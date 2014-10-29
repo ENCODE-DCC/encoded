@@ -21,6 +21,21 @@ controlRequiredAssayList = ['ChIP-seq',
                             'RIP-seq',
                             ]
 
+non_seq_assays = ["RNA profiling by array assay",
+                  "DNA methylation profiling by array assay",
+                  "Genotype",
+                  "RIP-chip",
+                  "protein sequencing by tandem mass spectrometry assay",
+                  "microRNA Array",
+                  "Switchgear",
+                  "5C"
+                  ]
+
+paired_end_assays = ["RNA-PET",
+                     "ChIA-PET",
+                     "DNA-PET"
+                     ]
+
 
 @audit_checker('experiment')
 def audit_experiment_description(value, system):
@@ -117,7 +132,6 @@ def audit_experiment_target(value, system):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
-                   
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
                 unique_antibody_target = set()
@@ -202,22 +216,41 @@ def audit_experiment_platform(value, system):
     Eventually we should enforce that the platform is appropirate for the assay.
     '''
 
-    if value['status'] in ['deleted', 'proposed']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
-    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
+    if (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
         return
+
+    platforms = []
+    read_lengths = []
 
     for i in range(0, len(value['replicates'])):
         rep = value['replicates'][i]
-        if 'platform' not in rep:
-            detail = 'rep {} missing platform'.format(rep["uuid"])
-            raise AuditFailure('missing platform', detail, level='WARNING')
-        if value['assay_term_name'] in ['Proteogenomics']:  # There will be more
-            return
-        if 'read_length' not in rep:
+        platform = rep.get('platform')  # really need to get the name here?
+        platforms.append(platform)
+
+        if platform is None:
+            detail = '{} missing platform'.format(rep["uuid"])
+            yield AuditFailure('missing platform', detail, level='WARNING')  # release error
+
+        if value['assay_term_name'] in non_seq_assays:
+            continue
+
+        read_length = rep.get('read-length')
+        read_lengths.append(read_length)
+
+        if read_length is None:
             detail = 'rep {} missing read_length'.format(rep["uuid"])
-            raise AuditFailure('missing read_length', detail, level='WARNING')
+            yield AuditFailure('missing read_length', detail, level='WARNING')  # release error
+
+    if len(set(read_lengths)) > 1:
+        detail = '{} has mixed read_length replicates: {}'.format(value['accession'], string(read_lengths))
+        yield AuditFailure('read_length mismatch', detail, level='ERROR')  # informational
+
+    if len(set(platforms)) > 1:
+        detail = '{} has mixed platform replicates'.format(value['accession'])
+        yield AuditFailure('platform mismatch', detail, level='ERROR')  # informational
 
 
 @audit_checker('experiment')
@@ -303,29 +336,13 @@ def audit_experiment_paired_end(value, system):
     If a library says it is paired_end and it's replicate is not, that is informational.
     If two replicates do not match, that is a warning.
     '''
-    ignore_assays = [
-        "RNA profiling by array assay",
-        "DNA methylation profiling by array assay",
-        "Genotype",
-        "RIP-chip",
-        "protein sequencing by tandem mass spectrometry assay",
-        "microRNA Array",
-        "Switchgear",
-        "5C"
-    ]
-
-    paired_end_assays = [
-        "RNA-PET",
-        "ChIA-PET",
-        "DNA-PET"
-    ]
 
     if value['status'] in ['deleted', 'replaced']:
         return
 
     term_name = value.get('assay_term_name')
 
-    if (term_name in ignore_assays) or (term_name is None):
+    if (term_name in non_seq_assays) or (term_name is None):
         return
 
     reps_list = []
