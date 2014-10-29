@@ -210,33 +210,27 @@ def audit_experiment_control(value, system):
 
 
 @audit_checker('experiment')
-def audit_experiment_platform(value, system):
+def audit_experiment_readlength(value, system):
     '''
-    All ENCODE 3 experiments should specify thier platform, certain platforms require read_length.
-    Eventually we should enforce that the platform is appropirate for the assay.
+    All ENCODE 3 experiments of sequencing type should specify their read_length
+    Read-lengths should likely match across replicates
+    Other rfas likely should have warning
     '''
 
     if value['status'] in ['deleted', 'replaced']:
         return
 
+    if value.get('assay_term_name') in non_seq_assays:
+        return
+
     if (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
         return
 
-    platforms = []
     read_lengths = []
 
     for i in range(0, len(value['replicates'])):
+        
         rep = value['replicates'][i]
-        platform = rep.get('platform')  # really need to get the name here?
-        platforms.append(platform)
-
-        if platform is None:
-            detail = '{} missing platform'.format(rep["uuid"])
-            yield AuditFailure('missing platform', detail, level='WARNING')  # release error
-
-        if value['assay_term_name'] in non_seq_assays:
-            continue
-
         read_length = rep.get('read-length')
         read_lengths.append(read_length)
 
@@ -247,6 +241,32 @@ def audit_experiment_platform(value, system):
     if len(set(read_lengths)) > 1:
         detail = '{} has mixed read_length replicates: {}'.format(value['accession'], string(read_lengths))
         yield AuditFailure('read_length mismatch', detail, level='ERROR')  # informational
+        
+        
+@audit_checker('experiment')
+def audit_experiment_platform(value, system):
+    '''
+    All ENCODE 3 experiments should specify thier platform.
+    Eventually we should enforce that the platform is appropirate for the assay.
+    Other rfas likely should have warning
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
+        return
+
+    platforms = []
+
+    for i in range(0, len(value['replicates'])):
+        rep = value['replicates'][i]
+        platform = rep.get('platform')  # really need to get the name here?
+        platforms.append(platform)
+
+        if platform is None:
+            detail = '{} missing platform'.format(rep["uuid"])
+            yield AuditFailure('missing platform', detail, level='WARNING')  # release error
 
     if len(set(platforms)) > 1:
         detail = '{} has mixed platform replicates'.format(value['accession'])
