@@ -54,19 +54,19 @@
     {
         "name": "rsem",
         "title": "RSEM",
-        "description": "",
+        "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data. ",
         "used_by": ["ENCODE"],
         "status": "released",
-        "source_url": "",
+        "source_url": "http://deweylab.biostat.wisc.edu/rsem/",
         "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
     },
     {
         "name": "bismark",
         "title": "Bismark",
-        "description": "",
+        "description": "A tool to map bisulfite converted sequence reads and determine cytosine methylation states",
         "used_by": ["ENCODE"],
         "status": "released",
-        "source_url": "",
+        "source_url": "http://www.bioinformatics.babraham.ac.uk/projects/bismark/",
         "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
     },
     {
@@ -167,7 +167,7 @@
         "uuid": "ce18defa-8989-4067-9ac7-2f13734223da"
     },
     {
-        "name": "mott-trimm.py",
+        "name": "mott-trim.py",
         "title": "Mott Trimmer",
         "description": "Mott-Trimmer for WGBS reads",
         "used_by": ["ENCODE"],
@@ -176,9 +176,9 @@
         "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
     },
     {
-        "name": "cx-repo.py",
+        "name": "cxrepo-bed.py",
         "title": "WGBS output processor",
-        "description": "",
+        "description": "Convert a Bismark CX_report file to bed-like files",
         "used_by": ["ENCODE"],
         "status": "released",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",

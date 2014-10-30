@@ -17,6 +17,12 @@
         "schema_version": {
             "default": "1"
         },
+        "name": {
+            "title": "Name",
+            "description": "Unique name of the analysis step",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+"
+        },
         "analysis_step_types": {
             "title": "Types",
              "description": "The classification of the software",
@@ -87,6 +93,7 @@
                     "bigWig",
                     "postScript",
                     "gtf",
+                    "tsv",
                     "csv"
                 ]
             }
