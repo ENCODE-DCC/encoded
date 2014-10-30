@@ -223,7 +223,7 @@ def audit_experiment_readlength(value, system):
     if value.get('assay_term_name') in non_seq_assays:
         return
 
-    if (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
+    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
         return
 
     read_lengths = []
@@ -231,7 +231,7 @@ def audit_experiment_readlength(value, system):
     for i in range(0, len(value['replicates'])):
         
         rep = value['replicates'][i]
-        read_length = rep.get('read-length')
+        read_length = rep.get('read_length')
         read_lengths.append(read_length)
 
         if read_length is None:
