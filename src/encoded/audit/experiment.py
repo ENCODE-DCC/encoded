@@ -229,7 +229,7 @@ def audit_experiment_readlength(value, system):
     read_lengths = []
 
     for i in range(0, len(value['replicates'])):
-        
+
         rep = value['replicates'][i]
         read_length = rep.get('read_length')
         read_lengths.append(read_length)
@@ -239,10 +239,11 @@ def audit_experiment_readlength(value, system):
             yield AuditFailure('missing read_length', detail, level='WARNING')  # release error
 
     if len(set(read_lengths)) > 1:
-        detail = '{} has mixed read_length replicates: {}'.format(value['accession'], string(read_lengths))
+        list_of_lens = str(read_lengths)
+        detail = '{} has mixed read_length replicates: {}'.format(value['accession'], list_of_lens)
         yield AuditFailure('read_length mismatch', detail, level='ERROR')  # informational
-        
-        
+
+
 @audit_checker('experiment')
 def audit_experiment_platform(value, system):
     '''
