@@ -111,5 +111,25 @@
         "status": "released",
         "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
         "uuid": "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
+    },
+    {
+        "analysis_step_types": ["aligner"],
+        "software_versions": [
+            "7b939da7-32ae-44ac-86f3-a584d8a4a555"
+        ],
+        "input_file_types": ["fastq"],
+        "output_file_types": ["bam"],
+        "status": "released",
+        "uuid": "2dd0f890-b287-4147-84ad-edd6d3612772"
+    },
+    {
+        "analysis_step_types": ["peak calling"],
+        "software_versions": [
+            "0a2cde6c-61c5-407b-aab7-7cc4847d5a37"
+        ],
+        "input_file_types": ["bam"],
+        "output_file_types": ["narrowPeak"],
+        "status": "released",
+        "uuid": "8abc2031-9aab-46a3-b3a0-d800ae44656e"
     }
 ]

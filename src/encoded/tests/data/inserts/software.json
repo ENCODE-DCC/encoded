@@ -208,5 +208,14 @@
         "software_type": ["quality metric"],
         "url": "http://www.uwencode.org/proj/hotspot/",
         "uuid":  "4219a456-d064-49ac-9383-93c0021e73e0"
+    },
+    {
+        "name": "clipper",
+        "title": "CLIPper",
+        "description": "A tool to detect CLIP-seq peaks.",
+        "software_type": ["peak caller", "quality metric"],
+        "url": "https://github.com/YeoLab/clipper/wiki/CLIPper-Home",
+        "source_url": "https://github.com/YeoLab/clipper",
+        "uuid": "56c6dc47-0692-493b-8983-ef80ea28d2fd"
     }
 ]

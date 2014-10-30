@@ -152,5 +152,17 @@
         "version": "unknown",
         "status": "released",
         "uuid": "d0c7d890-3446-41b5-82f0-388347f7e8dd"
+    },
+    {
+        "software": "0afb6080-1c08-11e4-8c21-0800200c9a66",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "7b939da7-32ae-44ac-86f3-a584d8a4a555"  
+    },
+    {
+        "software": "56c6dc47-0692-493b-8983-ef80ea28d2fd",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "0a2cde6c-61c5-407b-aab7-7cc4847d5a37"
     }
 ]
