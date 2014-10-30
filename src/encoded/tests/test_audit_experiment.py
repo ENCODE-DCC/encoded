@@ -130,7 +130,11 @@ def test_audit_experiment_target(testapp, base_experiment):
     errors = res.json['audit']
     assert any(error['category'] == 'missing target' for error in errors)
 
-
+def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_replicate):
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing read_length' for error in errors)
+    
 def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_replicate):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
