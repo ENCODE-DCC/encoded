@@ -388,11 +388,11 @@
             "linkTo": "pipeline"
         },
         "step": {
-            "title": "Analysis step run",
+            "title": "Analysis step",
             "description": "The instance of the step the file was generated from.",
-            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) for available identifiers.",
+            "comment": "For steps, see analysis_step.json (and analysis_step.json) for available identifiers.",
             "type": "string",
-            "linkTo": "analysis_step_run"
+            "linkTo": "analysis_step"
         }
     },
     "columns": {
