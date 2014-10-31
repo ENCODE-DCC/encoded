@@ -21,6 +21,12 @@
         "schema_version": {
             "default": "1"
         },
+        "name": {
+            "title": "Name",
+            "description": "Unique name of the software package, lower cased version of title.",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+"
+        },
         "accession": {
             "accessionType": "PL"
         },
@@ -58,6 +64,12 @@
                 "type": "string",
                 "linkTo": "analysis_step"
             }
+        },
+        "source_url": {
+            "title": "Source URL",
+            "description": "An external resource to the code base.",
+            "type": "string",
+            "format": "uri"
         },
         "documents": {
             "title": "Documents",

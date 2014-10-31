@@ -7,9 +7,6 @@
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-methlyation-pipeline",
-        "prerequisites": [
-            "aa598eaa-eda4-4fb3-b313-072f95de58a4"
-        ],
         "analysis_steps": [
             "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
             "36a667fe-e98c-402d-babf-88a9d39df5ff",
