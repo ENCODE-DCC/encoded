@@ -29,9 +29,11 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
 
         var documents = {};
-        context.documents.forEach(function(doc, i) {
-            documents[doc['@id']] = Panel({context: doc, key: i + 1});
-        });
+        if (context.documents) {
+            context.documents.forEach(function(doc, i) {
+                documents[doc['@id']] = Panel({context: doc, key: i + 1});
+            });
+        }
 
 
         return (
@@ -78,10 +80,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                              {documents}
                          </div>
                      </div>
-                      : null}      
+                      : null}
             </div>
 
-      
+
         );
     }
 });
@@ -103,7 +105,7 @@ var AnalysisStep = module.exports.AnalysisStep = function (props) {
                 {props.software_versions.length ?
                 	<dl>
                 	<dt> Software</dt>
-                	<dd> 
+                	<dd>
                 	{props.software_versions.map(function(software_version, i) {
                 		return ( <span> {
                 			i > 0 ? ", ": ""
@@ -136,8 +138,8 @@ var Listing = React.createClass({
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
-                            	{result['title']} 
-                            </a> 
+                            	{result['title']}
+                            </a>
                         </div>
                     </div>
             </li>
