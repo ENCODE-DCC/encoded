@@ -26,6 +26,7 @@ from pyramid.security import (
     principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
     resource_path,
@@ -60,6 +61,7 @@ from .embedding import (
     expand_path,
 )
 from .schema_formats import is_accession
+from .schema_utils import lookup_resource
 from .schema_utils import validate_request
 from .storage import (
     DBSession,
@@ -127,7 +129,7 @@ def no_validate_item_content_patch(context, request):
 
 def validate_item_content_post(context, request):
     data = request.json
-    schema = context.Item.schema
+    schema = request.registry['calculated_properties'].schema_for(context.Item)
     if schema is None:
         request.validated.update(data)
         return
@@ -136,7 +138,7 @@ def validate_item_content_post(context, request):
 
 def validate_item_content_put(context, request):
     data = request.json
-    schema = context.schema
+    schema = request.registry['calculated_properties'].schema_for(context.__class__)
     if schema is None:
         if 'uuid' in data:
             if UUID(data['uuid']) != context.uuid:
@@ -144,6 +146,7 @@ def validate_item_content_put(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
+
     current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
@@ -154,7 +157,7 @@ def validate_item_content_patch(context, request):
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
-    schema = context.schema
+    schema = request.registry['calculated_properties'].schema_for(context.__class__)
     if schema is None:
         if 'uuid' in data:
             if UUID(data['uuid']) != context.uuid:
@@ -503,6 +506,19 @@ class Item(object):
             if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
         ]
 
+    @classreify
+    def schema_rev_links(cls):
+        schema = get_current_request().registry['calculated_properties'].schema_for(cls)
+
+        revs = {}
+        for key, prop in schema['properties'].items():
+            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
+            if linkFrom is None:
+                continue
+            linkType, linkProp = linkFrom.split('.')
+            revs[key] = linkType, linkProp
+        return revs
+
     @property
     def merged_back_rev(self):
         root = find_root(self)
@@ -609,8 +625,8 @@ class Item(object):
         try:
             session.add(self.model)
             self.update_properties(properties, sheets)
-            self.update_rels()
             keys_add, keys_remove = self.update_keys()
+            self.update_rels()
             sp.commit()
         except (IntegrityError, FlushError):
             sp.rollback()
@@ -633,13 +649,60 @@ class Item(object):
 
     def update_properties(self, properties, sheets=None):
         if properties is not None:
-            if 'uuid' in properties:
+            if 'uuid' in properties or self.schema_rev_links:
                 properties = properties.copy()
+            if 'uuid' in properties:
                 del properties['uuid']
+            if self.schema_rev_links:
+                child_props = {}
+                for key, spec in self.schema_rev_links.items():
+                    if key in properties:
+                        child_props[key] = properties.pop(key)
+                if child_props:
+                    self.update_children(child_props)
             self.model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
                 self.model[key] = value
+
+    def update_children(self, properties):
+        request = get_current_request()
+        root = request.root
+
+        for propname, children in properties.items():
+            link_type, link_attr = spec = self.schema_rev_links[propname]
+            child_collection = root.by_item_type[link_type]
+            found = set()
+
+            # Add or update children included in properties
+            for child_props in children:
+                if isinstance(child_props, basestring):  # IRI of (existing) child
+                    child = lookup_resource(root, root, child_props)
+                else:
+                    child_props = child_props.copy()
+                    child_props[link_attr] = str(self.model.rid)
+                    if 'uuid' in child_props:  # update existing child
+                        child_id = child_props.pop('uuid')
+                        child = root.get_by_uuid(child_id)
+                        request.registry.notify(BeforeModified(child, request))
+                        child.update(child_props)
+                        request.registry.notify(AfterModified(child, request))
+                    else:  # add new child
+                        child_props = child_props.copy()
+                        child = child_collection.Item.create(child_collection, child_props)
+                        request.registry.notify(Created(child, request))
+                found.add(child.uuid)
+
+            # Remove existing children that are not in properties
+            for link in self.model.revs:
+                if (link.source.item_type, link.rel) != spec:
+                    continue
+                if link.source_rid in found:
+                    continue
+                child = root.get_by_uuid(link.source_rid)
+                props = child.properties.copy()
+                props['status'] = 'deleted'
+                child.update(props)
 
     def update_keys(self):
         _keys = [(k, v) for k, values in self.keys().items() for v in values]
@@ -718,9 +781,7 @@ class Item(object):
     def jsonld_type(self):
         return [self.item_type] + self.base_types
 
-    @calculated_property(name='uuid', schema={
-        "type": "string",
-    })
+    @calculated_property(name='uuid')
     def prop_uuid(self):
         return str(self.uuid)
 
@@ -1065,7 +1126,12 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
-    return item_links(context, request)
+    properties = item_links(context, request)
+    calculated = calculate_properties(context, request, properties)
+    for key, value in calculated.items():
+        if key in context.schema_rev_links:
+            properties[key] = value
+    return properties
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',

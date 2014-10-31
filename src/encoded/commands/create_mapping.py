@@ -274,13 +274,11 @@ def collection_mapping(calculated_properties, collection, embed=True):
 
         for i, p in enumerate(prop.split('.')):
             name = None
-            subschema = None
 
-            if name is None:
-                subschema = new_schema.get('properties', {}).get(p)
-                if subschema is not None:
-                    subschema = subschema.get('items', subschema)
-                    name = subschema.get('linkTo')
+            subschema = new_schema.get('properties', {}).get(p)
+            if subschema is not None:
+                subschema = subschema.get('items', subschema)
+                name = subschema.get('linkTo')
 
             if name is None and p in new_rev:
                 name, rev_path = new_rev[p]

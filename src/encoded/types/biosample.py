@@ -209,8 +209,8 @@ class Biosample(Item):
         "title": "Characterizations",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "biosample_characterization",
+            "type": ['string', 'object'],
+            "linkFrom": "biosample_characterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

@@ -8,6 +8,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 import json
 import collections
+import copy
 from jsonschema import (
     Draft4Validator,
     FormatChecker,
@@ -154,6 +155,61 @@ def linkTo(validator, linkTo, instance, schema):
         validator._validated[-1] = str(item.uuid)
 
 
+def linkFrom(validator, linkFrom, instance, schema):
+    # avoid circular import
+    from .contentbase import Item
+
+    linkType, linkProp = linkFrom.split('.')
+    if validator.is_type(instance, "string"):
+        request = get_current_request()
+        base = request.root.by_item_type[linkType]
+        try:
+            item = lookup_resource(request.root, base, instance.encode('utf-8'))
+            if item is None:
+                raise KeyError()
+        except KeyError:
+            error = "%r not found" % instance
+            yield ValidationError(error)
+            return
+        if not isinstance(item, Item):
+            error = "%r is not a linkable resource" % instance
+            yield ValidationError(error)
+            return
+        if linkType not in set([item.item_type] + item.base_types):
+            error = "%r is not of type %s" % (instance, repr(linkType))
+            yield ValidationError(error)
+            return
+        pass
+    else:
+        path = instance.get('@id')
+        request = get_current_request()
+        if validator._serialize:
+            lv = len(validator._validated)
+        if '@id' in instance:
+            del instance['@id']
+
+        # treat the link property as not required
+        # because it will be filled in when the child is created/updated
+        subtype = request.root.by_item_type.get(linkType)
+        subschema = request.registry['calculated_properties'].schema_for(subtype.Item)
+        subschema = copy.deepcopy(subschema)
+        if linkProp in subschema['required']:
+            subschema['required'].remove(linkProp)
+
+        for error in validator.descend(instance, subschema):
+            yield error
+
+        if validator._serialize:
+            validated_instance = validator._validated[lv]
+            del validator._validated[lv:]
+            if path is not None:
+                item = lookup_resource(request.root, request.root, path)
+                validated_instance['uuid'] = str(item.uuid)
+            elif 'uuid' in validated_instance:  # where does this come from?
+                del validated_instance['uuid']
+            validator._validated[-1] = validated_instance
+
+
 class IgnoreUnchanged(ValidationError):
     pass
 
@@ -206,6 +262,7 @@ class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['calculatedProperty'] = calculatedProperty
     VALIDATORS['linkTo'] = linkTo
+    VALIDATORS['linkFrom'] = linkFrom
     VALIDATORS['permission'] = permission
     VALIDATORS['requestMethod'] = requestMethod
     VALIDATORS['validators'] = validators

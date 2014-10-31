@@ -65,8 +65,8 @@ class Dataset(Item):
         "title": "Original files",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "file",
+            "type": ['string', 'object'],
+            "linkFrom": "file.dataset",
         },
     })
     def original_files(self, request, original_files):

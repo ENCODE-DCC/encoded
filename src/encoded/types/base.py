@@ -39,12 +39,6 @@ ONLY_ADMIN_VIEW = [
 ]
 
 
-TYPES_WITH_FORMS = [
-    'image',
-    'page',
-]
-
-
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     return [
         path for path in paths
@@ -129,7 +123,7 @@ class Item(contentbase.Item):
 
 @contentbase.calculated_property(context=Item.Collection, category='action')
 def add(item_uri, item_type, has_permission):
-    if item_type in TYPES_WITH_FORMS and has_permission('add'):
+    if has_permission('add'):
         return {
             'name': 'add',
             'title': 'Add',
@@ -145,5 +139,5 @@ def edit(item_uri, item_type, has_permission):
             'name': 'edit',
             'title': 'Edit',
             'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + ('#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
+            'href': item_uri + '#!edit',
         }
