@@ -66,7 +66,7 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        yield AuditFailure('NTR, assay', detail, level='WARNING')
+        yield AuditFailure('NTR, assay', detail, level='DCC_ACTION')
         return
 
     if term_id not in ontology:
@@ -167,7 +167,7 @@ def audit_experiment_control(value, system):
 
     if value['possible_controls'] == []:
         detail = 'missing control'
-        raise AuditFailure('missing possible controls', detail, level='ERROR')
+        raise AuditFailure('missing possible controls', detail, level='STANDARDS_FAILURE')
 
     # A check should go here that would go through all possible controls to
     # verify that they are the same biosample term
