@@ -35,7 +35,7 @@ before_install:
   - elasticsearch -v
 install:
   - python bootstrap.py
-  - bin/buildout
+  - bin/buildout -v 2.2.1
 before_script:
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script:
