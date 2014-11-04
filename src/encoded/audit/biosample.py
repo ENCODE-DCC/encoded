@@ -48,7 +48,7 @@ def audit_biosample_term(value, system):
     term_name = value.get('biosample_term_name')
 
     if term_id.startswith('NTR:'):
-        detail = '{} has {} - {}'.format(value['accesion'], term_id, term_name)
+        detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
         raise AuditFailure('NTR', detail, level='WARNING')  # DCC action
 
     if term_id not in ontology:
