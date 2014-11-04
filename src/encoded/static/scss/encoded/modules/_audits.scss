@@ -41,7 +41,9 @@
 // Connect audit types to fontawesome icon suffixes and colors
 $audit-types:
     (error, warning, #cc0700),
-    (warning, exclamation-circle, #ebe310);
+    (warning, exclamation-circle, #ebe310),
+    (standards_failure, warning, #33aaff),
+    (dcc_action, arrow-circle-right, #00e500);
 
 // Generate the audit icon classes for each of the audit types
 @each $audit-type, $suffix, $color in $audit-types {
@@ -67,7 +69,7 @@ $audit-types:
     .audit-detail-#{$audit-type} {
         padding: 5px 10px;
         border-top: 1px solid #a0a0a0;
-        background-color: lighten(desaturate($color,30%),40%);
+        background-color: lighten(desaturate($color,30%),30%);
 
         &:first-child {
             border-top: none;

@@ -24,6 +24,8 @@ _levelNames = {
     30: 'WARNING',
     40: 'ERROR',
     50: 'CRITICAL',
+    60: 'STANDARDS_FAILURE',
+    70: 'DCC_ACTION',
     'CRITICAL': 50,
     'DEBUG': 10,
     'ERROR': 40,
@@ -31,6 +33,8 @@ _levelNames = {
     'NOTSET': 0,
     'WARN': 30,
     'WARNING': 30,
+    'STANDARDS_FAILURE': 60,
+    'DCC_ACTION': 70,
 }
 
 
