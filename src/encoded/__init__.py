@@ -167,7 +167,7 @@ def main(global_config, **settings):
 
     config.include('.persona')
     config.include('pyramid_multiauth')
-    from .local_roles import LocalRolesAuthorizationPolicy
+    from pyramid_localroles import LocalRolesAuthorizationPolicy
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
 
     config.include(static_resources)

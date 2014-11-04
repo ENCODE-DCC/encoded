@@ -33,6 +33,12 @@ var Dataset = module.exports.Dataset = React.createClass({
         });
         experiments = _.values(experiments);
 
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -75,10 +81,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </dl>
                 </div>
 
-				{context.documents.length ?
+                {Object.keys(datasetDocuments).length ?
                     <div>
                         <h3>Dataset documents</h3>
-                        {context.documents.map(Panel)}
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
                     </div>
                 : null}
 

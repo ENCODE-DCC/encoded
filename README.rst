@@ -15,7 +15,7 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql node
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql node graphviz
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
 
 Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::

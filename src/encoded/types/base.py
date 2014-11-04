@@ -74,9 +74,8 @@ ADD_ACTION = {
     'name': 'add',
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
-    'method': 'GET',
     'href': '{collection_uri}#!add',
-    'className': 'btn btn-success',
+    'className': 'btn-success',
     '$templated': True,
     '$condition': 'permission:add',
 }
@@ -84,10 +83,9 @@ ADD_ACTION = {
 EDIT_ACTION = {
     'name': 'edit',
     'title': 'Edit',
-    'profile': '/profiles/page.json',
-    'method': 'PUT',
+    'profile': '/profiles/{item_type}.json',
     'href': '#!edit',
-    'className': 'btn navbar-btn',
+    '$templated': True,
 }
 
 
@@ -99,6 +97,10 @@ def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
 
 
 class Collection(BaseCollection):
+    template = {
+        'actions': [ADD_ACTION],
+    }
+
     def __init__(self, parent, name):
         super(Collection, self).__init__(parent, name)
         if hasattr(self, '__acl__'):

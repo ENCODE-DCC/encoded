@@ -35,7 +35,7 @@
                 "description": "A donor member of the same litter.",
                 "comment": "See mouse_donor.json for available identifiers.",
                 "type": "string",
-                "linkTo": "donor"
+                "linkTo": "mouse_donor"
             }
         },
         "organism": {

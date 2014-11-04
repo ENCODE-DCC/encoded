@@ -1,4 +1,6 @@
+import copy
 import os
+from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -17,9 +19,10 @@ def includeme(config):
     config.add_route('jsonld_context', '/terms/')
     config.add_route('jsonld_context_no_slash', '/terms')
     config.add_route('jsonld_term', '/terms/{term}')
-    config.add_route('graph', '/profiles/graph.dot')
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
+    config.add_route('graph_dot', '/profiles/graph.dot')
+    config.add_route('graph_svg', '/profiles/graph.svg')
     config.scan()
 
 
@@ -54,7 +57,16 @@ def schema(context, request):
         collection = context.by_item_type[item_type]
     except KeyError:
         raise HTTPNotFound(item_type)
-    return collection.schema
+
+    schema = copy.deepcopy(collection.schema)
+    properties = OrderedDict()
+    for k, v in schema['properties'].items():
+        if 'permission' in v:
+            if not request.has_permission(v['permission'], collection):
+                continue
+        properties[k] = v
+    schema['properties'] = properties
+    return schema
 
 
 @view_config(route_name='batch_hub')

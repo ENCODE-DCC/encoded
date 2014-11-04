@@ -42,6 +42,15 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
     return htmlClass;
 };
 
+module.exports.truncateString = function (str, len) {
+    if (str.length > len) {
+        str = str.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
+        var isOneWord = str.match(/\s/gi) === null; // Detect single-word string
+        str = str.substr(0, len - 1); // Truncate to length ignoring word boundary
+        str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…'; // Back up to word boundary
+    }
+    return str;
+};
 
 module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 

@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -173,7 +174,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </dl>
                 </div>
 
-                <div className="characterizations">
+                <div className="characterizations row multi-columns-row">
                     {characterizations}
                 </div>
 
@@ -213,35 +214,58 @@ var ExperimentsUsingAntibody = React.createClass({
 var StandardsDocuments = React.createClass({
     render: function() {
         return (
-            <div>
+            <dd>
                 {this.props.docs.map(function(doc, i) {
                     var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
                     return (
-                        <div key={i} className="multi-dd">
-                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                        <div className="multi-dd dl-link">
+                            <i className="icon icon-download"></i>&nbsp;
+                            <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
                                 {doc.aliases[0]}
                             </a>
                         </div>
                     );
                 })}
-            </div>
+            </dd>
         );
     }
 });
 
 
 var Characterization = module.exports.Characterization = React.createClass({
+    getInitialState: function() {
+        return {panelOpen: false};
+    },
+
+    // Clicking the Lab bar inverts visible state of the popover
+    handleClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Tell parent (App component) about new popover state
+        // Pass it this component's React unique node ID
+        this.setState({panelOpen: !this.state.panelOpen});
+    },
+
     render: function() {
         var context = this.props.context;
+        var keyClass = cx({
+            "characterization-meta-data": true,
+            "key-value-left": true,
+            "characterization-slider": true,
+            "active": this.state.panelOpen
+        });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
         if (context.attachment && context.attachment.href && context.attachment.download) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             download = (
-                <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
-                    {context.attachment.download}
-                </a>
+                <dd className="dl-link">
+                    <i className="icon icon-download"></i>&nbsp;<a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
+                    </a>
+                </dd>
             );
         } else {
             download = (
@@ -257,74 +281,81 @@ var Characterization = module.exports.Characterization = React.createClass({
             });
         }
 
+        var excerpt;
+        if (context.caption && context.caption.length > 200) {
+            excerpt = globals.truncateString(context.caption, 200);
+        }
+
         return (
-            <section className={globals.itemClass(context, 'view-detail panel')}>
-                <h4>{context.target.label} (<i>{context.target.organism.scientific_name}</i>)</h4>
-                <div className="row">
-                    <div className="col-sm-4 col-md-6">
+            // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
+            <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                <div className={globals.itemClass(context, 'view-detail panel')}>
+                    <div className="panel-heading characterization-title">
+                        {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
+                    </div>
+                    <div className="panel-body characterization-header">
                         <figure>
                             {figure}
-                            <figcaption>
-                                <span>{context.status}</span>
-                            </figcaption>
+                            <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
-                    </div>
-                    <div className="col-sm-8 col-md-6">
-                        <dl className="characterization-meta-data key-value">
+
+                        <dl className="characterization-intro characterization-meta-data key-value-left">
                             {context.characterization_method ?
                                 <div data-test="method">
-                                    <dt className="h3">Method</dt>
-                                    <dd className="h3">{context.characterization_method}</dd>
+                                    <dt>Method</dt>
+                                    <dd>{context.characterization_method}</dd>
                                 </div>
                             : null}
 
-                            <div data-test="targetspecies">
-                                <dt className="h4">Target species</dt>
-                                <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
-                            </div>
-
-                            {context.caption ?
+                            {excerpt || (context.caption && context.caption.length) ?
                                 <div data-test="caption">
-                                    <dt>Caption</dt>
-                                    <dd className="sentence-case">{context.caption}</dd>
+                                    <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
+                                    <dd>{excerpt ? excerpt : context.caption}</dd>
                                 </div>
                             : null}
-
-                            {context.submitted_by && context.submitted_by.title ?
-                                <div data-test="submitted">
-                                    <dt>Submitted by</dt>
-                                    <dd>{context.submitted_by.title}</dd>
-                                </div>
-                            : null}
-
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-
-                            <div data-test="grant">
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
-                            </div>
-
-                            <div data-test="image">
-                                <dt>Image</dt>
-                                <dd><StatusLabel status={context.status} /></dd>
-                            </div>
-
-                            {standardsDocuments.length ?
-                                <div data-test="standardsdoc">
-                                    <dt>Standards documents</dt>
-                                    <dd><StandardsDocuments docs={standardsDocuments} /></dd>
-                                </div>
-                            : null}
-
-                            <div data-test="download">
-                                <dt><i className="icon icon-download"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </div>
                         </dl>
                     </div>
+                    <dl ref="collapse" className={keyClass}>
+                        {excerpt ?
+                            <div data-test="caption">
+                                <dt>Caption</dt>
+                                <dd className="sentence-case para-text">{context.caption}</dd>
+                            </div>
+                        : null}
+
+                        {context.submitted_by && context.submitted_by.title ?
+                            <div data-test="submitted">
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
+                        : null}
+
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
+                        <div data-test="grant">
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
+                        </div>
+
+                        <div data-test="download">
+                            <dt>Download</dt>
+                            {download}
+                        </div>
+
+                        {standardsDocuments.length ?
+                            <div data-test="standardsdoc">
+                                <dt>Standards documents</dt>
+                                <StandardsDocuments docs={standardsDocuments} />
+                            </div>
+                        : null}
+                    </dl>
+
+                    <button onClick={this.handleClick} className="key-value-trigger panel-footer">
+                        {this.state.panelOpen ? 'Less' : 'More'}
+                    </button>
                 </div>
             </section>
         );

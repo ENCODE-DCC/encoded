@@ -90,6 +90,7 @@
     position: relative;
     font-size: 1.3em;
     font-weight: bold;
+    overflow: hidden;
 
     a {
         &:hover {
@@ -228,4 +229,24 @@ span.bar {
     display: inline;
     margin: 0 !important;
     font-size: floor($font-size-base * 0.95);;
+}
+
+.list-supplementary {
+    margin: 0;
+    padding: 5px;
+    border-right: 1px solid #e8e8e8;
+    border-bottom: 1px solid #e8e8e8;
+    border-left: 1px solid #e8e8e8;
+
+    &:first-child {
+        border-top: 1px solid #e8e8e8;
+    }
+
+    button.btn-link {
+        margin-left: 5px;
+        padding: 0;
+        font-size: inherit;
+        vertical-align: baseline;
+        border: none;
+    }
 }

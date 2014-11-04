@@ -16,6 +16,7 @@ var portal = {
             {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
+            {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
             {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
         ]},
         {id: 'methods', title: 'Methods', children: [
@@ -44,6 +45,20 @@ var portal = {
 var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
+
+// See https://github.com/facebook/react/issues/2323
+var Title = React.createClass({
+    render: function() {
+        return this.transferPropsTo(<title>{this.props.children}</title>);
+    },
+    componentDidMount: function() {
+        var node = document.querySelector('title');
+        if (node && !node.getAttribute('data-reactid')) {
+            node.setAttribute('data-reactid', this._rootNodeID);
+        }
+    }
+});
+
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -190,7 +205,7 @@ var App = React.createClass({
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                    <title>{title}</title>
+                    <Title>{title}</Title>
                     {base ? <base href={base}/> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
