@@ -43,7 +43,11 @@
         "accession": "ENCPL001GRV",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
+        "end_points": [
+            "c4a33ee0-50ab-11e4-916c-0800200c9a66"
+        ],
         "analysis_steps": [
+            "ab7ec880-50ab-11e4-916c-0800200c9a66",
             "c4a33ee0-50ab-11e4-916c-0800200c9a66"
         ],
         "documents": [
@@ -57,7 +61,12 @@
         "accession": "ENCPL001CRG",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
+        "end_points": [
+            "1e418e10-5ae9-11e4-8ed6-0800200c9a66",
+            "27c011e0-5aef-11e4-8ed6-0800200c9a66"
+        ],
         "analysis_steps": [
+            "54ae7770-5ae8-11e4-8ed6-0800200c9a66",
             "1e418e10-5ae9-11e4-8ed6-0800200c9a66",
             "27c011e0-5aef-11e4-8ed6-0800200c9a66"
         ],
@@ -72,9 +81,17 @@
         "accession": "ENCPL001ENC",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
-        "analysis_steps": [
+        "end_points": [
              "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
              "7bdab3ce-d4e7-47ef-9584-84273adecc08",
+             "11440ed3-1228-4430-aa5a-54cd408ff105",
+             "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
+        ],
+        "analysis_steps": [
+            "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
+             "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
+             "7bdab3ce-d4e7-47ef-9584-84273adecc08",
+              "709bba59-7717-41c3-b829-ae9dfba9ffd8",
              "11440ed3-1228-4430-aa5a-54cd408ff105",
              "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
         ],
@@ -90,7 +107,11 @@
         "accession": "ENCPL001CLP",
         "assay_term_id": "NTR:0001449",
         "assay_term_name": "iCLIP",
+        "end_points": [
+            "8abc2031-9aab-46a3-b3a0-d800ae44656e"
+        ],
         "analysis_steps": [
+            "2dd0f890-b287-4147-84ad-edd6d3612772",
             "8abc2031-9aab-46a3-b3a0-d800ae44656e"
         ],
         "documents": [
