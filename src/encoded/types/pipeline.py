@@ -50,3 +50,20 @@ class AnalysisStep(Collection):
             'software_versions.software',
             'parents'
         ]
+
+
+@location('analysis-step-runs')
+class AnalysisStepRun(Collection):
+    item_type = 'analysis_step_run'
+    schema = load_schema('analysis_step_run.json')
+    properties = {
+        'title': 'Analysis step runs',
+        'description': 'Listing of Analysis Step Runs'
+    }
+
+    class Item(Collection.Item):
+        keys = ALIAS_KEYS
+
+        embedded = [
+            'analysis_step',
+        ]

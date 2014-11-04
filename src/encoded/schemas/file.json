@@ -389,10 +389,10 @@
         },
         "step": {
             "title": "Analysis step",
-            "description": "The instance of the step the file was generated from.",
-            "comment": "For steps, see analysis_step.json (and analysis_step.json) for available identifiers.",
+            "description": "The run instance of the step the file was generated from.",
+            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "analysis_step_run"
         }
     },
     "columns": {

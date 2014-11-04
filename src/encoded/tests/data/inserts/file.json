@@ -10,7 +10,7 @@
         "md5sum": "e002cd204df36d93dd070ed0712b7eed",
         "output_type": "sites",
         "replicate": "6e85c807-684a-46e3-b4b9-1f7990e85720",
-        "status": "released", 
+        "status": "released",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeHaibMethyl450/wgEncodeHaibMethyl450SaecSitesRep1.bigBed",
         "uuid": "46e82a90-49e5-4c33-afab-9ec90d65faf3"
@@ -370,7 +370,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "status": "in progress",
-        "step": "ab7ec880-50ab-11e4-916c-0800200c9a66",
+        "step": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bam",
         "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66"
@@ -392,7 +392,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
         "status": "in progress",
-        "step": "ab7ec880-50ab-11e4-916c-0800200c9a66",
+        "step": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
         "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
@@ -413,7 +413,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "status": "in progress",
-        "step": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
+        "step": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bigWig",
         "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66"
@@ -434,11 +434,11 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
         "status": "in progress",
-        "step": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
+        "step": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bigWig",
         "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66"
-   },  
+   },
    {
         "_project": "encode3",
         "accession": "ENCFF001RDR",

@@ -3,7 +3,7 @@
     "id": "/profiles/analysis_step_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysis_step", "workflow_run", "status"],
+    "required": ["analysis_step", "status"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "dx_job_id"],
     "mixinProperties": [
@@ -23,30 +23,39 @@
             "linkTo": "analysis_step"
         },
         "workflow_run": {
-            "title": "Analysis Step",
-            "description": "Reference to template step in pipeline",
+            "title": "Workflow Run",
+            "description": "Reference executed workflow_run objects",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "workflow_run"
         },
         "dx_job_id": {
             "title": "DNA Nexus job id",
             "description": "Identifier in the DNA Nexus system",
-            "type:": "string"
+            "type": "string"
         },
         "dx_app_json": {
             "title": "DNA Nexus applet json",
             "description": "dxapp JSON for the applet (wrapper code) corresponding to the step",
-            "type": "object"
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
+        },
+        "parameters": {
+            "title": "Input Parameters",
+            "description": "The input parameters used for this run (could be extracted from dx_job)",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
         },
         "started_running": {
             "title": "Start time",
-            "description": "When the workflow was started",
+            "description": "When the analysis step was started",
             "type": "string",
             "format": "date-time"
         },
         "finished_running": {
             "title": "Finish time",
-            "description": "When the workflow ended",
+            "description": "When the analysis step ended",
             "type": "string",
             "format": "date-time"
         },
