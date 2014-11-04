@@ -34,8 +34,8 @@ before_install:
   - sudo service elasticsearch stop
   - elasticsearch -v
 install:
-  - python bootstrap.py
-  - bin/buildout -v 2.2.1
+  - python bootstrap.py -v 2.2.1
+  - bin/buildout
 before_script:
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script:
