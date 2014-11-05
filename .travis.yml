@@ -25,9 +25,9 @@ before_install:
     --logfile $CONNECT_LOG
     --tunnel-identifier $TRAVIS_JOB_NUMBER
     $SAUCE_USERNAME $SAUCE_ACCESS_KEY > sauce-connect.log &
-  - pip install -U setuptools
   - virtualenv clean-python
   - source clean-python/bin/activate
+  - pip install -U setuptools
   - sudo service postgresql stop
   - postgres --version
   - initdb --version
