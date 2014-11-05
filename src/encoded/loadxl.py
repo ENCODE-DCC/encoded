@@ -38,6 +38,7 @@ ORDER = [
     'software',
     'software_version',
     'analysis_step',
+    'analysis_step_run',
     'pipeline',
     'file',
     'image',
