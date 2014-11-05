@@ -689,6 +689,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
         "assembly": "hg19",
+        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI"],
         "aliases": []
     },
     {
@@ -706,6 +707,7 @@
         "file_size": 370148294,
         "output_type": "raw data",
         "lab": "/labs/richard-myers/",
+        "derived_from": ["ENCFF434GXF"],
         "aliases": []
     },
     {
@@ -723,6 +725,7 @@
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
+        "derived_from": ["ENCFF434GXF"],
         "aliases": []
     },
     {
@@ -740,6 +743,7 @@
         "file_size": 5526340790,
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
-        "aliases": []
+        "aliases": [],
+        "derived_from": ["ENCFF434GXF"]
     }
 ]
