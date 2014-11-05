@@ -14,7 +14,7 @@
     }
 
     &.active {
-        background-color: #a0a0a0;
+        background-color: #f0f0f0;
     }
 }
 
@@ -38,12 +38,25 @@
     margin: 0 2px;
 }
 
-// Connect audit types to fontawesome icon suffixes and colors
+// Connect audit types to fontawesome icon suffixes and colors.
+// Set audit type icons and colors here.
+// Icon names are for font-awesome and are suffixed to 'icon-'.
+// BG colors automatically generated from the FG colors set here.
 $audit-types:
     (error, warning, #cc0700),
-    (warning, exclamation-circle, #ebe310),
-    (standards_failure, warning, #33aaff),
-    (dcc_action, arrow-circle-right, #00e500);
+    (warning, exclamation-circle, #ff8000),
+    (standards_failure, file-text, #ebe310),
+    (dcc_action, life-ring, #a0a0a0);
+
+// Function for an inverse curve; used for saturation and lightness of backgrounds
+@function inverse-curve($value) {
+    @return (1 / ($value + 9.1)) * -1000 + 109.1;
+}
+
+// Calculate bg color based on color using inverse function
+@function fg-to-bg-color($basecolor) {
+    @return hsl(hue($basecolor), inverse-curve(saturation($basecolor)), inverse-curve(lightness($basecolor)));
+}
 
 // Generate the audit icon classes for each of the audit types
 @each $audit-type, $suffix, $color in $audit-types {
@@ -69,11 +82,17 @@ $audit-types:
     .audit-detail-#{$audit-type} {
         padding: 5px 10px;
         border-top: 1px solid #a0a0a0;
-        background-color: lighten(desaturate($color,30%),30%);
+        background-color: fg-to-bg-color($color);
 
         &:first-child {
             border-top: none;
         }
+    }
+
+    // Audit level name text
+    .audit-level-#{$audit-type} {
+        margin-left: 5px !important;
+        color: $color;
     }
 }
 
@@ -86,6 +105,5 @@ $audit-types:
 
     strong {
         display: inline-block;
-        margin-left: 10px;
     }
 }

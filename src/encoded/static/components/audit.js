@@ -83,9 +83,12 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var level = audit.level_name.toLowerCase();
                         var iconClass = 'icon audit-icon-' + level;
                         var alertClass = 'audit-detail-' + level;
+                        var levelClass = 'audit-level-' + level;
                         return (
                             <div className={alertClass} key={i} role="alert">
                                 <i className={iconClass}></i>
+                                <strong className={levelClass}>{audit.level_name.split('_').join(' ')}</strong>
+                                &nbsp;&mdash;&nbsp;
                                 <strong>{audit.category}</strong>: {audit.detail}
                             </div>
                         );
