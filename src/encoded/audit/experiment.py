@@ -237,7 +237,7 @@ def audit_experiment_spikeins(value, system):
     if value.get('assay_term_name') != 'RNA-seq':
         return
 
-    for i in range(0, len(value['replicates'])):
+    for i in range(len(value['replicates'])):
         
         rep = value['replicates'][i]
         
@@ -252,9 +252,10 @@ def audit_experiment_spikeins(value, system):
         if lib['size_range'] is not '>200':
             continue
         
-        if ('spikeins_used' not in lib) or (lib['spikeins_used'] == []): 
+        spikes = lib.get('spikeins_used')
+        if (spikes == None) or (spikes == []): 
             detail = '{} missing spikeins'.format(lib["accession"])
-            raise AuditFailure('missing spikeins', detail, level='WARNING')  # release error
+            yield AuditFailure('missing spikeins', detail, level='WARNING')  # release error
             # Informattional if ENCODE2 and release error if ENCODE3
         
         #for dset in lib['spikeins_used]:
