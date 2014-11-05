@@ -300,5 +300,22 @@
         "rbns_protein_concentration": 20,
         "rbns_protein_concentration_units":"nM",
         "uuid": "2743cbc5-dc25-4fe4-8808-47df3e632339"
+    },
+    {
+        "_test": "DNA-me pipeline test",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "biological_replicate_number": 1,
+        "uuid": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
+        "read_length_units": "nt",
+        "read_length": 100,
+        "technical_replicate_number": 1,
+        "platform": "da150a82-63cd-4471-ba3e-ffe7ca96bcda",
+        "paired_ended": true,
+        "flowcell_details": [],
+        "library": "ENCLB742NWU",
+        "experiment": "/experiments/ENCSR765JPC/",
+        "aliases": []
     }
+
 ]
