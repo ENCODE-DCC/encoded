@@ -21,6 +21,18 @@ controlRequiredAssayList = ['ChIP-seq',
                             'RIP-seq',
                             ]
 
+seq_assays = ['RNA-seq',
+              'ChIP-seq',
+              'RNA Bind-n-Seq',
+              'MeDIP-seq',
+              'RNA-PET',
+              'DNA-PET',
+              'ChIA-PET',
+              'CAGE',
+              'RAMPAGE',
+              'RIP-seq'
+              ]
+
 non_seq_assays = ["RNA profiling by array assay",
                   "DNA methylation profiling by array assay",
                   "Genotype",
@@ -220,23 +232,22 @@ def audit_experiment_readlength(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') in non_seq_assays:
+    if value.get('assay_term_name') not in seq_assays:
         return
 
-    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
+    if ('award' not in value) or (value['award'].get('rfa') in ['ENCODE2', 'ENCODE2-Mouse']): # or (value['replicates'] == []):  # This logic seems redundant
         return
 
     read_lengths = []
 
-    for i in range(0, len(value['replicates'])):
-
+    for i in range(len(value['replicates'])):
         rep = value['replicates'][i]
         read_length = rep.get('read_length')
         read_lengths.append(read_length)
 
         if read_length is None:
-            detail = 'rep {} missing read_length'.format(rep["uuid"])
-            yield AuditFailure('missing read_length', detail, level='WARNING')  # release error
+            detail = 'rep {} missing read_length'.format(rep['uuid'])
+            yield AuditFailure('missing read length', detail, level='WARNING')  # release error
 
     if len(set(read_lengths)) > 1:
         list_of_lens = str(read_lengths)
@@ -260,7 +271,7 @@ def audit_experiment_platform(value, system):
 
     platforms = []
 
-    for i in range(0, len(value['replicates'])):
+    for i in range(len(value['replicates'])):
         rep = value['replicates'][i]
         platform = rep.get('platform')  # really need to get the name here?
         platforms.append(platform)
