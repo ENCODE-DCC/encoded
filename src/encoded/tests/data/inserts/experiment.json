@@ -120,7 +120,7 @@
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-       "lab": "richard-myers",
+        "lab": "richard-myers",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
@@ -266,7 +266,7 @@
         "status": "proposed",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole genome bisulfite sequencing",
-        "lab": "/labs/richard-myers/",
+        "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus"
     }
 ]
