@@ -149,11 +149,11 @@ def search(context, request, search_type=None):
     # Sorting the files when search term is not specified
     if search_term == '*':
         query['sort'] = {
-            'date_created': {
+            'embedded.date_created': {
                 'order': 'desc',
                 'ignore_unmapped': True,
             },
-            'label': {
+            'embedded.label': {
                 'order': 'asc',
                 'missing': '_last',
                 'ignore_unmapped': True,

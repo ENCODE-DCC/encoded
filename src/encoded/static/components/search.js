@@ -509,7 +509,7 @@ var Dbxref = dbxref.Dbxref;
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
-            var term = this.props.term['term'];
+            var term = this.props.term['key'];
             var filters = this.props.filters;
             var title;
             try {
