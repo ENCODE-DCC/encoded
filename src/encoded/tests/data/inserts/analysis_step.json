@@ -130,6 +130,7 @@
         "input_file_types": ["bam"],
         "output_file_types": ["narrowPeak"],
         "status": "released",
+        "parents": ["2dd0f890-b287-4147-84ad-edd6d3612772"],
         "uuid": "8abc2031-9aab-46a3-b3a0-d800ae44656e"
     },
     {
