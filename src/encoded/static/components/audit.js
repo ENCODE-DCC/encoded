@@ -86,7 +86,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         return (
                             <div className={alertClass} key={i} role="alert">
                                 <i className={iconClass}></i>
-                                <strong className="sentence-case">{audit.category}</strong>: {audit.detail}
+                                <strong>{audit.category}</strong>: {audit.detail}
                             </div>
                         );
                     }.bind(this))}
