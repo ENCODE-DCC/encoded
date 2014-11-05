@@ -238,26 +238,23 @@ def audit_experiment_spikeins(value, system):
         return
 
     for i in range(len(value['replicates'])):
-        
+
         rep = value['replicates'][i]
-        
-        if 'library' not in rep:
+
+        lib = rep.get('library')
+        if lib is None:
             continue
-        
-        lib = replicate['library']
-        
-        if 'size_range' not in lib:
+
+        size_range = lib.get('size_range')
+        if size_range is not '>200':
             continue
-        
-        if lib['size_range'] is not '>200':
-            continue
-        
+
         spikes = lib.get('spikeins_used')
-        if (spikes == None) or (spikes == []): 
+        if (spikes is None) or (spikes == []):
             detail = '{} missing spikeins'.format(lib["accession"])
             yield AuditFailure('missing spikeins', detail, level='WARNING')  # release error
             # Informattional if ENCODE2 and release error if ENCODE3
-        
+
         #for dset in lib['spikeins_used]:
             #get the dataset
             # if dset['type'] =! "spikeins":
@@ -267,7 +264,7 @@ def audit_experiment_spikeins(value, system):
             #     detail = '{} missing document'.format(dset["accession"])
             #     yield AuditFailure('missing spikeins', detail, level='ERROR') # release error
             # Search through files for a fasta
-        
+
 
 @audit_checker('experiment')
 def audit_experiment_biosample_term(value, system):
