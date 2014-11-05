@@ -263,14 +263,7 @@
         "biosample_term_name": "K562",
         "dataset_type": "experiment",
         "assay_term_id": "OBI:0001863",
-        "assay_synonyms": [
-            "Shotgun bisulfite sequencing",
-            "WGSBS",
-            "whole-genome shotgun bisulfite sequencing",
-            "shotgun bisulfite-seq assay"
-        ],
         "status": "proposed",
-        "run_type": "Paired-ended",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole genome bisulfite sequencing",
         "lab": "/labs/richard-myers/",
