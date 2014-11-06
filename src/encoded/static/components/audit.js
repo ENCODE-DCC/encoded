@@ -1,8 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var _ = require('underscore');
 var cx = require('react/lib/cx');
-
 
 var AuditMixin = module.exports.AuditMixin = {
     childContextTypes: {
@@ -38,9 +38,14 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
         var audits = this.props.audits;
         var indicatorClasses = "audit-indicators" + (this.context.auditDetailOpen ? ' active' : '');
         if (audits && audits.length) {
+            // Sort audit records
+            var audits_sorted = _.sortBy(audits, function(audit) {
+                return -audit.level;
+            });
+
             return (
                 <button className={indicatorClasses} aria-expanded={this.context.auditDetailOpen} aria-controls="#audit-details" onClick={this.context.auditStateToggle}>
-                    {audits.map(function(audit, i) {
+                    {audits_sorted.map(function(audit, i) {
                         return <AuditIndicator audit={audit} />;
                     }.bind(this))}
                 </button>
@@ -76,10 +81,16 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
     render: function() {
         var audits = this.props.audits;
+
+        // Sort audit records
+        var audits_sorted = _.sortBy(audits, function(audit) {
+            return -audit.level;
+        });
+
         if (audits && this.context.auditDetailOpen) {
             return (
                 <div className="audit-details" id="audit-details" aria-hidden={!this.context.auditDetailOpen}>
-                    {audits.map(function(audit, i) {
+                    {audits_sorted.map(function(audit, i) {
                         var level = audit.level_name.toLowerCase();
                         var iconClass = 'icon audit-icon-' + level;
                         var alertClass = 'audit-detail-' + level;

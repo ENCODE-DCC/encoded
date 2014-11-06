@@ -45,17 +45,25 @@
 $audit-types:
     (error, warning, #cc0700),
     (warning, exclamation-circle, #ff8000),
-    (standards_failure, file-text, #ebe310),
+    (standards_failure, file-text, #e0e000),
     (dcc_action, life-ring, #a0a0a0);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {
-    @return (1 / ($value + 9.1)) * -1000 + 109.1;
+    @return (1 / ($value + 9.1)) * -800 + 109.1;
 }
 
 // Calculate bg color based on color using inverse function
 @function fg-to-bg-color($basecolor) {
     @return hsl(hue($basecolor), inverse-curve(saturation($basecolor)), inverse-curve(lightness($basecolor)));
+}
+
+@function audit-level-color($basecolor) {
+    @if lightness($basecolor) <= 40 {
+        @return $basecolor;
+    } @else {
+        @return darken($basecolor,10%);
+    }
 }
 
 // Generate the audit icon classes for each of the audit types
@@ -92,7 +100,7 @@ $audit-types:
     // Audit level name text
     .audit-level-#{$audit-type} {
         margin-left: 5px !important;
-        color: $color;
+        color: audit-level-color($color);
     }
 }
 
