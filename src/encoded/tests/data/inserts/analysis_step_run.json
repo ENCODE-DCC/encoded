@@ -12,12 +12,12 @@
     {
         "uuid": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
         "status": "finished",
-        "analysis_step": "prep-bismark"
+        "analysis_step": "a25381ab-1740-42f7-8d5a-20bb2a2b9549"
     },
     {
         "uuid": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "status": "finished",
-        "analysis_step": "mott-trim"
+        "analysis_step": "36a667fe-e98c-402d-babf-88a9d39df5ff"
     },
     {
         "uuid": "1b896efe-4cb6-403d-b1cf-bcf331e6efe4",
@@ -25,10 +25,10 @@
         "dx_job_id": " job-BV3J9Jj0z53z1YYVzkZQ0VPY",
         "parameters": {
             "min_insert": 0,
-            "max_insert": 500,
+            "max_insert": 500
         },
-        "started_running": 1413928125471,
-        "stopped_running": 1414119467065,
+        "started_running": "2014-10-21T14:48:45.000000+00:00",
+        "stopped_running": "2014-10-23T19:57:47.000000+00:00",
         "dx_app_json": {
             "links": [
                 "file-BQyb2pQ0z53gZ8ZGFVxQ21bg"
@@ -146,11 +146,11 @@
             "project": "project-BKf7zV80z53QbqKQz18005vZ",
             "developerNotes": ""
         },
-        "analysis_step": "align-bismark"
+        "analysis_step": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e"
     },
     {
         "uuid": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
         "status": "finished",
-        "analysis_step": "extract-bismark"
-    },
+        "analysis_step": "aa598eaa-eda4-4fb3-b313-072f95de58a4"
+    }
 ]
