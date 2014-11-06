@@ -33,7 +33,7 @@ def get_parent_track(accession, label, visibility):
         ('visibility', visibility),
         ('compositeTrack', 'on'),
         ('longLabel', label),
-        ('shortLabel', accession),
+        ('shortLabel', label),
         ('track', accession)
     ])
     parent_array = render(parent)
@@ -194,31 +194,6 @@ def generate_trackDb(embedded, visibility):
     if not parent.endswith('\n'):
         parent = parent + '\n'
     return parent
-
-
-def search_hubs(request):
-    '''Generate trackDb file here'''
-    
-    search_params = request.matchdict['search_params']
-    search_params = search_params.replace(';', '&')
-    subreq = make_subrequest(request, '/search/?%s' % search_params)
-    subreq.override_renderer = 'null_renderer'
-    files = []
-    try:
-        results = request.invoke_subrequest(subreq)
-        for result in results['@graph']:
-            subreq2 = make_subrequest(request, result['@id'])
-            subreq2.override_renderer = 'null_renderer'
-            dataset = request.invoke_subrequest(subreq2)
-            for f in dataset['files']:
-                if f['file_format'] in BIGBED_FILE_TYPES or f['file_format'] in BIGWIG_FILE_TYPES:
-                    files.append(f)
-    except Exception as e:
-        print e
-    else:
-        parent_track = get_parent_track('search', 'search_trackhub')
-        data = generate_trackDb(files, parent_track, 'search_trackhub', 'search')
-        return data
 
 
 def generate_html(context, request):
