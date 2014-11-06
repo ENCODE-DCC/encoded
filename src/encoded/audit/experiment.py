@@ -231,22 +231,25 @@ def audit_experiment_spikeins(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    #if (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
-    #    return
+    # rfa = value['award'].get('rfa')
+    # err_map = {None: 'ERROR',
+    #            'ENCODE3': 'ERROR',
+    #            'ENCODE2': 'WARNING',
+    #            'ENCODE2-Mouse': 'WARNING'
+    #            }
+    # level = err_map[rfa]
 
     if value.get('assay_term_name') != 'RNA-seq':
         return
 
-    for i in range(len(value['replicates'])):
-
-        rep = value['replicates'][i]
+    for rep in value['replicates']:
 
         lib = rep.get('library')
         if lib is None:
             continue
 
         size_range = lib.get('size_range')
-        if size_range is not '>200':
+        if size_range != '>200':
             continue
 
         spikes = lib.get('spikeins_used')
@@ -254,16 +257,6 @@ def audit_experiment_spikeins(value, system):
             detail = '{} missing spikeins'.format(lib["accession"])
             yield AuditFailure('missing spikeins', detail, level='WARNING')  # release error
             # Informattional if ENCODE2 and release error if ENCODE3
-
-        #for dset in lib['spikeins_used]:
-            #get the dataset
-            # if dset['type'] =! "spikeins":
-            #     detail = '{} not of type spikeins'.format(dset["accession"])
-            #     yield AuditFailure('dataset is not spikeins', detail, level='ERROR')
-            # if dset['documents'] == []:
-            #     detail = '{} missing document'.format(dset["accession"])
-            #     yield AuditFailure('missing spikeins', detail, level='ERROR') # release error
-            # Search through files for a fasta
 
 
 @audit_checker('experiment')
