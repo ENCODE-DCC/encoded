@@ -8,5 +8,149 @@
         "uuid": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
         "status": "virtual",
         "analysis_step": "c4a33ee0-50ab-11e4-916c-0800200c9a66"
-    }
+    },
+    {
+        "uuid": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
+        "status": "finished",
+        "analysis_step": "prep-bismark"
+    },
+    {
+        "uuid": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "status": "finished",
+        "analysis_step": "mott-trim"
+    },
+    {
+        "uuid": "1b896efe-4cb6-403d-b1cf-bcf331e6efe4",
+        "status": "finished",
+        "dx_job_id": " job-BV3J9Jj0z53z1YYVzkZQ0VPY",
+        "parameters": {
+            "min_insert": 0,
+            "max_insert": 500,
+        },
+        "started_running": 1413928125471,
+        "stopped_running": 1414119467065,
+        "dx_app_json": {
+            "links": [
+                "file-BQyb2pQ0z53gZ8ZGFVxQ21bg"
+            ],
+            "inputSpec": [
+                {
+                    "patterns": [
+                        "*.tgz"
+                    ],
+                    "label": "A directory of converted genome files (C->T, G->A)",
+                    "optional": false,
+                    "name": "meIndex",
+                    "class": "file"
+                },
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "Prepared Reads for Pair 1",
+                    "optional": false,
+                    "name": "pair_1",
+                    "class": "file"
+                },
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "Prepared Reads for Pair 2",
+                    "optional": false,
+                    "name": "pair_2",
+                    "class": "file"
+                },
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "A genome",
+                    "optional": false,
+                    "name": "genome",
+                    "class": "file"
+                },
+                {
+                    "default": 275,
+                    "label": "Minimum insert size",
+                    "optional": true,
+                    "name": "min_insert",
+                    "class": "int"
+                },
+                {
+                    "default": 525,
+                    "label": "Maximum insert size",
+                    "optional": true,
+                    "name": "max_insert",
+                    "class": "int"
+                }
+            ],
+            "dxapi": "1.0.0",
+            "id": "applet-BQyb2vj0z53gZ8ZGFVxQ21bv",
+            "title": "WGBS-bismark-map-pe",
+            "runSpec": {
+                "interpreter": "bash",
+                "bundledDepends": [
+                    {
+                        "name": "resources.tar.gz",
+                        "id": {
+                            "$dnanexus_link": "file-BQyb2pQ0z53gZ8ZGFVxQ21bg"
+                        }
+                    }
+                ],
+                "systemRequirements": {
+                    "myEntryPoint": {
+                        "instanceType": "mem3_hdd2_x8"
+                    },
+                    "main": {
+                        "instanceType": "mem3_hdd2_x8"
+                    }
+                },
+                "execDepends": [
+                    {
+                        "package_manager": "apt",
+                        "name": "dx-toolkit"
+                    }
+                ],
+                "executionPolicy": {}
+            },
+            "class": "applet",
+            "access": {
+                "network": []
+            },
+            "state": "closed",
+            "details": {},
+            "folder": "/",
+            "description": "",
+            "tags": [
+                "DNA Methylation"
+            ],
+            "outputSpec": [
+                {
+                    "label": "tgz file of mapped bismark outputs",
+                    "name": "mapped_files",
+                    "class": "file"
+                }
+            ],
+            "sponsored": false,
+            "createdBy": {
+                "user": "user-hitz"
+            },
+            "properties": {},
+            "types": [],
+            "hidden": false,
+            "name": "map-pe",
+            "created": 1413304691000,
+            "modified": 1413304691532,
+            "summary": "WGBS ENCODE Pipeline step: Mapping paired ended reads using Bismark",
+            "project": "project-BKf7zV80z53QbqKQz18005vZ",
+            "developerNotes": ""
+        },
+        "analysis_step": "align-bismark"
+    },
+    {
+        "uuid": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
+        "status": "finished",
+        "analysis_step": "extract-bismark"
+    },
 ]
