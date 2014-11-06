@@ -28,6 +28,16 @@
             "type": "string",
             "linkTo": "software_version"
         },
+        "input_files": {
+            "title": "Workflow Input files",
+            "description": "All ENCFF files used to initiate the workflow run",
+            "type": "array",
+            "items": {
+                "title": "File",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
         "dx_workflow_id": {
             "title": "DNA Nexus workflow id",
             "description": "Workflow Identifier in the DNA Nexus system",

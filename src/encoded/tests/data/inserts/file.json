@@ -608,6 +608,7 @@
         "output_type": "reads",
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
         "status": "uploaded",
+        "pipeline": "ENCPL002BIS",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
@@ -629,6 +630,7 @@
         "output_type": "reads",
         "md5sum": "85c68b36bb91ef2fa361cdbc8663b4f6",
         "date_created": "2014-09-30T18:22:25.486325+00:00",
+        "pipeline": "ENCPL002BIS",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
@@ -649,6 +651,7 @@
         "award": "/awards/U54HG006998/",
         "output_type": "reads",
         "md5sum": "5f3232d8937b53c296507f6516f0db8f",
+        "pipeline": "ENCPL002BIS",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
@@ -671,6 +674,7 @@
         "output_type": "reads",
         "md5sum": "ef3a148b24fde7501a8a229f3de603f9",
         "date_created": "2014-09-30T17:38:48.091343+00:00",
+        "pipeline": "ENCPL002BIS",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
@@ -690,6 +694,7 @@
         "output_type": "raw data",
         "assembly": "hg19",
         "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI"],
+        "pipeline": "ENCPL002BIS",
         "aliases": []
     },
     {
@@ -708,6 +713,7 @@
         "output_type": "raw data",
         "lab": "/labs/richard-myers/",
         "derived_from": ["ENCFF434GXF"],
+        "pipeline": "ENCPL002BIS",
         "aliases": []
     },
     {
@@ -726,6 +732,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
         "derived_from": ["ENCFF434GXF"],
+        "pipeline": "ENCPL002BIS",
         "aliases": []
     },
     {
@@ -744,6 +751,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
         "aliases": [],
+        "pipeline": "ENCPL002BIS",
         "derived_from": ["ENCFF434GXF"]
     }
 ]
