@@ -17,7 +17,101 @@
     {
         "uuid": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "status": "finished",
-        "analysis_step": "36a667fe-e98c-402d-babf-88a9d39df5ff"
+        "analysis_step": "36a667fe-e98c-402d-babf-88a9d39df5ff",
+        "dx_job_id": " job-BV016900z53k72z0Xkq003jY",
+        "started_running": "2014-10-15T11:49:12.000000+00:00",
+        "stopped_running": "2014-10-19T04:58:40.000000+00:00",
+        "dx_app_json": {
+            "links": [
+                "file-BQzyv980z53v5J0zx1FQ086g"
+            ],
+            "inputSpec": [
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "The reads (pair one) that ought to be methylated",
+                    "optional": false,
+                    "name": "pair1_reads",
+                    "class": "array:file"
+                },
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "The reads (pair two) that ought to be methylated",
+                    "optional": false,
+                    "name": "pair2_reads",
+                    "class": "array:file"
+                }
+            ],
+            "dxapi": "1.0.0",
+            "id": "applet-BQzyvB80z53v5J0zx1FQ086v",
+            "title": "WGBS-mott-read-trimmer-se",
+            "runSpec": {
+                "interpreter": "bash",
+                "bundledDepends": [
+                    {
+                        "name": "resources.tar.gz",
+                        "id": {
+                            "$dnanexus_link": "file-BQzyv980z53v5J0zx1FQ086g"
+                        }
+                    }
+                ],
+                "systemRequirements": {
+                    "myEntryPoint": {
+                        "instanceType": "mem2_hdd2_x2"
+                    },
+                    "main": {
+                        "instanceType": "mem2_hdd2_x2"
+                    }
+                },
+                "execDepends": [
+                    {
+                        "package_manager": "apt",
+                        "name": "dx-toolkit"
+                    }
+                ],
+                "executionPolicy": {}
+            },
+            "class": "applet",
+            "access": {
+                "network": []
+            },
+            "state": "closed",
+            "details": {},
+            "folder": "/",
+            "description": "",
+            "tags": [
+                "DNA Methylation",
+                "ENCODE"
+            ],
+            "outputSpec": [
+                {
+                    "label": "Mott Trimmed Reads for input into Bismark (1st pair)",
+                    "name": "trimmed_reads1",
+                    "class": "file"
+                },
+                {
+                    "label": "Mott Trimmed Reads for input into Bismark (2nd pair)",
+                    "name": "trimmed_reads2",
+                    "class": "file"
+                }
+            ],
+            "sponsored": false,
+            "createdBy": {
+                "user": "user-hitz"
+            },
+            "properties": {},
+            "types": [],
+            "hidden": false,
+            "name": "trim-pe",
+            "created": 1413475881000,
+            "modified": 1413475881272,
+            "summary": "WGBS ENCODE Pipeline step: Read trimming (paired end)",
+            "project": "project-BKf7zV80z53QbqKQz18005vZ",
+            "developerNotes": ""
+        }
     },
     {
         "uuid": "1b896efe-4cb6-403d-b1cf-bcf331e6efe4",
@@ -27,6 +121,7 @@
             "min_insert": 0,
             "max_insert": 500
         },
+        "analysis_step": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
         "started_running": "2014-10-21T14:48:45.000000+00:00",
         "stopped_running": "2014-10-23T19:57:47.000000+00:00",
         "dx_app_json": {
@@ -145,12 +240,124 @@
             "summary": "WGBS ENCODE Pipeline step: Mapping paired ended reads using Bismark",
             "project": "project-BKf7zV80z53QbqKQz18005vZ",
             "developerNotes": ""
-        },
-        "analysis_step": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e"
+        }
     },
     {
         "uuid": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
         "status": "finished",
-        "analysis_step": "aa598eaa-eda4-4fb3-b313-072f95de58a4"
+        "analysis_step": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
+        "dx_job_id": "job-BV5FpPQ0z53k785K1Ggvbv1z",
+        "started_running": "2014-10-24T14:03:33.000000+00:00",
+        "stopped_running": "2014-10-26T18:42:35.000000+00:00",
+        "dx_app_json": {
+            "links": [
+                "file-BQyf6400z53ZZbb85xvQ01X6"
+            ],
+            "inputSpec": [
+                {
+                    "patterns": [
+                        "*.gz"
+                    ],
+                    "label": "A genome",
+                    "optional": false,
+                    "name": "genome",
+                    "class": "file"
+                },
+                {
+                    "patterns": [
+                        "*.tgz"
+                    ],
+                    "label": "tgz file of mapped bismark outputs",
+                    "name": "mapped_files",
+                    "class": "file"
+                }
+            ],
+            "dxapi": "1.0.0",
+            "id": "applet-BQyf67Q0z53ZZbb85xvQ01XF",
+            "title": "WGBS-extract-report",
+            "runSpec": {
+                "interpreter": "bash",
+                "bundledDepends": [
+                    {
+                        "name": "resources.tar.gz",
+                        "id": {
+                            "$dnanexus_link": "file-BQyf6400z53ZZbb85xvQ01X6"
+                        }
+                    }
+                ],
+                "systemRequirements": {
+                    "myEntryPoint": {
+                        "instanceType": "mem3_hdd2_x8"
+                    },
+                    "main": {
+                        "instanceType": "mem3_hdd2_x8"
+                    }
+                },
+                "execDepends": [
+                    {
+                        "package_manager": "apt",
+                        "name": "dx-toolkit"
+                    }
+                ],
+                "executionPolicy": {}
+            },
+            "class": "applet",
+            "access": {
+                "network": []
+            },
+            "state": "closed",
+            "details": {},
+            "folder": "/",
+            "description": "",
+            "tags": [
+                "DNA Methylation",
+                "ENCODE"
+            ],
+            "outputSpec": [
+                {
+                    "label": "CG methyation BED file (gzipped)",
+                    "name": "CG",
+                    "class": "file"
+                },
+                {
+                    "label": "CHG methyation BED file (gzipped)",
+                    "name": "CHG",
+                    "class": "file"
+                },
+                {
+                    "label": "CHH methyation BED file (gzipped)",
+                    "name": "CHH",
+                    "class": "file"
+                },
+                {
+                    "label": "the BAM file",
+                    "name": "mapped_reads",
+                    "class": "file"
+                },
+                {
+                    "label": "Mapping QC report",
+                    "name": "map_report",
+                    "class": "file"
+                },
+                {
+                    "label": "M-Biast QC report",
+                    "name": "M_bias_report",
+                    "class": "file"
+                }
+            ],
+            "sponsored": false,
+            "createdBy": {
+                "user": "user-hitz"
+            },
+            "properties": {},
+            "types": [],
+            "hidden": false,
+            "name": "extract",
+            "created": 1413309214000,
+            "modified": 1413309214906,
+            "summary": "WGBS ENCODE Pipeline step: Extract methylation and report Whole Genome Bisulphite Analysis",
+            "project": "project-BKf7zV80z53QbqKQz18005vZ",
+            "developerNotes": ""
+        }
     }
 ]
