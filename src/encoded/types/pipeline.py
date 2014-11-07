@@ -66,4 +66,22 @@ class AnalysisStepRun(Collection):
 
         embedded = [
             'analysis_step',
+            'workflow_run'
+        ]
+
+
+@location('workflow-runs')
+class WorkflowRun(Collection):
+    item_type = 'workflow_run'
+    schema = load_schema('workflow_run.json')
+    properties = {
+        'title': 'Workflow runs',
+        'description': 'Listing of (DNANexus) Workflow Runs'
+    }
+
+    class Item(Collection.Item):
+        keys = ALIAS_KEYS
+
+        embedded = [
+            'pipeline',
         ]

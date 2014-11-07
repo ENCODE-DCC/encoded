@@ -21,6 +21,7 @@
         "dx_job_id": " job-BV016900z53k72z0Xkq003jY",
         "started_running": "2014-10-15T11:49:12.000000+00:00",
         "stopped_running": "2014-10-19T04:58:40.000000+00:00",
+        "workflow_run": "541db16d-72ed-4d5f-ac12-d688c599c1fb",
         "dx_app_json": {
             "links": [
                 "file-BQzyv980z53v5J0zx1FQ086g"
@@ -124,6 +125,7 @@
         "analysis_step": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
         "started_running": "2014-10-21T14:48:45.000000+00:00",
         "stopped_running": "2014-10-23T19:57:47.000000+00:00",
+        "workflow_run": "541db16d-72ed-4d5f-ac12-d688c599c1fb",
         "dx_app_json": {
             "links": [
                 "file-BQyb2pQ0z53gZ8ZGFVxQ21bg"
@@ -249,6 +251,7 @@
         "dx_job_id": "job-BV5FpPQ0z53k785K1Ggvbv1z",
         "started_running": "2014-10-24T14:03:33.000000+00:00",
         "stopped_running": "2014-10-26T18:42:35.000000+00:00",
+        "workflow_run": "541db16d-72ed-4d5f-ac12-d688c599c1fb",
         "dx_app_json": {
             "links": [
                 "file-BQyf6400z53ZZbb85xvQ01X6"
