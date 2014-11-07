@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var _ = require('underscore');
+var d3 = require('d3');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
@@ -34,7 +36,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         }
-
 
         return (
             <div className={itemClass}>
@@ -73,21 +74,116 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                           </div>
                       : null}
                 </div>
-                     {Object.keys(documents).length ?
-                     <div data-test="protocols">
-                         <h3>Documents</h3>
-                         <div className="row multi-columns-row">
-                             {documents}
-                         </div>
-                     </div>
-                      : null}
+                {Object.keys(documents).length ?
+                    <div data-test="protocols">
+                        <h3>Documents</h3>
+                        <div className="row multi-columns-row">
+                            {documents}
+                        </div>
+                    </div>
+                : null}
+                <Graph />
             </div>
-
 
         );
     }
 });
 globals.content_views.register(Pipeline, 'pipeline');
+
+
+var Bar = React.createClass({
+    getDefaultProps: function() {
+        return {
+            width: 0,
+            height: 0,
+            offset: 0
+        }
+    },
+
+    getInitialState: function() {
+        return {hovered: false};
+    },
+
+    handleMouseEnter: function() {
+        this.setState({hovered: true});
+    },
+
+    handleMouseLeave: function() {
+        this.setState({hovered: false});
+    },
+
+    render: function() {
+        return (
+            <rect fill={this.state.hovered ? '#000' : this.props.color}
+                width={this.props.width} height={this.props.height} 
+                x={this.props.offset} y={this.props.availableHeight - this.props.height} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
+        );
+    }
+});
+
+
+var DataSeries = React.createClass({
+    getDefaultProps: function() {
+        return {
+            title: '',
+            data: []
+        }
+    },
+
+    render: function() {
+        var props = this.props;
+
+        var yScale = d3.scale.linear()
+            .domain([0, d3.max(this.props.data)])
+            .range([0, this.props.height]);
+
+        var xScale = d3.scale.ordinal()
+            .domain(d3.range(this.props.data.length))
+            .rangeRoundBands([0, this.props.width], 0.05);
+
+        var bars = _.map(this.props.data, function(point, i) {
+            return (
+                <Bar height={yScale(point)} width={xScale.rangeBand()}
+                    offset={xScale(i)} availableHeight={props.height} color={props.color} key={i} />
+            );
+        });
+
+        return (
+            <g>{bars}</g>
+        );
+    }
+});
+
+
+var Chart = React.createClass({
+    render: function() {
+        return (
+            <svg width={this.props.width} height={this.props.height}>{this.props.children}</svg>
+        );
+    }
+});
+
+
+var BarChart = React.createClass({
+    render: function() {
+        return (
+            <Chart width={this.props.width} height={this.props.height}>
+                <DataSeries data={[ 30, 10, 5, 8, 15, 10 ]} width={this.props.width} height={this.props.height} color="cornflowerblue" />
+            </Chart>
+        );
+    }
+});
+
+
+var Graph = React.createClass({
+    render: function() {
+        return (
+            <div className="panel">
+                <BarChart width={600} height={300} />
+            </div>
+        );
+    }
+});
 
 
 var AnalysisStep = module.exports.AnalysisStep = function (props) {
