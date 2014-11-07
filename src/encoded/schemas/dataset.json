@@ -41,7 +41,8 @@
                 "composite",
                 "publication",
                 "spike-ins",
-                "paired set"
+                "paired set",
+                "time course"
             ]
         },
         "dbxrefs": {
