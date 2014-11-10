@@ -154,6 +154,9 @@ var jsonSchemaToFormSchema = function(p, props) {
                 <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
             );
         }
+        if (p.type == 'integer' || p.type == 'number') {
+            props.type = 'number';
+        }
         if (props.name == 'schema_version') {
             props.input = <input type="text" disabled />;
         }
