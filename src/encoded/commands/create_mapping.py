@@ -318,6 +318,10 @@ def collection_mapping(collection, embed=True):
         new_mapping[last]['boost'] = boost_values[value]
         new_mapping[last]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
 
+    # Automatic boost for uuid
+    if 'uuid' in mapping['properties']:
+        mapping['properties']['uuid']['boost'] = 1.0
+        mapping['properties']['uuid']['copy_to'] = ['encoded_all_standard', 'encoded_all_untouched']
     return mapping
 
 
