@@ -79,7 +79,7 @@ def histone_target(testapp, organism):
 
 @pytest.fixture
 def base_antibody(award, lab, source, organism, target):
-   return {
+    return {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'source': source['uuid'],
@@ -131,6 +131,13 @@ def test_audit_experiment_target(testapp, base_experiment):
     assert any(error['category'] == 'missing target' for error in errors)
 
 
+def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_replicate):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing read length' for error in errors)
+
+
 def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_replicate):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -145,7 +152,7 @@ def test_audit_experiment_library_paired_end(testapp, base_experiment, base_repl
 
 
 def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_library['@id'], {'paired_ended': False })
+    testapp.patch_json(base_library['@id'], {'paired_ended': False})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -154,7 +161,7 @@ def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_rep
 
 def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})
-    testapp.patch_json(base_library['@id'], {'paired_ended': False })
+    testapp.patch_json(base_library['@id'], {'paired_ended': False})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -212,7 +219,7 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name':'K562'})
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'biosample type missing' for error in errors)
