@@ -225,46 +225,42 @@ def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
     concordent with library biosamples,
-    probably there are assays that are the exception
+    Exception: RNA Bind-n-Seq
     '''
-    if value['status'] in ['deleted', 'proposed']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
-    if 'biosample_term_id' not in value:
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
         return
-
-    if 'biosample_type' not in value:
-        detail = 'biosample type missing'
-        yield AuditFailure('biosample type missing', detail, level='ERROR')
-        return
-
-    if 'target' in value:
-        target = value['target']
-        if 'control' in target['investigated_as']:
-            return
-
-    if 'biosample_term_id' not in value:
-        yield AuditFailure('term id missing', detail, level='ERROR')
 
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_term_id')
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
-    if term_id.startswith('NTR:'):
-        detail = '{} - {}'.format(term_id, term_name)
-        yield AuditFailure('NTR,biosample', detail, level='WARNING')
-        return
+    if 'biosample_type' not in value:
+        detail = '{} missing biosample_type'.format(value['accession'])
+        yield AuditFailure('biosample type missing', detail, level='ERROR')  # release error
 
-    if term_id not in ontology:
+    if 'biosample_term_name' not in value:
+        detail = '{} missing biosample_term_name'.format(value['accession'])
+        yield AuditFailure('missing biosample_term_name', detail, level='ERROR')  # release error
+    # The type and term name should be put into dependancies
+
+    if term_id is None:
+        detail = '{} missing biosample_term_id'.format(value['accession'])
+        yield AuditFailure('missing biosample_term_id', detail, level='ERROR')  # release error
+    elif term_id.startswith('NTR:'):
+        detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
+        yield AuditFailure('NTR,biosample', detail, level='WARNING')  # DCC Error
+    elif term_id not in ontology:
+        detail = '{} has term_id {} not in ontology'.format(value['accession'], term_id)
         yield AuditFailure('term id not in ontology', term_id, level='ERROR')
-        return
-
-    ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
-        yield AuditFailure('term name mismatch', detail, level='ERROR')
-        return
+    else:
+        ontology_name = ontology[term_id]['name']
+        if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
+            detail = '{} has {} - {} - {}'.format(value['accession'], term_id, term_name, ontology_name)
+            yield AuditFailure('term name mismatch', detail, level='ERROR')
 
     for rep in value['replicates']:
         if 'library' not in rep:
@@ -273,23 +269,25 @@ def audit_experiment_biosample_term(value, system):
         lib = rep['library']
         if 'biosample' not in lib:
             detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
-            yield AuditFailure('missing biosample', detail, level='ERROR')
+            yield AuditFailure('missing biosample', detail, level='ERROR')  # release error
             continue
 
         biosample = lib['biosample']
-        if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
-            continue
+        bs_type = biosample.get('biosample_type')
+        bs_name = biosample.get('biosample_term_name')
+        bs_id = biosample.get('biosample_term_id')
 
-        if biosample.get('biosample_type') != term_type:
-            detail = '{} - {} in {}'.format(term_type, biosample.get('biosample_type'), lib['accession'])
+        if bs_type != term_type:
+            detail = '{} has mismatched biosample_type {} - {}'.format(lib['accession'], term_type, bs_type)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
-        if biosample.get('biosample_term_name') != term_name:
-            detail = '{} - {} in {}'.format(term_name, biosample.get('biosample_term_name'), lib['accession'])
+        if bs_name != term_name:
+            detail = '{} has mismatched biosample_term_name {} - {}'.format(lib['accession'], term_name, bs_name)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
+            # This is propbably a duplicate warning to the biosample mismatches
 
-        if biosample.get('biosample_term_id') != term_id:
-            detail = '{} - {} in {}'.format(term_id, biosample.get('biosample_term_id'), lib['accession'])
+        if bs_id != term_id:
+            detail = '{} has a mismatched biosample_term_id {} - {}'.format(lib['accession'], term_id, bs_id)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
 

@@ -58,8 +58,7 @@ def audit_library_status(value, system):
     if value['status'] == 'deleted':
         return
     if 'biosample' not in value:
-        detail = value['accession']
-        raise AuditFailure('missing biosample', detail, level='ERROR')
+        return  # this is being checked at the experiment level 
     if value['biosample']['status'] == 'deleted':
         detail = 'library({}) has deleted biosample'.format(value['accession'])
         raise AuditFailure('status mismatch', detail, level='ERROR')
