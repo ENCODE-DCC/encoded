@@ -141,8 +141,8 @@ var jsonSchemaToFormSchema = function(p, props) {
         if (p.pattern) {
             props.validate = function(v) { return v.match(p.pattern); };
         }
-        if (p.enum) {
-            var options = p.enum.map(v => <option value={v}>{v}</option>);
+        if (p['enum']) {
+            var options = p['enum'].map(v => <option value={v}>{v}</option>);
             if (!props.required) {
                 options = [<option value={null} />].concat(options);
             }
@@ -168,8 +168,8 @@ var jsonSchemaToFormSchema = function(p, props) {
 var jsonSchemaToDefaultValue = function(schema) {
     var defaultValue = {};
     _.each(schema.properties, function(property, name) {
-        if (property.default !== undefined) {
-            defaultValue[name] = property.default;
+        if (property['default'] !== undefined) {
+            defaultValue[name] = property['default'];
         }
     });
     return defaultValue;
