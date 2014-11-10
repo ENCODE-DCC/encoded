@@ -426,7 +426,8 @@
             "enum": [
                 "early embryonic",
                 "late embryonic",
-                "embryonic",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
                 "L2 larva",
                 "L2d larva",

@@ -10,12 +10,17 @@ not_current_statuses = ['revoked', 'obsolete', 'deleted']
 
 @audit_checker('file')
 def audit_paired_with(value, system):
+    '''
+    A file with a paired_end needs a paired_with.
+    Should be handled in the schema.
+    A paired_with should be the same replicate
+    '''
 
-    if value['status'] in ['deleted','replaced']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
     if 'paired_end' not in value:
-        return    
+        return
 
     if 'paired_with' not in value:
         detail = 'Pair {} missing paired_with'.format(value['paired_end'])
@@ -31,7 +36,7 @@ def audit_file_size(value, system):
         return
 
     if 'file_size' not in value:
-        detail = 'missing file_size'
+        detail = '{} missing file_size'.format(value['accession'])
         raise AuditFailure('missing file_size', detail, level='ERROR')
 
 
@@ -123,4 +128,4 @@ def audit_file_output_type(value, system):
     #if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
             detail = '{}'.format(value['output_type'])
-            raise AuditFailure('undesirable output type', detail, level='ERROR')
+            raise AuditFailure('undesirable output type', detail, level='ERROR')  # DCC action

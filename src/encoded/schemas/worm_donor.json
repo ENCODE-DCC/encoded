@@ -32,7 +32,14 @@
             "title": "Number of times outcrossed",
             "description": "The number of out/backcrossed when constructing the strain",
             "type": "string",
-            "pattern": "^(\\d+?)x|unknown|new\\s+line$" 
+            "pattern": "^x(\\d+?)|unknown|new\\s+line$" 
+        },
+        "outcrossed_strain": {
+            "title": "Outcrossed strain background",
+            "description": "The strain used for backcrossing.",
+            "comment": "For worm strains, see worm_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "worm_donor"
         },
         "documents": {
             "title": "Strain documents",
