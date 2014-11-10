@@ -29,7 +29,8 @@ class Pipeline(Collection):
             'analysis_steps',
             'analysis_steps.software_versions',
             'analysis_steps.software_versions.software',
-            'analysis_steps.software_versions.software.references'
+            'analysis_steps.software_versions.software.references',
+            'end_points',
         ]
 
 

@@ -91,95 +91,135 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 globals.content_views.register(Pipeline, 'pipeline');
 
 
-var Bar = React.createClass({
-    getDefaultProps: function() {
-        return {
-            width: 0,
-            height: 0,
-            offset: 0
+var d3Chart = {
+    create: function(el, props, state) {
+        var svg = d3.select(el).append('svg')
+            .attr('class', 'd3')
+            .attr('width', props.width)
+            .attr('height', props.height);
+
+        svg.append('g').attr('class', 'd3-points');
+
+        this.update(el, state);
+    },
+
+    update: function(el, state) {
+        // Re-compute the scales, and render the data points
+        var scales = this._scales(el, state.domain);
+        this._drawPoints(el, scales, state.data);
+    },
+
+    destroy: function(el) {
+        // Any clean-up would go here
+        // in this example there is nothing to do
+    },
+
+    _scales: function(el, domain) {
+        if (!domain) {
+            return null;
         }
+
+        var width = el.offsetWidth;
+        var height = el.offsetHeight;
+
+        var x = d3.scale.linear()
+            .range([0, width])
+            .domain(domain.x);
+
+        var y = d3.scale.linear()
+            .range([height, 0])
+            .domain(domain.y);
+
+        var z = d3.scale.linear()
+            .range([5, 20])
+            .domain([1, 10]);
+
+        return {x: x, y: y, z: z};
     },
 
-    getInitialState: function() {
-        return {hovered: false};
-    },
+    _drawPoints: function(el, scales, data) {
+        var g = d3.select(el).selectAll('.d3-points');
 
-    handleMouseEnter: function() {
-        this.setState({hovered: true});
-    },
-
-    handleMouseLeave: function() {
-        this.setState({hovered: false});
-    },
-
-    render: function() {
-        return (
-            <rect fill={this.state.hovered ? '#000' : this.props.color}
-                width={this.props.width} height={this.props.height} 
-                x={this.props.offset} y={this.props.availableHeight - this.props.height} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} />
-        );
-    }
-});
-
-
-var DataSeries = React.createClass({
-    getDefaultProps: function() {
-        return {
-            title: '',
-            data: []
-        }
-    },
-
-    render: function() {
-        var props = this.props;
-
-        var yScale = d3.scale.linear()
-            .domain([0, d3.max(this.props.data)])
-            .range([0, this.props.height]);
-
-        var xScale = d3.scale.ordinal()
-            .domain(d3.range(this.props.data.length))
-            .rangeRoundBands([0, this.props.width], 0.05);
-
-        var bars = _.map(this.props.data, function(point, i) {
-            return (
-                <Bar height={yScale(point)} width={xScale.rangeBand()}
-                    offset={xScale(i)} availableHeight={props.height} color={props.color} key={i} />
-            );
+        var point = g.selectAll('.d3-point')
+            .data(data, function(d) { return d.id; }).on('mouseenter', function(data, i) {
+            console.log('ENTER: %i, %o', i, data);
+        }).on('mouseleave', function(data, i) {
+            console.log('LEAVE: %i, %o', i, data)
         });
 
-        return (
-            <g>{bars}</g>
-        );
+        // ENTER
+        point.enter().append('circle')
+            .attr('class', 'd3-point');
+
+        // ENTER & UPDATE
+        point.attr('cx', function(d) { return scales.x(d.x); })
+            .attr('cy', function(d) { return scales.y(d.y); })
+            .attr('r', function(d) { return scales.z(d.z); });
+
+        // EXIT
+        point.exit().remove();
     }
-});
+};
 
 
 var Chart = React.createClass({
+    propTypes: {
+        data: React.PropTypes.array,
+        domain: React.PropTypes.object
+    },
+
+    componentDidMount: function() {
+        var el = this.getDOMNode();
+        d3Chart.create(el, {
+            width: '100%',
+            height: '300px'
+        }, this.getChartState());
+    },
+
+    componentDidUpdate: function() {
+        var el = this.getDOMNode();
+        d3Chart.update(el, this.getChartState());
+    },
+
+    getChartState: function() {
+        return {
+            data: this.props.data,
+            domain: this.props.domain
+        };
+    },
+
+    componentWillUnmount: function() {
+        var el = this.getDOMNode();
+        d3Chart.destroy(el);
+    },
+
     render: function() {
         return (
-            <svg width={this.props.width} height={this.props.height}>{this.props.children}</svg>
+            <div className="Chart"></div>
         );
     }
 });
 
 
-var BarChart = React.createClass({
-    render: function() {
-        return (
-            <Chart width={this.props.width} height={this.props.height}>
-                <DataSeries data={[ 30, 10, 5, 8, 15, 10 ]} width={this.props.width} height={this.props.height} color="cornflowerblue" />
-            </Chart>
-        );
-    }
-});
+var sampleData = [
+    {id: '5fbmzmtc', x: 7, y: 41, z: 6},
+    {id: 's4f8phwm', x: 11, y: 45, z: 9},
+];
 
 
 var Graph = React.createClass({
+    getInitialState: function() {
+        return {
+            data: sampleData,
+            domain: {x: [0, 30], y: [0, 100]}
+        };
+    },
+
     render: function() {
         return (
             <div className="panel">
-                <BarChart width={600} height={300} />
+                <Chart data={this.state.data}
+                    domain={this.state.domain} />
             </div>
         );
     }
