@@ -6,13 +6,16 @@ from ..auditor import (
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_review(value, system):
+    '''
+    Make sure that biosample terms are in ontology
+    for each characterization_review.
+    '''
     if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
         return
 
     if 'secondary_characterization_method' in value:
         return
 
-    '''Make sure that biosample terms are in ontology for each characterization_review'''
     if value['characterization_reviews']:
         ontology = system['registry']['ontology']
         for review in value['characterization_reviews']:
@@ -35,7 +38,10 @@ def audit_antibody_characterization_review(value, system):
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_standards(value, system):
-    '''Make sure that a standards document is attached if status is compliant or not compliant.'''
+    '''
+    Make sure that a standards document is attached if
+    status is compliant or not compliant.
+    '''
     if (value['status'] in ['compliant', 'not compliant']):
         has_standards = False
         for document in value['documents']:
@@ -45,9 +51,13 @@ def audit_antibody_characterization_standards(value, system):
             detail = 'Missing standards document'
             raise AuditFailure('missing standards', detail, level='ERROR')
 
+
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_unique_reviews(value, system):
-    '''Make sure primary characterizations have unique lane, biosample_term_id and organism combinations for characterization reviews'''
+    '''
+    Make sure primary characterizations have unique lane, biosample_term_id and
+    organism combinations for characterization reviews
+    '''
     if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
         return
 
@@ -69,7 +79,10 @@ def audit_antibody_characterization_unique_reviews(value, system):
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_target(value, system):
-    '''Make sure that target in characterization matches target of antibody'''
+    '''
+    Make sure that target in characterization
+    matches target of antibody
+    '''
     antibody = value['characterizes']
     target = value['target']
     if 'recombinant protein' in target['investigated_as']:
@@ -100,7 +113,10 @@ def audit_antibody_characterization_target(value, system):
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_status(value, system):
-    '''Make sure the lane_status matches the characterization status'''
+    '''
+    Make sure the lane_status matches
+    the characterization status
+    '''
     if 'secondary_characterization_method' in value:
         return
 
