@@ -45,10 +45,12 @@ def get_track(f, label, parent):
 
     file_format = 'bigWig 1.000000 3291154.000000'
     sub_group = 'view=SIG'
-    
+    visibility = 'hide'
+
     if f['file_format'] in BIGBED_FILE_TYPES:
         file_format = 'bigBed'
         sub_group = 'view=PK'
+        visibility = 'pack'
 
     label = label + ' - {accession} {format} {output}'.format(
         accession=f['accession'],
@@ -64,7 +66,7 @@ def get_track(f, label, parent):
 
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('visibility', 'full'),
+        ('visibility', visibility),
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
@@ -72,7 +74,7 @@ def get_track(f, label, parent):
         ('type', file_format),
         ('track', f['accession']),
     ])
-    
+
     if parent == '':
         del(track['parent'])
         del(track['subGroups'])
@@ -137,7 +139,7 @@ def get_hub(label):
 
 
 def generate_trackDb(embedded, visibility):
-    
+
     files = embedded.get('files', None)
     long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
         assay_term_name=embedded['assay_term_name'],
@@ -230,7 +232,7 @@ def generate_batch_hubs(request):
     txt = request.matchdict['txt']
     params = request.matchdict['search_params']
     params = params.replace(',,', '&')
-    
+
     if len(request.matchdict) == 3:
         assembly = request.matchdict['assembly']
         params = params + FILE_QUERY + '&limit=all&frame=embedded&assembly=' + assembly
@@ -243,7 +245,7 @@ def generate_batch_hubs(request):
         if txt == TRACKDB_TXT:
             trackdb = ''
             for i, experiment in enumerate(results['@graph']):
-                if i < 5:
+                if i < 25:
                     if i == 0:
                         trackdb = generate_trackDb(experiment, 'full')
                     else:
@@ -289,7 +291,7 @@ def hub(context, request):
     assembly = ''
     if 'assembly' in embedded:
         assembly = embedded['assembly']
-    
+
     if url_ret[1][1:] == HUB_TXT:
         return Response(
             NEWLINE.join(get_hub(embedded['accession'])),
