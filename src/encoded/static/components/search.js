@@ -11,7 +11,7 @@ var search = module.exports;
 var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-
+var statusOrder = globals.statusOrder;
 
     // Should really be singular...
     var types = {
@@ -163,9 +163,15 @@ var Dbxref = dbxref.Dbxref;
             var result = this.props.context;
             var columns = this.props.columns;
 
+            // Sort the lot reviews by their status according to our predefined order
+            // given in the statusOrder array.
+            var lot_reviews = _.sortBy(result.lot_reviews, function(lot_review) {
+                return _.indexOf(statusOrder, lot_review.status); // Use underscore indexOf so that this works in IE8
+            });
+
             // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
             var targetTree = {};
-            result.lot_reviews.forEach(function(lot_review) {
+            lot_reviews.forEach(function(lot_review) {
                 lot_review.targets.forEach(function(target) {
                     // If we haven't seen this target, save it in targetTree along with the
                     // corresponding target and organism structures.
@@ -186,6 +192,7 @@ var Dbxref = dbxref.Dbxref;
                     }
                 });
             });
+            lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
                 <li>
@@ -265,6 +272,18 @@ var Dbxref = dbxref.Dbxref;
                                 <div>
                                     <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong>
                                     {treatment}
+                                </div>
+                            : null}
+                            {result['culture_harvest_date'] ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result['culture_harvest_date']}
+                                </div>
+                            : null}
+                            {result['date_obtained'] ?
+                                <div>
+                                    <strong>{columns['date_obtained']['title'] + ': '}</strong>
+                                    {result['date_obtained']}
                                 </div>
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>

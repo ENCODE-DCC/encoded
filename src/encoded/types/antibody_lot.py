@@ -107,6 +107,7 @@ def lot_reviews(root, characterizations, targets):
 
     if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and \
             total_characterizations > 0:
+        base_review['status'] = 'not pursued'
         return [base_review]
 
     if len(primary_chars) == 0 and len(secondary_chars) > 0:

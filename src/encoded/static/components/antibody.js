@@ -16,6 +16,7 @@ var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
 var StatusLabel = statuslabel.StatusLabel;
+var statusOrder = globals.statusOrder;
 
 
 var Lot = module.exports.Lot = React.createClass({
@@ -369,9 +370,15 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     render: function() {
         var context = this.props.context;
 
+        // Sort the lot reviews by their status according to our predefined order
+        // given in the statusOrder array.
+        var lot_reviews = _.sortBy(context.lot_reviews, function(lot_review) {
+            return _.indexOf(statusOrder, lot_review.status); // Use underscore indexOf so that this works in IE8
+        });
+
         // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
         var statusTree = {};
-        context.lot_reviews.forEach(function(lot_review) {
+        lot_reviews.forEach(function(lot_review) {
             // Status at top of hierarchy. If haven’t seen this status before, remember it
             if (!statusTree[lot_review.status]) {
                 statusTree[lot_review.status] = {};

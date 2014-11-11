@@ -69,9 +69,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string
+        // Build the text of the Treatment string array and the synchronization string array
         var treatmentText = [];
+        var synchText = [];
         biosamples.map(function(biosample) {
+            // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -83,9 +85,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
                 return singleTreatment;
             }));
+
+            // Collect synchronizations
+            if (biosample.synchronization) {
+                synchText.push(biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
+        }
+        if (synchText) {
+            synchText = _.uniq(synchText);
         }
 
         // Adding experiment specific documents
@@ -167,6 +180,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     : null}
                                     {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
                                     {organismName.length || lifeAge.length ? ')' : null}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {synchText.length ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Synchronization timepoint</dt>
+                                <dd>
+                                    {synchText.join(', ')}
                                 </dd>
                             </div>
                         : null}
