@@ -267,6 +267,18 @@ var Dbxref = dbxref.Dbxref;
                                     {treatment}
                                 </div>
                             : null}
+                            {result['culture_harvest_date'] ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result['culture_harvest_date']}
+                                </div>
+                            : null}
+                            {result['date_obtained'] ?
+                                <div>
+                                    <strong>{columns['date_obtained']['title'] + ': '}</strong>
+                                    {result['date_obtained']}
+                                </div>
+                            : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
                         </div>
                 </li>   
