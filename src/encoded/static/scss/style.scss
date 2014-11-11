@@ -18,6 +18,15 @@ $brand-success: #4C994C;
 $brand-danger: #B24342;
 $brand-info: #4F689E;
 
+.d3 circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.d3 line {
+  stroke: #999;
+}
+
 // Core variables and mixins
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
