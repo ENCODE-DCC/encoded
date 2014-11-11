@@ -52,6 +52,17 @@ module.exports.truncateString = function (str, len) {
     return str;
 };
 
+// Order that antibody statuses should be displayed
+module.exports.statusOrder = [
+    'eligible for new data',
+    'not eligible for new data',
+    'pending dcc review',
+    'awaiting lab characterization',
+    'not pursued',
+    'not reviewed'
+];
+
+
 module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 
 module.exports.encodeVersionMap = {
