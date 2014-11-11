@@ -158,6 +158,13 @@ def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_rep
     errors = res.json['audit']
     assert any(error['category'] == 'paired end mismatch' for error in errors)
 
+def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_library['@id'], {'size_range': '>200'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing spikeins' for error in errors)
 
 def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})

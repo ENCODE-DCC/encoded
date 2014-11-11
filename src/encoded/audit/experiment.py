@@ -297,6 +297,45 @@ def audit_experiment_platform(value, system):
 
 
 @audit_checker('experiment')
+def audit_experiment_spikeins(value, system):
+    '''
+    All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
+    The spikeins specified should have datasets of type spikeins.
+    The spikeins datasets should have a fasta file, a document, and maybe a tsv
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    # rfa = value['award'].get('rfa')
+    # err_map = {None: 'ERROR',
+    #            'ENCODE3': 'ERROR',
+    #            'ENCODE2': 'WARNING',
+    #            'ENCODE2-Mouse': 'WARNING'
+    #            }
+    # level = err_map[rfa]
+
+    if value.get('assay_term_name') != 'RNA-seq':
+        return
+
+    for rep in value['replicates']:
+
+        lib = rep.get('library')
+        if lib is None:
+            continue
+
+        size_range = lib.get('size_range')
+        if size_range != '>200':
+            continue
+
+        spikes = lib.get('spikeins_used')
+        if (spikes is None) or (spikes == []):
+            detail = '{} missing spikeins'.format(lib["accession"])
+            yield AuditFailure('missing spikeins', detail, level='WARNING')  # release error
+            # Informattional if ENCODE2 and release error if ENCODE3
+
+
+@audit_checker('experiment')
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
