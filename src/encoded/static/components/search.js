@@ -216,7 +216,7 @@ var statusOrder = globals.statusOrder;
                             })}
                         </div>
                     </div>
-                    <div className="data-row"> 
+                    <div className="data-row">
                         <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
                         <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                     </div>
@@ -251,7 +251,7 @@ var statusOrder = globals.statusOrder;
                                     {result['biosample_term_name'] + ' ('}
                                     <em>{result['organism.scientific_name']}</em>
                                     {separator + lifeStage + age + ageUnits + ')'}
-                                </a> 
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
@@ -288,7 +288,7 @@ var statusOrder = globals.statusOrder;
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
                         </div>
-                </li>   
+                </li>
             );
         }
     });
@@ -392,7 +392,7 @@ var statusOrder = globals.statusOrder;
                                 <p className="type">{' ' + result['accession']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['description']}</a> 
+                                <a href={result['@id']}>{result['description']}</a>
                             </div>
                         </div>
                         <div className="data-row">
@@ -427,11 +427,11 @@ var statusOrder = globals.statusOrder;
                                     {result['label'] + ' ('}
                                     <em>{result['organism.scientific_name']}</em>
                                     {')'}
-                                </a> 
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']['title']}</strong>: 
+                            <strong>{columns['dbxref']['title']}</strong>:
                             {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em> None submitted</em> }
@@ -482,7 +482,7 @@ var statusOrder = globals.statusOrder;
     function countSelectedTerms(terms, field, filters) {
         var count = 0;
         for(var oneTerm in terms) {
-            if(termSelected(terms[oneTerm].term, field, filters)) {
+            if(termSelected(terms[oneTerm].key, field, filters)) {
                 count++;
             }
         }
@@ -492,8 +492,8 @@ var statusOrder = globals.statusOrder;
     var Term = search.Term = React.createClass({
         render: function () {
             var filters = this.props.filters;
-            var term = this.props.term['term'];
-            var count = this.props.term['count'];
+            var term = this.props.term['key'];
+            var count = this.props.term['doc_count'];
             var title = this.props.title || term;
             var field = this.props.facet['field'];
             var em = field === 'target.organism.scientific_name' ||
@@ -528,7 +528,7 @@ var statusOrder = globals.statusOrder;
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
-            var term = this.props.term['term'];
+            var term = this.props.term['key'];
             var filters = this.props.filters;
             var title;
             try {
@@ -557,13 +557,13 @@ var statusOrder = globals.statusOrder;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
-                if (term.term) {
+                if (term.key) {
                     for(var filter in filters) {
-                        if(filters[filter].term === term.term) {
+                        if(filters[filter].term === term.key) {
                             return true;
                         }
                     }
-                    return term.count > 0;
+                    return term.doc_count > 0;
                 } else {
                     return false;
                 }
@@ -585,13 +585,13 @@ var statusOrder = globals.statusOrder;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -651,7 +651,7 @@ var statusOrder = globals.statusOrder;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;                
+                return false;
             }
         }
     });
@@ -689,6 +689,7 @@ var statusOrder = globals.statusOrder;
 
         getDefaultProps: function() {
             return {
+
                 restrictions: {},
                 searchBase: ''
             };
@@ -710,12 +711,11 @@ var statusOrder = globals.statusOrder;
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            
             _.each(facets, function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
                     facet.restrictions = this.props.restrictions[facet.field];
                     facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.term);
+                        return _.contains(facet.restrictions, term.key);
                     }.bind(this));
                 }
             }.bind(this));
@@ -732,7 +732,7 @@ var statusOrder = globals.statusOrder;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} 
+                                        Showing {results.length} of {total}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
@@ -764,7 +764,7 @@ var statusOrder = globals.statusOrder;
                                 </ul>
                             </div>
                         </div>
-                    </div>  
+                    </div>
             );
         },
 
@@ -788,7 +788,7 @@ var statusOrder = globals.statusOrder;
             return (
                 <div>
                     {facetdisplay ?
-                        <div className="panel data-display main-panel"> 
+                        <div className="panel data-display main-panel">
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>
                     : <h4>{notification}</h4>}
