@@ -273,11 +273,11 @@ def generate_batch_hubs(request):
         for facet in results['facets']:
             if facet['field'] == 'assembly':
                 for term in facet['terms']:
-                    if term['count'] != 0:
+                    if term['doc_count'] != 0:
                         if g_text == '':
-                            g_text = NEWLINE.join(get_genomes_txt(term['term']))
+                            g_text = NEWLINE.join(get_genomes_txt(term['key']))
                         else:
-                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['term']))
+                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['key']))
         return g_text
 
 
