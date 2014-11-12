@@ -38,6 +38,12 @@
     margin: 0 5px 2px 0;
 }
 
+.btn-audit {
+    height: 100%;
+    padding: 0 12px;
+    background-color: #fff;
+}
+
 // Connect audit types to fontawesome icon suffixes and colors.
 // Set audit type icons and colors here.
 // Icon names are for font-awesome and are suffixed to 'icon-'.
@@ -79,13 +85,17 @@ $audit-types:
     .audit-activeicon-#{$audit-type} {
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-active-icon;
-        color: #fff;
+        color: $color;
+        font-size: 16px;
     }
 
+    // Button for each class of audit error
     .btn-audit-#{$audit-type} {
-        height: 28px;
-        padding: 0 12px;
-        background-color: $color !important;
+        color: $color;
+
+        &:hover, &:focus {
+            color: $color;
+        }
     }
 
     // Audit detail
