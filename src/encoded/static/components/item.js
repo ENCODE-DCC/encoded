@@ -219,5 +219,6 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
     }
 });
 
-globals.content_views.register(ItemEdit, 'item', 'edit');
-globals.content_views.register(ItemEdit, 'collection', 'add');
+/* XXX forms. See edit.js */
+// globals.content_views.register(ItemEdit, 'item', 'edit');
+// globals.content_views.register(ItemEdit, 'collection', 'add');
