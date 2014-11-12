@@ -39,37 +39,41 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
         var auditCounts = {}  ;
         var audits = this.props.audits;
 
-        // Count the errors at each level
-        audits.forEach(function(audit) {
-            if (auditCounts[audit.level]) {
-                auditCounts[audit.level].count++;
-            } else {
-                auditCounts[audit.level] = {count: 1, level_name: audit.level_name.toLowerCase()};
-            }
-        });
+        if (audits && audits.length) {
+            // Count the errors at each level
+            audits.forEach(function(audit) {
+                if (auditCounts[audit.level]) {
+                    auditCounts[audit.level].count++;
+                } else {
+                    auditCounts[audit.level] = {count: 1, level_name: audit.level_name.toLowerCase()};
+                }
+            });
 
-        // Sort the audit levels by their level number
-        var sortedAuditLevels = _(Object.keys(auditCounts)).sortBy(function(level) {
-            return -parseInt(level, 10);
-        });
+            // Sort the audit levels by their level number
+            var sortedAuditLevels = _(Object.keys(auditCounts)).sortBy(function(level) {
+                return -parseInt(level, 10);
+            });
 
-        return (
-            <div className="btn-group audit-indicators">
-                {sortedAuditLevels.map(function(level) {
-                    // Calculate the CSS class for the icon
-                    var level_name = auditCounts[level].level_name;
-                    var btnClass = 'btn btn-default btn-audit btn-audit-' + level_name + (level == this.context.auditDetailOpen ? ' active' : '');
-                    var iconClass = 'icon audit-activeicon-' + level_name;
+            return (
+                <div className="btn-group audit-indicators" role="group" aria-label="Audit indicators">
+                    {sortedAuditLevels.map(function(level) {
+                        // Calculate the CSS class for the icon
+                        var level_name = auditCounts[level].level_name;
+                        var btnClass = 'btn btn-default btn-audit btn-audit-' + level_name + (level == this.context.auditDetailOpen ? ' active' : '');
+                        var iconClass = 'icon audit-activeicon-' + level_name;
 
-                    return (
-                        <button type="button" className={btnClass} onClick={this.context.auditStateToggle.bind(null, level)}>
-                            <i className={iconClass}><span className="sr-only">{'Audit'} {level_name}</span></i>
-                            {auditCounts[level].count}
-                        </button>
-                    );
-                }.bind(this))}
-            </div>
-        );
+                        return (
+                            <button type="button" className={btnClass} onClick={this.context.auditStateToggle.bind(null, level)}>
+                                <i className={iconClass}><span className="sr-only">{'Audit'} {level_name}</span></i>
+                                {auditCounts[level].count}
+                            </button>
+                        );
+                    }.bind(this))}
+                </div>
+            );
+        } else {
+            return null;
+        }
     }
 });
 
