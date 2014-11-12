@@ -1,16 +1,16 @@
 .audit-indicators {
     display: block;
     margin-top: 5px;
-    padding: 0 5px;
+    padding: 0;
     height: 28px;
     @include border-radius(4px);
     background-color: #fff;
     border: 1px solid #a0a0a0;
+    vertical-align: top;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
         margin: 0 5px;
-        vertical-align: top;
     }
 
     &.active {
@@ -35,7 +35,7 @@
 // Audit icon that's clickable as well as displayable
 %audit-active-icon {
     @extend %audit-icon;
-    margin: 0 2px;
+    margin: 0 5px 2px 0;
 }
 
 // Connect audit types to fontawesome icon suffixes and colors.
@@ -79,11 +79,13 @@ $audit-types:
     .audit-activeicon-#{$audit-type} {
         @extend .icon-#{$suffix}; // FontAwesome icon
         @extend %audit-active-icon;
-        color: $color;
+        color: #fff;
+    }
 
-        &.active {
-            background-color: #a0a0a0;
-        }
+    .btn-audit-#{$audit-type} {
+        height: 28px;
+        padding: 0 12px;
+        background-color: $color !important;
     }
 
     // Audit detail

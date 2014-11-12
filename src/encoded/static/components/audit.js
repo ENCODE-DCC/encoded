@@ -35,39 +35,36 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     },
 
     render: function() {
+        var auditCounts = {}  ;
         var audits = this.props.audits;
-        var indicatorClasses = "audit-indicators" + (this.context.auditDetailOpen ? ' active' : '');
-        if (audits && audits.length) {
-            // Sort audit records
-            var audits_sorted = _.sortBy(audits, function(audit) {
-                return -audit.level;
-            });
 
-            return (
-                <button className={indicatorClasses} aria-expanded={this.context.auditDetailOpen} aria-controls="#audit-details" onClick={this.context.auditStateToggle}>
-                    {audits_sorted.map(function(audit, i) {
-                        return <AuditIndicator audit={audit} />;
-                    }.bind(this))}
-                </button>
-            );
-        } else {
-            return null;
-        }
-    }
-});
+        // Count the errors at each level, then sort the keys by level
+        audits.forEach(function(audit) {
+            if (auditCounts[audit.level]) {
+                auditCounts[audit.level].count++;
+            } else {
+                auditCounts[audit.level] = {count: 1, level_name: audit.level_name.toLowerCase()};
+            }
+        });
+        var sortedAuditKeys = _(Object.keys(auditCounts)).sortBy(function(key) {
+            return -key;
+        });
 
-
-var AuditIndicator = React.createClass({
-    contextTypes: {
-        auditDetailOpen: React.PropTypes.bool,
-        auditStateToggle: React.PropTypes.func // Function for clicks in audit indicators
-    },
-
-    render: function() {
-        var audit = this.props.audit;
-        var iconClass = 'icon audit-activeicon-' + audit.level_name.toLowerCase();
         return (
-            <i className={iconClass}><span className="sr-only">{'Audit'} {audit.level_name}</span></i>
+            <div className="btn-group audit-indicators">
+                {sortedAuditKeys.map(function(level) {
+                    // Calculate the CSS class for the icon
+                    var btnClass = 'btn btn-audit-' + auditCounts[level].level_name;
+                    var iconClass = 'icon audit-activeicon-' + auditCounts[level].level_name;
+
+                    return (
+                        <button type="button" className={btnClass}>
+                            <i className={iconClass}><span className="sr-only">{'Audit'} {auditCounts[level].level_name}</span></i>
+                            {auditCounts[level].count}
+                        </button>
+                    );
+                })}
+            </div>
         );
     }
 });
