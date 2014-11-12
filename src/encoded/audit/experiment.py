@@ -285,11 +285,12 @@ def audit_experiment_platform(value, system):
     for i in range(len(value['replicates'])):
         rep = value['replicates'][i]
         platform = rep.get('platform')  # really need to get the name here?
-        platforms.append(platform)
 
         if platform is None:
             detail = '{} missing platform'.format(rep["uuid"])
             yield AuditFailure('missing platform', detail, level='WARNING')  # release error
+        else:
+            platforms.append(platform['@id'])
 
     if len(set(platforms)) > 1:
         detail = '{} has mixed platform replicates'.format(value['accession'])
