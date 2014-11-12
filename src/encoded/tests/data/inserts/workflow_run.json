@@ -9,7 +9,19 @@
             "ENCFF431TKZ",
             "ENCFF504RKH",
             "ENCFF958GWJ",
-            "ENCFF360FSI"
+            "ENCFF360FSI",
+            "ENCFF019HBG"
+        ],
+        "status": "finished"
+    },
+    {
+        "uuid": "19eec4bf-469d-43bd-8fd3-f5c2d15388e7",
+        "pipeline": "ENCPL000MEG",
+        "dx_analysis_id": "analysis-BQQz9x80z53VpbqXGQb00Z5B",
+        "started_running": "2014-10-14T22:47:10.000000+00:00",
+        "stopped_running": "2014-10-15T11:42:35.000000+00:00",
+        "input_files": [
+            "ENCFF019HGN"
         ],
         "status": "finished"
     }

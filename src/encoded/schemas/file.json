@@ -125,7 +125,8 @@
                         "rcc",
                         "CEL",
                         "tsv",
-                        "csv"
+                        "csv",
+                        "tgz"
                     ]
                 },
                 {
@@ -224,7 +225,12 @@
                         "splice junctions",
                         "unique minus signal",
                         "unique plus signal",
-                        "unique signal"
+                        "unique signal",
+                        "genome reference",
+                        "genome index",
+                        "methyl_CG",
+                        "methyl_CHH",
+                        "methyl_CHG"
                     ]
                 },
                 {

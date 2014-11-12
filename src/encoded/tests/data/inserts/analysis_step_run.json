@@ -12,7 +12,88 @@
     {
         "uuid": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
         "status": "finished",
-        "analysis_step": "a25381ab-1740-42f7-8d5a-20bb2a2b9549"
+        "analysis_step": "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
+        "dx_job_id": "job-BV0168j0z53k72z0Xkq003jX",
+        "started_running": "2014-10-14T22:47:10.000000+00:00",
+        "stopped_running": "2014-10-15T11:42:35.000000+00:00",
+        "workflow_run": "19eec4bf-469d-43bd-8fd3-f5c2d15388e7",
+        "dx_app_json": {
+                "links": [
+                    "file-BQyb2Xj0z53b1z661bY00bBg"
+                ],
+                "inputSpec": [
+                    {
+                        "patterns": [
+                            "*.gz"
+                        ],
+                        "label": "A genome",
+                        "optional": false,
+                        "name": "genome",
+                        "class": "file"
+                    }
+                ],
+                "dxapi": "1.0.0",
+                "id": "applet-BQyb2Zj0z53b1z661bY00bBv",
+                "title": "WGBS-genome-index",
+                "runSpec": {
+                    "interpreter": "bash",
+                    "bundledDepends": [
+                        {
+                            "name": "resources.tar.gz",
+                            "id": {
+                                "$dnanexus_link": "file-BQyb2Xj0z53b1z661bY00bBg"
+                            }
+                        }
+                    ],
+                    "systemRequirements": {
+                        "myEntryPoint": {
+                            "instanceType": "mem3_hdd2_x2"
+                        },
+                        "main": {
+                            "instanceType": "mem3_hdd2_x2"
+                        }
+                    },
+                    "execDepends": [
+                        {
+                            "package_manager": "apt",
+                            "name": "dx-toolkit"
+                        }
+                    ],
+                    "executionPolicy": {}
+                },
+                "class": "applet",
+                "access": {
+                    "network": []
+                },
+                "state": "closed",
+                "details": {},
+                "folder": "/",
+                "description": "",
+                "tags": [
+                    "DNA Methylation",
+                    "ENCODE"
+                ],
+                "outputSpec": [
+                    {
+                        "label": "Converted Genome Index",
+                        "name": "meIndex",
+                        "class": "file"
+                    }
+                ],
+                "sponsored": false,
+                "createdBy": {
+                    "user": "user-hitz"
+                },
+                "properties": {},
+                "types": [],
+                "hidden": false,
+                "name": "index",
+                "created": 1413304659000,
+                "modified": 1413304659986,
+                "summary": "WGBS ENCODE Pipeline step: Creates C->T indexed genomic files used for Whole Genome Bisulphite Analysis",
+                "project": "project-BKf7zV80z53QbqKQz18005vZ",
+                "developerNotes": ""
+            }
     },
     {
         "uuid": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
