@@ -56,7 +56,65 @@
         "target": "3XFLAG-pab-1-celegans",
         "vector_backbone_name": "pSA2",
         "promoter_used": "mes-4-celegans",
-        "promoter_position_relative_to_target": 35,
+        "promoter_position_relative_to_target": "-35",
+        "promoter_genome_coordinates": {
+            "assembly": "ce10",
+            "chromosome": "I",
+            "start": 23891,
+            "end": 30812
+        },
+        "insert_genome_coordinates": {
+            "assembly": "ce10",
+            "chromosome": "III",
+            "start": 289812,
+            "end": 392337
+        },
+        "genomic_integration_site": {
+            "assembly": "WBcel235",
+            "chromosome": "IV",
+            "start": 337847,
+            "end": 337847
+        },
+        "insert_sequence": "ACGTAGGGATAGCCCATCGATCGATCGTACGTACGTACGATCTTTGCATCGATCGATGCTAGCAC",
         "uuid": "c65c008a-6085-47ed-aa50-668b321ff035"
+    },
+    {
+        "award": "U41HG007355",
+        "construct_type": "fusion protein",
+        "description": "Testing the coordinates",
+        "lab": "kevin-white",
+        "source": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "tags": [
+            {
+                "location": "C-terminal",
+                "name": "eGFP"
+            },
+            {
+                "location": "C-terminal",
+                "name": "3xFLAG"
+            }
+        ],
+        "target": "FLAG-synthetic",
+        "promoter_genome_coordinates": {
+            "assembly": "dm3",
+            "chromosome": "2L",
+            "start": 23891,
+            "end": 30812
+        },
+        "insert_genome_coordinates": {
+            "assembly": "dm6",
+            "chromosome": "3R",
+            "start": 289812,
+            "end": 392337
+        },
+        "genomic_integration_site": {
+            "assembly": "GRCh38",
+            "chromosome": "16",
+            "start": 337847,
+            "end": 337847
+        },
+        "insert_sequence": "ACGTAGGGATAGCCCATCGATCGATCGTACGTACGTACGATCTTTGCATCGATCGATGCTAGCAC",
+        "uuid": "351d060f-40fc-42a7-8b15-0afc1c1a5649"
     }
 ]
