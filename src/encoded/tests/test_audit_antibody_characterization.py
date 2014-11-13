@@ -2,9 +2,9 @@ import pytest
 
 
 @pytest.fixture
-def base_antibody_characterization(testapp, lab, award, target, antibody_lot):
+def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody_lot):
     item = {
-        'award': award['uuid'],
+        'award': ENCODE3_award['uuid'],
         'target': target['uuid'],
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid']
@@ -99,6 +99,15 @@ def recombinant_target(testapp, organism):
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
 
+@pytest.fixture
+def ENCODE3_award(testapp):
+    item = {
+        'name': 'ABC1234',
+        'rfa': 'ENCODE3',
+    }
+    return testapp.post_json('/award', item, status=201).json['@graph'][0]
+
+
 def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characterization, base_characterization_review):
     base_characterization_review['biosample_term_name'] = 'qwijibo'
     characterization_review_list = []
@@ -189,3 +198,18 @@ def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_ch
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+
+
+def test_audit_unapproved_antibody_characterization_method1(testapp, base_antibody_characterization):
+    testapp.patch_json(base_antibody_characterization['@id'], {'secondary_characterization_method': 'motif enrichment'})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'unapproved char method' for error in errors)
+
+
+def test_audit_unapproved_antibody_characterization_method2(testapp, base_antibody_characterization, target):
+    testapp.patch_json(target['@id'], {'investigated_as': ['histone modification']})
+    testapp.patch_json(base_antibody_characterization['@id'], {'secondary_characterization_method': 'ChIP-seq comparison', 'target': target['@id']})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'unapproved char method' for error in errors)

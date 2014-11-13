@@ -124,7 +124,7 @@ def audit_antibody_characterization_status(value, system):
         if 'characterization_reviews' in value:
             '''If any of these statuses, we shouldn't have characterization_reviews'''
             detail = 'status: {} is incompatible with having characterization_reviews'.format(value['status'])
-            raise AuditFailure('unexpected characterization_reviews')
+            raise AuditFailure('unexpected characterization_reviews', detail, level='WARNING')
         else:
             return
 
@@ -136,11 +136,30 @@ def audit_antibody_characterization_status(value, system):
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
             detail = 'lane_status: {} is incompatible with pending dcc review'.format(lane['lane_status'])
-            raise AuditFailure('char/lane status mismatch')
+            raise AuditFailure('char/lane status mismatch', detail, level='WARNING')
             continue
         if lane['lane_status'] == 'compliant':
             has_compliant_lane = True
 
     if has_compliant_lane and value['status'] != 'compliant':
         detail = 'lane_status: {} is incompatible with char status: {}'.format(lane['lane_status'], value['status'])
-        raise AuditFailure('char/lane status mismatch')
+        raise AuditFailure('char/lane status mismatch', detail, level='WARNING')
+
+
+@audit_checker('antibody_characterization')
+def audit_antibody_characterization_method_allowed(value, system):
+    '''Warn if a lab submits an ENCODE3 characterization if the method is not yet approved by the standards document.'''
+    if 'primary_characterization_method' in value:
+        return
+
+    target = value['target']
+    is_histone = False
+    if 'histone modification' in target['investigated_as']:
+        is_histone = True
+
+    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):
+        return
+
+    if (value['secondary_characterization_method'] == 'motif enrichment') or (is_histone and value['secondary_characterization_method'] == 'ChIP-seq comparison'):
+        detail = '{} is not an approved secondary characterization_method according to the current standards'.format(value['secondary_characterization_method'])
+        raise AuditFailure('unapproved char method', detail, level='WARNING')
