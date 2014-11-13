@@ -1,5 +1,4 @@
 
-import string
 from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
@@ -464,11 +463,11 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
     if len(set(reps_list)) > 1:
-            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], string(reps_list))
+            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], repr(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='ERROR')  # informational
 
     if len(set(libs_list)) > 1:
-            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], string(reps_list))
+            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], repr(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='ERROR')  # informational
 
 
