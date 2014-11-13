@@ -45,12 +45,10 @@ def get_track(f, label, parent):
 
     file_format = 'bigWig 1.000000 3291154.000000'
     sub_group = 'view=SIG'
-    visibility = 'hide'
 
     if f['file_format'] in BIGBED_FILE_TYPES:
         file_format = 'bigBed'
         sub_group = 'view=PK'
-        visibility = 'pack'
 
     label = label + ' - {accession} {format} {output}'.format(
         accession=f['accession'],
@@ -66,7 +64,7 @@ def get_track(f, label, parent):
 
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('visibility', visibility),
+        ('visibility', 'pack'),
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
@@ -109,7 +107,7 @@ def get_signal_view(accession, view):
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
         ('viewUi', 'on'),
-        ('visibility', 'hide'),
+        ('visibility', 'pack'),
         ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -245,7 +243,7 @@ def generate_batch_hubs(request):
         if txt == TRACKDB_TXT:
             trackdb = ''
             for i, experiment in enumerate(results['@graph']):
-                if i < 25:
+                if i < 5:
                     if i == 0:
                         trackdb = generate_trackDb(experiment, 'full')
                     else:
@@ -273,11 +271,11 @@ def generate_batch_hubs(request):
         for facet in results['facets']:
             if facet['field'] == 'assembly':
                 for term in facet['terms']:
-                    if term['count'] != 0:
+                    if term['doc_count'] != 0:
                         if g_text == '':
-                            g_text = NEWLINE.join(get_genomes_txt(term['term']))
+                            g_text = NEWLINE.join(get_genomes_txt(term['key']))
                         else:
-                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['term']))
+                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['key']))
         return g_text
 
 
