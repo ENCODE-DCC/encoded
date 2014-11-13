@@ -18,14 +18,28 @@ $brand-success: #4C994C;
 $brand-danger: #B24342;
 $brand-info: #4F689E;
 
-.d3 circle {
-  stroke: #fff;
+/* This sets the color for "TK" nodes to a light blue green. */
+g.type-TK > rect {
+  fill: #00ffd0;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke: #999;
+  fill: #fff;
   stroke-width: 1.5px;
 }
 
-.d3 line {
-  stroke: #999;
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
 }
+
 
 // Core variables and mixins
 @import "bootstrap/variables";
