@@ -18,29 +18,6 @@ $brand-success: #4C994C;
 $brand-danger: #B24342;
 $brand-info: #4F689E;
 
-/* This sets the color for "TK" nodes to a light blue green. */
-g.type-TK > rect {
-  fill: #00ffd0;
-}
-
-text {
-  font-weight: 300;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
-  font-size: 14px;
-}
-
-.node rect {
-  stroke: #999;
-  fill: #fff;
-  stroke-width: 1.5px;
-}
-
-.edgePath path {
-  stroke: #333;
-  stroke-width: 1.5px;
-}
-
-
 // Core variables and mixins
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
@@ -120,6 +97,7 @@ text {
         "encoded/modules/tables",
         "encoded/modules/facet",
         "encoded/modules/characterizations",
+        "encoded/modules/pipeline",
         "encoded/modules/blocks",
         "encoded/modules/layout-editor";
 @import "encoded/state";

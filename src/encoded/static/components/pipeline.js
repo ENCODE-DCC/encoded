@@ -83,7 +83,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 : null}
-                <Graph />
+                {context.analysis_steps && context.analysis_steps.length ?
+                    <Graph analysis_steps={context.analysis_steps} />                                      
+                : null}
             </div>
 
         );
@@ -92,122 +94,65 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 globals.content_views.register(Pipeline, 'pipeline');
 
 
-var d3Chart = {
-    // Create the D3 element and insert an SVG element into it
-    create: function(el, props, state) {
+var Graph = React.createClass({
+    componentDidMount: function() {
+        var el = this.getDOMNode();
+
+        // Add SVG element to this component, and assign it classes, sizes, and a group
         var svg = d3.select(el).append('svg')
             .attr('class', 'd3')
-            .attr('width', props.width)
-            .attr('height', props.height);
+            .attr('width', '100%')
+            .attr('height', '300px');
         svg.append('g').attr('class', 'd3-points');
 
+        // Define a linear gradient, called #step-gradient
+        svg.append('linearGradient')
+            .attr('id', 'step-gradient')
+            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
+            .selectAll('stop')
+            .data([
+                {offset: '0%', color: '#FEFCEA'},
+                {offset: '100%', color: '#FFF5BA'}
+            ])
+        .enter().append("stop")
+            .attr('offset', function(d) { return d.offset; })
+            .attr('stop-color', function(d) { return d.color; });
+
+        // Create a new empty graph
         var g = new dagreD3.graphlib.Graph()
             .setGraph({rankdir: "LR"})
             .setDefaultEdgeLabel(function() { return {}; });
 
-        // Here we"re setting nodeclass, which is used by our custom drawNodes function
-        // below.
-        g.setNode(0,  { label: "TOP",       class: "type-TOP" });
-        g.setNode(1,  { label: "S",         class: "type-S" });
-        g.setNode(2,  { label: "NP",        class: "type-NP" });
-        g.setNode(3,  { label: "DT",        class: "type-DT" });
-        g.setNode(4,  { label: "This",      class: "type-TK" });
-        g.setNode(5,  { label: "VP",        class: "type-VP" });
-        g.setNode(6,  { label: "VBZ",       class: "type-VBZ" });
-        g.setNode(7,  { label: "is",        class: "type-TK" });
-        g.setNode(8,  { label: "NP",        class: "type-NP" });
-        g.setNode(9,  { label: "DT",        class: "type-DT" });
-        g.setNode(10, { label: "an",        class: "type-TK" });
-        g.setNode(11, { label: "NN",        class: "type-NN" });
-        g.setNode(12, { label: "example",   class: "type-TK" });
-        g.setNode(13, { label: ".",         class: "type-." });
-        g.setNode(14, { label: "sentence",  class: "type-TK" });
+        // Loop over each analysis step to insert it into the graph
+        this.props.analysis_steps.forEach(function(step) {
+            // Make an array of step types
+            var stepTypesList = step.analysis_step_types.map(function(type) {
+                return type;
+            });
 
-        g.nodes().forEach(function(v) {
-            var node = g.node(v);
-            // Round the corners of the nodes
-            node.rx = node.ry = 5;
+            // Render each node
+            g.setNode(step['@id'], {label: stepTypesList.join(', '), rx: 4, ry: 4, class: 'analysis-step', style: 'fill: url(#step-gradient)'});
+            if (step.parents && step.parents.length) {
+                step.parents.forEach(function(parent) {
+                    g.setEdge(step['@id'], parent);
+                });
+            }
         });
 
-        // Set up edges, no special attributes.
-        g.setEdge(3, 4);
-        g.setEdge(2, 3);
-        g.setEdge(1, 2);
-        g.setEdge(6, 7);
-        g.setEdge(5, 6);
-        g.setEdge(9, 10);
-        g.setEdge(8, 9);
-        g.setEdge(11,12);
-        g.setEdge(8, 11);
-        g.setEdge(5, 8);
-        g.setEdge(13,14);
-        g.setEdge(1, 13);
-        g.setEdge(0, 1);
-
-        // Update the chart
-        this.update(el, g);
-    },
-
-    update: function(el, g) {
-        // Re-compute the scales, and render the data points
-        this._drawPoints(el, g);
-    },
-
-    destroy: function(el) {
-        // Any clean-up would go here
-        // in this example there is nothing to do
-    },
-
-    _drawPoints: function(el, g) {
-        var render = new dagreD3.render();
-
-        // Set up an SVG group so that we can translate the final graph.
-        var svg = d3.select("svg");
-        var svgGroup = svg.append("g");
-
         // Run the renderer. This is what draws the final graph.
+        var render = new dagreD3.render();
         render(d3.select("svg g"), g);
 
         // Center the graph
+        var svgGroup = svg.append("g");
         var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
         svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
         svg.attr("height", g.graph().height + 40);
-    }
-};
-
-
-var Chart = React.createClass({
-    componentDidMount: function() {
-        var el = this.getDOMNode();
-        d3Chart.create(el, {
-            width: '100%',
-            height: '300px'
-        });
     },
 
-    componentDidUpdate: function() {
-        var el = this.getDOMNode();
-        d3Chart.update(el);
-    },
-
-    componentWillUnmount: function() {
-        var el = this.getDOMNode();
-        d3Chart.destroy(el);
-    },
-
-    render: function() {
-        return (
-            <div className="Chart"></div>
-        );
-    }
-});
-
-
-var Graph = React.createClass({
     render: function() {
         return (
             <div className="panel">
-                <Chart />
             </div>
         );
     }

@@ -1,0 +1,34 @@
+g.node {
+    rect {
+        stroke: #a0a0a0;
+        stroke-width: 1.5px;
+        fill: #fefcea;
+    }
+}
+
+g.analysis-step {
+    dl {
+        margin: 0;
+    }
+
+    dt, dd {
+        color: #606060;
+        @include text-shadow(none);
+    }
+
+    dt {
+        margin-top: 5px;
+    }
+
+    dd {
+        margin-bottom: 5px;
+        font-weight: normal;
+    }
+}
+
+g.edgePath {
+    path {
+        stroke: #c0c0c0;
+        stroke-width: 1.5px;
+    }
+}
