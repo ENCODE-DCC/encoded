@@ -56,10 +56,6 @@ class FlyDonor(Collection):
     class Item(DonorItem):
         embedded = set(['organism', 'constructs', 'constructs.target'])
 
-        def __ac_local_roles__(self):
-            # Disallow lab submitter edits
-            return {}
-
 
 @location('worm-donors')
 class WormDonor(Collection):
@@ -73,10 +69,6 @@ class WormDonor(Collection):
 
     class Item(DonorItem):
         embedded = set(['organism', 'constructs', 'constructs.target'])
-
-        def __ac_local_roles__(self):
-            # Disallow lab submitter edits
-            return {}
 
 
 @location('human-donors')
