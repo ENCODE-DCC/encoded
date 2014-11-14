@@ -49,17 +49,17 @@ def audit_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
-        raise AuditFailure('NTR', detail, level='WARNING')  # DCC action
+        raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
         detail = '{} has {} not in ontology'.format(value['accession'])
-        raise AuditFailure('term id not in ontology', term_id, level='WARNING')  # DCC action
+        raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} has {} - {} - {}'.format(value['accession'],
                                               term_id, term_name, ontology_term_name)
-        raise AuditFailure('term name mismatch', detail, level='ERROR')
+        raise AuditFailure('term name mismatch', detail, level='DCC_ACTION')
 
 
 @audit_checker('biosample')

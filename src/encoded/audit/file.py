@@ -37,7 +37,7 @@ def audit_file_size(value, system):
 
     if 'file_size' not in value:
         detail = '{} missing file_size'.format(value['accession'])
-        raise AuditFailure('missing file_size', detail, level='ERROR')
+        raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
 
 
 @audit_checker('file')
@@ -128,4 +128,4 @@ def audit_file_output_type(value, system):
     #if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
             detail = '{}'.format(value['output_type'])
-            raise AuditFailure('undesirable output type', detail, level='ERROR')  # DCC action
+            raise AuditFailure('undesirable output type', detail, level='WARNING')  # DCC action
