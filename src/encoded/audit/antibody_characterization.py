@@ -25,10 +25,10 @@ def audit_antibody_characterization_review(value, system):
 
             if term_id.startswith('NTR:'):
                 detail = '{} - {}'.format(term_id, term_name)
-                raise AuditFailure('NTR', detail, level='WARNING')
+                raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                raise AuditFailure('term id not in ontology', term_id, level='WARNING')
+                raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
@@ -136,11 +136,11 @@ def audit_antibody_characterization_status(value, system):
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
             detail = 'lane_status: {} is incompatible with pending dcc review'.format(lane['lane_status'])
-            raise AuditFailure('char/lane status mismatch')
+            raise AuditFailure('char/lane status mismatch', detail, level='DCC_ACTION')
             continue
         if lane['lane_status'] == 'compliant':
             has_compliant_lane = True
 
     if has_compliant_lane and value['status'] != 'compliant':
         detail = 'lane_status: {} is incompatible with char status: {}'.format(lane['lane_status'], value['status'])
-        raise AuditFailure('char/lane status mismatch')
+        raise AuditFailure('char/lane status mismatch', detail, level='DCC_ACTION')
