@@ -713,28 +713,21 @@ var statusOrder = globals.statusOrder;
             return (
                 <div>
                     <div class="checkbox">
-                        <label><input type="checkbox" onChange={this.handleCBChange}/>Peak search</label>
+                        <label><input type="checkbox" onChange={this.handleCBChange}/> Peak search</label>
                     </div>
                     {this.state.disclosed ?
                         <form ref="adv-search" role="form">
                             <div className="row">
                                 <div className="form-group col-sm-6">
-                                    <label for="assembly">Genome assembly</label>
-                                    <input ref="assembly" name="assembly" type="text" className="form-control" onChange={this.handleChange} />
+                                    <label for="regionid">Enter GeneID or RSID or "chr#-start-end"</label>
+                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                                 </div>
                                 <div className="form-group col-sm-6">
-                                    <label for="chromosome">Chromosome</label>
-                                    <input ref="chromosome" name="chromosome" type="text" className="form-control" onChange={this.handleChange} />
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="form-group col-sm-6">
-                                    <label for="start">Start</label>
-                                    <input ref="start" name="start" type="text" className="form-control" onChange={this.handleChange} />
-                                </div>
-                                <div className="form-group col-sm-6">
-                                    <label for="stop">Stop (optional)</label>
-                                    <input ref="stop" name="stop" type="text" className="form-control" onChange={this.handleChange} />
+                                    <label for="peakid">Organism</label>
+                                    <select ref="organism" name="organism" className="form-control" onChange={this.handleChange} >
+                                        <option selected="selected">human</option>
+                                        <option>mouse</option>
+                                    </select>
                                 </div>
                             </div>
                             <a className="btn btn-primary" href={query}>Submit</a>
@@ -855,7 +848,7 @@ var statusOrder = globals.statusOrder;
             });
             return (
                 <div>
-                    {facetdisplay ?
+                    {context['total'] ?
                         <div className="panel data-display main-panel">
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>

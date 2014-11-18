@@ -4,6 +4,7 @@ from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib import urlencode
 from collections import OrderedDict
+import requests
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 extra_params = [
@@ -13,10 +14,8 @@ extra_params = [
     'format',
     'frame',
     'datastore',
-    'assembly',
-    'chromosome',
-    'start',
-    'stop'
+    'regionid',
+    'organism',
 ]
 
 
@@ -69,79 +68,96 @@ def flatten_dict(d):
     return dict(items())
 
 
-def search_peaks(request, result):
+def search_peaks(request):
+    """ return file uuids which have the snp or interval found in """
     es = request.registry[ELASTIC_SEARCH]
-    chromosome = request.params.get('chr', None)
-    s = request.params.get('snip', None)
-    if chromosome is None or s is None:
-        result['notification'] = 'Chr and snip are both required for peaks'
-        return result
-    snip = int(s)
-    query = {
-        'query': {
-            'filtered': {
-                'query': {
-                    'term': {
-                        'chromosome': chromosome
-                    }
-                },
-                'filter': {
-                    'and': {
-                        'filters': [
-                            {
-                                'range': {
-                                    'start': {
-                                        'lte': snip,
+    peakid = request.params.get('regionid', None)
+    assembly = 'hg19'
+    if request.params.get('organism', 'human') is not 'human':
+        assembly = 'mm9'
+    
+    chromosome = ''
+    start = ''
+    end = ''
+
+    if peakid.startswith('rs'):
+        # RSIDs should be handled here
+        pass
+    elif peakid.startswith('chr'):
+        # Address should be handled here
+        params = peakid.split('-')
+        chromosome = params[0]
+        start = params[1]
+        end = params[1]
+        if len(params) > 2:
+            end = params[2]
+    else:
+        response = requests.get('http://www.mygene.info/v2/gene/'
+            + peakid + '?fields=genomic_pos,genomic_pos_hg19').json()
+
+        if 'genomic_pos_hg19' in response:
+            # Human assemgly since we have hg19
+            chromosome = 'chr' + response['genomic_pos_hg19']['chr']
+            start = response['genomic_pos_hg19']['start']
+            end = response['genomic_pos_hg19']['end']
+        elif 'genomic_pos_mm9' in response:
+            # mouse assemble since we have mm9
+            chromosome = 'chr' + response['genomic_pos_mm9']['chr']
+            start = response['genomic_pos_mm9']['start']
+            end = response['genomic_pos_mm9']['end']
+        elif 'genomic_pos' in response:
+            # All others
+            chromosome = 'chr' + response['genomic_pos']['chr']
+            start = response['genomic_pos']['start']
+            end = response['genomic_pos']['end']
+
+    file_ids = []
+    if chromosome == '' or start == '':
+        notification = 'Invalid entry'
+        return (file_ids, notification)
+    else:
+        query = {
+            'query': {
+                'filtered': {
+                    'query': {
+                        'term': {
+                            'chromosome': chromosome
+                        }
+                    },
+                    'filter': {
+                        'and': {
+                            'filters': [
+                                {
+                                    'range': {
+                                        'start': {
+                                            'lte': start,
+                                        }
+                                    }
+                                },
+                                {
+                                    'range': {
+                                        'stop': {
+                                            'gte': end
+                                        }
                                     }
                                 }
-                            },
-                            {
-                                'range': {
-                                    'stop': {
-                                        'gte': snip
-                                    }
-                                }
-                            }
-                        ],
-                        '_cache': True
+                            ],
+                            '_cache': True
+                        }
                     }
                 }
-            }
-        },
-        'fields': ['experiment', 'file']
-    }
-    results = es.search(body=query, index='encoded', doc_type='peaks' or None, size=99999999)
-    file_ids = []
-    exp_ids = []
-    for hit in results['hits']['hits']:
-        exp = hit['fields']['experiment'][0]
-        f = hit['fields']['file'][0]
-        if exp not in exp_ids:
-            exp_ids.append(exp)
-            result['@graph'].append({'@id': exp, '@type': 'peaks', 'files': [f]})
-        else:
-            if f not in file_ids:
-                file_ids.append(f)
-                for g in result['@graph']:
-                    if g['@id'] == exp:
-                        g['files'].append(f)
-                        break
-    result['total'] = len(result['@graph'])
-    result['facets'].append({
-        'field': 'type',
-        'total': len(result['@graph']),
-        'term': [
-            {
-                'count': len(result['@graph']),
-                'term': 'peaks'
-            }
-        ]
-    })
-    result['notification'] = 'Success'
-    return result
+            },
+            'fields': ['uuid']
+        }
+        
+        results = es.search(body=query, index='peaks', doc_type=assembly or None, size=99999999)
+        for hit in results['hits']['hits']:
+            if hit['fields']['uuid'] not in file_ids:
+                file_ids.append(hit['fields']['uuid'][0])
+        return (file_ids, 'success')
 
 
-@view_config(route_name='search', context=Root, request_method='GET', permission='search')
+@view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
 
@@ -182,15 +198,12 @@ def search(context, request, search_type=None):
 
     if search_type is None:
         search_type = request.params.get('type')
-        if search_type == 'peaks':
-            return search_peaks(request, result)
-        else:
-            # handling invalid item types
-            if search_type not in (None, '*'):
-                if search_type not in root.by_item_type:
-                    result['notification'] = "'" + search_type + \
-                        "' is not a valid 'item type'"
-                    return result
+        # handling invalid item types
+        if search_type not in (None, '*'):
+            if search_type not in root.by_item_type:
+                result['notification'] = "'" + search_type + \
+                    "' is not a valid 'item type'"
+                return result
 
     # Building query for filters
     if search_type in (None, '*'):
@@ -254,6 +267,23 @@ def search(context, request, search_type=None):
     # Setting filters
     query_filters = query['filter']['and']['filters']
     used_filters = []
+
+    peak_files_uuids = []
+    if 'regionid' in request.params:
+        peak_files_uuids, notification = search_peaks(request)
+        if not len(peak_files_uuids):
+            if notification is 'success':
+                result['notification'] = 'No results found for region entered'
+            else:
+                result['notification'] = 'Invalid region search term. Please enter(GeneId, RSID or chr#-start-stop)'
+            return result
+        else:
+            query_filters.append({
+                'terms': {
+                    'embedded.files.uuid': peak_files_uuids
+                }
+            })
+
     for field, term in request.params.iteritems():
         if field not in extra_params:
             # Add filter to result
@@ -325,6 +355,19 @@ def search(context, request, search_type=None):
                 }
             }
         }
+
+        # Handling region search using filters
+        if len(peak_files_uuids):
+            o_terms = query['aggs'][agg_name]['filter']
+            n_terms = {'terms': {
+                'embedded.files.uuid': peak_files_uuids
+            }}
+            query['aggs'][agg_name]['filter'] = {
+                'bool': {
+                    'must': [o_terms, n_terms]
+                }
+            }
+
         for count, used_facet in enumerate(result['filters']):
             if used_facet['field'] == 'searchTerm':
                 continue
@@ -356,7 +399,6 @@ def search(context, request, search_type=None):
                                 q_field: [used_facet['term']]
                             }
                         })
-
     # Execute the query
     results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
 

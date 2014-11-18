@@ -352,33 +352,36 @@ def file_index(request):
         item = request.root.get_by_uuid(uuid)
         properties = item.__json__(request)
         if 'assembly' in properties and properties['status'] != 'revoked':
-            if properties['file_format'] in types and properties['assembly'] == 'hg19':
-                print "Downloading and indexing - " + properties['href']
+            if properties['file_format'] in types:
                 r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
                 comp = StringIO.StringIO()
                 comp.write(r.data)
                 comp.seek(0)
-                f = gzip.GzipFile(fileobj=comp, mode='rb')
-                r.release_conn()
-                file_data = list(csv.reader(f, delimiter='\t'))
-                for row in file_data:
-                    result = {
-                        'chromosome': row[0],
-                        'start': int(row[1]) + 1,
-                        'stop': int(row[2]) + 1,
-                        'uuid': properties['uuid'],
-                    }
-                    es.index(
+                try:
+                    f = gzip.GzipFile(fileobj=comp, mode='rb')
+                except:
+                    print 'File has problem - ' + properties['href']
+                else:
+                    r.release_conn()
+                    file_data = list(csv.reader(f, delimiter='\t'))
+                    for row in file_data:
+                        result = {
+                            'chromosome': row[0],
+                            'start': int(row[1]) + 1,
+                            'stop': int(row[2]) + 1,
+                            'uuid': properties['uuid'],
+                        }
+                        es.index(
+                            index=file_index,
+                            doc_type=properties['assembly'],
+                            body=result,
+                            id=counter,
+                            timeout="10m"
+                        )
+                        counter = counter + 1
+                    es.indices.flush(
                         index=file_index,
-                        doc_type=properties['assembly'],
-                        body=result,
-                        id=counter,
-                        timeout="10m"
+                        full=True,
+                        force=True
                     )
-                    counter = counter + 1
-                es.indices.flush(
-                    index=file_index,
-                    full=True,
-                    force=True
-                )
             es.indices.refresh(index=file_index)
