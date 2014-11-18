@@ -719,7 +719,7 @@ var statusOrder = globals.statusOrder;
                         <form ref="adv-search" role="form">
                             <div className="row">
                                 <div className="form-group col-sm-6">
-                                    <label for="regionid">Enter GeneID or RSID or "chr#-start-end"</label>
+                                    <label for="regionid">Enter GeneID or "chr#-start-end"</label>
                                     <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                                 </div>
                                 <div className="form-group col-sm-6">

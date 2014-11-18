@@ -92,24 +92,29 @@ def search_peaks(request):
         if len(params) > 2:
             end = params[2]
     else:
-        response = requests.get('http://www.mygene.info/v2/gene/'
-            + peakid + '?fields=genomic_pos,genomic_pos_hg19').json()
-
-        if 'genomic_pos_hg19' in response:
-            # Human assemgly since we have hg19
-            chromosome = 'chr' + response['genomic_pos_hg19']['chr']
-            start = response['genomic_pos_hg19']['start']
-            end = response['genomic_pos_hg19']['end']
-        elif 'genomic_pos_mm9' in response:
-            # mouse assemble since we have mm9
-            chromosome = 'chr' + response['genomic_pos_mm9']['chr']
-            start = response['genomic_pos_mm9']['start']
-            end = response['genomic_pos_mm9']['end']
-        elif 'genomic_pos' in response:
-            # All others
-            chromosome = 'chr' + response['genomic_pos']['chr']
-            start = response['genomic_pos']['start']
-            end = response['genomic_pos']['end']
+        try:
+            response = requests.get('http://www.mygene.info/v2/gene/'
+                + peakid + '?fields=genomic_pos,genomic_pos_hg19').json()
+        except:
+            return([], 'Failed search')
+        else:
+            if 'genomic_pos_hg19' in response:
+                # Human assemgly since we have hg19
+                chromosome = 'chr' + response['genomic_pos_hg19']['chr']
+                start = response['genomic_pos_hg19']['start']
+                end = response['genomic_pos_hg19']['end']
+            elif 'genomic_pos_mm9' in response:
+                # mouse assemble since we have mm9
+                chromosome = 'chr' + response['genomic_pos_mm9']['chr']
+                start = response['genomic_pos_mm9']['start']
+                end = response['genomic_pos_mm9']['end']
+            elif 'genomic_pos' in response:
+                # All others
+                chromosome = 'chr' + response['genomic_pos']['chr']
+                start = response['genomic_pos']['start']
+                end = response['genomic_pos']['end']
+            else:
+                return([], 'Failed search')
 
     file_ids = []
     if chromosome == '' or start == '':
