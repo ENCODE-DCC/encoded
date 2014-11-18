@@ -11,7 +11,7 @@ var search = module.exports;
 var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-
+var statusOrder = globals.statusOrder;
 
     // Should really be singular...
     var types = {
@@ -163,9 +163,15 @@ var Dbxref = dbxref.Dbxref;
             var result = this.props.context;
             var columns = this.props.columns;
 
+            // Sort the lot reviews by their status according to our predefined order
+            // given in the statusOrder array.
+            var lot_reviews = _.sortBy(result.lot_reviews, function(lot_review) {
+                return _.indexOf(statusOrder, lot_review.status); // Use underscore indexOf so that this works in IE8
+            });
+
             // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
             var targetTree = {};
-            result.lot_reviews.forEach(function(lot_review) {
+            lot_reviews.forEach(function(lot_review) {
                 lot_review.targets.forEach(function(target) {
                     // If we haven't seen this target, save it in targetTree along with the
                     // corresponding target and organism structures.
@@ -186,6 +192,7 @@ var Dbxref = dbxref.Dbxref;
                     }
                 });
             });
+            lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
                 <li>
@@ -209,7 +216,7 @@ var Dbxref = dbxref.Dbxref;
                             })}
                         </div>
                     </div>
-                    <div className="data-row"> 
+                    <div className="data-row">
                         <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
                         <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                     </div>
@@ -244,7 +251,7 @@ var Dbxref = dbxref.Dbxref;
                                     {result['biosample_term_name'] + ' ('}
                                     <em>{result['organism.scientific_name']}</em>
                                     {separator + lifeStage + age + ageUnits + ')'}
-                                </a> 
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
@@ -267,9 +274,21 @@ var Dbxref = dbxref.Dbxref;
                                     {treatment}
                                 </div>
                             : null}
+                            {result['culture_harvest_date'] ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result['culture_harvest_date']}
+                                </div>
+                            : null}
+                            {result['date_obtained'] ?
+                                <div>
+                                    <strong>{columns['date_obtained']['title'] + ': '}</strong>
+                                    {result['date_obtained']}
+                                </div>
+                            : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
                         </div>
-                </li>   
+                </li>
             );
         }
     });
@@ -373,7 +392,7 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type">{' ' + result['accession']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['description']}</a> 
+                                <a href={result['@id']}>{result['description']}</a>
                             </div>
                         </div>
                         <div className="data-row">
@@ -408,11 +427,11 @@ var Dbxref = dbxref.Dbxref;
                                     {result['label'] + ' ('}
                                     <em>{result['organism.scientific_name']}</em>
                                     {')'}
-                                </a> 
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']['title']}</strong>: 
+                            <strong>{columns['dbxref']['title']}</strong>:
                             {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em> None submitted</em> }
@@ -463,7 +482,7 @@ var Dbxref = dbxref.Dbxref;
     function countSelectedTerms(terms, field, filters) {
         var count = 0;
         for(var oneTerm in terms) {
-            if(termSelected(terms[oneTerm].term, field, filters)) {
+            if(termSelected(terms[oneTerm].key, field, filters)) {
                 count++;
             }
         }
@@ -473,8 +492,8 @@ var Dbxref = dbxref.Dbxref;
     var Term = search.Term = React.createClass({
         render: function () {
             var filters = this.props.filters;
-            var term = this.props.term['term'];
-            var count = this.props.term['count'];
+            var term = this.props.term['key'];
+            var count = this.props.term['doc_count'];
             var title = this.props.title || term;
             var field = this.props.facet['field'];
             var em = field === 'target.organism.scientific_name' ||
@@ -509,7 +528,7 @@ var Dbxref = dbxref.Dbxref;
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
-            var term = this.props.term['term'];
+            var term = this.props.term['key'];
             var filters = this.props.filters;
             var title;
             try {
@@ -538,13 +557,13 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
-                if (term.term) {
+                if (term.key) {
                     for(var filter in filters) {
-                        if(filters[filter].term === term.term) {
+                        if(filters[filter].term === term.key) {
                             return true;
                         }
                     }
-                    return term.count > 0;
+                    return term.doc_count > 0;
                 } else {
                     return false;
                 }
@@ -566,13 +585,13 @@ var Dbxref = dbxref.Dbxref;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -632,7 +651,7 @@ var Dbxref = dbxref.Dbxref;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;                
+                return false;
             }
         }
     });
@@ -730,6 +749,7 @@ var Dbxref = dbxref.Dbxref;
 
         getDefaultProps: function() {
             return {
+
                 restrictions: {},
                 searchBase: ''
             };
@@ -751,12 +771,11 @@ var Dbxref = dbxref.Dbxref;
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            
             _.each(facets, function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
                     facet.restrictions = this.props.restrictions[facet.field];
                     facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.term);
+                        return _.contains(facet.restrictions, term.key);
                     }.bind(this));
                 }
             }.bind(this));
@@ -774,7 +793,7 @@ var Dbxref = dbxref.Dbxref;
                                 <AdvSearch />
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} 
+                                        Showing {results.length} of {total}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
@@ -792,6 +811,13 @@ var Dbxref = dbxref.Dbxref;
                                                 : null}
                                             </span>
                                         }
+                                        
+                                        {context['batch_hub'] != '' ?
+                                            <span className="pull-right">
+                                                <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
+                                                   href={context['batch_hub']}>Visualize</a>&nbsp;
+                                            </span>
+                                        :null}
                                     </h4>
                                 :
                                     <h4>{context['notification']}</h4>
@@ -806,7 +832,7 @@ var Dbxref = dbxref.Dbxref;
                                 </ul>
                             </div>
                         </div>
-                    </div>  
+                    </div>
             );
         },
 
@@ -830,7 +856,7 @@ var Dbxref = dbxref.Dbxref;
             return (
                 <div>
                     {facetdisplay ?
-                        <div className="panel data-display main-panel"> 
+                        <div className="panel data-display main-panel">
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>
                     : <h4>{notification}</h4>}

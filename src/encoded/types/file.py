@@ -170,6 +170,8 @@ def download(context, request):
         filename, = request.subpath
         if filename != '{accession}{file_extension}'.format(**ns):
             raise HTTPNotFound(filename)
+    else:
+        filename = '{accession}{file_extension}'.format(**ns)
 
     proxy = asbool(request.params.get('proxy'))
 
@@ -177,7 +179,11 @@ def download(context, request):
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
-        location = conn.generate_url(36*60*60, method, external['bucket'], external['key'])
+        location = conn.generate_url(
+            36*60*60, method, external['bucket'], external['key'],
+            response_headers={
+                'response-content-disposition': "attachment; filename=" + filename,
+            })
     else:
         raise ValueError(external.get('service'))
 

@@ -75,7 +75,8 @@
                             "TRE",
                             "T2A",
                             "YFP",
-                            "FLAG"
+                            "FLAG",
+                            "mCherry"
                         ]
                     },
                     "location": {
@@ -110,24 +111,69 @@
         },
         "genomic_integration_site": {
             "title": "Integration site",
-            "description": "Genomic coordinates where construct is integrated, if known. Use NCBI assembly version:chromosome number:5' nucleotide position (e.g. GRCh37:21:3393939).",
-            "comment": "TODO",
-            "type": "string",
-            "requestMethod": []
+            "description": "Genomic coordinates where construct is integrated, if known.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38 or dm6",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
         },
         "insert_sequence": {
             "title": "Insert Sequence",
             "description": "DNA sequence inserted into the vector backbone.",
-            "comment": "TODO",
             "type": "string",
-            "requestMethod": []
+            "pattern": "^[ACTG]+$"
         },
         "insert_genome_coordinates": {
             "title": "Insert genome coordinates",
-            "description": "Genomic coordinates of the insert. Use NCBI assembly version:chromosome number:nucleotide range (e.g. GRCh37:15:2800021-28344458).",
-            "comment": "TODO",
-            "type": "string",
-            "requestMethod": []
+            "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
         },
         "promoter_used": {
            "title": "Promoter used in construct",
@@ -139,15 +185,39 @@
        "promoter_genome_coordinates": {
            "title": "Promoter genome coordinates",
            "description": "Genomic coordinates of the promoter. Use NCBI assembly version:chromosome number:nucleotide range (e.g. WBcel235:III:1433720-1434340).",
-           "comment": "TODO",
-           "type": "string",
-           "requestMethod": []
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The GRC genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
        },
        "promoter_position_relative_to_target": {
            "title": "Promoter position relative to target",
            "description": "Relative distance of promoter sequence in the construct upstream of the target gene TSS.",
            "comment": "Distance in bp upstream of target gene TSS in the construct",
-           "type": "number"
+           "type": "string",
+           "pattern": "^-[0-9]+$"
        }
     }
 }

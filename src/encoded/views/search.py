@@ -49,7 +49,7 @@ def get_filtered_query(term, fields, principals):
                 '_all': {}
             }
         },
-        'facets': {},
+        'aggs': {},
         '_source': list(fields),
     }
 
@@ -154,7 +154,8 @@ def search(context, request, search_type=None):
         '@graph': [],
         'columns': OrderedDict(),
         'filters': [],
-        'notification': ''
+        'notification': '',
+        'batch_hub': ''
     }
 
     principals = effective_principals(request)
@@ -236,11 +237,11 @@ def search(context, request, search_type=None):
     # Sorting the files when search term is not specified
     if search_term == '*':
         query['sort'] = {
-            'date_created': {
+            'embedded.date_created': {
                 'order': 'desc',
                 'ignore_unmapped': True,
             },
-            'label': {
+            'embedded.label': {
                 'order': 'asc',
                 'missing': '_last',
                 'ignore_unmapped': True,
@@ -298,6 +299,7 @@ def search(context, request, search_type=None):
     if request.has_permission('search_audit'):
         facets = facets.copy()
         facets['Audit category'] = 'audit.category'
+
     for facet_title in facets:
         field = facets[facet_title]
         if field == 'type':
@@ -306,13 +308,18 @@ def search(context, request, search_type=None):
             query_field = 'audit.category'
         else:
             query_field = 'embedded.' + field
-        query['facets'][field] = {
-            'terms': {
-                'field': query_field,
-                'all_terms': True,
-                'size': 100
+        agg_name = field.replace('.', '-')
+        query['aggs'][agg_name] = {
+            'aggs': {
+                agg_name: {
+                    'terms': {
+                        'field': query_field,
+                        'min_doc_count': 0,
+                        'size': 100
+                    }
+                }
             },
-            'facet_filter': {
+            'filter': {
                 'terms': {
                     'principals_allowed_view': principals
                 }
@@ -326,17 +333,18 @@ def search(context, request, search_type=None):
                     q_field = 'embedded.' + used_facet['field']
                 else:
                     q_field = used_facet['field']
-                if 'terms' in query['facets'][field]['facet_filter']:
-                    old_terms = query['facets'][field]['facet_filter']
-                    new_terms = {'terms': {q_field:
-                                           [used_facet['term']]}}
-                    query['facets'][field]['facet_filter'] = {
+                if 'terms' in query['aggs'][agg_name]['filter']:
+                    old_terms = query['aggs'][agg_name]['filter']
+                    new_terms = {'terms': {
+                        q_field: [used_facet['term']]
+                    }}
+                    query['aggs'][agg_name]['filter'] = {
                         'bool': {
                             'must': [old_terms, new_terms]
                         }
                     }
                 else:
-                    terms = query['facets'][field]['facet_filter']['bool']['must']
+                    terms = query['aggs'][agg_name]['filter']['bool']['must']
                     flag = 0
                     for count, term in enumerate(terms):
                         if q_field in term['terms'].keys():
@@ -353,21 +361,33 @@ def search(context, request, search_type=None):
     results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
 
     # Loading facets in to the results
-    if 'facets' in results:
-        facet_results = results['facets']
+    if 'aggregations' in results:
+        facet_results = results['aggregations']
         for facet_title in facets:
             field = facets[facet_title]
-            if field not in facet_results:
+            temp_field = field.replace('.', '-')
+            if temp_field not in facet_results:
                 continue
-            terms = facet_results[field]['terms']
+            terms = facet_results[temp_field][temp_field]['buckets']
             if len(terms) < 2:
                 continue
             result['facets'].append({
                 'field': field,
                 'title': facet_title,
                 'terms': terms,
-                'total': facet_results[field]['total']
+                'total': facet_results[temp_field]['doc_count']
             })
+
+    if search_type == 'experiment':
+        for facet in results['aggregations']['assembly']['assembly']['buckets']:
+            if facet['doc_count'] > 0:
+                hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
+                hub = hub.replace('&', ',,')
+                hgConnect = 'http://genome.ucsc.edu/cgi-bin/hgHubConnect?hgHub_do_redirect=on&hgHubConnect.remakeTrackHub=on&hgHub_do_firstDb=1&'
+                result['batch_hub'] = hgConnect + '&'.join([
+                    'hubUrl=' + hub
+                ])
+                break
 
     # Loading result rows
     hits = results['hits']['hits']
