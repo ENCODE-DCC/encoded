@@ -95,28 +95,16 @@ globals.content_views.register(Pipeline, 'pipeline');
 
 
 var Graph = React.createClass({
-    componentDidMount: function() {
-        var el = this.getDOMNode();
+    getInitialState: function() {
+        return {
+            infoNode: '' // ID of node whose info panel is open
+        };
+    },
 
-        // Add SVG element to this component, and assign it classes, sizes, and a group
-        var svg = d3.select(el).append('svg')
-            .attr('class', 'd3')
-            .attr('width', '100%')
-            .attr('height', '300px');
-        svg.append('g').attr('class', 'd3-points');
+    drawGraph: function(el) {
+        console.log('DRAW' + this.state.infoNode);
 
-        // Define a linear gradient, called #step-gradient
-        svg.append('linearGradient')
-            .attr('id', 'step-gradient')
-            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
-            .selectAll('stop')
-            .data([
-                {offset: '0%', color: '#FEFCEA'},
-                {offset: '100%', color: '#FFF5BA'}
-            ])
-        .enter().append("stop")
-            .attr('offset', function(d) { return d.offset; })
-            .attr('stop-color', function(d) { return d.color; });
+        var svg = d3.select(el).select('svg');
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph()
@@ -130,29 +118,191 @@ var Graph = React.createClass({
                 return type;
             });
 
-            // Render each node
-            g.setNode(step['@id'], {label: stepTypesList.join(', '), rx: 4, ry: 4, class: 'analysis-step', style: 'fill: url(#step-gradient)'});
+            // Render each node. Set node ID to analysis step object ID so we can find it later
+            g.setNode(step['@id'], {label: stepTypesList.join(', '), rx: 4, ry: 4, class: 'analysis-step' + (this.state.infoNode === step['@id'] ? ' active' : '')});
+
+            // If the node has parents, render the edges to those parents
             if (step.parents && step.parents.length) {
                 step.parents.forEach(function(parent) {
                     g.setEdge(step['@id'], parent);
                 });
             }
-        });
+        }, this);
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
-        render(d3.select("svg g"), g);
+        render(svg, g);
+    },
 
-        // Center the graph
-        var svgGroup = svg.append("g");
-        var xCenterOffset = (svg.attr("width") - g.graph().width) / 2;
-        svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-        svg.attr("height", g.graph().height + 40);
+    componentDidMount: function() {
+        var el = this.getDOMNode();
+
+        // Add SVG element to the graph component, and assign it classes, sizes, and a group
+        var svg = d3.select(el).insert('svg', '.graph-node-info')
+            .attr('class', 'd3')
+            .attr('width', '960px')
+            .attr('height', '300px')
+            .attr('viewBox', '0 0 960 300')
+            .attr('preserveAspectRatio', 'xMidYMid');
+        svg.append('g').attr('class', 'd3-points');
+
+        // Define a linear gradient for each node, called #step-gradient
+        svg.append('linearGradient')
+            .attr('id', 'step-gradient')
+            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
+            .selectAll('stop')
+            .data([
+                {offset: '0%', color: '#FEFCEA'},
+                {offset: '100%', color: '#FFF5BA'}
+            ])
+        .enter().append("stop")
+            .attr('offset', function(d) { return d.offset; })
+            .attr('stop-color', function(d) { return d.color; });
+
+        // Define a linear gradient for selected node, called #active-gradient
+        svg.append('linearGradient')
+            .attr('id', 'active-gradient')
+            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
+            .selectAll('stop')
+            .data([
+                {offset: '0%', color: '#c9de96'},
+                {offset: '100%', color: '#b9cc8a'}
+            ])
+        .enter().append("stop")
+            .attr('offset', function(d) { return d.offset; })
+            .attr('stop-color', function(d) { return d.color; });
+
+        // Draw the graph into the panel
+        this.drawGraph(el);
+
+        // Add hover event listeners to each node rendering. Node's ID is its ENCODE object ID
+        var handleMouseEnter = this.handleMouseEnter;
+        var reactThis = this;
+        svg.selectAll("g.node").each(function(nodeId) {
+            this.addEventListener('click', function(e) {
+                reactThis.handleMouseClick(e, nodeId);
+            });
+        });
+    },
+
+    componentDidUpdate: function() {
+        var el = this.getDOMNode();
+        this.drawGraph(el);
+    },
+
+    handleMouseClick: function(e, nodeId) {
+        this.setState({infoNode: this.state.infoNode !== nodeId ? nodeId : ''});
     },
 
     render: function() {
+        // Find analysis step matching selected node, if any
+        var displayStep;
+        if (this.state.infoNode) {
+            this.props.analysis_steps.some(function(step) {
+                if (step['@id'] === this.state.infoNode) {
+                    displayStep = step;
+                    return true; // Found it; save the matching analysis step and exit loop
+                } else {
+                    return false; // Keep searching...
+                }
+            }, this);
+        }
+
         return (
-            <div className="panel">
+            <div className="panel graph-display">
+                <div className="graph-node-info">
+                    <hr />
+                    <dl className="key-value">
+                        <div>
+                            <dt>Categories</dt>
+                            <dd>
+                                {displayStep ?
+                                    <span>
+                                        {displayStep.analysis_step_types ?
+                                            <span>
+                                                {displayStep.analysis_step_types.map(function(type) {
+                                                    return type;
+                                                }).join(', ')}
+                                            </span>
+                                        :
+                                            <span className="select-note">Unspecified</span>
+                                        }
+                                    </span>
+                                :
+                                    <span className="select-note">Select a node above</span>
+                                }
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt>Software</dt>
+                            <dd>
+                                {displayStep ?
+                                    <span>
+                                        {displayStep.software_versions ?
+                                            <span>
+                                                {displayStep.software_versions.map(function(sw, i) {
+                                                    return (
+                                                        <span>
+                                                            {i > 0 ? ', ' : null}
+                                                            <a href={sw.software['@id']}>{sw.software.title}</a>
+                                                        </span>
+                                                    );
+                                                })}
+                                            </span>
+                                        :
+                                            <span className="select-note">Unspecified</span>
+                                        }
+                                    </span>
+                                :
+                                    <span className="select-note">Select a node above</span>
+                                }
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt>Input file types</dt>
+                            <dd>
+                                {displayStep ?
+                                    <span>
+                                        {displayStep.input_file_types ?
+                                            <span>
+                                                {displayStep.input_file_types.map(function(type) {
+                                                    return type;
+                                                }).join(', ')}
+                                            </span>
+                                        :
+                                            <span className="select-note">Unspecified</span>
+                                        }
+                                    </span>
+                                :
+                                    <span className="select-note">Select a node above</span>
+                                }
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt>Output file types</dt>
+                            <dd>
+                                {displayStep ?
+                                    <span>
+                                        {displayStep.output_file_types ?
+                                            <span>
+                                                {displayStep.output_file_types.map(function(type) {
+                                                    return type;
+                                                }).join(', ')}
+                                            </span>
+                                        :
+                                            <span className="select-note">Unspecified</span>
+                                        }
+                                    </span>
+                                :
+                                    <span className="select-note">Select a node above</span>
+                                }
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
             </div>
         );
     }

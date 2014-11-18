@@ -2,27 +2,22 @@ g.node {
     rect {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
-        fill: #fefcea;
     }
 }
 
 g.analysis-step {
-    dl {
-        margin: 0;
+    fill: url(/#step-gradient);
+
+    &.active {
+        fill: url(/#active-gradient);
     }
 
-    dt, dd {
-        color: #606060;
-        @include text-shadow(none);
+    &:hover {
+        cursor: pointer;
     }
 
-    dt {
-        margin-top: 5px;
-    }
-
-    dd {
-        margin-bottom: 5px;
-        font-weight: normal;
+    text {
+        fill: #000;
     }
 }
 
@@ -31,4 +26,21 @@ g.edgePath {
         stroke: #c0c0c0;
         stroke-width: 1.5px;
     }
+}
+
+.graph-display {
+    position: relative;
+
+    svg {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+.graph-node-info {
+}
+
+.select-note {
+    font-style: italic;
+    color: #c0c0c0;
 }
