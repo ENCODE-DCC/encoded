@@ -707,7 +707,7 @@ var statusOrder = globals.statusOrder;
             var results = context['@graph'];
             var facets = context['facets'];
             var total = context['total'];
-            var batch_hub_disabled = total >= 500;
+            var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
