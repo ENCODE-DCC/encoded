@@ -200,6 +200,8 @@ def audit_experiment_control(value, system):
 
     # We do not want controls
     target = value['target']
+    if 'control' in target['investigated_as']:
+        return
 
     if value['possible_controls'] == []:
         detail = 'missing control'
