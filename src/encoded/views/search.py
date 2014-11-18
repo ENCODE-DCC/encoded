@@ -71,9 +71,9 @@ def flatten_dict(d):
 def search_peaks(request):
     """ return file uuids which have the snp or interval found in """
     es = request.registry[ELASTIC_SEARCH]
-    peakid = request.params.get('regionid', None)
+    peakid = request.params.get('regionid', None).lower()
     assembly = 'hg19'
-    if request.params.get('organism', 'human') is not 'human':
+    if request.params.get('organism', 'human') != 'human':
         assembly = 'mm9'
     
     chromosome = ''
@@ -130,14 +130,14 @@ def search_peaks(request):
                                 {
                                     'range': {
                                         'start': {
-                                            'lte': start,
+                                            'lte': end,
                                         }
                                     }
                                 },
                                 {
                                     'range': {
                                         'stop': {
-                                            'gte': end
+                                            'gte': start
                                         }
                                     }
                                 }
@@ -149,7 +149,6 @@ def search_peaks(request):
             },
             'fields': ['uuid']
         }
-        
         results = es.search(body=query, index='peaks', doc_type=assembly or None, size=99999999)
         for hit in results['hits']['hits']:
             if hit['fields']['uuid'] not in file_ids:

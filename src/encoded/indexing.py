@@ -357,13 +357,13 @@ def file_index(request):
                 comp = StringIO.StringIO()
                 comp.write(r.data)
                 comp.seek(0)
+                f = gzip.GzipFile(fileobj=comp, mode='rb')
+                r.release_conn()
                 try:
-                    f = gzip.GzipFile(fileobj=comp, mode='rb')
+                    file_data = list(csv.reader(f, delimiter='\t'))
                 except:
                     print 'File has problem - ' + properties['href']
                 else:
-                    r.release_conn()
-                    file_data = list(csv.reader(f, delimiter='\t'))
                     for row in file_data:
                         result = {
                             'chromosome': row[0],
