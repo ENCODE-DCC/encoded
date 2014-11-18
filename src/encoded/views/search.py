@@ -70,7 +70,6 @@ def search(context, request, search_type=None):
         'columns': OrderedDict(),
         'filters': [],
         'notification': '',
-        'batch_hub': ''
     }
 
     principals = effective_principals(request)

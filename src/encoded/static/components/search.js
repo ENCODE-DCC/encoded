@@ -751,7 +751,7 @@ var statusOrder = globals.statusOrder;
                                             </span>
                                         }
                                         
-                                        {context['batch_hub'] != '' ?
+                                        {context['batch_hub'] ?
                                             <span className="pull-right">
                                                 <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
                                                    href={context['batch_hub']}>Visualize</a>&nbsp;
