@@ -760,6 +760,7 @@ var statusOrder = globals.statusOrder;
             var results = context['@graph'];
             var facets = context['facets'];
             var total = context['total'];
+            var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
@@ -805,10 +806,10 @@ var statusOrder = globals.statusOrder;
                                             </span>
                                         }
                                         
-                                        {context['batch_hub'] != '' ?
+                                        {context['batch_hub'] ?
                                             <span className="pull-right">
-                                                <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                                   href={context['batch_hub']}>Visualize</a>&nbsp;
+                                                <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
+                                                   href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
                                             </span>
                                         :null}
                                     </h4>
