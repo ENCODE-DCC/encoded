@@ -237,6 +237,12 @@ def generate_batch_hubs(request):
     param_list = urlparse.parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
 
     if len(request.matchdict) == 3:
+
+        # Should generate a HTML page for requests other than trackDb.txt
+        if txt != TRACKDB_TXT:
+            data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+            return data_policy
+        
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
         params['assembly'] = [assembly]
