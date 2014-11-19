@@ -271,9 +271,7 @@ def generate_batch_hubs(request):
         for facet in results['facets']:
             if facet['field'] == 'assembly':
                 for term in facet['terms']:
-                    if 'assembly' in subreq.params:
-                        g_text = NEWLINE.join(get_genomes_txt(str(subreq.params['assembly'])))
-                    elif term['doc_count'] != 0:
+                    if term['doc_count'] != 0:
                         if g_text == '':
                             g_text = NEWLINE.join(get_genomes_txt(term['key']))
                         else:
