@@ -9,7 +9,6 @@ OWLNS = Namespace("http://www.w3.org/2002/07/owl#")
 OBO_OWL = Namespace("http://www.geneontology.org/formats/oboInOwl#")
 EFO = Namespace("http://www.ebi.ac.uk/efo/")
 OBO = Namespace("http://purl.obolibrary.org/obo/")
-RO = Namespace("http://www.obofoundry.org/ro/ro.owl#")
 
 EFO_Synonym = EFO["alternative_term"]
 OBO_Synonym = OBO["IAO_0000118"]
@@ -403,6 +402,7 @@ def getTermStructure():
         'name': '',
         'parents': [],
         'part_of': [],
+        'derives_from': [],
         'develops_from': [],
         'organs': [],
         'closure': [],
@@ -410,8 +410,7 @@ def getTermStructure():
         'data': [],
         'closure_with_develops_from': [],
         'data_with_develops_from': [],
-        'synonyms': [],
-        'derives_from': []
+        'synonyms': []
     }
 
 
@@ -482,7 +481,7 @@ def main():
                             elif o.__str__() == DERIVES_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))   
                             elif o.__str__() == DEVELOPS_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
@@ -517,7 +516,7 @@ def main():
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
     for term in terms:
-        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from'], terms[term]['derives_from'] 
+        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
 
     with open('ontology.json', 'w') as outfile:
