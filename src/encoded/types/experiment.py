@@ -94,6 +94,7 @@ class Experiment(Dataset):
             ),
         }
         embedded = Dataset.Item.embedded + [
+            'files.platform',
             'replicates.antibody',
             'replicates.antibody.targets',
             'replicates.library.documents.lab',
@@ -107,7 +108,6 @@ class Experiment(Dataset):
             'replicates.library.biosample.treatments',
             'replicates.library.spikeins_used',
             'replicates.library.treatments',
-            'replicates.platform',
             'possible_controls',
             'target.organism',
         ]

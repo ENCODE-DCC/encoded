@@ -371,32 +371,68 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
-				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
+                {library && library.nucleic_acid_term_name ?
+                    <div data-test="nucleicacid">
+                        <dt>Nucleic acid type</dt>
+                        <dd>{library.nucleic_acid_term_name}</dd>
+                    </div>
+                : null}
 
-                {depletedIn ? <dt>Depleted in</dt> : null}
-				{depletedIn ? <dd>{depletedIn}</dd> : null}
+                {depletedIn ?
+                    <div data-test="depletedin">
+                        <dt>Depleted in</dt>
+                        <dd>{depletedIn}</dd>
+                    </div>
+                : null}
 
-                {library && library.lysis_method ? <dt>Lysis method</dt> : null}
-				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
+                {library && library.lysis_method ?
+                    <div data-test="lysismethod">
+                        <dt>Lysis method</dt>
+                        <dd>{library.lysis_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.extraction_method ? <dt>Extraction method</dt> : null}
-				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
+                {library && library.extraction_method ?
+                    <div data-test="extractionmethod">
+                        <dt>Extraction method</dt>
+                        <dd>{library.extraction_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
-				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
+                {library && library.fragmentation_method ?
+                    <div data-test="fragmethod">
+                        <dt>Fragmentation method</dt>
+                        <dd>{library.fragmentation_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.size_range ? <dt>Size range</dt> : null}
-				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
+                {library && library.size_range ?
+                    <div data-test="sizerange">
+                        <dt>Size range</dt>
+                        <dd>{library.size_range}</dd>
+                    </div>
+                : null}
 
-                {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
-				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
+                {library && library.library_size_selection_method ?
+                    <div data-test="sizeselectionmethod">
+                        <dt>Size selection method</dt>
+        				<dd>{library.library_size_selection_method}</dd>
+                    </div>
+                : null}
 
-                {treatments ? <dt>Treatments</dt> : null}
-				{treatments ? <dd>{treatments}</dd> : null}
+                {treatments ?
+                    <div data-test="treatments">
+                        <dt>Treatments</dt>
+                        <dd>{treatments}</dd>
+                    </div>
+                : null}
 
-                {platform ? <dt>Platform</dt> : null}
-				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
+                {platform ?
+                    <div data-test="platform">
+                        <dt>Platform</dt>
+                        <dd><a href={platform['@id']}>{platform.title}</a></dd>
+                    </div>
+                : null}
 
                 {library && library.spikeins_used && library.spikeins_used.length ?
                     <div data-test="spikeins">
