@@ -101,9 +101,8 @@ var Graph = React.createClass({
         };
     },
 
+    // Draw the graph on initial draw as well as on state changes
     drawGraph: function(el) {
-        console.log('DRAW' + this.state.infoNode);
-
         var svg = d3.select(el).select('svg');
 
         // Create a new empty graph
@@ -132,45 +131,28 @@ var Graph = React.createClass({
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
         render(svg, g);
+
+        // Dagre-D3 has a width and height for the graph.
+        // Set the viewbox's and viewport's width and height to that plus a little extra
+        var width = g.graph().width;
+        var height = g.graph().height;
+        svg.attr("width", width + 20);
+        svg.attr("height", height + 20);
+        svg.attr("viewBox", "-10 -10 " + (width + 20) + " " + (height + 20));
     },
 
+    // After the graph panel is mounted in the DOM, use D3/Dagre/Dagre-D3 to draw into it
     componentDidMount: function() {
         var el = this.getDOMNode();
 
         // Add SVG element to the graph component, and assign it classes, sizes, and a group
         var svg = d3.select(el).insert('svg', '.graph-node-info')
             .attr('class', 'd3')
-            .attr('width', '960px')
+            .attr('width', '960px') // Just choose an initial viewport size; we'll resize it later
             .attr('height', '300px')
-            .attr('viewBox', '0 0 960 300')
+            .attr('viewBox', '0 0 960 300') // Choose an inital viewbox size; we'll resize it later
             .attr('preserveAspectRatio', 'xMidYMid');
         svg.append('g').attr('class', 'd3-points');
-
-        // Define a linear gradient for each node, called #step-gradient
-        svg.append('linearGradient')
-            .attr('id', 'step-gradient')
-            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
-            .selectAll('stop')
-            .data([
-                {offset: '0%', color: '#FEFCEA'},
-                {offset: '100%', color: '#FFF5BA'}
-            ])
-        .enter().append("stop")
-            .attr('offset', function(d) { return d.offset; })
-            .attr('stop-color', function(d) { return d.color; });
-
-        // Define a linear gradient for selected node, called #active-gradient
-        svg.append('linearGradient')
-            .attr('id', 'active-gradient')
-            .attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1)
-            .selectAll('stop')
-            .data([
-                {offset: '0%', color: '#c9de96'},
-                {offset: '100%', color: '#b9cc8a'}
-            ])
-        .enter().append("stop")
-            .attr('offset', function(d) { return d.offset; })
-            .attr('stop-color', function(d) { return d.color; });
 
         // Draw the graph into the panel
         this.drawGraph(el);
@@ -185,11 +167,13 @@ var Graph = React.createClass({
         });
     },
 
+    // State change; redraw the graph
     componentDidUpdate: function() {
         var el = this.getDOMNode();
         this.drawGraph(el);
     },
 
+    // Handle mouse clicks in any of the nodes
     handleMouseClick: function(e, nodeId) {
         this.setState({infoNode: this.state.infoNode !== nodeId ? nodeId : ''});
     },

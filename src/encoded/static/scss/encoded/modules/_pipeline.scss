@@ -6,10 +6,10 @@ g.node {
 }
 
 g.analysis-step {
-    fill: url(/#step-gradient);
+    fill: #FFF5BA;
 
     &.active {
-        fill: url(/#active-gradient);
+        fill: #b9cc8a;
     }
 
     &:hover {
