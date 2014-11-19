@@ -237,7 +237,7 @@ def generate_batch_hubs(request):
     param_list = urlparse.parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
 
     if len(request.matchdict) == 3:
-        assembly = request.matchdict['assembly']
+        assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
         params['assembly'] = [assembly]
         subreq = make_subrequest(request, '/search/?%s' % urllib.urlencode(params, True))
