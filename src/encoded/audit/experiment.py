@@ -276,17 +276,19 @@ def audit_experiment_platform(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if (value['award'].get('rfa') != 'ENCODE3'):  # or (value['replicates'] == []):  # This logic seems redundant
+    if (value['award'].get('rfa') != 'ENCODE3'):
         return
 
     platforms = []
 
-    for i in range(len(value['replicates'])):
-        rep = value['replicates'][i]
-        platform = rep.get('platform')  # really need to get the name here?
+    for ff in value['files']:
+        platform = ff.get('platform')
+
+        if ff['format'] not in ['rcc', 'fasta', 'fastq']:
+            continue
 
         if platform is None:
-            detail = '{} missing platform'.format(rep["uuid"])
+            detail = '{} missing platform'.format(ff["uuid"])
             yield AuditFailure('missing platform', detail, level='WARNING')  # release error
         else:
             platforms.append(platform['@id'])
