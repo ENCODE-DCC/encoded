@@ -72,7 +72,7 @@ def audit_experiment_description(value, system):
     if 'description' not in value:
         return
 
-    notallowed = ['=', '_', ':', ';']
+    notallowed = ['=', ':', '!',';']
     if any(c in notallowed for c in value['description']):
         detail = 'Bad characters'  # I would like to report the errant char here
         raise AuditFailure('malformed description', detail, level='WARNING')
@@ -200,6 +200,8 @@ def audit_experiment_control(value, system):
 
     # We do not want controls
     target = value['target']
+    if 'control' in target['investigated_as']:
+        return
 
     if value['possible_controls'] == []:
         detail = 'missing control'
