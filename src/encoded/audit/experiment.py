@@ -294,7 +294,7 @@ def audit_experiment_platform(value, system):
 
         if platform is None:
             detail = 'Replicate ({}) is missing platform'.format(rep['uuid'])
-            yield AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing platform', detail, level='DCC_ACTION')
         else:
             platforms.append(platform['@id'])
 
@@ -362,16 +362,16 @@ def audit_experiment_biosample_term(value, system):
 
     if 'biosample_type' not in value:
         detail = '{} missing biosample_type'.format(value['accession'])
-        yield AuditFailure('biosample type missing', detail, level='STANDARDS_FAILURE')
+        yield AuditFailure('biosample type missing', detail, level='ERROR')
 
     if 'biosample_term_name' not in value:
         detail = '{} missing biosample_term_name'.format(value['accession'])
-        yield AuditFailure('missing biosample_term_name', detail, level='STANDARDS_FAILURE')
+        yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
     # The type and term name should be put into dependancies
 
     if term_id is None:
         detail = '{} missing biosample_term_id'.format(value['accession'])
-        yield AuditFailure('missing biosample_term_id', detail, level='STANDARDS_FAILURE')
+        yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
     elif term_id.startswith('NTR:'):
         detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
         yield AuditFailure('NTR,biosample', detail, level='DCC_ACTION')
@@ -468,11 +468,11 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
     if len(set(reps_list)) > 1:
-            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], string(reps_list))
+            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], repr(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
 
     if len(set(libs_list)) > 1:
-            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], string(reps_list))
+            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], repr(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
 
 
