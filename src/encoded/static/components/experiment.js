@@ -438,7 +438,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     </div>
                 : null}
 
-                {platforms ?
+                {Object.keys(platforms).length ?
                     <div data-test="platform">
                         <dt>Platform</dt>
                         <dd>
