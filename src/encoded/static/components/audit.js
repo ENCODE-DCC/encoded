@@ -6,7 +6,7 @@ var cx = require('react/lib/cx');
 
 var AuditMixin = module.exports.AuditMixin = {
     childContextTypes: {
-        auditDetailOpen: React.PropTypes.string, // Which audit detail type is open, if any?
+        auditDetailOpen: React.PropTypes.bool, // Audit details open
         auditStateToggle: React.PropTypes.func // Function to set current audit detail type
     },
 
@@ -19,19 +19,19 @@ var AuditMixin = module.exports.AuditMixin = {
     },
 
     getInitialState: function() {
-        return {auditDetailOpen: undefined};
+        return {auditDetailOpen: false};
     },
 
     // React to click in audit indicator. Set state to clicked indicator's error level
-    auditStateToggle: function(level) {
-        this.setState({auditDetailOpen: level == this.state.auditDetailOpen ? undefined : level});
+    auditStateToggle: function() {
+        this.setState({auditDetailOpen: !this.state.auditDetailOpen});
     }
 };
 
 
 var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     contextTypes: {
-        auditDetailOpen: React.PropTypes.string,
+        auditDetailOpen: React.PropTypes.bool,
         auditStateToggle: React.PropTypes.func
     },
 
@@ -54,22 +54,24 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
                 return -parseInt(level, 10);
             });
 
+            var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '');
+
             return (
-                <div className="btn-group audit-indicators" role="group" aria-label="Audit indicators">
+                <button className={indicatorClass} role="group" aria-label="Audit indicators" onClick={this.context.auditStateToggle}>
                     {sortedAuditLevels.map(function(level) {
                         // Calculate the CSS class for the icon
                         var level_name = auditCounts[level].level_name;
-                        var btnClass = 'btn btn-default btn-audit btn-audit-' + level_name + (level == this.context.auditDetailOpen ? ' active' : '');
+                        var btnClass = 'btn-audit btn-audit-' + level_name;
                         var iconClass = 'icon audit-activeicon-' + level_name;
 
                         return (
-                            <button type="button" className={btnClass} onClick={this.context.auditStateToggle.bind(null, level)}>
+                            <span className={btnClass}>
                                 <i className={iconClass}><span className="sr-only">{'Audit'} {level_name}</span></i>
                                 {auditCounts[level].count}
-                            </button>
+                            </span>
                         );
                     }.bind(this))}
-                </div>
+                </button>
             );
         } else {
             return null;
@@ -86,27 +88,28 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
     render: function() {
         var audits = this.props.audits;
 
-        if (audits && this.context.auditDetailOpen) {
+        // Sort audit records
+        var audits_sorted = _.sortBy(audits, function(audit) {
+            return -audit.level;
+        });
+
+        if (audits_sorted && this.context.auditDetailOpen) {
             return (
                 <div className="audit-details" id="audit-details" aria-hidden={!this.context.auditDetailOpen}>
-                    {audits.map(function(audit, i) {
-                        if (audit.level == this.context.auditDetailOpen) {
-                            var level = audit.level_name.toLowerCase();
-                            var iconClass = 'icon audit-icon-' + level;
-                            var alertClass = 'audit-detail-' + level;
-                            var levelClass = 'audit-level-' + level;
-                            return (
-                                <div className={alertClass} key={i} role="alert">
-                                    <i className={iconClass}></i>
-                                    <strong className={levelClass}>{audit.level_name.split('_').join(' ')}</strong>
-                                    &nbsp;&mdash;&nbsp;
-                                    <strong>{audit.category}</strong>: {audit.detail}
-                                </div>
-                            );
-                        } else {
-                            return null;
-                        }
-                    }.bind(this))}
+                    {audits_sorted.map(function(audit, i) {
+                        var level = audit.level_name.toLowerCase();
+                        var iconClass = 'icon audit-icon-' + level;
+                        var alertClass = 'audit-detail-' + level;
+                        var levelClass = 'audit-level-' + level;
+                        return (
+                            <div className={alertClass} key={i} role="alert">
+                                <i className={iconClass}></i>
+                                <strong className={levelClass}>{audit.level_name.split('_').join(' ')}</strong>
+                                &nbsp;&mdash;&nbsp;
+                                <strong>{audit.category}</strong>: {audit.detail}
+                            </div>
+                        );
+                    })}
             </div>
             );
         } else {

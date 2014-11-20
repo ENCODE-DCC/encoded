@@ -69,7 +69,7 @@ def search(context, request, search_type=None):
         '@graph': [],
         'columns': OrderedDict(),
         'filters': [],
-        'notification': ''
+        'notification': '',
     }
 
     principals = effective_principals(request)
@@ -290,6 +290,17 @@ def search(context, request, search_type=None):
                 'terms': terms,
                 'total': facet_results[temp_field]['doc_count']
             })
+
+    if search_type == 'experiment':
+        for facet in results['aggregations']['assembly']['assembly']['buckets']:
+            if facet['doc_count'] > 0:
+                hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
+                hub = hub.replace('&', ',,')
+                hgConnect = 'http://genome.ucsc.edu/cgi-bin/hgHubConnect?hgHub_do_redirect=on&hgHubConnect.remakeTrackHub=on&hgHub_do_firstDb=1&'
+                result['batch_hub'] = hgConnect + '&'.join([
+                    'hubUrl=' + hub
+                ])
+                break
 
     # Loading result rows
     hits = results['hits']['hits']

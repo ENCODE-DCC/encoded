@@ -1,5 +1,4 @@
 
-import string
 from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
@@ -292,11 +291,17 @@ def audit_experiment_platform(value, system):
     for i in range(len(value['replicates'])):
         rep = value['replicates'][i]
         platform = rep.get('platform')  # really need to get the name here?
-        platforms.append(platform)
 
         if platform is None:
+<<<<<<< HEAD
             detail = 'Replicate ({}) is missing platform'.format(rep['uuid'])
             yield AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
+=======
+            detail = '{} missing platform'.format(rep["uuid"])
+            yield AuditFailure('missing platform', detail, level='WARNING')  # release error
+        else:
+            platforms.append(platform['@id'])
+>>>>>>> origin/2418-audit-details-combo
 
     if len(set(platforms)) > 1:
         detail = '{} has mixed platform replicates'.format(value['accession'])
@@ -468,12 +473,21 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
     if len(set(reps_list)) > 1:
+<<<<<<< HEAD
             detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], string(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
 
     if len(set(libs_list)) > 1:
             detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], string(reps_list))
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
+=======
+            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], repr(reps_list))
+            yield AuditFailure('paired end mismatch', detail, level='ERROR')  # informational
+
+    if len(set(libs_list)) > 1:
+            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], repr(reps_list))
+            yield AuditFailure('paired end mismatch', detail, level='ERROR')  # informational
+>>>>>>> origin/2418-audit-details-combo
 
 
 @audit_checker('experiment')
