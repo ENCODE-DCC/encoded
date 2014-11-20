@@ -295,7 +295,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                <AssayDetails replicates={replicates} />
+                <AssayDetails context={context} replicates={replicates} />
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -333,6 +333,8 @@ globals.content_views.register(Experiment, 'experiment');
 
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
+    var context = props.context;
+
     var replicates = props.replicates.sort(function(a, b) {
         if (b.biological_replicate_number === a.biological_replicate_number) {
             return a.technical_replicate_number - b.technical_replicate_number;
@@ -344,7 +346,6 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 
     var replicate = replicates[0];
     var library = replicate.library;
-    var platform = replicate.platform;
     var depletedIn;
     var treatments;
 
@@ -363,8 +364,18 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         treatments = treatmentList.join(", ");
     }
 
-    if (!library && !depletedIn && !treatments && !platform) {
+    if (!library && !depletedIn && !treatments) {
         return (<div hidden={true}></div>);
+    }
+
+    // Create platforms array
+    var platforms = {};
+    if (context.files && context.files.length) {
+        context.files.forEach(function(file) {
+            if (file.platform && file.dataset === context['@id']) {
+                platforms[file.platform['@id']] = file.platform;
+            }
+        });
     }
 
     return (
@@ -427,10 +438,16 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     </div>
                 : null}
 
-                {platform ?
+                {platforms ?
                     <div data-test="platform">
                         <dt>Platform</dt>
-                        <dd><a href={platform['@id']}>{platform.title}</a></dd>
+                        <dd>
+                            {Object.keys(platforms).map(function(platformId, i) {
+                                return(
+                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                );
+                            })}
+                        </dd>
                     </div>
                 : null}
 
