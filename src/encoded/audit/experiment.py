@@ -77,7 +77,7 @@ def audit_experiment_description(value, system):
     if 'description' not in value:
         return
 
-    notallowed = ['=', '_', ':', ';']
+    notallowed = ['=', ':', '!',';']
     if any(c in notallowed for c in value['description']):
         detail = '{} has odd character(s) in the description'.format(value['accession'])
         raise AuditFailure('malformed description', detail, level='WARNING')
@@ -207,6 +207,8 @@ def audit_experiment_control(value, system):
 
     # We do not want controls
     target = value['target']
+    if 'control' in target['investigated_as']:
+        return
 
     if value['possible_controls'] == []:
         detail = '{} experiments require a possible_control'.format(value['assay_term_name'])
