@@ -37,9 +37,9 @@
 // BG colors automatically generated from the FG colors set here.
 $audit-types:
     (error, warning, #cc0700),
-    (warning, exclamation-circle, #ff8000),
-    (standards_failure, file-text, #e0e000),
-    (dcc_action, life-ring, #a0a0a0);
+    (warning, exclamation-circle, #e0e000),
+    (standards_failure, file-text, #ff8000),
+    (dcc_action, asterisk, #a0a0a0);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {

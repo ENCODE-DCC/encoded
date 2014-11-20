@@ -61,7 +61,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
                     {sortedAuditLevels.map(function(level) {
                         // Calculate the CSS class for the icon
                         var level_name = auditCounts[level].level_name;
-                        var btnClass = 'btn-audit btn-audit-' + level_name;
+                        var btnClass = 'btn-audit btn-audit-' + level_name + ' audit-level-' + level_name;
                         var iconClass = 'icon audit-activeicon-' + level_name;
 
                         return (
