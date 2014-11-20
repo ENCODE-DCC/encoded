@@ -153,9 +153,9 @@ def audit_biosample_transfection_type(value, system):
         return
 
     if (value['rnais']) and ('transfection_type' not in value):
-        detail = 'transfection_type is missing'
+        detail = '{} has RNAi but is missing transfection_type'.format(value['accession'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
     if (value['constructs']) and ('transfection_type' not in value):
-        detail = 'transfection_type is missing'
+        detail = '{} has contruct but is missing transfection_type'.format(value['accession'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')

@@ -4,13 +4,14 @@ from ..auditor import (
 )
 
 
-moleculeDict = {"DNA": "SO:0000352",
-                "RNA": "SO:0000356",
-                "polyadenylated mRNA": "SO:0000871",
-                "miRNA": "SO:0000276",
-                "rRNA": "SO:0000252",
-                "capped mRNA": "SO:0000862"
-                }
+moleculeDict = {
+    'DNA': 'SO:0000352',
+    'RNA': 'SO:0000356',
+    'polyadenylated mRNA': 'SO:0000871',
+    'miRNA': 'SO:0000276',
+    'rRNA': 'SO:0000252',
+    'capped mRNA': 'SO:0000862',
+    }
 
 
 @audit_checker('library')
@@ -64,10 +65,12 @@ def audit_library_status(value, system):
     A released library should have a released biosample and donor.
     This will need to be fully replaced
     '''
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted']:
         return
+
     if 'biosample' not in value:
-        return  # this is being checked at the experiment level 
+        return  # this is being checked at the experiment level
+
     if value['biosample']['status'] == 'deleted':
         detail = 'library({}) has deleted biosample'.format(value['accession'])
         raise AuditFailure('status mismatch', detail, level='ERROR')
