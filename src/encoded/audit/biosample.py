@@ -52,13 +52,8 @@ def audit_biosample_term(value, system):
         raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
-<<<<<<< HEAD
         detail = '{} has {} not in ontology'.format(value['accession'])
         raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
-=======
-        detail = '{} has {} not in ontology'.format(value['accession'], term_id)
-        raise AuditFailure('term id not in ontology', term_id, level='WARNING')  # DCC action
->>>>>>> origin/2418-audit-details-combo
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
