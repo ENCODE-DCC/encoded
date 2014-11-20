@@ -268,9 +268,9 @@ def audit_experiment_readlength(value, system):
 @audit_checker('experiment')
 def audit_experiment_platform(value, system):
     '''
-    All ENCODE 3 experiments should specify thier platform.
-    Eventually we should enforce that the platform is appropirate for the assay.
-    Other rfas likely should have warning
+    Platform has moved to file.  It is checked for presence there.
+    Here we look for mismatched platforms.
+    We should likely check that the platform is valid for the assay type
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -284,18 +284,17 @@ def audit_experiment_platform(value, system):
     for ff in value['files']:
         platform = ff.get('platform')
 
-        if ff['format'] not in ['rcc', 'fasta', 'fastq']:
+        if ff['format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
             continue
 
         if platform is None:
-            detail = '{} missing platform'.format(ff["uuid"])
-            yield AuditFailure('missing platform', detail, level='WARNING')  # release error
+            continue  # This error is caught in file
         else:
-            platforms.append(platform['@id'])
+            platforms.append(platform)
 
     if len(set(platforms)) > 1:
         detail = '{} has mixed platform replicates'.format(value['accession'])
-        yield AuditFailure('platform mismatch', detail, level='ERROR')  # informational
+        yield AuditFailure('platform mismatch', detail, level='WARNING')  # informational
 
 
 @audit_checker('experiment')
