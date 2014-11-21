@@ -60,7 +60,7 @@ def audit_experiment_release_date(value, system):
     This should eventually go to schema
     '''
     if value['status'] == 'released' and 'date_released' not in value:
-        detail = '{} is released and has no release date'.format(value['accession'])
+        detail = '{} is released yet has no date_released field'.format(value['accession'])
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
@@ -114,7 +114,7 @@ def audit_experiment_assay(value, system):
         return
 
     if term_id not in ontology:
-        detail = 'Assay_term_id ({}) is not found in cached version of ontology'.format(term_id)
+        detail = '{} is not found in cached version of ontology'.format(term_id)
         yield AuditFailure('assay_term_id not in ontology', term_id, level='DCC_ACTION')
         return
 
@@ -175,7 +175,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('not tagged antibody', detail, level='ERROR')
                 else:
                     if prefix not in unique_antibody_target:
-                        detail = '{} not found in target for {}'.format(prefix, antibody['@id'])
+                        detail = '{} is not found in target for {}'.format(prefix, antibody['@id'])
                         yield AuditFailure('tag target mismatch', detail, level='ERROR')
             else:
                 target_matches = False
@@ -183,7 +183,7 @@ def audit_experiment_target(value, system):
                     if target['name'] == antibody_target.get('name'):
                         target_matches = True
                 if not target_matches:
-                    detail = '{} not found in target for {}'.format(target['name'], antibody['@id'])
+                    detail = '{} is not found in target for {}'.format(target['name'], antibody['@id'])
                     yield AuditFailure('target mismatch', detail, level='ERROR')
 
 
@@ -339,7 +339,7 @@ def audit_experiment_spikeins(value, system):
 
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
-            detail = '{} is RNA-seq on >200 nt RNA but is missing spikeins_used'.format(lib['accession'])
+            detail = '{} is RNA-seq with >200 nt RNA but is missing spikeins_used'.format(lib['accession'])
             yield AuditFailure('missing spikeins', detail, level='STANDARDS_FAILURE')
             # Informattional if ENCODE2 and release error if ENCODE3
 
@@ -363,16 +363,16 @@ def audit_experiment_biosample_term(value, system):
     term_name = value.get('biosample_term_name')
 
     if 'biosample_type' not in value:
-        detail = '{} missing biosample_type'.format(value['accession'])
+        detail = '{} is missing biosample_type'.format(value['accession'])
         yield AuditFailure('biosample type missing', detail, level='ERROR')
 
     if 'biosample_term_name' not in value:
-        detail = '{} missing biosample_term_name'.format(value['accession'])
+        detail = '{} is missing biosample_term_name'.format(value['accession'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
     # The type and term name should be put into dependancies
 
     if term_id is None:
-        detail = '{} missing biosample_term_id'.format(value['accession'])
+        detail = '{} is missing biosample_term_id'.format(value['accession'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
     elif term_id.startswith('NTR:'):
         detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
@@ -392,7 +392,7 @@ def audit_experiment_biosample_term(value, system):
 
         lib = rep['library']
         if 'biosample' not in lib:
-            detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
+            detail = '{} is missing biosample, expected {}'.format(lib['accession'], term_name)
             yield AuditFailure('missing biosample', detail, level='STANDARDS_FAILURE')
             continue
 
@@ -458,7 +458,7 @@ def audit_experiment_paired_end(value, system):
         libs_list.append(lib_paired_ended)
 
         if lib_paired_ended is None:
-            detail = '{} missing paired_ended'.format(lib['accession'])
+            detail = '{} is missing paired_ended'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='STANDARDS_FAILURE')
 
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
@@ -524,10 +524,10 @@ def audit_experiment_antibody_eligible(value, system):
                         if organism == lot_organism_properties['name']:
                             organism_match = True
                     if not organism_match:
-                        detail = '{} not eligible for {}'.format(antibody["@id"], organism)
+                        detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
                         yield AuditFailure('not eligible histone antibody', detail, level='STANDARDS_FAILURE')
                 else:
-                    detail = '{} not eligible for {}'.format(antibody["@id"], organism)
+                    detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
                     yield AuditFailure('not eligible histone antibody', detail, level='STANDARDS_FAILURE')
         else:
             biosample_term_id = value['biosample_term_id']
@@ -542,5 +542,5 @@ def audit_experiment_antibody_eligible(value, system):
                         eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism_properties['name']])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
-                detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
+                detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='STANDARDS_FAILURE')
