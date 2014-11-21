@@ -335,6 +335,9 @@ globals.content_views.register(Experiment, 'experiment');
 var AssayDetails = module.exports.AssayDetails = function (props) {
     var context = props.context;
 
+    if (!props.replicates.length) return null;
+
+    // Sort the replicates first by replicate number, then by technical replicate number
     var replicates = props.replicates.sort(function(a, b) {
         if (b.biological_replicate_number === a.biological_replicate_number) {
             return a.technical_replicate_number - b.technical_replicate_number;
@@ -342,33 +345,49 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         return a.biological_replicate_number - b.biological_replicate_number;
     });
 
-    if (!replicates.length) return (<div hidden={true}></div>);
+    // Collect data from the libraries of all of the replicates, ignoring duplicates
+    var libraries = {
+        nucleic_acid_term_name: {},
+        lysis_method: {},
+        extraction_method: {},
+        fragmentation_method: {},
+        size_range: {},
+        library_size_selection_method: {}
+    };
+    var depleted = {};
+    var treatments = {};
+    var lib;
+    replicates.forEach(function(replicate) {
+        lib = replicate.library;
+        if (lib) {
+            // Collect single-item data from the libraries
+            if (lib.nucleic_acid_term_name) libraries.nucleic_acid_term_name[lib.nucleic_acid_term_name] = true;
+            if (lib.lysis_method) libraries.lysis_method[lib.lysis_method] = true;
+            if (lib.extraction_method) libraries.extraction_method[lib.extraction_method] = true;
+            if (lib.fragmentation_method) libraries.fragmentation_method[lib.fragmentation_method] = true;
+            if (lib.size_range) libraries.size_range[lib.size_range] = true;
+            if (lib.library_size_selection_method) libraries.library_size_selection_method[lib.library_size_selection_method] = true;
 
-    var replicate = replicates[0];
-    var library = replicate.library;
-    var depletedIn;
-    var treatments;
+            // Collect depleted_in_term_name strings from all replicate's libraries
+            if (replicate.library.depleted_in_term_name && replicate.library.depleted_in_term_name.length) {
+                replicate.library.depleted_in_term_name.forEach(function(term) {
+                    depleted[term] = true;
+                });
+            }
 
-    if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
-        depletedIn = library.depleted_in_term_name.join(", ");
-    }
-
-    if (library && library.treatments && library.treatments.length) {
-        var i = library.treatments.length;
-        var t;
-        var treatmentList = [];
-        while (i--) {
-            t = library.treatments[i];
-            treatmentList.push(t.treatment_term_name);
+            // Collect treatment strings from all replicate's libraries
+            if (replicate.library.treatments && replicate.library.treatments.length) {
+                replicate.library.treatments.forEach(function(treatment) {
+                    treatments[treatment.treatment_term_name] = true;
+                });
+            }
         }
-        treatments = treatmentList.join(", ");
-    }
+    });
 
-    if (!library && !depletedIn && !treatments) {
-        return (<div hidden={true}></div>);
-    }
+    // Only render the Assay panel if we saw at least one library
+    if (!lib) return null;
 
-    // Create platforms array
+    // Create platforms array from file platforms; ignore duplicate platforms
     var platforms = {};
     if (context.files && context.files.length) {
         context.files.forEach(function(file) {
@@ -382,59 +401,91 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {library && library.nucleic_acid_term_name ?
+                {Object.keys(libraries.nucleic_acid_term_name).length ?
                     <div data-test="nucleicacid">
                         <dt>Nucleic acid type</dt>
-                        <dd>{library.nucleic_acid_term_name}</dd>
+                        <dd>
+                            {Object.keys(libraries.nucleic_acid_term_name).map(function(nucleic_acid_term_name) {
+                                return nucleic_acid_term_name;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {depletedIn ?
+                {Object.keys(depleted).length ?
                     <div data-test="depletedin">
                         <dt>Depleted in</dt>
-                        <dd>{depletedIn}</dd>
+                        <dd>
+                            {Object.keys(depleted).map(function(term) {
+                                return term;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {library && library.lysis_method ?
+                {Object.keys(libraries.lysis_method).length ?
                     <div data-test="lysismethod">
                         <dt>Lysis method</dt>
-                        <dd>{library.lysis_method}</dd>
+                        <dd>
+                            {Object.keys(libraries.lysis_method).map(function(lysis_method) {
+                                return lysis_method;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {library && library.extraction_method ?
+                {Object.keys(libraries.extraction_method).length ?
                     <div data-test="extractionmethod">
                         <dt>Extraction method</dt>
-                        <dd>{library.extraction_method}</dd>
+                        <dd>
+                            {Object.keys(libraries.extraction_method).map(function(extraction_method) {
+                                return extraction_method;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {library && library.fragmentation_method ?
-                    <div data-test="fragmethod">
+                {Object.keys(libraries.fragmentation_method).length ?
+                    <div data-test="fragmentationmethod">
                         <dt>Fragmentation method</dt>
-                        <dd>{library.fragmentation_method}</dd>
+                        <dd>
+                            {Object.keys(libraries.fragmentation_method).map(function(fragmentation_method) {
+                                return fragmentation_method;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {library && library.size_range ?
+                {Object.keys(libraries.size_range).length ?
                     <div data-test="sizerange">
                         <dt>Size range</dt>
-                        <dd>{library.size_range}</dd>
+                        <dd>
+                            {Object.keys(libraries.size_range).map(function(size_range) {
+                                return size_range;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {library && library.library_size_selection_method ?
+                {Object.keys(libraries.library_size_selection_method).length ?
                     <div data-test="sizeselectionmethod">
                         <dt>Size selection method</dt>
-        				<dd>{library.library_size_selection_method}</dd>
+                        <dd>
+                            {Object.keys(libraries.library_size_selection_method).map(function(library_size_selection_method) {
+                                return library_size_selection_method;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
-                {treatments ?
+                {Object.keys(treatments).length ?
                     <div data-test="treatments">
                         <dt>Treatments</dt>
-                        <dd>{treatments}</dd>
+                        <dd>
+                            {Object.keys(treatments).map(function(treatment) {
+                                return treatment;
+                            }).join(', ')}
+                        </dd>
                     </div>
                 : null}
 
@@ -442,25 +493,9 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     <div data-test="platform">
                         <dt>Platform</dt>
                         <dd>
-                            {Object.keys(platforms).map(function(platformId, i) {
+                            {Object.keys(platforms).map(function(platformId) {
                                 return(
                                     <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
-                                );
-                            })}
-                        </dd>
-                    </div>
-                : null}
-
-                {library && library.spikeins_used && library.spikeins_used.length ?
-                    <div data-test="spikeins">
-                        <dt>Spike-ins datasets</dt>
-                        <dd>
-                            {library.spikeins_used.map(function(dataset, i) {
-                                return (
-                                    <span key={i}>
-                                        {i > 0 ? ', ' : ''}
-                                        <a href={dataset['@id']}>{dataset.accession}</a>
-                                    </span>
                                 );
                             })}
                         </dd>
@@ -482,32 +517,58 @@ var Replicate = module.exports.Replicate = function (props) {
         <div key={props.key} className="panel-replicate">
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
-                <dt>Technical replicate</dt>
-                <dd>{replicate.technical_replicate_number}</dd>
+                <div data-test="techreplicate">
+                    <dt>Technical replicate</dt>
+                    <dd>{replicate.technical_replicate_number}</dd>
+                </div>
 
-                {concentration ? <dt>Protein concentration</dt> : null}
-                {concentration ? <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd> : null}
+                {concentration ?
+                    <div data-test="proteinconcentration">
+                        <dt>Protein concentration</dt>
+                        <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd>
+                    </div>
+                : null}
 
-                {library ? <dt>Library</dt> : null}
-                {library ? <dd>{library.accession}</dd> : null}
+                {library ?
+                    <div data-test="library">
+                        <dt>Library</dt>
+                        <dd>{library.accession}</dd>
+                    </div>
+                : null}
 
-                {library && library.nucleic_acid_starting_quantity ? <dt>Library starting quantity</dt> : null}
                 {library && library.nucleic_acid_starting_quantity ?
-                    <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
+                    <div data-test="startingquantity">
+                        <dt>Library starting quantity</dt>
+                        <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
+                    </div>
                 : null}
                 
-                {biosample ? <dt>Biosample</dt> : null}
-                {biosample ? <dd>
-                    <a href={biosample['@id']}>
-                        {biosample.accession}
-                    </a>{' '}-{' '}{biosample.biosample_term_name}
-                </dd> : null}
+                {biosample ?
+                    <div data-test="biosample">
+                        <dt>Biosample</dt>
+                        {biosample ?
+                            <dd>
+                                <a href={biosample['@id']}>
+                                    {biosample.accession}
+                                </a>{' '}-{' '}{biosample.biosample_term_name}
+                            </dd>
+                        : null}
+                    </div>
+                : null}
 
-                {replicate.read_length ? <dt>Run type</dt> : null}
-                {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
+                {replicate.read_length ?
+                    <div data-test="runtype">
+                        <dt>Run type</dt>
+                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
+                    </div>
+                : null}
 
-                {replicate.read_length ? <dt>Read length</dt> : null}
-                {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
+                {replicate.read_length ?
+                    <div data-test="readlength">
+                        <dt>Read length</dt>
+                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );
