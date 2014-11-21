@@ -98,7 +98,7 @@ def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
 
 class Collection(BaseCollection):
     template = {
-        # 'actions': [ADD_ACTION],  # XXX forms. Remove redundant page add action when done.
+        'actions': [ADD_ACTION],
     }
 
     def __init__(self, parent, name):
