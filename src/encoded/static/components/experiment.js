@@ -335,6 +335,7 @@ globals.content_views.register(Experiment, 'experiment');
 var AssayDetails = module.exports.AssayDetails = function (props) {
     var context = props.context;
 
+    // No replicates, so no assay panel
     if (!props.replicates.length) return null;
 
     // Sort the replicates first by replicate number, then by technical replicate number
@@ -346,46 +347,25 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     });
 
     // Collect data from the libraries of all of the replicates, ignoring duplicates
-    var libraries = {
-        nucleic_acid_term_name: {},
-        lysis_method: {},
-        extraction_method: {},
-        fragmentation_method: {},
-        size_range: {},
-        library_size_selection_method: {}
-    };
-    var depleted = {};
-    var treatments = {};
-    var lib;
-    replicates.forEach(function(replicate) {
-        lib = replicate.library;
-        if (lib) {
-            // Collect single-item data from the libraries
-            if (lib.nucleic_acid_term_name) libraries.nucleic_acid_term_name[lib.nucleic_acid_term_name] = true;
-            if (lib.lysis_method) libraries.lysis_method[lib.lysis_method] = true;
-            if (lib.extraction_method) libraries.extraction_method[lib.extraction_method] = true;
-            if (lib.fragmentation_method) libraries.fragmentation_method[lib.fragmentation_method] = true;
-            if (lib.size_range) libraries.size_range[lib.size_range] = true;
-            if (lib.library_size_selection_method) libraries.library_size_selection_method[lib.library_size_selection_method] = true;
-
-            // Collect depleted_in_term_name strings from all replicate's libraries
-            if (replicate.library.depleted_in_term_name && replicate.library.depleted_in_term_name.length) {
-                replicate.library.depleted_in_term_name.forEach(function(term) {
-                    depleted[term] = true;
-                });
-            }
-
-            // Collect treatment strings from all replicate's libraries
-            if (replicate.library.treatments && replicate.library.treatments.length) {
-                replicate.library.treatments.forEach(function(treatment) {
-                    treatments[treatment.treatment_term_name] = true;
-                });
-            }
+    var depleted = [];
+    var treatments = [];
+    var lib = replicates[0].library;
+    if (lib) {
+        // Get the array of depleted_in_term_name strings for display
+        if (lib.depleted_in_term_name && lib.depleted_in_term_name.length) {
+            depleted = lib.depleted_in_term_name;
         }
-    });
 
-    // Only render the Assay panel if we saw at least one library
-    if (!lib) return null;
+        // Make an array of treatment term names for display
+        if (lib.treatments && lib.treatments.length) {
+            treatments = lib.treatments.map(function(treatment) {
+                return treatment.treatment_term_name;
+            });
+        }
+    } else {
+        // No libraries, so no assay panel
+        return null;
+    }
 
     // Create platforms array from file platforms; ignore duplicate platforms
     var platforms = {};
@@ -401,90 +381,60 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {Object.keys(libraries.nucleic_acid_term_name).length ?
+                {lib.nucleic_acid_term_name ?
                     <div data-test="nucleicacid">
                         <dt>Nucleic acid type</dt>
-                        <dd>
-                            {Object.keys(libraries.nucleic_acid_term_name).map(function(nucleic_acid_term_name) {
-                                return nucleic_acid_term_name;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.nucleic_acid_term_name}</dd>
                     </div>
                 : null}
 
-                {Object.keys(depleted).length ?
+                {depleted.length ?
                     <div data-test="depletedin">
                         <dt>Depleted in</dt>
-                        <dd>
-                            {Object.keys(depleted).map(function(term) {
-                                return term;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{depleted.join(', ')}</dd>
                     </div>
                 : null}
 
-                {Object.keys(libraries.lysis_method).length ?
+                {lib.lysis_method ?
                     <div data-test="lysismethod">
                         <dt>Lysis method</dt>
-                        <dd>
-                            {Object.keys(libraries.lysis_method).map(function(lysis_method) {
-                                return lysis_method;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.lysis_method}</dd>
                     </div>
                 : null}
 
-                {Object.keys(libraries.extraction_method).length ?
+                {lib.extraction_method ?
                     <div data-test="extractionmethod">
                         <dt>Extraction method</dt>
-                        <dd>
-                            {Object.keys(libraries.extraction_method).map(function(extraction_method) {
-                                return extraction_method;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.extraction_method}</dd>
                     </div>
                 : null}
 
-                {Object.keys(libraries.fragmentation_method).length ?
+                {lib.fragmentation_method ?
                     <div data-test="fragmentationmethod">
                         <dt>Fragmentation method</dt>
-                        <dd>
-                            {Object.keys(libraries.fragmentation_method).map(function(fragmentation_method) {
-                                return fragmentation_method;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.fragmentation_method}</dd>
                     </div>
                 : null}
 
-                {Object.keys(libraries.size_range).length ?
+                {lib.size_range ?
                     <div data-test="sizerange">
                         <dt>Size range</dt>
-                        <dd>
-                            {Object.keys(libraries.size_range).map(function(size_range) {
-                                return size_range;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.size_range}</dd>
                     </div>
                 : null}
 
-                {Object.keys(libraries.library_size_selection_method).length ?
+                {lib.library_size_selection_method ?
                     <div data-test="sizeselectionmethod">
                         <dt>Size selection method</dt>
-                        <dd>
-                            {Object.keys(libraries.library_size_selection_method).map(function(library_size_selection_method) {
-                                return library_size_selection_method;
-                            }).join(', ')}
-                        </dd>
+                        <dd>{lib.library_size_selection_method}</dd>
                     </div>
                 : null}
 
-                {Object.keys(treatments).length ?
+                {treatments.length ?
                     <div data-test="treatments">
                         <dt>Treatments</dt>
                         <dd>
-                            {Object.keys(treatments).map(function(treatment) {
-                                return treatment;
-                            }).join(', ')}
+                            {treatments.join(', ')}
                         </dd>
                     </div>
                 : null}
