@@ -190,5 +190,11 @@ def download(context, request):
     if proxy:
         return InternalResponse(location='/_proxy/' + location)
 
+    if asbool(request.params.get('soft')):
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+        }
+
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
