@@ -1,0 +1,74 @@
+$form-element-height: 26px;
+$form-bg: #f3f3f3;
+
+.btn.btn-disclose {
+    position: relative;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: $form-bg;
+    @include box-shadow(none);
+    line-height: 20px;
+    border: 1px solid #ccc;
+
+    &.active {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom: transparent;
+    }
+    z-index: 1;
+}
+
+.icon-disclose {
+    position: relative;
+    display: inline-block;
+    top: 1px;
+    font-size: 18px;
+    width: 10px;
+    line-height: 20px;
+}
+
+.adv-search-form {
+    position: relative;
+    margin: 20px 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin: 0;
+    }
+
+    .col-md-5, .col-md-2 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .form-control {
+        height: $form-element-height !important;
+        z-index: 0;
+    }
+
+    form {
+        position: relative;
+        top: -1px;
+        padding-top: 15px;
+        background-color: $form-bg;
+        border: 1px solid #ccc;
+    }
+
+    label[for=spacing] {
+        display: none;
+
+        @media screen and (min-width: $screen-md-min) {
+            display: inline-block;
+        }
+    }
+
+    .adv-search-submit {
+        padding: 0 15px;
+        height: $form-element-height;
+        line-height: $form-element-height - 2;
+
+        @media screen and (min-width: $screen-md-min) {
+            padding: 0;
+            width: 100%;
+        }
+    }
+}

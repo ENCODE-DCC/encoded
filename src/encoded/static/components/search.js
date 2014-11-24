@@ -693,8 +693,8 @@ var statusOrder = globals.statusOrder;
             };
         },
 
-        handleCBChange: function(e) {
-            this.setState({disclosed: e.target.checked});
+        handleDiscloseClick: function(e) {
+            this.setState({disclosed: !this.state.disclosed});
         },
 
         handleChange: function(e) {
@@ -710,27 +710,29 @@ var statusOrder = globals.statusOrder;
             }.bind(this));
             query = '/search/?type=experiment&' + query.substr(1);
 
+            var btnClass = 'btn btn-disclose' + (this.state.disclosed ? ' active' : '');
+            var discloseClass = 'icon icon-disclose ' + (this.state.disclosed ? 'icon-caret-down' : 'icon-caret-right');
+
             return (
-                <div>
-                    <div class="checkbox">
-                        <label><input type="checkbox" onChange={this.handleCBChange}/> Peak search</label>
-                    </div>
+                <div className="adv-search-form">
+                    <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
-                        <form ref="adv-search" role="form">
-                            <div className="row">
-                                <div className="form-group col-sm-6">
-                                    <label for="regionid">Enter GeneID or "chr#-start-end"</label>
-                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
-                                </div>
-                                <div className="form-group col-sm-6">
-                                    <label for="peakid">Organism</label>
-                                    <select ref="organism" name="organism" className="form-control" onChange={this.handleChange} >
-                                        <option selected="selected">human</option>
-                                        <option>mouse</option>
-                                    </select>
-                                </div>
+                        <form id="panel1" ref="adv-search" role="form" aria-labeledby="tab1">
+                            <div className="form-group col-md-5">
+                                <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
+                                <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                             </div>
-                            <a className="btn btn-primary" href={query}>Submit</a>
+                            <div className="form-group col-md-5">
+                                <label htmlFor="peakid">Organism</label>
+                                <select ref="organism" name="organism" className="form-control" onChange={this.handleChange} >
+                                    <option selected="selected">human</option>
+                                    <option>mouse</option>
+                                </select>
+                            </div>
+                            <div className="form-group col-md-2">
+                                <label htmlFor="spacing">&nbsp;</label>
+                                <a className="btn btn-sm btn-info adv-search-submit" href={query}>Submit</a>
+                            </div>
                         </form>
                     : null}
                 </div>
