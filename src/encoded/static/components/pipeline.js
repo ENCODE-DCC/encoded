@@ -123,7 +123,7 @@ var Graph = React.createClass({
             // If the node has parents, render the edges to those parents
             if (step.parents && step.parents.length) {
                 step.parents.forEach(function(parent) {
-                    g.setEdge(step['@id'], parent);
+                    g.setEdge(parent, step['@id']);
                 });
             }
         }, this);
