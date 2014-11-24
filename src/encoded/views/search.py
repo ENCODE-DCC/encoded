@@ -17,6 +17,7 @@ extra_params = [
     'regionid',
     'organism',
 ]
+ENSEMBL_URL = 'http://rest.ensembl.org/'
 
 
 def get_filtered_query(term, fields, principals):
@@ -68,13 +69,36 @@ def flatten_dict(d):
     return dict(items())
 
 
+def assembly_mapper(location, species, old_assembly, new_assembly):
+    # All others
+    new_url = ENSEMBL_URL + 'map/' + species + '/' \
+        + new_assembly + '/' + location + '/' + old_assembly \
+        + '/?content-type=application/json'
+    try:
+        new_response = requests.get(new_url).json()
+    except:
+        return('', '', '')
+    else:
+        data = new_response['mappings'][0]['mapped']
+        chromosome = 'chr' + data['seq_region_name']
+        start = data['start']
+        end = data['end']
+        return(chromosome, start, end)
+
+
 def search_peaks(request):
     """ return file uuids which have the snp or interval found in """
     es = request.registry[ELASTIC_SEARCH]
     peakid = request.params.get('regionid', None).lower()
     assembly = 'hg19'
+    species = 'human'
+    old_assembly = 'GRCh37'
+    new_assembly = 'GRCh38'
     if request.params.get('organism', 'human') != 'human':
         assembly = 'mm9'
+        species = 'mouse'
+        old_assembly = 'NCBIM37'
+        new_assembly = 'GRCm38'
     
     chromosome = ''
     start = ''
@@ -82,7 +106,16 @@ def search_peaks(request):
 
     if peakid.startswith('rs'):
         # RSIDs should be handled here
-        pass
+        url = ENSEMBL_URL + 'variation/' + species + '/' + peakid \
+            + '/?content-type=application/json'
+        try:
+            response = requests.get(url).json()
+        except:
+            return([], 'Failed search')
+        else:
+            if 'mappings' in response:
+                location = response['mappings'][0]['location']
+                chromosome, start, end = assembly_mapper(location, species, old_assembly, new_assembly)
     elif peakid.startswith('chr'):
         # Address should be handled here
         params = peakid.split('-')
@@ -93,8 +126,9 @@ def search_peaks(request):
             end = params[2]
     else:
         try:
-            response = requests.get('http://www.mygene.info/v2/gene/'
-                + peakid + '?fields=genomic_pos,genomic_pos_hg19').json()
+            url = 'http://www.mygene.info/v2/gene/' \
+                + peakid + '?fields=genomic_pos,genomic_pos_hg19'
+            response = requests.get(url).json()
         except:
             return([], 'Failed search')
         else:
@@ -110,9 +144,10 @@ def search_peaks(request):
                 end = response['genomic_pos_mm9']['end']
             elif 'genomic_pos' in response:
                 # All others
-                chromosome = 'chr' + response['genomic_pos']['chr']
-                start = response['genomic_pos']['start']
-                end = response['genomic_pos']['end']
+                location = response['genomic_pos']['chr'] \
+                    + ':' + str(response['genomic_pos']['start']) \
+                    + '-' + str(response['genomic_pos']['end'])
+                chromosome, start, end = assembly_mapper(location, species, old_assembly, new_assembly)
             else:
                 return([], 'Failed search')
 
