@@ -29,25 +29,36 @@ term_mapping = {
 
 @audit_checker('biosample')
 def audit_biosample_term(value, system):
+    '''
+    Biosample_term_id and biosample_term_name
+    and biosample_type should all be present.
+    This should be handled by schemas.
+    Biosample_term_id should be in the ontology.
+    Biosample_term_name should match biosample_term_id.
+    '''
+
     if value['status'] == 'deleted':
         return
 
     if 'biosample_term_id' not in value:
         return
+
     ontology = system['registry']['ontology']
     term_id = value['biosample_term_id']
     term_name = value.get('biosample_term_name')
 
     if term_id.startswith('NTR:'):
-        detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR', detail, level='WARNING')
+        detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
+        raise AuditFailure('NTR', detail, level='WARNING')  # DCC action
 
     if term_id not in ontology:
-        raise AuditFailure('term id not in ontology', term_id, level='WARNING')
+        detail = '{} has {} not in ontology'.format(value['accession'], term_id)
+        raise AuditFailure('term id not in ontology', term_id, level='WARNING')  # DCC action
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
+        detail = '{} has {} - {} - {}'.format(value['accession'],
+                                              term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
 
@@ -66,15 +77,20 @@ def audit_biosample_culture_date(value, system):
 
 @audit_checker('biosample')
 def audit_biosample_donor(value, system):
+    '''
+    A biosample should have a donor.
+    The organism of donor and biosample should match.
+    Pooled_from biosamples do not need donors??
+    '''
     if value['status'] == 'deleted':
         return
 
-    if ('donor' not in value) and (not value['pooled_from']):
-        detail = 'biosample donor is missing'
-        raise AuditFailure('missing donor', detail, level='ERROR')
+    if ('donor' not in value) and (value['pooled_from']):
         return
 
-    if ('donor' not in value) and (value['pooled_from']):
+    if ('donor' not in value) and (not value['pooled_from']):
+        detail = 'Biosample ({}) is missing donor'.format(value['accession'])
+        raise AuditFailure('missing donor', detail, level='ERROR')
         return
 
     donor = value['donor']
@@ -85,19 +101,31 @@ def audit_biosample_donor(value, system):
 
 @audit_checker('biosample')
 def audit_biosample_subcellular_term_match(value, system):
+    '''
+    The subcellular_fraction_term_name and subcellular_fraction_term_id
+    should be concordant. This should be a calculated field
+    If one exists the other should. This should be handled in the schema.
+    '''
     if value['status'] == 'deleted':
         return
 
     if ('subcellular_fraction_term_name' not in value) or ('subcellular_fraction_term_id' not in value):
         return
 
-    if (term_mapping[value['subcellular_fraction_term_name']]) != (value['subcellular_fraction_term_id']):
-        detail = '{} - {}'.format(value['subcellular_fraction_term_name'], value['subcellular_fraction_term_id'])
+    expected_name = term_mapping[value['subcellular_fraction_term_name']]
+    if expected_name != (value['subcellular_fraction_term_id']):
+        detail = '{} - {}'.format(value['subcellular_fraction_term_name'],
+                                  value['subcellular_fraction_term_id'])
         raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
 
 
 @audit_checker('biosample')
 def audit_biosample_depleted_term_match(value, system):
+    '''
+    The depleted_in_term_name and depleted_in_term_name
+    should be concordant. This should be a calcualted field.
+    If one exists, the other should.  This should be handled in the schema.
+    '''
     if value['status'] == 'deleted':
         return
 
@@ -105,7 +133,7 @@ def audit_biosample_depleted_term_match(value, system):
         return
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
+        detail = '{} has depleted_in_term_name and depleted_in_term_id totals that do not match'.format(value['accession'])
         raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
         return
 
@@ -117,6 +145,10 @@ def audit_biosample_depleted_term_match(value, system):
 
 @audit_checker('biosample')
 def audit_biosample_transfection_type(value, system):
+    '''
+    A biosample with constructs or rnais should have a
+    transfection_type
+    '''
     if value['status'] == 'deleted':
         return
 

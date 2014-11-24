@@ -7,10 +7,8 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ADD_ACTION,
     ALLOW_EVERYONE_VIEW,
     Collection,
-    EDIT_ACTION,
     ONLY_ADMIN_VIEW,
 )
 from pyramid.threadlocal import get_current_request
@@ -28,9 +26,6 @@ class Page(Collection):
     }
     schema = load_schema('page.json')
     unique_key = 'page:location'
-    template = {
-        'actions': [ADD_ACTION],
-    }
 
     class Item(Collection.Item):
         name_key = 'name'
@@ -47,8 +42,6 @@ class Page(Collection):
             '$condition': lambda collection_uri=None: collection_uri == '/pages/',
             '$templated': True
         }
-
-        actions = [EDIT_ACTION]
 
         STATUS_ACL = {
             'in progress': [],
