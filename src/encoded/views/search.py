@@ -124,7 +124,11 @@ def search(context, request, search_type=None):
             })
 
     frame = request.params.get('frame')
-    if frame in ['embedded', 'object']:
+    fields_requested = request.params.getall('field')
+    if len(fields_requested):
+        fields = {'embedded.@id', 'embedded.@type'}
+        fields.update('embedded.' + field for field in fields_requested)
+    elif frame in ['embedded', 'object']:
         fields = [frame + '.*']
     elif len(doc_types) == 1 and 'columns' not in (root[doc_types[0]].schema or ()):
         frame = 'object'
@@ -168,7 +172,7 @@ def search(context, request, search_type=None):
     used_filters = []
     for field, term in request.params.iteritems():
         if field not in ['type', 'limit', 'mode',
-                         'format', 'frame', 'datastore']:
+                         'format', 'frame', 'datastore', 'field']:
             # Add filter to result
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
@@ -304,7 +308,7 @@ def search(context, request, search_type=None):
 
     # Loading result rows
     hits = results['hits']['hits']
-    if frame in ['embedded', 'object']:
+    if frame in ['embedded', 'object'] and not len(fields_requested):
         result['@graph'] = [hit['_source'][frame] for hit in hits]
     else:  # columns
         for hit in hits:
