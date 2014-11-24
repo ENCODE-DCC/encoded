@@ -107,15 +107,15 @@
 //.#{$fa-css-prefix}-compress:before { content: $fa-var-compress; }
 //.#{$fa-css-prefix}-plus:before { content: $fa-var-plus; }
 //.#{$fa-css-prefix}-minus:before { content: $fa-var-minus; }
-//.#{$fa-css-prefix}-asterisk:before { content: $fa-var-asterisk; }
-//.#{$fa-css-prefix}-exclamation-circle:before { content: $fa-var-exclamation-circle; }
+.#{$fa-css-prefix}-asterisk:before { content: $fa-var-asterisk; }
+.#{$fa-css-prefix}-exclamation-circle:before { content: $fa-var-exclamation-circle; }
 //.#{$fa-css-prefix}-gift:before { content: $fa-var-gift; }
 //.#{$fa-css-prefix}-leaf:before { content: $fa-var-leaf; }
 //.#{$fa-css-prefix}-fire:before { content: $fa-var-fire; }
 //.#{$fa-css-prefix}-eye:before { content: $fa-var-eye; }
 //.#{$fa-css-prefix}-eye-slash:before { content: $fa-var-eye-slash; }
-//.#{$fa-css-prefix}-warning:before,
-//.#{$fa-css-prefix}-exclamation-triangle:before { content: $fa-var-exclamation-triangle; }
+.#{$fa-css-prefix}-warning:before,
+.#{$fa-css-prefix}-exclamation-triangle:before { content: $fa-var-exclamation-triangle; }
 //.#{$fa-css-prefix}-plane:before { content: $fa-var-plane; }
 //.#{$fa-css-prefix}-calendar:before { content: $fa-var-calendar; }
 //.#{$fa-css-prefix}-random:before { content: $fa-var-random; }
@@ -169,7 +169,7 @@
 //.#{$fa-css-prefix}-hand-o-up:before { content: $fa-var-hand-o-up; }
 //.#{$fa-css-prefix}-hand-o-down:before { content: $fa-var-hand-o-down; }
 //.#{$fa-css-prefix}-arrow-circle-left:before { content: $fa-var-arrow-circle-left; }
-//.#{$fa-css-prefix}-arrow-circle-right:before { content: $fa-var-arrow-circle-right; }
+.#{$fa-css-prefix}-arrow-circle-right:before { content: $fa-var-arrow-circle-right; }
 //.#{$fa-css-prefix}-arrow-circle-up:before { content: $fa-var-arrow-circle-up; }
 //.#{$fa-css-prefix}-arrow-circle-down:before { content: $fa-var-arrow-circle-down; }
 //.#{$fa-css-prefix}-globe:before { content: $fa-var-globe; }

@@ -6,10 +6,14 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
+var audit = require('./audit');
+var AuditMixin = audit.AuditMixin;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -23,6 +27,7 @@ var Panel = function (props) {
 
 
 var Experiment = module.exports.Experiment = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -144,11 +149,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                             Experiment summary for {context.accession}
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} />
                         </div>
                    </div>
                 </header>
+                <AuditDetail audits={context.audit} />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
