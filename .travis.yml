@@ -36,9 +36,10 @@ script:
     --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"
     --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT"
     --browser-arg-int wait_time 10
+    --browser-arg-int idle-timeout 180
     --browser 'Chrome'
 after_script:
-  - export SAUCE_JOB_ID=`grep -m 1 /session/ ./sauce_connect.log | cut -d / -f 7`
+  - export SAUCE_JOB_ID=`grep -m 1 /session/ $HOME/sauce-connect.log | cut -d / -f 7`
   - export SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
   - >
     curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}"
