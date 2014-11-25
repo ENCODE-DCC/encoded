@@ -116,6 +116,7 @@ def audit_biosample_donor(value, system):
         detail = 'Biosample {} has organism {} yet its donor {} has organism {}. Biosamples require a donor of the same species'.format(
             value['accession'],
             value['organism']['name'],
+            donor['accession'],
             donor['organism']['name'])
         raise AuditFailure('organism mismatch', detail, level='ERROR')
 
