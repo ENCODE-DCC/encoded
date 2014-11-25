@@ -26,7 +26,7 @@ def audit_file_platform(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['format'] not in raw_data_formats:
+    if value['file_format'] not in raw_data_formats:
         return
 
     if 'platform' not in value:
@@ -43,7 +43,7 @@ def audit_file_flowcells(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['format'] not in ['fastq']:
+    if value['file_format'] not in ['fastq']:
         return
 
     if 'flowcell_details' not in value or (value['flowcell_details'] == {}):

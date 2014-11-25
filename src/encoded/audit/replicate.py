@@ -14,7 +14,7 @@ def audit_file_platform(value, system):
     if 'platform' in value:
         detail = 'Replicate {} has a platform {}'.format(
             value['uuid'],
-            value['platform']['name']
+            value['platform']  # ['name']
             )
         yield AuditFailure('replicate with platform', detail, level='DCC_ACTION')
 
