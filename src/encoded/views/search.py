@@ -7,6 +7,14 @@ from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
+hgConnect = ''.join([
+    'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
+    '?hgHub_do_redirect=on',
+    '&hgHubConnect.remakeTrackHub=on',
+    '&hgHub_do_firstDb=1',
+    '&hubUrl=',
+])
+
 
 def get_filtered_query(term, fields, principals):
     return {
@@ -165,67 +173,71 @@ def search(context, request, search_type=None):
         }
         # Adding match_all for wildcard search for performance
         query['query']['match_all'] = {}
-        del(query['query']['query_string'])
+        del query['query']['query_string']
 
     # Setting filters
     query_filters = query['filter']['and']['filters']
-    used_filters = []
+    used_filters = {}
     for field, term in request.params.iteritems():
-        if field not in ['type', 'limit', 'mode',
-                         'format', 'frame', 'datastore', 'field']:
-            # Add filter to result
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if v != term
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
+        if field in ['type', 'limit', 'mode', 'searchTerm',
+                     'format', 'frame', 'datastore', 'field']:
+            continue
 
-            # Add filter to query
-            if field == 'searchTerm':
-                continue  # searchTerm is already in the query
-            if field.startswith('audit'):
-                field_query = field
-            else:
-                field_query = 'embedded.' + field
-            if term == 'other':
-                query_filters.append({'missing': {'field': 'embedded.' + field}})
-            else:
-                if field in used_filters:
-                    for f in query_filters:
-                        if field_query in f['terms'].keys():
-                            f['terms'][field_query].append(term)
-                else:
-                    query_filters.append({
-                        'terms': {
-                            field_query: [term]
-                        }
-                    })
-                    used_filters.append(field)
+        # Add filter to result
+        qs = urlencode([
+            (k.encode('utf-8'), v.encode('utf-8'))
+            for k, v in request.params.iteritems() if v != term
+        ])
+        result['filters'].append({
+            'field': field,
+            'term': term,
+            'remove': '{}?{}'.format(request.path, qs)
+        })
+
+        # Add filter to query
+        if field == 'audit.category':
+            query_field = field
+        else:
+            query_field = 'embedded.' + field
+
+        if query_field not in used_filters:
+            query_terms = used_filters[query_field] = []
+            query_filters.append({
+                'terms': {
+                    query_field: query_terms,
+                }
+            })
+        used_filters[query_field].append(term)
 
     # Adding facets to the query
     # TODO: Have to simplify this piece of code
-    facets = OrderedDict()
-    facets['Data Type'] = 'type'
+    facets = [
+        ('type', {'title': 'Data Type'}),
+    ]
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        for facet in root[doc_types[0]].schema['facets']:
-            facets[root[doc_types[0]].schema['facets'][facet]['title']] = facet
-    if request.has_permission('search_audit'):
-        facets = facets.copy()
-        facets['Audit category'] = 'audit.category'
+        facets.extend(root[doc_types[0]].schema['facets'].items())
 
-    for facet_title in facets:
-        field = facets[facet_title]
+    if request.has_permission('search_audit'):
+        facets.append(('audit.category', {'title': 'Audit category'}))
+
+    for field, _ in facets:
         if field == 'type':
             query_field = '_type'
         elif field == 'audit.category':
-            query_field = 'audit.category'
+            query_field = field
         else:
             query_field = 'embedded.' + field
         agg_name = field.replace('.', '-')
+
+        terms = [
+            {'terms': {q_field: q_terms}}
+            for q_field, q_terms in used_filters.iteritems()
+            if q_field != query_field
+        ]
+        terms.append(
+            {'terms': {'principals_allowed_view': principals}}
+        )
+
         query['aggs'][agg_name] = {
             'aggs': {
                 agg_name: {
@@ -237,42 +249,11 @@ def search(context, request, search_type=None):
                 }
             },
             'filter': {
-                'terms': {
-                    'principals_allowed_view': principals
-                }
-            }
+                'bool': {
+                    'must': terms,
+                },
+            },
         }
-        for count, used_facet in enumerate(result['filters']):
-            if used_facet['field'] == 'searchTerm':
-                continue
-            if field != used_facet['field'] and used_facet['field'] != 'type':
-                if used_facet['field'] != 'audit.category':
-                    q_field = 'embedded.' + used_facet['field']
-                else:
-                    q_field = used_facet['field']
-                if 'terms' in query['aggs'][agg_name]['filter']:
-                    old_terms = query['aggs'][agg_name]['filter']
-                    new_terms = {'terms': {
-                        q_field: [used_facet['term']]
-                    }}
-                    query['aggs'][agg_name]['filter'] = {
-                        'bool': {
-                            'must': [old_terms, new_terms]
-                        }
-                    }
-                else:
-                    terms = query['aggs'][agg_name]['filter']['bool']['must']
-                    flag = 0
-                    for count, term in enumerate(terms):
-                        if q_field in term['terms'].keys():
-                            terms[count]['terms'][q_field].append(used_facet['term'])
-                            flag = 1
-                    if not flag:
-                        terms.append({
-                            'terms': {
-                                q_field: [used_facet['term']]
-                            }
-                        })
 
     # Execute the query
     results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
@@ -280,31 +261,26 @@ def search(context, request, search_type=None):
     # Loading facets in to the results
     if 'aggregations' in results:
         facet_results = results['aggregations']
-        for facet_title in facets:
-            field = facets[facet_title]
-            temp_field = field.replace('.', '-')
-            if temp_field not in facet_results:
+        for field, facet in facets:
+            agg_name = field.replace('.', '-')
+            if agg_name not in facet_results:
                 continue
-            terms = facet_results[temp_field][temp_field]['buckets']
+            terms = facet_results[agg_name][agg_name]['buckets']
             if len(terms) < 2:
                 continue
             result['facets'].append({
                 'field': field,
-                'title': facet_title,
+                'title': facet['title'],
                 'terms': terms,
-                'total': facet_results[temp_field]['doc_count']
+                'total': facet_results[agg_name]['doc_count']
             })
 
-    if search_type == 'experiment':
-        for facet in results['aggregations']['assembly']['assembly']['buckets']:
-            if facet['doc_count'] > 0:
-                hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
-                hub = hub.replace('&', ',,')
-                hgConnect = 'http://genome.ucsc.edu/cgi-bin/hgHubConnect?hgHub_do_redirect=on&hgHubConnect.remakeTrackHub=on&hgHub_do_firstDb=1&'
-                result['batch_hub'] = hgConnect + '&'.join([
-                    'hubUrl=' + hub
-                ])
-                break
+    if search_type == 'experiment' and any(
+            facet['doc_count'] > 0
+            for facet in results['aggregations']['assembly']['assembly']['buckets']):
+        search_params = request.query_string.replace('&', ',,')
+        hub = request.route_url('batch_hub', search_params=search_params, txt='hub.txt')
+        result['batch_hub'] = hgConnect + hub
 
     # Loading result rows
     hits = results['hits']['hits']
@@ -320,8 +296,6 @@ def search(context, request, search_type=None):
 
     # Adding total
     result['total'] = results['hits']['total']
-    if len(result['@graph']):
-        result['notification'] = 'Success'
-    else:
-        result['notification'] = 'No results found'
+    result['notification'] = 'Success' if result['total'] else 'No results found'
+
     return result
