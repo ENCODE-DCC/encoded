@@ -1,6 +1,8 @@
 language: python
 python:
   - "2.7"
+addons:
+  sauce_connect: true
 env:
   global:
   - secure: |-
@@ -11,20 +13,9 @@ env:
       WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
       SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
       ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
-  - CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
-  - CONNECT_DOWNLOAD=Sauce_Connect.zip
-  - CONNECT_LOG=sauce_connect.log
-  - READY_FILE=connect.ready
   - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 before_install:
   - whereis elasticsearch
-  - curl $CONNECT_URL > $CONNECT_DOWNLOAD
-  - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
-  - >
-    java -jar Sauce-Connect.jar --readyfile $READY_FILE
-    --logfile $CONNECT_LOG
-    --tunnel-identifier $TRAVIS_JOB_NUMBER
-    $SAUCE_USERNAME $SAUCE_ACCESS_KEY > sauce-connect.log &
   - virtualenv clean-python
   - source clean-python/bin/activate
   - pip install -U setuptools
@@ -36,8 +27,6 @@ before_install:
 install:
   - python bootstrap.py -v 2.2.1
   - bin/buildout
-before_script:
-  - while [ ! -f $READY_FILE ]; do sleep .5; done
 script:
   - npm test
   - >
@@ -49,7 +38,7 @@ script:
     --browser-arg-int wait_time 10
     --browser 'Chrome'
 after_script:
-  - export SAUCE_JOB_ID=`grep -m 1 /session/ $CONNECT_LOG | cut -d / -f 7`
+  - export SAUCE_JOB_ID=`grep -m 1 /session/ ./sauce_connect.log | cut -d / -f 7`
   - export SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
   - >
     curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}"
