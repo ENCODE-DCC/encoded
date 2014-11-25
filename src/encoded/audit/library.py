@@ -25,14 +25,14 @@ def audit_library_nucleic_acid(value, system):
     if value['status'] in ['deleted']:
         return
 
-    # This next check should be redundant
-    if 'nucleic_acid_term_name' not in value or 'nucleic_acid_term_id' not in value:
-        detail = '{} missing nucleic_acid_term_name'.format(value['accession'])
-        raise AuditFailure('missing molecule', detail, level='ERROR')
-
     expected = moleculeDict[value['nucleic_acid_term_name']]
     if expected != value['nucleic_acid_term_id']:
-        detail = '{} is not {}'.format(value['nucleic_acid_term_name'], value['nucleic_acid_term_id'])
+        detail = 'Library {} has nucleic_acid_term_name "{}" and nucleic_acid_term_id "{}". However {} is {}'.format(
+            value['accession'],
+            value['nucleic_acid_term_name'],
+            value['nucleic_acid_term_id'],
+            value['nucleic_acid_term_id'],
+            expected)
         raise AuditFailure('molecule mismatch', detail, level='ERROR')
 
 
@@ -54,7 +54,7 @@ def audit_library_documents(value, system):
 
     for method in list_of_methods:
         if value.get(method) == "see document" and value['documents'] == []:
-            detail = 'library ({}) has no document'.format(value['accession'])
+            detail = 'Library {} has a method that specifies "see document" yet has no document'.format(value['accession'])
             raise AuditFailure('missing document', detail, level='STANDARDS_FAILURE')
 
 
@@ -93,7 +93,7 @@ def audit_library_RNA_size_range(value, system):
     RNAs = ['SO:0000356', 'SO:0000871']
 
     if (value['nucleic_acid_term_id'] in RNAs) and ('size_range' not in value):
-        detail = 'RNA library ({}) missing size_range'.format(value['accession'])
+        detail = 'RNA library {} requires a value for size_range'.format(value['accession'])
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
 
@@ -113,18 +113,22 @@ def audit_library_depleted_in(value, system):
         return
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
+        detail = 'Library {} has depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
+            value['accession'])
         yield AuditFailure('depleted_in length mismatch', detail, level='ERROR')
 
     for i, dep_term in enumerate(value['depleted_in_term_id']):
         if dep_term == value['nucleic_acid_term_id']:
-            detail = '{} library ({}) is depleted in {}'.format(value['depleted_in_term_name'][i],
-                                                                value['accession'],
-                                                                value['nucleic_acid_term_name'][i])
-            yield AuditFailure('invalid depleted_in', detail, level='ERROR')
+            detail = 'Library {} of type {} cannot be depleted in {}'.format(
+                value['accession'],
+                value['nucleic_acid_term_id'],
+                value['depleted_in_term_id'][i])
+            yield AuditFailure('invalid depleted_in_term_id', detail, level='ERROR')
 
-        if moleculeDict[value['depleted_in_term_name'][i]] != value['depleted_in_term_id'][i]:
-            detail = 'Library ({}) has mismatch {} - {}'.format(value['accession'],
-                                                                value['depleted_in_term_name'][i],
-                                                                value['depleted_in_term_id'][i])
-            yield AuditFailure('depleted_in term mismatch', detail, level='ERROR')
+        expected = moleculeDict[value['depleted_in_term_name'][i]]
+        if expected != value['depleted_in_term_id'][i]:
+            detail = 'Library {} has mismatch between {} - {}'.format(
+                value['accession'],
+                value['depleted_in_term_name'][i],
+                value['depleted_in_term_id'][i])
+            yield AuditFailure('depleted_in_term mismatch', detail, level='ERROR')

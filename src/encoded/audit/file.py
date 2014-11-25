@@ -23,8 +23,9 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
-        detail = '{} is pair {} and missing paired_with'.format(value['accession'],
-                                                                value['paired_end'])
+        detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
+            value['accession'],
+            value['paired_end'])
         raise AuditFailure('missing paired_with', detail, level='ERROR')
 
     # Would love to then check to see if the files shared the same replicate
@@ -37,47 +38,17 @@ def audit_file_size(value, system):
         return
 
     if 'file_size' not in value:
-        detail = '{} missing file_size'.format(value['accession'])
+        detail = 'File {} requires a value for file_size'.format(value['accession'])
         raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
 
 
 @audit_checker('file')
-def audit_file_status(value, system):
-
-    file_status = value.get('status')
-
-    if file_status == 'deleted':
-        return
-
-    if 'dataset' not in value:
-        detail = 'missing dataset'
-        raise AuditFailure('missing dataset', detail, level='ERROR')
-
-    # Here I am trying to get at the dataset object that is a part of file.
-    # I would like to compared its status to that of the file to determine 
-    # a mismatch, howeverm this is not working as it does in the upgrade
-    # I think that we would need to affect the imbedding but then that gets 
-    # circular 
-
-    #context = system['context']
-    #root = find_root(context)
-    #dataset = root.get_by_uuid(value['dataset'])
-
-    #dataset_status = dataset.get('status')
-
-    #if file_status == 'released' and dataset_status != 'released':
-    #    detail = '{} file - {} dataset'.format(file_status, dataset_status)
-    #    raise AuditFailure('status mismatch', detail, level='ERROR')
-
-    #if file_status in current_statuses and dataset_status in not_current_statuses:
-    #    detail = '{} file - {} dataset'.format(file_status, dataset_status)
-    #    raise AuditFailure('status mismatch', detail, level='ERROR')
-
-
-@audit_checker('file')
 def audit_file_output_type(value, system):
+    '''
+    The differing RFA's will have differeing accesptable output_types
+    '''
 
-    if value.get('status') == 'deleted':
+    if value.get('status') in ['deleted']:
         return
 
     undesirable_output_type = [
@@ -130,5 +101,7 @@ def audit_file_output_type(value, system):
 
     #if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
-            detail = '{}'.format(value['output_type'])
+            detail = 'File {} has output_type "{}" which is not a standard value'.format(
+                value['accession'],
+                value['output_type'])
             raise AuditFailure('undesirable output type', detail, level='DCC_ACTION')

@@ -37,7 +37,7 @@ def audit_biosample_term(value, system):
     Biosample_term_name should match biosample_term_id.
     '''
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted']:
         return
 
     if 'biosample_term_id' not in value:
@@ -48,30 +48,48 @@ def audit_biosample_term(value, system):
     term_name = value.get('biosample_term_name')
 
     if term_id.startswith('NTR:'):
-        detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
+        detail = 'Biosample {} has a New Term Request {} - {}'.format(
+            value['accession'],
+            term_id,
+            term_name)
         raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
-        detail = '{} has {} not in ontology'.format(value['accession'])
-        raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
+        detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
+            value['accession'],
+            term_id)
+        raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = '{} has {} - {} - {}'.format(value['accession'],
-                                              term_id, term_name, ontology_term_name)
+        detail = 'Biosample {} has biosample_term_id = {} and biosample_term_name = {}. However, {} is {}'.format(
+            value['accession'],
+            term_id,
+            term_name,
+            term_id,
+            ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='DCC_ACTION')
 
 
 @audit_checker('biosample')
 def audit_biosample_culture_date(value, system):
-    if value['status'] == 'deleted':
+    '''
+    A culture_harvest_date should not precede
+    a culture_start_date.
+    This should move to the schema.
+    '''
+
+    if value['status'] in ['deleted']:
         return
 
     if ('culture_start_date' not in value) or ('culture_harvest_date' not in value):
         return
 
     if value['culture_harvest_date'] <= value['culture_start_date']:
-        detail = 'culture_harvest_date precedes culture_start_date'
+        detail = 'Biosample {} has a culture_harvest_date {} which precedes culture_start_date {}'.format(
+            value['accession'],
+            value['culture_harvest_date'],
+            value['culture_start_date'])
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
 
@@ -82,20 +100,23 @@ def audit_biosample_donor(value, system):
     The organism of donor and biosample should match.
     Pooled_from biosamples do not need donors??
     '''
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted']:
         return
 
     if ('donor' not in value) and (value['pooled_from']):
         return
 
     if ('donor' not in value) and (not value['pooled_from']):
-        detail = 'Biosample ({}) is missing donor'.format(value['accession'])
+        detail = 'Biosample {} requires a donor'.format(value['accession'])
         raise AuditFailure('missing donor', detail, level='ERROR')
         return
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
-        detail = 'biosample and donor organism mismatch'
+        detail = 'Biosample {} has organism {} yet its donor {} has organism {}. Biosamples require a donor of the same species'.format(
+            value['accession'],
+            value['organism']['name'],
+            donor['organism']['name'])
         raise AuditFailure('organism mismatch', detail, level='ERROR')
 
 
@@ -106,7 +127,7 @@ def audit_biosample_subcellular_term_match(value, system):
     should be concordant. This should be a calculated field
     If one exists the other should. This should be handled in the schema.
     '''
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted']:
         return
 
     if ('subcellular_fraction_term_name' not in value) or ('subcellular_fraction_term_id' not in value):
@@ -133,7 +154,8 @@ def audit_biosample_depleted_term_match(value, system):
         return
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = '{} has depleted_in_term_name and depleted_in_term_id totals that do not match'.format(value['accession'])
+        detail = 'Biosample {} has depleted_in_term_name array and depleted_in_term_id array of differeing lengths'.format(
+            value['accession'])
         raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
         return
 
@@ -153,9 +175,9 @@ def audit_biosample_transfection_type(value, system):
         return
 
     if (value['rnais']) and ('transfection_type' not in value):
-        detail = '{} has RNAi but is missing transfection_type'.format(value['accession'])
+        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['accession'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
     if (value['constructs']) and ('transfection_type' not in value):
-        detail = '{} has contruct but is missing transfection_type'.format(value['accession'])
+        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['accession'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
