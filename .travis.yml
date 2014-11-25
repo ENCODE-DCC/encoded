@@ -33,7 +33,7 @@ script:
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
-      bin/test -v -v --timeout=200 --remote-webdriver -m "bdd"
+      bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short
         --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"
