@@ -1,10 +1,9 @@
 language: python
 python:
   - "2.7"
-addons:
-  sauce_connect: true
 env:
   global:
+    - SC_SOURCE_URL="https://gist.githubusercontent.com/henrikhodne/9322897/raw/sauce-connect.sh"
     - secure: |-
         CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
         cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -27,6 +26,8 @@ before_install:
 install:
   - python bootstrap.py -v 2.2.5
   - bin/buildout -c buildout-travis.cfg
+before_script:
+  - if test -n "$BROWSER"; then curl -L "$SC_SOURCE_URL" | bash; fi
 script:
   - if test -z "$BROWSER"; then npm test; fi
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
