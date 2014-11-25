@@ -4,6 +4,8 @@ from ..contentbase import Item, embed
 from ..renderers import make_subrequest
 from collections import OrderedDict
 import cgi
+import urlparse
+import urllib
 
 TAB = '\t'
 NEWLINE = '\n'
@@ -12,7 +14,11 @@ GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed']
-FILE_QUERY = '&files.file_format=bigWig&files.file_format=broadPeak&files.file_format=narrowPeak&files.file_format=bigBed'
+FILE_QUERY = {
+    'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
+    'limit': ['all'],
+    'frame': ['embedded']
+}
 
 
 def render(data):
@@ -228,54 +234,59 @@ def generate_batch_hubs(request):
 
     results = {}
     txt = request.matchdict['txt']
-    params = request.matchdict['search_params']
-    params = params.replace(',,', '&')
+    param_list = urlparse.parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
 
     if len(request.matchdict) == 3:
-        assembly = request.matchdict['assembly']
-        params = params + FILE_QUERY + '&limit=all&frame=embedded&assembly=' + assembly
-        subreq = make_subrequest(request, '/search/?%s' % params)
+
+        # Should generate a HTML page for requests other than trackDb.txt
+        if txt != TRACKDB_TXT:
+            data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+            return data_policy
+        
+        assembly = str(request.matchdict['assembly'])
+        params = dict(param_list, **FILE_QUERY)
+        params['assembly'] = [assembly]
+        subreq = make_subrequest(request, '/search/?%s' % urllib.urlencode(params, True))
         subreq.override_renderer = 'null_renderer'
         try:
             results = request.invoke_subrequest(subreq)
         except Exception as e:
             print e
-        if txt == TRACKDB_TXT:
-            trackdb = ''
-            for i, experiment in enumerate(results['@graph']):
-                if i < 5:
-                    if i == 0:
-                        trackdb = generate_trackDb(experiment, 'full')
-                    else:
-                        trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full')
+        trackdb = ''
+        for i, experiment in enumerate(results['@graph']):
+            if i < 5:
+                if i == 0:
+                    trackdb = generate_trackDb(experiment, 'full')
                 else:
-                    trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'hide')
-            return trackdb
-        else:
-            # generate HTML for each experiment
-            report = ''
-            data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-            for experiment in results['@graph']:
-                report = report + '<br/><br/>' + generate_html(experiment, request)
-            return report + data_policy
+                    trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full')
+            else:
+                trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'hide')
+        return trackdb
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        subreq = make_subrequest(request, '/search/?%s' % params)
+        subreq = make_subrequest(request, '/search/?%s' % urllib.urlencode(param_list, True))
         subreq.override_renderer = 'null_renderer'
         try:
             results = request.invoke_subrequest(subreq)
         except Exception as e:
             print e
         g_text = ''
-        for facet in results['facets']:
-            if facet['field'] == 'assembly':
-                for term in facet['terms']:
-                    if term['doc_count'] != 0:
-                        if g_text == '':
-                            g_text = NEWLINE.join(get_genomes_txt(term['key']))
-                        else:
-                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['key']))
+        if 'assembly' in param_list:
+            for assembly in param_list.get('assembly'):
+                if g_text == '':
+                    g_text = NEWLINE.join(get_genomes_txt(assembly))
+                else:
+                    g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(assembly))
+        else:
+            for facet in results['facets']:
+                if facet['field'] == 'assembly':
+                    for term in facet['terms']:
+                        if term['doc_count'] != 0:
+                            if g_text == '':
+                                g_text = NEWLINE.join(get_genomes_txt(term['key']))
+                            else:
+                                g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['key']))
         return g_text
 
 

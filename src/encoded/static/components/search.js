@@ -195,7 +195,7 @@ var statusOrder = globals.statusOrder;
             lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
-                <li>
+                <li className="clearfix">
                     <div>
                         {this.renderActions()}
                         <div className="pull-right search-meta">
@@ -238,7 +238,7 @@ var statusOrder = globals.statusOrder;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li>
+            return (<li className="clearfix">
                         <div>
                             {this.renderActions()}
                             <div className="pull-right search-meta">

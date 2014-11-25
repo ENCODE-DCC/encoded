@@ -159,4 +159,3 @@ var EditForm = module.exports.EditForm = React.createClass({
 
 
 globals.content_views.register(ItemEdit, 'item', 'edit-json');
-globals.content_views.register(ItemEdit, 'item', 'edit');  // XXX forms
