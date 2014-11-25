@@ -45,7 +45,7 @@ def audit_file_size(value, system):
 @audit_checker('file')
 def audit_file_output_type(value, system):
     '''
-    The differing RFA's will have differeing accesptable output_types
+    The differing RFA's will have differeing acceptable output_types
     '''
 
     if value.get('status') in ['deleted']:
@@ -99,7 +99,7 @@ def audit_file_output_type(value, system):
         'WaveSignal',
         ]
 
-    #if value['dataset']['award']['rfa'] != 'ENCODE3':
+    # if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
             detail = 'File {} has output_type "{}" which is not a standard value'.format(
                 value['accession'],

@@ -62,12 +62,11 @@ def audit_biosample_term(value, system):
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = 'Biosample {} has biosample_term_id = {} and biosample_term_name = {}. However, {} is {}'.format(
+        detail = 'Biosample {} has a mismatch between biosample_term_id "{}" and biosample_term_name "{}"'.format(
             value['accession'],
             term_id,
             term_name,
-            term_id,
-            ontology_term_name)
+            )
         raise AuditFailure('term name mismatch', detail, level='DCC_ACTION')
 
 
@@ -86,7 +85,7 @@ def audit_biosample_culture_date(value, system):
         return
 
     if value['culture_harvest_date'] <= value['culture_start_date']:
-        detail = 'Biosample {} has a culture_harvest_date {} which precedes culture_start_date {}'.format(
+        detail = 'Biosample {} has a culture_harvest_date {} which precedes the culture_start_date {}'.format(
             value['accession'],
             value['culture_harvest_date'],
             value['culture_start_date'])
@@ -136,8 +135,10 @@ def audit_biosample_subcellular_term_match(value, system):
 
     expected_name = term_mapping[value['subcellular_fraction_term_name']]
     if expected_name != (value['subcellular_fraction_term_id']):
-        detail = '{} - {}'.format(value['subcellular_fraction_term_name'],
-                                  value['subcellular_fraction_term_id'])
+        detail = 'Biosample {} has mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
+            value['accession'],
+            value['subcellular_fraction_term_name'],
+            value['subcellular_fraction_term_id'])
         raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
 
 
@@ -155,14 +156,17 @@ def audit_biosample_depleted_term_match(value, system):
         return
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'Biosample {} has depleted_in_term_name array and depleted_in_term_id array of differeing lengths'.format(
+        detail = 'Biosample {} has depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['accession'])
         raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
         return
 
     for i, dep_term in enumerate(value['depleted_in_term_name']):
         if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
-            detail = '{} - {}'.format(dep_term, value['depleted_in_term_id'][i])
+            detail = 'Biosample {} has a mismatch between {} and {}'.format(
+                value['accession'],
+                dep_term,
+                value['depleted_in_term_id'][i])
             raise AuditFailure('depleted_in term mismatch', detail, level='ERROR')
 
 
