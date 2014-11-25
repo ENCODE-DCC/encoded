@@ -82,6 +82,7 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
+    search_audit = request.has_permission('search_audit')
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -139,11 +140,15 @@ def search(context, request, search_type=None):
     elif frame in ['embedded', 'object']:
         fields = [frame + '.*']
     elif len(doc_types) == 1 and 'columns' not in (root[doc_types[0]].schema or ()):
-        frame = 'object'
+        frame = 'columns'
         fields = ['object.*']
+        if search_audit:
+            fields.append('audit.*')
     else:
         frame = 'columns'
         fields = {'object.*', 'embedded.@id', 'embedded.@type'}
+        if search_audit:
+            fields.add('audit.*')
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
             if collection.schema is None:
@@ -217,7 +222,7 @@ def search(context, request, search_type=None):
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets.extend(root[doc_types[0]].schema['facets'].items())
 
-    if request.has_permission('search_audit'):
+    if search_audit:
         facets.append(('audit.category', {'title': 'Audit category'}))
 
     for field, _ in facets:
@@ -290,9 +295,12 @@ def search(context, request, search_type=None):
         for hit in hits:
             item_type = hit['_source']['embedded']['@type'][0]
             if 'columns' in root[item_type].schema:
-                result['@graph'].append(flatten_dict(hit['_source']['embedded']))
+                item = flatten_dict(hit['_source']['embedded'])
             else:
-                result['@graph'].append(hit['_source']['object'])
+                item = hit['_source']['object']
+            if 'audit' in hit['_source']:
+                item['audit'] = hit['_source']['audit']
+            result['@graph'].append(item)
 
     # Adding total
     result['total'] = results['hits']['total']
