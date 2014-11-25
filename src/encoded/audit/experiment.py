@@ -293,7 +293,7 @@ def audit_experiment_platform(value, system):
     for ff in value['files']:
         platform = ff.get('platform')
 
-        if ff['format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
+        if ff['file_format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
             continue
 
         if platform is None:
