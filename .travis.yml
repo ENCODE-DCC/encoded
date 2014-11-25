@@ -32,7 +32,7 @@ before_install:
   - elasticsearch -v
 install:
   - python bootstrap.py -v 2.2.5
-  - bin/buildout
+  - bin/buildout -c buildout-travis.cfg
 before_script:
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script:
