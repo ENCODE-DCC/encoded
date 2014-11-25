@@ -77,6 +77,11 @@ class File(Collection):
                 '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
             },
         ]
+        embedded = [
+            'pipeline',
+            'step',
+            'step.analysis_step',
+        ]
         template = {
             'href': {
                 '$value': '{item_uri}@@download/{accession}{file_extension}',

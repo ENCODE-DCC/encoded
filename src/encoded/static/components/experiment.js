@@ -489,7 +489,7 @@ var Graph = React.createClass({
         // Loop over each analysis step to insert it into the graph
         this.props.files.forEach(function(file) {
             // Render each node. Set node ID to analysis step object ID so we can find it later
-            g.setNode(file['@id'], {label: file.accession, rx: 4, ry: 4, class: 'analysis-step' + (this.state.infoNode === file['@id'] ? ' active' : '')});
+            g.setNode(file['@id'], {label: file.accession + ' (' + file.output_type + ')', rx: 4, ry: 4, class: 'analysis-step' + (this.state.infoNode === file['@id'] ? ' active' : '')});
 
             // If the node has parents, render the edges to those parents
             if (file.derived_from && file.derived_from.length) {
