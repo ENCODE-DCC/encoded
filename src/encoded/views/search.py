@@ -293,7 +293,7 @@ def search(context, request, search_type=None):
         result['@graph'] = [hit['_source'][frame] for hit in hits]
     else:  # columns
         for hit in hits:
-            item_type = hit['_source']['embedded']['@type'][0]
+            item_type = hit['_type']
             if 'columns' in root[item_type].schema:
                 item = flatten_dict(hit['_source']['embedded'])
             else:
