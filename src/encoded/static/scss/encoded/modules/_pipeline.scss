@@ -1,24 +1,31 @@
+$pipeline-node-types:
+    (file, #FFF5BA),
+    (analysis-step, #D3E9FF);
+
+@each $node-type, $color in $pipeline-node-types {
+    // Audit icons
+    g.pipeline-node-#{$node-type} {
+        fill: $color;
+
+        &.active {
+            fill: desaturate(darken($color, 20%), 30%);
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        text {
+            fill: #000;
+            font-weight: normal;
+        }
+    }
+}
+
 g.node {
     rect {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
-    }
-}
-
-g.analysis-step {
-    fill: #FFF5BA;
-
-    &.active {
-        fill: #b9cc8a;
-    }
-
-    &:hover {
-        cursor: pointer;
-    }
-
-    text {
-        fill: #000;
-        font-weight: normal;
     }
 }
 
@@ -36,9 +43,6 @@ g.edgePath {
         display: block;
         margin: 0 auto;
     }
-}
-
-.graph-node-info {
 }
 
 .select-note {

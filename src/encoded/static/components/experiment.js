@@ -489,12 +489,17 @@ var Graph = React.createClass({
         // Loop over each analysis step to insert it into the graph
         this.props.files.forEach(function(file) {
             // Render each node. Set node ID to analysis step object ID so we can find it later
-            g.setNode(file['@id'], {label: file.accession + ' (' + file.output_type + ')', rx: 4, ry: 4, class: 'analysis-step' + (this.state.infoNode === file['@id'] ? ' active' : '')});
+            g.setNode(file['@id'], {label: file.accession + ' (' + file.output_type + ')', rx: 4, ry: 4,
+                class: 'pipeline-node-file' + (this.state.infoNode === file['@id'] ? ' active' : '')});
 
-            // If the node has parents, render the edges to those parents
-            if (file.derived_from && file.derived_from.length) {
+            // If the node has parents, render the edges to the analysis step
+            if (file.derived_from && file.derived_from.length && file.step) {
+                var step = file.step.analysis_step;
+                g.setNode(step['@id'] + file['@id'], {label: step.analysis_step_types.join(', '), rx: 4, ry: 4,
+                    class: 'pipeline-node-analysis-step' + (this.state.infoNode === (step['@id'] + file['@id']) ? ' active' : '')});
+                g.setEdge(file['@id'], step['@id'] + file['@id']);
                 file.derived_from.forEach(function(derived) {
-                    g.setEdge(derived, file['@id']);
+                    g.setEdge(step['@id'] + file['@id'], derived);
                 });
             }
         }, this);
@@ -529,7 +534,6 @@ var Graph = React.createClass({
         this.drawGraph(el);
 
         // Add hover event listeners to each node rendering. Node's ID is its ENCODE object ID
-        var handleMouseEnter = this.handleMouseEnter;
         var reactThis = this;
         svg.selectAll("g.node").each(function(nodeId) {
             this.addEventListener('click', function(e) {

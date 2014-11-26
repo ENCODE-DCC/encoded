@@ -109,6 +109,8 @@ class Experiment(Dataset):
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',
+            'files.step',
+            'files.step.analysis_step',
             'target.organism',
         ]
         rev = {
