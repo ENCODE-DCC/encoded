@@ -27,7 +27,7 @@ install:
   - bin/buildout -c buildout-travis.cfg
 before_script:
   - >
-    if test -n "$BROWSER";
+    if test -n "$BROWSER"; then
       CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
       CONNECT_DOWNLOAD=Sauce_Connect.zip
       curl $CONNECT_URL > $CONNECT_DOWNLOAD
