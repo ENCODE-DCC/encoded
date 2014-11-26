@@ -57,7 +57,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '');
 
             return (
-                <button className={indicatorClass} role="group" aria-label="Audit indicators" onClick={this.context.auditStateToggle}>
+                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.key.replace(/\W/g, '')} onClick={this.context.auditStateToggle}>
                     {sortedAuditLevels.map(function(level) {
                         // Calculate the CSS class for the icon
                         var level_name = auditCounts[level].level_name;
@@ -95,7 +95,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 
         if (audits_sorted && this.context.auditDetailOpen) {
             return (
-                <div className="audit-details" id="audit-details" aria-hidden={!this.context.auditDetailOpen}>
+                <div className="audit-details" id={this.props.key.replace(/\W/g, '')} aria-hidden={!this.context.auditDetailOpen}>
                     {audits_sorted.map(function(audit, i) {
                         var level = audit.level_name.toLowerCase();
                         var iconClass = 'icon audit-icon-' + level;
