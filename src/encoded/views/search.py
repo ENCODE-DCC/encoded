@@ -54,17 +54,6 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-def flatten_dict(d):
-    def items():
-        for key, value in d.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in flatten_dict(value).items():
-                    yield key + "." + subkey, subvalue
-            else:
-                yield key, value
-    return dict(items())
-
-
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
@@ -294,12 +283,12 @@ def search(context, request, search_type=None):
     if frame in ['embedded', 'object'] and not len(fields_requested):
         result['@graph'] = [hit['_source'][frame] for hit in hits]
     elif fields_requested:
-        result['@graph'] = [flatten_dict(hit['_source']['embedded']) for hit in hits]
+        result['@graph'] = [hit['_source']['embedded'] for hit in hits]
     else:  # columns
         for hit in hits:
             item_type = hit['_type']
             if 'columns' in root[item_type].schema:
-                item = flatten_dict(hit['_source']['embedded'])
+                item = hit['_source']['embedded']
             else:
                 item = hit['_source']['object']
             if 'audit' in hit['_source']:
