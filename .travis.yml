@@ -30,13 +30,15 @@ before_script:
     if test -n "$BROWSER"; then
       CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
       CONNECT_DOWNLOAD=Sauce_Connect.zip
+      SC_READYFILE=sauce-connect-ready-$RANDOM
+      SC_LOGFILE=$HOME/sauce-connect.log
       curl $CONNECT_URL > $CONNECT_DOWNLOAD
       unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
-      java -jar Sauce-Connect.jar --readyfile $READY_FILE \
-        --logfile $CONNECT_LOG \
+      java -jar Sauce-Connect.jar --readyfile $SC_READYFILE \
+        --logfile $SC_LOGFILE \
         --tunnel-identifier $TRAVIS_JOB_NUMBER \
-        $SAUCE_USERNAME $SAUCE_ACCESS_KEY > $HOME/sauce_connect.log &
-      while [ ! -f $READY_FILE ]; do sleep .5; done
+        $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+      while [ ! -f $SC_READYFILE ]; do sleep .5; done
     fi
 script:
   - if test -z "$BROWSER"; then npm test; fi
