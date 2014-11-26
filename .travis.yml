@@ -59,6 +59,6 @@ after_script:
       SAUCE_JOB_ID=`grep -m 1 /session/ "$HOME/sauce-connect.log" | cut -d / -f 7`
       SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
       curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}" \
-        "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
+        "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID" > /dev/null
       echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
     fi
