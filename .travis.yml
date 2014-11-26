@@ -37,7 +37,7 @@ before_script:
       java -jar Sauce-Connect.jar --readyfile $SC_READYFILE \
         --logfile $SC_LOGFILE \
         --tunnel-identifier $TRAVIS_JOB_NUMBER \
-        $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+        $SAUCE_USERNAME $SAUCE_ACCESS_KEY > /dev/null &
       while [ ! -f $SC_READYFILE ]; do sleep .5; done
     fi
 script:
