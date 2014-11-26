@@ -19,6 +19,35 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "age":  {
+            "oneOf": [
+                {
+                    "required": ["age_units"],
+                    "properties": {
+                        "age_units": {
+                            "enum": ["year"]
+                        },
+                        "age": {
+                            "pattern": "^([1-8]?\\d)|(unknown)|(90 or above)$"
+                        }
+                    }
+                },
+                {
+                    "required": ["age_units"],
+                    "properties": {
+                        "age_units": {
+                            "enum": ["day", "week","month"]
+                        },
+                        "age": {
+                            "pattern":  "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+                        }
+                    }
+                }
+            ]
+        }
+
+    },
     "properties": {
         "schema_version": {
             "default": "2"
@@ -31,7 +60,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)|([1-8]?\\d)|(90 or above)$"
         },
         "age_units": {
             "title": "Donor age units",
