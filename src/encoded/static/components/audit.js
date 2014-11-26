@@ -82,7 +82,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
 var AuditDetail = module.exports.AuditDetail = React.createClass({
     contextTypes: {
-        auditDetailOpen: React.PropTypes.string
+        auditDetailOpen: React.PropTypes.bool
     },
 
     render: function() {

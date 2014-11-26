@@ -9,9 +9,13 @@ var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
+var audit = require('./audit');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
@@ -52,22 +56,29 @@ var statusOrder = globals.statusOrder;
     };
 
     var Item = module.exports.Item = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var title = globals.listing_titles.lookup(result)({context: result});
             var item_type = result['@type'][0];
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
-                            <div className="accession">
-                                <a href={result['@id']}>{title}</a>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        {result.accession ?
+                            <div className="pull-right type sentence-case search-meta">
+                                <p>{item_type}: {' ' + result['accession']}</p>
+                                <AuditIndicators audits={result.audit} />
                             </div>
+                        : null}
+                        <div className="accession">
+                            <a href={result['@id']}>{title}</a>
                         </div>
                         <div className="data-row">
                             {result.description}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -158,7 +169,7 @@ var statusOrder = globals.statusOrder;
     });
 
     var Antibody = module.exports.Antibody = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -195,12 +206,13 @@ var statusOrder = globals.statusOrder;
             lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
-                <li className="clearfix">
-                    <div>
+                <li>
+                    <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
+                            <AuditIndicators audits={result.audit} />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
@@ -215,11 +227,12 @@ var statusOrder = globals.statusOrder;
                                 );
                             })}
                         </div>
+                        <div className="data-row">
+                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                            <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
-                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
-                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -227,7 +240,7 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Antibody, 'antibody_lot');
 
     var Biosample = module.exports.Biosample = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -238,21 +251,22 @@ var statusOrder = globals.statusOrder;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li className="clearfix">
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Biosample</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['biosample_term_name'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {separator + lifeStage + age + ageUnits + ')'}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Biosample</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['biosample_term_name'] + ' ('}
+                                <em>{result['organism.scientific_name']}</em>
+                                {separator + lifeStage + age + ageUnits + ')'}
+                            </a>
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
@@ -288,6 +302,8 @@ var statusOrder = globals.statusOrder;
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -296,7 +312,7 @@ var statusOrder = globals.statusOrder;
 
 
     var Experiment = module.exports.Experiment = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -336,26 +352,27 @@ var statusOrder = globals.statusOrder;
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Experiment</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    {name || lifeStage || age || ageUnit ?
-                                        <span>
-                                            {' ('}
-                                            {name ? <em>{name}</em> : ''}
-                                            {separator + lifeStage + age + ageUnit + ')'}
-                                        </span>
-                                    : ''}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Experiment</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
+                                {name || lifeStage || age || ageUnit ?
+                                    <span>
+                                        {' ('}
+                                        {name ? <em>{name}</em> : ''}
+                                        {separator + lifeStage + age + ageUnit + ')'}
+                                    </span>
+                                : ''}
+                            </a>
                         </div>
                         <div className="data-row">
                             {result['target.label'] ?
@@ -373,6 +390,8 @@ var statusOrder = globals.statusOrder;
                             <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
                             <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -380,20 +399,21 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Experiment, 'experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Dataset</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result['description']}</a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Dataset</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <AuditIndicators audits={result.audit} />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result['description']}</a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ?
@@ -405,6 +425,8 @@ var statusOrder = globals.statusOrder;
                             <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
                             <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -412,23 +434,24 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Dataset, 'dataset');
 
     var Target = module.exports.Target = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Target</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['label'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {')'}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Target</p>
+                            <AuditIndicators audits={result.audit} />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['label'] + ' ('}
+                                <em>{result['organism.scientific_name']}</em>
+                                {')'}
+                            </a>
                         </div>
                         <div className="data-row">
                             <strong>{columns['dbxref']['title']}</strong>:
@@ -436,6 +459,8 @@ var statusOrder = globals.statusOrder;
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em> None submitted</em> }
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
@@ -444,23 +469,26 @@ var statusOrder = globals.statusOrder;
 
 
     var Image = module.exports.Image = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, ],
         render: function() {
             var result = this.props.context;
             var Attachment = image.Attachment;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Image</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result.caption}</a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Image</p>
+                            <AuditIndicators audits={result.audit} />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result.caption}</a>
                         </div>
                         <div className="data-row">
                             <Attachment context={result} />
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} />
                 </li>
             );
         }
