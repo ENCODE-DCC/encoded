@@ -33,20 +33,20 @@ script:
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
-      bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short
-        --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
-        --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
-        --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"
-        --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT"
-        --browser-arg-int wait_time 10
-        --browser "$BROWSER";
+      bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short \
+        --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
+        --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
+        --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
+        --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
+        --browser-arg-int wait_time 10 \
+        --browser "$BROWSER"
     fi
 after_script:
   - >
     if test -n "$BROWSER"; then
-      SAUCE_JOB_ID=`grep -m 1 /session/ "$HOME/sauce-connect.log" | cut -d / -f 7`;
-      SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`;
-      curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}"
-        "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID";
-      echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID";
+      SAUCE_JOB_ID=`grep -m 1 /session/ "$HOME/sauce-connect.log" | cut -d / -f 7`
+      SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
+      curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}" \
+        "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
+      echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
     fi
