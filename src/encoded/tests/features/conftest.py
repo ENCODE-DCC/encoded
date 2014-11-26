@@ -66,7 +66,6 @@ def set_webdriver(request, context):
     context.default_browser = request.config.option.browser
     context.remote_webdriver = request.config.option.remote_webdriver
     context.browser_args = dict(request.config.option.browser_args or ())
-    print 'browser_args: %r' % context.browser_args
 
 
 @pytest.mark.fixture_cost(1000)

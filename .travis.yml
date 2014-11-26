@@ -3,7 +3,7 @@ python:
   - "2.7"
 env:
   global:
-    - SC_SOURCE_URL="https://gist.githubusercontent.com/henrikhodne/9322897/raw/sauce-connect.sh"
+    - SC_SOURCE_URL="https://gist.githubusercontent.com/lrowe/aa0d1700ecd45212526f/raw/sauce-connect.sh"
     - secure: |-
         CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
         cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
