@@ -3,7 +3,6 @@ python:
   - "2.7"
 env:
   global:
-    - SC_SOURCE_URL="https://gist.githubusercontent.com/lrowe/aa0d1700ecd45212526f/raw/sauce-connect.sh"
     - secure: |-
         CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
         cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -27,7 +26,18 @@ install:
   - python bootstrap.py -v 2.2.5
   - bin/buildout -c buildout-travis.cfg
 before_script:
-  - if test -n "$BROWSER"; then curl -L "$SC_SOURCE_URL" | bash; fi
+  - >
+    if test -n "$BROWSER";
+      CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
+      CONNECT_DOWNLOAD=Sauce_Connect.zip
+      curl $CONNECT_URL > $CONNECT_DOWNLOAD
+      unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
+      java -jar Sauce-Connect.jar --readyfile $READY_FILE \
+        --logfile $CONNECT_LOG \
+        --tunnel-identifier $TRAVIS_JOB_NUMBER \
+        $SAUCE_USERNAME $SAUCE_ACCESS_KEY > $HOME/sauce_connect.log &
+      while [ ! -f $READY_FILE ]; do sleep .5; done
+    fi
 script:
   - if test -z "$BROWSER"; then npm test; fi
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
