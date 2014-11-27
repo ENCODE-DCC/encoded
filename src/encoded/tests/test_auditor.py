@@ -19,6 +19,10 @@ def yielding_checker(value, system):
         yield AuditFailure('testchecker', 'Missing checker1')
 
 
+def has_condition1(value, system):
+    return value.get('condition1')
+
+
 @pytest.fixture(params=[
     raising_checker,
     returning_checker,
@@ -28,6 +32,14 @@ def auditor(request):
     from ..auditor import Auditor
     auditor = Auditor()
     auditor.add_audit_checker(request.param, 'test')
+    return auditor
+
+
+@pytest.fixture
+def auditor_conditions():
+    from ..auditor import Auditor
+    auditor = Auditor()
+    auditor.add_audit_checker(raising_checker, 'test', has_condition1)
     return auditor
 
 
@@ -45,6 +57,15 @@ def test_audit_failure(auditor):
     assert error.level == 0
 
 
+def test_audit_conditions(auditor_conditions):
+    assert auditor_conditions.audit({}, 'test') == []
+    value = {'condition1': True}
+    error, = auditor_conditions.audit(value, 'test')
+    assert error.detail == 'Missing checker1'
+    assert error.category == 'testchecker'
+    assert error.level == 0
+
+
 def test_declarative_config():
     from pyramid.config import Configurator
     config = Configurator()
@@ -53,7 +74,7 @@ def test_declarative_config():
     config.commit()
 
     auditor = config.registry['auditor']
-    value = {}
+    value = {'condition1': True}
     error, = auditor.audit(value, 'testing_auditor')
     assert error.detail == 'Missing checker1'
     assert error.category == 'testchecker'

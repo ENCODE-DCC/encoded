@@ -8,7 +8,11 @@ def includeme(config):
     config.scan(__name__)
 
 
-@audit_checker('testing_auditor')
+def has_condition1(value, system):
+    return value.get('condition1')
+
+
+@audit_checker('testing_auditor', condition=has_condition1)
 def checker1(value, system):
     if not value.get('checker1'):
         return AuditFailure('testchecker', 'Missing checker1')

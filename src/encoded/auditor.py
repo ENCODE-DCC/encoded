@@ -61,10 +61,10 @@ class Auditor(object):
     def __init__(self):
         self.type_checkers = {}
 
-    def add_audit_checker(self, checker, item_type):
+    def add_audit_checker(self, checker, item_type, condition=None):
         checkers = self.type_checkers.setdefault(item_type, [])
         self._order += 1  # consistent execution ordering
-        checkers.append((self._order, checker))
+        checkers.append((self._order, checker, condition))
 
     def audit(self, value, item_type, path=None, **kw):
         if isinstance(item_type, basestring):
@@ -74,7 +74,16 @@ class Auditor(object):
         errors = []
         system = {}
         system.update(kw)
-        for order, checker in sorted(checkers):
+        for order, checker, condition in sorted(checkers):
+            if condition is not None:
+                try:
+                    if not condition(value, system):
+                        continue
+                except Exception as e:
+                    detail = '%s: %r' % (checker.__name__, e)
+                    errors.append(AuditFailure('audit condition error', detail, 'ERROR'))
+                    logger.warning('audit condition error auditing %s', path, exc_info=True)
+                    continue
             try:
                 try:
                     result = checker(value, system)
@@ -99,21 +108,21 @@ class Auditor(object):
 
 
 # Imperative configuration
-def add_audit_checker(config, checker, item_type):
+def add_audit_checker(config, checker, item_type, condition=None):
     auditor = config.registry['auditor']
     config.action(None, auditor.add_audit_checker,
-                  (checker, item_type))
+                  (checker, item_type, condition))
 
 
 # Declarative configuration
-def audit_checker(item_type):
+def audit_checker(item_type, condition=None):
     """ Register an audit checker
     """
 
     def decorate(checker):
         def callback(scanner, factory_name, factory):
             scanner.config.add_audit_checker(
-                checker, item_type)
+                checker, item_type, condition)
 
         venusian.attach(checker, callback, category='auditor')
         return checker
