@@ -161,7 +161,7 @@ var Graph = React.createClass({
         var handleMouseEnter = this.handleMouseEnter;
         var reactThis = this;
         svg.selectAll("g.node").each(function(nodeId) {
-            this.addEventListener('click', function(e) {
+            globals.bindEvent(this, 'click', function(e) {
                 reactThis.handleMouseClick(e, nodeId);
             });
         });
