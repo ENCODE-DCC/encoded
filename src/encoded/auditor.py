@@ -61,16 +61,10 @@ class Auditor(object):
     def __init__(self):
         self.type_checkers = {}
 
-    def add_audit_checker(self, checker, item_type, category=None, detail=None, level=0):
-        if category is None:
-            category = 'check'
-        if detail is None:
-            detail = ''
-        if not isinstance(level, int):
-            level = _levelNames[level]
+    def add_audit_checker(self, checker, item_type):
         checkers = self.type_checkers.setdefault(item_type, [])
         self._order += 1  # consistent execution ordering
-        checkers.append((self._order, checker, category, detail, level))
+        checkers.append((self._order, checker))
 
     def audit(self, value, item_type, path=None, **kw):
         if isinstance(item_type, basestring):
@@ -80,7 +74,7 @@ class Auditor(object):
         errors = []
         system = {}
         system.update(kw)
-        for order, checker, category, detail, level in sorted(checkers):
+        for order, checker in sorted(checkers):
             try:
                 try:
                     result = checker(value, system)
@@ -89,15 +83,11 @@ class Auditor(object):
                     continue
                 if result is None:
                     continue
-                if isinstance(result, basestring):
+                if isinstance(result, AuditFailure):
                     result = [result]
                 for item in result:
                     if isinstance(item, AuditFailure):
                         errors.append(item)
-                        continue
-                    if isinstance(item, basestring):
-                        detail = item
-                        errors.append(AuditFailure(category, detail, level))
                         continue
                     raise ValueError(item)
             except Exception as e:
@@ -109,21 +99,21 @@ class Auditor(object):
 
 
 # Imperative configuration
-def add_audit_checker(config, checker, item_type, category=None, detail=None, level=0):
+def add_audit_checker(config, checker, item_type):
     auditor = config.registry['auditor']
     config.action(None, auditor.add_audit_checker,
-                  (checker, item_type, category, detail, level))
+                  (checker, item_type))
 
 
 # Declarative configuration
-def audit_checker(item_type, category=None, detail=None, level=0):
+def audit_checker(item_type):
     """ Register an audit checker
     """
 
     def decorate(checker):
         def callback(scanner, factory_name, factory):
             scanner.config.add_audit_checker(
-                checker, item_type, category, detail, level)
+                checker, item_type)
 
         venusian.attach(checker, callback, category='auditor')
         return checker

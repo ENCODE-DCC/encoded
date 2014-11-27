@@ -1,20 +1,16 @@
 import pytest
 
 
-def string_returning_checker(value, system):
-    if not value.get('checker1'):
-        return 'Missing checker1'
-
-
 def raising_checker(value, system):
     from ..auditor import AuditFailure
     if not value.get('checker1'):
         raise AuditFailure('testchecker', 'Missing checker1')
 
 
-def string_yielding_checker(value, system):
+def returning_checker(value, system):
+    from ..auditor import AuditFailure
     if not value.get('checker1'):
-        yield 'Missing checker1'
+        return AuditFailure('testchecker', 'Missing checker1')
 
 
 def yielding_checker(value, system):
@@ -24,15 +20,14 @@ def yielding_checker(value, system):
 
 
 @pytest.fixture(params=[
-    string_returning_checker,
     raising_checker,
-    string_yielding_checker,
-    string_returning_checker
+    returning_checker,
+    yielding_checker,
 ])
 def auditor(request):
     from ..auditor import Auditor
     auditor = Auditor()
-    auditor.add_audit_checker(request.param, 'test', 'testchecker')
+    auditor.add_audit_checker(request.param, 'test')
     return auditor
 
 

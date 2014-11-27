@@ -1,18 +1,21 @@
-from ..auditor import audit_checker
+from ..auditor import (
+    audit_checker,
+    AuditFailure,
+)
 
 
 def includeme(config):
     config.scan(__name__)
 
 
-@audit_checker('testing_auditor', 'testchecker')
+@audit_checker('testing_auditor')
 def checker1(value, system):
     if not value.get('checker1'):
-        return 'Missing checker1'
+        return AuditFailure('testchecker', 'Missing checker1')
 
 
-@audit_checker('testing_link_target', 'status')
+@audit_checker('testing_link_target')
 def testing_link_target_status(value, system):
     if value.get('status') == 'CHECK':
         if not len(value['reverse']):
-            return 'Missing reverse items'
+            return AuditFailure('status', 'Missing reverse items')
