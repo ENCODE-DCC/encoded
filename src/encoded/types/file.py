@@ -18,7 +18,12 @@ from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
+from urlparse import (
+    parse_qs,
+    urlparse,
+)
 import boto
+import datetime
 import json
 import time
 
@@ -194,6 +199,14 @@ def download(context, request):
 
     if proxy:
         return InternalResponse(location='/_proxy/' + location)
+
+    if asbool(request.params.get('soft')):
+        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+            'expires': datetime.datetime.fromtimestamp(expires).isoformat(),
+        }
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
