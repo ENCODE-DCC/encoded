@@ -996,9 +996,9 @@ class Collection(Mapping):
 
     def add_default_page(self, request, properties):
         root = find_root(self)
-        default_page = root['pages'].get(self.__name__)
-        if default_page is not None:
-            properties['default_page'] = item_view(default_page, request)
+        if self.__name__ in root['pages']:
+            properties['default_page'] = embed(
+                request, '/pages/%s/?frame=page' % self.__name__, as_user=True)
 
 
 def column_value(obj, column):

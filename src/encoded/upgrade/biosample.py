@@ -120,3 +120,10 @@ def biosample_6_7(value, system):
                 else:
                     value[val] = value[key]
             del value[key]
+
+@upgrade_step('biosample', '7', '8')
+def biosample_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/2456
+
+    if value.get('worm_life_stage') == 'embryonic':
+        value['worm_life_stage'] = 'mixed stage (embryonic)'

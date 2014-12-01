@@ -9,14 +9,16 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
+var audit = require('./audit');
 var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
-
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
-
 var Attachment = image.Attachment;
 
 
@@ -32,6 +34,7 @@ var Panel = function (props) {
 
 
 var Biosample = module.exports.Biosample = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -59,9 +62,18 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         });
 
+        // Build the text of the synchronization string
+        var synchText;
+        if (context.synchronization) {
+            synchText = context.synchronization +
+                (context.post_synchronization_time ?
+                    ' + ' + context.post_synchronization_time + (context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : '')
+                : '');
+        }
+
         var protocol_documents = {};
-        context.protocol_documents.forEach(function(doc, i) {
-            protocol_documents[doc['@id']] = Panel({context: doc, key: i + 1});
+        context.protocol_documents.forEach(function(doc) {
+            protocol_documents[doc['@id']] = Panel({context: doc});
         });
 
         // Make string of alternate accessions
@@ -84,11 +96,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
+                            <AuditIndicators audits={context.audit} />
                         </div>
                     </div>
                 </header>
+                <AuditDetail audits={context.audit} />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">
@@ -105,6 +121,31 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="description">
                                 <dt>Description</dt>
                                 <dd className="sentence-case">{context.description}</dd>
+                            </div>
+                        : null}
+
+                        {context.donor && context.donor.organism.name !== 'human' ?
+                            <div>
+                                {context.life_stage ?
+                                    <div data-test="life-stage">
+                                        <dt>Life stage</dt>
+                                        <dd className="sentence-case">{context.life_stage}</dd>
+                                    </div>
+                                : null}
+
+                                {context.age ?
+                                    <div data-test="age">
+                                        <dt>Age</dt>
+                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                    </div>
+                                : null}
+                            </div>
+                        : null}
+
+                        {synchText ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Synchronization timepoint</dt>
+                                <dd className="sentence-case">{synchText}</dd>
                             </div>
                         : null}
 
@@ -449,20 +490,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     </div>
                 : null}
 
-                {biosample && biosample.life_stage ?
-                    <div data-test="life-stage">
-                        <dt>Life stage</dt>
-                        <dd className="sentence-case">{biosample.life_stage}</dd>
-                    </div>
-                : null}
-
-                {biosample && biosample.age ?
-                    <div data-test="age">
-                        <dt>Age</dt>
-                        <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
-                    </div>
-                : null}
-
                 {biosample && biosample.sex ?
                     <div data-test="sex">
                         <dt>Sex</dt>
@@ -512,6 +539,12 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donor_constructs = {};
+        if (biosample && biosample.model_organism_donor_constructs) {
+            biosample.model_organism_donor_constructs.forEach(function (construct) {
+                donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
+            });
+        }
 
         return (
             <div>
@@ -539,20 +572,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         <div data-test="genotype">
                             <dt>Genotype</dt>
                             <dd>{context.genotype}</dd>
-                        </div>
-                    : null}
-
-                    {biosample && biosample.life_stage ?
-                        <div data-test="life-stage">
-                            <dt>Life stage</dt>
-                            <dd className="sentence-case">{biosample.life_stage}</dd>
-                        </div>
-                    : null}
-
-                    {biosample && biosample.age ?
-                        <div data-test="age">
-                            <dt>Age</dt>
-                            <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
                         </div>
                     : null}
 
@@ -584,6 +603,14 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     : null}
                 </dl>
+
+                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
+                    <section>
+                        <hr />
+                        <h4>Construct details</h4>
+                        {donor_constructs}
+                    </section>
+                : null}
 
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
                     <section className="multi-columns-row">
@@ -633,6 +660,12 @@ globals.panel_views.register(Treatment, 'treatment');
 var Construct = module.exports.Construct = React.createClass({
     render: function() {
         var context = this.props.context;
+        var embeddedDocs = this.props.embeddedDocs;
+        var construct_documents = {};
+        context.documents.forEach(function (doc) {
+            construct_documents[doc['@id']] = Panel({context: doc, embeddedDocs: embeddedDocs});
+        });
+
         return (
             <div>
                 <dl className="key-value">
@@ -695,6 +728,14 @@ var Construct = module.exports.Construct = React.createClass({
                         </div>
                     : null}
                 </dl>
+
+                {embeddedDocs && Object.keys(construct_documents).length ?
+                    <div>
+                        <hr />
+                        <h4>Construct documents</h4>
+                        <div className="row">{construct_documents}</div>
+                    </div>
+                : null}
             </div>
         );
     }
@@ -778,13 +819,13 @@ var Document = module.exports.Document = React.createClass({
             );
         }
 
-        var panelClass = 'view-item view-detail status-none panel';
         var characterization = context['@type'].indexOf('characterization') >= 0;
         var caption = characterization ? context.caption : context.description;
         var excerpt;
         if (caption && caption.length > 100) {
             excerpt = globals.truncateString(caption, 100);
         }
+        var panelClass = 'view-item view-detail status-none panel';
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works

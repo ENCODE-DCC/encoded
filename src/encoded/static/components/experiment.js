@@ -6,10 +6,14 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
+var audit = require('./audit');
+var AuditMixin = audit.AuditMixin;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -23,6 +27,7 @@ var Panel = function (props) {
 
 
 var Experiment = module.exports.Experiment = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -69,9 +74,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string
+        // Build the text of the Treatment string array and the synchronization string array
         var treatmentText = [];
+        var synchText = [];
         biosamples.map(function(biosample) {
+            // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -83,9 +90,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
                 return singleTreatment;
             }));
+
+            // Collect synchronizations
+            if (biosample.synchronization) {
+                synchText.push(biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
+        }
+        if (synchText) {
+            synchText = _.uniq(synchText);
         }
 
         // Adding experiment specific documents
@@ -131,11 +149,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                             Experiment summary for {context.accession}
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} />
                         </div>
                    </div>
                 </header>
+                <AuditDetail audits={context.audit} />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
@@ -167,6 +189,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     : null}
                                     {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
                                     {organismName.length || lifeAge.length ? ')' : null}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {synchText.length ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Synchronization timepoint</dt>
+                                <dd>
+                                    {synchText.join(', ')}
                                 </dd>
                             </div>
                         : null}
