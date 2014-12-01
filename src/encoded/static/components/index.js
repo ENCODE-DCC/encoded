@@ -13,6 +13,7 @@ require('./errors');
 require('./experiment');
 require('./footer');
 require('./globals');
+require('./graph');
 require('./home');
 require('./item');
 require('./page');

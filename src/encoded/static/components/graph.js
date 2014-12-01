@@ -1,3 +1,5 @@
+/** @jsx React.DOM */
+'use strict';
 var React = require('react');
 var d3 = require('d3');
 var dagreD3 = require('dagre-d3');
@@ -17,26 +19,12 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph()
-            .setGraph({rankdir: "LR"})
+            .setGraph({rankdir: "TB"})
             .setDefaultEdgeLabel(function() { return {}; });
 
-        // Loop over each analysis step to insert it into the graph
-        this.props.files.forEach(function(file) {
-            // Render each node. Set node ID to analysis step object ID so we can find it later
-            g.setNode(file['@id'], {label: file.accession + ' (' + file.output_type + ')', rx: 4, ry: 4,
-                class: 'pipeline-node-file' + (this.state.infoNode === file['@id'] ? ' active' : '')});
-
-            // If the node has parents, render the edges to the analysis step
-            if (file.derived_from && file.derived_from.length && file.step) {
-                var step = file.step.analysis_step;
-                g.setNode(step['@id'] + file['@id'], {label: step.analysis_step_types.join(', '), rx: 4, ry: 4,
-                    class: 'pipeline-node-analysis-step' + (this.state.infoNode === (step['@id'] + file['@id']) ? ' active' : '')});
-                g.setEdge(file['@id'], step['@id'] + file['@id']);
-                file.derived_from.forEach(function(derived) {
-                    g.setEdge(step['@id'] + file['@id'], derived);
-                });
-            }
-        }, this);
+        // Call the supplied node assembler, passing it the graph to assemble
+        // the nodes into, and the ID of the currently selected node, if any
+        this.props.assembler(g, this.state.infoNode);
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
@@ -88,59 +76,9 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     render: function() {
-        // Find analysis step matching selected node, if any
-        var displayMeta;
-        if (this.state.infoNode) {
-            this.props.item.some(function(file) {
-                if (file['@id'] === this.state.infoNode) {
-                    displayMeta = file;
-                    return true; // Found it; save the matching analysis step and exit loop
-                } else {
-                    return false; // Keep searching...
-                }
-            }, this);
-        }
-
         return (
             <div className="panel graph-display">
-                <div className="graph-node-info">
-                    <hr />
-                    <dl className="key-value">
-                        <div>
-                            <dt>Format</dt>
-                            <dd>
-                                {displayMeta ?
-                                    <span>
-                                        {displayMeta.file_format ?
-                                            <span>{displayMeta.file_format}</span>
-                                        :
-                                            <span className="select-note">Unspecified</span>
-                                        }
-                                    </span>
-                                :
-                                    <span className="select-note">Select a node above</span>
-                                }
-                            </dd>
-                        </div>
-
-                        <div>
-                            <dt>Output</dt>
-                            <dd>
-                                {displayMeta ?
-                                    <span>
-                                        {displayMeta.output_type ?
-                                            <span>{displayMeta.output_type}</span>
-                                        :
-                                            <span className="select-note">Unspecified</span>
-                                        }
-                                    </span>
-                                :
-                                    <span className="select-note">Select a node above</span>
-                                }
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
+                {this.props.detailer(this.state.infoNode)}
             </div>
         );
     }
