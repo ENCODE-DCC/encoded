@@ -1108,7 +1108,7 @@ def collection_add(context, request, render=None):
     if render == 'uuid':
         item_uri = '/%s' % item.uuid
     else:
-        item_uri = request.resource_path(item)
+        item_uri = str(request.resource_path(item))  # str necessary for pypy
     if asbool(render) is True:
         rendered = embed(request, item_uri + '?frame=object', as_user=True)
     else:
