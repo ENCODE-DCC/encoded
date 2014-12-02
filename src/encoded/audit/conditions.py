@@ -1,21 +1,32 @@
-from functools import partial
-_rfa_conditions = {}
-_award_rfa_cache = {}
+import functools
 
 
+def memoize(obj):
+    # Replace with functools.lru_cache() for Python 3.2+
+    cache = obj.cache = {}
+
+    @functools.wraps(obj)
+    def memoizer(*args, **kwargs):
+        if args not in cache:
+            cache[args] = obj(*args, **kwargs)
+        return cache[args]
+    return memoizer
+
+
+@memoize
 def rfa(*rfa_names):
-    rfa_names = frozenset(rfa_names)
-    if rfa_names not in _rfa_conditions:
-        _rfa_conditions[rfa_names] = partial(_rfa, rfa_names)
-    return _rfa_conditions[rfa_names]
+    """ award.rfa auditor condition factory
+    """
+    def rfa_condition(value, system):
+        context = system['context']
+        award_uuid = context.upgrade_properties(finalize=False)['award']
+        rfa = _award_rfa(award_uuid, system['root'])
+        return rfa in rfa_names
+
+    return rfa_condition
 
 
-def _rfa(rfa_names, value, system):
-    context = system['context']
-    award_uuid = context.upgrade_properties(finalize=False)['award']
-    # Cache award rfa as these do not change
-    if award_uuid not in _award_rfa_cache:
-        root = system['root']
-        award = root.get_by_uuid(award_uuid)
-        _award_rfa_cache[award_uuid] = award.upgrade_properties(finalize=False)['rfa']
-    return _award_rfa_cache[award_uuid] in rfa_names
+@memoize
+def _award_rfa(award_uuid, root):
+    award = root.get_by_uuid(award_uuid)
+    return award.upgrade_properties(finalize=False)['rfa']
