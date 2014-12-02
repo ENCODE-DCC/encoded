@@ -241,8 +241,17 @@ $characterization-figure-height: 200px;
 }
 
 .characterization-status-labels {
+    display: block;
     font-weight: bold;
     font-size: 20px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+
+        .status-list li {
+            height: 28px;
+        }
+    }
 }
 
 
@@ -615,10 +624,11 @@ $characterization-figure-height: 200px;
 
 .dl-bar {
     height: 32px;
-    padding: 0 25px 0 10px;
+    padding: 0 10px 0 10px;
     line-height: 32px;
     border-bottom: 1px solid #e8e8e8;
     white-space: nowrap;
+    overflow: hidden;
 }
 
 
@@ -695,4 +705,8 @@ $characterization-figure-height: 200px;
     &.active {
         display: none;
     }
+}
+
+.status-line {
+    vertical-align: top;
 }

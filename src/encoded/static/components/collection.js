@@ -4,6 +4,15 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 
+var lookup_column = function (result, column) {
+    var value = result;
+    var names = column.split('.');
+    for (var i = 0, len = names.length; i < len && value !== undefined; i++) {
+        value = value[names[i]];
+    }
+    return value;
+};
+
     var Collection = module.exports.Collection = React.createClass({
         render: function () {
             var context = this.props.context;
@@ -164,7 +173,7 @@ var globals = require('./globals');
                     //if (factory) {
                     //    return factory({context: item, column: column});
                     //}
-                    var value = item[column];
+                    var value = lookup_column(item, column);
                     if (column == '@id') {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
