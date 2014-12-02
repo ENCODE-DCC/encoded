@@ -237,6 +237,16 @@ def location(name, factory=None):
     return decorate
 
 
+def _get_by_uuid_instance_map(uuid):
+    # Internals from sqlalchemy/orm/query.py:Query.get
+    session = DBSession()
+    mapper = orm.class_mapper(Resource)
+    ident = [uuid]
+    key = mapper.identity_key_from_primary_key(ident)
+    return orm.loading.get_from_identity(
+        session, key, orm.attributes.PASSIVE_OFF)
+
+
 @precompiled_query_builder(DBSession)
 def _get_by_uuid_query():
     session = DBSession()
@@ -330,10 +340,14 @@ class Root(object):
         if cached is not None:
             return cached
 
-        try:
-            model = _get_by_uuid_query().params(rid=uuid).one()
-        except NoResultFound:
-            return default
+        model = _get_by_uuid_instance_map(uuid)
+
+        if model is None:
+            try:
+                model = _get_by_uuid_query().params(rid=uuid).one()
+            except NoResultFound:
+                return default
+
         collection = self.by_item_type[model.item_type]
         item = collection.Item(collection, model)
         self.item_cache[uuid] = item
