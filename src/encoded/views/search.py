@@ -54,17 +54,6 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-def flatten_dict(d):
-    def items():
-        for key, value in d.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in flatten_dict(value).items():
-                    yield key + "." + subkey, subvalue
-            else:
-                yield key, value
-    return dict(items())
-
-
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
@@ -104,58 +93,60 @@ def search(context, request, search_type=None):
         return result
 
     if search_type is None:
-        search_type = request.params.get('type')
+        doc_types = request.params.getall('type')
+        if '*' in doc_types:
+            doc_types = []
 
         # handling invalid item types
-        if search_type not in (None, '*'):
-            if search_type not in root.by_item_type:
-                result['notification'] = "'" + search_type + \
-                    "' is not a valid 'item type'"
-                return result
+        bad_types = [t for t in doc_types if t not in root.by_item_type]
+        if bad_types:
+            result['notification'] = "Invalid type: %s" ', '.join(bad_types)
+            return result
+    else:
+        doc_types = [search_type]
 
     # Building query for filters
-    if search_type in (None, '*'):
+    if not doc_types:
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
             doc_types = ['antibody_lot', 'biosample',
                          'experiment', 'target', 'dataset', 'page']
     else:
-        doc_types = [search_type]
-        qs = urlencode([
-            (k.encode('utf-8'), v.encode('utf-8'))
-            for k, v in request.params.iteritems() if k != 'type'
-        ])
-        result['filters'].append({
-            'field': 'type',
-            'term': search_type,
-            'remove': '{}?{}'.format(request.path, qs)
-            })
+        for item_type in doc_types:
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.iteritems() if k != 'type' and v != item_type
+            ])
+            result['filters'].append({
+                'field': 'type',
+                'term': item_type,
+                'remove': '{}?{}'.format(request.path, qs)
+                })
 
     frame = request.params.get('frame')
     fields_requested = request.params.getall('field')
-    if len(fields_requested):
+    if fields_requested:
         fields = {'embedded.@id', 'embedded.@type'}
         fields.update('embedded.' + field for field in fields_requested)
     elif frame in ['embedded', 'object']:
         fields = [frame + '.*']
-    elif len(doc_types) == 1 and 'columns' not in (root[doc_types[0]].schema or ()):
-        frame = 'columns'
-        fields = ['object.*']
-        if search_audit:
-            fields.append('audit.*')
     else:
         frame = 'columns'
-        fields = {'object.*', 'embedded.@id', 'embedded.@type'}
+        fields = set()
         if search_audit:
             fields.add('audit.*')
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
-            if collection.schema is None:
-                continue
-            columns = collection.schema.get('columns', ())
-            fields.update('embedded.' + column for column in columns)
-            result['columns'].update(columns)
+            if 'columns' not in (collection.schema or ()):
+                fields.add('object.*')
+            else:
+                columns = collection.schema['columns']
+                fields.update(
+                    ('embedded.@id', 'embedded.@type'),
+                    ('embedded.' + column for column in columns),
+                )
+                result['columns'].update(columns)
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
@@ -280,7 +271,7 @@ def search(context, request, search_type=None):
                 'total': facet_results[agg_name]['doc_count']
             })
 
-    if search_type == 'experiment' and any(
+    if doc_types == ['experiment'] and any(
             facet['doc_count'] > 0
             for facet in results['aggregations']['assembly']['assembly']['buckets']):
         search_params = request.query_string.replace('&', ',,')
@@ -291,11 +282,13 @@ def search(context, request, search_type=None):
     hits = results['hits']['hits']
     if frame in ['embedded', 'object'] and not len(fields_requested):
         result['@graph'] = [hit['_source'][frame] for hit in hits]
+    elif fields_requested:
+        result['@graph'] = [hit['_source']['embedded'] for hit in hits]
     else:  # columns
         for hit in hits:
             item_type = hit['_type']
             if 'columns' in root[item_type].schema:
-                item = flatten_dict(hit['_source']['embedded'])
+                item = hit['_source']['embedded']
             else:
                 item = hit['_source']['object']
             if 'audit' in hit['_source']:
