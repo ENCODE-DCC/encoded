@@ -285,9 +285,6 @@ def audit_experiment_platform(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if (value['award'].get('rfa') != 'ENCODE3'):
-        return
-
     platforms = []
 
     for ff in value['files']:
@@ -302,7 +299,9 @@ def audit_experiment_platform(value, system):
             platforms.append(platform)
 
     if len(set(platforms)) > 1:
-        detail = '{} has mixed platform replicates'.format(value['accession'])
+        detail = '{} has mixed platform files {}'.format(
+            value['accession'],
+            repr(platforms))
         yield AuditFailure('platform mismatch', detail, level='WARNING')
 
 
