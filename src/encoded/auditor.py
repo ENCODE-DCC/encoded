@@ -21,16 +21,17 @@ _levelNames = {
     0: 'NOTSET',
     10: 'DEBUG',
     20: 'INFO',
-    30: 'WARNING',
-    40: 'ERROR',
-    50: 'CRITICAL',
-    'CRITICAL': 50,
+    30: 'DCC_ACTION',
+    40: 'WARNING',
+    50: 'STANDARDS_FAILURE',
+    60: 'ERROR',
     'DEBUG': 10,
-    'ERROR': 40,
+    'ERROR': 60,
     'INFO': 20,
     'NOTSET': 0,
-    'WARN': 30,
-    'WARNING': 30,
+    'WARNING': 40,
+    'STANDARDS_FAILURE': 50,
+    'DCC_ACTION': 30,
 }
 
 
@@ -60,16 +61,10 @@ class Auditor(object):
     def __init__(self):
         self.type_checkers = {}
 
-    def add_audit_checker(self, checker, item_type, category=None, detail=None, level=0):
-        if category is None:
-            category = 'check'
-        if detail is None:
-            detail = ''
-        if not isinstance(level, int):
-            level = _levelNames[level]
+    def add_audit_checker(self, checker, item_type, condition=None):
         checkers = self.type_checkers.setdefault(item_type, [])
         self._order += 1  # consistent execution ordering
-        checkers.append((self._order, checker, category, detail, level))
+        checkers.append((self._order, checker, condition))
 
     def audit(self, value, item_type, path=None, **kw):
         if isinstance(item_type, basestring):
@@ -79,7 +74,16 @@ class Auditor(object):
         errors = []
         system = {}
         system.update(kw)
-        for order, checker, category, detail, level in sorted(checkers):
+        for order, checker, condition in sorted(checkers):
+            if condition is not None:
+                try:
+                    if not condition(value, system):
+                        continue
+                except Exception as e:
+                    detail = '%s: %r' % (checker.__name__, e)
+                    errors.append(AuditFailure('audit condition error', detail, 'ERROR'))
+                    logger.warning('audit condition error auditing %s', path, exc_info=True)
+                    continue
             try:
                 try:
                     result = checker(value, system)
@@ -88,15 +92,11 @@ class Auditor(object):
                     continue
                 if result is None:
                     continue
-                if isinstance(result, basestring):
+                if isinstance(result, AuditFailure):
                     result = [result]
                 for item in result:
                     if isinstance(item, AuditFailure):
                         errors.append(item)
-                        continue
-                    if isinstance(item, basestring):
-                        detail = item
-                        errors.append(AuditFailure(category, detail, level))
                         continue
                     raise ValueError(item)
             except Exception as e:
@@ -108,21 +108,21 @@ class Auditor(object):
 
 
 # Imperative configuration
-def add_audit_checker(config, checker, item_type, category=None, detail=None, level=0):
+def add_audit_checker(config, checker, item_type, condition=None):
     auditor = config.registry['auditor']
     config.action(None, auditor.add_audit_checker,
-                  (checker, item_type, category, detail, level))
+                  (checker, item_type, condition))
 
 
 # Declarative configuration
-def audit_checker(item_type, category=None, detail=None, level=0):
+def audit_checker(item_type, condition=None):
     """ Register an audit checker
     """
 
     def decorate(checker):
         def callback(scanner, factory_name, factory):
             scanner.config.add_audit_checker(
-                checker, item_type, category, detail, level)
+                checker, item_type, condition)
 
         venusian.attach(checker, callback, category='auditor')
         return checker

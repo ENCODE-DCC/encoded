@@ -195,7 +195,7 @@ var statusOrder = globals.statusOrder;
             lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
-                <li>
+                <li className="clearfix">
                     <div>
                         {this.renderActions()}
                         <div className="pull-right search-meta">
@@ -217,7 +217,7 @@ var statusOrder = globals.statusOrder;
                         </div>
                     </div>
                     <div className="data-row">
-                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                        <strong>{columns['source.title']['title']}</strong>: {result.source.title}<br />
                         <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                     </div>
                 </li>
@@ -238,7 +238,7 @@ var statusOrder = globals.statusOrder;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li>
+            return (<li className="clearfix">
                         <div>
                             {this.renderActions()}
                             <div className="pull-right search-meta">
@@ -249,7 +249,7 @@ var statusOrder = globals.statusOrder;
                             <div className="accession">
                                 <a href={result['@id']}>
                                     {result['biosample_term_name'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
+                                    <em>{result.organism.scientific_name}</em>
                                     {separator + lifeStage + age + ageUnits + ')'}
                                 </a>
                             </div>
@@ -286,7 +286,7 @@ var statusOrder = globals.statusOrder;
                                     {result['date_obtained']}
                                 </div>
                             : null}
-                            <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
+                            <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                 </li>
             );
@@ -361,7 +361,7 @@ var statusOrder = globals.statusOrder;
                             {result['target.label'] ?
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
-                                    {result['target.label']}
+                                    {result.target.label}
                                 </div>
                             : null}
                             {treatment ?
@@ -370,8 +370,8 @@ var statusOrder = globals.statusOrder;
                                     {treatment}
                                 </div>
                             : null}
-                            <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
-                            <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
+                            <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
+                            <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                 </li>
             );
@@ -402,8 +402,8 @@ var statusOrder = globals.statusOrder;
                                     {result['dataset_type']}
                                 </div>
                             : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result.lab.title}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                 </li>
             );
@@ -425,7 +425,7 @@ var statusOrder = globals.statusOrder;
                             <div className="accession">
                                 <a href={result['@id']}>
                                     {result['label'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
+                                    <em>{result.organism.scientific_name}</em>
                                     {')'}
                                 </a>
                             </div>

@@ -1,4 +1,6 @@
 'use strict';
+var reactify = require('./reactify');
+
 module.exports = function(grunt) {
     var path = require('path');
 
@@ -46,7 +48,7 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, './reactify'],
+                    [{harmony: true, sourceMap: true}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -85,7 +87,7 @@ module.exports = function(grunt) {
                     'url',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, './reactify'],
+                    [{harmony: true, sourceMap: true}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -107,7 +109,7 @@ module.exports = function(grunt) {
                     detectGlobals: false,
                 },
                 transform: [
-                    [{harmony: true, sourceMap: true}, './reactify'],
+                    [{harmony: true, sourceMap: true}, reactify],
                     'brfs',
                     'envify',
                 ],
