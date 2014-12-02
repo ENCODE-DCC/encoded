@@ -30,12 +30,45 @@ var Panel = function (props) {
 
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
+
     nodeId: function(type, id) {
         return type + id;
     },
 
     getNodeIdType: function(id) {
         return id.slice(0, 2);
+    },
+
+    assembleJsonNodes: function() {
+        var graphData = {};
+
+        graphData.id = "experiment";
+        graphData.children = [];
+        graphData.edges = [];
+        this.props.context.files.forEach(function(file) {
+            var fileId = this.nodeId('fi', file['@id']);
+
+            // Assemble a single file node
+            var node.id = fileId;
+            node.labels[0].text = file.accession + ' (' + file.output_type + ')';
+            node.class = 'pipeline-node-file';
+            graphData.children.push(node);
+
+            // If the node has parents, render the edges to the analysis step between this node and its parents
+            if (file.derived_from && file.derived_from.length && file.step) {
+                var step = file.step.analysis_step;
+                var stepId = this.nodeId('as', step['@id'] + '&' + file['@id']);
+
+                // Insert a node for the analysis step, with an ID combining the IDS of this step and the file that
+                // points to it; there may be more than one copy of this step on the graph if more than one
+                // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                var node.id = stepId;
+                node.labels[0].text = step.analysis_step_types.join(', ');
+                node.class = 'pipeline-node-analysis-step';
+                graphData.children.push(node);
+            }
+        });
+        return graph;
     },
 
     assembleNodes: function(graph, infoNode) {

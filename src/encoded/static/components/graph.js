@@ -1,9 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var d3 = require('d3');
-var dagreD3 = require('dagre-d3');
 var globals = require('./globals');
+var $script = require('scriptjs');
 
 
 var Graph = module.exports.Graph = React.createClass({
@@ -15,6 +14,8 @@ var Graph = module.exports.Graph = React.createClass({
 
     // Draw the graph on initial draw as well as on state changes
     drawGraph: function(el) {
+        var d3 = require('d3');
+        var dagreD3 = require('dagre-d3');
         var svg = d3.select(el).select('svg');
 
         // Create a new empty graph
@@ -40,7 +41,13 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     // After the graph panel is mounted in the DOM, use D3/Dagre/Dagre-D3 to draw into it
-    componentDidMount: function() {
+    componentDidMount: function () {
+        $script('dagre', this.setupGraph);
+    },
+
+    setupGraph: function() {
+        var d3 = require('d3');
+        var dagreD3 = require('dagre-d3');
         var el = this.getDOMNode();
 
         // Add SVG element to the graph component, and assign it classes, sizes, and a group
@@ -62,10 +69,12 @@ var Graph = module.exports.Graph = React.createClass({
                 reactThis.handleMouseClick(e, nodeId);
             });
         });
+        this.dagreLoaded = true;
     },
 
     // State change; redraw the graph
     componentDidUpdate: function() {
+        if (!this.dagreLoaded) return;
         var el = this.getDOMNode();
         this.drawGraph(el);
     },

@@ -26,7 +26,6 @@ describe("Server rendering", function () {
         App = require('..');
         var server_app = <App context={home} href={home_url} />;
         var markup = '<!DOCTYPE html>\n' + React.renderComponentToString(server_app);
-        console.log('HELLO');
         var parser = new DOMParser();
         document = parser.parseFromString(markup, 'text/html');
     });
