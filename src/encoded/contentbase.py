@@ -35,10 +35,14 @@ from pyramid.traversal import (
 )
 from pyramid.view import view_config
 from sqlalchemy import (
+    bindparam,
     orm,
 )
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import FlushError
+from sqlalchemy.orm.exc import (
+    FlushError,
+    NoResultFound,
+)
 from urllib import urlencode
 from uuid import (
     UUID,
@@ -46,6 +50,7 @@ from uuid import (
 )
 from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
+from .precompiled_query import precompiled_query_builder
 from .renderers import embed
 from .schema_formats import is_accession
 from .schema_utils import validate_request
@@ -232,6 +237,25 @@ def location(name, factory=None):
     return decorate
 
 
+@precompiled_query_builder(DBSession)
+def _get_by_uuid_query():
+    session = DBSession()
+    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
+
+
+@precompiled_query_builder(DBSession)
+def _get_by_unique_key_query():
+    session = DBSession()
+    return session.query(Key).options(
+        orm.joinedload_all(
+            Key.resource,
+            Resource.data,
+            CurrentPropertySheet.propsheet,
+            innerjoin=True,
+        ),
+    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
@@ -306,9 +330,9 @@ class Root(object):
         if cached is not None:
             return cached
 
-        session = DBSession()
-        model = session.query(Resource).get(uuid)
-        if model is None:
+        try:
+            model = _get_by_uuid_query().params(rid=uuid).one()
+        except NoResultFound:
             return default
         collection = self.by_item_type[model.item_type]
         item = collection.Item(collection, model)
@@ -322,17 +346,11 @@ class Root(object):
         if cached is not None:
             return self.get_by_uuid(cached)
 
-        session = DBSession()
-        key = session.query(Key).options(
-            orm.joinedload_all(
-                Key.resource,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-                innerjoin=True,
-            ),
-        ).get(pkey)
-        if key is None:
+        try:
+            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
+        except NoResultFound:
             return default
+
         model = key.resource
 
         uuid = model.rid
