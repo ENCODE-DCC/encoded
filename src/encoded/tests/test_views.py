@@ -212,8 +212,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(2):
-        res = testapp.get('/' + uuid).follow().json
+    res = testapp.get('/' + uuid).follow().json
 
     for key in update:
         assert res[key] == update[key]
