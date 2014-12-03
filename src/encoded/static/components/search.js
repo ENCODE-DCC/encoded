@@ -68,7 +68,7 @@ var AuditMixin = audit.AuditMixin;
                         {result.accession ?
                             <div className="pull-right type sentence-case search-meta">
                                 <p>{item_type}: {' ' + result['accession']}</p>
-                                <AuditIndicators audits={result.audit} key={this.props.context['@id']} />
+                                <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
                             </div>
                         : null}
                         <div className="accession">
@@ -260,18 +260,11 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['biosample_term_name'] + ' ('}
-                                    <em>{result.organism.scientific_name}</em>
-                                    {separator + lifeStage + age + ageUnits + ')'}
-                                </a>
-                            </div>
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
                                 {result['biosample_term_name'] + ' ('}
-                                <em>{result['organism.scientific_name']}</em>
+                                <em>{result.organism.scientific_name}</em>
                                 {separator + lifeStage + age + ageUnits + ')'}
                             </a>
                         </div>
@@ -455,9 +448,8 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
-                                {result['label'] + ' ('}
-                                <em>{result.organism.scientific_name}</em>
-                                {')'}
+                                {result['label']}
+                                {result.organism && result.organism.scientific_name ? <em>{' (' + result.organism.scientific_name + ')'}</em> : null}
                             </a>
                         </div>
                         <div className="data-row">
