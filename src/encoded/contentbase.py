@@ -275,7 +275,7 @@ class Root(object):
     schema = None
     builtin_acl = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
+        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
     ]
 
     def __init__(self, registry, acl=None):
@@ -1136,6 +1136,28 @@ def item_view(context, request):
     return properties
 
 
+@view_config(context=Item, permission='expand', request_method='GET',
+             request_param=['frame=expand'])
+def item_view_expand(context, request):
+    path = request.resource_path(context)
+    properties = embed(request, path + '?frame=object')
+    for path in request.params.getall('expand'):
+        expand_path(request, properties, path)
+    return properties
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             request_param=['frame=audit'])
+def item_view_audit(context, request):
+    path = request.resource_path(context)
+    types = [context.item_type] + context.base_types
+    return {
+        '@id': path,
+        '@type': types,
+        'audit': request.audit(types=types, path=path),
+    }
+
+
 @view_config(context=Item, permission='view_raw', request_method='GET',
              request_param=['frame=raw'])
 def item_view_raw(context, request):
@@ -1255,11 +1277,12 @@ def item_index_data(context, request):
                 resource_path(base, key)
                 for key in keys[key_name])
 
-    embedded = embed(request, path + '/?frame=embedded')
-    audit = request.audit(embedded, embedded['@type'], path=path)
+    path = path + '/'
+    embedded = embed(request, path + '?frame=embedded')
+    audit = request.audit(types=embedded['@type'], path=path)
     document = {
         'embedded': embedded,
-        'object': embed(request, path + '/?frame=object'),
+        'object': embed(request, path + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals['view']),
