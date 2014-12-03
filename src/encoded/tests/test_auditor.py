@@ -57,6 +57,7 @@ def test_audit_failure(auditor, monkeypatch):
     assert error.detail == 'Missing checker1'
     assert error.category == 'testchecker'
     assert error.level == 0
+    assert error.path == '/foo'
 
 
 def test_audit_conditions(auditor_conditions, monkeypatch):
@@ -68,6 +69,7 @@ def test_audit_conditions(auditor_conditions, monkeypatch):
     assert error.detail == 'Missing checker1'
     assert error.category == 'testchecker'
     assert error.level == 0
+    assert error.path == '/foo'
 
 
 def test_declarative_config(monkeypatch):
@@ -84,6 +86,7 @@ def test_declarative_config(monkeypatch):
     assert error.detail == 'Missing checker1'
     assert error.category == 'testchecker'
     assert error.level == 0
+    assert error.path == '/foo'
 
 
 def test_link_target_audit_fail(testapp):
@@ -94,6 +97,7 @@ def test_link_target_audit_fail(testapp):
     assert error['detail'] == 'Missing reverse items'
     assert error['category'] == 'status'
     assert error['level'] == 0
+    assert error['path'] == res.json['object']['@id']
 
 
 def test_link_target_audit_pass(testapp):
