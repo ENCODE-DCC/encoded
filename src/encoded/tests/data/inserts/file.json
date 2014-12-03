@@ -70,6 +70,12 @@
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "f7acb742cf7e0637878651b2b949aad1",
         "output_type": "raw data",
@@ -85,6 +91,12 @@
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "c5f5e6a76a65b24682adec5c0121df57",
         "output_type": "raw data",
@@ -195,6 +207,12 @@
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "5fbe47e031a0af4b67d356b5bd4c348a",
         "output_type": "raw data",
@@ -210,6 +228,12 @@
         "dataset": "ENCSR000ADI",
         "date_created": "2010-05-12",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "8f4923e506cc12d7803084b87985f99c",
         "output_type": "raw data",
@@ -226,6 +250,12 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "3a25713488522b0ea8a4d9635b5afa41",
         "output_type": "reads",
@@ -242,6 +272,12 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "0e88b38c8d48806ee98929a5bad06fc4",
         "output_type": "reads",
@@ -258,6 +294,12 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "5dd317654eb81f577a0f78745a3c8e66",
         "output_type": "reads",
@@ -274,6 +316,12 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-14",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "4c646fa9b822b7f52f9c2c5a9da0f5e3",
         "output_type": "reads",
@@ -290,6 +338,12 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "a8879e9e78f17c37fdcfe1a8b572ac1f",
         "output_type": "reads",
@@ -307,6 +361,12 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "97b452ae74c7d279706c88141155a00c",
         "output_type": "reads",
@@ -324,6 +384,12 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
         "output_type": "reads",
@@ -342,6 +408,17 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        },
+        {
+            "flowcell": "C5WA6ACUU",
+            "lane": "8",
+            "machine": "HWI-ST382"    
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_type": "reads",
@@ -360,6 +437,12 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "8cd1f9a1fbf709cb0a58e427b0448dbc",
         "output_type": "reads",
@@ -376,6 +459,12 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "689e73dd026e24ed347378b6ec578521",
         "output_type": "reads",
@@ -394,6 +483,12 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "10dfc1816893a76a48c645c5294ad74c",
         "output_type": "reads",
@@ -413,6 +508,12 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "f73b8010630a28fe9ac1f93155a46e8b",
         "output_type": "reads",
@@ -431,6 +532,12 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
         "output_type": "reads",
@@ -447,6 +554,12 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
         "lab":"j-michael-cherry",
         "md5sum": "de9e05ad88fea5664f1c5d90815df360",
         "output_type": "reads",
