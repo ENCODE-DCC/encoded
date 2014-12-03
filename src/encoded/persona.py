@@ -141,7 +141,7 @@ def session(request):
     if not request.params.get('reload'):
         return request.session
     # Reload the user's session cookie
-    login = authenticated_userid(request)
+    login = request.authenticated_userid
     if login is None:
         namespace = userid = None
     else:
