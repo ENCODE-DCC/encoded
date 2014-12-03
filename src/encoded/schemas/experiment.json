@@ -117,6 +117,18 @@
             "title": "Biosample treatment",
             "type": "array"
         },
+        "replicates.library.biosample.synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "files.file_format": {
             "title": "Available data",
             "type": "string"

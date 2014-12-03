@@ -238,6 +238,16 @@ var statusOrder = globals.statusOrder;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+ 
+            // Build the text of the synchronization string
+            var synchText;
+            if (result.synchronization) {
+                synchText = result.synchronization +
+                    (result.post_synchronization_time ?
+                        ' + ' + result.post_synchronization_time + (result.post_synchronization_time_units ? ' ' + result.post_synchronization_time_units : '')
+                    : '');
+            }
+
             return (<li className="clearfix">
                         <div>
                             {this.renderActions()}
@@ -284,6 +294,12 @@ var statusOrder = globals.statusOrder;
                                 <div>
                                     <strong>{columns['date_obtained']['title'] + ': '}</strong>
                                     {result['date_obtained']}
+                                </div>
+                            : null}
+                            {synchText ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchText}
                                 </div>
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
