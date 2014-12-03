@@ -228,7 +228,7 @@ var AuditMixin = audit.AuditMixin;
                             })}
                         </div>
                         <div className="data-row">
-                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                            <strong>{columns['source.title']['title']}</strong>: {result.source.title}<br />
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
@@ -260,6 +260,13 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} key={this.props.context['@id']} />
+                            <div className="accession">
+                                <a href={result['@id']}>
+                                    {result['biosample_term_name'] + ' ('}
+                                    <em>{result.organism.scientific_name}</em>
+                                    {separator + lifeStage + age + ageUnits + ')'}
+                                </a>
+                            </div>
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -300,7 +307,7 @@ var AuditMixin = audit.AuditMixin;
                                     {result['date_obtained']}
                                 </div>
                             : null}
-                            <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
+                            <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
                     <AuditDetail audits={result.audit} key={this.props.context['@id']} />
@@ -378,7 +385,7 @@ var AuditMixin = audit.AuditMixin;
                             {result['target.label'] ?
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
-                                    {result['target.label']}
+                                    {result.target.label}
                                 </div>
                             : null}
                             {treatment ?
@@ -387,8 +394,8 @@ var AuditMixin = audit.AuditMixin;
                                     {treatment}
                                 </div>
                             : null}
-                            <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
-                            <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
+                            <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
+                            <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
                     <AuditDetail audits={result.audit} key={this.props.context['@id']} />
@@ -422,8 +429,8 @@ var AuditMixin = audit.AuditMixin;
                                     {result['dataset_type']}
                                 </div>
                             : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result.lab.title}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
                     <AuditDetail audits={result.audit} key={this.props.context['@id']} />
@@ -449,7 +456,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="accession">
                             <a href={result['@id']}>
                                 {result['label'] + ' ('}
-                                <em>{result['organism.scientific_name']}</em>
+                                <em>{result.organism.scientific_name}</em>
                                 {')'}
                             </a>
                         </div>
