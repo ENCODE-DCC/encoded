@@ -288,3 +288,11 @@ def test_jsonld_context(testapp):
 def test_jsonld_term(testapp):
     res = testapp.get('/terms/submitted_by')
     assert res.json
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
+    res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
+    for item in res.json['@graph']:
+        indexer_testapp.get(item['@id'] + '@@index-data')

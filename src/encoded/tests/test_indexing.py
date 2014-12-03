@@ -54,16 +54,6 @@ def external_tx():
     pass
 
 
-@pytest.fixture
-def indexer_testapp(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'INDEXER',
-    }
-    return TestApp(app, environ)
-
-
 @pytest.yield_fixture
 def dbapi_conn(app):
     from encoded.storage import DBSession
