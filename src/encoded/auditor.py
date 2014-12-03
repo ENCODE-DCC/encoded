@@ -37,13 +37,14 @@ _levelNames = {
 
 
 class AuditFailure(Exception):
-    def __init__(self, category, detail=None, level=0):
+    def __init__(self, category, detail=None, level=0, path=None):
         super(AuditFailure, self)
         self.category = category
         self.detail = detail
         if not isinstance(level, int):
             level = _levelNames[level]
         self.level = level
+        self.path = path
 
     def __json__(self, request=None):
         return {
@@ -51,6 +52,7 @@ class AuditFailure(Exception):
             'detail': self.detail,
             'level': self.level,
             'level_name': _levelNames[self.level],
+            'path': self.path,
         }
 
 
@@ -100,7 +102,8 @@ class Auditor(object):
                     result = checker(value, system)
                 except AuditFailure as e:
                     e = e.__json__(request)
-                    e['path'] = path
+                    if e['path'] is None:
+                        e['path'] = path
                     errors.append(e)
                     continue
                 if result is None:
@@ -110,7 +113,8 @@ class Auditor(object):
                 for item in result:
                     if isinstance(item, AuditFailure):
                         item = item.__json__(request)
-                        item['path'] = path
+                        if item['path'] is None:
+                            item['path'] = path
                         errors.append(item)
                         continue
                     raise ValueError(item)
