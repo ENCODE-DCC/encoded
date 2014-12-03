@@ -51,7 +51,7 @@ from uuid import (
 from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
-from .renderers import embed
+from .embedding import embed
 from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import (
