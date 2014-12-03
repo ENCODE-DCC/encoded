@@ -15,6 +15,7 @@ var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var Graph = graph.Graph;
+var GraphArch = graph.GraphArch;
 var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
@@ -39,33 +40,31 @@ var Experiment = module.exports.Experiment = React.createClass({
         return id.slice(0, 2);
     },
 
-    assembleJsonNodes: function() {
-        var graphData = {};
-
-        graphData.id = "experiment";
-        graphData.children = [];
-        graphData.edges = [];
+    assembleJsonNodes: function(infoNodeId) {
+        var graphArch = new GraphArch('experiment');
         this.props.context.files.forEach(function(file) {
-            var fileId = this.nodeId('fi', file['@id']);
+            var fileId = file['@id'];
 
             // Assemble a single file node
-            var node.id = fileId;
-            node.labels[0].text = file.accession + ' (' + file.output_type + ')';
-            node.class = 'pipeline-node-file';
-            graphData.children.push(node);
+            graphArch.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''), 'fi');
 
             // If the node has parents, render the edges to the analysis step between this node and its parents
             if (file.derived_from && file.derived_from.length && file.step) {
                 var step = file.step.analysis_step;
-                var stepId = this.nodeId('as', step['@id'] + '&' + file['@id']);
+                var stepId = step['@id'] + '&' + file['@id'];
 
                 // Insert a node for the analysis step, with an ID combining the IDS of this step and the file that
                 // points to it; there may be more than one copy of this step on the graph if more than one
                 // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                var node.id = stepId;
-                node.labels[0].text = step.analysis_step_types.join(', ');
-                node.class = 'pipeline-node-analysis-step';
-                graphData.children.push(node);
+                graphArch.addNode(stepId, step.analysis_step_types.join(', '),
+                    'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '', 'as'));
+                graphArch.addEdge(stepId, fileId);
+
+                // Draw an edge from the analysis step to each of the derived_from files
+                file.derived_from.forEach(function(derived) {
+                    graphArch.addEdge(derived, stepId);
+                }, this);
             }
         });
         return graph;

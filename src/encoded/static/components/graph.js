@@ -5,6 +5,34 @@ var globals = require('./globals');
 var $script = require('scriptjs');
 
 
+// Constructor for a graph architecture
+function GraphArch(id) {
+    this.id = id;
+    this.children = [];
+    this.edges = [];
+}
+
+// Add node to the graph architecture
+GraphArch.prototype.addNode = function(id, label, cssClass, type) {
+    var newNode = {};
+    newNode.id = id;
+    newNode.type = type;
+    newNode.labels[0].text = label;
+    newNode.cssClass = cssClass;
+    this.children.push(newNode);
+};
+
+// Add edge to the graph architecture
+GraphArch.prototype.addEdge = function(source, target) {
+    var newEdge = {};
+    newEdge.id = '';
+    newEdge.source = source;
+    newEdge.target = target;
+};
+
+module.exports.GraphArch = GraphArch;
+
+
 var Graph = module.exports.Graph = React.createClass({
     getInitialState: function() {
         return {
