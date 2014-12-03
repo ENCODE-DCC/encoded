@@ -56,3 +56,24 @@ def _embed(request, path, as_user='EMBED'):
         return request.invoke_subrequest(subreq)
     except HTTPNotFound:
         raise KeyError(path)
+
+
+def expand_path(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = value[index] = embed(request, member + '?frame=object')
+            expand_path(request, member, remaining)
+    else:
+        if not isinstance(value, dict):
+            value = obj[name] = embed(request, value + '?frame=object')
+        expand_path(request, value, remaining)

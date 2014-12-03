@@ -51,7 +51,10 @@ from uuid import (
 from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
-from .embedding import embed
+from .embedding import (
+    embed,
+    expand_path,
+)
 from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import (
@@ -416,6 +419,8 @@ class MergedKeysMeta(MergedDictsMeta):
                            'value': '{%s}' % key, '$templated': True}
                 self.merged_keys.append(key)
 
+        self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
+
 
 class Item(object):
     __metaclass__ = MergedKeysMeta
@@ -607,10 +612,7 @@ class Item(object):
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
-        if self.schema is None:
-            return
-        paths = [p.split('.') for p in self.embedded]
-        for path in paths:
+        for path in self.embedded_paths:
             expand_path(request, properties, path)
 
     @classmethod
@@ -824,7 +826,7 @@ class Collection(Mapping):
         self.__name__ = name
         self.__parent__ = parent
 
-        self.embedded_paths = set()
+        self.column_paths = set()
         if self.schema is not None and 'columns' in self.schema:
             for column in self.schema['columns']:
                 path = tuple(
@@ -832,7 +834,7 @@ class Collection(Mapping):
                     if name not in ('length', '0')
                 )
                 if path:
-                    self.embedded_paths.add(path)
+                    self.column_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
@@ -956,7 +958,7 @@ class Collection(Mapping):
         if frame != 'columns':
             return rendered
 
-        for path in self.embedded_paths:
+        for path in self.column_paths:
             expand_path(request, rendered, path)
 
         subset = {
@@ -1016,22 +1018,6 @@ class Collection(Mapping):
         result.update(properties)
         return result
 
-    def expand_embedded(self, request, properties):
-        pass
-
-    @classmethod
-    def expand_page(cls, request, properties):
-        return properties
-
-    def add_actions(self, request, properties):
-        pass
-
-    def add_default_page(self, request, properties):
-        root = find_root(self)
-        if self.__name__ in root['pages']:
-            properties['default_page'] = embed(
-                request, '/pages/%s/?frame=page' % self.__name__, as_user=True)
-
 
 def column_value(obj, column):
     path = column.split('.')
@@ -1056,25 +1042,6 @@ def column_value(obj, column):
     return value
 
 
-def expand_path(request, obj, path):
-    if not path:
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if isinstance(value, list):
-        for index, member in enumerate(value):
-            if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?frame=object')
-            expand_path(request, member, remaining)
-    else:
-        if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?frame=object')
-        expand_path(request, value, remaining)
-
-
 def if_match_tid(view_callable):
     """ ETag conditional PUT/PATCH support
 
@@ -1091,7 +1058,14 @@ def if_match_tid(view_callable):
 
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    return item_view(context, request)
+    properties = context.__json__(request)
+
+    root = find_root(context)
+    if context.__name__ in root['pages']:
+        properties['default_page'] = embed(
+            request, '/pages/%s/?frame=page' % context.__name__, as_user=True)
+
+    return properties
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1159,8 +1133,6 @@ def item_view(context, request):
 
     context.add_actions(request, properties)
     properties = context.expand_page(request, properties)
-    if hasattr(context, 'add_default_page'):
-        context.add_default_page(request, properties)
     return properties
 
 
