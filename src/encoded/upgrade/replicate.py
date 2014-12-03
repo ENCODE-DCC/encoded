@@ -16,3 +16,16 @@ def replicate_0_3(value, system):
     # http://redmine.encodedcc.org/issues/1354
     if 'paired_ended' in value and 'read_length' not in value:
         del value['paired_ended']
+
+
+@upgrade_step('replicate', '3', '4')
+def replicate_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/2498
+    if 'flowcell_details' in value:
+        if len(value['flowcell_details']) > 0:
+            details = repr(value['flowcell_details'])
+            if 'notes' in value:
+                value['notes'] = value['notes'] + details
+            else:
+                value['notes'] = details
+        del value['flowcell_details']
