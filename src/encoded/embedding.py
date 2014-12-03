@@ -36,6 +36,8 @@ def embed(request, path, as_user=None):
     """
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
+    if isinstance(path, unicode):
+        path = path.encode('utf-8')
     if as_user is not None:
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
