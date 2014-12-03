@@ -623,7 +623,7 @@ class Item(object):
         if not request.has_permission('edit', self):
             return
         properties['actions'] = getattr(self, 'actions', [])
-        properties['audit'] = embed(request, properties['@id'] + '@@frame-audit')['audit']
+        properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1148,7 +1148,7 @@ def item_view_expand(context, request):
 @view_config(context=Item, permission='audit', request_method='GET',
              request_param=['frame=audit'])
 @view_config(context=Item, permission='audit', request_method='GET',
-             name='frame-audit')
+             name='audit')
 def item_view_audit(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
@@ -1247,7 +1247,7 @@ def expand_audit(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
-        result = embed(request, obj['@id'] + '@@frame-audit')
+        result = embed(request, obj['@id'] + '@@audit')
         for error in result['audit']:
             yield error
         return
@@ -1302,7 +1302,7 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, path + '?frame=embedded')
-    audit = embed(request, path + '@@frame-audit')['audit']
+    audit = embed(request, path + '@@audit')['audit']
     for audit_path in context.embedded_paths:
         audit.extend(expand_audit(request, embedded, audit_path))
     document = {
