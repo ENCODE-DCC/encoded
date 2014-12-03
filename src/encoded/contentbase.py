@@ -623,8 +623,7 @@ class Item(object):
         if not request.has_permission('edit', self):
             return
         properties['actions'] = getattr(self, 'actions', [])
-        audit = request.audit(properties, properties['@type'], path=resource_path(self))
-        properties['audit'] = audit
+        properties['audit'] = embed(request, properties['@id'] + '/?frame=audit')['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1279,7 +1278,7 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, path + '?frame=embedded')
-    audit = request.audit(types=embedded['@type'], path=path)
+    audit = embed(request, path + '/?frame=audit')['audit']
     document = {
         'embedded': embedded,
         'object': embed(request, path + '?frame=object'),
