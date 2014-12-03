@@ -54,10 +54,10 @@ def test_audit_failure(auditor, monkeypatch):
     value = {}
     monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
     error, = auditor.audit(request=None, path='/foo', types='test')
-    assert error.detail == 'Missing checker1'
-    assert error.category == 'testchecker'
-    assert error.level == 0
-    assert error.path == '/foo'
+    assert error['detail'] == 'Missing checker1'
+    assert error['category'] == 'testchecker'
+    assert error['level'] == 0
+    assert error['path'] == '/foo'
 
 
 def test_audit_conditions(auditor_conditions, monkeypatch):
@@ -66,10 +66,10 @@ def test_audit_conditions(auditor_conditions, monkeypatch):
     assert auditor_conditions.audit(request=None, path='/foo', types='test') == []
     value = {'condition1': True}
     error, = auditor_conditions.audit(request=None, path='/foo', types='test')
-    assert error.detail == 'Missing checker1'
-    assert error.category == 'testchecker'
-    assert error.level == 0
-    assert error.path == '/foo'
+    assert error['detail'] == 'Missing checker1'
+    assert error['category'] == 'testchecker'
+    assert error['level'] == 0
+    assert error['path'] == '/foo'
 
 
 def test_declarative_config(monkeypatch):
@@ -83,10 +83,10 @@ def test_declarative_config(monkeypatch):
     value = {'condition1': True}
     monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
     error, = auditor.audit(request=None, path='/foo', types='testing_auditor')
-    assert error.detail == 'Missing checker1'
-    assert error.category == 'testchecker'
-    assert error.level == 0
-    assert error.path == '/foo'
+    assert error['detail'] == 'Missing checker1'
+    assert error['category'] == 'testchecker'
+    assert error['level'] == 0
+    assert error['path'] == '/foo'
 
 
 def test_link_target_audit_fail(testapp):
