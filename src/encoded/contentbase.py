@@ -1243,6 +1243,28 @@ class AfterModified(object):
         self.request = request
 
 
+def expand_audit(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        result = embed(request, obj['@id'] + '?frame=audit')
+        for error in result['audit']:
+            yield error
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for member in value:
+            for error in expand_audit(request, member, remaining):
+                yield error
+    else:
+        for error in expand_audit(request, value, remaining):
+            yield error
+
+
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     links = defaultdict(list)
@@ -1281,6 +1303,8 @@ def item_index_data(context, request):
     path = path + '/'
     embedded = embed(request, path + '?frame=embedded')
     audit = embed(request, path + '@@frame-audit')['audit']
+    for audit_path in context.embedded_paths:
+        audit.extend(expand_audit(request, embedded, audit_path))
     document = {
         'embedded': embedded,
         'object': embed(request, path + '?frame=object'),
