@@ -1247,7 +1247,7 @@ def expand_audit(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
-        result = embed(request, obj['@id'] + '?frame=audit')
+        result = embed(request, obj['@id'] + '@@frame-audit')
         for error in result['audit']:
             yield error
         return
