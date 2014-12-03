@@ -336,6 +336,17 @@ var statusOrder = globals.statusOrder;
             }));
             var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
 
+            // Collect synchronizations
+            var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
+            }).map(function(replicate) {
+                var biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }));
+
             // Make array of age units from replicates; remove all duplicates
             var ageUnit = '';
             if (age) {
@@ -384,6 +395,12 @@ var statusOrder = globals.statusOrder;
                                 <div>
                                     <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
                                     {treatment}
+                                </div>
+                            : null}
+                            {synchronizations && synchronizations.length ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchronizations.join(', ')}
                                 </div>
                             : null}
                             <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
