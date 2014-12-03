@@ -54,7 +54,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
                 return -parseInt(level, 10);
             });
 
-            var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '');
+            var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
 
             return (
                 <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.key.replace(/\W/g, '')} onClick={this.context.auditStateToggle}>

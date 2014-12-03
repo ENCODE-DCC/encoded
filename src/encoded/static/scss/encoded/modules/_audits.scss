@@ -13,6 +13,11 @@
     .search-meta & {
         margin: 5px 0 5px 5px;
     }
+
+    &.audit-search {
+        font-size: 12px;
+        height: 24px;
+    }
 }
 
 // Audit icon for display only
@@ -26,6 +31,11 @@
 
     &:first-child {
         margin-left: 0;
+    }
+
+    .audit-search & {
+        font-size: 12px;
+        line-height: 24px;
     }
 }
 
@@ -43,7 +53,7 @@ $audit-types:
     (error, warning, #cc0700),
     (warning, exclamation-circle, #e0e000),
     (standards_failure, file-text, #ff8000),
-    (dcc_action, asterisk, #a0a0a0);
+    (dcc_action, ambulance, #a0a0a0);
 
 // Function for an inverse curve; used for saturation and lightness of backgrounds
 @function inverse-curve($value) {
@@ -66,6 +76,10 @@ $audit-types:
 .btn-audit {
     display: inline-block;
     margin: 0 10px;
+
+    .audit-search & {
+        margin: 0 6px;
+    }
 }
 
 
