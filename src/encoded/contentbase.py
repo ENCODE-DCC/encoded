@@ -620,10 +620,17 @@ class Item(object):
         return properties
 
     def add_actions(self, request, properties):
-        if not request.has_permission('edit', self):
-            return
-        properties['actions'] = getattr(self, 'actions', [])
-        properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
+        ns = {}
+        ns['permission'] = permission_checker(self, request)
+        ns['item_type'] = self.item_type
+        ns['item_uri'] = properties['@id']
+        compiled = ObjectTemplate(self.actions)
+        actions = compiled(ns)
+        if actions:
+            properties['actions'] = actions
+
+        if ns['permission']('edit'):
+            properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1152,7 +1159,6 @@ def item_view_expand(context, request):
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
-
 
 
 @view_config(context=Item, permission='audit', request_method='GET',
