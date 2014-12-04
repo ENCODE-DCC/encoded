@@ -22,6 +22,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
+from .objtemplate import ObjectTemplate
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import json
@@ -299,6 +300,13 @@ page_or_json = SubprocessTween(
 )
 
 
+def es_permission_checker(source, request):
+    def checker(permission):
+        allowed = set(source['principals_allowed_' + permission])
+        return allowed.intersection(request.effective_principals)
+    return checker
+
+
 def es_tween_factory(handler, registry):
     from .indexing import ELASTIC_SEARCH
     es = registry.get(ELASTIC_SEARCH)
@@ -352,9 +360,16 @@ def es_tween_factory(handler, registry):
             rendering_val = collection.Item.expand_page(request, properties)
 
             # Add actions
-            allowed = set(source['principals_allowed_edit'])
-            if allowed.intersection(request.effective_principals):
-                rendering_val['actions'] = collection.Item.actions
+            ns = {}
+            ns['permission'] = es_permission_checker(source, request)
+            ns['item_type'] = collection.item_type
+            ns['item_uri'] = source['object']['@id']
+            compiled = ObjectTemplate(collection.Item.actions)
+            actions = compiled(ns)
+            if actions:
+                rendering_val['actions'] = actions
+
+            if ns['permission']('edit'):
                 rendering_val['audit'] = source['audit']
 
         else:
