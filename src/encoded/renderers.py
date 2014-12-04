@@ -219,7 +219,7 @@ def canonical_redirect(event):
             request.path_info.endswith('/') == canonical_path.endswith('/')):
         return
 
-    if '/@@' in request_path:
+    if '/@@' in request.path_info:
         return
 
     qs = request.query_string
