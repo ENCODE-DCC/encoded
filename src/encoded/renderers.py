@@ -219,6 +219,9 @@ def canonical_redirect(event):
             request.path_info.endswith('/') == canonical_path.endswith('/')):
         return
 
+    if '/@@' in request_path:
+        return
+
     qs = request.query_string
     location = canonical_path + ('?' if qs else '') + qs
     raise HTTPMovedPermanently(location=location)
