@@ -150,7 +150,7 @@ def post_upload(context, request):
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
     context.update(None, {'external': creds})
-    rendered = embed(request, '/%s/?frame=object' % context.uuid, as_user=True)
+    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],

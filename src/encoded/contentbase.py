@@ -275,7 +275,7 @@ class Root(object):
     schema = None
     builtin_acl = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
+        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
     ]
 
     def __init__(self, registry, acl=None):
@@ -623,8 +623,7 @@ class Item(object):
         if not request.has_permission('edit', self):
             return
         properties['actions'] = getattr(self, 'actions', [])
-        audit = request.audit(properties, properties['@type'], path=resource_path(self))
-        properties['audit'] = audit
+        properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -951,7 +950,7 @@ class Collection(Mapping):
         item_uri = request.resource_path(item)
 
         if frame != 'embedded':
-            item_uri += '?frame=object'
+            item_uri += '@@object'
 
         rendered = embed(request, item_uri)
 
@@ -1063,7 +1062,7 @@ def collection_list(context, request):
     root = find_root(context)
     if context.__name__ in root['pages']:
         properties['default_page'] = embed(
-            request, '/pages/%s/?frame=page' % context.__name__, as_user=True)
+            request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
     return properties
 
@@ -1080,11 +1079,11 @@ def collection_add(context, request, render=None):
     item = context.add(properties)
     request.registry.notify(Created(item, request))
     if render == 'uuid':
-        item_uri = '/%s' % item.uuid
+        item_uri = '/%s/' % item.uuid
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?frame=object', as_user=True)
+        rendered = embed(request, item_uri + '@@object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1115,29 +1114,75 @@ def traversal_security(event):
 
 @view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
-    properties = context.__json__(request)
-    frame = request.params.get('frame', None)
+    frame = request.params.get('frame', 'page')
+    path = request.resource_path(context, '@@' + frame)
+    if request.query_string:
+        path += '?' + request.query_string
+    return embed(request, path, as_user=True)
 
-    if frame is None:
-        if asbool(request.params.get('embed', True)):
-            frame = 'page'
-        else:
-            frame = 'object'
 
-    if frame == 'object':
-        return properties
+@view_config(context=Item, permission='view', request_method='GET',
+             name='object')
+def item_view_object(context, request):
+    return context.__json__(request)
 
+
+@view_config(context=Item, permission='view', request_method='GET',
+             name='embedded')
+def item_view_embedded(context, request):
+    properties = embed(request, request.resource_path(context, '@@object'))
     context.expand_embedded(request, properties)
-    if frame == 'embedded':
-        return properties
+    return properties
 
+
+@view_config(context=Item, permission='view', request_method='GET',
+             name='page')
+def item_view_page(context, request):
+    properties = embed(request, request.resource_path(context, '@@embedded'))
     context.add_actions(request, properties)
     properties = context.expand_page(request, properties)
     return properties
 
 
+@view_config(context=Item, permission='expand', request_method='GET',
+             name='expand')
+def item_view_expand(context, request):
+    path = request.resource_path(context)
+    properties = embed(request, path + '@@object')
+    for path in request.params.getall('expand'):
+        expand_path(request, properties, path)
+    return properties
+
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             name='audit-self')
+def item_view_audit_self(context, request):
+    path = request.resource_path(context)
+    types = [context.item_type] + context.base_types
+    return {
+        '@id': path,
+        '@type': types,
+        'audit': request.audit(types=types, path=path),
+    }
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             name='audit')
+def item_view_audit(context, request):
+    path = request.resource_path(context)
+    types = [context.item_type] + context.base_types
+    embedded = embed(request, path + '@@embedded')
+    audit = inherit_audits(request, embedded, context.embedded_paths)
+    return {
+        '@id': path,
+        '@type': types,
+        'audit': audit,
+    }
+
+
 @view_config(context=Item, permission='view_raw', request_method='GET',
-             request_param=['frame=raw'])
+             name='raw')
 def item_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
         return context.upgrade_properties()
@@ -1145,7 +1190,7 @@ def item_view_raw(context, request):
 
 
 @view_config(context=Item, permission='edit', request_method='GET',
-             request_param=['frame=edit'])
+             name='edit')
 def item_view_edit(context, request):
     properties = context.upgrade_properties()
     for name, value in context.links(properties).iteritems():
@@ -1190,7 +1235,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?frame=object', as_user=True)
+        rendered = embed(request, item_uri + '@@object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1218,6 +1263,38 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+def path_ids(obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        yield obj if isinstance(obj, basestring) else obj['@id']
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for member in value:
+            for item_uri in path_ids(member, remaining):
+                yield item_uri
+    else:
+        for item_uri in path_ids(value, remaining):
+            yield item_uri
+
+
+def inherit_audits(request, embedded, embedded_paths):
+    audit_paths = {embedded['@id']}
+    for embedded_path in embedded_paths:
+        audit_paths.update(path_ids(embedded, embedded_path))
+
+    audit = []
+    for audit_path in audit_paths:
+        result = embed(request, audit_path + '@@audit-self')
+        audit.extend(result['audit'])
+    return audit
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
@@ -1255,11 +1332,13 @@ def item_index_data(context, request):
                 resource_path(base, key)
                 for key in keys[key_name])
 
-    embedded = embed(request, path + '/?frame=embedded')
-    audit = request.audit(embedded, embedded['@type'], path=path)
+    path = path + '/'
+    embedded = embed(request, path + '@@embedded')
+    audit = inherit_audits(request, embedded, context.embedded_paths)
+
     document = {
         'embedded': embedded,
-        'object': embed(request, path + '/?frame=object'),
+        'object': embed(request, path + '@@object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals['view']),
