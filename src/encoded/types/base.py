@@ -65,7 +65,7 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['traverse', 'view']),
-    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['view', 'traverse', 'expand', 'audit']),
     (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
     DENY_ALL,
 ]
@@ -84,7 +84,8 @@ EDIT_ACTION = {
     'name': 'edit',
     'title': 'Edit',
     'profile': '/profiles/{item_type}.json',
-    'href': '#!edit',
+    'href': '{item_uri}#!add',
+    '$condition': 'permission:edit',
     '$templated': True,
 }
 

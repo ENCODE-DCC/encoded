@@ -6,6 +6,49 @@ from pyramid.traversal import find_root
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
+raw_data_formats = [
+    'fastq',
+    'csfasta',
+    'csqual',
+    'rcc',
+    'idat',
+    'CEL',
+    ]
+
+
+@audit_checker('file')
+def audit_file_platform(value, system):
+    '''
+    A raw data file should have a platform specified.
+    Should be in the schema.
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['file_format'] not in raw_data_formats:
+        return
+
+    if 'platform' not in value:
+        detail = 'Raw data file {} missing platform information'.format(value['accession'])
+        raise AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
+
+
+@audit_checker('file')
+def audit_file_flowcells(value, system):
+    '''
+    A fastq file could have its flowcell details.
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['file_format'] not in ['fastq']:
+        return
+
+    if 'flowcell_details' not in value or (value['flowcell_details'] == {}):
+        detail = 'Fastq file {} missing flowcell details'.format(value['accession'])
+        raise AuditFailure('missing platform', detail, level='WARNING')
 
 
 @audit_checker('file')
