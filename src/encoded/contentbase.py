@@ -1145,17 +1145,30 @@ def item_view_expand(context, request):
     return properties
 
 
+
 @view_config(context=Item, permission='audit', request_method='GET',
-             request_param=['frame=audit'])
-@view_config(context=Item, permission='audit', request_method='GET',
-             name='audit')
-def item_view_audit(context, request):
+             name='audit-self')
+def item_view_audit_self(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
     return {
         '@id': path,
         '@type': types,
         'audit': request.audit(types=types, path=path),
+    }
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             name='audit')
+def item_view_audit(context, request):
+    path = request.resource_path(context)
+    types = [context.item_type] + context.base_types
+    embedded = embed(request, path + '?frame=embedded')
+    audit = inherit_audits(request, embedded, context.embedded_paths)
+    return {
+        '@id': path,
+        '@type': types,
+        'audit': audit,
     }
 
 
@@ -1263,6 +1276,18 @@ def path_ids(obj, path):
             yield item_uri
 
 
+def inherit_audits(request, embedded, embedded_paths):
+    audit_paths = {embedded['@id']}
+    for embedded_path in embedded_paths:
+        audit_paths.update(path_ids(embedded, embedded_path))
+
+    audit = []
+    for audit_path in audit_paths:
+        result = embed(request, audit_path + '@@audit-self')
+        audit.extend(result['audit'])
+    return audit
+
+
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     links = defaultdict(list)
@@ -1300,15 +1325,7 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, path + '?frame=embedded')
-
-    audit_paths = {path}
-    for embedded_path in context.embedded_paths:
-        audit_paths.update(path_ids(embedded, embedded_path))
-
-    audit = []
-    for audit_path in audit_paths:
-        result = embed(request, audit_path + '@@audit')
-        audit.extend(result['audit'])
+    audit = inherit_audits(request, embedded, context.embedded_paths)
 
     document = {
         'embedded': embedded,
