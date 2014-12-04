@@ -14,13 +14,14 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
+from .precompiled_query import PrecompiledQuery
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker())
+DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
