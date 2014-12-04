@@ -1243,13 +1243,11 @@ class AfterModified(object):
         self.request = request
 
 
-def expand_audit(request, obj, path):
+def path_ids(obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
-        result = embed(request, obj['@id'] + '@@audit')
-        for error in result['audit']:
-            yield error
+        yield obj if isinstance(obj, basestring) else obj['@id']
         return
     name = path[0]
     remaining = path[1:]
@@ -1258,11 +1256,11 @@ def expand_audit(request, obj, path):
         return
     if isinstance(value, list):
         for member in value:
-            for error in expand_audit(request, member, remaining):
-                yield error
+            for item_uri in path_ids(member, remaining):
+                yield item_uri
     else:
-        for error in expand_audit(request, value, remaining):
-            yield error
+        for item_uri in path_ids(value, remaining):
+            yield item_uri
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
@@ -1302,9 +1300,16 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, path + '?frame=embedded')
-    audit = embed(request, path + '@@audit')['audit']
-    for audit_path in context.embedded_paths:
-        audit.extend(expand_audit(request, embedded, audit_path))
+
+    audit_paths = {path}
+    for embedded_path in context.embedded_paths:
+        audit_paths.update(path_ids(embedded, embedded_path))
+
+    audit = []
+    for audit_path in audit_paths:
+        result = embed(request, audit_path + '@@audit')
+        audit.extend(result['audit'])
+
     document = {
         'embedded': embedded,
         'object': embed(request, path + '?frame=object'),
