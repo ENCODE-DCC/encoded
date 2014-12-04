@@ -44,7 +44,7 @@ def home(context, request):
     })
 
     try:
-        result['default_page'] = embed(request, '/pages/homepage/?frame=page', as_user=True)
+        result['default_page'] = embed(request, '/pages/homepage/@@page', as_user=True)
     except KeyError:
         pass
 

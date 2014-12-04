@@ -153,11 +153,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} />
+                            <AuditIndicators audits={context.audit} key="experiment-audit" />
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} />
+                <AuditDetail audits={context.audit} key="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">

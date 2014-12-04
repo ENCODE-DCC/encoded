@@ -97,6 +97,7 @@ class Experiment(Dataset):
             'files.platform',
             'replicates.antibody',
             'replicates.antibody.targets',
+            'replicates.library',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
