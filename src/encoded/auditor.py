@@ -94,7 +94,8 @@ class Auditor(object):
                         continue
                 except Exception as e:
                     detail = '%s: %r' % (checker.__name__, e)
-                    errors.append(AuditFailure('audit condition error', detail, 'ERROR'))
+                    failure = AuditFailure('audit condition error', detail, 'ERROR', path)
+                    errors.append(failure.__json__(request))
                     logger.warning('audit condition error auditing %s', path, exc_info=True)
                     continue
             try:
@@ -120,7 +121,8 @@ class Auditor(object):
                     raise ValueError(item)
             except Exception as e:
                 detail = '%s: %r' % (checker.__name__, e)
-                errors.append(AuditFailure('audit script error', detail, 'ERROR'))
+                failure = AuditFailure('audit script error', detail, 'ERROR', path)
+                errors.append(failure.__json__(request))
                 logger.warning('audit script error auditing %s', path, exc_info=True)
                 continue
         return errors
