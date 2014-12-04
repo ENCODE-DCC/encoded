@@ -1,8 +1,8 @@
-
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -473,15 +473,18 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
 
 
-@audit_checker('experiment', frame=[
-    'target',
-    'replicates',
-    'replicates.antibody',
-    'replicates.antibody.lot_reviews.organisms',
-    'replicates.library',
-    'replicates.library.biosample',
-    'replicates.library.biosample.organism',
-])
+@audit_checker(
+    'experiment',
+    frame=[
+        'target',
+        'replicates',
+        'replicates.antibody',
+        'replicates.antibody.lot_reviews.organisms',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.organism',
+    ],
+    condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
@@ -499,9 +502,6 @@ def audit_experiment_antibody_eligible(value, system):
         return
 
     if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
-        return
-
-    if (value['award'].get('rfa') not in ['ENCODE3', 'FlyWormChIP']):
         return
 
     for rep in value['replicates']:
