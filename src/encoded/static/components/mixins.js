@@ -393,6 +393,9 @@ module.exports.HistoryAndTriggers = {
         // Skip external links
         if (!origin.same(href)) return;
 
+        // Skip links with a different target
+        if (target.getAttribute('target')) return;
+
         // With HTML5 history supported, local navigation is passed
         // through the navigate method.
         if (this.historyEnabled) {
