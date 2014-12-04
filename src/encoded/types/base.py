@@ -84,7 +84,8 @@ EDIT_ACTION = {
     'name': 'edit',
     'title': 'Edit',
     'profile': '/profiles/{item_type}.json',
-    'href': '#!edit',
+    'href': '{item_uri}#!add',
+    '$condition': 'permission:edit',
     '$templated': True,
 }
 
