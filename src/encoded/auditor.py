@@ -83,9 +83,9 @@ class Auditor(object):
             if frame is None:
                 uri = path
             elif isinstance(frame, basestring):
-                uri = '%s?frame=%s' % (path, frame)
+                uri = '%s@@%s' % (path, frame)
             else:
-                uri = '%s?frame=expand&expand=%s' % (path, '&expand='.join(frame))
+                uri = '%s@@expand?expand=%s' % (path, '&expand='.join(frame))
             value = embed(request, uri)
 
             if condition is not None:

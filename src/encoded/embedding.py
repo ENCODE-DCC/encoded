@@ -2,6 +2,7 @@ from copy import deepcopy
 from urllib import unquote
 from .cache import ManagerLRUCache
 from pyramid.httpexceptions import HTTPNotFound
+from posixpath import join
 
 
 def make_subrequest(request, path):
@@ -73,9 +74,9 @@ def expand_path(request, obj, path):
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?frame=object')
+                member = value[index] = embed(request, join(member, '@@object'))
             expand_path(request, member, remaining)
     else:
         if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?frame=object')
+            value = obj[name] = embed(request, join(value, '@@object'))
         expand_path(request, value, remaining)
