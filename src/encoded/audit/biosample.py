@@ -112,7 +112,7 @@ def audit_biosample_donor(value, system):
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
-        detail = 'Biosample {} has organism {} yet its donor {} has organism {}. Biosamples require a donor of the same species'.format(
+        detail = 'Biosample {} has organism {}, yet its donor {} has organism {}. Biosamples require a donor of the same species'.format(
             value['accession'],
             value['organism']['name'],
             donor['accession'],
