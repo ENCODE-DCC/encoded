@@ -386,6 +386,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         });
     }
 
+    // If no platforms found in files, get the platform from the first replicate, if it has one
+    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
+        platforms[replicates[0].platform['@id']] = replicates[0].platform;
+    }
+
     return (
         <div className = "panel-assay">
             <h3>Assay details</h3>
