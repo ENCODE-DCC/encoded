@@ -214,14 +214,14 @@ def audit_experiment_control(value, system):
         return
 
     if value['possible_controls'] == []:
-        detail = '{} experiments require a value possible_control unless the target is a control'.format(
+        detail = '{} experiments require a value in possible_control unless the target is a control'.format(
             value['assay_term_name']
             )
         raise AuditFailure('missing possible controls', detail, level='STANDARDS_FAILURE')
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
-            detail = 'Control {} is for {} but experiment is on {}'.format(
+            detail = 'Control {} is for {} but experiment is done on {}'.format(
                 control['accession'],
                 control['biosample_term_name'],
                 value['biosample_term_name'])
@@ -276,7 +276,7 @@ def audit_experiment_readlength(value, system):
 
     if len(set(read_lengths)) > 1:
         list_of_lens = str(read_lengths)
-        detail = '{} has mixed read_length replicates: {}'.format(value['accession'], list_of_lens)
+        detail = '{} has mixed values for read_length between replicates: {}'.format(value['accession'], list_of_lens)
         yield AuditFailure('read_length mismatch', detail, level='WARNING')
 
 
@@ -307,7 +307,7 @@ def audit_experiment_platform(value, system):
             platforms.append(platform['@id'])
 
     if len(set(platforms)) > 1:
-        detail = '{} has mixed platform replicates'.format(value['accession'])
+        detail = '{} has mixed values for platform between replicates'.format(value['accession'])
         yield AuditFailure('platform mismatch', detail, level='WARNING')
 
 
@@ -376,7 +376,7 @@ def audit_experiment_biosample_term(value, system):
         detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
         yield AuditFailure('NTR,biosample', detail, level='DCC_ACTION')
     elif term_id not in ontology:
-        detail = '{} has term_id {} not in ontology'.format(value['accession'], term_id)
+        detail = '{} has term_id {} which is not in ontology'.format(value['accession'], term_id)
         yield AuditFailure('term id not in ontology', term_id, level='ERROR')
     else:
         ontology_name = ontology[term_id]['name']
@@ -390,7 +390,7 @@ def audit_experiment_biosample_term(value, system):
 
         lib = rep['library']
         if 'biosample' not in lib:
-            detail = '{} is missing biosample, expected {}'.format(lib['accession'], term_name)
+            detail = '{} is missing biosample, expected is {}'.format(lib['accession'], term_name)
             yield AuditFailure('missing biosample', detail, level='STANDARDS_FAILURE')
             continue
 
@@ -400,16 +400,16 @@ def audit_experiment_biosample_term(value, system):
         bs_id = biosample.get('biosample_term_id')
 
         if bs_type != term_type:
-            detail = '{} has mismatched biosample_type {} - {}'.format(lib['accession'], term_type, bs_type)
+            detail = '{} has mismatched biosample_type, {} - {}'.format(lib['accession'], term_type, bs_type)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
         if bs_name != term_name:
-            detail = '{} has mismatched biosample_term_name {} - {}'.format(lib['accession'], term_name, bs_name)
+            detail = '{} has mismatched biosample_term_name, {} - {}'.format(lib['accession'], term_name, bs_name)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
             # This is propbably a duplicate warning to the biosample mismatches
 
         if bs_id != term_id:
-            detail = '{} has a mismatched biosample_term_id {} - {}'.format(lib['accession'], term_id, bs_id)
+            detail = '{} has a mismatched biosample_term_id, {} - {}'.format(lib['accession'], term_id, bs_id)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
 
@@ -441,7 +441,7 @@ def audit_experiment_paired_end(value, system):
         reps_list.append(rep_paired_ended)
 
         if rep_paired_ended is None:
-            detail = 'Replicate ({}) is missing paired_ended'.format(rep['uuid'])
+            detail = 'Replicate ({}) is missing value for paired_ended'.format(rep['uuid'])
             yield AuditFailure('missing replicate paired end', detail, level='STANDARDS_FAILURE')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
@@ -456,7 +456,7 @@ def audit_experiment_paired_end(value, system):
         libs_list.append(lib_paired_ended)
 
         if lib_paired_ended is None:
-            detail = '{} is missing paired_ended'.format(lib['accession'])
+            detail = '{} is missing value for paired_ended'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='STANDARDS_FAILURE')
 
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
@@ -464,7 +464,7 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
         if (rep_paired_ended != lib_paired_ended) and (lib_paired_ended is False):
-            detail = 'Library {} has paired_ended false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
+            detail = 'Library {} has paired_ended as false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
     if len(set(reps_list)) > 1:
