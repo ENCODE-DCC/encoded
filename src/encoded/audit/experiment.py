@@ -498,7 +498,7 @@ def audit_experiment_antibody_eligible(value, system):
     if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
         return
 
-    if (value['award'].get('rfa') != 'ENCODE3'):
+    if (value['award'].get('rfa') not in ['ENCODE3', 'FlyWormChIP']):
         return
 
     for rep in value['replicates']:
