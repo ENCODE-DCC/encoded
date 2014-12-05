@@ -402,7 +402,7 @@ var AuditMixin = audit.AuditMixin;
                             </a>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ?
+                            {result.target && result.target.label ?
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
                                     {result.target.label}
