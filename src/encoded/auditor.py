@@ -79,7 +79,11 @@ class Auditor(object):
         checkers = set()
         checkers.update(*(self.type_checkers.get(item_type, ()) for item_type in types))
         errors = []
-        system = {}
+        system = {
+            'request': request,
+            'path': path,
+            'types': types,
+        }
         system.update(kw)
         for order, checker, condition, frame in sorted(checkers):
             if frame is None:
