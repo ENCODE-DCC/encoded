@@ -114,7 +114,7 @@ var Graph = module.exports.Graph = React.createClass({
         $script('dagre', function() {
             var d3 = require('d3');
             var dagreD3 = require('dagre-d3');
-            var el = this.getDOMNode();
+            var el = this.refs.graphdisplay.getDOMNode();
 
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
             var svg = d3.select(el).insert('svg', '.graph-node-info')
@@ -129,9 +129,13 @@ var Graph = module.exports.Graph = React.createClass({
             this.drawGraph(el);
 
             // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+            // Also bind to touchstart to eliminate mobile tap delay
             var reactThis = this;
             svg.selectAll("g.node").each(function(nodeId) {
                 globals.bindEvent(this, 'click', function(e) {
+                    reactThis.props.nodeClickHandler(e, nodeId);
+                });
+                globals.bindEvent(this, 'touchstart', function(e) {
                     reactThis.props.nodeClickHandler(e, nodeId);
                 });
             });
@@ -149,7 +153,8 @@ var Graph = module.exports.Graph = React.createClass({
 
     render: function() {
         return (
-            <div className="panel graph-display">
+            <div className="panel">
+                <div ref="graphdisplay" className="graph-display"></div>
                 {this.props.children}
             </div>
         );

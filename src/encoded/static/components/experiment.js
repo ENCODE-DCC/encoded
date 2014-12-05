@@ -162,6 +162,7 @@ var Experiment = module.exports.Experiment = React.createClass({
     },
 
     handleNodeClick: function(e, nodeId) {
+        e.stopPropagation(); e.preventDefault();
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
