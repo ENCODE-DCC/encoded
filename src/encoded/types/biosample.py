@@ -52,7 +52,6 @@ class Biosample(Collection):
             'sex': ['model_organism_sex', 'donor.sex'],
             'age': ['model_organism_age', 'donor.age'],
             'age_units': ['model_organism_age_units', 'donor.age_units'],
-            'age_display': ['model_organism_sex' + 'model_organism_age_units'],
             'health_status': ['model_organism_health_status', 'donor.health_status'],
             'life_stage': [
                 'mouse_life_stage',
