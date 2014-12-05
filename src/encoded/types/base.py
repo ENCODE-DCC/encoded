@@ -154,16 +154,18 @@ class Collection(BaseCollection):
         def __acl__(self):
             # Don't finalize to avoid validation here.
             properties = self.upgrade_properties(finalize=False).copy()
-            ns = self.template_namespace(properties)
-            properties.update(ns)
-            status = ns.get('status')
+            if 'status' in self.namespace_from_path:
+                ns = self.template_namespace(properties)
+                properties.update(ns)
+            status = properties.get('status')
             return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
         def __ac_local_roles__(self):
             roles = {}
             properties = self.upgrade_properties(finalize=False).copy()
-            ns = self.template_namespace(properties)
-            properties.update(ns)
+            if 'lab' in self.namespace_from_path:
+                ns = self.template_namespace(properties)
+                properties.update(ns)
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'

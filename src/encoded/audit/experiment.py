@@ -532,14 +532,14 @@ def audit_experiment_antibody_eligible(value, system):
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
-            experiment_biosample = set([biosample_term_id, organism])
+            experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
                     for lo in lot_review['organisms']:
                         lot_organism = find_resource(context, lo)
                         lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
-                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism_properties['name']])
+                        eligible_biosample = (lot_review['biosample_term_id'], lot_organism_properties['name'])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
