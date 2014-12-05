@@ -1,5 +1,5 @@
 from ..contentbase import location
-from ..renderers import embed
+from ..embedding import embed
 from ..schema_utils import (
     load_schema,
     schema_validator,

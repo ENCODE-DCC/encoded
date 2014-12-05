@@ -18,7 +18,7 @@ from ..contentbase import (
     item_view_raw,
     location,
 )
-from ..renderers import make_subrequest
+from ..embedding import embed
 
 
 @location('users')
@@ -100,6 +100,4 @@ def current_user(request):
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
     path = request.resource_path(collection, userid)
-    subreq = make_subrequest(request, path)
-    subreq.override_renderer = 'null_renderer'
-    return request.invoke_subrequest(subreq)
+    return embed(request, path, as_user=True)

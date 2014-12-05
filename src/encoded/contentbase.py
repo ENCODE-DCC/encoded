@@ -35,10 +35,14 @@ from pyramid.traversal import (
 )
 from pyramid.view import view_config
 from sqlalchemy import (
+    bindparam,
     orm,
 )
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import FlushError
+from sqlalchemy.orm.exc import (
+    FlushError,
+    NoResultFound,
+)
 from urllib import urlencode
 from uuid import (
     UUID,
@@ -46,7 +50,11 @@ from uuid import (
 )
 from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
-from .renderers import embed
+from .precompiled_query import precompiled_query_builder
+from .embedding import (
+    embed,
+    expand_path,
+)
 from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import (
@@ -232,6 +240,35 @@ def location(name, factory=None):
     return decorate
 
 
+def _get_by_uuid_instance_map(uuid):
+    # Internals from sqlalchemy/orm/query.py:Query.get
+    session = DBSession()
+    mapper = orm.class_mapper(Resource)
+    ident = [uuid]
+    key = mapper.identity_key_from_primary_key(ident)
+    return orm.loading.get_from_identity(
+        session, key, orm.attributes.PASSIVE_OFF)
+
+
+@precompiled_query_builder(DBSession)
+def _get_by_uuid_query():
+    session = DBSession()
+    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
+
+
+@precompiled_query_builder(DBSession)
+def _get_by_unique_key_query():
+    session = DBSession()
+    return session.query(Key).options(
+        orm.joinedload_all(
+            Key.resource,
+            Resource.data,
+            CurrentPropertySheet.propsheet,
+            innerjoin=True,
+        ),
+    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
@@ -306,10 +343,14 @@ class Root(object):
         if cached is not None:
             return cached
 
-        session = DBSession()
-        model = session.query(Resource).get(uuid)
+        model = _get_by_uuid_instance_map(uuid)
+
         if model is None:
-            return default
+            try:
+                model = _get_by_uuid_query().params(rid=uuid).one()
+            except NoResultFound:
+                return default
+
         collection = self.by_item_type[model.item_type]
         item = collection.Item(collection, model)
         self.item_cache[uuid] = item
@@ -322,17 +363,11 @@ class Root(object):
         if cached is not None:
             return self.get_by_uuid(cached)
 
-        session = DBSession()
-        key = session.query(Key).options(
-            orm.joinedload_all(
-                Key.resource,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-                innerjoin=True,
-            ),
-        ).get(pkey)
-        if key is None:
+        try:
+            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
+        except NoResultFound:
             return default
+
         model = key.resource
 
         uuid = model.rid
@@ -383,6 +418,8 @@ class MergedKeysMeta(MergedDictsMeta):
                     key = {'name': '{item_type}:' + key,
                            'value': '{%s}' % key, '$templated': True}
                 self.merged_keys.append(key)
+
+        self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
 
 
 class Item(object):
@@ -575,10 +612,7 @@ class Item(object):
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
-        if self.schema is None:
-            return
-        paths = [p.split('.') for p in self.embedded]
-        for path in paths:
+        for path in self.embedded_paths:
             expand_path(request, properties, path)
 
     @classmethod
@@ -792,7 +826,7 @@ class Collection(Mapping):
         self.__name__ = name
         self.__parent__ = parent
 
-        self.embedded_paths = set()
+        self.column_paths = set()
         if self.schema is not None and 'columns' in self.schema:
             for column in self.schema['columns']:
                 path = tuple(
@@ -800,7 +834,7 @@ class Collection(Mapping):
                     if name not in ('length', '0')
                 )
                 if path:
-                    self.embedded_paths.add(path)
+                    self.column_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
@@ -924,7 +958,7 @@ class Collection(Mapping):
         if frame != 'columns':
             return rendered
 
-        for path in self.embedded_paths:
+        for path in self.column_paths:
             expand_path(request, rendered, path)
 
         subset = {
@@ -984,22 +1018,6 @@ class Collection(Mapping):
         result.update(properties)
         return result
 
-    def expand_embedded(self, request, properties):
-        pass
-
-    @classmethod
-    def expand_page(cls, request, properties):
-        return properties
-
-    def add_actions(self, request, properties):
-        pass
-
-    def add_default_page(self, request, properties):
-        root = find_root(self)
-        if self.__name__ in root['pages']:
-            properties['default_page'] = embed(
-                request, '/pages/%s/?frame=page' % self.__name__, as_user=True)
-
 
 def column_value(obj, column):
     path = column.split('.')
@@ -1024,25 +1042,6 @@ def column_value(obj, column):
     return value
 
 
-def expand_path(request, obj, path):
-    if not path:
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if isinstance(value, list):
-        for index, member in enumerate(value):
-            if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?frame=object')
-            expand_path(request, member, remaining)
-    else:
-        if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?frame=object')
-        expand_path(request, value, remaining)
-
-
 def if_match_tid(view_callable):
     """ ETag conditional PUT/PATCH support
 
@@ -1059,7 +1058,14 @@ def if_match_tid(view_callable):
 
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    return item_view(context, request)
+    properties = context.__json__(request)
+
+    root = find_root(context)
+    if context.__name__ in root['pages']:
+        properties['default_page'] = embed(
+            request, '/pages/%s/?frame=page' % context.__name__, as_user=True)
+
+    return properties
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1127,8 +1133,6 @@ def item_view(context, request):
 
     context.add_actions(request, properties)
     properties = context.expand_page(request, properties)
-    if hasattr(context, 'add_default_page'):
-        context.add_default_page(request, properties)
     return properties
 
 

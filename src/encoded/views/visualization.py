@@ -1,7 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from ..contentbase import Item, embed
-from ..renderers import make_subrequest
+from ..contentbase import Item
+from ..embedding import embed
 from collections import OrderedDict
 import cgi
 import urlparse
@@ -246,10 +246,9 @@ def generate_batch_hubs(request):
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
         params['assembly'] = [assembly]
-        subreq = make_subrequest(request, '/search/?%s' % urllib.urlencode(params, True))
-        subreq.override_renderer = 'null_renderer'
+        path = '/search/?%s' % urllib.urlencode(params, True)
         try:
-            results = request.invoke_subrequest(subreq)
+            results = embed(request, path, as_user=True)
         except Exception as e:
             print e
         trackdb = ''
@@ -265,10 +264,9 @@ def generate_batch_hubs(request):
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        subreq = make_subrequest(request, '/search/?%s' % urllib.urlencode(param_list, True))
-        subreq.override_renderer = 'null_renderer'
+        path = '/search/?%s' % urllib.urlencode(param_list, True)
         try:
-            results = request.invoke_subrequest(subreq)
+            results = embed(request, path, as_user=True)
         except Exception as e:
             print e
         g_text = ''
