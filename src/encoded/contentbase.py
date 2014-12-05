@@ -33,7 +33,10 @@ from pyramid.traversal import (
     find_root,
     resource_path,
 )
-from pyramid.view import view_config
+from pyramid.view import (
+    render_view_to_response,
+    view_config,
+)
 from sqlalchemy import (
     bindparam,
     orm,
@@ -1123,6 +1126,9 @@ def traversal_security(event):
 @view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
+    if getattr(request, '__parent__', None) is None:
+        # We need the response headers from non subrequests
+        return render_view_to_response(context, request, name=frame)
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
         path += '?' + request.query_string

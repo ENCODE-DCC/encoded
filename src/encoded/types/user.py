@@ -60,7 +60,6 @@ def user_details_view(context, request):
     return context.__json__(request)
 
 
-
 @view_config(context=User.Item, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
@@ -84,5 +83,5 @@ def current_user(request):
         return {}
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid)
+    path = request.resource_path(collection, userid, '@@details')
     return embed(request, path, as_user=True)
