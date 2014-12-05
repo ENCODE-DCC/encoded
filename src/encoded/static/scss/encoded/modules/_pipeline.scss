@@ -38,6 +38,7 @@ g.edgePath {
 
 .graph-display {
     position: relative;
+    overflow: scroll;
 
     svg {
         display: block;

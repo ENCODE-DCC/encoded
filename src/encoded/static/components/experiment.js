@@ -15,7 +15,7 @@ var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var Graph = graph.Graph;
-var GraphArch = graph.GraphArch;
+var JsonGraph = graph.JsonGraph;
 var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
@@ -32,165 +32,130 @@ var Panel = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
-    nodeId: function(type, id) {
-        return type + id;
+    getInitialState: function() {
+        return {
+            infoNodeId: '' // ID of node whose info panel is open
+        };
     },
 
-    getNodeIdType: function(id) {
-        return id.slice(0, 2);
-    },
+    // Create nodes based on all files in this experiment
+    assembleGraph: function() {
+        var jsonGraph;
 
-    assembleJsonNodes: function(infoNodeId) {
-        var graphArch = new GraphArch('experiment');
-        this.props.context.files.forEach(function(file) {
-            var fileId = file['@id'];
+        if (this.props.context.files) {
+            // Create an empty graph architecture
+            jsonGraph = new JsonGraph('experiment');
 
-            // Assemble a single file node
-            graphArch.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''), 'fi');
+            // Add files and their steps as nodes to the graph
+            this.props.context.files.forEach(function(file) {
+                var fileId = file['@id'];
 
-            // If the node has parents, render the edges to the analysis step between this node and its parents
-            if (file.derived_from && file.derived_from.length && file.step) {
-                var step = file.step.analysis_step;
-                var stepId = step['@id'] + '&' + file['@id'];
+                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                // to show that this is a file node.
+                jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi');
 
-                // Insert a node for the analysis step, with an ID combining the IDS of this step and the file that
-                // points to it; there may be more than one copy of this step on the graph if more than one
-                // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                graphArch.addNode(stepId, step.analysis_step_types.join(', '),
-                    'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '', 'as'));
-                graphArch.addEdge(stepId, fileId);
+                // If the node has parents, render the edges to the analysis step between this node and its parents
+                if (file.derived_from && file.derived_from.length && file.step) {
+                    var step = file.step.analysis_step;
+                    var stepId = step['@id'] + '&' + file['@id'];
 
-                // Draw an edge from the analysis step to each of the derived_from files
-                file.derived_from.forEach(function(derived) {
-                    graphArch.addEdge(derived, stepId);
-                }, this);
-            }
-        });
-        return graph;
-    },
+                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                    // points to it; there may be more than one copy of this step on the graph if more than one
+                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                    // 'as' type identifies these as analysis step nodes
+                    jsonGraph.addNode(stepId, step.analysis_step_types.join(', '),
+                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as');
+                    jsonGraph.addEdge(stepId, fileId);
 
-    assembleNodes: function(graph, infoNode) {
-        // Loop over each analysis step to insert it into the graph
-        this.props.context.files.forEach(function(file) {
-            var fileId = this.nodeId('fi', file['@id']);
-
-            // Render each node. Set node ID to analysis step object ID so we can find it later
-            graph.setNode(fileId, {label: file.accession + ' (' + file.output_type + ')', rx: 4, ry: 4,
-                class: 'pipeline-node-file' + (infoNode === fileId ? ' active' : '')});
-
-            // If the node has parents, render the edges to the analysis step between this node and its parents
-            if (file.derived_from && file.derived_from.length && file.step) {
-                var step = file.step.analysis_step;
-                var stepId = this.nodeId('as', step['@id'] + '&' + file['@id']);
-
-                // Insert a node for the analysis step, with an ID combining the IDS of this step and the file that
-                // points to it; there may be more than one copy of this step on the graph if more than one
-                // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                graph.setNode(stepId, {label: step.analysis_step_types.join(', '), rx: 4, ry: 4,
-                    class: 'pipeline-node-analysis-step' + (infoNode === stepId ? ' active' : '')});
-                graph.setEdge(stepId, fileId);
-
-                // Draw an edge from the analysis step to each of the derived_from files
-                file.derived_from.forEach(function(derived) {
-                    graph.setEdge(this.nodeId('fi', derived), stepId);
-                }, this);
-            }
-        }, this);
-    },
-
-    detailNodes: function(infoNode) {
-        // Find data matching selected node, if any
-        var displayMeta;
-        var meta;
-        if (infoNode) {
-            switch(this.getNodeIdType(infoNode)) {
-                case 'fi':
-                    this.props.context.files.some(function(file) {
-                        if (this.nodeId('fi', file['@id']) === infoNode) {
-                            displayMeta = file;
-                            return true; // Found it; save the matching analysis step and exit loop
-                        } else {
-                            return false; // Keep searching...
-                        }
-                    }, this);
-
-                    meta = (
-                        <dl className="key-value">
-                            <div>
-                                <dt>Format</dt>
-                                <dd>
-                                    {displayMeta ?
-                                        <span>
-                                            {displayMeta.file_format ?
-                                                <span>{displayMeta.file_format}</span>
-                                            :
-                                                <span className="select-note">Unspecified</span>
-                                            }
-                                        </span>
-                                    :
-                                        <span className="select-note">Select a node above</span>
-                                    }
-                                </dd>
-                            </div>
-
-                            <div>
-                                <dt>Output</dt>
-                                <dd>
-                                    {displayMeta ?
-                                        <span>
-                                            {displayMeta.output_type ?
-                                                <span>{displayMeta.output_type}</span>
-                                            :
-                                                <span className="select-note">Unspecified</span>
-                                            }
-                                        </span>
-                                    :
-                                        <span className="select-note">Select a node above</span>
-                                    }
-                                </dd>
-                            </div>
-                        </dl>
-                    );
-
-                    break;
-
-                case 'as':
-                    var nodeId = infoNode.slice(2);
-                    var analysisStepId = nodeId.slice(0, nodeId.indexOf('&'));
-                    this.props.context.files.some(function(file) {
-                        if (file.step && file.step.analysis_step['@id'] === analysisStepId) {
-                            displayMeta = file.step;
-                            return true;
-                        } else {
-                            return false;
-                        }
+                    // Draw an edge from the analysis step to each of the derived_from files
+                    file.derived_from.forEach(function(derived) {
+                        jsonGraph.addEdge(derived, stepId);
                     });
+                }
+            }, this);
+        }
+        return jsonGraph;
+    },
 
-                    if (displayMeta) {
-                        meta = (
-                            <dl className="key-value">
-                                {displayMeta.analysis_step.input_file_types && displayMeta.analysis_step.input_file_types.length ?
-                                    <div>
-                                        <dt>Input file types</dt>
-                                        <dd>{displayMeta.analysis_step.input_file_types.join(', ')}</dd>
-                                    </div>
-                                : null}
+    detailNodes: function(jsonGraph, infoNodeId) {
+        // Find data matching selected node, if any
+        var selectedFile;
+        var selectedStep;
+        var meta;
+        if (infoNodeId) {
+            var node = jsonGraph.getNode(infoNodeId);
+            if (node) {
+                switch(node.type) {
+                    case 'fi':
+                        this.props.context.files.some(function(file) {
+                            if (this.nodeId('fi', file['@id']) === infoNodeId) {
+                                selectedFile = file;
+                                return true; // Found it; save the matching file and exit loop
+                            } else {
+                                return false; // Keep searching...
+                            }
+                        }, this);
 
-                                {displayMeta.analysis_step.output_file_types && displayMeta.analysis_step.output_file_types.length ?
-                                    <div>
-                                        <dt>Output file types</dt>
-                                        <dd>{displayMeta.analysis_step.output_file_types.join(', ')}</dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        );
-                    }
+                        if (selectedFile) {
+                            meta = (
+                                <dl className="key-value">
+                                    {selectedFile.file_format ?
+                                        <div>
+                                            <dt>Format</dt>
+                                            <dd>{displayMeta.file_format}</dd>
+                                        </div>
+                                    : null}
 
-                    break;
+                                    {selectedFile.output_type ?
+                                        <div>
+                                            <dt>Output</dt>
+                                            <dd>{displayMeta.output_type}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            );
+                        }
 
-                default:
-                    break;
+                        break;
+
+                    case 'as':
+                        var nodeId = node.id.slice(2);
+                        var analysisStepId = nodeId.slice(0, nodeId.indexOf('&'));
+                        this.props.context.files.some(function(file) {
+                            if (file.step && file.step.analysis_step['@id'] === analysisStepId) {
+                                displayMeta = file.step;
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        });
+
+                        if (displayMeta) {
+                            meta = (
+                                <dl className="key-value">
+                                    {displayMeta.analysis_step.input_file_types && displayMeta.analysis_step.input_file_types.length ?
+                                        <div>
+                                            <dt>Input file types</dt>
+                                            <dd>{displayMeta.analysis_step.input_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {displayMeta.analysis_step.output_file_types && displayMeta.analysis_step.output_file_types.length ?
+                                        <div>
+                                            <dt>Output file types</dt>
+                                            <dd>{displayMeta.analysis_step.output_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            );
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
 
@@ -199,6 +164,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {meta ? <div><hr />{meta}</div> : null}
             </div>
         );
+    },
+
+    handleNodeClick: function(e, nodeId) {
+        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
     render: function() {
@@ -216,6 +185,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                 documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         });
+
+        // Build node graph of the files and analysis steps with this experiment
+        var jsonGraph = this.assembleGraph();
 
         // Process biosamples for summary display
         var biosamples = [], lifeAge = [], organismName = [];
@@ -510,9 +482,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Pipeline for {context.accession}</h3>
-                        <Graph assembler={this.assembleNodes} detailer={this.detailNodes} />
                     </div>
                 : null }
+
+                <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick} />
+                {this.detailNodes()}
             </div>
         );
     }

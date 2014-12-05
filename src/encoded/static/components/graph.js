@@ -5,39 +5,81 @@ var globals = require('./globals');
 var $script = require('scriptjs');
 
 
+// The JsonGraph object helps build JSON graph objects. Create a new object
+// with the constructor, then add edges and nodes with the methods.
+// Uses a variation of the JSON Graph structure described in:
+// http://rtsys.informatik.uni-kiel.de/confluence/display/KIELER/JSON+Graph+Format
+// The variation is that this one doesn't use 'width' and 'height' in the node, and it
+// adds 'cssClass' and 'type' to the node.
+
 // Constructor for a graph architecture
-function GraphArch(id) {
+function JsonGraph(id) {
     this.id = id;
+    this.type = '';
     this.children = [];
     this.edges = [];
+    this.cssClass = '';
 }
 
 // Add node to the graph architecture
-GraphArch.prototype.addNode = function(id, label, cssClass, type) {
+// id: uniquely identify the node
+// label: text to display in the node
+// cssClass: optional CSS class to assign to the SVG object for this node
+// type: Optional text type to track the type of node this is
+JsonGraph.prototype.addNode = function(id, label, cssClass, type) {
     var newNode = {};
     newNode.id = id;
     newNode.type = type;
+    newNode.labels = [];
+    newNode.labels[0] = {};
     newNode.labels[0].text = label;
     newNode.cssClass = cssClass;
     this.children.push(newNode);
 };
 
 // Add edge to the graph architecture
-GraphArch.prototype.addEdge = function(source, target) {
+// source: ID of node for the edge to originate; corresponds to 'id' parm of addNode
+// target: ID of node for the edge to terminate
+JsonGraph.prototype.addEdge = function(source, target) {
     var newEdge = {};
     newEdge.id = '';
     newEdge.source = source;
     newEdge.target = target;
+    this.edges.push(newEdge);
 };
 
-module.exports.GraphArch = GraphArch;
+// Return the node matching the given ID
+JsonGraph.prototype.getNode = function(id) {
+    var node;
+
+    this.children.some(function(child) {
+        if (child.id === id) {
+            nodeType = child;
+            return true;
+        } else {
+            return false;
+        }
+    });
+    return node;
+};
+
+module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
-    getInitialState: function() {
-        return {
-            infoNode: '' // ID of node whose info panel is open
-        };
+    // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
+    // graphArch: JsonGraph object containing nodes and edges.
+    // graph: Initialized empty Dagre-D3 graph.
+    convertGraph: function(graphArch, graph) {
+        // Convert the nodes
+        graphArch.children.forEach(function(node) {
+            graph.setNode(node.id, {label: node.labels[0].text, rx: 4, ry: 4, class: node.cssClass});
+        });
+
+        // Convert the edges
+        graphArch.edges.forEach(function(edge) {
+            graph.setEdge(edge.source, edge.target);
+        });
     },
 
     // Draw the graph on initial draw as well as on state changes
@@ -51,9 +93,8 @@ var Graph = module.exports.Graph = React.createClass({
             .setGraph({rankdir: "TB"})
             .setDefaultEdgeLabel(function() { return {}; });
 
-        // Call the supplied node assembler, passing it the graph to assemble
-        // the nodes into, and the ID of the currently selected node, if any
-        this.props.assembler(g, this.state.infoNode);
+        // Convert from given node architecture to the dagre nodes and edges
+        this.convertGraph(this.props.graph, g);
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
@@ -68,54 +109,47 @@ var Graph = module.exports.Graph = React.createClass({
         svg.attr("viewBox", "-10 -10 " + (width + 20) + " " + (height + 20));
     },
 
-    // After the graph panel is mounted in the DOM, use D3/Dagre/Dagre-D3 to draw into it
     componentDidMount: function () {
-        $script('dagre', this.setupGraph);
-    },
+        // Delay loading dagre
+        $script('dagre', function() {
+            var d3 = require('d3');
+            var dagreD3 = require('dagre-d3');
+            var el = this.getDOMNode();
 
-    setupGraph: function() {
-        var d3 = require('d3');
-        var dagreD3 = require('dagre-d3');
-        var el = this.getDOMNode();
+            // Add SVG element to the graph component, and assign it classes, sizes, and a group
+            var svg = d3.select(el).insert('svg', '.graph-node-info')
+                .attr('class', 'd3')
+                .attr('width', '960px') // Just choose an initial viewport size; we'll resize it later
+                .attr('height', '300px')
+                .attr('viewBox', '0 0 960 300') // Choose an inital viewbox size; we'll resize it later
+                .attr('preserveAspectRatio', 'xMidYMid');
+            svg.append('g').attr('class', 'd3-points');
 
-        // Add SVG element to the graph component, and assign it classes, sizes, and a group
-        var svg = d3.select(el).insert('svg', '.graph-node-info')
-            .attr('class', 'd3')
-            .attr('width', '960px') // Just choose an initial viewport size; we'll resize it later
-            .attr('height', '300px')
-            .attr('viewBox', '0 0 960 300') // Choose an inital viewbox size; we'll resize it later
-            .attr('preserveAspectRatio', 'xMidYMid');
-        svg.append('g').attr('class', 'd3-points');
+            // Draw the graph into the panel
+            this.drawGraph(el);
 
-        // Draw the graph into the panel
-        this.drawGraph(el);
-
-        // Add hover event listeners to each node rendering. Node's ID is its ENCODE object ID
-        var reactThis = this;
-        svg.selectAll("g.node").each(function(nodeId) {
-            globals.bindEvent(this, 'click', function(e) {
-                reactThis.handleMouseClick(e, nodeId);
+            // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+            var reactThis = this;
+            svg.selectAll("g.node").each(function(nodeId) {
+                globals.bindEvent(this, 'click', function(e) {
+                    reactThis.props.nodeClickHandler(e, nodeId);
+                });
             });
-        });
-        this.dagreLoaded = true;
+            this.dagreLoaded = true;
+        }.bind(this));
     },
 
     // State change; redraw the graph
     componentDidUpdate: function() {
-        if (!this.dagreLoaded) return;
-        var el = this.getDOMNode();
-        this.drawGraph(el);
-    },
-
-    // Handle mouse clicks in any of the nodes
-    handleMouseClick: function(e, nodeId) {
-        this.setState({infoNode: this.state.infoNode !== nodeId ? nodeId : ''});
+        if (this.dagreLoaded) {
+            var el = this.getDOMNode();
+            this.drawGraph(el);
+        }
     },
 
     render: function() {
         return (
             <div className="panel graph-display">
-                {this.props.detailer(this.state.infoNode)}
             </div>
         );
     }
