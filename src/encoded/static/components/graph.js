@@ -68,16 +68,16 @@ module.exports.JsonGraph = JsonGraph;
 
 var Graph = module.exports.Graph = React.createClass({
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
-    // graphArch: JsonGraph object containing nodes and edges.
+    // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
-    convertGraph: function(graphArch, graph) {
+    convertGraph: function(jsonGraph, graph) {
         // Convert the nodes
-        graphArch.children.forEach(function(node) {
+        jsonGraph.children.forEach(function(node) {
             graph.setNode(node.id, {label: node.labels[0].text, rx: 4, ry: 4, class: node.cssClass});
         });
 
         // Convert the edges
-        graphArch.edges.forEach(function(edge) {
+        jsonGraph.edges.forEach(function(edge) {
             graph.setEdge(edge.source, edge.target);
         });
     },
