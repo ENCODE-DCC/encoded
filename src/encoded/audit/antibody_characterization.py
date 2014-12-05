@@ -37,28 +37,12 @@ def audit_antibody_characterization_review(value, system):
 
 
 @audit_checker('antibody_characterization')
-def audit_antibody_characterization_standards(value, system):
-    '''
-    Make sure that a standards document is attached if
-    status is compliant or not compliant.
-    '''
-    if (value['status'] in ['compliant', 'not compliant']):
-        has_standards = False
-        for document in value['documents']:
-            if document.get('document_type') == 'standards document':
-                has_standards = True
-        if not has_standards:
-            detail = 'Missing standards document'
-            raise AuditFailure('missing standards', detail, level='ERROR')
-
-
-@audit_checker('antibody_characterization')
 def audit_antibody_characterization_unique_reviews(value, system):
     '''
     Make sure primary characterizations have unique lane, biosample_term_id and
     organism combinations for characterization reviews
     '''
-    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
+    if(value['status'] in ['deleted', 'not submitted for review by lab', 'in progress', 'not reviewed']):
         return
 
     if 'secondary_characterization_method' in value:
@@ -161,6 +145,7 @@ def audit_antibody_characterization_method_allowed(value, system):
     if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):
         return
 
-    if (value['secondary_characterization_method'] == 'motif enrichment') or (is_histone and value['secondary_characterization_method'] == 'ChIP-seq comparison'):
+    secondary = value['secondary_characterization_method']
+    if (secondary == 'motif enrichment') or (is_histone and secondary == 'ChIP-seq comparison'):
         detail = '{} is not an approved secondary characterization_method according to the current standards'.format(value['secondary_characterization_method'])
-        raise AuditFailure('unapproved char method', detail, level='WARNING')
+        raise AuditFailure('unapproved char method', detail, level='STANDARDS_FAILURE')

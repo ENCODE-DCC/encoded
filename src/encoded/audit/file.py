@@ -66,9 +66,10 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
-        detail = '{} is pair {} and missing paired_with'.format(value['accession'],
-                                                                value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
+        detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
+            value['accession'],
+            value['paired_end'])
+        raise AuditFailure('missing paired_with', detail, level='ERROR')
 
     # Would love to then check to see if the files shared the same replicate
 
@@ -80,14 +81,17 @@ def audit_file_size(value, system):
         return
 
     if 'file_size' not in value:
-        detail = '{} missing file_size'.format(value['accession'])
-        raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
+        detail = 'File {} requires a value for file_size'.format(value['accession'])
+        raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
 
 
 @audit_checker('file')
 def audit_file_output_type(value, system):
+    '''
+    The differing RFA's will have differeing acceptable output_types
+    '''
 
-    if value.get('status') == 'deleted':
+    if value.get('status') in ['deleted']:
         return
 
     undesirable_output_type = [
@@ -138,7 +142,9 @@ def audit_file_output_type(value, system):
         'WaveSignal',
         ]
 
-    #if value['dataset']['award']['rfa'] != 'ENCODE3':
+    # if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
-            detail = '{}'.format(value['output_type'])
+            detail = 'File {} has output_type "{}" which is not a standard value'.format(
+                value['accession'],
+                value['output_type'])
             raise AuditFailure('undesirable output type', detail, level='DCC_ACTION')
