@@ -290,7 +290,7 @@ def audit_experiment_platform(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    platforms = []
+    platforms = set()
 
     for ff in value['files']:
         platform = ff.get('platform')
@@ -301,12 +301,12 @@ def audit_experiment_platform(value, system):
         if platform is None:
             continue  # This error is caught in file
         else:
-            platforms.append(platform)
+            platforms.add(platform['@id'])
 
-    if len(set(platforms)) > 1:
+    if len(platforms) > 1:
         detail = '{} has mixed values for platform files {}'.format(
             value['accession'],
-            repr(platforms))
+            repr(sorted(platforms)))
         yield AuditFailure('platform mismatch', detail, level='WARNING')
 
 
