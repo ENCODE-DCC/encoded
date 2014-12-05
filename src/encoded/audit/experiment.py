@@ -398,7 +398,6 @@ def audit_experiment_biosample_term(value, system):
         biosample = lib['biosample']
         bs_type = biosample.get('biosample_type')
         bs_name = biosample.get('biosample_term_name')
-        bs_id = biosample.get('biosample_term_id')
 
         if bs_type != term_type:
             detail = '{} has mismatched biosample_type {} - {}'.format(lib['accession'], term_type, bs_type)
@@ -406,11 +405,6 @@ def audit_experiment_biosample_term(value, system):
 
         if bs_name != term_name:
             detail = '{} has mismatched biosample_term_name {} - {}'.format(lib['accession'], term_name, bs_name)
-            yield AuditFailure('biosample mismatch', detail, level='ERROR')
-            # This is propbably a duplicate warning to the biosample mismatches
-
-        if bs_id != term_id:
-            detail = '{} has a mismatched biosample_term_id {} - {}'.format(lib['accession'], term_id, bs_id)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
 
@@ -439,7 +433,8 @@ def audit_experiment_paired_end(value, system):
     for rep in value['replicates']:
 
         rep_paired_ended = rep.get('paired_ended')
-        reps_list.append(rep_paired_ended)
+        if rep_paired_ended is not None:
+            reps_list.append(rep_paired_ended)
 
         if rep_paired_ended is None:
             detail = 'Replicate ({}) is missing paired_ended'.format(rep['uuid'])
@@ -454,7 +449,8 @@ def audit_experiment_paired_end(value, system):
 
         lib = rep['library']
         lib_paired_ended = lib.get('paired_ended')
-        libs_list.append(lib_paired_ended)
+        if lib_paired_ended is not None:
+            libs_list.append(lib_paired_ended)
 
         if lib_paired_ended is None:
             detail = '{} is missing paired_ended'.format(lib['accession'])
@@ -464,7 +460,7 @@ def audit_experiment_paired_end(value, system):
             detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(term_name, lib['accession'])
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
-        if (rep_paired_ended != lib_paired_ended) and (lib_paired_ended is False):
+        if (rep_paired_ended is True) and (lib_paired_ended is False):
             detail = 'Library {} has paired_ended false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
