@@ -54,7 +54,7 @@ JsonGraph.prototype.getNode = function(id) {
 
     this.children.some(function(child) {
         if (child.id === id) {
-            nodeType = child;
+            node = child;
             return true;
         } else {
             return false;
@@ -150,6 +150,7 @@ var Graph = module.exports.Graph = React.createClass({
     render: function() {
         return (
             <div className="panel graph-display">
+                {this.props.children}
             </div>
         );
     }

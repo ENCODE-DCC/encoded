@@ -89,7 +89,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 switch(node.type) {
                     case 'fi':
                         this.props.context.files.some(function(file) {
-                            if (this.nodeId('fi', file['@id']) === infoNodeId) {
+                            if (file['@id'] === infoNodeId) {
                                 selectedFile = file;
                                 return true; // Found it; save the matching file and exit loop
                             } else {
@@ -103,14 +103,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     {selectedFile.file_format ?
                                         <div>
                                             <dt>Format</dt>
-                                            <dd>{displayMeta.file_format}</dd>
+                                            <dd>{selectedFile.file_format}</dd>
                                         </div>
                                     : null}
 
                                     {selectedFile.output_type ?
                                         <div>
                                             <dt>Output</dt>
-                                            <dd>{displayMeta.output_type}</dd>
+                                            <dd>{selectedFile.output_type}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -120,31 +120,30 @@ var Experiment = module.exports.Experiment = React.createClass({
                         break;
 
                     case 'as':
-                        var nodeId = node.id.slice(2);
-                        var analysisStepId = nodeId.slice(0, nodeId.indexOf('&'));
+                        var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
                         this.props.context.files.some(function(file) {
                             if (file.step && file.step.analysis_step['@id'] === analysisStepId) {
-                                displayMeta = file.step;
+                                selectedStep = file.step;
                                 return true;
                             } else {
                                 return false;
                             }
                         });
 
-                        if (displayMeta) {
+                        if (selectedStep) {
                             meta = (
                                 <dl className="key-value">
-                                    {displayMeta.analysis_step.input_file_types && displayMeta.analysis_step.input_file_types.length ?
+                                    {selectedStep.analysis_step.input_file_types && selectedStep.analysis_step.input_file_types.length ?
                                         <div>
                                             <dt>Input file types</dt>
-                                            <dd>{displayMeta.analysis_step.input_file_types.join(', ')}</dd>
+                                            <dd>{selectedStep.analysis_step.input_file_types.join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {displayMeta.analysis_step.output_file_types && displayMeta.analysis_step.output_file_types.length ?
+                                    {selectedStep.analysis_step.output_file_types && selectedStep.analysis_step.output_file_types.length ?
                                         <div>
                                             <dt>Output file types</dt>
-                                            <dd>{displayMeta.analysis_step.output_file_types.join(', ')}</dd>
+                                            <dd>{selectedStep.analysis_step.output_file_types.join(', ')}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -159,11 +158,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
         }
 
-        return(
-            <div className="graph-node-info">
-                {meta ? <div><hr />{meta}</div> : null}
-            </div>
-        );
+        return meta;
     },
 
     handleNodeClick: function(e, nodeId) {
@@ -279,6 +274,8 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
 
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
@@ -485,8 +482,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </div>
                 : null }
 
-                <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick} />
-                {this.detailNodes()}
+                <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                    <div className="graph-node-info">
+                        {meta ? <div><hr />{meta}</div> : null}
+                    </div>
+                </Graph>
             </div>
         );
     }
