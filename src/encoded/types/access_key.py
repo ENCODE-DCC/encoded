@@ -140,12 +140,12 @@ def access_key_view(context, request):
 
 
 @view_config(context=AccessKey.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=raw'])
+             name='raw')
 def access_key_view_raw(context, request):
     return remove_secret_access_key_hash(item_view_raw(context, request))
 
 
 @view_config(context=AccessKey.Item, permission='edit', request_method='GET',
-             request_param=['frame=edit'])
+             name='edit')
 def access_key_view_edit(context, request):
     return remove_secret_access_key_hash(item_view_edit(context, request))

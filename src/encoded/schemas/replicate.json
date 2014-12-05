@@ -64,6 +64,7 @@
             "description": "The measurement device used to collect data.",
             "comment": "See platform.json for available identifiers.",
             "type": "string",
+            "permission": "import_items",
             "linkTo": "platform"
         },
         "flowcell_details": {
