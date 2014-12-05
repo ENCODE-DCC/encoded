@@ -76,13 +76,6 @@
     {
         "biological_replicate_number": 1,
         "experiment": "ENCSR000AEN",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "6",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
         "notes": "Has read length",
         "paired_ended": false,
@@ -96,13 +89,6 @@
     {
         "biological_replicate_number": 2,
         "experiment": "ENCSR000AEN",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "6",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": false,
@@ -207,13 +193,6 @@
         "_test": "test - no files",
         "biological_replicate_number": 1,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "1",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
         "notes": "Has read length",
         "paired_ended": true,
@@ -228,13 +207,6 @@
         "_test": "test - no files",
         "biological_replicate_number": 2,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "2",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": true,
@@ -249,13 +221,6 @@
         "_test": "test - no files",
         "biological_replicate_number": 2,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": true,
