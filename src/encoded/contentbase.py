@@ -815,6 +815,7 @@ class Collection(Mapping):
     ]
     Item = Item
     schema = None
+    schema_links = ()
     schema_version = None
     properties = OrderedDict()
     item_type = None
