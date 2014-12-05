@@ -251,6 +251,16 @@ var AuditMixin = audit.AuditMixin;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+ 
+            // Build the text of the synchronization string
+            var synchText;
+            if (result.synchronization) {
+                synchText = result.synchronization +
+                    (result.post_synchronization_time ?
+                        ' + ' + result.post_synchronization_time + (result.post_synchronization_time_units ? ' ' + result.post_synchronization_time_units : '')
+                    : '');
+            }
+
             return (
                 <li>
                     <div className="clearfix">
@@ -300,6 +310,12 @@ var AuditMixin = audit.AuditMixin;
                                     {result['date_obtained']}
                                 </div>
                             : null}
+                            {synchText ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchText}
+                                </div>
+                            : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
@@ -335,6 +351,17 @@ var AuditMixin = audit.AuditMixin;
                 return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age : undefined;
             }));
             var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
+
+            // Collect synchronizations
+            var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
+            }).map(function(replicate) {
+                var biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }));
 
             // Make array of age units from replicates; remove all duplicates
             var ageUnit = '';
@@ -385,6 +412,12 @@ var AuditMixin = audit.AuditMixin;
                                 <div>
                                     <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
                                     {treatment}
+                                </div>
+                            : null}
+                            {synchronizations && synchronizations.length ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchronizations.join(', ')}
                                 </div>
                             : null}
                             <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>

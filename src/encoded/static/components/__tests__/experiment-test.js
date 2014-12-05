@@ -181,6 +181,7 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_rep = _.clone(context);
             context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
+            context_rep.files = [require('../testdata/file/fastq')];
             experiment = TestUtils.renderIntoDocument(
                 <Experiment context={context_rep} />
             );

@@ -219,6 +219,18 @@
             "title": "Treatment",
             "type": "string"
         },
+        "replicates.library.biosample.synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "replicates.length": {
             "title": "Replicates",
             "type": "array"
