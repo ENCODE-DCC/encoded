@@ -6,9 +6,9 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from ..contentbase import (
     Root,
-    item_view,
     location_root,
 )
+from ..embedding import embed
 from .visualization import generate_batch_hubs
 
 
@@ -43,9 +43,10 @@ def home(context, request):
         # 'login': {'href': request.resource_path(context, 'login')},
     })
 
-    homepage = context.get_by_unique_key('page:location', 'homepage')
-    if homepage is not None:
-        result['default_page'] = item_view(homepage, request)
+    try:
+        result['default_page'] = embed(request, '/pages/homepage/@@page', as_user=True)
+    except KeyError:
+        pass
 
     return result
 

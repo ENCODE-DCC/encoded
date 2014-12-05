@@ -1,9 +1,8 @@
-
-from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -283,31 +282,31 @@ def audit_experiment_readlength(value, system):
 @audit_checker('experiment')
 def audit_experiment_platform(value, system):
     '''
-    All ENCODE 3 experiments should specify thier platform.
-    Eventually we should enforce that the platform is appropirate for the assay.
-    Other rfas likely should have warning
+    Platform has moved to file.  It is checked for presence there.
+    Here we look for mismatched platforms.
+    We should likely check that the platform is valid for the assay type
     '''
 
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if (value['award'].get('rfa') != 'ENCODE3'):
-        return
-
     platforms = []
 
-    for i in range(len(value['replicates'])):
-        rep = value['replicates'][i]
-        platform = rep.get('platform')  # really need to get the name here?
+    for ff in value['files']:
+        platform = ff.get('platform')
+
+        if ff['file_format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
+            continue
 
         if platform is None:
-            detail = 'Replicate ({}) is missing platform'.format(rep['uuid'])
-            yield AuditFailure('missing platform', detail, level='DCC_ACTION')
+            continue  # This error is caught in file
         else:
-            platforms.append(platform['@id'])
+            platforms.append(platform)
 
     if len(set(platforms)) > 1:
-        detail = '{} has mixed values for platform between replicates'.format(value['accession'])
+        detail = '{} has mixed values for platform files {}'.format(
+            value['accession'],
+            repr(platforms))
         yield AuditFailure('platform mismatch', detail, level='WARNING')
 
 
@@ -397,7 +396,6 @@ def audit_experiment_biosample_term(value, system):
         biosample = lib['biosample']
         bs_type = biosample.get('biosample_type')
         bs_name = biosample.get('biosample_term_name')
-        bs_id = biosample.get('biosample_term_id')
 
         if bs_type != term_type:
             detail = '{} has mismatched biosample_type, {} - {}'.format(lib['accession'], term_type, bs_type)
@@ -405,11 +403,6 @@ def audit_experiment_biosample_term(value, system):
 
         if bs_name != term_name:
             detail = '{} has mismatched biosample_term_name, {} - {}'.format(lib['accession'], term_name, bs_name)
-            yield AuditFailure('biosample mismatch', detail, level='ERROR')
-            # This is propbably a duplicate warning to the biosample mismatches
-
-        if bs_id != term_id:
-            detail = '{} has a mismatched biosample_term_id, {} - {}'.format(lib['accession'], term_id, bs_id)
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
 
@@ -438,7 +431,8 @@ def audit_experiment_paired_end(value, system):
     for rep in value['replicates']:
 
         rep_paired_ended = rep.get('paired_ended')
-        reps_list.append(rep_paired_ended)
+        if rep_paired_ended is not None:
+            reps_list.append(rep_paired_ended)
 
         if rep_paired_ended is None:
             detail = 'Replicate ({}) is missing value for paired_ended'.format(rep['uuid'])
@@ -453,7 +447,8 @@ def audit_experiment_paired_end(value, system):
 
         lib = rep['library']
         lib_paired_ended = lib.get('paired_ended')
-        libs_list.append(lib_paired_ended)
+        if lib_paired_ended is not None:
+            libs_list.append(lib_paired_ended)
 
         if lib_paired_ended is None:
             detail = '{} is missing value for paired_ended'.format(lib['accession'])
@@ -463,7 +458,7 @@ def audit_experiment_paired_end(value, system):
             detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(term_name, lib['accession'])
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
-        if (rep_paired_ended != lib_paired_ended) and (lib_paired_ended is False):
+        if (rep_paired_ended is True) and (lib_paired_ended is False):
             detail = 'Library {} has paired_ended as false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
@@ -476,7 +471,18 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('paired end mismatch', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker(
+    'experiment',
+    frame=[
+        'target',
+        'replicates',
+        'replicates.antibody',
+        'replicates.antibody.lot_reviews.organisms',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.organism',
+    ],
+    condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
@@ -510,16 +516,13 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['name']
-        context = system['context']
 
         if 'histone modification' in target['investigated_as']:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000'):
                     organism_match = False
-                    for lo in lot_review['organisms']:
-                        lot_organism = find_resource(context, lo)
-                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
-                        if organism == lot_organism_properties['name']:
+                    for lot_organism in lot_review['organisms']:
+                        if organism == lot_organism['name']:
                             organism_match = True
                     if not organism_match:
                         detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
@@ -530,14 +533,12 @@ def audit_experiment_antibody_eligible(value, system):
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
-            experiment_biosample = set([biosample_term_id, organism])
+            experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
-                    for lo in lot_review['organisms']:
-                        lot_organism = find_resource(context, lo)
-                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
-                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism_properties['name']])
+                    for lot_organism in lot_review['organisms']:
+                        eligible_biosample = (lot_review['biosample_term_id'], lot_organism['name'])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)

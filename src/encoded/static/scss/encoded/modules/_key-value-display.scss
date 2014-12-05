@@ -36,6 +36,10 @@ dd.h3, dd.h4 {
     dd {
         margin-bottom: 10px;
         padding-bottom: 0;
+
+        a.stacked-link {
+            display: block;
+        }
     }
 }
 
@@ -85,26 +89,6 @@ dd.h3, dd.h4 {
         &.key-value-left-indent {
             margin-left: 20px !important;
         }
-    }
-}
-
-// Left-justified key-value
-.key-value-left {
-    @extend .key-value;
-
-    dt, dd {
-        padding-top: 0 !important;
-    }
-
-    dt {
-        float: none !important;
-        display: block !important;
-        text-align: left !important;
-        margin-bottom: 0px !important;
-    }
-
-    dd {
-        margin-left: 0 !important;
     }
 }
 

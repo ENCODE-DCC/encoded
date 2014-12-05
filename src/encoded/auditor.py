@@ -6,6 +6,7 @@ We also need to perform higher order checking between linked objects.
 
 import logging
 import venusian
+from .embedding import embed
 
 logger = logging.getLogger(__name__)
 
@@ -36,13 +37,14 @@ _levelNames = {
 
 
 class AuditFailure(Exception):
-    def __init__(self, category, detail=None, level=0):
+    def __init__(self, category, detail=None, level=0, path=None):
         super(AuditFailure, self)
         self.category = category
         self.detail = detail
         if not isinstance(level, int):
             level = _levelNames[level]
         self.level = level
+        self.path = path
 
     def __json__(self, request=None):
         return {
@@ -50,6 +52,7 @@ class AuditFailure(Exception):
             'detail': self.detail,
             'level': self.level,
             'level_name': _levelNames[self.level],
+            'path': self.path,
         }
 
 
@@ -61,33 +64,47 @@ class Auditor(object):
     def __init__(self):
         self.type_checkers = {}
 
-    def add_audit_checker(self, checker, item_type, condition=None):
+    def add_audit_checker(self, checker, item_type, condition=None, frame='embedded'):
         checkers = self.type_checkers.setdefault(item_type, [])
         self._order += 1  # consistent execution ordering
-        checkers.append((self._order, checker, condition))
+        if not isinstance(frame, basestring):
+            frame = tuple(sorted(frame))
+        checkers.append((self._order, checker, condition, frame))
 
-    def audit(self, value, item_type, path=None, **kw):
-        if isinstance(item_type, basestring):
-            item_type = [item_type]
+    def audit(self, request, types, path, **kw):
+        if isinstance(types, basestring):
+            types = [types]
         checkers = set()
-        checkers.update(*(self.type_checkers.get(name, ()) for name in item_type))
+        checkers.update(*(self.type_checkers.get(item_type, ()) for item_type in types))
         errors = []
         system = {}
         system.update(kw)
-        for order, checker, condition in sorted(checkers):
+        for order, checker, condition, frame in sorted(checkers):
+            if frame is None:
+                uri = path
+            elif isinstance(frame, basestring):
+                uri = '%s@@%s' % (path, frame)
+            else:
+                uri = '%s@@expand?expand=%s' % (path, '&expand='.join(frame))
+            value = embed(request, uri)
+
             if condition is not None:
                 try:
                     if not condition(value, system):
                         continue
                 except Exception as e:
                     detail = '%s: %r' % (checker.__name__, e)
-                    errors.append(AuditFailure('audit condition error', detail, 'ERROR'))
+                    failure = AuditFailure('audit condition error', detail, 'ERROR', path)
+                    errors.append(failure.__json__(request))
                     logger.warning('audit condition error auditing %s', path, exc_info=True)
                     continue
             try:
                 try:
                     result = checker(value, system)
                 except AuditFailure as e:
+                    e = e.__json__(request)
+                    if e['path'] is None:
+                        e['path'] = path
                     errors.append(e)
                     continue
                 if result is None:
@@ -96,33 +113,37 @@ class Auditor(object):
                     result = [result]
                 for item in result:
                     if isinstance(item, AuditFailure):
+                        item = item.__json__(request)
+                        if item['path'] is None:
+                            item['path'] = path
                         errors.append(item)
                         continue
                     raise ValueError(item)
             except Exception as e:
                 detail = '%s: %r' % (checker.__name__, e)
-                errors.append(AuditFailure('audit script error', detail, 'ERROR'))
+                failure = AuditFailure('audit script error', detail, 'ERROR', path)
+                errors.append(failure.__json__(request))
                 logger.warning('audit script error auditing %s', path, exc_info=True)
                 continue
         return errors
 
 
 # Imperative configuration
-def add_audit_checker(config, checker, item_type, condition=None):
+def add_audit_checker(config, checker, item_type, condition=None, frame='embedded'):
     auditor = config.registry['auditor']
     config.action(None, auditor.add_audit_checker,
-                  (checker, item_type, condition))
+                  (checker, item_type, condition, frame))
 
 
 # Declarative configuration
-def audit_checker(item_type, condition=None):
+def audit_checker(item_type, condition=None, frame='embedded'):
     """ Register an audit checker
     """
 
     def decorate(checker):
         def callback(scanner, factory_name, factory):
             scanner.config.add_audit_checker(
-                checker, item_type, condition)
+                checker, item_type, condition, frame)
 
         venusian.attach(checker, callback, category='auditor')
         return checker
@@ -130,12 +151,14 @@ def audit_checker(item_type, condition=None):
     return decorate
 
 
-def audit(request, value, item_type, path=None, context=None, **kw):
+def audit(request, types=None, path=None, context=None, **kw):
     auditor = request.registry['auditor']
     if path is None:
         path = request.path
     if context is None:
         context = request.context
+    if types is None:
+        types = [context.item_type] + context.base_types
     return auditor.audit(
-        value, item_type, path=path, root=request.root, context=context,
+        request=request, types=types, path=path, root=request.root, context=context,
         registry=request.registry, **kw)

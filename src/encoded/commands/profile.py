@@ -45,18 +45,23 @@ def parse_restriction(value):
     return value
 
 
-def run(testapp, path, warm_ups, filename, restrictions, sortby):
+def run(testapp, path, warm_ups, filename, sortby, stats, callers, callees):
     for n in range(warm_ups):
         res = testapp.get(path)
-        logger.info('Warm up %d: %s', n + 1, res.headers['X-Stats'])
+        logger.info('Warm up %d:\n%s', n + 1, res.headers['X-Stats'].replace('&', '\n\t'))
     pr = cProfile.Profile()
     pr.enable()
     res = testapp.get(path)
     pr.disable()
-    logger.info('Run: %s', res.headers['X-Stats'])
+    logger.info('Run:\n%s', res.headers['X-Stats'].replace('&', '\n\t'))
     pr.create_stats()
     ps = pstats.Stats(pr).sort_stats(sortby)
-    ps.print_stats(*(parse_restriction(r) for r in restrictions))
+    if stats:
+        ps.print_stats(*(parse_restriction(r) for r in stats))
+    if callers:
+        ps.print_callers(*(parse_restriction(r) for r in callers))
+    if callees:
+        ps.print_callees(*(parse_restriction(r) for r in callees))
     if filename is not None:
         ps.dump_stats(filename)
 
@@ -69,7 +74,9 @@ def main():
     )
     parser.add_argument('--warm-ups', default=1, type=int, help="Warm ups")
     parser.add_argument('--filename', help="profile filename")
-    parser.add_argument('--restriction', default=[], action='append', help="Profile restrictions")
+    parser.add_argument('--stat', default=[], action='append', help="print_stats restrictions")
+    parser.add_argument('--caller', default=[], action='append', help="print_callers restrictions")
+    parser.add_argument('--callee', default=[], action='append', help="print_callees restrictions")
     parser.add_argument('--sortby', default='time', help="profile sortby")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
@@ -82,7 +89,8 @@ def main():
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
-    run(testapp, args.path, args.warm_ups, args.filename, args.restriction, args.sortby)
+    run(testapp, args.path, args.warm_ups, args.filename, args.sortby,
+        args.stat, args.caller, args.callee)
 
 
 if __name__ == '__main__':
