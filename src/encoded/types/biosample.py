@@ -12,6 +12,25 @@ from .base import (
 )
 
 
+def calculate_age_display(root, properties):
+    donor = {}
+    if 'donor' in properties:
+        donor = root.__getitem__(properties['donor'].split('/')[2]).properties
+        if 'age' in donor and 'age_units' in donor:
+            if donor['age'] == 'unknown':
+                return ''
+            return '{age} {age_units}'.format(
+                age=donor['age'],
+                age_units=donor['age_units']
+            )
+    if 'model_organism_age' in properties and 'model_organism_age_units' in properties:
+        return '{age} {age_units}'.format(
+            age=properties['model_organism_age'],
+            age_units=properties['model_organism_age_units']
+        )
+    return ''
+
+
 @location('biosamples')
 class Biosample(Collection):
     item_type = 'biosample'
@@ -33,6 +52,7 @@ class Biosample(Collection):
             'sex': ['model_organism_sex', 'donor.sex'],
             'age': ['model_organism_age', 'donor.age'],
             'age_units': ['model_organism_age_units', 'donor.age_units'],
+            'age_display': ['model_organism_sex' + 'model_organism_age_units'],
             'health_status': ['model_organism_health_status', 'donor.health_status'],
             'life_stage': [
                 'mouse_life_stage',
@@ -105,6 +125,7 @@ class Biosample(Collection):
             'characterizations': (
                 lambda root, characterizations: paths_filtered_by_status(root, characterizations)
             ),
+            'age_display': calculate_age_display,
         }
         embedded = [
             'donor',

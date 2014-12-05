@@ -509,6 +509,10 @@
             "title": "Life stage",
             "type": "string"
         },
+        "age_display": {
+            "title": "Age",
+            "type": "string"
+        },
         "subcellular_fraction_term_name": {
             "title": "Subcellular fraction",
             "type": "string"
@@ -521,12 +525,24 @@
             "title": "Biosample treatment",
             "type": "array"
         },
+        "Transfection type": {
+            "title": "transfection_type",
+            "type": "string"
+        },
+        "Transfection method": {
+            "title": "transfection_method",
+            "type": "string"
+        },
         "source.title": {
             "title": "Source",
             "type": "string"
         },
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -627,6 +643,10 @@
         },
         "age_units": {
             "title": "Age units",
+            "type": "string"
+        },
+        "age_display": {
+            "title": "Age",
             "type": "string"
         },
         "health_status": {
