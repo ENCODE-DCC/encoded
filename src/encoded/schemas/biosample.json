@@ -619,6 +619,10 @@
             "title": "Date obtained",
             "type": "string"
         },
+        "model_organism_donor_constructs.target.label": {
+            "title": "Constructs",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
