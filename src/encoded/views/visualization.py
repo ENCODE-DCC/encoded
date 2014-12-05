@@ -212,7 +212,7 @@ def generate_html(context, request):
         embedded = embed(request, request.resource_path(item))
     else:
         embedded = embed(request, request.resource_path(context))
-    link = request.environ.get('HTTP_HOST', None) + '/experiments/' + embedded['accession']
+    link = request.host_url + '/experiments/' + embedded['accession']
     files_json = embedded.get('files', None)
     data_accession = '<a href={link}>{accession}<a></p>' \
         .format(link=link, accession=embedded['accession'])
