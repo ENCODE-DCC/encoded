@@ -94,6 +94,7 @@ class Experiment(Dataset):
             ),
         }
         embedded = Dataset.Item.embedded + [
+            'files.platform',
             'replicates.antibody',
             'replicates.antibody.targets',
             'replicates.library',
