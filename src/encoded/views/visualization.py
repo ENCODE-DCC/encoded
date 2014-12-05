@@ -206,15 +206,21 @@ def generate_html(context, request):
     ''' Generates and returns HTML for the track hub'''
 
     url_ret = (request.url).split('@@hub')
-    embedded = embed(request, request.resource_path(context))
+    embedded = {}
+    if url_ret[0] == request.url:
+        item = request.root.__getitem__((request.url.split('/')[-1])[:-5])
+        embedded = embed(request, request.resource_path(item))
+    else:
+        embedded = embed(request, request.resource_path(context))
+    link = request.environ.get('HTTP_HOST', None) + '/experiments/' + embedded['accession']
     files_json = embedded.get('files', None)
     data_accession = '<a href={link}>{accession}<a></p>' \
-        .format(link=url_ret[0], accession=embedded['accession'])
+        .format(link=link, accession=embedded['accession'])
     data_description = '<h2>{description}</h2>' \
         .format(description=cgi.escape(embedded['description']))
     data_files = ''
     for f in files_json:
-        if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
+        if f['file_format'] in BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES:
             replicate_number = 'pooled'
             if 'replicate' in f:
                 replicate_number = str(f['replicate']['biological_replicate_number'])
@@ -229,7 +235,7 @@ def generate_html(context, request):
     return data_description + header + file_table
 
 
-def generate_batch_hubs(request):
+def generate_batch_hubs(context, request):
     '''search for the input params and return the trackhub'''
 
     results = {}
@@ -241,7 +247,7 @@ def generate_batch_hubs(request):
         # Should generate a HTML page for requests other than trackDb.txt
         if txt != TRACKDB_TXT:
             data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-            return data_policy
+            return generate_html(context, request) + data_policy
         
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
