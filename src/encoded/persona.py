@@ -17,7 +17,7 @@ from pyramid.settings import (
 from pyramid.view import (
     view_config,
 )
-from .renderers import make_subrequest
+from .embedding import embed
 
 _marker = object()
 
@@ -112,10 +112,7 @@ def login(request):
         request.session['user_properties'] = {}
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()
-    subreq = make_subrequest(request, '/current-user')
-    subreq.remote_user = userid
-    subreq.override_renderer = 'null_renderer'
-    request.session['user_properties'] = request.invoke_subrequest(subreq)
+    request.session['user_properties'] = embed(request, '/current-user', as_user=userid)
     request.response.headerlist.extend(remember(request, 'mailto.' + userid))
     return request.session
 
@@ -141,15 +138,12 @@ def session(request):
     if not request.params.get('reload'):
         return request.session
     # Reload the user's session cookie
-    login = authenticated_userid(request)
+    login = request.authenticated_userid
     if login is None:
         namespace = userid = None
     else:
         namespace, userid = login.split('.', 1)
     if namespace != 'mailto':
         return request.session
-    subreq = make_subrequest(request, '/current-user')
-    subreq.remote_user = userid
-    subreq.override_renderer = 'null_renderer'
-    request.session['user_properties'] = request.invoke_subrequest(subreq)
+    request.session['user_properties'] = embed(request, '/current-user', as_user=userid)
     return request.session

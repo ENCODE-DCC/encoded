@@ -33,6 +33,29 @@ def replicate_2(root, replicate, library):
     return properties
 
 
+@pytest.fixture
+def replicate_3(root, replicate):
+    item = root.get_by_uuid(replicate['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '3',
+        'notes': 'Test notes',
+        'flowcell_details': [
+            {
+                u'machine': u'Unknown',
+                u'lane': u'2',
+                u'flowcell': u'FC64KEN'
+            },
+            {
+                u'machine': u'Unknown',
+                u'lane': u'3',
+                u'flowcell': u'FC64M2B'
+            }
+        ]
+    })
+    return properties
+
+
 def test_replicate_upgrade(root, registry, replicate, replicate_1, library, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(replicate['uuid'])
@@ -53,3 +76,14 @@ def test_replicate_upgrade_read_length(root, registry, replicate, replicate_1, l
     assert value['schema_version'] == '3'
     assert value['status'] == 'released'
     assert value['paired_ended'] == False
+
+
+def test_replicate_upgrade_flowcell(root, registry, replicate, replicate_3, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(replicate['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('replicate', replicate_3, target_version='4', context=context)
+    assert value['schema_version'] == '4'
+    assert 'flowcell_details' not in value
+    assert 'machine' in value['notes']
+    assert 'Test notes' in value['notes']

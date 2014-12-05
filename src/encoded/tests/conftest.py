@@ -217,6 +217,16 @@ def submitter_testapp(app, external_tx):
     return TestApp(app, environ)
 
 
+@pytest.fixture
+def indexer_testapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'INDEXER',
+    }
+    return TestApp(app, environ)
+
+
 @fixture(scope='session')
 def server_host_port():
     from webtest.http import get_free_port

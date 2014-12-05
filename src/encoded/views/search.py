@@ -111,7 +111,8 @@ def search(context, request, search_type=None):
             doc_types = []
         else:
             doc_types = ['antibody_lot', 'biosample',
-                         'experiment', 'target', 'dataset', 'page']
+                         'experiment', 'target', 'dataset', 'page', 'publication',
+                         'software']
     else:
         for item_type in doc_types:
             qs = urlencode([

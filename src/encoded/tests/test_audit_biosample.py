@@ -94,3 +94,10 @@ def test_audit_construct_transfection(testapp, base_biosample, construct):
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing transfection_type' for error in errors)
+
+
+def test_audit_biosample_status(testapp, base_biosample, construct):
+    testapp.patch_json(base_biosample['@id'], {'status': 'released', 'constructs': [construct['@id']]})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'status mismatch' for error in errors)
