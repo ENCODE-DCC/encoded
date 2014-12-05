@@ -37,7 +37,7 @@ _levelNames = {
 
 
 class AuditFailure(Exception):
-    def __init__(self, category, detail=None, level=0, path=None):
+    def __init__(self, category, detail=None, level=0, path=None, name=None):
         super(AuditFailure, self)
         self.category = category
         self.detail = detail
@@ -45,6 +45,7 @@ class AuditFailure(Exception):
             level = _levelNames[level]
         self.level = level
         self.path = path
+        self.name = name
 
     def __json__(self, request=None):
         return {
@@ -53,6 +54,7 @@ class AuditFailure(Exception):
             'level': self.level,
             'level_name': _levelNames[self.level],
             'path': self.path,
+            'name': self.name,
         }
 
 
@@ -94,7 +96,8 @@ class Auditor(object):
                         continue
                 except Exception as e:
                     detail = '%s: %r' % (checker.__name__, e)
-                    failure = AuditFailure('audit condition error', detail, 'ERROR', path)
+                    failure = AuditFailure(
+                        'audit condition error', detail, 'ERROR', path, checker.__name__)
                     errors.append(failure.__json__(request))
                     logger.warning('audit condition error auditing %s', path, exc_info=True)
                     continue
@@ -105,6 +108,7 @@ class Auditor(object):
                     e = e.__json__(request)
                     if e['path'] is None:
                         e['path'] = path
+                    e['name'] = checker.__name__
                     errors.append(e)
                     continue
                 if result is None:
@@ -116,12 +120,14 @@ class Auditor(object):
                         item = item.__json__(request)
                         if item['path'] is None:
                             item['path'] = path
+                        item['name'] = checker.__name__
                         errors.append(item)
                         continue
                     raise ValueError(item)
             except Exception as e:
                 detail = '%s: %r' % (checker.__name__, e)
-                failure = AuditFailure('audit script error', detail, 'ERROR', path)
+                failure = AuditFailure(
+                    'audit script error', detail, 'ERROR', path, checker.__name__)
                 errors.append(failure.__json__(request))
                 logger.warning('audit script error auditing %s', path, exc_info=True)
                 continue
