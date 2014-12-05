@@ -140,14 +140,18 @@ AWARDS = [
     {
         'uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
         'name': 'ENCODE3-DCC',
+        'rfa': 'ENCODE3',
     },
     {
         'uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
         'name': 'Myers',
+        'rfa': 'ENCODE3',
+
     },
     {
         'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
-        'name': 'ENCODE2'
+        'name': 'ENCODE2',
+        'rfa': 'ENCODE2',
     }
 ]
 

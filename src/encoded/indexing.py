@@ -13,10 +13,8 @@ from .contentbase import (
     BeforeModified,
     Created,
 )
-from .renderers import (
-    json_renderer,
-    make_subrequest,
-)
+from .embedding import embed
+from .renderers import json_renderer
 from .stats import ElasticsearchConnectionMixin
 from .storage import (
     DBSession,
@@ -194,11 +192,8 @@ def es_update_object(request, objects):
     es = request.registry[ELASTIC_SEARCH]
     i = -1
     for i, uuid in enumerate(objects):
-        subreq = make_subrequest(request, '/%s/@@index-data' % uuid)
-        subreq.override_renderer = 'null_renderer'
-        subreq.remote_user = 'INDEXER'
         try:
-            result = request.invoke_subrequest(subreq)
+            result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
         except Exception as e:
             log.warning('Error indexing %s', uuid, exc_info=True)
         else:
