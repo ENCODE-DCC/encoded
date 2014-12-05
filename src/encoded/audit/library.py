@@ -59,28 +59,6 @@ def audit_library_documents(value, system):
 
 
 @audit_checker('library')
-def audit_library_status(value, system):
-    '''
-    An undeleted library should have a biosample and donor that is not deleted
-    A released library should have a released biosample and donor.
-    This will need to be fully replaced
-    '''
-    if value['status'] in ['deleted']:
-        return
-
-    if 'biosample' not in value:
-        return  # this is being checked at the experiment level
-
-    if value['biosample']['status'] == 'deleted':
-        detail = 'library({}) has deleted biosample'.format(value['accession'])
-        raise AuditFailure('status mismatch', detail, level='ERROR')
-    if value['status'] == 'released':
-        if value['biosample']['status'] != 'released':
-            detail = value['biosample']['accession']
-            raise AuditFailure('unreleased biosample', detail, level='ERROR')
-
-
-@audit_checker('library')
 def audit_library_RNA_size_range(value, system):
     '''
     An RNA library should have a size_range specified.
