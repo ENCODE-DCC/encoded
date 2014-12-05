@@ -6,7 +6,7 @@ from ..embedding import embed
 from ..schema_utils import validate
 
 
-@audit_checker('item')
+@audit_checker('item', frame='object')
 def audit_item_schema(value, system):
     context = system['context']
     registry = system['registry']
