@@ -61,6 +61,8 @@ def user_details_view(context, request):
 
 
 @view_config(context=User.Item, permission='view', request_method='GET',
+             name='page')
+@view_config(context=User.Item, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
     properties = context.__json__(request)

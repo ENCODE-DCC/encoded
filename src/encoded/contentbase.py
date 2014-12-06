@@ -1,5 +1,6 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 import logging
+import sys
 import venusian
 from abc import ABCMeta
 from collections import Mapping
@@ -9,10 +10,12 @@ from pyramid.events import (
     ContextFound,
     subscriber,
 )
+from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
     HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
+    HTTPNotFound,
     HTTPPreconditionFailed,
 )
 from pyramid.interfaces import (
@@ -1128,7 +1131,13 @@ def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
         # We need the response headers from non subrequests
-        return render_view_to_response(context, request, name=frame)
+        try:
+            return render_view_to_response(context, request, name=frame)
+        except PredicateMismatch:
+            # Avoid this view emitting PredicateMismatch
+            exc_class, exc, tb = sys.exc_info()
+            exc.__class__ = HTTPNotFound
+            raise HTTPNotFound, exc, tb
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
         path += '?' + request.query_string
