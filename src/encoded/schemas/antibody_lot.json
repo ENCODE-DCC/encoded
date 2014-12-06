@@ -165,7 +165,7 @@
             "title": "Eligibility status",
             "type": "string"
         },
-        "characterizations.target.organism.scientific_name": {
+        "targets.organism.scientific_name": {
             "title": "Target Organism",
             "type": "string"
         },
@@ -327,6 +327,13 @@
         "host_organism.name": 1.0,
         "host_organism.scientific_name": 1.0,
         "host_organism.taxon_id": 1.0,
+        "targets.gene_name": 1.0,
+        "targets.label": 1.0,
+        "targets.dbxref": 1.0,
+        "targets.aliases": 1.0,
+        "targets.organism.name": 1.0,
+        "targets.organism.scientific_name": 1.0,
+        "targets.organism.taxon_id": 1.0,
         "characterizations.primary_characterization_method": 1.0,
         "characterizations.secondary_characterization_method": 1.0,
         "characterizations.award.title": 1.0,

@@ -269,6 +269,7 @@ class AntibodyLot(Collection):
             'source',
             'host_organism',
             'targets',
+            'targets.organism',
             'characterizations.award',
             'characterizations.documents',
             'characterizations.lab',
