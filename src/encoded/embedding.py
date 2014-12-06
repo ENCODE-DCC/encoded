@@ -2,6 +2,7 @@ from copy import deepcopy
 from urllib import unquote
 from .cache import ManagerLRUCache
 from pyramid.httpexceptions import HTTPNotFound
+from posixpath import join
 
 
 def make_subrequest(request, path):
@@ -25,6 +26,7 @@ def make_subrequest(request, path):
                                body=b'')
     subreq.remove_conditional_headers()
     # XXX "This does not remove headers like If-Match"
+    subreq.__parent__ = request
     return subreq
 
 
@@ -36,6 +38,8 @@ def embed(request, path, as_user=None):
     """
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
+    if isinstance(path, unicode):
+        path = path.encode('utf-8')
     if as_user is not None:
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
@@ -71,9 +75,9 @@ def expand_path(request, obj, path):
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?frame=object')
+                member = value[index] = embed(request, join(member, '@@object'))
             expand_path(request, member, remaining)
     else:
         if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?frame=object')
+            value = obj[name] = embed(request, join(value, '@@object'))
         expand_path(request, value, remaining)

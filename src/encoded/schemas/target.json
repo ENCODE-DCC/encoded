@@ -85,6 +85,10 @@
         "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
+        },
+        "investigated_as": {
+            "title": "Assay targets investigated",
+            "type": "string"
         }
     },
     "columns": {

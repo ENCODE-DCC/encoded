@@ -65,9 +65,21 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['traverse', 'view']),
-    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['view', 'traverse', 'expand', 'audit']),
     (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
     DENY_ALL,
+]
+
+
+TYPES_WITH_FORMS = [
+    'document',
+    'antibody_characterization',
+    'biosample_characterization',
+    'construct_characterization',
+    'donor_characterization',
+    'rnai_characterization',
+    'image',
+    'page',
 ]
 
 ADD_ACTION = {
@@ -77,14 +89,16 @@ ADD_ACTION = {
     'href': '{collection_uri}#!add',
     'className': 'btn-success',
     '$templated': True,
-    '$condition': 'permission:add',
+    '$condition': lambda item_type, permission: item_type in TYPES_WITH_FORMS and permission('add'),
 }
 
 EDIT_ACTION = {
     'name': 'edit',
     'title': 'Edit',
     'profile': '/profiles/{item_type}.json',
-    'href': '#!edit',
+    'href': lambda item_uri, item_type: item_uri + (
+        '#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
+    '$condition': 'permission:edit',
     '$templated': True,
 }
 

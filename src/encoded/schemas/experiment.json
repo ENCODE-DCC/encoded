@@ -101,6 +101,10 @@
             "title": "Organism",
             "type": "string"
         },
+        "target.investigated_as": {
+            "title": "Assay targets investigated",
+            "type": "string"
+        },
         "replicates.library.biosample.biosample_type": {
             "title": "Biosample type",
             "type": "string"
@@ -133,6 +137,14 @@
             "title": "Library insert size (nt)",
             "type": "string"
         },
+        "replicates.library.nucleic_acid_term_name": {
+            "title": "Library sequenced",
+            "type": "string"
+        },
+        "replicates.library.depleted_in_term_name": {
+            "title": "Library depleted in",
+            "type": "string"
+        },
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment",
             "type": "array"
@@ -143,6 +155,10 @@
         },
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -203,6 +219,18 @@
             "title": "Treatment",
             "type": "string"
         },
+        "replicates.library.biosample.synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "replicates.length": {
             "title": "Replicates",
             "type": "array"

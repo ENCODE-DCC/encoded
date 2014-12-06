@@ -169,6 +169,14 @@
             "title": "Target Organism",
             "type": "string"
         },
+        "targets.investigated_as": {
+            "title": "Assay targets investigated",
+            "type": "string"
+        },
+        "characterizations.characterization_method": {
+            "title": "Characterization method",
+            "type": "string"
+        },
         "source.title" : {
             "title": "Source",
             "type": "string"

@@ -268,6 +268,7 @@ class AntibodyLot(Collection):
         embedded = [
             'source',
             'host_organism',
+            'targets',
             'targets.organism',
             'characterizations.award',
             'characterizations.documents',

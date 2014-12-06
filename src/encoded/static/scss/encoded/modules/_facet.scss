@@ -90,6 +90,7 @@
     position: relative;
     font-size: 1.3em;
     font-weight: bold;
+    z-index: 0;
 
     a {
         &:hover {
@@ -114,7 +115,10 @@
 }
 
 .search-meta {
+    position: relative;
     padding: 2px 5px;
+    text-align: right;
+    z-index: 1;
 
     p {
         color: #909090;

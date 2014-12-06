@@ -212,8 +212,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(2):
-        res = testapp.get('/' + uuid).follow().json
+    res = testapp.get('/' + uuid).follow().json
 
     for key in update:
         assert res[key] == update[key]
@@ -289,3 +288,11 @@ def test_jsonld_context(testapp):
 def test_jsonld_term(testapp):
     res = testapp.get('/terms/submitted_by')
     assert res.json
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
+    res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
+    for item in res.json['@graph']:
+        indexer_testapp.get(item['@id'] + '@@index-data')

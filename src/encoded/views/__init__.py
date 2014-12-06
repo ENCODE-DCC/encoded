@@ -44,7 +44,7 @@ def home(context, request):
     })
 
     try:
-        result['default_page'] = embed(request, '/pages/homepage/?frame=page', as_user=True)
+        result['default_page'] = embed(request, '/pages/homepage/@@page', as_user=True)
     except KeyError:
         pass
 
@@ -74,4 +74,4 @@ def schema(context, request):
 @view_config(route_name='batch_hub:trackdb')
 def batch_hub(context, request):
     ''' View for batch track hubs '''
-    return Response(generate_batch_hubs(request), content_type='text/plain')
+    return Response(generate_batch_hubs(context, request), content_type='text/plain')

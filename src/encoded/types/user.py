@@ -13,9 +13,6 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Root,
-    item_view,
-    item_view_edit,
-    item_view_raw,
     location,
 )
 from ..embedding import embed
@@ -53,33 +50,22 @@ class User(Collection):
             return {owner: 'role.owner'}
 
 
+@view_config(context=User.Item, permission='view_details', request_method='GET',
+             name='details')
 @view_config(context=User.Item, permission='view', request_method='GET',
-             additional_permission='view_details')
+             name='object', additional_permission='view_details')
+@view_config(context=User.Item, permission='view', request_method='GET',
+             name='page', additional_permission='view_details')
 def user_details_view(context, request):
-    return item_view(context, request)
+    return context.__json__(request)
 
 
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             additional_permission='view_details',
-             request_param=['frame=raw'])
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=raw'])
-def user_view_raw(context, request):
-    return item_view_raw(context, request)
-
-
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             additional_permission='view_details',
-             request_param=['frame=edit'])
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=edit'])
-def user_view_edit(context, request):
-    return item_view_edit(context, request)
-
-
-@view_config(context=User.Item, permission='view', request_method='GET')
+@view_config(context=User.Item, permission='view', request_method='GET',
+             name='page')
+@view_config(context=User.Item, permission='view', request_method='GET',
+             name='object')
 def user_basic_view(context, request):
-    properties = item_view(context, request)
+    properties = context.__json__(request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:
@@ -99,5 +85,5 @@ def current_user(request):
         return {}
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid)
+    path = request.resource_path(collection, userid, '@@details')
     return embed(request, path, as_user=True)
