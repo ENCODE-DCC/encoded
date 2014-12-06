@@ -113,6 +113,8 @@ class Experiment(Dataset):
             'possible_controls',
             'target.organism',
         ]
+        audit_inherit = embedded.copy()
+        audit_inherit.remove('possible_controls')
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
