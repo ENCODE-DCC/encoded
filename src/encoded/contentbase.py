@@ -426,6 +426,11 @@ class MergedKeysMeta(MergedDictsMeta):
                 self.merged_keys.append(key)
 
         self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
+        if self.audit_inherit is None:
+            self.audit_inherit_paths = self.embedded_paths
+        else:
+            self.audit_inherit_paths = sorted(
+                {tuple(path.split('.')) for path in self.audit_inherit})
 
 
 class Item(object):
@@ -440,6 +445,7 @@ class Item(object):
     name_key = None
     rev = None
     embedded = ()
+    audit_inherit = None
     namespace_from_path = {}
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
@@ -1195,7 +1201,7 @@ def item_view_audit(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
     embedded = embed(request, path + '@@embedded')
-    audit = inherit_audits(request, embedded, context.embedded_paths)
+    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
     return {
         '@id': path,
         '@type': types,
@@ -1356,7 +1362,7 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, path + '@@embedded')
-    audit = inherit_audits(request, embedded, context.embedded_paths)
+    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
 
     document = {
         'embedded': embedded,
