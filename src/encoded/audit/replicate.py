@@ -4,7 +4,7 @@ from ..auditor import (
 )
 
 
-@audit_checker('replicate')
+@audit_checker('replicate', frame='object')
 def audit_file_platform(value, system):
     '''
     A replicate should no longer have flowcells or platforms

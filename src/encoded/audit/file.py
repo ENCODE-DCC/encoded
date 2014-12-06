@@ -2,7 +2,6 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
-from pyramid.traversal import find_root
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -16,7 +15,7 @@ raw_data_formats = [
     ]
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -34,7 +33,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -51,7 +50,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing platform', detail, level='WARNING')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
@@ -74,7 +73,7 @@ def audit_paired_with(value, system):
     # Would love to then check to see if the files shared the same replicate
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_size(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'uploading']:
@@ -85,7 +84,7 @@ def audit_file_size(value, system):
         raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_output_type(value, system):
     '''
     The differing RFA's will have differeing acceptable output_types
