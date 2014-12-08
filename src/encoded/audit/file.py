@@ -33,7 +33,7 @@ def audit_file_platform(value, system):
 
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['accession'])
-        raise AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('file', frame='object')
