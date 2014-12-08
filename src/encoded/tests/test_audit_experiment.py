@@ -135,7 +135,7 @@ def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_r
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing read length' for error in errors)
+    assert any(error['category'] == 'missing read_length' for error in errors)
 
 
 def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_replicate):
