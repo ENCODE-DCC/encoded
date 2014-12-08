@@ -271,7 +271,7 @@ def audit_experiment_readlength(value, system):
 
         if read_length is None:
             detail = 'Replicate {} requires a value for read_length'.format(rep['uuid'])
-            yield AuditFailure('missing read length', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing read_length', detail, level='ERROR')
 
     if len(set(read_lengths)) > 1:
         list_of_lens = str(read_lengths)
