@@ -26,7 +26,7 @@ def audit_item_schema(value, system):
             raise
         except Exception as e:
             detail = '%r upgrading from %r to %r' % (e, current_version, target_version)
-            yield AuditFailure('upgrade failure', detail, level='ERROR')
+            yield AuditFailure('upgrade failure', detail, level='DCC_ACTION')
             return
 
         properties['schema_version'] = target_version
@@ -38,7 +38,8 @@ def audit_item_schema(value, system):
         path = list(error.path)
         if path:
             category += ': ' + '/'.join(path)
-        yield AuditFailure(category, error.message, level='ERROR')
+        detail = 'Object {} has schema error {}'.format(value['uuid'], error.message)
+        yield AuditFailure(category, detail, level='DCC_ACTION')
 
 
 STATUS_LEVEL = {
