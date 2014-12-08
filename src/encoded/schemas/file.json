@@ -345,7 +345,6 @@
             "description": "Genome assembly that files were mapped to.",
             "comment": "Applies to mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "permission": "import_items",
             "enum": [
                 "mm9",
                 "mm10",
@@ -361,6 +360,7 @@
             "description": "Genome annotation that file was generated with.",
             "comment": "Applies to files created using annotations.",
             "type": "string",
+            "permission": "import_items",
             "enum": [
                 "M2",
                 "M3",
