@@ -42,7 +42,11 @@ var Experiment = module.exports.Experiment = React.createClass({
     assembleGraph: function() {
         var jsonGraph;
 
-        if (this.props.context.files) {
+        // Only produce a graph if there's at least one file with an analysis step
+        // and the file has derived from other files.
+        if (this.props.context.files && this.props.context.files.some(function(file) {
+            return file.derived_from && file.derived_from.length && file.step;
+        })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('experiment');
 
@@ -55,7 +59,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
                     'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi');
 
-                // If the node has parents, render the edges to the analysis step between this node and its parents
+                // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.step) {
                     var step = file.step.analysis_step;
                     var stepId = step['@id'] + '&' + file['@id'];
@@ -63,7 +67,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
                     // points to it; there may be more than one copy of this step on the graph if more than one
                     // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                    // 'as' type identifies these as analysis step nodes
+                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                    // analysis step.
                     jsonGraph.addNode(stepId, step.analysis_step_types.join(', '),
                         'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as');
                     jsonGraph.addEdge(stepId, fileId);
@@ -79,23 +84,17 @@ var Experiment = module.exports.Experiment = React.createClass({
     },
 
     detailNodes: function(jsonGraph, infoNodeId) {
-        // Find data matching selected node, if any
-        var selectedFile;
-        var selectedStep;
         var meta;
+
+        // Find data matching selected node, if any
         if (infoNodeId) {
             var node = jsonGraph.getNode(infoNodeId);
             if (node) {
                 switch(node.type) {
                     case 'fi':
-                        this.props.context.files.some(function(file) {
-                            if (file['@id'] === infoNodeId) {
-                                selectedFile = file;
-                                return true; // Found it; save the matching file and exit loop
-                            } else {
-                                return false; // Keep searching...
-                            }
-                        }, this);
+                        var selectedFile = _(this.props.context.files).find(function(file) {
+                            return file['@id'] === infoNodeId;
+                        });
 
                         if (selectedFile) {
                             meta = (
@@ -121,29 +120,25 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     case 'as':
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        this.props.context.files.some(function(file) {
-                            if (file.step && file.step.analysis_step['@id'] === analysisStepId) {
-                                selectedStep = file.step;
-                                return true;
-                            } else {
-                                return false;
-                            }
+                        var selectedFile = _(this.props.context.files).find(function(file) {
+                            return file.step && file.step.analysis_step['@id'] === analysisStepId;
                         });
 
-                        if (selectedStep) {
+                        if (selectedFile) {
+                            var selectedStep = selectedFile.step.analysis_step;
                             meta = (
                                 <dl className="key-value">
-                                    {selectedStep.analysis_step.input_file_types && selectedStep.analysis_step.input_file_types.length ?
+                                    {selectedStep.input_file_types && selectedStep.input_file_types.length ?
                                         <div>
                                             <dt>Input file types</dt>
-                                            <dd>{selectedStep.analysis_step.input_file_types.join(', ')}</dd>
+                                            <dd>{selectedStep.input_file_types.join(', ')}</dd>
                                         </div>
                                     : null}
 
-                                    {selectedStep.analysis_step.output_file_types && selectedStep.analysis_step.output_file_types.length ?
+                                    {selectedStep.output_file_types && selectedStep.output_file_types.length ?
                                         <div>
                                             <dt>Output file types</dt>
-                                            <dd>{selectedStep.analysis_step.output_file_types.join(', ')}</dd>
+                                            <dd>{selectedStep.output_file_types.join(', ')}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -477,17 +472,16 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </div>
                 : null }
 
-                {context.files.length ?
+                {jsonGraph ?
                     <div>
                         <h3>Pipeline for {context.accession}</h3>
+                        <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                            <div className="graph-node-info">
+                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                            </div>
+                        </Graph>
                     </div>
-                : null }
-
-                <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                    <div className="graph-node-info">
-                        {meta ? <div><hr />{meta}</div> : null}
-                    </div>
-                </Graph>
+                : null}
             </div>
         );
     }

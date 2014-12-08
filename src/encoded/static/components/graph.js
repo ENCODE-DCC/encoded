@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
 
@@ -48,19 +49,13 @@ JsonGraph.prototype.addEdge = function(source, target) {
     this.edges.push(newEdge);
 };
 
-// Return the node matching the given ID
+// Return the JSON graph node matching the given ID
 JsonGraph.prototype.getNode = function(id) {
     var node;
 
-    this.children.some(function(child) {
-        if (child.id === id) {
-            node = child;
-            return true;
-        } else {
-            return false;
-        }
+    return _(this.children).find(function(child) {
+        return child.id === id;
     });
-    return node;
 };
 
 module.exports.JsonGraph = JsonGraph;
@@ -78,15 +73,16 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Convert the edges
         jsonGraph.edges.forEach(function(edge) {
-            graph.setEdge(edge.source, edge.target);
+            graph.setEdge(edge.source, edge.target, {lineInterpolate: 'basis'});
         });
     },
 
-    // Draw the graph on initial draw as well as on state changes
+    // Draw the graph on initial draw as well as on state changes.
+    // An <svg> element to draw into must already exist in the HTML element in the el parm.
     drawGraph: function(el) {
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
-        var svg = d3.select(el).select('svg');
+        var svg = d3.select(el).select('svg')
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph()
@@ -98,19 +94,19 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
-        render(svg, g);
+        render(d3.select("svg g"), g);
 
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra
         var width = g.graph().width;
         var height = g.graph().height;
-        svg.attr("width", width + 20);
-        svg.attr("height", height + 20);
-        svg.attr("viewBox", "-10 -10 " + (width + 20) + " " + (height + 20));
+        svg.attr("width", width + 40).attr("height", height + 40)
+            .attr("viewBox", "-20 -20 " + (width + 40) + " " + (height + 40));
     },
 
     componentDidMount: function () {
-        // Delay loading dagre
+        // Delay loading dagre for Jest testing compatibility;
+        // Both D3 and Jest have their own conflicting JSDOM instances
         $script('dagre', function() {
             var d3 = require('d3');
             var dagreD3 = require('dagre-d3');
@@ -119,11 +115,8 @@ var Graph = module.exports.Graph = React.createClass({
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
             var svg = d3.select(el).insert('svg', '.graph-node-info')
                 .attr('class', 'd3')
-                .attr('width', '960px') // Just choose an initial viewport size; we'll resize it later
-                .attr('height', '300px')
-                .attr('viewBox', '0 0 960 300') // Choose an inital viewbox size; we'll resize it later
                 .attr('preserveAspectRatio', 'xMidYMid');
-            svg.append('g').attr('class', 'd3-points');
+            var svgGroup = svg.append("g");
 
             // Draw the graph into the panel
             this.drawGraph(el);
@@ -135,9 +128,6 @@ var Graph = module.exports.Graph = React.createClass({
                 globals.bindEvent(this, 'click', function(e) {
                     reactThis.props.nodeClickHandler(e, nodeId);
                 });
-                globals.bindEvent(this, 'touchstart', function(e) {
-                    reactThis.props.nodeClickHandler(e, nodeId);
-                });
             });
             this.dagreLoaded = true;
         }.bind(this));
@@ -146,14 +136,14 @@ var Graph = module.exports.Graph = React.createClass({
     // State change; redraw the graph
     componentDidUpdate: function() {
         if (this.dagreLoaded) {
-            var el = this.getDOMNode();
+            var el = this.refs.graphdisplay.getDOMNode();
             this.drawGraph(el);
         }
     },
 
     render: function() {
         return (
-            <div className="panel">
+            <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display"></div>
                 {this.props.children}
             </div>
