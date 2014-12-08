@@ -3,6 +3,8 @@ from urllib import unquote
 from .cache import ManagerLRUCache
 from pyramid.httpexceptions import HTTPNotFound
 from posixpath import join
+import logging
+log = logging.getLogger(__name__)
 
 
 def make_subrequest(request, path):
@@ -44,8 +46,11 @@ def embed(request, path, as_user=None):
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
     if result is None:
+        log.debug('embed_cache miss: %s', path)
         result = _embed(request, path)
         embed_cache[path] = result
+    else:
+        log.debug('embed_cache hit: %s', path)
     return deepcopy(result)
 
 
