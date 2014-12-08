@@ -279,3 +279,6 @@ class AntibodyLot(Collection):
             'lot_reviews.targets.organism',
             'lot_reviews.organisms'
         ]
+
+        audit_inherit = list(embedded)
+        audit_inherit.append('characterizations')
