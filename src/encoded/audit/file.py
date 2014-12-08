@@ -25,7 +25,7 @@ def audit_file_platform(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
     
-    if value['award'].get('rfa') not in ['ENCODE3']
+    if value['award'].get('rfa') not in ['ENCODE3']:
         return
 
     if value['file_format'] not in raw_data_formats:
