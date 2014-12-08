@@ -115,6 +115,12 @@ class Experiment(Dataset):
         ]
         audit_inherit = list(embedded)
         audit_inherit.remove('possible_controls')
+        audit_inherit.remove('replicates.library.documents.submitted_by')
+        audit_inherit.remove('replicates.library.documents.award')
+        audit_inherit.remove('replicates.library.biosample.submitted_by')
+        audit_inherit.remove('replicates.library.biosample.source')
+        audit_inherit.append('replicates.library.biosample.donor')
+        audit_inherit.append('replicates.antibody.characterizations')
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
