@@ -436,7 +436,7 @@ def audit_experiment_paired_end(value, system):
 
         if rep_paired_ended is None:
             detail = 'Replicate ({}) is missing value for paired_ended'.format(rep['uuid'])
-            yield AuditFailure('missing replicate paired end', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing replicate paired end', detail, level='ERROR')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
             detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(term_name, rep['uuid'])
@@ -452,7 +452,7 @@ def audit_experiment_paired_end(value, system):
 
         if lib_paired_ended is None:
             detail = '{} is missing value for paired_ended'.format(lib['accession'])
-            yield AuditFailure('missing library paired end', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing library paired end', detail, level='WARNING')
 
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
             detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(term_name, lib['accession'])
