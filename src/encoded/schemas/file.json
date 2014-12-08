@@ -345,6 +345,7 @@
             "description": "Genome assembly that files were mapped to.",
             "comment": "Applies to mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
+            "permission": "import_items",
             "enum": [
                 "mm9",
                 "mm10",
