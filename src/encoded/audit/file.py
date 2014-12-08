@@ -40,17 +40,21 @@ def audit_file_platform(value, system):
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
+    Don't bother to check anything but ENCODE3
     '''
 
     if value['status'] in ['deleted', 'replaced']:
+        return
+    
+    if value['award']['rfa'] not in ['ENCODE3']:
         return
 
     if value['file_format'] not in ['fastq']:
         return
 
-    if 'flowcell_details' not in value or (value['flowcell_details'] == {}):
-        detail = 'Fastq file {} missing flowcell details'.format(value['accession'])
-        raise AuditFailure('missing platform', detail, level='WARNING')
+    if 'flowcell_details' not in value or (value['flowcell_details'] == []):
+        detail = 'Fastq file {} is missing flowcell_details'.format(value['accession'])
+        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
 @audit_checker('file', frame='object')
