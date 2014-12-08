@@ -20,6 +20,7 @@ def audit_antibody_lot_target(value, system):
         if char['target']['@id'] not in value['targets']:
             detail = 'The antibody_lot {} has a characterization {} with target {}, which is not in the targets list'.format(
                 value['accession'],
-                char['target']['label'],
-                char['uuid'])
+                char['uuid'],
+                char['target']['label']
+                )
             yield AuditFailure('target mismatch', detail, level='ERROR')
