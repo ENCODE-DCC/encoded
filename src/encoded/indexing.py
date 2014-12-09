@@ -247,6 +247,8 @@ def pool_set_snapshot_id(snapshot_id):
     request.registry = registry
     request._stats = {}
     manager.push({'request': request, 'registry': registry})
+    import os
+    return os.getpid()
 
 
 def pool_clear_snapshot_id(snapshot_id):
@@ -255,7 +257,8 @@ def pool_clear_snapshot_id(snapshot_id):
     import transaction
     transaction.abort()
     manager.pop()
-
+    import os
+    return os.getpid()
 
 def pool_embed(uuid):
     from pyramid.threadlocal import get_current_request
@@ -280,9 +283,10 @@ def es_update_object(request, objects, snapshot_id):
     try:
         if pool:
             event.clear()
-            result = pool.map_async(pool_set_snapshot_id, (snapshot_id for x in range(pool._processes)), 1)
+            r = pool.map_async(pool_set_snapshot_id, (snapshot_id for x in range(len(pool._pool))), 1)
             event.set()
-            result.get()
+            pids = r.get()
+            assert len(set(pids)) == len(pool._pool)
             results = pool.imap_unordered(pool_embed, (str(uuid) for uuid in objects), chunksize=50)
         else:
             results = itertools.imap(pool_embed, (str(uuid) for uuid in objects))
@@ -308,9 +312,10 @@ def es_update_object(request, objects, snapshot_id):
     finally:
         if pool:
             event.clear()
-            result = pool.map(pool_clear_snapshot_id, (snapshot_id for x in range(pool._processes)), 1)
+            r = pool.map(pool_clear_snapshot_id, (snapshot_id for x in range(len(pool._pool))), 1)
             event.set()
-            result.get()
+            pids = r.get()
+            assert len(set(pids)) == len(pool._pool)
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
     if not committed:
