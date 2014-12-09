@@ -24,14 +24,14 @@ _levelNames = {
     20: 'INFO',
     30: 'DCC_ACTION',
     40: 'WARNING',
-    50: 'STANDARDS_FAILURE',
+    50: 'NOT_COMPLIANT',
     60: 'ERROR',
     'DEBUG': 10,
     'ERROR': 60,
     'INFO': 20,
     'NOTSET': 0,
     'WARNING': 40,
-    'STANDARDS_FAILURE': 50,
+    'NOT_COMPLIANT': 50,
     'DCC_ACTION': 30,
 }
 

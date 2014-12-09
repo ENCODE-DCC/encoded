@@ -7,7 +7,7 @@ from ..auditor import (
 @audit_checker('replicate', frame='object')
 def audit_file_platform(value, system):
     '''
-    A replicate should no longer have flowcells or platforms
+    A replicate should no longer have platforms
     Should be in the schema.
     '''
 
@@ -17,7 +17,3 @@ def audit_file_platform(value, system):
             value['platform']  # ['name']
             )
         yield AuditFailure('replicate with platform', detail, level='DCC_ACTION')
-
-    if 'flowcell_details' in value and value['flowcell_details'] != []:
-        detail = 'Replicate {} has flowcell_details'.format(value['uuid'])
-        yield AuditFailure('replicate with flowcell', detail, level='DCC_ACTION')
