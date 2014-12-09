@@ -202,10 +202,10 @@ def make_pool(settings):
     IMapIterator.next = wrapper(IMapIterator.next)
 
     import atexit
+    event = multiprocessing.Event()
     pool = multiprocessing.Pool(
-        processes=None,
         initializer=pool_initializer,
-        initargs=(settings,),
+        initargs=(settings, event),
     )
 
     @atexit.register
@@ -213,18 +213,23 @@ def make_pool(settings):
         pool.terminate()
         pool.join()
 
-    return pool
+    return pool, event
 
 _pool_app = None
+_pool_event = None
 
 
-def pool_initializer(settings):
+def pool_initializer(settings, event):
     from encoded import main
     global _pool_app
+    global _pool_event
+
     _pool_app = main(settings, indexer=False, create_tables=False)
+    _pool_event = event
 
 
 def pool_set_snapshot_id(snapshot_id):
+    _pool_event.wait()
     from pyramid.threadlocal import manager
     import transaction
     txn = transaction.begin()
@@ -245,6 +250,7 @@ def pool_set_snapshot_id(snapshot_id):
 
 
 def pool_clear_snapshot_id(snapshot_id):
+    _pool_event.wait()
     from pyramid.threadlocal import manager
     import transaction
     transaction.abort()
@@ -270,14 +276,17 @@ def es_update_object(request, objects, snapshot_id):
         return 0
 
     es = request.registry[ELASTIC_SEARCH]
-    pool = request.registry['indexing_pool']
+    pool, event = request.registry['indexing_pool']
     if pool:
         imap = pool.imap_unordered
     else:
         imap = itertools.imap
     try:
         if pool:
-            pool.map(pool_set_snapshot_id, [snapshot_id for x in range(pool._processes)], 1)
+            event.clear()
+            result = pool.map_async(pool_set_snapshot_id, (snapshot_id for x in range(pool._processes)), 1)
+            event.set()
+            result.get()
 
         results = imap(pool_embed, (str(uuid) for uuid in objects))
 
@@ -301,8 +310,10 @@ def es_update_object(request, objects, snapshot_id):
         return i + 1
     finally:
         if pool:
-            pool.map(pool_clear_snapshot_id, [snapshot_id for x in range(pool._processes)], 1)
-
+            event.clear()
+            result = pool.map(pool_clear_snapshot_id, (snapshot_id for x in range(pool._processes)), 1)
+            event.set()
+            result.get()
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
     if not committed:
