@@ -33,7 +33,7 @@ def audit_library_nucleic_acid(value, system):
             value['nucleic_acid_term_id'],
             value['nucleic_acid_term_id'],
             expected)
-        raise AuditFailure('molecule mismatch', detail, level='ERROR')
+        raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
 
 
 @audit_checker('library')
@@ -109,4 +109,4 @@ def audit_library_depleted_in(value, system):
                 value['accession'],
                 value['depleted_in_term_name'][i],
                 value['depleted_in_term_id'][i])
-            yield AuditFailure('depleted_in_term mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
