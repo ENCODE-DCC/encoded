@@ -85,6 +85,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
     detailNodes: function(jsonGraph, infoNodeId) {
         var meta;
+        var selectedFile;
 
         // Find data matching selected node, if any
         if (infoNodeId) {
@@ -92,7 +93,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (node) {
                 switch(node.type) {
                     case 'fi':
-                        var selectedFile = _(this.props.context.files).find(function(file) {
+                        selectedFile = _(this.props.context.files).find(function(file) {
                             return file['@id'] === infoNodeId;
                         });
 
@@ -120,7 +121,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     case 'as':
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        var selectedFile = _(this.props.context.files).find(function(file) {
+                        selectedFile = _(this.props.context.files).find(function(file) {
                             return file.step && file.step.analysis_step['@id'] === analysisStepId;
                         });
 

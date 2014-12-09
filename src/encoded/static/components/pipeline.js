@@ -37,8 +37,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     assembleGraph: function() {
         var jsonGraph;
 
-        // Only produce a graph if there's at least one file with an analysis step
-        // and the file has derived from other files.
+        // Only produce a graph if there's at least one analysis step
         if (this.props.context.analysis_steps) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('experiment');
@@ -72,63 +71,76 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
         if (infoNodeId) {
             // Find analysis step matching selected node, if any
+            var selectedStep;
             var node = jsonGraph.getNode(infoNodeId);
+            if (node) {
+                selectedStep = _.find(this.props.context.analysis_steps, function(step) {
+                    return step['@id'] === infoNodeId;
+                });
+            }
 
-            meta = (
-                <dl className="key-value">
-                    {node.analysis_step_types ?
-                        <div>
-                            <dt>Categories</dt>
-                            <dd>
-                                {node.analysis_step_types.map(function(type) {
-                                    return type;
-                                }).join(', ')}
-                            </dd>
-                        </div>
-                    : null}
+            if (selectedStep) {
+                return (
+                    <dl className="key-value">
+                        {selectedStep.analysis_step_types ?
+                            <div>
+                                <dt>Categories</dt>
+                                <dd>
+                                    {selectedStep.analysis_step_types.map(function(type) {
+                                        return type;
+                                    }).join(', ')}
+                                </dd>
+                            </div>
+                        : null}
 
-                    {node.software_versions ?
-                        <div>
-                            <dt>Software</dt>
-                            <dd>
-                                {node.software_versions.map(function(sw, i) {
-                                    return (
-                                        <span>
-                                            {i > 0 ? ', ' : null}
-                                            <a href={sw.software['@id']}>{sw.software.title}</a>
-                                        </span>
-                                    );
-                                })}
-                            </dd>
-                        </div>
-                    : null}
+                        {selectedStep.software_versions ?
+                            <div>
+                                <dt>Software</dt>
+                                <dd>
+                                    {selectedStep.software_versions.map(function(sw, i) {
+                                        return (
+                                            <span>
+                                                {i > 0 ? ', ' : null}
+                                                <a href={sw.software['@id']}>{sw.software.title}</a>
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+                        : null}
 
-                    {node.input_file_types ?
-                        <div>
-                            <dt>Input file types</dt>
-                            <dd>
-                                {node.input_file_types.map(function(type) {
-                                    return type;
-                                }).join(', ')}
-                            </dd>
-                        </div>
-                    : null}
+                        {selectedStep.input_file_types ?
+                            <div>
+                                <dt>Input file types</dt>
+                                <dd>
+                                    {selectedStep.input_file_types.map(function(type) {
+                                        return type;
+                                    }).join(', ')}
+                                </dd>
+                            </div>
+                        : null}
 
-                    {node.output_file_types ?
-                        <div>
-                            <dt>Output file types</dt>
-                            <dd>
-                                {node.output_file_types.map(function(type) {
-                                    return type;
-                                }).join(', ')}
-                            </dd>
-                        </div>
-                    : null}
-                </dl>
-            );
+                        {selectedStep.output_file_types ?
+                            <div>
+                                <dt>Output file types</dt>
+                                <dd>
+                                    {selectedStep.output_file_types.map(function(type) {
+                                        return type;
+                                    }).join(', ')}
+                                </dd>
+                            </div>
+                        : null}
+                    </dl>
+                );
+            } else {
+                return null;
+            }
         }
+    },
 
-        return meta;
+    handleNodeClick: function(e, nodeId) {
+        e.stopPropagation(); e.preventDefault();
+        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
     render: function() {
