@@ -148,7 +148,7 @@
         "parents": ["a25381ab-1740-42f7-8d5a-20bb2a2b9549"],
         "analysis_step_types": ["filtering"],
         "software_versions": ["a86c9d15-deaf-4abd-8bce-bfa6595d70bb"]
-   },
+    },
     {
         "name": "align-bismark",
         "uuid": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
