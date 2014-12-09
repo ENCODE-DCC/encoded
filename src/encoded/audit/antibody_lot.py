@@ -6,6 +6,7 @@ from ..auditor import (
 
 @audit_checker('antibody_lot', frame=[
     'characterizations',
+    'characterizations.target',
 ])
 def audit_antibody_lot_target(value, system):
     '''
