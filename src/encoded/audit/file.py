@@ -68,7 +68,7 @@ def audit_paired_with(value, system):
         return
     
    # Disabling this code until we can get 1795    
-    if value['paired_end'] == 1:
+    if value['paired_end'] == '1':
         return
     
     if 'paired_with' not in value:
