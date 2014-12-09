@@ -2,6 +2,7 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
