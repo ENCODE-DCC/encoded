@@ -113,14 +113,38 @@ class Experiment(Dataset):
             'possible_controls',
             'target.organism',
         ]
-        audit_inherit = list(embedded)
-        audit_inherit.remove('possible_controls')
-        audit_inherit.remove('replicates.library.documents.submitted_by')
-        audit_inherit.remove('replicates.library.documents.award')
-        audit_inherit.remove('replicates.library.biosample.submitted_by')
-        audit_inherit.remove('replicates.library.biosample.source')
-        audit_inherit.append('replicates.library.biosample.donor')
-        audit_inherit.append('replicates.antibody.characterizations')
+
+        audit_inherit = [
+            'original_files',
+            'original_files.replicate',
+            'original_files.platform',
+            'target',
+            'revoked_files',
+            'revoked_files.replicate',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents',
+            'replicates.antibody',
+            'replicates.antibody.characterizations',
+            'replicates.antibody.targets',
+            'replicates.library',
+            'replicates.library.documents',
+            'replicates.library.biosample',
+            'replicates.library.biosample.organism',
+            'replicates.library.biosample.treatments',
+            'replicates.library.biosample.donor.organism',
+            'replicates.library.biosample.donor',
+            'replicates.library.biosample.treatments',
+            'replicates.library.biosample.derived_from',
+            'replicates.library.biosample.part_of',
+            'replicates.library.biosample.pooled_from',
+            'replicates.library.spikeins_used',
+            'replicates.library.treatments',
+            'replicates.platform',
+            'target.organism',
+        ]
+
         rev = {
             'replicates': ('replicate', 'experiment'),
         }

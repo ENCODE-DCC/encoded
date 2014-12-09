@@ -280,5 +280,14 @@ class AntibodyLot(Collection):
             'lot_reviews.organisms'
         ]
 
-        audit_inherit = list(embedded)
-        audit_inherit.append('characterizations')
+        audit_inherit = [
+            'source',
+            'host_organism',
+            'targets',
+            'targets.organism',
+            'characterizations',
+            'characterizations.documents',
+            'lot_reviews.targets',
+            'lot_reviews.targets.organism',
+            'lot_reviews.organisms'
+        ]
