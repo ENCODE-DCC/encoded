@@ -9,6 +9,7 @@ var search = require('./search');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var Graph = graph.Graph;
+var JsonGraph = graph.JsonGraph;
 
 var _ = require('underscore');
 
@@ -27,105 +28,107 @@ var Panel = function (props) {
 
 
 var Pipeline = module.exports.Pipeline = React.createClass({
-    assembleNodes: function(graph, infoNode) {
-        // Loop over each analysis step to insert it into the graph
-        this.props.context.analysis_steps.forEach(function(step) {
-            // Make an array of step types
-            var stepTypesList = step.analysis_step_types.map(function(type) {
-                return type;
-            });
-
-            // Render each node. Set node ID to analysis step object ID so we can find it later
-            graph.setNode(step['@id'], {label: stepTypesList.join(', '), rx: 4, ry: 4, class: 'pipeline-node-analysis-step' + (infoNode === step['@id'] ? ' active' : '')});
-
-            // If the node has parents, render the edges to those parents
-            if (step.parents && step.parents.length) {
-                step.parents.forEach(function(parent) {
-                    graph.setEdge(parent, step['@id']);
-                });
-            }
-        });
+    getInitialState: function() {
+        return {
+            infoNodeId: '' // ID of node whose info panel is open
+        };
     },
 
-    detailNodes: function(infoNode) {
+    assembleGraph: function() {
+        var jsonGraph;
+
+        // Only produce a graph if there's at least one file with an analysis step
+        // and the file has derived from other files.
+        if (this.props.context.analysis_steps) {
+            // Create an empty graph architecture
+            jsonGraph = new JsonGraph('experiment');
+
+            // Add files and their steps as nodes to the graph
+            this.props.context.analysis_steps.forEach(function(step) {
+                var stepId = step['@id'];
+
+                // Make an array of step types
+                var stepTypesList = step.analysis_step_types.map(function(type) {
+                    return type;
+                });
+
+                // Assemble a single analysis step node.
+                jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''));
+
+                // If the node has parents, render the edges to those parents
+                if (step.parents && step.parents.length) {
+                    step.parents.forEach(function(parent) {
+                        jsonGraph.addEdge(parent, stepId);
+                    });
+                }
+            }, this);
+        }
+        return jsonGraph;
+    },
+
+    detailNodes: function(jsonGraph, infoNodeId) {
         var meta;
 
-        if (infoNode) {
+        if (infoNodeId) {
             // Find analysis step matching selected node, if any
-            var displayStep;
-            if (infoNode) {
-                this.props.context.analysis_steps.some(function(step) {
-                    if (step['@id'] === infoNode) {
-                        displayStep = step;
-                        return true; // Found it; save the matching analysis step and exit loop
-                    } else {
-                        return false; // Keep searching...
-                    }
-                });
-            }
+            var node = jsonGraph.getNode(infoNodeId);
 
             meta = (
-                <div className="graph-node-info">
-                    <hr />
-                    <dl className="key-value">
-                        {displayStep.analysis_step_types ?
-                            <div>
-                                <dt>Categories</dt>
-                                <dd>
-                                    {displayStep.analysis_step_types.map(function(type) {
-                                        return type;
-                                    }).join(', ')}
-                                </dd>
-                            </div>
-                        : null}
+                <dl className="key-value">
+                    {node.analysis_step_types ?
+                        <div>
+                            <dt>Categories</dt>
+                            <dd>
+                                {node.analysis_step_types.map(function(type) {
+                                    return type;
+                                }).join(', ')}
+                            </dd>
+                        </div>
+                    : null}
 
-                        {displayStep.software_versions ?
-                            <div>
-                                <dt>Software</dt>
-                                <dd>
-                                    {displayStep.software_versions.map(function(sw, i) {
-                                        return (
-                                            <span>
-                                                {i > 0 ? ', ' : null}
-                                                <a href={sw.software['@id']}>{sw.software.title}</a>
-                                            </span>
-                                        );
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
+                    {node.software_versions ?
+                        <div>
+                            <dt>Software</dt>
+                            <dd>
+                                {node.software_versions.map(function(sw, i) {
+                                    return (
+                                        <span>
+                                            {i > 0 ? ', ' : null}
+                                            <a href={sw.software['@id']}>{sw.software.title}</a>
+                                        </span>
+                                    );
+                                })}
+                            </dd>
+                        </div>
+                    : null}
 
-                        {displayStep.input_file_types ?
-                            <div>
-                                <dt>Input file types</dt>
-                                <dd>
-                                    {displayStep.input_file_types.map(function(type) {
-                                        return type;
-                                    }).join(', ')}
-                                </dd>
-                            </div>
-                        : null}
+                    {node.input_file_types ?
+                        <div>
+                            <dt>Input file types</dt>
+                            <dd>
+                                {node.input_file_types.map(function(type) {
+                                    return type;
+                                }).join(', ')}
+                            </dd>
+                        </div>
+                    : null}
 
-                        {displayStep.output_file_types ?
-                            <div>
-                                <dt>Output file types</dt>
-                                <dd>
-                                    {displayStep.output_file_types.map(function(type) {
-                                        return type;
-                                    }).join(', ')}
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
+                    {node.output_file_types ?
+                        <div>
+                            <dt>Output file types</dt>
+                            <dd>
+                                {node.output_file_types.map(function(type) {
+                                    return type;
+                                }).join(', ')}
+                            </dd>
+                        </div>
+                    : null}
+                </dl>
             );
         }
 
-        return(
-            <div className="graph-node-info">
-                {meta ? <div><hr />{meta}</div> : null}
-            </div>
-        );
+        return meta;
     },
 
     render: function() {
@@ -138,6 +141,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         }
+
+        // Build node graph of the files and analysis steps with this experiment
+        var jsonGraph = this.assembleGraph();
+        var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
 
         return (
             <div className={itemClass}>
@@ -184,8 +191,15 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 : null}
-                {context.analysis_steps && context.analysis_steps.length ?
-                    <Graph assembler={this.assembleNodes} detailer={this.detailNodes} />
+                {jsonGraph ?
+                    <div>
+                        <h3>Pipeline</h3>
+                        <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                            <div className="graph-node-info">
+                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                            </div>
+                        </Graph>
+                    </div>
                 : null}
             </div>
 

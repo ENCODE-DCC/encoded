@@ -14,9 +14,9 @@ var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
-var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
