@@ -156,7 +156,7 @@ def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_rep
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'paired end mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched paired_ended' for error in errors)
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
@@ -200,7 +200,7 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'target mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched target' for error in errors)
 
 
 def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):

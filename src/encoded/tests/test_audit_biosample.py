@@ -58,28 +58,28 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'], 'organism': base_chipmunk['@id']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'organism mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched organism' for error in errors)
 
 
 def test_audit_subcellular(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'subcellular_fraction_term_name': 'nucleus', 'subcellular_fraction_term_id': 'GO:0005739'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'subcellular term mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched subcellular_fraction_term' for error in errors)
 
 
 def test_audit_depleted_in(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'depleted_in term mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched depleted_in_term' for error in errors)
 
 
 def test_audit_depleted_in_length(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'depleted_in length mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched depleted_in_term length' for error in errors)
 
 
 def test_audit_rnai_transfection(testapp, base_biosample, rnai):

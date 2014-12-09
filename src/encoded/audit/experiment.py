@@ -126,7 +126,7 @@ def audit_experiment_assay(value, system):
             term_name,
             term_id,
             )
-        yield AuditFailure('assay term name mismatch', detail, level='DCC_ACTION')
+        yield AuditFailure('mismatched assay_term_name', detail, level='DCC_ACTION')
         return
 
 
@@ -186,7 +186,7 @@ def audit_experiment_target(value, system):
                         target_matches = True
                 if not target_matches:
                     detail = '{} is not found in target for {}'.format(target['name'], antibody['@id'])
-                    yield AuditFailure('target mismatch', detail, level='ERROR')
+                    yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
 @audit_checker('experiment')
@@ -224,7 +224,7 @@ def audit_experiment_control(value, system):
                 control['accession'],
                 control['biosample_term_name'],
                 value['biosample_term_name'])
-            raise AuditFailure('control has mismatched biosample', detail, level='ERROR')
+            raise AuditFailure('mismatched control', detail, level='ERROR')
 
 
 # @audit_checker('experiment')
@@ -276,7 +276,7 @@ def audit_experiment_readlength(value, system):
     if len(set(read_lengths)) > 1:
         list_of_lens = str(read_lengths)
         detail = '{} has mixed values for read_length between replicates: {}'.format(value['accession'], list_of_lens)
-        yield AuditFailure('read_length mismatch', detail, level='WARNING')
+        yield AuditFailure('mismatched read_length', detail, level='WARNING')
 
 
 @audit_checker('experiment')
@@ -307,7 +307,7 @@ def audit_experiment_platform(value, system):
         detail = '{} has mixed values for platform files {}'.format(
             value['accession'],
             repr(sorted(platforms)))
-        yield AuditFailure('platform mismatch', detail, level='WARNING')
+        yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
 @audit_checker('experiment')
@@ -381,7 +381,7 @@ def audit_experiment_biosample_term(value, system):
         ontology_name = ontology[term_id]['name']
         if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
             detail = '{} has {} - {} - {}'.format(value['accession'], term_id, term_name, ontology_name)
-            yield AuditFailure('term name mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
     for rep in value['replicates']:
         if 'library' not in rep:
@@ -399,11 +399,11 @@ def audit_experiment_biosample_term(value, system):
 
         if bs_type != term_type:
             detail = '{} has mismatched biosample_type, {} - {}'.format(lib['accession'], term_type, bs_type)
-            yield AuditFailure('biosample mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
 
         if bs_name != term_name:
             detail = '{} has mismatched biosample_term_name, {} - {}'.format(lib['accession'], term_name, bs_name)
-            yield AuditFailure('biosample mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
 
 @audit_checker('experiment')
@@ -460,15 +460,15 @@ def audit_experiment_paired_end(value, system):
 
         if (rep_paired_ended is True) and (lib_paired_ended is False):
             detail = 'Library {} has paired_ended as false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
-            yield AuditFailure('paired end mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched paired_ended', detail, level='ERROR')
 
     if len(set(reps_list)) > 1:
             detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], repr(reps_list))
-            yield AuditFailure('paired end mismatch', detail, level='WARNING')
+            yield AuditFailure('mismatched paired_ended', detail, level='WARNING')
 
     if len(set(libs_list)) > 1:
             detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], repr(reps_list))
-            yield AuditFailure('paired end mismatch', detail, level='WARNING')
+            yield AuditFailure('mismatched paired_ended', detail, level='WARNING')
 
 
 @audit_checker(
