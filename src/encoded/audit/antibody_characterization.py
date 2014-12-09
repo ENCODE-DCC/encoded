@@ -148,4 +148,4 @@ def audit_antibody_characterization_method_allowed(value, system):
     secondary = value['secondary_characterization_method']
     if (secondary == 'motif enrichment') or (is_histone and secondary == 'ChIP-seq comparison'):
         detail = '{} is not an approved secondary characterization_method according to the current standards'.format(value['secondary_characterization_method'])
-        raise AuditFailure('unapproved char method', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('unapproved char method', detail, level='NOT_COMPLIANT')
