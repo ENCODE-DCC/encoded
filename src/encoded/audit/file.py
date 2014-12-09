@@ -66,13 +66,16 @@ def audit_paired_with(value, system):
 
     if 'paired_end' not in value:
         return
-
-   # Disabling this code until we can get 1795
-   # if 'paired_with' not in value:
-   #    detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
-   #    value['accession'],
-   #    value['paired_end'])
-   #    raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
+    
+   # Disabling this code until we can get 1795    
+    if value['paired_end'] == 1:
+        return
+    
+    if 'paired_with' not in value:
+        detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
+        value['accession'],
+        value['paired_end'])
+        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
     # Would love to then check to see if the files shared the same replicate
 
