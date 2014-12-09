@@ -277,18 +277,15 @@ def es_update_object(request, objects, snapshot_id):
 
     es = request.registry[ELASTIC_SEARCH]
     pool, event = request.registry['indexing_pool']
-    if pool:
-        imap = pool.imap_unordered
-    else:
-        imap = itertools.imap
     try:
         if pool:
             event.clear()
             result = pool.map_async(pool_set_snapshot_id, (snapshot_id for x in range(pool._processes)), 1)
             event.set()
             result.get()
-
-        results = imap(pool_embed, (str(uuid) for uuid in objects))
+            results = pool.imap_unordered(pool_embed, (str(uuid) for uuid in objects), chunksize=50)
+        else:
+            results = itertools.imap(pool_embed, (str(uuid) for uuid in objects))
 
         for i, item in enumerate(results):
             uuid, result, error = item
