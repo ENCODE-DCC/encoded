@@ -2,6 +2,7 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -15,17 +16,14 @@ raw_data_formats = [
     ]
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
     
-    if value['award'].get('rfa') not in ['ENCODE3']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
     if value['file_format'] not in raw_data_formats:
@@ -36,7 +34,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -44,9 +42,6 @@ def audit_file_flowcells(value, system):
     '''
 
     if value['status'] in ['deleted', 'replaced']:
-        return
-    
-    if value['award']['rfa'] not in ['ENCODE3']:
         return
 
     if value['file_format'] not in ['fastq']:

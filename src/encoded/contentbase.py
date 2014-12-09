@@ -641,7 +641,7 @@ class Item(object):
         if actions:
             properties['actions'] = actions
 
-        if ns['permission']('edit'):
+        if ns['permission']('audit'):
             properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
 
     @classmethod
