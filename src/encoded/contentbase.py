@@ -1335,12 +1335,12 @@ def item_index_data(context, request):
     for key in context.model.unique_keys:
         keys[key.name].append(key.value)
 
-    principals = {}
-    for permission in ('view', 'edit'):
+    principals_allowed = {}
+    for permission in ('view', 'edit', 'audit'):
         p = principals_allowed_by_permission(context, permission)
         if p is Everyone:
             p = [Everyone]
-        principals[permission] = p
+        principals_allowed[permission] = sorted(p)
 
     path = resource_path(context)
     paths = {path}
@@ -1369,8 +1369,7 @@ def item_index_data(context, request):
         'object': embed(request, path + '@@object'),
         'links': links,
         'keys': keys,
-        'principals_allowed_view': sorted(principals['view']),
-        'principals_allowed_edit': sorted(principals['edit']),
+        'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,
     }

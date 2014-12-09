@@ -302,7 +302,7 @@ page_or_json = SubprocessTween(
 
 def es_permission_checker(source, request):
     def checker(permission):
-        allowed = set(source['principals_allowed_' + permission])
+        allowed = set(source['principals_allowed'][permission])
         return allowed.intersection(request.effective_principals)
     return checker
 
@@ -349,7 +349,7 @@ def es_tween_factory(handler, registry):
             return handler(request)
 
         source = hits[0]['_source']
-        allowed = set(source['principals_allowed_view'])
+        allowed = set(source['principals_allowed']['view'])
         if allowed.isdisjoint(request.effective_principals):
             raise HTTPForbidden()
 
@@ -369,7 +369,7 @@ def es_tween_factory(handler, registry):
             if actions:
                 rendering_val['actions'] = actions
 
-            if ns['permission']('edit'):
+            if ns['permission']('audit'):
                 rendering_val['audit'] = source['audit']
 
         else:
