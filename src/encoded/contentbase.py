@@ -643,7 +643,7 @@ class Item(object):
             properties['actions'] = actions
 
         if ns['permission']('audit'):
-            properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
+            properties['audit'] = embed(request, join(properties['@id'], '@@audit'))['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1104,7 +1104,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1178,7 +1178,7 @@ def item_view_page(context, request):
              name='expand')
 def item_view_expand(context, request):
     path = request.resource_path(context)
-    properties = embed(request, path + '@@object')
+    properties = embed(request, join(path, '@@object'))
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
@@ -1201,7 +1201,7 @@ def item_view_audit_self(context, request):
 def item_view_audit(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
-    properties = embed(request, path + '@@object')
+    properties = embed(request, join(path, '@@object'))
     audit = inherit_audits(request, properties, context.audit_inherit_paths)
     return {
         '@id': path,
@@ -1264,7 +1264,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1325,7 +1325,7 @@ def inherit_audits(request, embedded, embedded_paths):
 
     audit = []
     for audit_path in audit_paths:
-        result = embed(request, audit_path + '@@audit-self')
+        result = embed(request, join(audit_path, '@@audit-self'))
         audit.extend(result['audit'])
     return audit
 
@@ -1366,12 +1366,12 @@ def item_index_data(context, request):
                 for key in keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, path + '@@embedded')
+    embedded = embed(request, join(path, '@@embedded'))
     audit = inherit_audits(request, embedded, context.audit_inherit_paths)
 
     document = {
         'embedded': embedded,
-        'object': embed(request, path + '@@object'),
+        'object': embed(request, join(path, '@@object')),
         'links': links,
         'keys': keys,
         'principals_allowed': principals_allowed,
