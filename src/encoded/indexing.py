@@ -23,7 +23,9 @@ from .storage import (
 import functools
 import json
 import logging
+import multiprocessing
 import transaction
+import itertools
 
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -40,9 +42,8 @@ def includeme(config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
         )
-        #es.session.hooks['response'].append(requests_timing_hook('es'))
+        # es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
-
 
 
 class PyramidJSONSerializer(object):
@@ -83,9 +84,10 @@ def index(request):
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     query = connection.execute("""
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
-        SELECT txid_snapshot_xmin(txid_current_snapshot());
+        SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();
     """)
-    xmin = query.scalar()  # lowest xid that is still in progress
+    result, = query.fetchall()
+    xmin, snapshot_id = result  # lowest xid that is still in progress
 
     last_xmin = None
     if 'last_xmin' in request.json:
@@ -134,7 +136,7 @@ def index(request):
         )
 
     if not dry_run and es is not None:
-        result['count'] = count = es_update_object(request, invalidated)
+        result['count'] = count = es_update_object(request, invalidated, snapshot_id)
         if count and record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
@@ -173,7 +175,7 @@ def add_dependent_objects(root, new, existing):
             dependents.update({
                 model.source_rid for model in item.model.revs
             })
-            
+
             item_type = item.item_type
             item_rels = item.model.rels
             for rel in item_rels:
@@ -188,29 +190,118 @@ def add_dependent_objects(root, new, existing):
         objects = dependents.difference(existing)
 
 
-def es_update_object(request, objects):
+def make_pool(settings):
+    from multiprocessing.pool import IMapIterator
+
+    def wrapper(func):
+        def wrap(self, timeout=None):
+            # Note: the timeout of 1 googol seconds introduces a rather subtle
+            # bug for Python scripts intended to run many times the age of the universe.
+            return func(self, timeout=timeout if timeout is not None else 1e100)
+        return wrap
+    IMapIterator.next = wrapper(IMapIterator.next)
+
+    import atexit
+    pool = multiprocessing.Pool(
+        processes=None,
+        initializer=pool_initializer,
+        initargs=(settings,),
+    )
+
+    @atexit.register
+    def abort():
+        pool.terminate()
+        pool.join()
+
+    return pool
+
+_pool_app = None
+
+
+def pool_initializer(settings):
+    from encoded import main
+    global _pool_app
+    _pool_app = main(settings, indexer=False, create_tables=False)
+
+
+def pool_set_snapshot_id(snapshot_id):
+    from pyramid.threadlocal import manager
+    import transaction
+    txn = transaction.begin()
+    txn.doom()
+    txn.setExtendedInfo('snapshot_id', snapshot_id)
+    app = _pool_app
+    root = app.root_factory(app)
+    registry = app.registry
+    request = app.request_factory.blank('/_indexing_pool')
+    extensions = app.request_extensions
+    if extensions is not None:
+        request._set_extensions(extensions)
+    request.invoke_subrequest = app.invoke_subrequest
+    request.root = root
+    request.registry = registry
+    request._stats = {}
+    manager.push({'request': request, 'registry': registry})
+
+
+def pool_clear_snapshot_id(snapshot_id):
+    from pyramid.threadlocal import manager
+    import transaction
+    transaction.abort()
+    manager.pop()
+
+
+def pool_embed(uuid):
+    from pyramid.threadlocal import get_current_request
+    request = get_current_request()
+    try:
+        return uuid, embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER'), None
+    except Exception:
+        import traceback
+        from cStringIO import StringIO
+        buf = StringIO()
+        traceback.print_exc(file=buf)
+        print buf.getvalue()
+        return uuid, None, buf.getvalue()
+
+
+def es_update_object(request, objects, snapshot_id):
+    if not objects:
+        return 0
+
     es = request.registry[ELASTIC_SEARCH]
-    i = -1
-    for i, uuid in enumerate(objects):
-        try:
-            result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
-        except Exception as e:
-            log.warning('Error indexing %s', uuid, exc_info=True)
-        else:
-            doctype = result['object']['@type'][0]
-            try:
-                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
-            except Exception as e:
-                log.warning('Error indexing %s', uuid, exc_info=True)
+    pool = request.registry['indexing_pool']
+    if pool:
+        imap = pool.imap_unordered
+    else:
+        imap = itertools.imap
+    try:
+        if pool:
+            pool.map(pool_set_snapshot_id, [snapshot_id for x in range(pool._processes)], 1)
+
+        results = imap(pool_embed, (str(uuid) for uuid in objects))
+
+        for i, item in enumerate(results):
+            uuid, result, error = item
+            if error is not None:
+                log.warning('Error indexing %s\n%s', uuid, error)
             else:
-                if (i + 1) % 50 == 0:
-                    log.info('Indexing %s %d', result['object']['@id'], i + 1)
+                doctype = result['object']['@type'][0]
+                try:
+                    es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
+                except Exception:
+                    log.warning('Error indexing %s', uuid, exc_info=True)
+                else:
+                    if (i + 1) % 50 == 0:
+                        log.info('Indexing %s %d', result['object']['@id'], i + 1)
 
-        if (i + 1) % 50 == 0:
-            es.indices.flush(index=INDEX)
+            if (i + 1) % 50 == 0:
+                es.indices.flush(index=INDEX)
 
-    return i + 1
-
+        return i + 1
+    finally:
+        if pool:
+            pool.map(pool_clear_snapshot_id, [snapshot_id for x in range(pool._processes)], 1)
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):

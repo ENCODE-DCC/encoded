@@ -140,7 +140,14 @@ def main(global_config, **local_config):
     """
     settings = global_config
     settings.update(local_config)
+    indexing_pool = None
+    if asbool(settings.get('indexer')):
+        # Must fork before setting up db.
+        from .indexing import make_pool
+        indexing_pool = make_pool(settings)
+
     config = Configurator(settings=settings)
+    config.registry['indexing_pool'] = indexing_pool
 
     config.include(session)
     config.include('pyramid_tm')
