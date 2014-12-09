@@ -1191,7 +1191,6 @@ def item_view_audit_self(context, request):
     types = [context.item_type] + context.base_types
     return {
         '@id': path,
-        '@type': types,
         'audit': request.audit(types=types, path=path),
     }
 
@@ -1205,7 +1204,6 @@ def item_view_audit(context, request):
     audit = inherit_audits(request, properties, context.audit_inherit_paths)
     return {
         '@id': path,
-        '@type': types,
         'audit': audit,
     }
 
