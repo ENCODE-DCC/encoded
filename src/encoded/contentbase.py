@@ -6,6 +6,7 @@ from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
 from itertools import islice
+from posixpath import join
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -642,7 +643,7 @@ class Item(object):
             properties['actions'] = actions
 
         if ns['permission']('audit'):
-            properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
+            properties['audit'] = embed(request, join(properties['@id'], '@@audit'))['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1103,7 +1104,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1177,7 +1178,7 @@ def item_view_page(context, request):
              name='expand')
 def item_view_expand(context, request):
     path = request.resource_path(context)
-    properties = embed(request, path + '@@object')
+    properties = embed(request, join(path, '@@object'))
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
@@ -1200,8 +1201,8 @@ def item_view_audit_self(context, request):
 def item_view_audit(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
-    embedded = embed(request, path + '@@embedded')
-    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
+    properties = embed(request, join(path, '@@object'))
+    audit = inherit_audits(request, properties, context.audit_inherit_paths)
     return {
         '@id': path,
         '@type': types,
@@ -1263,7 +1264,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1293,7 +1294,7 @@ class AfterModified(object):
         self.request = request
 
 
-def path_ids(obj, path):
+def path_ids(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
@@ -1306,21 +1307,25 @@ def path_ids(obj, path):
         return
     if isinstance(value, list):
         for member in value:
-            for item_uri in path_ids(member, remaining):
+            if remaining and isinstance(member, basestring):
+                member = embed(request, join(member, '@@object'))
+            for item_uri in path_ids(request, member, remaining):
                 yield item_uri
     else:
-        for item_uri in path_ids(value, remaining):
+        if remaining and isinstance(value, basestring):
+            value = embed(request, join(value, '@@object'))
+        for item_uri in path_ids(request, value, remaining):
             yield item_uri
 
 
 def inherit_audits(request, embedded, embedded_paths):
     audit_paths = {embedded['@id']}
     for embedded_path in embedded_paths:
-        audit_paths.update(path_ids(embedded, embedded_path))
+        audit_paths.update(path_ids(request, embedded, embedded_path))
 
     audit = []
     for audit_path in audit_paths:
-        result = embed(request, audit_path + '@@audit-self')
+        result = embed(request, join(audit_path, '@@audit-self'))
         audit.extend(result['audit'])
     return audit
 
@@ -1361,12 +1366,12 @@ def item_index_data(context, request):
                 for key in keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, path + '@@embedded')
+    embedded = embed(request, join(path, '@@embedded'))
     audit = inherit_audits(request, embedded, context.audit_inherit_paths)
 
     document = {
         'embedded': embedded,
-        'object': embed(request, path + '@@object'),
+        'object': embed(request, join(path, '@@object')),
         'links': links,
         'keys': keys,
         'principals_allowed': principals_allowed,
