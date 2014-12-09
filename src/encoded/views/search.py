@@ -34,7 +34,7 @@ def get_filtered_query(term, fields, principals):
                 'filters': [
                     {
                         'terms': {
-                            'principals_allowed_view': principals
+                            'principals_allowed.view': principals
                         }
                     }
                 ]
@@ -232,7 +232,7 @@ def search(context, request, search_type=None):
             if q_field != query_field
         ]
         terms.append(
-            {'terms': {'principals_allowed_view': principals}}
+            {'terms': {'principals_allowed.view': principals}}
         )
 
         query['aggs'][agg_name] = {

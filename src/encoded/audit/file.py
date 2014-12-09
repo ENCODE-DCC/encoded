@@ -58,6 +58,7 @@ def audit_paired_with(value, system):
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
     A paired_with should be the same replicate
+    DISABLING until ticket 1795 is implemented
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -65,7 +66,11 @@ def audit_paired_with(value, system):
 
     if 'paired_end' not in value:
         return
-
+    
+   # Disabling this code until we can get 1795    
+    if value['paired_end'] == '1':
+        return
+    
     if 'paired_with' not in value:
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
             value['accession'],

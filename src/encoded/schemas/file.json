@@ -19,7 +19,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },        
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -226,7 +226,10 @@
                         "splice junctions",
                         "unique minus signal",
                         "unique plus signal",
-                        "unique signal"
+                        "unique signal",
+                        "methyl_CG",
+                        "methyl_CHG",
+                        "methyl_CHH"
                     ]
                 },
                 {
@@ -350,8 +353,8 @@
                 "mm10",
                 "hg19",
                 "GRCh38",
-                "ce10", 
-                "dm3", 
+                "ce10",
+                "dm3",
                 "dm6"
                 ]
         },
