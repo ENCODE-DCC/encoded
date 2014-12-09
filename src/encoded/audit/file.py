@@ -2,6 +2,7 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -15,13 +16,13 @@ raw_data_formats = [
     ]
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
-
+    
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -33,10 +34,11 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
+    Don't bother to check anything but ENCODE3
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -45,9 +47,9 @@ def audit_file_flowcells(value, system):
     if value['file_format'] not in ['fastq']:
         return
 
-    if 'flowcell_details' not in value or (value['flowcell_details'] == {}):
-        detail = 'Fastq file {} missing flowcell details'.format(value['accession'])
-        raise AuditFailure('missing platform', detail, level='WARNING')
+    if 'flowcell_details' not in value or (value['flowcell_details'] == []):
+        detail = 'Fastq file {} is missing flowcell_details'.format(value['accession'])
+        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
 @audit_checker('file', frame='object')
@@ -68,7 +70,7 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
             value['accession'],
             value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
     # Would love to then check to see if the files shared the same replicate
 
@@ -81,7 +83,7 @@ def audit_file_size(value, system):
 
     if 'file_size' not in value:
         detail = 'File {} requires a value for file_size'.format(value['accession'])
-        raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
 @audit_checker('file', frame='object')
