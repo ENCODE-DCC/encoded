@@ -23,4 +23,4 @@ def audit_antibody_lot_target(value, system):
                 char['uuid'],
                 char['target']['label']
                 )
-            yield AuditFailure('target mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched target', detail, level='ERROR')
