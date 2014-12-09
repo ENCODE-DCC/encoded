@@ -435,7 +435,7 @@ def audit_experiment_paired_end(value, system):
             reps_list.append(rep_paired_ended)
 
         if rep_paired_ended is None:
-            detail = 'Replicate ({}) is missing value for paired_ended'.format(rep['uuid'])
+            detail = 'Replicate {} is missing value for paired_ended'.format(rep['uuid'])
             yield AuditFailure('missing replicate.paired_ended', detail, level='ERROR')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
