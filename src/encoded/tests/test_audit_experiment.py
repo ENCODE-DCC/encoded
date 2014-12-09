@@ -141,14 +141,14 @@ def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_r
 def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_replicate):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing replicate paired end' for error in errors)
+    assert any(error['category'] == 'missing replicate.paired_ended' for error in errors)
 
 
 def test_audit_experiment_library_paired_end(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing library paired end' for error in errors)
+    assert any(error['category'] == 'missing library.paired_ended' for error in errors)
 
 
 def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_replicate, base_library):
@@ -164,7 +164,7 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing spikeins' for error in errors)
+    assert any(error['category'] == 'missing spikeins_used' for error in errors)
 
 def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})
@@ -229,4 +229,4 @@ def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'biosample type missing' for error in errors)
+    assert any(error['category'] == 'missing biosample_type' for error in errors)

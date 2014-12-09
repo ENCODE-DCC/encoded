@@ -109,7 +109,7 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
-        yield AuditFailure('NTR, assay', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR assay', detail, level='DCC_ACTION')
         return
 
     if term_id not in ontology:
@@ -216,7 +216,7 @@ def audit_experiment_control(value, system):
         detail = '{} experiments require a value in possible_control unless the target is a control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible controls', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing possible_controls', detail, level='STANDARDS_FAILURE')
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -337,7 +337,7 @@ def audit_experiment_spikeins(value, system):
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = 'Library {} is in an RNA-seq experiment and has size_range >200. It requires a value for spikeins_used'.format(lib['accession'])
-            yield AuditFailure('missing spikeins', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing spikeins_used', detail, level='STANDARDS_FAILURE')
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
@@ -361,7 +361,7 @@ def audit_experiment_biosample_term(value, system):
 
     if 'biosample_type' not in value:
         detail = '{} is missing biosample_type'.format(value['accession'])
-        yield AuditFailure('biosample type missing', detail, level='ERROR')
+        yield AuditFailure('missing biosample_type', detail, level='ERROR')
 
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['accession'])
@@ -373,7 +373,7 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
     elif term_id.startswith('NTR:'):
         detail = '{} has {} - {}'.format(value['accession'], term_id, term_name)
-        yield AuditFailure('NTR,biosample', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
     elif term_id not in ontology:
         detail = '{} has term_id {} which is not in ontology'.format(value['accession'], term_id)
         yield AuditFailure('term id not in ontology', term_id, level='ERROR')
@@ -436,7 +436,7 @@ def audit_experiment_paired_end(value, system):
 
         if rep_paired_ended is None:
             detail = 'Replicate ({}) is missing value for paired_ended'.format(rep['uuid'])
-            yield AuditFailure('missing replicate paired end', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing replicate.paired_ended', detail, level='STANDARDS_FAILURE')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
             detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(term_name, rep['uuid'])
@@ -452,7 +452,7 @@ def audit_experiment_paired_end(value, system):
 
         if lib_paired_ended is None:
             detail = '{} is missing value for paired_ended'.format(lib['accession'])
-            yield AuditFailure('missing library paired end', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing library.paired_ended', detail, level='STANDARDS_FAILURE')
 
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
             detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(term_name, lib['accession'])

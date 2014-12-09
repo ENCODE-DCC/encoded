@@ -38,7 +38,7 @@ def test_audit_biosample_term_ntr(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'NTR' for error in errors)
+    assert any(error['category'] == 'NTR biosample' for error in errors)
 
 
 def test_audit_biosample_culture_dates(testapp, base_biosample):

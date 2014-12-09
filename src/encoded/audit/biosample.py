@@ -52,7 +52,7 @@ def audit_biosample_term(value, system):
             value['accession'],
             term_id,
             term_name)
-        raise AuditFailure('NTR', detail, level='DCC_ACTION')
+        raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
