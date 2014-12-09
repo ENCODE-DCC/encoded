@@ -99,6 +99,8 @@ def audit_item_status(value, system):
         linked_value = embed(request, path + '@@object')
         if 'status' not in linked_value:
             continue
+        if linked_value['status'] == 'disabled':
+            continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
