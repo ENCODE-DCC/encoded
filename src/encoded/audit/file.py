@@ -58,6 +58,7 @@ def audit_paired_with(value, system):
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
     A paired_with should be the same replicate
+    DISABLING until ticket 1795 is implemented
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -66,11 +67,12 @@ def audit_paired_with(value, system):
     if 'paired_end' not in value:
         return
 
-    if 'paired_with' not in value:
-        detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
-            value['accession'],
-            value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
+   # Disabling this code until we can get 1795
+   # if 'paired_with' not in value:
+   #    detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
+   #    value['accession'],
+   #    value['paired_end'])
+   #    raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
     # Would love to then check to see if the files shared the same replicate
 
