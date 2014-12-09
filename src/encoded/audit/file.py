@@ -70,7 +70,7 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
             value['accession'],
             value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
     # Would love to then check to see if the files shared the same replicate
 
@@ -83,7 +83,7 @@ def audit_file_size(value, system):
 
     if 'file_size' not in value:
         detail = 'File {} requires a value for file_size'.format(value['accession'])
-        raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
 @audit_checker('file', frame='object')
