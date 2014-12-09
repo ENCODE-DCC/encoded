@@ -216,7 +216,7 @@ def audit_experiment_control(value, system):
         detail = '{} experiments require a value in possible_control unless the target is a control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible controls', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing possible controls', detail, level='NOT_COMPLIANT')
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -337,7 +337,7 @@ def audit_experiment_spikeins(value, system):
         spikes = lib.get('spikeins_used')
         if (spikes is None) or (spikes == []):
             detail = 'Library {} is in an RNA-seq experiment and has size_range >200. It requires a value for spikeins_used'.format(lib['accession'])
-            yield AuditFailure('missing spikeins', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing spikeins', detail, level='NOT_COMPLIANT')
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
@@ -390,7 +390,7 @@ def audit_experiment_biosample_term(value, system):
         lib = rep['library']
         if 'biosample' not in lib:
             detail = '{} is missing biosample, expected is {}'.format(lib['accession'], term_name)
-            yield AuditFailure('missing biosample', detail, level='STANDARDS_FAILURE')
+            yield AuditFailure('missing biosample', detail, level='NOT_COMPLIANT')
             continue
 
         biosample = lib['biosample']
@@ -526,10 +526,10 @@ def audit_experiment_antibody_eligible(value, system):
                             organism_match = True
                     if not organism_match:
                         detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                        yield AuditFailure('not eligible histone antibody', detail, level='STANDARDS_FAILURE')
+                        yield AuditFailure('not eligible histone antibody', detail, level='NOT_COMPLIANT')
                 else:
                     detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                    yield AuditFailure('not eligible histone antibody', detail, level='STANDARDS_FAILURE')
+                    yield AuditFailure('not eligible histone antibody', detail, level='NOT_COMPLIANT')
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
@@ -542,4 +542,4 @@ def audit_experiment_antibody_eligible(value, system):
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
-                yield AuditFailure('not eligible antibody', detail, level='STANDARDS_FAILURE')
+                yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
