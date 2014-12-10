@@ -82,7 +82,7 @@ var Graph = module.exports.Graph = React.createClass({
     drawGraph: function(el) {
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
-        var svg = d3.select(el).select('svg')
+        var svg = d3.select(el).select('svg');
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph()
@@ -113,7 +113,7 @@ var Graph = module.exports.Graph = React.createClass({
             var el = this.refs.graphdisplay.getDOMNode();
 
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '.graph-node-info')
+            var svg = d3.select(el).insert('svg', '#scroll-buttons')
                 .attr('class', 'd3')
                 .attr('preserveAspectRatio', 'xMidYMid');
             var svgGroup = svg.append("g");
@@ -122,7 +122,6 @@ var Graph = module.exports.Graph = React.createClass({
             this.drawGraph(el);
 
             // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-            // Also bind to touchstart to eliminate mobile tap delay
             var reactThis = this;
             svg.selectAll("g.node").each(function(nodeId) {
                 globals.bindEvent(this, 'click', function(e) {
@@ -141,10 +140,24 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
+    scrollLeft: function() {
+        var displayNode = this.refs.graphdisplay.getDOMNode();
+        displayNode.scrollLeft = displayNode.scrollLeft + 30;
+    },
+
+    scrollRight: function() {
+
+    },
+
     render: function() {
         return (
             <div className="panel-full">
-                <div ref="graphdisplay" className="graph-display"></div>
+                <div ref="graphdisplay" className="graph-display">
+                    <div id="scroll-buttons">
+                        <button onClick={this.scrollLeft}>Left</button>
+                        <button onClick={this.scrollRight}>Right</button>
+                    </div>
+                </div>
                 {this.props.children}
             </div>
         );
