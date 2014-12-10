@@ -170,7 +170,7 @@
             "type": "string"
         },
         "targets.investigated_as": {
-            "title": "Assay targets investigated",
+            "title": "Target of antibody",
             "type": "string"
         },
         "characterizations.characterization_method": {

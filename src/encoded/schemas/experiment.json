@@ -102,7 +102,7 @@
             "type": "string"
         },
         "target.investigated_as": {
-            "title": "Assay targets investigated",
+            "title": "Target of assay",
             "type": "string"
         },
         "replicates.library.biosample.biosample_type": {
