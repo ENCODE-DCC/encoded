@@ -509,10 +509,6 @@
             "title": "Life stage",
             "type": "string"
         },
-        "age_display": {
-            "title": "Age",
-            "type": "string"
-        },
         "subcellular_fraction_term_name": {
             "title": "Subcellular fraction",
             "type": "string"

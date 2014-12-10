@@ -164,7 +164,7 @@ def test_audit_antibody_lane_status_pending_mismatch1(testapp, base_antibody_cha
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'compliant', 'reviewed_by': reviewed_by, 'documents': [standards_document['uuid']]})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+    assert any(error['category'] == 'lane status mismatch' for error in errors)
 
 
 def test_audit_antibody_lane_status_pending_mismatch2(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review):
@@ -174,7 +174,7 @@ def test_audit_antibody_lane_status_pending_mismatch2(testapp, base_antibody_cha
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'pending dcc review'})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+    assert any(error['category'] == 'lane status mismatch' for error in errors)
 
 
 def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, base_characterization_review2, wrangler, standards_document):
@@ -186,7 +186,7 @@ def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_ch
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'not compliant', 'reviewed_by': reviewed_by, 'documents': [standards_document['uuid']]})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+    assert any(error['category'] == 'lane status mismatch' for error in errors)
 
 
 def test_audit_unapproved_antibody_characterization_method1(testapp, base_antibody_characterization):

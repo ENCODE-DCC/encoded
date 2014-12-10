@@ -102,7 +102,7 @@
             "type": "string"
         },
         "target.investigated_as": {
-            "title": "Assay targets investigated",
+            "title": "Target of assay",
             "type": "string"
         },
         "replicates.library.biosample.biosample_type": {
@@ -137,11 +137,11 @@
             "title": "Library insert size (nt)",
             "type": "string"
         },
-        "replicate.library.nucleic_acid_term_name": {
+        "replicates.library.nucleic_acid_term_name": {
             "title": "Library sequenced",
             "type": "string"
         },
-        "replicate.library.depleted_in_term_name": {
+        "replicates.library.depleted_in_term_name": {
             "title": "Library depleted in",
             "type": "string"
         },

@@ -33,7 +33,7 @@ def audit_library_nucleic_acid(value, system):
             value['nucleic_acid_term_id'],
             value['nucleic_acid_term_id'],
             expected)
-        raise AuditFailure('molecule mismatch', detail, level='ERROR')
+        raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
 
 
 @audit_checker('library')
@@ -55,7 +55,7 @@ def audit_library_documents(value, system):
     for method in list_of_methods:
         if value.get(method) == "see document" and value['documents'] == []:
             detail = 'Library {} has a method that specifies "see document" yet has no document'.format(value['accession'])
-            raise AuditFailure('missing document', detail, level='STANDARDS_FAILURE')
+            raise AuditFailure('missing document', detail, level='ERROR')
 
 
 @audit_checker('library')
@@ -109,4 +109,4 @@ def audit_library_depleted_in(value, system):
                 value['accession'],
                 value['depleted_in_term_name'][i],
                 value['depleted_in_term_id'][i])
-            yield AuditFailure('depleted_in_term mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched depleted_in_term', detail, level='ERROR')

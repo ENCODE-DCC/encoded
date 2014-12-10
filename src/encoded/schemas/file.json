@@ -19,7 +19,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },        
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -226,7 +226,10 @@
                         "splice junctions",
                         "unique minus signal",
                         "unique plus signal",
-                        "unique signal"
+                        "unique signal",
+                        "methyl CG",
+                        "methyl CHG",
+                        "methyl CHH"
                     ]
                 },
                 {
@@ -342,10 +345,31 @@
         },
         "assembly": {
             "title": "Mapping assembly",
-            "description": "UCSC genome assembly that files were mapped to.",
-            "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
+            "description": "Genome assembly that files were mapped to.",
+            "comment": "Applies to mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "enum": ["mm9", "hg19", "mm10", "ce10", "dm3", "dm6"]
+            "enum": [
+                "mm9",
+                "mm10",
+                "hg19",
+                "GRCh38",
+                "ce10",
+                "dm3",
+                "dm6"
+                ]
+        },
+        "genome_annotation": {
+            "title": "Genome annotation",
+            "description": "Genome annotation that file was generated with.",
+            "comment": "Applies to files created using annotations.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "M2",
+                "M3",
+                "M4",
+                "V19"
+                ]
         },
         "submitted_file_name": {
             "title": "Original file name",

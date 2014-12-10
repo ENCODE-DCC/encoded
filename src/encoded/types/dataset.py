@@ -90,6 +90,16 @@ class Dataset(Collection):
             'documents.award',
             'documents.submitted_by',
         ]
+
+        audit_inherit = [
+            'original_files',
+            'revoked_files',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents.lab',
+        ]
+
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
         rev = {
