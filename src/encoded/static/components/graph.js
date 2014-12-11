@@ -162,25 +162,59 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     scrollLeftStart: function() {
+        this.scrollTimer = null;
         var displayNode = this.refs.graphdisplay.getDOMNode();
-        displayNode.scrollLeft = displayNode.scrollLeft + 30;
-        this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
+        var newScrollLeft = displayNode.scrollLeft - 30;
+        if (newScrollLeft > 0) {
+            displayNode.scrollLeft = newScrollLeft;
+            this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
+        } else {
+            displayNode.scrollLeft = 0;
+        }
+        console.log('scrollLeftStart');
     },
 
     scrollRightStart: function() {
+        this.scrollTimer = null;
         var displayNode = this.refs.graphdisplay.getDOMNode();
-        displayNode.scrollLeft = displayNode.scrollLeft - 30;
-        this.scrollTimer = setTimeout(this.scrollRightStart, 100);
+        var newScrollLeft = displayNode.scrollLeft + 30;
+        var svg = document.getElementById('graphsvg');
+        var widthDiff = svg.scrollWidth - displayNode.clientWidth;
+        if (newScrollLeft < widthDiff) {
+            displayNode.scrollLeft = newScrollLeft;
+            this.scrollTimer = setTimeout(this.scrollRightStart, 100);
+        } else {
+            displayNode.scrollLeft = widthDiff;
+        }
+        console.log('scrollRightStart');
     },
 
     scrollStop: function() {
-        clearTimeout(this.scrollTimer);
+        if (this.scrollTimer) {
+            clearTimeout(this.scrollTimer);
+            this.scrollTimer = null;
+            this.scrollHandler();
+        }
+        console.log('scrollStop');
     },
 
-    scrollHandler: function(e) {
-        var container = this.refs.graphdisplay.getDOMNode();
-        var svg = document.getElementById('graphsvg');
-        console.log(container.scrollLeft);
+    scrollHandler: function() {
+        if (!this.scrollTimer) {
+            var container = this.refs.graphdisplay.getDOMNode();
+            var svg = document.getElementById('graphsvg');
+            var containerWidth = container.clientWidth;
+            var svgWidth = svg.scrollWidth;
+            if (containerWidth < svgWidth) {
+                var leftScrollDisabled = container.scrollLeft === 0;
+                var rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
+                if (this.state.rightScrollDisabled !== rightScrollDisabled) {
+                    this.setState({rightScrollDisabled: rightScrollDisabled});
+                }
+                if (this.state.leftScrollDisabled !== leftScrollDisabled) {
+                    this.setState({leftScrollDisabled: leftScrollDisabled});
+                }
+            }
+        }
     },
 
     render: function() {
