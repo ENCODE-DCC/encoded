@@ -62,6 +62,13 @@ module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
+    getInitialState: function() {
+        return {
+            leftScrollDisabled: true,
+            rightScrollDisabled: true
+        };
+    },
+
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
@@ -105,6 +112,8 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     componentDidMount: function () {
+        globals.bindEvent(window, 'resize', this.handleResize);
+
         // Delay loading dagre for Jest testing compatibility;
         // Both D3 and Jest have their own conflicting JSDOM instances
         $script('dagre', function() {
@@ -114,7 +123,7 @@ var Graph = module.exports.Graph = React.createClass({
 
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
             var svg = d3.select(el).insert('svg', '#scroll-buttons')
-                .attr('class', 'd3')
+                .attr('id', 'graphsvg')
                 .attr('preserveAspectRatio', 'xMidYMid');
             var svgGroup = svg.append("g");
 
@@ -140,23 +149,49 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
-    scrollLeft: function() {
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        displayNode.scrollLeft = displayNode.scrollLeft + 30;
+    handleResize: function() {
+        var container = this.refs.graphdisplay.getDOMNode();
+        var svg = container.getElementById('graphsvg');
+        if (container.clientWidth < svg.scrollWidth) {
+            console.log('scroll needed');
+        }
     },
 
-    scrollRight: function() {
+    componentWillUnmount: function() {
+        globals.unbindEvent(window, 'resize', this.handleResize);
+    },
 
+    scrollLeftStart: function() {
+        var displayNode = this.refs.graphdisplay.getDOMNode();
+        displayNode.scrollLeft = displayNode.scrollLeft + 30;
+        this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
+    },
+
+    scrollRightStart: function() {
+        var displayNode = this.refs.graphdisplay.getDOMNode();
+        displayNode.scrollLeft = displayNode.scrollLeft - 30;
+        this.scrollTimer = setTimeout(this.scrollRightStart, 100);
+    },
+
+    scrollStop: function() {
+        clearTimeout(this.scrollTimer);
+    },
+
+    scrollHandler: function(e) {
+        var container = this.refs.graphdisplay.getDOMNode();
+        var svg = document.getElementById('graphsvg');
+        console.log(container.scrollLeft);
     },
 
     render: function() {
+        console.log('render graph');
         return (
             <div className="panel-full">
-                <div ref="graphdisplay" className="graph-display">
-                    <div id="scroll-buttons">
-                        <button onClick={this.scrollLeft}>Left</button>
-                        <button onClick={this.scrollRight}>Right</button>
-                    </div>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
+                </div>
+                <div id="scroll-buttons">
+                    <button onMouseDown={this.scrollLeftStart} onMouseUp={this.scrollStop} disabled={this.state.leftScrollDisabled}>Left</button>
+                    <button onMouseDown={this.scrollRightStart} onMouseUp={this.scrollStop} disabled={this.state.rightScrollDisabled}>Right</button>
                 </div>
                 {this.props.children}
             </div>
