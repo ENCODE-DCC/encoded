@@ -138,7 +138,7 @@
             "type": "string"
         },
         "replicates.library.nucleic_acid_term_name": {
-            "title": "Library sequenced",
+            "title": "Library made from",
             "type": "string"
         },
         "replicates.library.depleted_in_term_name": {
