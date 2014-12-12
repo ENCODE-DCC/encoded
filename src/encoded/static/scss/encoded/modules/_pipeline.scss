@@ -44,7 +44,6 @@ g.edgePath {
     position: relative;
     overflow: scroll;
     background-color: #f8f8f8;
-    border-bottom: 1px solid #e0e0e0;
 
     svg {
         display: block;
@@ -55,4 +54,23 @@ g.edgePath {
 .select-note {
     font-style: italic;
     color: #c0c0c0;
+}
+
+.scroll-graph {
+    width: 50px;
+    height: 20px;
+    border: none;
+    background-color: transparent;
+    background-image: none;
+
+    &:disabled {
+        color: #e0e0e0;
+    }
+}
+
+#scroll-buttons {
+    padding-top: 3px;
+    text-align: center;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e0e0e0;
 }

@@ -120,6 +120,7 @@ var Graph = module.exports.Graph = React.createClass({
             var d3 = require('d3');
             var dagreD3 = require('dagre-d3');
             var el = this.refs.graphdisplay.getDOMNode();
+            this.dagreLoaded = true;
 
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
             var svg = d3.select(el).insert('svg', '#scroll-buttons')
@@ -137,7 +138,9 @@ var Graph = module.exports.Graph = React.createClass({
                     reactThis.props.nodeClickHandler(e, nodeId);
                 });
             });
-            this.dagreLoaded = true;
+
+            // Make sure the left and right scroll buttons are enabled/disabled appropriately
+            this.scrollHandler();
         }.bind(this));
     },
 
@@ -149,31 +152,32 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
+    // Handle window resizing for doing the right thing with scrolling the graph
     handleResize: function() {
-        var container = this.refs.graphdisplay.getDOMNode();
-        var svg = container.getElementById('graphsvg');
-        if (container.clientWidth < svg.scrollWidth) {
-            console.log('scroll needed');
-        }
+        this.scrollHandler();
     },
 
     componentWillUnmount: function() {
         globals.unbindEvent(window, 'resize', this.handleResize);
     },
 
+    // Handle a click in the left scroll button
     scrollLeftStart: function() {
         this.scrollTimer = null;
         var displayNode = this.refs.graphdisplay.getDOMNode();
         var newScrollLeft = displayNode.scrollLeft - 30;
         if (newScrollLeft > 0) {
+            // The graph isn't scrolled all the way left yet; allow more scrolling
+            // after a delay
             displayNode.scrollLeft = newScrollLeft;
             this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
         } else {
+            // The graph is scrolled all the way to the left; that's it for scrolling
             displayNode.scrollLeft = 0;
         }
-        console.log('scrollLeftStart');
     },
 
+    // Handle a click in the right scroll button
     scrollRightStart: function() {
         this.scrollTimer = null;
         var displayNode = this.refs.graphdisplay.getDOMNode();
@@ -181,51 +185,64 @@ var Graph = module.exports.Graph = React.createClass({
         var svg = document.getElementById('graphsvg');
         var widthDiff = svg.scrollWidth - displayNode.clientWidth;
         if (newScrollLeft < widthDiff) {
+            // The graph isn't scrolled all the way right yet; allow more scrolling
+            // after a delay
             displayNode.scrollLeft = newScrollLeft;
             this.scrollTimer = setTimeout(this.scrollRightStart, 100);
         } else {
+            // The graph is scrolled all the way to the right; that's it for scrolling
             displayNode.scrollLeft = widthDiff;
         }
         console.log('scrollRightStart');
     },
 
+    // Called when the visitor releases the mouse button from either scroll button
+    // Cancel the timer if any, and update the scroll button enable/disable state
     scrollStop: function() {
         if (this.scrollTimer) {
             clearTimeout(this.scrollTimer);
             this.scrollTimer = null;
             this.scrollHandler();
         }
-        console.log('scrollStop');
     },
 
+    // Handle scrolling either through the scroll buttons or the mouse
+    // Only handle if the scroll timer isn't running so that we don't update the
+    // display a bunch of times while the visitor's holding down a scroll button
     scrollHandler: function() {
         if (!this.scrollTimer) {
+            var leftScrollDisabled = true;
+            var rightScrollDisabled = true;
             var container = this.refs.graphdisplay.getDOMNode();
             var svg = document.getElementById('graphsvg');
             var containerWidth = container.clientWidth;
             var svgWidth = svg.scrollWidth;
             if (containerWidth < svgWidth) {
-                var leftScrollDisabled = container.scrollLeft === 0;
-                var rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
-                if (this.state.rightScrollDisabled !== rightScrollDisabled) {
-                    this.setState({rightScrollDisabled: rightScrollDisabled});
-                }
-                if (this.state.leftScrollDisabled !== leftScrollDisabled) {
-                    this.setState({leftScrollDisabled: leftScrollDisabled});
-                }
+                // The graph is wide enough within the panel to scroll
+                // Enable or disable the left or right scroll buttons depending on
+                // whether we've scrolled all the way in that direction or not
+                leftScrollDisabled = container.scrollLeft === 0;
+                rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
+            }
+            if (this.state.rightScrollDisabled !== rightScrollDisabled) {
+                this.setState({rightScrollDisabled: rightScrollDisabled});
+            }
+            if (this.state.leftScrollDisabled !== leftScrollDisabled) {
+                this.setState({leftScrollDisabled: leftScrollDisabled});
             }
         }
     },
 
     render: function() {
-        console.log('render graph');
         return (
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
                 </div>
                 <div id="scroll-buttons">
-                    <button onMouseDown={this.scrollLeftStart} onMouseUp={this.scrollStop} disabled={this.state.leftScrollDisabled}>Left</button>
-                    <button onMouseDown={this.scrollRightStart} onMouseUp={this.scrollStop} disabled={this.state.rightScrollDisabled}>Right</button>
+                    <button className="scroll-graph icon icon-arrow-left" onMouseDown={this.scrollLeftStart}
+                        onMouseUp={this.scrollStop} disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
+                    <button className="scroll-graph icon icon-arrow-right" onMouseDown={this.scrollRightStart}
+                        onMouseUp={this.scrollStop} disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
                 </div>
                 {this.props.children}
             </div>
