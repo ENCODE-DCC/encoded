@@ -376,7 +376,7 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
     elif term_id not in ontology:
         detail = '{} has term_id {} which is not in ontology'.format(value['accession'], term_id)
-        yield AuditFailure('term id not in ontology', term_id, level='ERROR')
+        yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
     else:
         ontology_name = ontology[term_id]['name']
         if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:

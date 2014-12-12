@@ -24,11 +24,11 @@ class ManagerLRUCache(object):
     def get(self, key, default=None):
         cache = self.cache
         if cache is None:
-            return
-        cached = cache.get(key)
-        if cached is not None:
-            return cached[1]
-        return default
+            return default
+        try:
+            return cache[key]
+        except KeyError:
+            return default
 
     def __contains__(self, key):
         cache = self.cache
