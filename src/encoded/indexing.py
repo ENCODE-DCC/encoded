@@ -81,7 +81,7 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 def index(request):
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
-    es = request.registry.get(ELASTIC_SEARCH, None)
+    es = request.registry[ELASTIC_SEARCH]
 
     session = DBSession()
     connection = session.connection()
@@ -95,7 +95,7 @@ def index(request):
     last_xmin = None
     if 'last_xmin' in request.json:
         last_xmin = request.json['last_xmin']
-    elif es is not None:
+    else:
         try:
             status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
@@ -127,33 +127,38 @@ def index(request):
             renamed.update(txn.data.get('renamed', ()))
             updated.update(txn.data.get('updated', ()))
 
+        result['txn_count'] = txn_count
         if txn_count == 0:
-            max_xid = None
-        else:
-            es.indices.refresh(index=INDEX)
-            res = es.search(index=INDEX, body={
-                'filter': {
-                    'terms': {
-                        'embedded_uuids': updated,
-                        'linked_uuids': renamed,
-                        '_cache': False,
-                    },
+            return result
+
+        es.indices.refresh(index=INDEX)
+        res = es.search(index=INDEX, body={
+            'filter': {
+                'terms': {
+                    'embedded_uuids': updated,
+                    'linked_uuids': renamed,
+                    '_cache': False,
                 },
-                '_source': False,
-            })
-            invalidated = {hit['_id'] for hit in res['hits']['hits']}
-            new_referencing = set()
-            add_dependent_objects(request.root, updated, new_referencing)
-            invalidated.update(new_referencing)
+            },
+            '_source': False,
+        })
+        referencing = {hit['_id'] for hit in res['hits']['hits']}
+        now_referencing = set()
+        add_dependent_objects(request.root, updated, now_referencing)
+        invalidated = referencing | now_referencing
         result.update(
             max_xid=max_xid,
-            txn_count=txn_count,
-            invalidated=invalidated,
+            renamed=renamed,
+            updated=updated,
+            referencing=len(referencing),
+            now_referencing=len(now_referencing),
+            invalidated=len(invalidated),
         )
 
-    if not dry_run and es is not None:
-        result['count'] = count = es_update_object(request, invalidated, xmin)
-        if count and record:
+
+    if not dry_run:
+        result['indexed'] = es_update_object(request, invalidated, xmin)
+        if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
         es.indices.refresh(index=INDEX)
