@@ -131,7 +131,7 @@ def index(request):
             max_xid = None
         else:
             es.indices.refresh(index=INDEX)
-            res = es.search(index='encoded', body={
+            res = es.search(index=INDEX, body={
                 'filter': {
                     'terms': {
                         'embedded_uuids': updated,
