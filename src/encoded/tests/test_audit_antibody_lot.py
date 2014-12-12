@@ -70,4 +70,4 @@ def base_antibody_characterization2(testapp, lab, award, base_target2, antibody_
 def test_audit_antibody_lot_target(testapp, antibody_lot, base_antibody_characterization1, base_antibody_characterization2):
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'target mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched target' for error in errors)

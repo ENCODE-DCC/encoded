@@ -1,18 +1,22 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 import logging
+import sys
 import venusian
 from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
 from itertools import islice
+from posixpath import join
 from pyramid.events import (
     ContextFound,
     subscriber,
 )
+from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
     HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
+    HTTPNotFound,
     HTTPPreconditionFailed,
 )
 from pyramid.interfaces import (
@@ -33,7 +37,10 @@ from pyramid.traversal import (
     find_root,
     resource_path,
 )
-from pyramid.view import view_config
+from pyramid.view import (
+    render_view_to_response,
+    view_config,
+)
 from sqlalchemy import (
     bindparam,
     orm,
@@ -420,6 +427,11 @@ class MergedKeysMeta(MergedDictsMeta):
                 self.merged_keys.append(key)
 
         self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
+        if self.audit_inherit is None:
+            self.audit_inherit_paths = self.embedded_paths
+        else:
+            self.audit_inherit_paths = sorted(
+                {tuple(path.split('.')) for path in self.audit_inherit})
 
 
 class Item(object):
@@ -434,6 +446,7 @@ class Item(object):
     name_key = None
     rev = None
     embedded = ()
+    audit_inherit = None
     namespace_from_path = {}
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
@@ -629,8 +642,8 @@ class Item(object):
         if actions:
             properties['actions'] = actions
 
-        if ns['permission']('edit'):
-            properties['audit'] = embed(request, properties['@id'] + '@@audit')['audit']
+        if ns['permission']('audit'):
+            properties['audit'] = embed(request, join(properties['@id'], '@@audit'))['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1091,7 +1104,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1123,6 +1136,15 @@ def traversal_security(event):
 @view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
+    if getattr(request, '__parent__', None) is None:
+        # We need the response headers from non subrequests
+        try:
+            return render_view_to_response(context, request, name=frame)
+        except PredicateMismatch:
+            # Avoid this view emitting PredicateMismatch
+            exc_class, exc, tb = sys.exc_info()
+            exc.__class__ = HTTPNotFound
+            raise HTTPNotFound, exc, tb
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
         path += '?' + request.query_string
@@ -1156,7 +1178,7 @@ def item_view_page(context, request):
              name='expand')
 def item_view_expand(context, request):
     path = request.resource_path(context)
-    properties = embed(request, path + '@@object')
+    properties = embed(request, join(path, '@@object'))
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
@@ -1169,7 +1191,6 @@ def item_view_audit_self(context, request):
     types = [context.item_type] + context.base_types
     return {
         '@id': path,
-        '@type': types,
         'audit': request.audit(types=types, path=path),
     }
 
@@ -1179,11 +1200,10 @@ def item_view_audit_self(context, request):
 def item_view_audit(context, request):
     path = request.resource_path(context)
     types = [context.item_type] + context.base_types
-    embedded = embed(request, path + '@@embedded')
-    audit = inherit_audits(request, embedded, context.embedded_paths)
+    properties = embed(request, join(path, '@@object'))
+    audit = inherit_audits(request, properties, context.audit_inherit_paths)
     return {
         '@id': path,
-        '@type': types,
         'audit': audit,
     }
 
@@ -1242,7 +1262,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '@@object', as_user=True)
+        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1272,7 +1292,7 @@ class AfterModified(object):
         self.request = request
 
 
-def path_ids(obj, path):
+def path_ids(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
@@ -1285,21 +1305,25 @@ def path_ids(obj, path):
         return
     if isinstance(value, list):
         for member in value:
-            for item_uri in path_ids(member, remaining):
+            if remaining and isinstance(member, basestring):
+                member = embed(request, join(member, '@@object'))
+            for item_uri in path_ids(request, member, remaining):
                 yield item_uri
     else:
-        for item_uri in path_ids(value, remaining):
+        if remaining and isinstance(value, basestring):
+            value = embed(request, join(value, '@@object'))
+        for item_uri in path_ids(request, value, remaining):
             yield item_uri
 
 
 def inherit_audits(request, embedded, embedded_paths):
     audit_paths = {embedded['@id']}
     for embedded_path in embedded_paths:
-        audit_paths.update(path_ids(embedded, embedded_path))
+        audit_paths.update(path_ids(request, embedded, embedded_path))
 
     audit = []
     for audit_path in audit_paths:
-        result = embed(request, audit_path + '@@audit-self')
+        result = embed(request, join(audit_path, '@@audit-self'))
         audit.extend(result['audit'])
     return audit
 
@@ -1314,12 +1338,12 @@ def item_index_data(context, request):
     for key in context.model.unique_keys:
         keys[key.name].append(key.value)
 
-    principals = {}
-    for permission in ('view', 'edit'):
+    principals_allowed = {}
+    for permission in ('view', 'edit', 'audit'):
         p = principals_allowed_by_permission(context, permission)
         if p is Everyone:
             p = [Everyone]
-        principals[permission] = p
+        principals_allowed[permission] = sorted(p)
 
     path = resource_path(context)
     paths = {path}
@@ -1340,16 +1364,15 @@ def item_index_data(context, request):
                 for key in keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, path + '@@embedded')
-    audit = inherit_audits(request, embedded, context.embedded_paths)
+    embedded = embed(request, join(path, '@@embedded'))
+    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
 
     document = {
         'embedded': embedded,
-        'object': embed(request, path + '@@object'),
+        'object': embed(request, join(path, '@@object')),
         'links': links,
         'keys': keys,
-        'principals_allowed_view': sorted(principals['view']),
-        'principals_allowed_edit': sorted(principals['edit']),
+        'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,
     }

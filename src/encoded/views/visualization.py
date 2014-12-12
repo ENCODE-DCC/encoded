@@ -248,15 +248,12 @@ def generate_batch_hubs(context, request):
         if txt != TRACKDB_TXT:
             data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
             return generate_html(context, request) + data_policy
-        
+
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
         params['assembly'] = [assembly]
         path = '/search/?%s' % urllib.urlencode(params, True)
-        try:
-            results = embed(request, path, as_user=True)
-        except Exception as e:
-            print e
+        results = embed(request, path, as_user=True)
         trackdb = ''
         for i, experiment in enumerate(results['@graph']):
             if i < 5:
@@ -271,10 +268,7 @@ def generate_batch_hubs(context, request):
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
         path = '/search/?%s' % urllib.urlencode(param_list, True)
-        try:
-            results = embed(request, path, as_user=True)
-        except Exception as e:
-            print e
+        results = embed(request, path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:
             for assembly in param_list.get('assembly'):
