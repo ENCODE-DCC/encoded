@@ -1,6 +1,9 @@
 from collections import defaultdict
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import NotFoundError
+from elasticsearch.exceptions import (
+    ConflictError,
+    NotFoundError,
+)
 from pyramid.events import (
     BeforeRender,
     subscriber,
@@ -149,7 +152,7 @@ def index(request):
         )
 
     if not dry_run and es is not None:
-        result['count'] = count = es_update_object(request, invalidated)
+        result['count'] = count = es_update_object(request, invalidated, xmin)
         if count and record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
@@ -203,7 +206,7 @@ def add_dependent_objects(root, new, existing):
         objects = dependents.difference(existing)
 
 
-def es_update_object(request, objects):
+def es_update_object(request, objects, xmin):
     es = request.registry[ELASTIC_SEARCH]
     i = -1
     for i, uuid in enumerate(objects):
@@ -214,7 +217,9 @@ def es_update_object(request, objects):
         else:
             doctype = result['object']['@type'][0]
             try:
-                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
+                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid), version=xmin, version_type='external')
+            except ConflictError:
+                log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
             except Exception as e:
                 log.warning('Error indexing %s', uuid, exc_info=True)
             else:
