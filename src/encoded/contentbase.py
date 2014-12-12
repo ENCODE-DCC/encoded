@@ -592,9 +592,14 @@ class Item(object):
         if request is not None:
             ns['request'] = request
             ns['permission'] = permission_checker(self, request)
-
-        for name, value in self.rev_links().iteritems():
-            ns[name] = [resource_path(item, '') for item in value]
+            # Use request.resource_path so that linked uuid is recorded
+            ns['item_uri'] = request.resource_path(self)
+            for name, value in self.rev_links().iteritems():
+                ns[name] = [request.resource_path(item) for item in value]
+        else:
+            ns['item_uri'] = resource_path(self, '')
+            for name, value in self.rev_links().iteritems():
+                ns[name] = [resource_path(item, '') for item in value]
 
         if self.merged_namespace_from_path:
             root = find_root(self)
@@ -1375,6 +1380,8 @@ def item_index_data(context, request):
         'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,
+        'embedded_uuids': sorted(request._embedded_uuids),
+        'linked_uuids': sorted(request._linked_uuids),
     }
 
     return document
