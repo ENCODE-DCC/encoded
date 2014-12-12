@@ -52,7 +52,7 @@ def audit_biosample_term(value, system):
             value['accession'],
             term_id,
             term_name)
-        raise AuditFailure('NTR', detail, level='DCC_ACTION')
+        raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
@@ -67,7 +67,7 @@ def audit_biosample_term(value, system):
             term_id,
             term_name,
             )
-        raise AuditFailure('term name mismatch', detail, level='DCC_ACTION')
+        raise AuditFailure('mismatched biosample_term', detail, level='DCC_ACTION')
 
 
 @audit_checker('biosample')
@@ -117,7 +117,7 @@ def audit_biosample_donor(value, system):
             value['organism']['name'],
             donor['accession'],
             donor['organism']['name'])
-        raise AuditFailure('organism mismatch', detail, level='ERROR')
+        raise AuditFailure('mismatched organism', detail, level='ERROR')
 
 
 @audit_checker('biosample')
@@ -139,7 +139,7 @@ def audit_biosample_subcellular_term_match(value, system):
             value['accession'],
             value['subcellular_fraction_term_name'],
             value['subcellular_fraction_term_id'])
-        raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
+        raise AuditFailure('mismatched subcellular_fraction_term', detail, level='ERROR')
 
 
 @audit_checker('biosample')
@@ -158,7 +158,7 @@ def audit_biosample_depleted_term_match(value, system):
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Biosample {} has depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['accession'])
-        raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
+        raise AuditFailure('mismatched depleted_in_term length', detail, level='ERROR')
         return
 
     for i, dep_term in enumerate(value['depleted_in_term_name']):
@@ -167,7 +167,7 @@ def audit_biosample_depleted_term_match(value, system):
                 value['accession'],
                 dep_term,
                 value['depleted_in_term_id'][i])
-            raise AuditFailure('depleted_in term mismatch', detail, level='ERROR')
+            raise AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
 
 
 @audit_checker('biosample')

@@ -2,7 +2,7 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
-from pyramid.traversal import find_root
+from .conditions import rfa
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -16,13 +16,13 @@ raw_data_formats = [
     ]
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
-
+    
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -31,13 +31,14 @@ def audit_file_platform(value, system):
 
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['accession'])
-        raise AuditFailure('missing platform', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
+    Don't bother to check anything but ENCODE3
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -46,17 +47,18 @@ def audit_file_flowcells(value, system):
     if value['file_format'] not in ['fastq']:
         return
 
-    if 'flowcell_details' not in value or (value['flowcell_details'] == {}):
-        detail = 'Fastq file {} missing flowcell details'.format(value['accession'])
-        raise AuditFailure('missing platform', detail, level='WARNING')
+    if 'flowcell_details' not in value or (value['flowcell_details'] == []):
+        detail = 'Fastq file {} is missing flowcell_details'.format(value['accession'])
+        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
     A paired_with should be the same replicate
+    DISABLING until ticket 1795 is implemented
     '''
 
     if value['status'] in ['deleted', 'replaced']:
@@ -64,17 +66,21 @@ def audit_paired_with(value, system):
 
     if 'paired_end' not in value:
         return
-
+    
+   # Disabling this code until we can get 1795    
+    if value['paired_end'] == '1':
+        return
+    
     if 'paired_with' not in value:
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
             value['accession'],
             value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
     # Would love to then check to see if the files shared the same replicate
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_size(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'uploading']:
@@ -82,10 +88,10 @@ def audit_file_size(value, system):
 
     if 'file_size' not in value:
         detail = 'File {} requires a value for file_size'.format(value['accession'])
-        raise AuditFailure('missing file_size', detail, level='STANDARDS_FAILURE')
+        raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
-@audit_checker('file')
+@audit_checker('file', frame='object')
 def audit_file_output_type(value, system):
     '''
     The differing RFA's will have differeing acceptable output_types

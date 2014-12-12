@@ -185,15 +185,20 @@ def es_mapping(mapping):
                 'enabled': False,
                 'include_in_all': False,
             },
-            'principals_allowed_view': {
-                'type': 'string',
+            'principals_allowed': {
+                'type': 'object',
                 'include_in_all': False,
-                'index': 'not_analyzed'
-            },
-            'principals_allowed_edit': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed'
+                '_default_': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
+                'properties': {
+                    # 'view' must be specified explicitly to be searched on
+                    'view': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                },
             },
             'embedded_uuid_closure': {
                 'type': 'string',

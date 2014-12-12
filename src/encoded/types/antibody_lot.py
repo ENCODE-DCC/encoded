@@ -157,7 +157,7 @@ def lot_reviews(root, characterizations, targets):
                 if pending_secondary or compliant_secondary:
                     new_review['status'] = 'pending dcc review'
             elif lane_review['lane_status'] == 'not compliant':
-                if compliant_secondary or not_compliant_secondary:
+                if not_compliant_secondary:
                     new_review['status'] = 'not eligible for new data'
             elif lane_review['lane_status'] == 'compliant':
                 if compliant_secondary:
@@ -269,11 +269,24 @@ class AntibodyLot(Collection):
             'source',
             'host_organism',
             'targets',
+            'targets.organism',
             'characterizations.award',
             'characterizations.documents',
             'characterizations.lab',
             'characterizations.submitted_by',
             'characterizations.target.organism',
+            'lot_reviews.targets',
+            'lot_reviews.targets.organism',
+            'lot_reviews.organisms'
+        ]
+
+        audit_inherit = [
+            'source',
+            'host_organism',
+            'targets',
+            'targets.organism',
+            'characterizations',
+            'characterizations.documents',
             'lot_reviews.targets',
             'lot_reviews.targets.organism',
             'lot_reviews.organisms'

@@ -87,7 +87,7 @@
             "type": "string"
         },
         "investigated_as": {
-            "title": "Assay targets investigated",
+            "title": "Target of assay",
             "type": "string"
         }
     },

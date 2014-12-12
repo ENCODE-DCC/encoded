@@ -26,6 +26,7 @@ def make_subrequest(request, path):
                                body=b'')
     subreq.remove_conditional_headers()
     # XXX "This does not remove headers like If-Match"
+    subreq.__parent__ = request
     return subreq
 
 
