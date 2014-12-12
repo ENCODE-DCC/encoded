@@ -79,7 +79,13 @@ def uuid_adapter(obj, request):
     return str(obj)
 
 
+def set_adapter(obj, request):
+    return list(obj)
+
+
 json_renderer.add_adapter(uuid.UUID, uuid_adapter)
+json_renderer.add_adapter(set, set_adapter)
+json_renderer.add_adapter(frozenset, set_adapter)
 
 
 class NullRenderer:
