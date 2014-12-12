@@ -12,7 +12,6 @@ from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
 from pyramid.view import view_config
-from uuid import UUID
 from .contentbase import (
     AfterModified,
     BeforeModified,
@@ -45,9 +44,7 @@ def includeme(config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
         )
-        #es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
-
 
 
 class PyramidJSONSerializer(object):
@@ -134,11 +131,20 @@ def index(request):
         es.indices.refresh(index=INDEX)
         res = es.search(index=INDEX, body={
             'filter': {
-                'terms': {
-                    'embedded_uuids': updated,
-                    'linked_uuids': renamed,
-                    '_cache': False,
-                },
+                'or': [
+                    {
+                        'terms': {
+                            'embedded_uuids': updated,
+                            '_cache': False,
+                        },
+                    },
+                    {
+                        'terms': {
+                            'linked_uuids': renamed,
+                            '_cache': False,
+                        },
+                    },
+                ],
             },
             '_source': False,
         })
@@ -154,7 +160,6 @@ def index(request):
             now_referencing=len(now_referencing),
             invalidated=len(invalidated),
         )
-
 
     if not dry_run:
         result['indexed'] = es_update_object(request, invalidated, xmin)
@@ -196,7 +201,7 @@ def add_dependent_objects(root, new, existing):
             dependents.update(
                 str(model.source_rid) for model in item.model.revs
             )
-            
+
             item_type = item.item_type
             item_rels = item.model.rels
             for rel in item_rels:
@@ -217,15 +222,18 @@ def es_update_object(request, objects, xmin):
     for i, uuid in enumerate(objects):
         try:
             result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
-        except Exception as e:
+        except Exception:
             log.warning('Error indexing %s', uuid, exc_info=True)
         else:
             doctype = result['object']['@type'][0]
             try:
-                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid), version=xmin, version_type='external')
+                es.index(
+                    index=INDEX, doc_type=doctype, body=result,
+                    id=str(uuid), version=xmin, version_type='external',
+                )
             except ConflictError:
                 log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
-            except Exception as e:
+            except Exception:
                 log.warning('Error indexing %s', uuid, exc_info=True)
             else:
                 if (i + 1) % 50 == 0:
@@ -235,7 +243,6 @@ def es_update_object(request, objects, xmin):
             es.indices.flush(index=INDEX)
 
     return i + 1
-
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
