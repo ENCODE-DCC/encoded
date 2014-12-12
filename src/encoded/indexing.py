@@ -1,9 +1,11 @@
+from collections import defaultdict
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import NotFoundError
 from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
 from pyramid.view import view_config
@@ -113,24 +115,37 @@ def index(request):
 
         invalidated = set()
         updated = set()
+        renamed = set()
         max_xid = 0
         txn_count = 0
         for txn in txns.all():
             txn_count += 1
             max_xid = max(max_xid, txn.xid)
-            invalidated.update(UUID(uuid) for uuid in txn.data.get('invalidated', ()))
-            updated.update(UUID(uuid) for uuid in txn.data.get('updated', ()))
+            renamed.update(txn.data.get('renamed', ()))
+            updated.update(txn.data.get('updated', ()))
 
         if txn_count == 0:
             max_xid = None
-
-        new_referencing = set()
-        add_dependent_objects(request.root, updated, new_referencing)
-        invalidated.update(new_referencing)
+        else:
+            es.indices.refresh(index=INDEX)
+            res = es.search(index='encoded', body={
+                'filter': {
+                    'terms': {
+                        'embedded_uuids': updated,
+                        'linked_uuids': renamed,
+                        '_cache': False,
+                    },
+                },
+                '_source': False,
+            })
+            invalidated = {hit['_id'] for hit in res['hits']['hits']}
+            new_referencing = set()
+            add_dependent_objects(request.root, updated, new_referencing)
+            invalidated.update(new_referencing)
         result.update(
             max_xid=max_xid,
             txn_count=txn_count,
-            invalidated=[str(uuid) for uuid in invalidated],
+            invalidated=invalidated,
         )
 
     if not dry_run and es is not None:
@@ -150,16 +165,16 @@ def all_uuids(root, types=None):
         collection = root.by_item_type[collection_name]
         if types is not None and collection_name not in types:
             continue
-        for count, uuid in enumerate(collection):
-            yield uuid
+        for uuid in collection:
+            yield str(uuid)
     for collection_name in sorted(root.by_item_type):
         if collection_name in initial:
             continue
         if types is not None and collection_name not in types:
             continue
         collection = root.by_item_type[collection_name]
-        for count, uuid in enumerate(collection):
-            yield uuid
+        for uuid in collection:
+            yield str(uuid)
 
 
 def add_dependent_objects(root, new, existing):
@@ -170,9 +185,9 @@ def add_dependent_objects(root, new, existing):
         for uuid in objects:
             item = root.get_by_uuid(uuid)
 
-            dependents.update({
-                model.source_rid for model in item.model.revs
-            })
+            dependents.update(
+                str(model.source_rid) for model in item.model.revs
+            )
             
             item_type = item.item_type
             item_rels = item.model.rels
@@ -182,7 +197,7 @@ def add_dependent_objects(root, new, existing):
                     continue
                 rev_item = root.get_by_uuid(rel.target_rid)
                 if key in rev_item.merged_rev.values():
-                    dependents.add(rel.target_rid)
+                    dependents.add(str(rel.target_rid))
 
         existing.update(objects)
         objects = dependents.difference(existing)
@@ -235,22 +250,16 @@ es_update_object_in_txn = functools.partial(
 @subscriber(AfterModified)
 def record_created(event):
     request = event.request
+    context = event.object
     # Create property if that doesn't exist
-    try:
-        referencing = request._encoded_referencing
-    except AttributeError:
-        referencing = request._encoded_referencing = set()
     try:
         updated = request._encoded_updated
     except AttributeError:
-        updated = request._encoded_updated = set()
+        updated = request._encoded_updated = defaultdict(set)
 
-    uuid = event.object.uuid
-    updated.add(uuid)
-
-    # Record dependencies here to catch any to be removed links
-    # XXX replace with uuid_closure in elasticsearch document
-    add_dependent_objects(request.root, {uuid}, referencing)
+    uuid = str(context.uuid)
+    name = resource_path(context)
+    updated[uuid].add(name)
 
 
 @subscriber(BeforeRender)
@@ -261,11 +270,9 @@ def es_update_data(event):
     if not updated:
         return
 
-    invalidated = getattr(request, '_encoded_referencing', set())
-
     txn = transaction.get()
-    txn._extension['updated'] = [str(uuid) for uuid in updated]
-    txn._extension['invalidated'] = [str(uuid) for uuid in invalidated]
+    txn._extension['updated'] = updated.keys()
+    txn._extension['renamed'] = [uuid for uuid, names in updated.items() if len(names) > 1]
 
     # XXX How can we ensure consistency here but update written records
     # immediately? The listener might already be indexing on another
