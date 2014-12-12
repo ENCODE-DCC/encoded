@@ -104,9 +104,10 @@ var Graph = module.exports.Graph = React.createClass({
         render(d3.select("svg g"), g);
 
         // Dagre-D3 has a width and height for the graph.
-        // Set the viewbox's and viewport's width and height to that plus a little extra
-        var width = g.graph().width;
-        var height = g.graph().height;
+        // Set the viewbox's and viewport's width and height to that plus a little extra.
+        // Round the graph dimensions up to avoid problems detecting the end of scrolling.
+        var width = Math.ceil(g.graph().width);
+        var height = Math.ceil(g.graph().height);
         svg.attr("width", width + 40).attr("height", height + 40)
             .attr("viewBox", "-20 -20 " + (width + 40) + " " + (height + 40));
     },
@@ -193,7 +194,6 @@ var Graph = module.exports.Graph = React.createClass({
             // The graph is scrolled all the way to the right; that's it for scrolling
             displayNode.scrollLeft = widthDiff;
         }
-        console.log('scrollRightStart');
     },
 
     // Called when the visitor releases the mouse button from either scroll button
@@ -239,10 +239,12 @@ var Graph = module.exports.Graph = React.createClass({
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
                 </div>
                 <div id="scroll-buttons">
-                    <button className="scroll-graph icon icon-arrow-left" onMouseDown={this.scrollLeftStart}
-                        onMouseUp={this.scrollStop} disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
-                    <button className="scroll-graph icon icon-arrow-right" onMouseDown={this.scrollRightStart}
-                        onMouseUp={this.scrollStop} disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
+                    <button className="scroll-graph icon icon-arrow-left"
+                            onMouseDown={this.scrollLeftStart} onTouchStart={this.scrollLeftStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
+                            disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
+                    <button className="scroll-graph icon icon-arrow-right"
+                        onMouseDown={this.scrollRightStart} onTouchStart={this.scrollRightStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
+                        disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
                 </div>
                 {this.props.children}
             </div>

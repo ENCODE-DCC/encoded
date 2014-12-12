@@ -62,6 +62,13 @@ g.edgePath {
     border: none;
     background-color: transparent;
     background-image: none;
+    -webkit-touch-callout: none; // The following prevents text highlighting on mobile when
+    -webkit-user-select: none;   // tap-and-holding on the scroll buttons
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 
     &:disabled {
         color: #e0e0e0;
