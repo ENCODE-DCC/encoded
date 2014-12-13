@@ -294,7 +294,6 @@ class Root(object):
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
-        self.all_merged_rev = set()
         self.type_back_rev = {}
 
     def __getitem__(self, name):
@@ -392,7 +391,6 @@ class Root(object):
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
-        self.all_merged_rev.update(value.Item.merged_rev.values())
 
         # Calculate the reverse rev map
         for prop_name, spec in value.Item.merged_rev.items():

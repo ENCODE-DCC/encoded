@@ -152,15 +152,12 @@ def index(request):
             '_source': False,
         })
         referencing = {hit['_id'] for hit in res['hits']['hits']}
-        now_referencing = set()
-        add_dependent_objects(request.root, updated, now_referencing)
-        invalidated = referencing | now_referencing
+        invalidated = referencing | updated
         result.update(
             max_xid=max_xid,
             renamed=renamed,
             updated=updated,
             referencing=len(referencing),
-            now_referencing=len(now_referencing),
             invalidated=len(invalidated),
         )
 
@@ -191,32 +188,6 @@ def all_uuids(root, types=None):
         collection = root.by_item_type[collection_name]
         for uuid in collection:
             yield str(uuid)
-
-
-def add_dependent_objects(root, new, existing):
-    # Getting the dependent objects for the indexed object
-    objects = new.difference(existing)
-    while objects:
-        dependents = set()
-        for uuid in objects:
-            item = root.get_by_uuid(uuid)
-
-            dependents.update(
-                str(model.source_rid) for model in item.model.revs
-            )
-
-            item_type = item.item_type
-            item_rels = item.model.rels
-            for rel in item_rels:
-                key = (item_type, rel.rel)
-                if key not in root.all_merged_rev:
-                    continue
-                rev_item = root.get_by_uuid(rel.target_rid)
-                if key in rev_item.merged_rev.values():
-                    dependents.add(str(rel.target_rid))
-
-        existing.update(objects)
-        objects = dependents.difference(existing)
 
 
 def es_update_object(request, objects, xmin):
