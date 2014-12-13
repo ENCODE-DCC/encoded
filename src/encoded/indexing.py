@@ -288,8 +288,16 @@ def es_update_data(event):
         return
 
     txn = transaction.get()
-    txn._extension['updated'] = updated.keys()
-    txn._extension['renamed'] = [uuid for uuid, names in updated.items() if len(names) > 1]
+    data = txn._extension
+    renamed = data['renamed'] = [uuid for uuid, names in updated.items() if len(names) > 1]
+    updated = data['updated'] = updated.keys()
+
+    record = data['_encoded_transaction_record']
+    xid = record.xid
+    if xid is not None:
+        edits = request.session.setdefault('edits', [])
+        edits.append([xid, updated, renamed])
+        edits[:] = edits[-10:]
 
     # XXX How can we ensure consistency here but update written records
     # immediately? The listener might already be indexing on another
