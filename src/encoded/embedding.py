@@ -9,6 +9,7 @@ from pyramid.events import (
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.url import URLMethodsMixin
 
+
 def includeme(config):
     config.scan(__name__)
     config.add_request_method(embed, 'embed')

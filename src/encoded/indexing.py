@@ -11,6 +11,7 @@ from pyramid.events import (
 from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
+from pyramid.settings import aslist
 from pyramid.view import view_config
 from .contentbase import (
     AfterModified,
@@ -37,6 +38,8 @@ INDEX = 'encoded'
 def includeme(config):
     config.add_route('index', '/index')
     config.scan(__name__)
+    config.add_request_method(lambda request: defaultdict(set), '_updated_uuid_paths', reify=True)
+    config.add_request_method(lambda request: {}, '_initial_back_rev_links', reify=True)
 
     if 'elasticsearch.server' in config.registry.settings:
         es = Elasticsearch(
@@ -265,43 +268,83 @@ es_update_object_in_txn = functools.partial(
 @subscriber(Created)
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
-def record_created(event):
-    request = event.request
+def record_updated_uuid_paths(event):
     context = event.object
-    # Create property if that doesn't exist
-    try:
-        updated = request._encoded_updated
-    except AttributeError:
-        updated = request._encoded_updated = defaultdict(set)
-
+    updated = event.request._updated_uuid_paths
     uuid = str(context.uuid)
     name = resource_path(context)
     updated[uuid].add(name)
 
 
+@subscriber(BeforeModified)
+def record_initial_back_revs(event):
+    context = event.object
+    initial = event.request._initial_back_rev_links
+    properties = context.upgrade_properties(finalize=False)
+    initial[context.uuid] = {
+        rel: set(aslist(properties.get(rel, ())))
+        for rel in context.merged_back_rev
+    }
+
+
+@subscriber(Created)
+@subscriber(AfterModified)
+def invalidate_new_back_revs(event):
+    ''' Invalidate objects that rev_link to us
+
+    Catch those objects which newly rev_link us
+    '''
+    context = event.object
+    updated = event.request._updated_uuid_paths
+    initial = event.request._initial_back_rev_links.get(context.uuid, {})
+    properties = context.upgrade_properties(finalize=False)
+    current = {
+        rel: set(aslist(properties.get(rel, ())))
+        for rel in context.merged_back_rev
+    }
+    for rel, uuids in current.items():
+        for uuid in uuids.difference(initial.get(rel, ())):
+            updated[uuid]
+
+
 @subscriber(BeforeRender)
 def es_update_data(event):
     request = event['request']
-    updated = getattr(request, '_encoded_updated', None)
+    updated_uuid_paths = request._updated_uuid_paths
 
-    if not updated:
+    if not updated_uuid_paths:
         return
 
     txn = transaction.get()
     data = txn._extension
-    renamed = data['renamed'] = [uuid for uuid, names in updated.items() if len(names) > 1]
-    updated = data['updated'] = updated.keys()
+    renamed = data['renamed'] = [
+        uuid for uuid, names in updated_uuid_paths.items()
+        if len(names) > 1
+    ]
+    updated = data['updated'] = updated_uuid_paths.keys()
+
+    response = request.response
+    response.headers['X-Updated'] = ','.join(updated)
+    if renamed:
+        response.headers['X-Renamed'] = ','.join(renamed)
+
+    record = data.get('_encoded_transaction_record')
+    if record is None:
+        return
+
+    xid = record.xid
+    if xid is None:
+        return
+
+    response.headers['X-Transaction'] = str(xid)
 
     # Only set session cookie for web users
+    namespace = None
     login = request.authenticated_userid
     if login is not None:
         namespace, userid = login.split('.', 1)
-        if namespace != 'mailto':
-            return
 
-    record = data['_encoded_transaction_record']
-    xid = record.xid
-    if xid is not None:
+    if namespace != 'mailto':
         edits = request.session.setdefault('edits', [])
         edits.append([xid, updated, renamed])
         edits[:] = edits[-10:]

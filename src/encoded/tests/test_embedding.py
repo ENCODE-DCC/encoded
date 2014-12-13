@@ -45,3 +45,21 @@ def test_linked_uuids_object(content, dummy_request, threadlocals):
 def test_embedded_uuids_expand_target(content, dummy_request, threadlocals):
     dummy_request.embed('/testing-link-sources/', sources[0]['uuid'], '@@expand?expand=target')
     assert dummy_request._embedded_uuids == {sources[0]['uuid'], targets[0]['uuid']}
+
+
+def test_updated_source(content, testapp):
+    url = '/testing-link-sources/' + sources[0]['uuid']
+    res = testapp.patch_json(url, {})
+    assert set(res.headers['X-Updated'].split(',')) == {sources[0]['uuid']}
+
+
+def test_updated_source_changed(content, testapp):
+    url = '/testing-link-sources/' + sources[0]['uuid']
+    res = testapp.patch_json(url, {'target': targets[1]['uuid']})
+    assert set(res.headers['X-Updated'].split(',')) == {sources[0]['uuid'], targets[1]['uuid']}
+
+
+def test_updated_target(content, testapp):
+    url = '/testing-link-targets/' + targets[0]['uuid']
+    res = testapp.patch_json(url, {})
+    assert set(res.headers['X-Updated'].split(',')) == {targets[0]['uuid']}

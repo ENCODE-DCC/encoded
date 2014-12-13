@@ -295,6 +295,7 @@ class Root(object):
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
         self.all_merged_rev = set()
+        self.type_back_rev = {}
 
     def __getitem__(self, name):
         try:
@@ -392,6 +393,12 @@ class Root(object):
         value = factory(self, name)
         self[name] = value
         self.all_merged_rev.update(value.Item.merged_rev.values())
+
+        # Calculate the reverse rev map
+        for prop_name, spec in value.Item.merged_rev.items():
+            item_type, rel = spec
+            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
+            back.add((value.item_type, prop_name))
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -503,6 +510,15 @@ class Item(object):
     @property
     def schema_links(self):
         return self.collection.schema_links
+
+    @property
+    def merged_back_rev(self):
+        root = find_root(self)
+        merged = {}
+        types = [self.item_type] + self.base_types
+        for item_type in reversed(types):
+            merged.update(root.type_back_rev.get(item_type, ()))
+        return merged
 
     def links(self, properties):
         # This works from the schema rather than the links table
