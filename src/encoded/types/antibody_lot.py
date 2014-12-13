@@ -12,8 +12,8 @@ from .base import (
 )
 
 
-def lot_reviews(root, characterizations, targets, request):
-    characterizations = paths_filtered_by_status(root, characterizations)
+def lot_reviews(characterizations, targets, request):
+    characterizations = paths_filtered_by_status(request, characterizations)
     organisms = set()
 
     if not characterizations:
@@ -232,7 +232,7 @@ class AntibodyLot(Collection):
             'lot_reviews': lot_reviews,
             'title': {'$value': '{accession}'},
             'characterizations': (
-                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+                lambda request, characterizations: paths_filtered_by_status(request, characterizations)
             ),
         }
         name_key = 'accession'

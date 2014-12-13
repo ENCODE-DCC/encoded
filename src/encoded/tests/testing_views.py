@@ -118,7 +118,7 @@ class TestingLinkTarget(Collection):
         'reverse',
     ]
     item_template = {
-        'reverse': lambda root, reverse: paths_filtered_by_status(root, reverse),
+        'reverse': lambda request, reverse: paths_filtered_by_status(request, reverse),
     }
 
 
