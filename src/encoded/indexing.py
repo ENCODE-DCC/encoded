@@ -292,6 +292,13 @@ def es_update_data(event):
     renamed = data['renamed'] = [uuid for uuid, names in updated.items() if len(names) > 1]
     updated = data['updated'] = updated.keys()
 
+    # Only set session cookie for web users
+    login = request.authenticated_userid
+    if login is not None:
+        namespace, userid = login.split('.', 1)
+        if namespace != 'mailto':
+            return
+
     record = data['_encoded_transaction_record']
     xid = record.xid
     if xid is not None:
