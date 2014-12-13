@@ -11,7 +11,7 @@ from .base import (
     Collection,
     ONLY_ADMIN_VIEW,
 )
-from lyramid.location import lineage
+from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
