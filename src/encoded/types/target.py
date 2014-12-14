@@ -47,6 +47,7 @@ class Target(Collection):
                 organism_name=organism_properties['name'], **properties)
 
         def __resource_url__(self, request, info):
+            request._linked_uuids.add(str(self.uuid))
             # Record organism uuid in linked_uuids so linking objects record
             # the rename dependency.
             properties = self.upgrade_properties(finalize=False)

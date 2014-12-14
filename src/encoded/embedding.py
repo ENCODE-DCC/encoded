@@ -2,35 +2,14 @@ from copy import deepcopy
 from urllib import unquote
 from .cache import ManagerLRUCache
 from posixpath import join
-from pyramid.events import (
-    ContextFound,
-    subscriber,
-)
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid.url import URLMethodsMixin
 
 
 def includeme(config):
     config.scan(__name__)
     config.add_request_method(embed, 'embed')
-    config.add_request_method(resource_url, 'resource_url')
     config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
     config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
-
-
-@subscriber(ContextFound)
-def add_context_uuid(event):
-    request = event.request
-    uuid = getattr(request.context, 'uuid', None)
-    if uuid is not None:
-        request._embedded_uuids.add(str(uuid))
-
-
-def resource_url(request, resource, *elements, **kw):
-    uuid = getattr(resource, 'uuid', None)
-    if uuid is not None:
-        request._linked_uuids.add(str(uuid))
-    return URLMethodsMixin.resource_url(request, resource, *elements, **kw)
 
 
 def make_subrequest(request, path):

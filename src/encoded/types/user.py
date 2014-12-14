@@ -13,6 +13,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Root,
+    item_view_object,
     location,
 )
 from ..embedding import embed
@@ -52,20 +53,15 @@ class User(Collection):
 
 @view_config(context=User.Item, permission='view_details', request_method='GET',
              name='details')
-@view_config(context=User.Item, permission='view', request_method='GET',
-             name='object', additional_permission='view_details')
-@view_config(context=User.Item, permission='view', request_method='GET',
-             name='page', additional_permission='view_details')
 def user_details_view(context, request):
-    return context.__json__(request)
+    return item_view_object(context, request)
 
 
-@view_config(context=User.Item, permission='view', request_method='GET',
-             name='page')
+
 @view_config(context=User.Item, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
-    properties = context.__json__(request)
+    properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:
