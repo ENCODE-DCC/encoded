@@ -897,51 +897,6 @@ class Collection(Mapping):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def load_db(self, request):
-        result = {}
-
-        frame = request.params.get('frame', 'columns')
-
-        limit = request.params.get('limit', 25)
-        if limit in ('', 'all'):
-            limit = None
-        if limit is not None:
-            try:
-                limit = int(limit)
-            except ValueError:
-                limit = 25
-
-        items = (
-            item for item in self.itervalues()
-            if request.has_permission('view', item)
-        )
-
-        if limit is not None:
-            items = islice(items, limit)
-
-        result['@graph'] = [
-            request.embed(request.resource_path(item, '@@' + frame))
-            for item in items
-        ]
-
-        if limit is not None and len(result['@graph']) == limit:
-            params = [(k, v) for k, v in request.params.items() if k != 'limit']
-            params.append(('limit', 'all'))
-            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
-
-        return result
-
-    def load_es(self, request):
-        from .views.search import search
-        result = search(self, request, self.item_type)
-
-        if len(result['@graph']) < result['total']:
-            params = [(k, v) for k, v in request.params.items() if k != 'limit']
-            params.append(('limit', 'all'))
-            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
-
-        return result
-
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
         ns['properties'] = properties
@@ -956,14 +911,7 @@ class Collection(Mapping):
         return ns
 
     def __json__(self, request):
-        datastore = request.params.get('datastore', None)
-        if datastore is None:
-            datastore = request.registry.settings.get('collection_datastore', 'database')
-        # Switch to change summary page loading options: load_db, load_es
-        if datastore == 'elasticsearch':
-            return self.load_es(request)
-        else:
-            return self.load_db(request)
+        return self.properties.copy()
 
 
 def expand_column(request, obj, subset, path):
@@ -1022,9 +970,56 @@ def if_match_tid(view_callable):
     return wrapped
 
 
+def load_db(context, request):
+    result = {}
+
+    frame = request.params.get('frame', 'columns')
+
+    limit = request.params.get('limit', 25)
+    if limit in ('', 'all'):
+        limit = None
+    if limit is not None:
+        try:
+            limit = int(limit)
+        except ValueError:
+            limit = 25
+
+    items = (
+        item for item in context.itervalues()
+        if request.has_permission('view', item)
+    )
+
+    if limit is not None:
+        items = islice(items, limit)
+
+    result['@graph'] = [
+        request.embed(request.resource_path(item, '@@' + frame))
+        for item in items
+    ]
+
+    if limit is not None and len(result['@graph']) == limit:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
+    return result
+
+
+def load_es(context, request):
+    from .views.search import search
+    result = search(context, request, context.item_type)
+
+    if len(result['@graph']) < result['total']:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
+    return result
+
+
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    properties = context.properties.copy()
+    properties = context.__json__(request)
     ns = context.template_namespace(properties, request)
     compiled = ObjectTemplate(context.merged_template)
     templated = compiled(ns)
@@ -1035,14 +1030,22 @@ def collection_list(context, request):
         uri += '?' + request.query_string
     properties['@id'] = uri
 
-    properties.update(context.__json__(request))
-
     root = find_root(context)
     if context.__name__ in root['pages']:
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    return properties
+    datastore = request.params.get('datastore', None)
+    if datastore is None:
+        datastore = request.registry.settings.get('collection_datastore', 'database')
+    # Switch to change summary page loading options: load_db, load_es
+    if datastore == 'elasticsearch':
+        result = load_es(context, request)
+    else:
+        result = load_db(context, request)
+
+    result.update(properties)
+    return result
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
