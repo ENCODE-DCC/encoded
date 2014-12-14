@@ -25,6 +25,7 @@ from .storage import (
     DBSession,
     TransactionRecord,
 )
+import datetime
 import functools
 import json
 import logging
@@ -92,6 +93,7 @@ def index(request):
     """)
     xmin = query.scalar()  # lowest xid that is still in progress
 
+    first_txn = None
     last_xmin = None
     if 'last_xmin' in request.json:
         last_xmin = request.json['last_xmin']
@@ -124,6 +126,10 @@ def index(request):
         for txn in txns.all():
             txn_count += 1
             max_xid = max(max_xid, txn.xid)
+            if first_txn is None:
+                first_txn = txn.timestamp
+            else:
+                first_txn = min(first_txn, txn.timestamp)
             renamed.update(txn.data.get('renamed', ()))
             updated.update(txn.data.get('updated', ()))
 
@@ -159,6 +165,8 @@ def index(request):
             updated=updated,
             referencing=len(referencing),
             invalidated=len(invalidated),
+            txn_count=txn_count,
+            first_txn_timestamp=first_txn.isoformat(),
         )
 
     if not dry_run:
@@ -167,6 +175,9 @@ def index(request):
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
         es.indices.refresh(index=INDEX)
+
+    if first_txn is not None:
+        result['lag'] = str(datetime.datetime.now() - first_txn)
 
     return result
 
