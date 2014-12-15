@@ -12,21 +12,17 @@ from .base import (
 )
 
 
-def calculate_age_display(root, properties):
-    donor = {}
-    if 'donor' in properties:
-        donor = root.__getitem__(properties['donor'].split('/')[2]).properties
+def calculate_age_display(request, donor=None, model_organism_age=None, model_organism_age_units=None):
+    if donor is not None:
+        donor = request.embed(donor, '@@object')
         if 'age' in donor and 'age_units' in donor:
             if donor['age'] == 'unknown':
                 return ''
-            return '{age} {age_units}'.format(
-                age=donor['age'],
-                age_units=donor['age_units']
-            )
-    if 'model_organism_age' in properties and 'model_organism_age_units' in properties:
+            return '{age} {age_units}'.format(**donor)
+    if model_organism_age is not None and model_organism_age_units is not None:
         return '{age} {age_units}'.format(
-            age=properties['model_organism_age'],
-            age_units=properties['model_organism_age_units']
+            age=model_organism_age,
+            age_units=model_organism_age_units,
         )
     return ''
 
@@ -122,7 +118,7 @@ class Biosample(Collection):
                 '$condition': 'model_organism_donor_constructs',
             },
             'characterizations': (
-                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+                lambda request, characterizations: paths_filtered_by_status(request, characterizations)
             ),
             'age_display': calculate_age_display,
         }
