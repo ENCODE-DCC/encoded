@@ -89,9 +89,10 @@ def index(request):
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     query = connection.execute("""
         SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
-        SELECT txid_snapshot_xmin(txid_current_snapshot());
+        SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();
     """)
-    xmin = query.scalar()  # lowest xid that is still in progress
+    result, = query.fetchall()
+    xmin, snapshot_id = result  # lowest xid that is still in progress
 
     first_txn = None
     last_xmin = None

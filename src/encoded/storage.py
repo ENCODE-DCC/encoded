@@ -8,6 +8,7 @@ from sqlalchemy import (
     null,
     orm,
     schema,
+    text,
     types,
 )
 from sqlalchemy.dialects import postgresql
@@ -306,14 +307,27 @@ def record_transaction_data(session):
     session.add(record)
 
 
+_set_transaction_snapshot = text("""\
+    SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY;
+    SET TRANSACTION SNAPSHOT :snapshot_id;
+""")
+
+
 @event.listens_for(DBSession, 'after_begin')
 def read_only_doomed_transaction(session, sqla_txn, connection):
     ''' Doomed transactions can be read-only.
 
     ``transaction.doom()`` must be called before the connection is used.
     '''
-    if not transaction.isDoomed():
+    txn = transaction.get()
+    if not txn.isDoomed():
         return
     if connection.engine.url.drivername != 'postgresql':
         return
-    connection.execute("SET TRANSACTION READ ONLY;")
+    data = txn._extension
+    if 'snapshot_id' in data:
+        connection.execute(
+            _set_transaction_snapshot,
+            snapshot_id=data['snapshot_id'])
+    else:
+        connection.execute("SET TRANSACTION READ ONLY;")
