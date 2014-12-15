@@ -22,7 +22,7 @@ class DonorItem(Collection.Item):
     }
     template = {
         'characterizations': (
-            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     }
 

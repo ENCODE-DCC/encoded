@@ -79,7 +79,13 @@ def uuid_adapter(obj, request):
     return str(obj)
 
 
+def set_adapter(obj, request):
+    return list(obj)
+
+
 json_renderer.add_adapter(uuid.UUID, uuid_adapter)
+json_renderer.add_adapter(set, set_adapter)
+json_renderer.add_adapter(frozenset, set_adapter)
 
 
 class NullRenderer:
@@ -342,13 +348,26 @@ def es_tween_factory(handler, registry):
         if path in ignore or path.startswith('/static/'):
             return handler(request)
 
-        query = {'query': {'term': {'paths': path}}}
+        query = {'filter': {'term': {'paths': path}}, 'version': True}
         data = es.search(index='encoded', body=query)
         hits = data['hits']['hits']
         if len(hits) != 1:
             return handler(request)
 
         source = hits[0]['_source']
+        edits = dict.get(request.session, 'edits', None)
+        if edits is not None:
+            version = hits[0]['_version']
+            linked_uuids = set(source['linked_uuids'])
+            embedded_uuids = set(source['embedded_uuids'])
+            for xid, updated, linked in edits:
+                if xid < version:
+                    continue
+                if not embedded_uuids.isdisjoint(updated):
+                    return handler(request)
+                if not linked_uuids.isdisjoint(linked):
+                    return handler(request)
+
         allowed = set(source['principals_allowed']['view'])
         if allowed.isdisjoint(request.effective_principals):
             raise HTTPForbidden()

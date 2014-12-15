@@ -230,6 +230,9 @@ class TransactionRecord(Base):
         types.DateTime, nullable=False, server_default=func.now())
     # A server_default is necessary for the notify_ddl overwrite to work
     xid = Column(types.BigInteger, nullable=True, server_default=null())
+    __mapper_args__ = {
+        'eager_defaults': True,
+    }
 
 
 notify_ddl = DDL("""
