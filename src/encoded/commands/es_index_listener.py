@@ -167,6 +167,18 @@ class ErrorHandlingThread(threading.Thread):
 
 
 def composite(loader, global_conf, **settings):
+    listener = None
+
+    # Register before testapp creation.
+    @atexit.register
+    def shutdown_listener():
+        if listener is None:
+            return
+        log.debug('shutting down listening thread')
+        control  # Prevent early gc
+        controller.shutdown(socket.SHUT_RDWR)
+        listener.join()
+
     # Composite app is used so we can load the main app
     app_name = settings.get('app', None)
     app = loader.get_app(app_name, global_conf=global_conf)
@@ -200,7 +212,6 @@ def composite(loader, global_conf, **settings):
             status['results'] = [result] + status['results'][:9]
         status_holder['status'] = status
 
-
     kwargs = {
         'testapp': testapp,
         'control': control,
@@ -213,13 +224,6 @@ def composite(loader, global_conf, **settings):
     listener.daemon = True
     log.debug('starting listener')
     listener.start()
-
-    @atexit.register
-    def shutdown_listener():
-        log.debug('shutting down listening thread')
-        control  # Prevent early gc
-        controller.shutdown(socket.SHUT_RDWR)
-        listener.join()
 
     def status_app(environ, start_response):
         status = '200 OK'
