@@ -13,8 +13,13 @@ $characterization-figure-height: 200px;
 
 
 /* clear first in row in ie 8 or lower */
-.multi-columns-row .first-in-row {
-    clear: left;
+.multi-columns-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .first-in-row {
+        clear: left;
+    }
 }
 
 
@@ -247,6 +252,7 @@ $characterization-figure-height: 200px;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
+        margin-right: 5px;
 
         .status-list li {
             height: 28px;
