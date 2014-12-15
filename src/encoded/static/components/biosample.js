@@ -100,11 +100,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} key="biosample-audit" />
+                            <AuditIndicators context={context} key="biosample-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} key="biosample-audit" />
+                <AuditDetail context={context} key="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">

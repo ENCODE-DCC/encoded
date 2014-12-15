@@ -36,8 +36,9 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     },
 
     render: function() {
-        var auditCounts = {}  ;
-        var audits = this.props.audits;
+        var auditCounts = {};
+        var context = this.props.context;
+        var audits = context.audit;
 
         if (audits && audits.length) {
             // Count the errors at each level
@@ -86,7 +87,8 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
     },
 
     render: function() {
-        var audits = this.props.audits;
+        var context = this.props.context;
+        var audits = context.audit;
 
         // Sort audit records
         var audits_sorted = _.sortBy(audits, function(audit) {
@@ -101,12 +103,13 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var iconClass = 'icon audit-icon-' + level;
                         var alertClass = 'audit-detail-' + level;
                         var levelClass = 'audit-level-' + level;
+        console.log(audit.path);
                         return (
                             <div className={alertClass} key={i} role="alert">
                                 <i className={iconClass}></i>
                                 <strong className={levelClass}>{audit.level_name.split('_').join(' ')}</strong>
                                 &nbsp;&mdash;&nbsp;
-                                <strong>{audit.category}</strong>: {audit.detail}
+                                <strong>{audit.category}</strong>: {audit.detail} <a href={audit.path}><i className="icon icon-edit"><span className="sr-only">Edit</span></i></a>
                             </div>
                         );
                     })}

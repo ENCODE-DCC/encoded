@@ -76,10 +76,10 @@ var Lot = module.exports.Lot = React.createClass({
                         </h3>
                     </div>
                      <div className="status-line">
-                        <AuditIndicators audits={context.audit} key="antibody-audit" />
+                        <AuditIndicators context={context} key="antibody-audit" />
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} key="antibody-audit" />
+                <AuditDetail context={context} key="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
