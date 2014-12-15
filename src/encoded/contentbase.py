@@ -276,66 +276,11 @@ def _get_by_unique_key_query():
     ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
 
 
-class Root(object):
-    __name__ = ''
-    __parent__ = None
-    schema = None
-    builtin_acl = [
-        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
-    ]
-
-    def __init__(self, registry, acl=None):
-        self.registry = registry
-        if acl is None:
-            acl = []
-        self.__acl__ = acl + self.builtin_acl
-        self.collections = {}
-        self.by_item_type = {}
+class RDBConnection(object):
+    def __init__(self):
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
-        self.type_back_rev = {}
-
-    def __getitem__(self, name):
-        try:
-            resource = self.get(name)
-        except KeyError:
-            # Just in case we get an unexpected KeyError
-            # FIXME: exception logging.
-            raise HTTPInternalServerError('Traversal raised KeyError')
-        if resource is None:
-            raise KeyError(name)
-        return resource
-
-    def __contains__(self, name):
-        return self.get(name, None) is not None
-
-    def get(self, name, default=None):
-        resource = self.collections.get(name, None)
-        if resource is not None:
-            return resource
-        resource = self.by_item_type.get(name, None)
-        if resource is not None:
-            return resource
-        resource = self.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        resource = self.get_by_unique_key('page:location', name)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.get_by_unique_key('accession', name)
-            if resource is not None:
-                return resource
-        if ':' in name:
-            resource = self.get_by_unique_key('alias', name)
-            if resource is not None:
-                return resource
-        return default
-
-    def __setitem__(self, name, value):
-        self.collections[name] = value
-        self.by_item_type[value.item_type] = value
+        self.by_item_type = {}
 
     def get_by_uuid(self, uuid, default=None):
         if isinstance(uuid, basestring):
@@ -388,8 +333,97 @@ class Root(object):
         self.item_cache[uuid] = item
         return item
 
+    def __iter__(self, item_type=None, batchsize=1000):
+        session = DBSession()
+        query = session.query(Resource.rid)
+
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+
+        for rid, in query.yield_per(batchsize):
+            yield rid
+
+    def __len__(self, item_type=None):
+        session = DBSession()
+        query = session.query(Resource.rid)
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+        return query.count()
+
+
+class Root(object):
+    __name__ = ''
+    __parent__ = None
+    schema = None
+    builtin_acl = [
+        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
+        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
+    ]
+
+    def __init__(self, registry, acl=None):
+        self.connection = Connection()
+        self.registry = registry
+        if acl is None:
+            acl = []
+        self.__acl__ = acl + self.builtin_acl
+        self.collections = {}
+        self.by_item_type = {}
+        self.type_back_rev = {}
+
+    def __getitem__(self, name):
+        try:
+            resource = self.get(name)
+        except KeyError:
+            # Just in case we get an unexpected KeyError
+            # FIXME: exception logging.
+            raise HTTPInternalServerError('Traversal raised KeyError')
+        if resource is None:
+            raise KeyError(name)
+        return resource
+
+    def __contains__(self, name):
+        return self.get(name, None) is not None
+
+    def get(self, name, default=None):
+        resource = self.collections.get(name, None)
+        if resource is not None:
+            return resource
+        resource = self.by_item_type.get(name, None)
+        if resource is not None:
+            return resource
+        connection = self.connection
+        resource = connection.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        resource = connection.get_by_unique_key('page:location', name)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = connection.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource
+        return default
+
+    def get_by_uuid(self, uuid, default=None):
+        return self.connection.get_by_uuid(uuid, default)
+
+    def get_by_unique_key(self, unique_key, name, default=None):
+        return self.connection.get_by_unique_key(unique_keys, name, default)
+
+    def __setitem__(self, name, value):
+        self.collections[name] = value
+        self.by_item_type[value.item_type] = value
+
     def attach(self, name, factory):
-        value = factory(self, name)
+        value = factory(self, name, self.connection)
         self[name] = value
 
         # Calculate the reverse rev map
@@ -808,9 +842,10 @@ class Collection(Mapping):
         ],
     }
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, connection):
         self.__name__ = name
         self.__parent__ = parent
+        self.connection = connection
 
         self.column_paths = set()
         if self.schema is not None and 'columns' in self.schema:
@@ -842,44 +877,35 @@ class Collection(Mapping):
         return item
 
     def __iter__(self, batchsize=1000):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        ).order_by(Resource.rid)
-
-        for rid, in query.yield_per(batchsize):
+        for rid in self.connection.__iter__(self.item_type, batchsize):
             yield rid
 
     def __len__(self):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        )
-        return query.count()
+        return self.connection.__len__(self.item_type)
 
     def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
+        connection = self.connection
+        resource = connection.get_by_uuid(name, None)
         if resource is not None:
-            if resource.collection is not self and resource.__parent__ is not self:
+            if resource.collection is not self:
                 return default
             return resource
         if is_accession(name):
-            resource = root.get_by_unique_key('accession', name)
+            resource = connection.get_by_unique_key('accession', name)
             if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
+                if resource.collection is not self:
                     return default
                 return resource
         if ':' in name:
-            resource = root.get_by_unique_key('alias', name)
+            resource = connection.get_by_unique_key('alias', name)
             if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
+                if resource.collection is not self:
                     return default
                 return resource
         if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
+            resource = connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
+                if resource.collection is not self:
                     return default
                 return resource
         return default
