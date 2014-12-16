@@ -31,8 +31,13 @@ import json
 import logging
 import transaction
 
+from .mp_indexing import (
+    INDEXING_POOL,
+    pool_update_objects,
+)
+
 log = logging.getLogger(__name__)
-ELASTIC_SEARCH = __name__ + ':elasticsearch'
+ELASTIC_SEARCH = 'encoded:elasticsearch'
 INDEX = 'encoded'
 
 
@@ -94,6 +99,7 @@ def index(request):
     result, = query.fetchall()
     xmin, snapshot_id = result  # lowest xid that is still in progress
 
+    pool_info = request.registry.get(INDEXING_POOL)
     first_txn = None
     last_xmin = None
     if 'last_xmin' in request.json:
@@ -171,7 +177,10 @@ def index(request):
         )
 
     if not dry_run:
-        result['indexed'] = es_update_object(request, invalidated, xmin)
+        if pool_info:
+            result['indexed'] = pool_update_objects(request, invalidated, xmin, snapshot_id, pool_info)
+        else:
+            result['indexed'] = es_update_objects(request, invalidated, xmin)
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
@@ -202,33 +211,39 @@ def all_uuids(root, types=None):
             yield str(uuid)
 
 
-def es_update_object(request, objects, xmin):
+def es_update_objects(request, uuids, xmin):
+    print 'es_update_objects'
     es = request.registry[ELASTIC_SEARCH]
     i = -1
-    for i, uuid in enumerate(objects):
-        try:
-            result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
-        except Exception:
-            log.warning('Error indexing %s', uuid, exc_info=True)
-        else:
-            doctype = result['object']['@type'][0]
-            try:
-                es.index(
-                    index=INDEX, doc_type=doctype, body=result,
-                    id=str(uuid), version=xmin, version_type='external',
-                )
-            except ConflictError:
-                log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
-            except Exception:
-                log.warning('Error indexing %s', uuid, exc_info=True)
-            else:
-                if (i + 1) % 50 == 0:
-                    log.info('Indexing %s %d', result['object']['@id'], i + 1)
+    for i, uuid in enumerate(uuids):
+        path = es_update_object(request, uuid, xmin)
 
         if (i + 1) % 50 == 0:
+            log.info('Indexing %s %d', path, i + 1)
             es.indices.flush(index=INDEX)
 
     return i + 1
+
+
+def es_update_object(request, uuid, xmin):
+    es = request.registry[ELASTIC_SEARCH]
+    try:
+        result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
+    except Exception:
+        log.warning('Error indexing %s', uuid, exc_info=True)
+        return uuid
+
+    doctype = result['object']['@type'][0]
+    try:
+        es.index(
+            index=INDEX, doc_type=doctype, body=result,
+            id=str(uuid), version=xmin, version_type='external',
+        )
+    except ConflictError:
+        log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
+    except Exception:
+        log.warning('Error indexing %s', uuid, exc_info=True)
+    return result['object']['@id']
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
@@ -243,8 +258,8 @@ def run_in_doomed_transaction(fn, committed, *args, **kw):
 
 
 # After commit hook needs own transaction
-es_update_object_in_txn = functools.partial(
-    run_in_doomed_transaction, es_update_object,
+es_update_objects_in_txn = functools.partial(
+    run_in_doomed_transaction, es_update_objects,
 )
 
 

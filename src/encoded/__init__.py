@@ -141,6 +141,9 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
     config = Configurator(settings=settings)
+    # Fork early
+    if asbool(settings.get('indexer')):
+        config.include('.mp_indexing')
 
     config.include(session)
     config.include('pyramid_tm')
