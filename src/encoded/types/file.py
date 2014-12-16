@@ -1,5 +1,5 @@
 from ..contentbase import location
-from ..renderers import embed
+from ..embedding import embed
 from ..schema_utils import (
     load_schema,
     schema_validator,
@@ -18,7 +18,12 @@ from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
+from urlparse import (
+    parse_qs,
+    urlparse,
+)
 import boto
+import datetime
 import json
 import time
 
@@ -145,7 +150,7 @@ def post_upload(context, request):
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
     context.update(None, {'external': creds})
-    rendered = embed(request, '/%s/?frame=object' % context.uuid, as_user=True)
+    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],
@@ -170,6 +175,8 @@ def download(context, request):
         filename, = request.subpath
         if filename != '{accession}{file_extension}'.format(**ns):
             raise HTTPNotFound(filename)
+    else:
+        filename = '{accession}{file_extension}'.format(**ns)
 
     proxy = asbool(request.params.get('proxy'))
 
@@ -177,12 +184,24 @@ def download(context, request):
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
-        location = conn.generate_url(36*60*60, method, external['bucket'], external['key'])
+        location = conn.generate_url(
+            36*60*60, method, external['bucket'], external['key'],
+            response_headers={
+                'response-content-disposition': "attachment; filename=" + filename,
+            })
     else:
         raise ValueError(external.get('service'))
 
     if proxy:
         return InternalResponse(location='/_proxy/' + location)
+
+    if asbool(request.params.get('soft')):
+        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+            'expires': datetime.datetime.fromtimestamp(expires).isoformat(),
+        }
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

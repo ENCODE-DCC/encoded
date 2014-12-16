@@ -18,12 +18,18 @@ var FileInput = module.exports.FileInput = React.createClass({
     render: function() {
         var mimetype = this.state.value.type;
         var preview = (mimetype && mimetype.indexOf('image/') === 0) ? <img src={this.state.value.href} width="128" /> : '';
+        var filename = this.state.value.download;
         return (
             <div className="dropzone" onDragOver={this.onDragOver} onDrop={this.onDrop}>
-                <div className="drop">Drop a file here.
+                <div className="drop">
+                    {filename ? <div>
+                        <a href={this.state.value.href} target="_blank">{filename}</a>
+                    </div> : ''}
                     <div>{preview}</div>
-                </div>
-                <div className="browse">Or <input ref="input" type="file" onChange={this.onChange} /></div>
+                    <br />Drop a {filename ? 'replacement' : ''} file here.
+                    Or <input ref="input" type="file" onChange={this.onChange} />
+                    <br /><br />
+                </div>      
             </div>
         );
     },

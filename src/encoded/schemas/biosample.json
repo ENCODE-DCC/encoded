@@ -35,7 +35,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "accession": {
             "accessionType": "BS"
@@ -426,7 +426,8 @@
             "enum": [
                 "early embryonic",
                 "late embryonic",
-                "embryonic",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
                 "L2 larva",
                 "L2d larva",
@@ -520,12 +521,24 @@
             "title": "Biosample treatment",
             "type": "array"
         },
+        "transfection_type": {
+            "title": "Transfection type",
+            "type": "string"
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "type": "string"
+        },
         "source.title": {
             "title": "Source",
             "type": "string"
         },
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -550,6 +563,18 @@
             "title": "Type",
             "type": "string"
         },
+        "synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "organism.scientific_name": {
             "title": "Species",
             "type": "string"
@@ -580,6 +605,14 @@
         },
         "constructs.target.label": {
             "title": "Construct",
+            "type": "string"
+        },
+        "culture_harvest_date": {
+            "title": "Culture harvest date",
+            "type": "string"
+        },
+        "date_obtained": {
+            "title": "Date obtained",
             "type": "string"
         },
         "treatments.length": {
@@ -620,6 +653,10 @@
             "title": "Age units",
             "type": "string"
         },
+        "age_display": {
+            "title": "Age",
+            "type": "string"
+        },
         "health_status": {
             "title": "Health status",
             "type": "string"
@@ -647,7 +684,6 @@
         }
     },
     "boost_values": {
-        "uuid": 1.0,
         "accession": 1.0,
         "aliases": 1.0,
         "alternate_accessions": 1.0,

@@ -185,22 +185,27 @@ def es_mapping(mapping):
                 'enabled': False,
                 'include_in_all': False,
             },
-            'principals_allowed_view': {
+            'principals_allowed': {
+                'type': 'object',
+                'include_in_all': False,
+                '_default_': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
+                'properties': {
+                    # 'view' must be specified explicitly to be searched on
+                    'view': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+            'embedded_uuids': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
             },
-            'principals_allowed_edit': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed'
-            },
-            'embedded_uuid_closure': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed'
-            },
-            'link_uuid_closure': {
+            'linked_uuids': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
@@ -318,6 +323,10 @@ def collection_mapping(collection, embed=True):
         new_mapping[last]['boost'] = boost_values[value]
         new_mapping[last]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
 
+    # Automatic boost for uuid
+    if 'uuid' in mapping['properties']:
+        mapping['properties']['uuid']['boost'] = 1.0
+        mapping['properties']['uuid']['copy_to'] = ['encoded_all_untouched']
     return mapping
 
 

@@ -22,7 +22,7 @@ class DonorItem(Collection.Item):
     }
     template = {
         'characterizations': (
-            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     }
 
@@ -47,7 +47,6 @@ class MouseDonor(Collection):
 class FlyDonor(Collection):
     item_type = 'fly_donor'
     schema = load_schema('fly_donor.json')
-    __acl__ = []
     properties = {
         'title': 'Fly donors',
         'description': 'Listing Biosample Donors',
@@ -56,16 +55,11 @@ class FlyDonor(Collection):
     class Item(DonorItem):
         embedded = set(['organism', 'constructs', 'constructs.target'])
 
-        def __ac_local_roles__(self):
-            # Disallow lab submitter edits
-            return {}
-
 
 @location('worm-donors')
 class WormDonor(Collection):
     item_type = 'worm_donor'
     schema = load_schema('worm_donor.json')
-    __acl__ = []
     properties = {
         'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
@@ -73,10 +67,6 @@ class WormDonor(Collection):
 
     class Item(DonorItem):
         embedded = set(['organism', 'constructs', 'constructs.target'])
-
-        def __ac_local_roles__(self):
-            # Disallow lab submitter edits
-            return {}
 
 
 @location('human-donors')

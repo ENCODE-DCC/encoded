@@ -6,13 +6,16 @@ from ..auditor import (
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_review(value, system):
+    '''
+    Make sure that biosample terms are in ontology
+    for each characterization_review.
+    '''
     if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
         return
 
     if 'secondary_characterization_method' in value:
         return
 
-    '''Make sure that biosample terms are in ontology for each characterization_review'''
     if value['characterization_reviews']:
         ontology = system['registry']['ontology']
         for review in value['characterization_reviews']:
@@ -21,11 +24,12 @@ def audit_antibody_characterization_review(value, system):
             term_name = review['biosample_term_name']
 
             if term_id.startswith('NTR:'):
-                detail = '{} - {}'.format(term_id, term_name)
-                raise AuditFailure('NTR', detail, level='WARNING')
+                detail = 'Characterization_review contains a New Term Request {} - {}'.format(term_id, term_name)
+                raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                raise AuditFailure('term id not in ontology', term_id, level='WARNING')
+                detail = 'Characterization_review contains a biosample_term_id {} that is not in the ontology'.format(term_id)
+                raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
@@ -34,21 +38,12 @@ def audit_antibody_characterization_review(value, system):
 
 
 @audit_checker('antibody_characterization')
-def audit_antibody_characterization_standards(value, system):
-    '''Make sure that a standards document is attached if status is compliant or not compliant.'''
-    if (value['status'] in ['compliant', 'not compliant']):
-        has_standards = False
-        for document in value['documents']:
-            if document.get('document_type') == 'standards document':
-                has_standards = True
-        if not has_standards:
-            detail = 'Missing standards document'
-            raise AuditFailure('missing standards', detail, level='ERROR')
-
-@audit_checker('antibody_characterization')
 def audit_antibody_characterization_unique_reviews(value, system):
-    '''Make sure primary characterizations have unique lane, biosample_term_id and organism combinations for characterization reviews'''
-    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
+    '''
+    Make sure primary characterizations have unique lane, biosample_term_id and
+    organism combinations for characterization reviews
+    '''
+    if(value['status'] in ['deleted', 'not submitted for review by lab', 'in progress', 'not reviewed']):
         return
 
     if 'secondary_characterization_method' in value:
@@ -63,13 +58,16 @@ def audit_antibody_characterization_unique_reviews(value, system):
         if review_lane not in unique_reviews:
             unique_reviews.add(review_lane)
         else:
-            detail = '{} - {} - {}'.format(lane, term_id, organism)
+            detail = 'Characterization_review.lane {} is a duplicate review for {} - {}'.format(lane, term_id, organism)
             raise AuditFailure('duplicate lane review', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_target(value, system):
-    '''Make sure that target in characterization matches target of antibody'''
+    '''
+    Make sure that target in characterization
+    matches target of antibody
+    '''
     antibody = value['characterizes']
     target = value['target']
     if 'recombinant protein' in target['investigated_as']:
@@ -82,11 +80,11 @@ def audit_antibody_characterization_target(value, system):
             for investigated_as in antibody_target['investigated_as']:
                 unique_investigated_as.add(investigated_as)
         if 'tag' not in unique_investigated_as:
-            detail = '{} is not to tagged protein'.format(antibody['@id'])
+            detail = 'Antibody {} is not to tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:
-                detail = '{} not found in target for {}'.format(prefix, antibody['@id'])
+                detail = '{} not found in target list for antibody {}'.format(prefix, antibody['accession'])
                 raise AuditFailure('tag target mismatch', detail, level='ERROR')
     else:
         target_matches = False
@@ -94,21 +92,24 @@ def audit_antibody_characterization_target(value, system):
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
-            detail = '{} not found in target for {}'.format(target['name'], antibody['@id'])
+            detail = 'Target {} not found in target list for antibody {}'.format(target['name'], antibody['accession'])
             raise AuditFailure('target mismatch', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_status(value, system):
-    '''Make sure the lane_status matches the characterization status'''
+    '''
+    Make sure the lane_status matches
+    the characterization status
+    '''
     if 'secondary_characterization_method' in value:
         return
 
     if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
         if 'characterization_reviews' in value:
             '''If any of these statuses, we shouldn't have characterization_reviews'''
-            detail = 'status: {} is incompatible with having characterization_reviews'.format(value['status'])
-            raise AuditFailure('unexpected characterization_reviews')
+            detail = 'Antibody_characterization.status of {} is incompatible with having a value for characterization_reviews'.format(value['status'])
+            raise AuditFailure('unexpected characterization_reviews', detail, level='WARNING')
         else:
             return
 
@@ -119,12 +120,33 @@ def audit_antibody_characterization_status(value, system):
         is_pending = True
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
-            detail = 'lane_status: {} is incompatible with pending dcc review'.format(lane['lane_status'])
-            raise AuditFailure('char/lane status mismatch')
+            detail = 'A lane.status of {} is incompatible with antibody_characterization.status of pending dcc review'.format(lane['lane_status'])
+            raise AuditFailure('lane status mismatch', detail, level='WARNING')
             continue
+
         if lane['lane_status'] == 'compliant':
             has_compliant_lane = True
 
     if has_compliant_lane and value['status'] != 'compliant':
-        detail = 'lane_status: {} is incompatible with char status: {}'.format(lane['lane_status'], value['status'])
-        raise AuditFailure('char/lane status mismatch')
+        detail = 'A lane.status of {} is incompatible with antibody_characterization status of {}'.format(lane['lane_status'], value['status'])
+        raise AuditFailure('lane status mismatch', detail, level='DCC_ACTION')
+
+
+@audit_checker('antibody_characterization')
+def audit_antibody_characterization_method_allowed(value, system):
+    '''Warn if a lab submits an ENCODE3 characterization if the method is not yet approved by the standards document.'''
+    if 'primary_characterization_method' in value:
+        return
+
+    target = value['target']
+    is_histone = False
+    if 'histone modification' in target['investigated_as']:
+        is_histone = True
+
+    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):
+        return
+
+    secondary = value['secondary_characterization_method']
+    if (secondary == 'motif enrichment') or (is_histone and secondary == 'ChIP-seq comparison'):
+        detail = '{} is not an approved secondary_characterization_method according to the current standards'.format(value['secondary_characterization_method'])
+        raise AuditFailure('unapproved char method', detail, level='NOT_COMPLIANT')

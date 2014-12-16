@@ -14,13 +14,14 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
+from .precompiled_query import PrecompiledQuery
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker())
+DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
@@ -229,6 +230,9 @@ class TransactionRecord(Base):
         types.DateTime, nullable=False, server_default=func.now())
     # A server_default is necessary for the notify_ddl overwrite to work
     xid = Column(types.BigInteger, nullable=True, server_default=null())
+    __mapper_args__ = {
+        'eager_defaults': True,
+    }
 
 
 notify_ddl = DDL("""

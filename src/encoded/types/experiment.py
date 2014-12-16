@@ -11,15 +11,12 @@ from .base import (
     paths_filtered_by_status,
 )
 from .dataset import Dataset
-from pyramid.traversal import (
-    find_resource,
-)
 import datetime
 
 
-def run_type(root, registry, replicates):
+def run_type(request, replicates):
     for replicate in replicates:
-        properties = find_resource(root, replicate).upgrade_properties()
+        properties = request.embed(replicate, '@@object')
         if properties.get('status') in ('deleted', 'replaced'):
             continue
         if 'paired_ended' in properties:
@@ -90,12 +87,14 @@ class Experiment(Dataset):
                 '$condition': run_type,
             },
             'replicates': (
-                lambda root, replicates: paths_filtered_by_status(root, replicates)
+                lambda request, replicates: paths_filtered_by_status(request, replicates)
             ),
         }
         embedded = Dataset.Item.embedded + [
+            'files.platform',
             'replicates.antibody',
             'replicates.antibody.targets',
+            'replicates.library',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
@@ -111,6 +110,38 @@ class Experiment(Dataset):
             'possible_controls',
             'target.organism',
         ]
+
+        audit_inherit = [
+            'original_files',
+            'original_files.replicate',
+            'original_files.platform',
+            'target',
+            'revoked_files',
+            'revoked_files.replicate',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents',
+            'replicates.antibody',
+            'replicates.antibody.characterizations',
+            'replicates.antibody.targets',
+            'replicates.library',
+            'replicates.library.documents',
+            'replicates.library.biosample',
+            'replicates.library.biosample.organism',
+            'replicates.library.biosample.treatments',
+            'replicates.library.biosample.donor.organism',
+            'replicates.library.biosample.donor',
+            'replicates.library.biosample.treatments',
+            'replicates.library.biosample.derived_from',
+            'replicates.library.biosample.part_of',
+            'replicates.library.biosample.pooled_from',
+            'replicates.library.spikeins_used',
+            'replicates.library.treatments',
+            'replicates.platform',
+            'target.organism',
+        ]
+
         rev = {
             'replicates': ('replicate', 'experiment'),
         }

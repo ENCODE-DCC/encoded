@@ -282,9 +282,9 @@
         }
     },
     "boost_values": {
-        "uuid": 1.0,
         "title": 1.0,
         "authors": 1.0,
-        "references": 1.0
+        "references": 1.0,
+        "abstract": 1.0
     }
 }

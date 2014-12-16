@@ -108,14 +108,14 @@
 //.#{$fa-css-prefix}-plus:before { content: $fa-var-plus; }
 //.#{$fa-css-prefix}-minus:before { content: $fa-var-minus; }
 //.#{$fa-css-prefix}-asterisk:before { content: $fa-var-asterisk; }
-//.#{$fa-css-prefix}-exclamation-circle:before { content: $fa-var-exclamation-circle; }
+.#{$fa-css-prefix}-exclamation-circle:before { content: $fa-var-exclamation-circle; }
 //.#{$fa-css-prefix}-gift:before { content: $fa-var-gift; }
 //.#{$fa-css-prefix}-leaf:before { content: $fa-var-leaf; }
 //.#{$fa-css-prefix}-fire:before { content: $fa-var-fire; }
 //.#{$fa-css-prefix}-eye:before { content: $fa-var-eye; }
 //.#{$fa-css-prefix}-eye-slash:before { content: $fa-var-eye-slash; }
-//.#{$fa-css-prefix}-warning:before,
-//.#{$fa-css-prefix}-exclamation-triangle:before { content: $fa-var-exclamation-triangle; }
+.#{$fa-css-prefix}-warning:before,
+.#{$fa-css-prefix}-exclamation-triangle:before { content: $fa-var-exclamation-triangle; }
 //.#{$fa-css-prefix}-plane:before { content: $fa-var-plane; }
 //.#{$fa-css-prefix}-calendar:before { content: $fa-var-calendar; }
 //.#{$fa-css-prefix}-random:before { content: $fa-var-random; }
@@ -169,7 +169,7 @@
 //.#{$fa-css-prefix}-hand-o-up:before { content: $fa-var-hand-o-up; }
 //.#{$fa-css-prefix}-hand-o-down:before { content: $fa-var-hand-o-down; }
 //.#{$fa-css-prefix}-arrow-circle-left:before { content: $fa-var-arrow-circle-left; }
-//.#{$fa-css-prefix}-arrow-circle-right:before { content: $fa-var-arrow-circle-right; }
+.#{$fa-css-prefix}-arrow-circle-right:before { content: $fa-var-arrow-circle-right; }
 //.#{$fa-css-prefix}-arrow-circle-up:before { content: $fa-var-arrow-circle-up; }
 //.#{$fa-css-prefix}-arrow-circle-down:before { content: $fa-var-arrow-circle-down; }
 //.#{$fa-css-prefix}-globe:before { content: $fa-var-globe; }
@@ -247,7 +247,7 @@
 //.#{$fa-css-prefix}-file-text-o:before { content: $fa-var-file-text-o; }
 //.#{$fa-css-prefix}-building-o:before { content: $fa-var-building-o; }
 //.#{$fa-css-prefix}-hospital-o:before { content: $fa-var-hospital-o; }
-//.#{$fa-css-prefix}-ambulance:before { content: $fa-var-ambulance; }
+.#{$fa-css-prefix}-ambulance:before { content: $fa-var-ambulance; }
 //.#{$fa-css-prefix}-medkit:before { content: $fa-var-medkit; }
 //.#{$fa-css-prefix}-fighter-jet:before { content: $fa-var-fighter-jet; }
 //.#{$fa-css-prefix}-beer:before { content: $fa-var-beer; }

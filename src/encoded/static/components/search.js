@@ -9,9 +9,13 @@ var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
+var audit = require('./audit');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-
+var statusOrder = globals.statusOrder;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
@@ -52,22 +56,29 @@ var Dbxref = dbxref.Dbxref;
     };
 
     var Item = module.exports.Item = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var title = globals.listing_titles.lookup(result)({context: result});
             var item_type = result['@type'][0];
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
-                            <div className="accession">
-                                <a href={result['@id']}>{title}</a>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        {result.accession ?
+                            <div className="pull-right type sentence-case search-meta">
+                                <p>{item_type}: {' ' + result['accession']}</p>
+                                <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
                             </div>
+                        : null}
+                        <div className="accession">
+                            <a href={result['@id']}>{title}</a>
                         </div>
                         <div className="data-row">
                             {result.description}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -158,14 +169,20 @@ var Dbxref = dbxref.Dbxref;
     });
 
     var Antibody = module.exports.Antibody = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
 
+            // Sort the lot reviews by their status according to our predefined order
+            // given in the statusOrder array.
+            var lot_reviews = _.sortBy(result.lot_reviews, function(lot_review) {
+                return _.indexOf(statusOrder, lot_review.status); // Use underscore indexOf so that this works in IE8
+            });
+
             // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
             var targetTree = {};
-            result.lot_reviews.forEach(function(lot_review) {
+            lot_reviews.forEach(function(lot_review) {
                 lot_review.targets.forEach(function(target) {
                     // If we haven't seen this target, save it in targetTree along with the
                     // corresponding target and organism structures.
@@ -186,14 +203,16 @@ var Dbxref = dbxref.Dbxref;
                     }
                 });
             });
+            lot_reviews = null; // Tell GC we're done, just to be sure
 
             return (
                 <li>
-                    <div>
+                    <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
@@ -208,11 +227,12 @@ var Dbxref = dbxref.Dbxref;
                                 );
                             })}
                         </div>
+                        <div className="data-row">
+                            <strong>{columns['source.title']['title']}</strong>: {result.source.title}<br />
+                            <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                        </div>
                     </div>
-                    <div className="data-row"> 
-                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
-                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
-                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -220,7 +240,7 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Antibody, 'antibody_lot');
 
     var Biosample = module.exports.Biosample = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -231,21 +251,32 @@ var Dbxref = dbxref.Dbxref;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Biosample</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['biosample_term_name'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {separator + lifeStage + age + ageUnits + ')'}
-                                </a> 
-                            </div>
+ 
+            // Build the text of the synchronization string
+            var synchText;
+            if (result.synchronization) {
+                synchText = result.synchronization +
+                    (result.post_synchronization_time ?
+                        ' + ' + result.post_synchronization_time + (result.post_synchronization_time_units ? ' ' + result.post_synchronization_time_units : '')
+                    : '');
+            }
+
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Biosample</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['biosample_term_name'] + ' ('}
+                                <em>{result.organism.scientific_name}</em>
+                                {separator + lifeStage + age + ageUnits + ')'}
+                            </a>
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
@@ -267,9 +298,29 @@ var Dbxref = dbxref.Dbxref;
                                     {treatment}
                                 </div>
                             : null}
-                            <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
+                            {result['culture_harvest_date'] ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result['culture_harvest_date']}
+                                </div>
+                            : null}
+                            {result['date_obtained'] ?
+                                <div>
+                                    <strong>{columns['date_obtained']['title'] + ': '}</strong>
+                                    {result['date_obtained']}
+                                </div>
+                            : null}
+                            {synchText ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchText}
+                                </div>
+                            : null}
+                            <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
-                </li>   
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                </li>
             );
         }
     });
@@ -277,7 +328,7 @@ var Dbxref = dbxref.Dbxref;
 
 
     var Experiment = module.exports.Experiment = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -301,6 +352,17 @@ var Dbxref = dbxref.Dbxref;
             }));
             var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
 
+            // Collect synchronizations
+            var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
+            }).map(function(replicate) {
+                var biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }));
+
             // Make array of age units from replicates; remove all duplicates
             var ageUnit = '';
             if (age) {
@@ -317,32 +379,33 @@ var Dbxref = dbxref.Dbxref;
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Experiment</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    {name || lifeStage || age || ageUnit ?
-                                        <span>
-                                            {' ('}
-                                            {name ? <em>{name}</em> : ''}
-                                            {separator + lifeStage + age + ageUnit + ')'}
-                                        </span>
-                                    : ''}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Experiment</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
+                                {name || lifeStage || age || ageUnit ?
+                                    <span>
+                                        {' ('}
+                                        {name ? <em>{name}</em> : ''}
+                                        {separator + lifeStage + age + ageUnit + ')'}
+                                    </span>
+                                : ''}
+                            </a>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ?
+                            {result.target && result.target.label ?
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
-                                    {result['target.label']}
+                                    {result.target.label}
                                 </div>
                             : null}
                             {treatment ?
@@ -351,9 +414,17 @@ var Dbxref = dbxref.Dbxref;
                                     {treatment}
                                 </div>
                             : null}
-                            <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
-                            <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
+                            {synchronizations && synchronizations.length ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchronizations.join(', ')}
+                                </div>
+                            : null}
+                            <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
+                            <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -361,20 +432,21 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Experiment, 'experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Dataset</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result['description']}</a> 
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Dataset</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result['description']}</a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ?
@@ -383,9 +455,11 @@ var Dbxref = dbxref.Dbxref;
                                     {result['dataset_type']}
                                 </div>
                             : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result.lab.title}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -393,30 +467,32 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Dataset, 'dataset');
 
     var Target = module.exports.Target = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Target</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['label'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {')'}
-                                </a> 
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Target</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['label']}
+                                {result.organism && result.organism.scientific_name ? <em>{' (' + result.organism.scientific_name + ')'}</em> : null}
+                            </a>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']['title']}</strong>: 
+                            <strong>{columns['dbxref']['title']}</strong>:
                             {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em> None submitted</em> }
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -425,23 +501,26 @@ var Dbxref = dbxref.Dbxref;
 
 
     var Image = module.exports.Image = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, ],
         render: function() {
             var result = this.props.context;
             var Attachment = image.Attachment;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Image</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result.caption}</a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Image</p>
+                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result.caption}</a>
                         </div>
                         <div className="data-row">
                             <Attachment context={result} />
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
                 </li>
             );
         }
@@ -463,7 +542,7 @@ var Dbxref = dbxref.Dbxref;
     function countSelectedTerms(terms, field, filters) {
         var count = 0;
         for(var oneTerm in terms) {
-            if(termSelected(terms[oneTerm].term, field, filters)) {
+            if(termSelected(terms[oneTerm].key, field, filters)) {
                 count++;
             }
         }
@@ -473,8 +552,8 @@ var Dbxref = dbxref.Dbxref;
     var Term = search.Term = React.createClass({
         render: function () {
             var filters = this.props.filters;
-            var term = this.props.term['term'];
-            var count = this.props.term['count'];
+            var term = this.props.term['key'];
+            var count = this.props.term['doc_count'];
             var title = this.props.title || term;
             var field = this.props.facet['field'];
             var em = field === 'target.organism.scientific_name' ||
@@ -509,7 +588,7 @@ var Dbxref = dbxref.Dbxref;
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
-            var term = this.props.term['term'];
+            var term = this.props.term['key'];
             var filters = this.props.filters;
             var title;
             try {
@@ -538,13 +617,13 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
-                if (term.term) {
+                if (term.key) {
                     for(var filter in filters) {
-                        if(filters[filter].term === term.term) {
+                        if(filters[filter].term === term.key) {
                             return true;
                         }
                     }
-                    return term.count > 0;
+                    return term.doc_count > 0;
                 } else {
                     return false;
                 }
@@ -566,13 +645,13 @@ var Dbxref = dbxref.Dbxref;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -632,7 +711,7 @@ var Dbxref = dbxref.Dbxref;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;                
+                return false;
             }
         }
     });
@@ -670,6 +749,7 @@ var Dbxref = dbxref.Dbxref;
 
         getDefaultProps: function() {
             return {
+
                 restrictions: {},
                 searchBase: ''
             };
@@ -687,16 +767,16 @@ var Dbxref = dbxref.Dbxref;
             var results = context['@graph'];
             var facets = context['facets'];
             var total = context['total'];
+            var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            
             _.each(facets, function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
                     facet.restrictions = this.props.restrictions[facet.field];
                     facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.term);
+                        return _.contains(facet.restrictions, term.key);
                     }.bind(this));
                 }
             }.bind(this));
@@ -713,7 +793,7 @@ var Dbxref = dbxref.Dbxref;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} 
+                                        Showing {results.length} of {total}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
@@ -731,6 +811,13 @@ var Dbxref = dbxref.Dbxref;
                                                 : null}
                                             </span>
                                         }
+                                        
+                                        {context['batch_hub'] ?
+                                            <span className="pull-right">
+                                                <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
+                                                   href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
+                                            </span>
+                                        :null}
                                     </h4>
                                 :
                                     <h4>{context['notification']}</h4>
@@ -745,7 +832,7 @@ var Dbxref = dbxref.Dbxref;
                                 </ul>
                             </div>
                         </div>
-                    </div>  
+                    </div>
             );
         },
 
@@ -769,7 +856,7 @@ var Dbxref = dbxref.Dbxref;
             return (
                 <div>
                     {facetdisplay ?
-                        <div className="panel data-display main-panel"> 
+                        <div className="panel data-display main-panel">
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>
                     : <h4>{notification}</h4>}

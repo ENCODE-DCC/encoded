@@ -11,22 +11,17 @@ from .base import (
     paths_filtered_by_status,
 )
 from itertools import chain
-from pyramid.traversal import (
-    find_resource,
-)
 from urllib import quote_plus
 from urlparse import urljoin
 
 
-def file_is_revoked(root, path):
-    item = find_resource(root, path)
-    return item.upgrade_properties()['status'] == 'revoked'
+def file_is_revoked(request, path):
+    return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-def assembly(root, original_files, related_files):
+def assembly(request, original_files, related_files):
     for path in chain(original_files, related_files):
-        f = find_resource(root, path)
-        properties = f.upgrade_properties(finalize=False)
+        properties = request.embed(path, '@@object')
         if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
                 properties['status'] in ['released']:
             if 'assembly' in properties:
@@ -47,18 +42,18 @@ class Dataset(Collection):
         template = {
             # XXX Still needed?
             'original_files': (
-                lambda root, original_files: paths_filtered_by_status(root, original_files)
+                lambda request, original_files: paths_filtered_by_status(request, original_files)
             ),
             'files': (
-                lambda root, original_files, related_files: paths_filtered_by_status(
-                    root, chain(original_files, related_files),
+                lambda request, original_files, related_files: paths_filtered_by_status(
+                    request, chain(original_files, related_files),
                     exclude=('revoked', 'deleted', 'replaced'),
                 )
             ),
             'revoked_files': (
-                lambda root, original_files, related_files: [
+                lambda request, original_files, related_files: [
                     path for path in chain(original_files, related_files)
-                    if file_is_revoked(root, path)
+                    if file_is_revoked(request, path)
                 ]
             ),
             'hub': {
@@ -90,6 +85,16 @@ class Dataset(Collection):
             'documents.award',
             'documents.submitted_by',
         ]
+
+        audit_inherit = [
+            'original_files',
+            'revoked_files',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents.lab',
+        ]
+
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
         rev = {

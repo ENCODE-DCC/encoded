@@ -1,27 +1,31 @@
+from collections import defaultdict
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import NotFoundError
+from elasticsearch.exceptions import (
+    ConflictError,
+    NotFoundError,
+)
 from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
+from pyramid.settings import aslist
 from pyramid.view import view_config
-from uuid import UUID
 from .contentbase import (
     AfterModified,
     BeforeModified,
     Created,
 )
-from .renderers import (
-    json_renderer,
-    make_subrequest,
-)
+from .embedding import embed
+from .renderers import json_renderer
 from .stats import ElasticsearchConnectionMixin
 from .storage import (
     DBSession,
     TransactionRecord,
 )
+import datetime
 import functools
 import json
 import logging
@@ -35,6 +39,8 @@ INDEX = 'encoded'
 def includeme(config):
     config.add_route('index', '/index')
     config.scan(__name__)
+    config.add_request_method(lambda request: defaultdict(set), '_updated_uuid_paths', reify=True)
+    config.add_request_method(lambda request: {}, '_initial_back_rev_links', reify=True)
 
     if 'elasticsearch.server' in config.registry.settings:
         es = Elasticsearch(
@@ -42,9 +48,7 @@ def includeme(config):
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
         )
-        #es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
-
 
 
 class PyramidJSONSerializer(object):
@@ -78,7 +82,7 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 def index(request):
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
-    es = request.registry.get(ELASTIC_SEARCH, None)
+    es = request.registry[ELASTIC_SEARCH]
 
     session = DBSession()
     connection = session.connection()
@@ -89,10 +93,11 @@ def index(request):
     """)
     xmin = query.scalar()  # lowest xid that is still in progress
 
+    first_txn = None
     last_xmin = None
     if 'last_xmin' in request.json:
         last_xmin = request.json['last_xmin']
-    elif es is not None:
+    else:
         try:
             status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
@@ -115,32 +120,64 @@ def index(request):
 
         invalidated = set()
         updated = set()
+        renamed = set()
         max_xid = 0
         txn_count = 0
         for txn in txns.all():
             txn_count += 1
             max_xid = max(max_xid, txn.xid)
-            invalidated.update(UUID(uuid) for uuid in txn.data.get('invalidated', ()))
-            updated.update(UUID(uuid) for uuid in txn.data.get('updated', ()))
+            if first_txn is None:
+                first_txn = txn.timestamp
+            else:
+                first_txn = min(first_txn, txn.timestamp)
+            renamed.update(txn.data.get('renamed', ()))
+            updated.update(txn.data.get('updated', ()))
 
+        result['txn_count'] = txn_count
         if txn_count == 0:
-            max_xid = None
+            return result
 
-        new_referencing = set()
-        add_dependent_objects(request.root, updated, new_referencing)
-        invalidated.update(new_referencing)
+        es.indices.refresh(index=INDEX)
+        res = es.search(index=INDEX, body={
+            'filter': {
+                'or': [
+                    {
+                        'terms': {
+                            'embedded_uuids': updated,
+                            '_cache': False,
+                        },
+                    },
+                    {
+                        'terms': {
+                            'linked_uuids': renamed,
+                            '_cache': False,
+                        },
+                    },
+                ],
+            },
+            '_source': False,
+        })
+        referencing = {hit['_id'] for hit in res['hits']['hits']}
+        invalidated = referencing | updated
         result.update(
             max_xid=max_xid,
+            renamed=renamed,
+            updated=updated,
+            referencing=len(referencing),
+            invalidated=len(invalidated),
             txn_count=txn_count,
-            invalidated=[str(uuid) for uuid in invalidated],
+            first_txn_timestamp=first_txn.isoformat(),
         )
 
-    if not dry_run and es is not None:
-        result['count'] = count = es_update_object(request, invalidated)
-        if count and record:
+    if not dry_run:
+        result['indexed'] = es_update_object(request, invalidated, xmin)
+        if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
         es.indices.refresh(index=INDEX)
+
+    if first_txn is not None:
+        result['lag'] = str(datetime.datetime.now() - first_txn)
 
     return result
 
@@ -152,60 +189,36 @@ def all_uuids(root, types=None):
         collection = root.by_item_type[collection_name]
         if types is not None and collection_name not in types:
             continue
-        for count, uuid in enumerate(collection):
-            yield uuid
+        for uuid in collection:
+            yield str(uuid)
     for collection_name in sorted(root.by_item_type):
         if collection_name in initial:
             continue
         if types is not None and collection_name not in types:
             continue
         collection = root.by_item_type[collection_name]
-        for count, uuid in enumerate(collection):
-            yield uuid
+        for uuid in collection:
+            yield str(uuid)
 
 
-def add_dependent_objects(root, new, existing):
-    # Getting the dependent objects for the indexed object
-    objects = new.difference(existing)
-    while objects:
-        dependents = set()
-        for uuid in objects:
-            item = root.get_by_uuid(uuid)
-
-            dependents.update({
-                model.source_rid for model in item.model.revs
-            })
-            
-            item_type = item.item_type
-            item_rels = item.model.rels
-            for rel in item_rels:
-                key = (item_type, rel.rel)
-                if key not in root.all_merged_rev:
-                    continue
-                rev_item = root.get_by_uuid(rel.target_rid)
-                if key in rev_item.merged_rev.values():
-                    dependents.add(rel.target_rid)
-
-        existing.update(objects)
-        objects = dependents.difference(existing)
-
-
-def es_update_object(request, objects):
+def es_update_object(request, objects, xmin):
     es = request.registry[ELASTIC_SEARCH]
     i = -1
     for i, uuid in enumerate(objects):
-        subreq = make_subrequest(request, '/%s/@@index-data' % uuid)
-        subreq.override_renderer = 'null_renderer'
-        subreq.remote_user = 'INDEXER'
         try:
-            result = request.invoke_subrequest(subreq)
-        except Exception as e:
+            result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
+        except Exception:
             log.warning('Error indexing %s', uuid, exc_info=True)
         else:
             doctype = result['object']['@type'][0]
             try:
-                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
-            except Exception as e:
+                es.index(
+                    index=INDEX, doc_type=doctype, body=result,
+                    id=str(uuid), version=xmin, version_type='external',
+                )
+            except ConflictError:
+                log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
+            except Exception:
                 log.warning('Error indexing %s', uuid, exc_info=True)
             else:
                 if (i + 1) % 50 == 0:
@@ -215,7 +228,6 @@ def es_update_object(request, objects):
             es.indices.flush(index=INDEX)
 
     return i + 1
-
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
@@ -238,39 +250,86 @@ es_update_object_in_txn = functools.partial(
 @subscriber(Created)
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
-def record_created(event):
-    request = event.request
-    # Create property if that doesn't exist
-    try:
-        referencing = request._encoded_referencing
-    except AttributeError:
-        referencing = request._encoded_referencing = set()
-    try:
-        updated = request._encoded_updated
-    except AttributeError:
-        updated = request._encoded_updated = set()
+def record_updated_uuid_paths(event):
+    context = event.object
+    updated = event.request._updated_uuid_paths
+    uuid = str(context.uuid)
+    name = resource_path(context)
+    updated[uuid].add(name)
 
-    uuid = event.object.uuid
-    updated.add(uuid)
 
-    # Record dependencies here to catch any to be removed links
-    # XXX replace with uuid_closure in elasticsearch document
-    add_dependent_objects(request.root, {uuid}, referencing)
+@subscriber(BeforeModified)
+def record_initial_back_revs(event):
+    context = event.object
+    initial = event.request._initial_back_rev_links
+    properties = context.upgrade_properties(finalize=False)
+    initial[context.uuid] = {
+        rel: set(aslist(properties.get(rel, ())))
+        for rel in context.merged_back_rev
+    }
+
+
+@subscriber(Created)
+@subscriber(AfterModified)
+def invalidate_new_back_revs(event):
+    ''' Invalidate objects that rev_link to us
+
+    Catch those objects which newly rev_link us
+    '''
+    context = event.object
+    updated = event.request._updated_uuid_paths
+    initial = event.request._initial_back_rev_links.get(context.uuid, {})
+    properties = context.upgrade_properties(finalize=False)
+    current = {
+        rel: set(aslist(properties.get(rel, ())))
+        for rel in context.merged_back_rev
+    }
+    for rel, uuids in current.items():
+        for uuid in uuids.difference(initial.get(rel, ())):
+            updated[uuid]
 
 
 @subscriber(BeforeRender)
 def es_update_data(event):
     request = event['request']
-    updated = getattr(request, '_encoded_updated', None)
+    updated_uuid_paths = request._updated_uuid_paths
 
-    if not updated:
+    if not updated_uuid_paths:
         return
 
-    invalidated = getattr(request, '_encoded_referencing', set())
-
     txn = transaction.get()
-    txn._extension['updated'] = [str(uuid) for uuid in updated]
-    txn._extension['invalidated'] = [str(uuid) for uuid in invalidated]
+    data = txn._extension
+    renamed = data['renamed'] = [
+        uuid for uuid, names in updated_uuid_paths.items()
+        if len(names) > 1
+    ]
+    updated = data['updated'] = updated_uuid_paths.keys()
+
+    response = request.response
+    response.headers['X-Updated'] = ','.join(updated)
+    if renamed:
+        response.headers['X-Renamed'] = ','.join(renamed)
+
+    record = data.get('_encoded_transaction_record')
+    if record is None:
+        return
+
+    xid = record.xid
+    if xid is None:
+        return
+
+    response.headers['X-Transaction'] = str(xid)
+
+    # Only set session cookie for web users
+    namespace = None
+    login = request.authenticated_userid
+    if login is not None:
+        namespace, userid = login.split('.', 1)
+
+    if namespace != 'mailto':
+        edits = request.session.setdefault('edits', [])
+        edits.append([xid, updated, renamed])
+        edits[:] = edits[-10:]
 
     # XXX How can we ensure consistency here but update written records
     # immediately? The listener might already be indexing on another

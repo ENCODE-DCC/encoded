@@ -103,10 +103,35 @@ def threadlocals(request, dummy_request, registry):
     manager.pop()
 
 
+from pyramid.testing import DummyRequest
+class MyDummyRequest(DummyRequest):
+    def remove_conditional_headers(self):
+        pass
+    def _get_registry(self):
+        from pyramid.threadlocal import get_current_registry
+        if self._registry is None:
+            return get_current_registry()
+        return self._registry
+
+    def _set_registry(self, registry):
+        self.__dict__['registry'] = registry
+
+    def _del_registry(self):
+        self._registry = None
+
+    registry = property(_get_registry, _set_registry, _del_registry)
+
 @fixture
-def dummy_request(root, registry):
-    from pyramid.testing import DummyRequest
-    return DummyRequest(root=root, registry=registry, _stats={})
+def dummy_request(root, registry, app):
+    request = app.request_factory.blank('/dummy')
+    request.root = root
+    request.registry = registry
+    request._stats = {}
+    request.invoke_subrequest = app.invoke_subrequest
+    extensions = app.request_extensions
+    if extensions is not None:
+        request._set_extensions(extensions)
+    return request
 
 
 @fixture(scope='session')
@@ -213,6 +238,16 @@ def submitter_testapp(app, external_tx):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST_SUBMITTER',
+    }
+    return TestApp(app, environ)
+
+
+@pytest.fixture
+def indexer_testapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'INDEXER',
     }
     return TestApp(app, environ)
 

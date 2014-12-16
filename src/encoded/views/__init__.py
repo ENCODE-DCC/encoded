@@ -3,11 +3,13 @@ import os
 from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
+from pyramid.response import Response
 from ..contentbase import (
     Root,
-    item_view,
     location_root,
 )
+from ..embedding import embed
+from .visualization import generate_batch_hubs
 
 
 def includeme(config):
@@ -17,6 +19,8 @@ def includeme(config):
     config.add_route('jsonld_context', '/terms/')
     config.add_route('jsonld_context_no_slash', '/terms')
     config.add_route('jsonld_term', '/terms/{term}')
+    config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
+    config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.add_route('graph_dot', '/profiles/graph.dot')
     config.add_route('graph_svg', '/profiles/graph.svg')
     config.scan()
@@ -39,9 +43,10 @@ def home(context, request):
         # 'login': {'href': request.resource_path(context, 'login')},
     })
 
-    homepage = context.get_by_unique_key('page:location', 'homepage')
-    if homepage is not None:
-        result['default_page'] = item_view(homepage, request)
+    try:
+        result['default_page'] = embed(request, '/pages/homepage/@@page', as_user=True)
+    except KeyError:
+        pass
 
     return result
 
@@ -63,3 +68,10 @@ def schema(context, request):
         properties[k] = v
     schema['properties'] = properties
     return schema
+
+
+@view_config(route_name='batch_hub')
+@view_config(route_name='batch_hub:trackdb')
+def batch_hub(context, request):
+    ''' View for batch track hubs '''
+    return Response(generate_batch_hubs(context, request), content_type='text/plain')

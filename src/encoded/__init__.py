@@ -135,9 +135,11 @@ def session(config):
     config.set_session_factory(session_factory)
 
 
-def main(global_config, **settings):
+def main(global_config, **local_config):
     """ This function returns a Pyramid WSGI application.
     """
+    settings = global_config
+    settings.update(local_config)
     config = Configurator(settings=settings)
 
     config.include(session)
@@ -145,6 +147,7 @@ def main(global_config, **settings):
     configure_engine(settings)
 
     # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.embedding')
     config.include('.renderers')
     config.include('.authentication')
     config.include('.validation')

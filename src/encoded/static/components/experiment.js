@@ -6,10 +6,14 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
+var audit = require('./audit');
+var AuditMixin = audit.AuditMixin;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -23,6 +27,7 @@ var Panel = function (props) {
 
 
 var Experiment = module.exports.Experiment = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -69,9 +74,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string
+        // Build the text of the Treatment string array and the synchronization string array
         var treatmentText = [];
+        var synchText = [];
         biosamples.map(function(biosample) {
+            // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -83,9 +90,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
                 return singleTreatment;
             }));
+
+            // Collect synchronizations
+            if (biosample.synchronization) {
+                synchText.push(biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
+        }
+        if (synchText) {
+            synchText = _.uniq(synchText);
         }
 
         // Adding experiment specific documents
@@ -131,11 +149,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                             Experiment summary for {context.accession}
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} key="experiment-audit" />
                         </div>
                    </div>
                 </header>
+                <AuditDetail audits={context.audit} key="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
@@ -167,6 +189,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     : null}
                                     {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
                                     {organismName.length || lifeAge.length ? ')' : null}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {synchText.length ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Synchronization timepoint</dt>
+                                <dd>
+                                    {synchText.join(', ')}
                                 </dd>
                             </div>
                         : null}
@@ -273,7 +304,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                <AssayDetails replicates={replicates} />
+                <AssayDetails context={context} replicates={replicates} />
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -311,6 +342,12 @@ globals.content_views.register(Experiment, 'experiment');
 
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
+    var context = props.context;
+
+    // No replicates, so no assay panel
+    if (!props.replicates.length) return null;
+
+    // Sort the replicates first by replicate number, then by technical replicate number
     var replicates = props.replicates.sort(function(a, b) {
         if (b.biological_replicate_number === a.biological_replicate_number) {
             return a.technical_replicate_number - b.technical_replicate_number;
@@ -318,74 +355,111 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         return a.biological_replicate_number - b.biological_replicate_number;
     });
 
-    if (!replicates.length) return (<div hidden={true}></div>);
-
-    var replicate = replicates[0];
-    var library = replicate.library;
-    var platform = replicate.platform;
-    var depletedIn;
-    var treatments;
-
-    if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
-        depletedIn = library.depleted_in_term_name.join(", ");
-    }
-
-    if (library && library.treatments && library.treatments.length) {
-        var i = library.treatments.length;
-        var t;
-        var treatmentList = [];
-        while (i--) {
-            t = library.treatments[i];
-            treatmentList.push(t.treatment_term_name);
+    // Collect data from the libraries of all of the replicates, ignoring duplicates
+    var depleted = [];
+    var treatments = [];
+    var lib = replicates[0].library;
+    if (lib) {
+        // Get the array of depleted_in_term_name strings for display
+        if (lib.depleted_in_term_name && lib.depleted_in_term_name.length) {
+            depleted = lib.depleted_in_term_name;
         }
-        treatments = treatmentList.join(", ");
+
+        // Make an array of treatment term names for display
+        if (lib.treatments && lib.treatments.length) {
+            treatments = lib.treatments.map(function(treatment) {
+                return treatment.treatment_term_name;
+            });
+        }
+    } else {
+        // No libraries, so no assay panel
+        return null;
     }
 
-    if (!library && !depletedIn && !treatments && !platform) {
-        return (<div hidden={true}></div>);
+    // Create platforms array from file platforms; ignore duplicate platforms
+    var platforms = {};
+    if (context.files && context.files.length) {
+        context.files.forEach(function(file) {
+            if (file.platform && file.dataset === context['@id']) {
+                platforms[file.platform['@id']] = file.platform;
+            }
+        });
+    }
+
+    // If no platforms found in files, get the platform from the first replicate, if it has one
+    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
+        platforms[replicates[0].platform['@id']] = replicates[0].platform;
     }
 
     return (
         <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
-				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
+                {lib.nucleic_acid_term_name ?
+                    <div data-test="nucleicacid">
+                        <dt>Nucleic acid type</dt>
+                        <dd>{lib.nucleic_acid_term_name}</dd>
+                    </div>
+                : null}
 
-                {depletedIn ? <dt>Depleted in</dt> : null}
-				{depletedIn ? <dd>{depletedIn}</dd> : null}
+                {depleted.length ?
+                    <div data-test="depletedin">
+                        <dt>Depleted in</dt>
+                        <dd>{depleted.join(', ')}</dd>
+                    </div>
+                : null}
 
-                {library && library.lysis_method ? <dt>Lysis method</dt> : null}
-				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
+                {lib.lysis_method ?
+                    <div data-test="lysismethod">
+                        <dt>Lysis method</dt>
+                        <dd>{lib.lysis_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.extraction_method ? <dt>Extraction method</dt> : null}
-				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
+                {lib.extraction_method ?
+                    <div data-test="extractionmethod">
+                        <dt>Extraction method</dt>
+                        <dd>{lib.extraction_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
-				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
+                {lib.fragmentation_method ?
+                    <div data-test="fragmentationmethod">
+                        <dt>Fragmentation method</dt>
+                        <dd>{lib.fragmentation_method}</dd>
+                    </div>
+                : null}
 
-                {library && library.size_range ? <dt>Size range</dt> : null}
-				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
+                {lib.size_range ?
+                    <div data-test="sizerange">
+                        <dt>Size range</dt>
+                        <dd>{lib.size_range}</dd>
+                    </div>
+                : null}
 
-                {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
-				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
+                {lib.library_size_selection_method ?
+                    <div data-test="sizeselectionmethod">
+                        <dt>Size selection method</dt>
+                        <dd>{lib.library_size_selection_method}</dd>
+                    </div>
+                : null}
 
-                {treatments ? <dt>Treatments</dt> : null}
-				{treatments ? <dd>{treatments}</dd> : null}
-
-                {platform ? <dt>Platform</dt> : null}
-				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
-
-                {library && library.spikeins_used && library.spikeins_used.length ?
-                    <div data-test="spikeins">
-                        <dt>Spike-ins datasets</dt>
+                {treatments.length ?
+                    <div data-test="treatments">
+                        <dt>Treatments</dt>
                         <dd>
-                            {library.spikeins_used.map(function(dataset, i) {
-                                return (
-                                    <span key={i}>
-                                        {i > 0 ? ', ' : ''}
-                                        <a href={dataset['@id']}>{dataset.accession}</a>
-                                    </span>
+                            {treatments.join(', ')}
+                        </dd>
+                    </div>
+                : null}
+
+                {Object.keys(platforms).length ?
+                    <div data-test="platform">
+                        <dt>Platform</dt>
+                        <dd>
+                            {Object.keys(platforms).map(function(platformId) {
+                                return(
+                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                 );
                             })}
                         </dd>
@@ -407,32 +481,58 @@ var Replicate = module.exports.Replicate = function (props) {
         <div key={props.key} className="panel-replicate">
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
-                <dt>Technical replicate</dt>
-                <dd>{replicate.technical_replicate_number}</dd>
+                <div data-test="techreplicate">
+                    <dt>Technical replicate</dt>
+                    <dd>{replicate.technical_replicate_number}</dd>
+                </div>
 
-                {concentration ? <dt>Protein concentration</dt> : null}
-                {concentration ? <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd> : null}
+                {concentration ?
+                    <div data-test="proteinconcentration">
+                        <dt>Protein concentration</dt>
+                        <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd>
+                    </div>
+                : null}
 
-                {library ? <dt>Library</dt> : null}
-                {library ? <dd>{library.accession}</dd> : null}
+                {library ?
+                    <div data-test="library">
+                        <dt>Library</dt>
+                        <dd>{library.accession}</dd>
+                    </div>
+                : null}
 
-                {library && library.nucleic_acid_starting_quantity ? <dt>Library starting quantity</dt> : null}
                 {library && library.nucleic_acid_starting_quantity ?
-                    <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
+                    <div data-test="startingquantity">
+                        <dt>Library starting quantity</dt>
+                        <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
+                    </div>
                 : null}
                 
-                {biosample ? <dt>Biosample</dt> : null}
-                {biosample ? <dd>
-                    <a href={biosample['@id']}>
-                        {biosample.accession}
-                    </a>{' '}-{' '}{biosample.biosample_term_name}
-                </dd> : null}
+                {biosample ?
+                    <div data-test="biosample">
+                        <dt>Biosample</dt>
+                        {biosample ?
+                            <dd>
+                                <a href={biosample['@id']}>
+                                    {biosample.accession}
+                                </a>{' '}-{' '}{biosample.biosample_term_name}
+                            </dd>
+                        : null}
+                    </div>
+                : null}
 
-                {replicate.read_length ? <dt>Run type</dt> : null}
-                {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
+                {replicate.read_length ?
+                    <div data-test="runtype">
+                        <dt>Run type</dt>
+                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
+                    </div>
+                : null}
 
-                {replicate.read_length ? <dt>Read length</dt> : null}
-                {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
+                {replicate.read_length ?
+                    <div data-test="readlength">
+                        <dt>Read length</dt>
+                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );

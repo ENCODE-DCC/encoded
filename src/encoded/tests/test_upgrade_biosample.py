@@ -70,6 +70,15 @@ def biosample_6(biosample, biosamples):
     })
     return item
 
+@pytest.fixture
+def biosample_7(biosample):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '7',
+        'worm_life_stage': 'embryonic',
+    })
+    return item
+
 
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
@@ -237,3 +246,11 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
+
+def test_biosample_worm_life_stage(app, biosample_7):
+    biosample_7['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_7, target_version='8')
+    assert value['schema_version'] == '8'
+    assert value['worm_life_stage'] == 'mixed stage (embryonic)'
+
