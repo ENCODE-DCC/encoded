@@ -103,10 +103,10 @@ EDIT_ACTION = {
 }
 
 
-def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
+def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     return [
         path for path in paths
-        if find_resource(root, path).upgrade_properties().get('status') not in exclude
+        if request.embed(path, '@@object').get('status') not in exclude
     ]
 
 

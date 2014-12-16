@@ -294,7 +294,7 @@ class Root(object):
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
-        self.all_merged_rev = set()
+        self.type_back_rev = {}
 
     def __getitem__(self, name):
         try:
@@ -391,7 +391,12 @@ class Root(object):
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
-        self.all_merged_rev.update(value.Item.merged_rev.values())
+
+        # Calculate the reverse rev map
+        for prop_name, spec in value.Item.merged_rev.items():
+            item_type, rel = spec
+            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
+            back.add((value.item_type, prop_name))
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -504,22 +509,14 @@ class Item(object):
     def schema_links(self):
         return self.collection.schema_links
 
-    def links(self, properties):
-        # This works from the schema rather than the links table
-        # so that upgrade on GET can work.
-        if self.schema is None:
-            return {}
+    @property
+    def merged_back_rev(self):
         root = find_root(self)
-        links = {}
-        for name in self.schema_links:
-            value = properties.get(name, None)
-            if value is None:
-                continue
-            if isinstance(value, list):
-                links[name] = [root.get_by_uuid(v) for v in value]
-            else:
-                links[name] = root.get_by_uuid(value)
-        return links
+        merged = {}
+        types = [self.item_type] + self.base_types
+        for item_type in reversed(types):
+            merged.update(root.type_back_rev.get(item_type, ()))
+        return merged
 
     def rev_links(self):
         root = find_root(self)
@@ -553,28 +550,14 @@ class Item(object):
         return properties
 
     def __json__(self, request):
-        """ Render json structure
+        # Record embedding objects
+        request._embedded_uuids.add(str(self.uuid))
+        return self.upgrade_properties()
 
-        1. Fetch stored properties, possibly upgrading.
-        2. Link canonicalization (overwriting uuids).
-        3. Fill reverse links (Item.rev)
-        4. Templated properties
-
-        Embedding is the responsibility of the view.
-        """
-        properties = self.upgrade_properties()
-
-        for name, value in self.links(properties).iteritems():
-            # XXXX Should this be {'@id': url, '@type': [...]} instead?
-            if isinstance(value, list):
-                properties[name] = [request.resource_path(item) for item in value]
-            else:
-                properties[name] = request.resource_path(value)
-
-        templated = self.expand_template(properties, request)
-        properties.update(templated)
-
-        return properties
+    def __resource_url__(self, request, info):
+        # Record linking objects
+        request._linked_uuids.add(str(self.uuid))
+        return None
 
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
@@ -592,9 +575,14 @@ class Item(object):
         if request is not None:
             ns['request'] = request
             ns['permission'] = permission_checker(self, request)
-
-        for name, value in self.rev_links().iteritems():
-            ns[name] = [resource_path(item, '') for item in value]
+            # Use request.resource_path so that linked uuid is recorded
+            ns['item_uri'] = request.resource_path(self)
+            for name, value in self.rev_links().iteritems():
+                ns[name] = [request.resource_path(item) for item in value]
+        else:
+            ns['item_uri'] = resource_path(self, '')
+            for name, value in self.rev_links().iteritems():
+                ns[name] = [resource_path(item, '') for item in value]
 
         if self.merged_namespace_from_path:
             root = find_root(self)
@@ -619,31 +607,9 @@ class Item(object):
 
         return ns
 
-    def expand_template(self, properties, request):
-        ns = self.template_namespace(properties, request)
-        compiled = ObjectTemplate(self.merged_template)
-        return compiled(ns)
-
-    def expand_embedded(self, request, properties):
-        for path in self.embedded_paths:
-            expand_path(request, properties, path)
-
     @classmethod
     def expand_page(cls, request, properties):
         return properties
-
-    def add_actions(self, request, properties):
-        ns = {}
-        ns['permission'] = permission_checker(self, request)
-        ns['item_type'] = self.item_type
-        ns['item_uri'] = properties['@id']
-        compiled = ObjectTemplate(self.actions)
-        actions = compiled(ns)
-        if actions:
-            properties['actions'] = actions
-
-        if ns['permission']('audit'):
-            properties['audit'] = embed(request, join(properties['@id'], '@@audit'))['audit']
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -931,76 +897,6 @@ class Collection(Mapping):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def load_db(self, request):
-        result = {}
-
-        frame = request.params.get('frame', 'columns')
-        if frame == 'columns':
-            if self.schema is not None and 'columns' in self.schema:
-                result['columns'] = self.schema['columns']
-            else:
-                frame = 'object'
-
-        limit = request.params.get('limit', 25)
-        if limit in ('', 'all'):
-            limit = None
-        if limit is not None:
-            try:
-                limit = int(limit)
-            except ValueError:
-                limit = 25
-
-        items = (
-            item for item in self.itervalues()
-            if request.has_permission('view', item)
-        )
-
-        if limit is not None:
-            items = islice(items, limit)
-
-        result['@graph'] = [self._render_item(request, item, frame) for item in items]
-
-        if limit is not None and len(result['@graph']) == limit:
-            params = [(k, v) for k, v in request.params.items() if k != 'limit']
-            params.append(('limit', 'all'))
-            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
-
-        return result
-
-    def _render_item(self, request, item, frame):
-        item_uri = request.resource_path(item)
-
-        if frame != 'embedded':
-            item_uri += '@@object'
-
-        rendered = embed(request, item_uri)
-
-        if frame != 'columns':
-            return rendered
-
-        for path in self.column_paths:
-            expand_path(request, rendered, path)
-
-        subset = {
-            '@id': rendered['@id'],
-            '@type': rendered['@type'],
-        }
-        for column in self.schema['columns']:
-            subset[column] = column_value(rendered, column)
-
-        return subset
-
-    def load_es(self, request):
-        from .views.search import search
-        result = search(self, request, self.item_type)
-
-        if len(result['@graph']) < result['total']:
-            params = [(k, v) for k, v in request.params.items() if k != 'limit']
-            params.append(('limit', 'all'))
-            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
-
-        return result
-
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
         ns['properties'] = properties
@@ -1015,51 +911,49 @@ class Collection(Mapping):
         return ns
 
     def __json__(self, request):
-        properties = self.properties.copy()
-        ns = self.template_namespace(properties, request)
-        compiled = ObjectTemplate(self.merged_template)
-        templated = compiled(ns)
-        properties.update(templated)
+        return self.properties.copy()
 
-        uri = ns['collection_uri']
-        if request.query_string:
-            uri += '?' + request.query_string
-        properties['@id'] = uri
 
-        datastore = request.params.get('datastore', None)
-        if datastore is None:
-            datastore = request.registry.settings.get('collection_datastore', 'database')
-        # Switch to change summary page loading options: load_db, load_es
-        if datastore == 'elasticsearch':
-            result = self.load_es(request)
-        else:
-            result = self.load_db(request)
+def expand_column(request, obj, subset, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if not remaining:
+        subset[name] = value
+        return
+    if isinstance(value, list):
+        if name not in subset:
+            subset[name] = [{} for i in range(len(value))]
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = request.embed(member, '@@object')
+            expand_column(request, member, subset[index], remaining)
+    else:
+        if name not in subset:
+            subset[name] = {}
+        if not isinstance(value, dict):
+            value = request.embed(value, '@@object')
+        expand_column(request, value, subset[name], remaining)
 
-        result.update(properties)
+
+def etag_tid(view_callable):
+    def wrapped(context, request):
+        result = view_callable(context, request)
+        etag = 'tid:%s' % context.model.data[''].propsheet.tid
+        request.response.etag = etag
+        cache_control = request.response.cache_control
+        cache_control.private = True
+        cache_control.max_age = 0
+        cache_control.must_revalidate = True
         return result
 
-
-def column_value(obj, column):
-    path = column.split('.')
-    value = obj
-    for name in path:
-        # Hardcoding few lines here should be gone with ES
-        if name == 'length':
-            return len(value)
-        else:
-            if isinstance(value, list):
-                new_values = []
-                for v in value:
-                    if name in v:
-                        new_values.append(v[name])
-                value = new_values
-            else:
-                value = value.get(name, None)
-            if value is None:
-                return ''
-    if isinstance(value, list):
-        value = list(set(value))
-    return value
+    return wrapped
 
 
 def if_match_tid(view_callable):
@@ -1076,16 +970,82 @@ def if_match_tid(view_callable):
     return wrapped
 
 
+def load_db(context, request):
+    result = {}
+
+    frame = request.params.get('frame', 'columns')
+
+    limit = request.params.get('limit', 25)
+    if limit in ('', 'all'):
+        limit = None
+    if limit is not None:
+        try:
+            limit = int(limit)
+        except ValueError:
+            limit = 25
+
+    items = (
+        item for item in context.itervalues()
+        if request.has_permission('view', item)
+    )
+
+    if limit is not None:
+        items = islice(items, limit)
+
+    result['@graph'] = [
+        request.embed(request.resource_path(item, '@@' + frame))
+        for item in items
+    ]
+
+    if limit is not None and len(result['@graph']) == limit:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
+    return result
+
+
+def load_es(context, request):
+    from .views.search import search
+    result = search(context, request, context.item_type)
+
+    if len(result['@graph']) < result['total']:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
+    return result
+
+
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     properties = context.__json__(request)
+    ns = context.template_namespace(properties, request)
+    compiled = ObjectTemplate(context.merged_template)
+    templated = compiled(ns)
+    properties.update(templated)
+
+    uri = ns['collection_uri']
+    if request.query_string:
+        uri += '?' + request.query_string
+    properties['@id'] = uri
 
     root = find_root(context)
     if context.__name__ in root['pages']:
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    return properties
+    datastore = request.params.get('datastore', None)
+    if datastore is None:
+        datastore = request.registry.settings.get('collection_datastore', 'database')
+    # Switch to change summary page loading options: load_db, load_es
+    if datastore == 'elasticsearch':
+        result = load_es(context, request)
+    else:
+        result = load_db(context, request)
+
+    result.update(properties)
+    return result
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1104,7 +1064,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
+        rendered = embed(request, join(item_uri, '@@details'), as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1134,6 +1094,8 @@ def traversal_security(event):
 
 
 @view_config(context=Item, permission='view', request_method='GET')
+@view_config(context=Item, permission='view', request_method='GET',
+             name='details')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
@@ -1147,29 +1109,85 @@ def item_view(context, request):
             raise HTTPNotFound, exc, tb
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
+
         path += '?' + request.query_string
     return embed(request, path, as_user=True)
+
+
+
+def item_links(context, request):
+    # This works from the schema rather than the links table
+    # so that upgrade on GET can work.
+    properties = context.__json__(request)
+    root = request.root
+    for name in context.schema_links:
+        value = properties.get(name, None)
+        if value is None:
+            continue
+        if isinstance(value, list):
+            properties[name] = [
+                request.resource_path(root.get_by_uuid(v))
+                for v in value
+            ]
+        else:
+            properties[name] = request.resource_path(root.get_by_uuid(value))
+    return properties
 
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
 def item_view_object(context, request):
-    return context.__json__(request)
+    """ Render json structure
+
+    1. Fetch stored properties, possibly upgrading.
+    2. Link canonicalization (overwriting uuids.)
+    3. Templated properties (including reverse links.)
+    """
+    properties = item_links(context, request)
+    ns = context.template_namespace(properties, request)
+    compiled = ObjectTemplate(context.merged_template)
+    templated = compiled(ns)
+    properties.update(templated)
+    return properties
 
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='embedded')
 def item_view_embedded(context, request):
-    properties = embed(request, request.resource_path(context, '@@object'))
-    context.expand_embedded(request, properties)
+    item_path = request.resource_path(context)
+    properties = request.embed(item_path, '@@object')
+    for path in context.embedded_paths:
+        expand_path(request, properties, path)
     return properties
+
+
+@view_config(context=Item, permission='view', request_method='GET',
+             name='actions')
+def item_actions(context, request):
+    path = request.resource_path(context)
+    ns = {}
+    ns['permission'] = permission_checker(context, request)
+    ns['item_type'] = context.item_type
+    ns['item_uri'] = path
+    compiled = ObjectTemplate(context.actions)
+    actions = compiled(ns)
+    return {
+        '@id': path,
+        'actions': actions,
+    }
 
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='page')
 def item_view_page(context, request):
-    properties = embed(request, request.resource_path(context, '@@embedded'))
-    context.add_actions(request, properties)
+    item_path = request.resource_path(context)
+    properties = request.embed(item_path, '@@embedded')
+    actions = request.embed(item_path, '@@actions', as_user=True)['actions']
+    if actions:
+        properties['actions'] = actions
+    if request.has_permission('audit', context):
+        properties['audit'] = request.embed(item_path, '@@audit')['audit']
+    # XXX Move to view when views on ES results implemented.
     properties = context.expand_page(request, properties)
     return properties
 
@@ -1178,10 +1196,28 @@ def item_view_page(context, request):
              name='expand')
 def item_view_expand(context, request):
     path = request.resource_path(context)
-    properties = embed(request, join(path, '@@object'))
+    properties = request.embed(path, '@@object')
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
+
+
+@view_config(context=Item, permission='view', request_method='GET',
+             name='columns')
+def item_view_columns(context, request):
+    path = request.resource_path(context)
+    properties = request.embed(path, '@@object')
+    if context.schema is not None and 'columns' in context.schema:
+        return properties
+
+    subset = {
+        '@id': properties['@id'],
+        '@type': properties['@type'],
+    }
+    for path in context.collection.column_paths:
+        expand_column(request, properties, subset, path)
+
+    return subset
 
 
 @view_config(context=Item, permission='audit', request_method='GET',
@@ -1199,8 +1235,7 @@ def item_view_audit_self(context, request):
              name='audit')
 def item_view_audit(context, request):
     path = request.resource_path(context)
-    types = [context.item_type] + context.base_types
-    properties = embed(request, join(path, '@@object'))
+    properties = request.embed(path, '@@object')
     audit = inherit_audits(request, properties, context.audit_inherit_paths)
     return {
         '@id': path,
@@ -1217,21 +1252,9 @@ def item_view_raw(context, request):
 
 
 @view_config(context=Item, permission='edit', request_method='GET',
-             name='edit')
+             name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
-    properties = context.upgrade_properties()
-    for name, value in context.links(properties).iteritems():
-        if isinstance(value, list):
-            properties[name] = [request.resource_path(item) for item in value]
-        else:
-            properties[name] = request.resource_path(value)
-    etag = 'tid:%s' % context.model.data[''].propsheet.tid
-    request.response.etag = etag
-    cache_control = request.response.cache_control
-    cache_control.private = True
-    cache_control.max_age = 0
-    cache_control.must_revalidate = True
-    return properties
+    return item_links(context, request)
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',
@@ -1375,6 +1398,8 @@ def item_index_data(context, request):
         'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,
+        'embedded_uuids': sorted(request._embedded_uuids),
+        'linked_uuids': sorted(request._linked_uuids),
     }
 
     return document
