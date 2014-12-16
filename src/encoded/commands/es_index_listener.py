@@ -171,13 +171,10 @@ def composite(loader, global_conf, **settings):
 
     # Register before testapp creation.
     @atexit.register
-    def shutdown_listener():
-        if listener is None:
-            return
-        log.debug('shutting down listening thread')
-        control  # Prevent early gc
-        controller.shutdown(socket.SHUT_RDWR)
-        listener.join()
+    def join_listener():
+        if listener:
+            log.debug('joining listening thread')
+            listener.join()
 
     # Composite app is used so we can load the main app
     app_name = settings.get('app', None)
@@ -224,6 +221,13 @@ def composite(loader, global_conf, **settings):
     listener.daemon = True
     log.debug('starting listener')
     listener.start()
+
+    # Register before testapp creation.
+    @atexit.register
+    def shutdown_listener():
+        log.debug('shutting down listening thread')
+        control  # Prevent early gc
+        controller.shutdown(socket.SHUT_RDWR)
 
     def status_app(environ, start_response):
         status = '200 OK'
