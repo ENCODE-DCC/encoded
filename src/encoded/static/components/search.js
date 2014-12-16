@@ -424,7 +424,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} />
+                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
                 </li>
             );
         }
