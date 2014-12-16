@@ -11,6 +11,7 @@ from .base import (
     Collection,
     ONLY_ADMIN_VIEW,
 )
+from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
@@ -87,6 +88,16 @@ class Page(Collection):
             if resource is not None:
                 return resource
             return default
+
+        def __resource_url__(self, request, info):
+            # Record ancestor uuids in linked_uuids so renames of ancestors
+            # invalidate linking objects.
+            for obj in lineage(self):
+                uuid = getattr(obj, 'uuid', None)
+                if uuid is not None:
+                    request._linked_uuids.add(str(uuid))
+            return None
+
 
 
 def isNotCollectionDefaultPage(value, schema):
