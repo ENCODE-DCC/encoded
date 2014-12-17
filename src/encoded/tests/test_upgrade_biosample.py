@@ -80,6 +80,17 @@ def biosample_7(biosample):
     return item
 
 
+@pytest.fixture
+def biosample_8(biosample):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '8',
+        'model_organism_age': '15.0',
+        'model_organism_age_units': 'day',
+    })
+    return item
+
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -198,6 +209,7 @@ def test_biosample_upgrade_model_organism(app, biosample_6):
     assert 'health_status' not in value
     assert 'life_stage' not in value
 
+
 def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
     biosample_6['organism'] = '3413218c-3d86-498b-a0a2-9a406638e786'
     migrator = app.registry['migrator']
@@ -247,6 +259,7 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
 
+
 def test_biosample_worm_life_stage(app, biosample_7):
     biosample_7['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
     migrator = app.registry['migrator']
@@ -254,3 +267,16 @@ def test_biosample_worm_life_stage(app, biosample_7):
     assert value['schema_version'] == '8'
     assert value['worm_life_stage'] == 'mixed stage (embryonic)'
 
+
+def test_biosample_age_pattern(app, biosample_8):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_8, target_version='9')
+    assert value['schema_version'] == '9'
+    assert value['model_organism_age'] == '15'
+
+def test_biosample_age_pattern(app, biosample_8):
+    biosample_8['model_organism_age'] = '15.0-16.0'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_8, target_version='9')
+    assert value['schema_version'] == '9'
+    assert value['model_organism_age'] == '15-16'
