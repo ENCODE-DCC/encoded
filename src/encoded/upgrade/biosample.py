@@ -1,6 +1,6 @@
 from ..migrator import upgrade_step
 from .shared import ENCODE2_AWARDS
-import re, string
+import re
 
 def number(value):
     if isinstance(value, (int, long, float, complex)):
