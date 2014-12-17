@@ -96,7 +96,8 @@
             "comment": "The unit for the dependant rbns_protein_concentration.",
             "type": "string",
             "enum": [
-                "nM" 
+                "nM",
+                "pM"
             ]
         },
         "status": {
