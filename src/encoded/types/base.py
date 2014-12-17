@@ -72,12 +72,6 @@ ONLY_ADMIN_VIEW = [
 
 
 TYPES_WITH_FORMS = [
-    'document',
-    'antibody_characterization',
-    'biosample_characterization',
-    'construct_characterization',
-    'donor_characterization',
-    'rnai_characterization',
     'image',
     'page',
 ]
