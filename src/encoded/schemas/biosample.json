@@ -26,6 +26,8 @@
     "dependencies": {
         "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
+        "post_synchronization_time_units": ["post_synchronization_time"],
+        "post_synchronization_time": ["post_synchronization_time_units"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
