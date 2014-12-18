@@ -20,7 +20,7 @@
             "title": "Analysis Step",
             "description": "Reference to template step in pipeline",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "analysis_step"        
         },
         "workflow_run": {
             "title": "Workflow Run",
