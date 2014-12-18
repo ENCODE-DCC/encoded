@@ -238,6 +238,9 @@ class Software(Collection):
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
+    item_rev = {
+        'versions': ('software', 'software')
+    }
 
 
 @location('software-versions')

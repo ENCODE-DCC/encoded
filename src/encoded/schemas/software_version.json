@@ -113,14 +113,5 @@
             "title": "Purpose in project",
             "type": "array"
         }
-    },
-    "boost_values": {
-        "uuid": 1.0,
-        "version": 1.0,
-        "software.title": 1.0,
-        "software.name": 1.0,
-        "software.purpose": 1.0,
-        "software.used_by": 1.0,
-        "software.references.title": 1.0
     }
 }
