@@ -17,6 +17,7 @@ import atexit
 import transaction
 import time
 import Queue
+from contextlib import contextmanager
 from .embedding import embed
 import logging
 
@@ -29,15 +30,13 @@ INDEX = 'encoded'
 
 current_snapshot_id = None
 app = None
-resume = None
-ready = None
 
 
 def includeme(config):
     config.registry[INDEXING_POOL] = make_pool(config.registry.settings)
 
 
-def initializer(settings, _ready, _resume):
+def initializer(settings):
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
@@ -50,120 +49,71 @@ def initializer(settings, _ready, _resume):
 
     from . import main
     global app
-    global ready
-    global resume
-    ready = _ready
-    resume = _resume
+    global snapshot_lock
+    atexit.register(clear_snapshot)
     app = main(settings, indexer=False, create_tables=False)
+    signal.signal(signal.SIGALRM, clear_snapshot)
 
 
 def set_snapshot(snapshot_id):
     global current_snapshot_id
     if current_snapshot_id == snapshot_id:
         return
-    if current_snapshot_id:
-        transaction.abort()
-        manager.pop()
-        current_snapshot_id = None
+    clear_snapshot()
     current_snapshot_id = snapshot_id
-    if snapshot_id:
-        txn = transaction.begin()
-        txn.doom()
-        txn.setExtendedInfo('snapshot_id', snapshot_id)
-        root = app.root_factory(app)
-        registry = app.registry
-        request = app.request_factory.blank('/_indexing_pool')
-        extensions = app.request_extensions
-        if extensions is not None:
-            request._set_extensions(extensions)
-        request.invoke_subrequest = app.invoke_subrequest
-        request.root = root
-        request.registry = registry
-        request._stats = {}
-        manager.push({'request': request, 'registry': registry})
+    txn = transaction.begin()
+    txn.doom()
+    txn.setExtendedInfo('snapshot_id', snapshot_id)
+    root = app.root_factory(app)
+    registry = app.registry
+    request = app.request_factory.blank('/_indexing_pool')
+    extensions = app.request_extensions
+    if extensions is not None:
+        request._set_extensions(extensions)
+    request.invoke_subrequest = app.invoke_subrequest
+    request.root = root
+    request.registry = registry
+    request._stats = {}
+    manager.push({'request': request, 'registry': registry})
 
 
-def clear_snapshot():
+def clear_snapshot(signum=None, frame=None):
     global current_snapshot_id
-    if current_snapshot_id:
-        transaction.abort()
-        manager.pop()
-        current_snapshot_id = None
-    process = multiprocessing.current_process()
-    # print 'clear snapshot %s' % process._identity
-    ready.put(process._identity)
-    resume.wait()
-    return process._identity
+    if current_snapshot_id is None:
+        return
+    transaction.abort()
+    manager.pop()
+    current_snapshot_id = None
+
+
+@contextmanager
+def snapshot(snapshot_id):
+    import signal
+    signal.alarm(0)
+    set_snapshot(snapshot_id)
+    yield
+    signal.alarm(5)
 
 
 def es_update_object(args):
     snapshot_id, uuid, xmin = args
-    set_snapshot(snapshot_id)
-    request = get_current_request()
-    result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
-    doctype = result['object']['@type'][0]
-    es = request.registry[ELASTIC_SEARCH]
-    es.index(
-        index=INDEX, doc_type=doctype, body=result,
-        id=str(uuid), version=xmin, version_type='external',
-    )
-    return result['object']['@id']
+    with snapshot(snapshot_id):
+        request = get_current_request()
+        result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
+        doctype = result['object']['@type'][0]
+        es = request.registry[ELASTIC_SEARCH]
+        es.index(
+            index=INDEX, doc_type=doctype, body=result,
+            id=str(uuid), version=xmin, version_type='external',
+        )
+        return result['object']['@id']
 
 
 def make_pool(settings):
-    ready = multiprocessing.Queue()
-    resume = multiprocessing.Event()
-    pool = IndexingPool(
+    return IndexingPool(
         initializer=initializer,
-        initargs=(settings, ready, resume)
+        initargs=(settings, )
     )
-    return pool, ready, resume
-
-
-def pool_clear_snapshot(pool, ready, resume):
-    if pool._state != RUN:
-        return
-    if pool._cache:
-        for p in pool._pool:
-            if p.exitcode is None:
-                p.terminate()
-        return
-    pool._join_exited_workers()
-    resume.clear()
-    processes = len(pool._pool)
-    done = set()
-    for i in range(processes):
-        pool.enqueue_task(clear_snapshot)
-    timedout = False
-    for i in range(processes):
-        try:
-            identity = ready.get(timeout=1)
-        except Queue.Empty:
-            timedout = True
-            break
-        else:
-            done.add(identity)
-    if timedout:
-        pool._help_stuff_finish(pool._inqueue)
-        to_terminate = [w for w in pool._pool if w._identity not in done]
-        for w in to_terminate:
-            w.terminate()
-        pool._join_exited_workers()
-        try:
-            while True:
-                identity = ready.get(timeout=0.1)
-        except Queue.Empty:
-            pass
-    resume.set()
-    while done:
-        if pool._outqueue._reader.poll(0.1):
-            task = pool._outqueue.get()
-            job, i, obj = task
-            success, value = obj
-            if success and value in done:
-                done.remove(value)
-    while pool._outqueue._reader.poll(0.1):
-        pool._outqueue.get()
 
 
 def handle_results(request, value_holder):
@@ -187,18 +137,14 @@ def handle_results(request, value_holder):
         value_holder[0] = i
 
 
-def pool_update_objects(request, uuids, xmin, snapshot_id, pool_info):
-    pool, ready, resume = pool_info
-    try:
-        tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
-        value_holder = [0]
-        result_handler = handle_results(request, value_holder)
-        next(result_handler)
-        pool.run_tasks(es_update_object, tasks, callback=result_handler.send)
-        result_handler.close()
-        return value_holder[0]
-    finally:
-        pool_clear_snapshot(pool, ready, resume)
+def pool_update_objects(request, uuids, xmin, snapshot_id, pool):
+    tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
+    value_holder = [0]
+    result_handler = handle_results(request, value_holder)
+    next(result_handler)
+    pool.run_tasks(es_update_object, tasks, callback=result_handler.send)
+    result_handler.close()
+    return value_holder[0]
 
 
 class IndexingPool(object):
