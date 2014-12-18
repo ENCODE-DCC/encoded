@@ -47,6 +47,7 @@ data = {
 gzip_types = [
     "CEL",
     "bam",
+    "bed",
     "bed_bed3",
     "bed_bed6",
     "bed_bedLogR",
