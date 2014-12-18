@@ -78,7 +78,7 @@ runcmd:
 - cd /srv/encoded
 - sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
 - sudo -u encoded git checkout %(COMMIT)s
-- sudo -u encoded python2.7 bootstrap.py -v 2.2.5
+- sudo -u encoded python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
 - sudo -u encoded bin/buildout
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
 - sudo /etc/init.d/postgresql stop

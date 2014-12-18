@@ -229,6 +229,9 @@
                         "unique signal",
                         "genome reference",
                         "genome index",
+                        "transcriptome alignments",
+                        "genome quantifications",
+                        "transcript quantifications",
                         "methyl CG",
                         "methyl CHG",
                         "methyl CHH"

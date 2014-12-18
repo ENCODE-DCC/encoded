@@ -35,7 +35,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "BS"
@@ -404,7 +404,7 @@
             "title": "Post-synchronization time",
             "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_synchronization_time_units": {
             "title": "Post-synchronization time units",
@@ -416,7 +416,6 @@
                 "day",
                 "week",
                 "month",
-                "year",
                 "stage"
             ]
         },       

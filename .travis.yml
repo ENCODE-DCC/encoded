@@ -23,7 +23,7 @@ before_install:
   - sudo service elasticsearch stop
   - elasticsearch -v
 install:
-  - python bootstrap.py -v 2.2.5
+  - python bootstrap.py -v 2.2.5 --setuptools-version 7.0
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >
