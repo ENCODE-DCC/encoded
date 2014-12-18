@@ -70,6 +70,22 @@ class AnalysisStepRun(Collection):
         ]
 
 
+@location('qc-metrics')
+class QcMetric(Collection):
+    item_type = 'qc_metric',
+    schema = load_schema('qc_metric')
+    properties = {
+        'title': "QC metrics",
+        'description': 'Listing of the QC metrics'
+    }
+
+    class Item(Collection.Item):
+
+        embedded = [
+            'file'
+        ]
+
+
 @location('workflow-runs')
 class WorkflowRun(Collection):
     item_type = 'workflow_run'
