@@ -50,7 +50,19 @@
                             "IDR",
                             "Minimum unique reads",
                             "Minimum uniquely mapped reads",
-                            "sequencing coverage"
+                            "sequencing coverage",
+                            "Per tile sequence quality",
+                            "Per base sequence quality",
+                            "Sequence Duplication Levels",
+                            "Per base sequence content",
+                            "Per sequence GC content",
+                            "Sequence Length Distribution",
+                            "Kmer Content",
+                            "Basic Statistics",
+                            "Adapter Content",
+                            "Overrepresented sequences",
+                            "Per base N content",
+                            "Per sequence quality scores"
                         ]
                     },
                     "value": {
