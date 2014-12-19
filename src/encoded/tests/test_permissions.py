@@ -70,12 +70,12 @@ def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
 
 
 def test_users_view_details_admin(submitter, testapp):
-    res = testapp.get(submitter['@id'])
+    res = testapp.get(submitter['@id'] + '@@details')
     assert 'email' in res.json
 
 
 def test_users_view_details_self(submitter, submitter_testapp):
-    res = submitter_testapp.get(submitter['@id'])
+    res = submitter_testapp.get(submitter['@id'] + '@@details')
     assert 'email' in res.json
 
 

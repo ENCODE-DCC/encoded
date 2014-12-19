@@ -147,6 +147,7 @@ def main(global_config, **local_config):
     configure_engine(settings)
 
     # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.embedding')
     config.include('.renderers')
     config.include('.authentication')
     config.include('.validation')

@@ -11,15 +11,12 @@ from .base import (
     paths_filtered_by_status,
 )
 from .dataset import Dataset
-from pyramid.traversal import (
-    find_resource,
-)
 import datetime
 
 
-def run_type(root, registry, replicates):
+def run_type(request, replicates):
     for replicate in replicates:
-        properties = find_resource(root, replicate).upgrade_properties()
+        properties = request.embed(replicate, '@@object')
         if properties.get('status') in ('deleted', 'replaced'):
             continue
         if 'paired_ended' in properties:
@@ -90,7 +87,7 @@ class Experiment(Dataset):
                 '$condition': run_type,
             },
             'replicates': (
-                lambda root, replicates: paths_filtered_by_status(root, replicates)
+                lambda request, replicates: paths_filtered_by_status(request, replicates)
             ),
         }
         embedded = Dataset.Item.embedded + [

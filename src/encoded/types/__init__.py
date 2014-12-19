@@ -97,7 +97,7 @@ class Construct(Collection):
     }
     item_template = {
         'characterizations': (
-            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     }
     item_embedded = ['target']
@@ -119,7 +119,7 @@ class Talen(Collection):
     }
     item_template = {
         'characterizations': (
-            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     }
     item_embedded = ['lab', 'submitted_by']
@@ -186,7 +186,7 @@ class RNAi(Collection):
     }
     item_template = {
         'characterizations': (
-            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     }
     item_keys = ALIAS_KEYS
@@ -219,7 +219,7 @@ class Publication(Collection):
                 'value': '{reference}',
                 '$repeat': 'reference references',
                 '$templated': True,
-                '$condition': 'reference',
+                '$condition': 'references',
             },
         ]
 
@@ -237,6 +237,7 @@ class Software(Collection):
     item_embedded = ['references']
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+        {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
     ]
 
 

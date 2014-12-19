@@ -72,12 +72,6 @@ ONLY_ADMIN_VIEW = [
 
 
 TYPES_WITH_FORMS = [
-    'document',
-    'antibody_characterization',
-    'biosample_characterization',
-    'construct_characterization',
-    'donor_characterization',
-    'rnai_characterization',
     'image',
     'page',
 ]
@@ -103,10 +97,10 @@ EDIT_ACTION = {
 }
 
 
-def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
+def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     return [
         path for path in paths
-        if find_resource(root, path).upgrade_properties().get('status') not in exclude
+        if request.embed(path, '@@object').get('status') not in exclude
     ]
 
 

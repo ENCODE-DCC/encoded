@@ -200,12 +200,12 @@ def es_mapping(mapping):
                     },
                 },
             },
-            'embedded_uuid_closure': {
+            'embedded_uuids': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
             },
-            'link_uuid_closure': {
+            'linked_uuids': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
