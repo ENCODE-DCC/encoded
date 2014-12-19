@@ -927,5 +927,53 @@
         "output_type": "genome index",
         "pipeline": "ENCPL000MEG",
         "derived_from": ["ENCFF019HGN"]
+    },
+    {
+        "accession": "ENCFF000VWO",
+        "assembly": "hg19",
+        "award": "U54HG004558",
+        "dataset": "ENCSR000EYX",
+        "file_format": "bam",
+        "file_size": 462139262,
+        "lab": "michael-snyder",
+        "md5sum": "ce073afcbc07afa343f2d4e4d07efeda",
+        "output_type": "alignments",
+        "replicate": "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "hg19/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878InputStdAlnRep1.bam",
+        "uuid": "85cebb31-19cc-4431-8479-f202bc6acc2d"
+    },
+    {
+        "accession": "ENCFF000VUQ",
+        "assembly": "hg19",
+        "award": "U54HG004558",
+        "dataset": "ENCSR000DZQ",
+        "file_format": "bam",
+        "file_size": 456470369,
+        "lab": "michael-snyder",
+        "md5sum": "fa9c4893066d128ed24d5fc45becb67a",
+        "output_type": "alignments",
+        "replicate": "3e2a2c90-91fb-40f6-82db-d2bf2f2a914e",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "hg19/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878Ebf1sc137065StdAlnRep1.bam",
+        "uuid": "054165db-7b03-452e-9b5a-ea7599248e6b"
+    },
+    {
+        "accession": "ENCFF000VUS",
+        "assembly": "hg19",
+        "award": "U54HG004558",
+        "dataset": "ENCSR000DZQ",
+        "file_format": "bam",
+        "file_size": 473944988,
+        "lab": "michael-snyder",
+        "md5sum": "91d0dd9e0df439dd6599914b5275e7b2",
+        "output_type": "alignments",
+        "replicate": "befa63a2-a597-4521-8dec-8acce5d2af01",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "hg19/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878Ebf1sc137065StdAlnRep2.bam",
+        "uuid": "e77dba78-71f2-4f73-9611-79b5e725b539"
     }
 ]

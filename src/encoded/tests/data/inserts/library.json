@@ -322,5 +322,46 @@
         "size_range": "100-300",
         "paired_ended": false,
         "biosample": "ENCBS039ENC"
+    },
+    {
+        "accession": "ENCLB723GTS",
+        "award": "U54HG004558",
+        "biosample": "ENCBS630AAA",
+        "depleted_in_term_id": [],
+        "depleted_in_term_name": [],
+        "lab": "michael-snyder/",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "paired_ended": false,
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "50c0d6d6-3d79-430b-bbdf-6b035fdb4b29"
+    },
+    {
+        "accession": "ENCLB209APR",
+        "award": "U54HG004558",
+        "biosample": "ENCBS630AAA",
+        "lab": "michael-snyder",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "paired_ended": false,
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "677a9c62-764e-47e0-bbbd-afa0dcb20b26"
+    },
+    {
+        "accession": "ENCLB209APS",
+        "award": "U54HG004558",
+        "biosample": "ENCBS630AAA",
+        "lab": "michael-snyder",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "paired_ended": false,
+        "status": "released",
+        "strand_specificity": false,
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "de797662-a71b-45d5-96bf-9dd800194907"
     }
 ]
