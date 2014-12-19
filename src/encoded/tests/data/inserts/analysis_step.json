@@ -43,51 +43,29 @@
         "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66"
     },
     {
-        "analysis_step_types": ["filtering", "file format conversion"],
+        "analysis_step_types": [
+            "filtering", 
+            "file format conversion",
+            "QA calculation",
+            "signal calling",
+            "peak calling"
+        ],
         "software_versions": [
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
-            "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"
-        ],
-        "input_file_types": ["bam"],
-        "output_file_types": ["tagAlign"],
-        "status": "released",
-        "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
-    },
-    {
-        "analysis_step_types": [ "QA calculation"],
-        "software_versions": [
-           "fe17b174-32f9-4e88-9618-57e8973d8868"
-        ],
-        "input_file_types": ["tagAlign"],
-        "qa_stats_generated": ["NSC", "RSC", "cross-correlation plot"],
-        "status": "released",
-        "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
-        "uuid": "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa"
-    },
-    {
-        "analysis_step_types": [ "signal calling"],
-        "software_versions": [
+            "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f",
+            "fe17b174-32f9-4e88-9618-57e8973d8868",
             "09d27175-9479-4684-b055-19491bbfd14f",
-            "956620a0-50ad-11e4-916c-0800200c9a66"
-        ],
-        "input_file_types": ["tagAlign", "fasta", "bed"],
-        "output_file_types": ["bigWig"],
-        "status": "released",
-        "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
-        "uuid": "7bdab3ce-d4e7-47ef-9584-84273adecc08"
-    },
-    {
-        "analysis_step_types": [ "peak calling"],
-        "software_versions": [
+            "956620a0-50ad-11e4-916c-0800200c9a66",
             "fa8af638-925c-4f94-8972-3d2f4f8b0c21",
             "fe17b174-32f9-4e88-9618-57e8973d8868",
-            "beb915d5-157c-48d2-9867-7d2bbf8917fe"
+            "beb915d5-157c-48d2-9867-7d2bbf8917fe",
+            "d0c7d890-3446-41b5-82f0-388347f7e8dd"
         ],
-        "input_file_types": ["tagAlign"],
-        "output_file_types": ["narrowPeak"],
+        "input_file_types": ["bam", "fasta", "bed"],
+        "output_file_types": ["bigWig", "narrowPeak"],
+        "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
-        "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
-        "uuid": "709bba59-7717-41c3-b829-ae9dfba9ffd8"
+        "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
     },
     {
         "analysis_step_types": [ "IDR"],
@@ -95,23 +73,11 @@
             "195de123-3300-4485-a862-d301ff35fc4e"
         ],
         "input_file_types": ["narrowPeak"],
-        "output_file_types": ["narrowPeak"],
-        "qa_stats_generated": ["self-consistency ration", "rescue ratio", "IDR plot"],
-        "status": "released",
-        "parents": ["709bba59-7717-41c3-b829-ae9dfba9ffd8"],
-        "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105"
-    },
-    {
-        "analysis_step_types": [ "QA calculation"],
-        "software_versions": [
-            "d0c7d890-3446-41b5-82f0-388347f7e8dd"
-        ],
-        "input_file_types": ["tagAlign", "bed"],
-        "qa_stats_generated": ["SPOT"],
+        "qa_stats_generated": ["self-consistency ratio", "rescue ratio", "IDR plot"],
         "status": "released",
         "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
-        "uuid": "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
-    },
+        "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105"
+    }
     {
         "analysis_step_types": ["alignment"],
         "software_versions": [

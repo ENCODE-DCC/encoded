@@ -94,18 +94,12 @@
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
         "end_points": [
-            "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
-            "7bdab3ce-d4e7-47ef-9584-84273adecc08",
+            "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
             "11440ed3-1228-4430-aa5a-54cd408ff105",
-            "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
         ],
         "analysis_steps": [
             "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
-            "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
-            "7bdab3ce-d4e7-47ef-9584-84273adecc08",
-            "709bba59-7717-41c3-b829-ae9dfba9ffd8",
             "11440ed3-1228-4430-aa5a-54cd408ff105",
-            "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
         ],
         "documents": [
             "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram",
