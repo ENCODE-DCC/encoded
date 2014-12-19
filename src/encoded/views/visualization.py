@@ -4,8 +4,10 @@ from ..contentbase import Item
 from ..embedding import embed
 from collections import OrderedDict
 import cgi
-import urlparse
-import urllib
+from urllib.parse import (
+    parse_qs,
+    urlencode,
+)
 
 TAB = '\t'
 NEWLINE = '\n'
@@ -240,7 +242,7 @@ def generate_batch_hubs(context, request):
 
     results = {}
     txt = request.matchdict['txt']
-    param_list = urlparse.parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
+    param_list = parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
 
     if len(request.matchdict) == 3:
 
@@ -252,7 +254,7 @@ def generate_batch_hubs(context, request):
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
         params['assembly'] = [assembly]
-        path = '/search/?%s' % urllib.urlencode(params, True)
+        path = '/search/?%s' % urlencode(params, True)
         results = embed(request, path, as_user=True)
         trackdb = ''
         for i, experiment in enumerate(results['@graph']):
@@ -267,7 +269,7 @@ def generate_batch_hubs(context, request):
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        path = '/search/?%s' % urllib.urlencode(param_list, True)
+        path = '/search/?%s' % urlencode(param_list, True)
         results = embed(request, path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:

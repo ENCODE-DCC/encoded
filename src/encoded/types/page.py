@@ -103,7 +103,7 @@ class Page(Collection):
 def isNotCollectionDefaultPage(value, schema):
     if value:
         request = get_current_request()
-        page = lookup_resource(request.root, request.root, value.encode('utf-8'))
+        page = lookup_resource(request.root, request.root, value)
         if page.is_default_page():
             return 'You may not place pages inside an object collection.'
 

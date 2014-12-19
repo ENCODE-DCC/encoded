@@ -51,7 +51,7 @@ def schema_mapping(name, schema):
 
     if type_ == 'object':
         properties = {}
-        all_props = schema['properties'].items() + schema.get('calculated_props', {}).items()
+        all_props = list(schema['properties'].items()) + list(schema.get('calculated_props', {}).items())
         for k, v in all_props:
             mapping = schema_mapping(k, v)
             if mapping is not None:
@@ -343,7 +343,7 @@ def run(app, collections=None, dry_run=False):
                 es.indices.create(index=index, body=index_settings())
 
     if not collections:
-        collections = ['meta'] + root.by_item_type.keys()
+        collections = ['meta'] + list(root.by_item_type.keys())
 
     for collection_name in collections:
         if collection_name == 'meta':
@@ -357,8 +357,7 @@ def run(app, collections=None, dry_run=False):
         if mapping is None:
             continue  # Testing collections
         if dry_run:
-            print json.dumps(
-                sorted_dict({index: {doc_type: mapping}}), indent=4)
+            print(json.dumps(sorted_dict({index: {doc_type: mapping}}), indent=4))
             continue
 
         if collection_name is not 'meta':

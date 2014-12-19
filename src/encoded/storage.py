@@ -1,4 +1,3 @@
-from UserDict import DictMixin
 from sqlalchemy import (
     Column,
     DDL,
@@ -180,7 +179,7 @@ class CurrentPropertySheet(Base):
     resource = orm.relationship('Resource')
 
 
-class Resource(Base, DictMixin):
+class Resource(Base):
     '''Resources are described by multiple propsheets
     '''
     __tablename__ = 'resources'
@@ -197,7 +196,8 @@ class Resource(Base, DictMixin):
             rid = uuid.uuid4()
         super(Resource, self).__init__(item_type=item_type, rid=rid)
         if data is not None:
-            self.update(data)
+            for k, v in data.items():
+                self[k] = v
 
     def __getitem__(self, key):
         return self.data[key].propsheet.properties
@@ -302,7 +302,7 @@ def record_transaction_data(session):
         user_path, userid = txn.user.split(' ', 1)
         data['userid'] = userid
 
-    record.data = {k: v for k, v in data.iteritems() if not k.startswith('_')}
+    record.data = {k: v for k, v in data.items() if not k.startswith('_')}
     session.add(record)
 
 

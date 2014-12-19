@@ -1,11 +1,11 @@
 from base64 import b64decode
-from cStringIO import StringIO
+from io import BytesIO
 from mimetypes import guess_type
 from PIL import Image
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.view import view_config
-from urllib2 import (
+from urllib.parse import (
     quote,
     unquote,
 )
@@ -89,7 +89,7 @@ class ItemWithAttachment(Item):
             if charset is not None:
                 download_meta['charset'] = charset
             # Make sure the mimetype appears to be what the client says it is
-            mime_type_detected = magic.from_buffer(data, mime=True)
+            mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
             if mime_type_declared and not mimetypes_are_equal(
                     mime_type_declared, mime_type_detected):
                 msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
@@ -120,7 +120,7 @@ class ItemWithAttachment(Item):
             # Validate images and store height/width
             major, minor = mime_type.split('/')
             if major == 'image' and minor in ('png', 'jpeg', 'gif', 'tiff'):
-                stream = StringIO(data)
+                stream = BytesIO(data)
                 im = Image.open(stream)
                 im.verify()
                 attachment['width'], attachment['height'] = im.size

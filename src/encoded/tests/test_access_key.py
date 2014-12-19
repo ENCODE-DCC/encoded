@@ -3,7 +3,7 @@ import pytest
 
 def basic_auth(username, password):
     from base64 import b64encode
-    return 'Basic ' + b64encode('%s:%s' % (username, password))
+    return 'Basic ' + b64encode(('%s:%s' % (username, password)).encode('utf-8')).decode('ascii')
 
 
 @pytest.yield_fixture(scope='session')

@@ -18,7 +18,7 @@ from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
-from urlparse import (
+from urllib.parse import (
     parse_qs,
     urlparse,
 )

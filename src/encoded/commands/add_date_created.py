@@ -12,6 +12,7 @@ For the development.ini you must supply the paster app name:
     %(prog)s development.ini --app-name app
 
 """
+from future.utils import iteritems
 from pyramid.traversal import resource_path
 import logging
 import pytz
@@ -53,7 +54,7 @@ def run(testapp, collections=None, exclude=None, dry_run=False):
         count = 0
         errors = 0
         logger.info('Upgrading %s', collection_name)
-        for uuid, item in collection.iteritems():
+        for uuid, item in iteritems(collection):
             history = item.model.data[''].history
             first_propsheet = history[0]
             if 'date_created' in first_propsheet.properties:

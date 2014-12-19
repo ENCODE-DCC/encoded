@@ -21,7 +21,7 @@ To make updates from a single tsv file
 
 """
 from webtest import TestApp
-from urlparse import urlparse
+from urllib.parse import urlparse
 from .. import loadxl
 import logging
 import os.path
@@ -30,7 +30,7 @@ EPILOG = __doc__
 
 def basic_auth(username, password):
     from base64 import b64encode
-    return 'Basic ' + b64encode('%s:%s' % (username, password))
+    return 'Basic ' + b64encode(('%s:%s' % (username, password)).encode('utf-8')).decode('ascii')
 
 
 def remote_app(base, username='', password=''):

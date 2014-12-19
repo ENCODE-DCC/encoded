@@ -52,8 +52,8 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
     instance.add_tag('Name', name)
     instance.add_tag('commit', commit)
     instance.add_tag('started_by', username)
-    print instance
-    print instance.state,
+    print(instance)
+    sys.stdout.write(instance.state)
 
     while instance.state == 'pending':
         sys.stdout.write('.')
@@ -61,10 +61,9 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         time.sleep(1)
         instance.update()
 
-    print
-    print instance.state
-
-    print instance.public_dns_name  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
+    print()
+    print(instance.state)
+    print(instance.public_dns_name)  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
 
 
 def main():

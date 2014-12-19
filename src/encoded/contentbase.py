@@ -5,7 +5,13 @@ import venusian
 from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
+from future.utils import (
+    raise_with_traceback,
+    with_metaclass,
+    itervalues,
+)
 from itertools import islice
+from past.builtins import basestring
 from posixpath import join
 from pyramid.events import (
     ContextFound,
@@ -50,7 +56,7 @@ from sqlalchemy.orm.exc import (
     FlushError,
     NoResultFound,
 )
-from urllib import urlencode
+from urllib.parse import urlencode
 from uuid import (
     UUID,
     uuid4,
@@ -173,7 +179,7 @@ def permission_checker(context, request):
 
 def acl_from_settings(settings):
     acl = []
-    for k, v in settings.iteritems():
+    for k, v in settings.items():
         if k.startswith('allow.'):
             action = Allow
             permission = k[len('allow.'):]
@@ -439,8 +445,7 @@ class MergedKeysMeta(MergedDictsMeta):
                 {tuple(path.split('.')) for path in self.audit_inherit})
 
 
-class Item(object):
-    __metaclass__ = MergedKeysMeta
+class Item(with_metaclass(MergedKeysMeta, object)):
     __merged_dicts__ = [
         'template',
         'rev',
@@ -521,7 +526,7 @@ class Item(object):
     def rev_links(self):
         root = find_root(self)
         links = {}
-        for name, spec in self.merged_rev.iteritems():
+        for name, spec in self.merged_rev.items():
             links[name] = value = []
             for link in self.model.revs:
                 if (link.source.item_type, link.rel) == spec:
@@ -577,11 +582,11 @@ class Item(object):
             ns['permission'] = permission_checker(self, request)
             # Use request.resource_path so that linked uuid is recorded
             ns['item_uri'] = request.resource_path(self)
-            for name, value in self.rev_links().iteritems():
+            for name, value in self.rev_links().items():
                 ns[name] = [request.resource_path(item) for item in value]
         else:
             ns['item_uri'] = resource_path(self, '')
-            for name, value in self.rev_links().iteritems():
+            for name, value in self.rev_links().items():
                 ns[name] = [resource_path(item, '') for item in value]
 
         if self.merged_namespace_from_path:
@@ -787,8 +792,7 @@ class CustomItemMeta(MergedDictsMeta, ABCMeta):
         self.Item = type('Item', item_bases, item_attrs)
 
 
-class Collection(Mapping):
-    __metaclass__ = CustomItemMeta
+class Collection(with_metaclass(CustomItemMeta, Mapping)):
     __merged_dicts__ = [
         'template',
     ]
@@ -825,7 +829,7 @@ class Collection(Mapping):
         if self.schema is not None:
             properties = self.schema['properties']
             self.schema_links = [
-                key for key, prop in properties.iteritems()
+                key for key, prop in properties.items()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
             self.schema_version = properties.get('schema_version', {}).get('default')
@@ -985,7 +989,7 @@ def load_db(context, request):
             limit = 25
 
     items = (
-        item for item in context.itervalues()
+        item for item in itervalues(context)
         if request.has_permission('view', item)
     )
 
@@ -1106,7 +1110,7 @@ def item_view(context, request):
             # Avoid this view emitting PredicateMismatch
             exc_class, exc, tb = sys.exc_info()
             exc.__class__ = HTTPNotFound
-            raise HTTPNotFound, exc, tb
+            raise_with_traceback(exc, tb)
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
 

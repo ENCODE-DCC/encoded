@@ -13,6 +13,7 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'future',
     'humanfriendly',
     'jsonschema',
     'loremipsum',
