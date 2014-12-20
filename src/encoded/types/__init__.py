@@ -217,7 +217,7 @@ class Publication(Collection):
                 'value': '{reference}',
                 '$repeat': 'reference references',
                 '$templated': True,
-                '$condition': 'reference',
+                '$condition': 'references',
             },
         ]
 
@@ -235,4 +235,5 @@ class Software(Collection):
     item_embedded = ['references']
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+        {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
     ]

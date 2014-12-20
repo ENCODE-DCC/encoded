@@ -11,7 +11,7 @@
             "type": "string"
         }
     },
-    "identifyingProperties": ["uuid", "title", "reference"],
+    "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
