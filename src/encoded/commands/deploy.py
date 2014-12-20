@@ -48,6 +48,7 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         instance_profile_name='demo-instance',
     )
 
+    time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
     instance.add_tag('Name', name)
     instance.add_tag('commit', commit)
