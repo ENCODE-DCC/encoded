@@ -12,9 +12,14 @@ env:
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
-  matrix:
-    - BROWSER=
-    - BROWSER=Chrome
+matrix:
+  include:
+    - python: "2.7"
+      env: BROWSER=
+    - python: "2.7"
+      env: BROWSER=Chrome
+    - python: "3.4"
+      env: BROWSER=
 before_install:
   - whereis elasticsearch
   - sudo service postgresql stop
