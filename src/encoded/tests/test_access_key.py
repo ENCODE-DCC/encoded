@@ -3,7 +3,8 @@ import pytest
 
 def basic_auth(username, password):
     from base64 import b64encode
-    return 'Basic ' + b64encode('%s:%s' % (username, password))
+    from pyramid.compat import ascii_native_
+    return 'Basic ' + ascii_native_(b64encode(('%s:%s' % (username, password)).encode('utf-8')))
 
 
 @pytest.yield_fixture(scope='session')

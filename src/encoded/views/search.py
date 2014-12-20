@@ -2,7 +2,7 @@ import re
 from pyramid.view import view_config
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
-from urllib import urlencode
+from urllib.parse import urlencode
 from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
@@ -117,7 +117,7 @@ def search(context, request, search_type=None):
         for item_type in doc_types:
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != 'type' and v != item_type
+                for k, v in request.params.items() if k != 'type' and v != item_type
             ])
             result['filters'].append({
                 'field': 'type',
@@ -175,7 +175,7 @@ def search(context, request, search_type=None):
     # Setting filters
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field, term in request.params.iteritems():
+    for field, term in request.params.items():
         if field in ['type', 'limit', 'mode', 'searchTerm',
                      'format', 'frame', 'datastore', 'field']:
             continue
@@ -183,7 +183,7 @@ def search(context, request, search_type=None):
         # Add filter to result
         qs = urlencode([
             (k.encode('utf-8'), v.encode('utf-8'))
-            for k, v in request.params.iteritems() if v != term
+            for k, v in request.params.items() if v != term
         ])
         result['filters'].append({
             'field': field,
@@ -228,7 +228,7 @@ def search(context, request, search_type=None):
 
         terms = [
             {'terms': {q_field: q_terms}}
-            for q_field, q_terms in used_filters.iteritems()
+            for q_field, q_terms in used_filters.items()
             if q_field != query_field
         ]
         terms.append(

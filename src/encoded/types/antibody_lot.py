@@ -215,7 +215,7 @@ def lot_reviews(characterizations, targets, request):
                 'status': 'eligible for new data'
             }]
 
-    return char_reviews.values()
+    return list(char_reviews.values())
 
 
 @location('antibodies')

@@ -48,7 +48,7 @@ def test_html_parsed(string):
     escaped = json_script_escape(json.dumps(string))
     html = HTML % escaped
 
-    from HTMLParser import HTMLParser
+    from html.parser import HTMLParser
 
     class CheckHTML(HTMLParser):
         data = None

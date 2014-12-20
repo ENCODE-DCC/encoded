@@ -62,8 +62,7 @@ class NamespacedAuthenticationPolicy(object):
         # Dynamically create a subclass
         name = 'Namespaced_%s_%s' % (namespace, base.__name__)
         klass = type(name, (cls, base), {'_namespace_prefix': namespace + '.'})
-        return super(NamespacedAuthenticationPolicy, klass) \
-            .__new__(klass, *args, **kw)
+        return super(NamespacedAuthenticationPolicy, klass).__new__(klass)
 
     def __init__(self, namespace, base, *args, **kw):
         super(NamespacedAuthenticationPolicy, self).__init__(*args, **kw)
@@ -123,7 +122,7 @@ def generate_user():
     # Take a random 5 char binary string (80 bits of
     # entropy) and encode it as upper cased base32 (8 chars)
     random_bytes = os.urandom(5)
-    user = base64.b32encode(random_bytes).rstrip('=').upper()
+    user = base64.b32encode(random_bytes).decode('ascii').rstrip('=').upper()
     return user
 
 
@@ -133,5 +132,5 @@ def generate_password():
     # Take a random 10 char binary string (80 bits of
     # entropy) and encode it as lower cased base32 (16 chars)
     random_bytes = os.urandom(10)
-    password = base64.b32encode(random_bytes).rstrip('=').lower()
+    password = base64.b32encode(random_bytes).decode('ascii').rstrip('=').lower()
     return password

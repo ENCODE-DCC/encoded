@@ -11,8 +11,8 @@ from .base import (
     paths_filtered_by_status,
 )
 from itertools import chain
-from urllib import quote_plus
-from urlparse import urljoin
+from urllib.parse import quote_plus
+from urllib.parse import urljoin
 
 
 def file_is_revoked(request, path):

@@ -14,6 +14,7 @@ For the development.ini you must supply the paster app name:
 """
 import logging
 import transaction
+from future.utils import itervalues
 from pyramid.paster import get_app
 from pyramid.traversal import resource_path
 
@@ -33,7 +34,7 @@ def run(app, collections=None):
         collection = root[collection_name]
         collection_path = resource_path(collection)
         updated = 0
-        for count, item in enumerate(collection.itervalues()):
+        for count, item in enumerate(itervalues(collection)):
             path = resource_path(item)
             keys_add, keys_remove = item.update_keys()
             update = False

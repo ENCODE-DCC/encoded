@@ -1,4 +1,8 @@
 from pkg_resources import resource_stream
+from pyramid.compat import (
+    native_,
+    unquote_bytes_to_wsgi,
+)
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -12,17 +16,20 @@ from jsonschema import (
 from jsonschema.exceptions import ValidationError
 from uuid import UUID
 
+import codecs
 import posixpath
 
 from .schema_formats import is_accession
 from .server_defaults import SERVER_DEFAULTS
+
+utf8 = codecs.getreader("utf-8")
 
 
 def local_handler(uri):
     base, filename = posixpath.split(uri)
     if base != '/profiles':
         raise KeyError(uri)
-    schema = json.load(resource_stream(__name__, 'schemas/' + filename),
+    schema = json.load(utf8(resource_stream(__name__, 'schemas/' + filename)),
                        object_pairs_hook=collections.OrderedDict)
     return schema
 
@@ -40,9 +47,9 @@ def mixinProperties(schema, resolver):
                 mixin = resolved
         bases.append(mixin)
     for base in bases:
-        for name, base_prop in base.iteritems():
+        for name, base_prop in base.items():
             prop = properties.setdefault(name, {})
-            for k, v in base_prop.iteritems():
+            for k, v in base_prop.items():
                 if k not in prop:
                     prop[k] = v
                     continue
@@ -51,15 +58,16 @@ def mixinProperties(schema, resolver):
                 raise ValueError('Schema mixin conflict for %s/%s' % (name, k))
     # Allow schema properties to override
     base = schema.get('properties', {})
-    for name, base_prop in base.iteritems():
+    for name, base_prop in base.items():
         prop = properties.setdefault(name, {})
-        for k, v in base_prop.iteritems():
+        for k, v in base_prop.items():
             prop[k] = v
     schema['properties'] = properties
     return schema
 
 
 def lookup_resource(root, base, path):
+    path = unquote_bytes_to_wsgi(native_(path))
     try:
         UUID(path)
     except ValueError:
@@ -98,7 +106,7 @@ def linkTo(validator, linkTo, instance, schema):
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = lookup_resource(request.root, base, instance.encode('utf-8'))
+        item = lookup_resource(request.root, base, instance)
         if item is None:
             raise KeyError()
     except KeyError:
@@ -206,7 +214,7 @@ def load_schema(filename):
     if isinstance(filename, dict):
         schema = filename
     else:
-        schema = json.load(resource_stream(__name__, 'schemas/' + filename),
+        schema = json.load(utf8(resource_stream(__name__, 'schemas/' + filename)),
                            object_pairs_hook=collections.OrderedDict)
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
     schema = mixinProperties(schema, resolver)
