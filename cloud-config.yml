@@ -80,6 +80,7 @@ runcmd:
 - sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/wal-e
 - chown postgres:postgres /opt/wal-e
+- sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - sudo /etc/init.d/postgresql stop
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
