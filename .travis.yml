@@ -1,4 +1,5 @@
 language: python
+sudo: false
 env:
   global:
     - secure: |-
@@ -20,10 +21,8 @@ matrix:
       env: BROWSER=
 before_install:
   - whereis elasticsearch
-  - sudo service postgresql stop
   - postgres --version
   - initdb --version
-  - sudo service elasticsearch stop
   - elasticsearch -v
 install:
   - python bootstrap.py -v 2.2.5 --setuptools-version 7.0
