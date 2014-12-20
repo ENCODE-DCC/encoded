@@ -1,5 +1,8 @@
 from pkg_resources import resource_stream
-from pyramid.compat import unquote_bytes_to_wsgi
+from pyramid.compat import (
+    native_,
+    unquote_bytes_to_wsgi,
+)
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -64,7 +67,7 @@ def mixinProperties(schema, resolver):
 
 
 def lookup_resource(root, base, path):
-    path = unquote_bytes_to_wsgi(path)
+    path = unquote_bytes_to_wsgi(native_(path))
     try:
         UUID(path)
     except ValueError:

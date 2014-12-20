@@ -2,7 +2,10 @@ from copy import deepcopy
 from .cache import ManagerLRUCache
 from past.builtins import basestring
 from posixpath import join
-from pyramid.compat import unquote_bytes_to_wsgi
+from pyramid.compat import (
+    native_,
+    unquote_bytes_to_wsgi,
+)
 from pyramid.httpexceptions import HTTPNotFound
 
 
@@ -48,7 +51,7 @@ def embed(request, *elements, **kw):
     # Cache cut response time from ~800ms to ~420ms.
     as_user = kw.get('as_user')
     path = join(*elements)
-    path = unquote_bytes_to_wsgi(path)
+    path = unquote_bytes_to_wsgi(native_(path))
     if as_user is not None:
         result, embedded, linked = _embed(request, path, as_user)
     else:
