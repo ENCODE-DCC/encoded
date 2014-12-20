@@ -101,9 +101,10 @@ def test_json(testapp, item_type):
 
 
 def test_json_basic_auth(anonhtmltestapp):
-    import base64
+    from base64 import b64encode
+    from pyramid.compat import ascii_native_
     url = '/'
-    value = "Authorization: Basic %s" % base64.b64encode(b'nobody:pass').decode('ascii')
+    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
     res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=401)
     assert res.content_type == 'application/json'
 
@@ -172,8 +173,9 @@ def test_collection_post_missing_content_type(testapp):
 
 
 def test_collection_post_bad_(anontestapp):
-    import base64
-    value = "Authorization: Basic %s" % base64.b64encode(b'nobody:pass').decode('ascii')
+    from base64 import b64encode
+    from pyramid.compat import ascii_native_
+    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
     anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
 
 

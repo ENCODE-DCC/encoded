@@ -28,9 +28,11 @@ import os.path
 
 EPILOG = __doc__
 
+
 def basic_auth(username, password):
     from base64 import b64encode
-    return 'Basic ' + b64encode(('%s:%s' % (username, password)).encode('utf-8')).decode('ascii')
+    from pyramid.compat import ascii_native_
+    return 'Basic ' + ascii_native_(b64encode(('%s:%s' % (username, password)).encode('utf-8')))
 
 
 def remote_app(base, username='', password=''):
