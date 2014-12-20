@@ -1,4 +1,5 @@
 import os
+import sys
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -35,6 +36,11 @@ requires = [
     'xlrd',
     'zope.sqlalchemy',
 ]
+
+if sys.version_info.major == 2:
+    requires.extend([
+        'subprocess32',
+    ])
 
 tests_require = [
     'behave',
