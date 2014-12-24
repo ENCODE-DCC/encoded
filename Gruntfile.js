@@ -137,14 +137,13 @@ module.exports = function(grunt) {
         },
     });
 
-    grunt.registerMultiTask('browserify', function () {
+    grunt.registerMultiTask('browserify', function (watch) {
         var browserify = require('browserify');
         var watchify = require('watchify');
         var _ = grunt.util._;
         var path = require('path');
         var fs = require('fs');
         var data = this.data;
-        var watch = (process.env.NODE_ENV !== 'production');
         var options = _.extend({
             debug: true,
             cache: {},
@@ -220,9 +219,6 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-copy');
 
-    if (process.env.NODE_ENV === 'production') {
-        grunt.registerTask('default', ['browserify', 'copy']);
-    } else {
-        grunt.registerTask('default', ['browserify', 'copy', 'wait']);
-    }
+    grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('watch', ['browserify:*:watch', 'wait']);
 };
