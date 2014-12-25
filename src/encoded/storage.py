@@ -58,40 +58,36 @@ class UUID(types.TypeDecorator):
             return uuid.UUID(value)
 
 
-class PGJSON(types.Text):
-    """Postgresql JSON type.
-    """
-    __visit_name__ = 'JSON'
-
-
-@compiles(PGJSON, 'postgresql')
-def compile_varchar(element, compiler, **kw):
-    return 'JSON'
-
-
 class JSON(types.TypeDecorator):
     """Represents an immutable structure as a json-encoded string.
     """
 
     impl = types.Text
+    using_native_json = False
 
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql':
-            return dialect.type_descriptor(PGJSON())
-        else:
-            return dialect.type_descriptor(types.Text())
+            if dialect.server_version_info >= (9, 4):
+                self.using_native_json = True
+                return dialect.type_descriptor(postgresql.JSONB())
+            if dialect.server_version_info >= (9, 2):
+                self.using_native_json = True
+                return dialect.type_descriptor(postgresql.JSON())
+        return dialect.type_descriptor(types.Text())
 
     def process_bind_param(self, value, dialect):
+        if self.using_native_json:
+            return value
         if value is None:
             return value
         return json_renderer.dumps(value)
 
     def process_result_value(self, value, dialect):
-        if dialect.name == 'postgresql':
+        if self.using_native_json:
             return value
-        if value is not None:
-            value = json.loads(value)
-        return value
+        if value is None:
+            return value
+        return json.loads(value)
 
 
 class Key(Base):

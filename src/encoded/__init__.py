@@ -42,11 +42,14 @@ def static_resources(config):
 
 
 def configure_engine(settings, test_setup=False):
+    from .renderers import json_renderer
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
         # Already setup by test fixture
         return None
     engine_opts = {}
+    if engine_url.startswith('postgresql'):
+        engine_opts['json_serializer'] = json_renderer.dumps
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
