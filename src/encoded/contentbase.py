@@ -232,20 +232,28 @@ def location_root(factory):
     return factory
 
 
-def location(name, factory=None):
+def location(name, **kw):
     """ Attach a collection at the location ``name``.
 
     Use as a decorator on Collection subclasses.
     """
 
-    def set_location(config, name, factory):
+    def set_location(config, name, factory, **kw):
         root = config.registry[LOCATION_ROOT]
-        root.attach(name, factory)
+        collection = factory(root, name, **kw)
+        root[name] = collection
 
     def decorate(factory):
+        if issubclass(factory, Item):
+            kw['Item'] = factory
+            collection_class = factory.Collection
+        else:
+            collection_class = factory
+
         def callback(scanner, factory_name, factory):
             scanner.config.action(('location', name), set_location,
-                                  args=(scanner.config, name, factory),
+                                  args=(scanner.config, name, collection_class),
+                                  kw=kw,
                                   order=PHASE2_CONFIG)
         venusian.attach(factory, callback, category='pyramid')
         return factory
@@ -343,6 +351,12 @@ class Root(object):
         self.collections[name] = value
         self.by_item_type[value.item_type] = value
 
+        # Calculate the reverse rev map
+        for prop_name, spec in value.Item.merged_rev.items():
+            item_type, rel = spec
+            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
+            back.add((value.item_type, prop_name))
+
     def get_by_uuid(self, uuid, default=None):
         if isinstance(uuid, basestring):
             try:
@@ -393,16 +407,6 @@ class Root(object):
         item = collection.Item(collection, model)
         self.item_cache[uuid] = item
         return item
-
-    def attach(self, name, factory):
-        value = factory(self, name)
-        self[name] = value
-
-        # Calculate the reverse rev map
-        for prop_name, spec in value.Item.merged_rev.items():
-            item_type, rel = spec
-            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
-            back.add((value.item_type, prop_name))
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -812,9 +816,19 @@ class Collection(with_metaclass(CustomItemMeta, Mapping)):
         ],
     }
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, Item=None, item_type=None, properties=None, acl=None, unique_key=None):
         self.__name__ = name
         self.__parent__ = parent
+        if Item is not None:
+            self.Item = Item
+            self.item_type = Item.item_type
+            self.schema = Item.schema
+        if properties is not None:
+            self.properties = properties
+        if acl is not None:
+            self.__acl__ = acl
+        if unique_key is not None:
+            self.unique_key = unique_key
 
         self.column_paths = set()
         if self.schema is not None and 'columns' in self.schema:
@@ -916,6 +930,9 @@ class Collection(with_metaclass(CustomItemMeta, Mapping)):
 
     def __json__(self, request):
         return self.properties.copy()
+
+
+Item.Collection = Collection
 
 
 def expand_column(request, obj, subset, path):
