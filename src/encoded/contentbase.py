@@ -823,11 +823,7 @@ class Collection(Mapping):
         else:
             uuid = UUID(uuid)
         item = self.Item.create(self, uuid, properties)
-        self.after_add(item)
         return item
-
-    def after_add(self, item):
-        '''Hook for subclasses'''
 
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
