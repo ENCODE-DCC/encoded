@@ -102,7 +102,7 @@ class File(Item):
         return ns
 
     @classmethod
-    def create(cls, parent, uuid, properties, sheets=None):
+    def create(cls, parent, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
@@ -117,7 +117,7 @@ class File(Item):
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(parent, uuid, properties, sheets)
+        return super(File, cls).create(parent, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',

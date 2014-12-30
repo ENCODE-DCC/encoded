@@ -570,14 +570,24 @@ class Item(object):
         return properties
 
     @classmethod
-    def create(cls, parent, uuid, properties, sheets=None):
-        item_type = parent.item_type
+    def create(cls, parent, properties, sheets=None):
+        if 'uuid' in properties:
+            uuid = UUID(properties['uuid'])
+        else:
+            uuid = uuid4()
+        resource = Resource(cls.item_type, rid=uuid)
+        self = cls(parent, resource)
+        self._update(properties, sheets)
+        return self
+
+    def update(self, properties, sheets=None):
+        self._update(properties, sheets)
+
+    def _update(self, properties, sheets=None):
         session = DBSession()
         sp = session.begin_nested()
-        resource = Resource(item_type, rid=uuid)
-        cls.update_properties(resource, properties, sheets)
-        session.add(resource)
-        self = cls(parent, resource)
+        session.add(self.model)
+        self.update_properties(properties, sheets)
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
@@ -585,12 +595,11 @@ class Item(object):
         except (IntegrityError, FlushError):
             sp.rollback()
         else:
-            return self
+            return
 
         # Try again more carefully
-        cls.update_properties(resource, properties, sheets)
-        session.add(resource)
-        self = cls(parent, resource)
+        session.add(self.model)
+        self.update_properties(properties, sheets)
         try:
             session.flush()
         except (IntegrityError, FlushError):
@@ -602,42 +611,15 @@ class Item(object):
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
 
-    @classmethod
-    def update_properties(cls, model, properties, sheets=None):
+    def update_properties(self, properties, sheets=None):
         if properties is not None:
             if 'uuid' in properties:
                 properties = properties.copy()
                 del properties['uuid']
-            model[''] = properties
+            self.model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
-                model[key] = value
-
-    def update(self, properties, sheets=None):
-        session = DBSession()
-        sp = session.begin_nested()
-        self.update_properties(self.model, properties, sheets)
-        keys_add, keys_remove = self.update_keys()
-        self.update_rels()
-        try:
-            sp.commit()
-        except (IntegrityError, FlushError):
-            sp.rollback()
-        else:
-            return
-
-        # Try again more carefully
-        self.update_properties(self.model, properties, sheets)
-        try:
-            session.flush()
-        except (IntegrityError, FlushError):
-            msg = 'Properties conflict'
-            raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(keys_add)
-        self.update_properties(self.model, properties, sheets)
-        assert conflicts
-        msg = 'Keys conflict: %r' % conflicts
-        raise HTTPConflict(msg)
+                self.model[key] = value
 
     def update_keys(self):
         session = DBSession()
@@ -785,15 +767,6 @@ class Collection(Mapping):
                     return default
                 return resource
         return default
-
-    def add(self, properties):
-        uuid = properties.get('uuid', _marker)
-        if uuid is _marker:
-            uuid = uuid4()
-        else:
-            uuid = UUID(uuid)
-        item = self.Item.create(self, uuid, properties)
-        return item
 
     def __json__(self, request):
         return self.properties.copy()
@@ -959,7 +932,7 @@ def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
     properties = request.validated
-    item = context.add(properties)
+    item = context.Item.create(context, properties)
     request.registry.notify(Created(item, request))
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid
