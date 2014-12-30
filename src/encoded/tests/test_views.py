@@ -181,10 +181,10 @@ def test_collection_post_bad_(anontestapp):
 
 def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
     res = testapp.get('/pages/')
-    assert any(action for action in res.json['actions'] if action['name'] == 'add')
+    assert any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
     res = anontestapp.get('/pages/')
-    assert not any(action for action in res.json['actions'] if action['name'] == 'add')
+    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
 
 def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sources):

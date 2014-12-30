@@ -75,7 +75,7 @@ ADD_ACTION = {
     'name': 'add',
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
-    'href': '{collection_uri}#!add',
+    'href': '{item_uri}#!add',
     'className': 'btn-success',
     '$templated': True,
     '$condition': lambda item_type, permission: item_type in TYPES_WITH_FORMS and permission('add'),
@@ -163,8 +163,7 @@ class Item(contentbase.Item):
         return roles
 
     class Collection(contentbase.Collection):
-        template = contentbase.Collection.template.copy()
-        template['actions'] = [ADD_ACTION]
+        actions = [ADD_ACTION]
 
         def __init__(self, *args, **kw):
             super(Item.Collection, self).__init__(*args, **kw)

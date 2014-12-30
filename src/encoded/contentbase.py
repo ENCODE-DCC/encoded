@@ -723,13 +723,6 @@ class Collection(Mapping):
     item_type = None
     unique_key = None
     columns = {}
-    template = {
-        '@id': {'$value': '{collection_uri}', '$templated': True},
-        '@type': [
-            {'$value': '{item_type}_collection', '$templated': True},
-            'collection',
-        ],
-    }
 
     def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
         self.__name__ = name
@@ -824,19 +817,6 @@ class Collection(Mapping):
             uuid = UUID(uuid)
         item = self.Item.create(self, uuid, properties)
         return item
-
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['collection_uri'] = resource_path(self, '')
-        ns['item_type'] = self.item_type
-        ns['context'] = self
-        ns['root'] = root = find_root(self)
-        ns['registry'] = root.registry
-        if request is not None:
-            ns['permission'] = permission_checker(self, request)
-            ns['request'] = request
-        return ns
 
     def __json__(self, request):
         return self.properties.copy()
@@ -948,18 +928,32 @@ def load_es(context, request):
     return result
 
 
+@view_config(context=Collection, permission='list', request_method='GET',
+             name='object')
+def collection_view_object(context, request):
+    uri = resource_path(context, '')
+    properties = context.__json__(request)
+    properties.update({
+        '@id': uri,
+        '@type': [
+            '{item_type}_collection'.format(item_type=context.item_type),
+            'collection',
+        ],
+    })
+    return properties
+
+
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    properties = context.__json__(request)
-    ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.template)
-    templated = compiled(ns)
-    properties.update(templated)
+    path = request.resource_path(context)
+    properties = request.embed(path, '@@object')
 
-    uri = ns['collection_uri']
+    actions = request.embed(path, '@@actions', as_user=True)['actions']
+    if actions:
+        properties['actions'] = actions
+
     if request.query_string:
-        uri += '?' + request.query_string
-    properties['@id'] = uri
+        properties['@id'] += '?' + request.query_string
 
     root = find_root(context)
     if context.__name__ in root['pages']:
@@ -1092,6 +1086,8 @@ def item_view_embedded(context, request):
 
 
 @view_config(context=Item, permission='view', request_method='GET',
+             name='actions')
+@view_config(context=Collection, permission='list', request_method='GET',
              name='actions')
 def item_actions(context, request):
     path = request.resource_path(context)
