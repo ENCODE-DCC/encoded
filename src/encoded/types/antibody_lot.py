@@ -7,7 +7,7 @@ from ..contentbase import (
 from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
-    Collection,
+    Item,
     paths_filtered_by_status,
 )
 
@@ -218,66 +218,66 @@ def lot_reviews(characterizations, targets, request):
     return list(char_reviews.values())
 
 
-@location('antibodies')
-class AntibodyLot(Collection):
-    item_type = 'antibody_lot'
-    schema = load_schema('antibody_lot.json')
-    properties = {
+@location(
+    name='antibodies',
+    properties={
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
+    })
+class AntibodyLot(Item):
+    item_type = 'antibody_lot'
+    schema = load_schema('antibody_lot.json')
+
+    template = {
+        'lot_reviews': lot_reviews,
+        'title': {'$value': '{accession}'},
+        'characterizations': (
+            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
+        ),
+    }
+    name_key = 'accession'
+
+    keys = ACCESSION_KEYS + ALIAS_KEYS + [
+        {
+            'name': '{item_type}:source_product_lot',
+            'value': '{source}/{product_id}/{lot_id}',
+            '$templated': True,
+        },
+        {
+            'name': '{item_type}:source_product_lot',
+            'value': '{source}/{product_id}/{alias}',
+            '$repeat': 'alias lot_id_alias',
+            '$templated': True,
+        },
+    ]
+
+    rev = {
+        'characterizations': ('antibody_characterization', 'characterizes'),
     }
 
-    class Item(Collection.Item):
-        template = {
-            'lot_reviews': lot_reviews,
-            'title': {'$value': '{accession}'},
-            'characterizations': (
-                lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-            ),
-        }
-        name_key = 'accession'
+    embedded = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
 
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {
-                'name': '{item_type}:source_product_lot',
-                'value': '{source}/{product_id}/{lot_id}',
-                '$templated': True,
-            },
-            {
-                'name': '{item_type}:source_product_lot',
-                'value': '{source}/{product_id}/{alias}',
-                '$repeat': 'alias lot_id_alias',
-                '$templated': True,
-            },
-        ]
-
-        rev = {
-            'characterizations': ('antibody_characterization', 'characterizes'),
-        }
-
-        embedded = [
-            'source',
-            'host_organism',
-            'targets',
-            'targets.organism',
-            'characterizations.award',
-            'characterizations.documents',
-            'characterizations.lab',
-            'characterizations.submitted_by',
-            'characterizations.target.organism',
-            'lot_reviews.targets',
-            'lot_reviews.targets.organism',
-            'lot_reviews.organisms'
-        ]
-
-        audit_inherit = [
-            'source',
-            'host_organism',
-            'targets',
-            'targets.organism',
-            'characterizations',
-            'characterizations.documents',
-            'lot_reviews.targets',
-            'lot_reviews.targets.organism',
-            'lot_reviews.organisms'
-        ]
+    audit_inherit = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations',
+        'characterizations.documents',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]

@@ -7,7 +7,7 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.settings import asbool
-from .base import Collection
+from .base import Item
 from ..authentication import (
     generate_password,
     generate_user,
@@ -25,17 +25,14 @@ from ..contentbase import (
 )
 
 
-@location('access-keys')
-class AccessKey(Collection):
-    item_type = 'access_key'
-    schema = load_schema('access_key.json')
-    unique_key = 'access_key:access_key_id'
-    properties = {
+@location(
+    name='access-keys',
+    unique_key='access_key:access_key_id',
+    properties={
         'title': 'Access keys',
         'description': 'Programmatic access keys',
-    }
-
-    __acl__ = [
+    },
+    acl=[
         (Allow, Authenticated, 'traverse'),
         (Allow, 'remoteuser.INDEXER', 'traverse'),
         (Allow, 'remoteuser.EMBED', 'traverse'),
@@ -46,23 +43,27 @@ class AccessKey(Collection):
         (Allow, 'remoteuser.INDEXER', 'view'),
         (Allow, 'remoteuser.EMBED', 'view'),
         (Deny, Everyone, 'view'),
-    ]
+    ])
+class AccessKey(Item):
+    item_type = 'access_key'
+    schema = load_schema('access_key.json')
+    keys = ['access_key_id']
+    name_key = 'access_key_id'
 
-    class Item(Collection.Item):
-        keys = ['access_key_id']
-        name_key = 'access_key_id'
+    def __ac_local_roles__(self):
+        owner = 'userid.%s' % self.properties['user']
+        return {owner: 'role.owner'}
 
-        def __ac_local_roles__(self):
-            owner = 'userid.%s' % self.properties['user']
-            return {owner: 'role.owner'}
+    def __json__(self, request):
+        properties = super(AccessKey, self).__json__(request)
+        del properties['secret_access_key_hash']
+        return properties
 
-        def __json__(self, request):
-            properties = super(AccessKey.Item, self).__json__(request)
-            del properties['secret_access_key_hash']
-            return properties
+    class Collection(Item.Collection):
+        pass
 
 
-@view_config(context=AccessKey, permission='add', request_method='POST',
+@view_config(context=AccessKey.Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
@@ -94,7 +95,7 @@ def access_key_add(context, request):
     return result
 
 
-@view_config(name='reset-secret', context=AccessKey.Item, permission='edit',
+@view_config(name='reset-secret', context=AccessKey, permission='edit',
              request_method='POST', subpath_segments=0)
 def access_key_reset_secret(context, request):
     request.validated = context.properties.copy()
@@ -108,7 +109,7 @@ def access_key_reset_secret(context, request):
     return result
 
 
-@view_config(name='disable-secret', context=AccessKey.Item, permission='edit',
+@view_config(name='disable-secret', context=AccessKey, permission='edit',
              request_method='POST', subpath_segments=0)
 def access_key_disable_secret(context, request):
     request.validated = context.properties.copy()
@@ -120,7 +121,7 @@ def access_key_disable_secret(context, request):
     return result
 
 
-@view_config(context=AccessKey.Item, permission='edit', request_method='PUT',
+@view_config(context=AccessKey, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()
@@ -129,7 +130,7 @@ def access_key_edit(context, request):
     return item_edit(context, request)
 
 
-@view_config(context=AccessKey.Item, permission='view_raw', request_method='GET',
+@view_config(context=AccessKey, permission='view_raw', request_method='GET',
              name='raw')
 def item_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
