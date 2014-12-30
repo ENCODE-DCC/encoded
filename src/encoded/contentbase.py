@@ -716,6 +716,7 @@ class Collection(Mapping):
     item_type = None
     unique_key = None
     columns = {}
+    actions = []
 
     def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
         self.__name__ = name
