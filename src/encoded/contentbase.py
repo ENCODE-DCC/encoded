@@ -53,6 +53,7 @@ from uuid import (
     uuid4,
 )
 from .cache import ManagerLRUCache
+from .decorator import classreify
 from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
 from .embedding import (
@@ -405,6 +406,7 @@ class Item(object):
     embedded = ()
     audit_inherit = None
     namespace_from_path = {}
+    schema = None
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -435,15 +437,14 @@ class Item(object):
 
     @property
     def item_type(self):
-        return self.model.item_type
+        return type(self).__name__
 
-    @property
-    def schema(self):
-        return self.collection.schema
-
-    @property
-    def schema_version(self):
-        return self.collection.schema_version
+    @classreify
+    def schema_version(cls):
+        try:
+            return cls.schema['properties']['schema_version']['default']
+        except (KeyError, TypeError):
+            return None
 
     @property
     def properties(self):
@@ -457,9 +458,14 @@ class Item(object):
     def uuid(self):
         return self.model.rid
 
-    @property
-    def schema_links(self):
-        return self.collection.schema_links
+    @classreify
+    def schema_links(cls):
+        if not cls.schema:
+            return ()
+        return [
+            key for key, prop in cls.schema['properties'].items()
+            if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
+        ]
 
     @property
     def merged_back_rev(self):
@@ -709,13 +715,8 @@ class Item(object):
 
 
 class Collection(Mapping):
-    schema = None
-    schema_links = ()
-    schema_version = None
     properties = {}
-    item_type = None
     unique_key = None
-    columns = {}
     actions = []
 
     def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
@@ -730,24 +731,6 @@ class Collection(Mapping):
             self.__acl__ = acl
         if unique_key is not None:
             self.unique_key = unique_key
-
-        self.column_paths = set()
-        if self.schema is not None and 'columns' in self.schema:
-            for column in self.schema['columns']:
-                path = tuple(
-                    name for name in column.split('.')[:-1]
-                    if name not in ('length', '0')
-                )
-                if path:
-                    self.column_paths.add(path)
-
-        if self.schema is not None:
-            properties = self.schema['properties']
-            self.schema_links = [
-                key for key, prop in properties.items()
-                if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
-            ]
-            self.schema_version = properties.get('schema_version', {}).get('default')
 
     def __getitem__(self, name):
         try:
@@ -838,7 +821,7 @@ def expand_column(request, obj, subset, path):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
                 member = request.embed(member, '@@object')
-            expand_column(request, member, subset[index], remaining)
+            expand_column(request, member, subset[name][index], remaining)
     else:
         if name not in subset:
             subset[name] = {}
@@ -1111,15 +1094,20 @@ def item_view_expand(context, request):
 def item_view_columns(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
-    if context.schema is not None and 'columns' in context.schema:
+    if context.schema is None or 'columns' not in context.schema:
         return properties
 
     subset = {
         '@id': properties['@id'],
         '@type': properties['@type'],
     }
-    for path in context.collection.column_paths:
-        expand_column(request, properties, subset, path)
+
+    for column in context.schema['columns']:
+        path = column.split('.')
+        if path[-1] == 'length':
+            path.pop()
+        if path:
+            expand_column(request, properties, subset, path)
 
     return subset
 
