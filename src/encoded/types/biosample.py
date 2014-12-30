@@ -63,7 +63,8 @@ class Biosample(Item):
             'donor.synchronization',
         ],
     }
-    template = {
+    template = Item.template.copy()
+    template.update({
         'organ_slims': {
             '$value': (
                 lambda registry, biosample_term_id:
@@ -122,7 +123,7 @@ class Biosample(Item):
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
         'age_display': calculate_age_display,
-    }
+    })
     embedded = [
         'donor',
         'donor.organism',

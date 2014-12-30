@@ -26,11 +26,12 @@ class AntibodyApproval(Item):
         'label': 'target.label',
         'scientific_name': 'target.organism.scientific_name'
     }
-    template = {
+    template = Item.template.copy()
+    template.update({
         # trigger redirect to antibody_lot
         '@id': {'$value': '{antibody}', '$templated': True},
         'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
-    }
+    })
     embedded = [
         'antibody.host_organism',
         'antibody.source',

@@ -34,7 +34,8 @@ class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
     base_types = [Dataset.item_type] + Dataset.base_types
-    template = {
+    template = Dataset.template.copy()
+    template.update({
         'organ_slims': {
             '$value': (
                 lambda registry, biosample_term_id:
@@ -89,7 +90,7 @@ class Experiment(Dataset):
         'replicates': (
             lambda request, replicates: paths_filtered_by_status(request, replicates)
         ),
-    }
+    })
     embedded = Dataset.embedded + [
         'files.platform',
         'replicates.antibody',
@@ -142,9 +143,10 @@ class Experiment(Dataset):
         'target.organism',
     ]
 
-    rev = {
+    rev = Dataset.rev.copy()
+    rev.update({
         'replicates': ('replicate', 'experiment'),
-    }
+    })
 
 
 @location(

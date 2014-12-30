@@ -163,12 +163,11 @@ class Item(contentbase.Item):
         return roles
 
     class Collection(contentbase.Collection):
-        template = {
-            'actions': [ADD_ACTION],
-        }
+        template = contentbase.Collection.template.copy()
+        template['actions'] = [ADD_ACTION]
 
-        def __init__(self, parent, name, **kw):
-            super(Item.Collection, self).__init__(parent, name, **kw)
+        def __init__(self, *args, **kw):
+            super(Item.Collection, self).__init__(*args, **kw)
             if hasattr(self, '__acl__'):
                 return
             if 'lab' in self.schema['properties']:

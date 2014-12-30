@@ -228,13 +228,14 @@ class AntibodyLot(Item):
     item_type = 'antibody_lot'
     schema = load_schema('antibody_lot.json')
 
-    template = {
+    template = Item.template.copy()
+    template.update({
         'lot_reviews': lot_reviews,
         'title': {'$value': '{accession}'},
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    }
+    })
     name_key = 'accession'
 
     keys = ACCESSION_KEYS + ALIAS_KEYS + [

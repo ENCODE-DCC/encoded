@@ -113,9 +113,10 @@ class TestingLinkTarget(Item):
     embedded = [
         'reverse',
     ]
-    template = {
+    template = Item.template.copy()
+    template.update({
         'reverse': lambda request, reverse: paths_filtered_by_status(request, reverse),
-    }
+    })
 
 
 @location(

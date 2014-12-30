@@ -27,10 +27,11 @@ class Target(Item):
         'organism_name': 'organism.name',
         'scientific_name': 'organism.scientific_name',
     }
-    template = {
+    template = Item.template.copy()
+    template.update({
         'name': {'$value': '{label}-{organism_name}', '$templated': True},
         'title': {'$value': '{label} ({scientific_name})', '$templated': True},
-    }
+    })
     embedded = ['organism']
     keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},

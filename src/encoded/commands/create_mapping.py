@@ -263,10 +263,10 @@ def collection_mapping(collection, embed=True):
 
     mapping = schema_mapping(collection.item_type, schema)
 
-    merged_rev = collection.Item.merged_rev
+    rev = collection.Item.rev
 
     mixins = ['@id', '@type']
-    mixins.extend(merged_rev.keys())
+    mixins.extend(rev.keys())
     for name in mixins:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
 
@@ -277,7 +277,7 @@ def collection_mapping(collection, embed=True):
     for prop in collection.Item.embedded:
         new_mapping = mapping
         new_schema = schema
-        new_merged_rev = merged_rev
+        new_rev = rev
 
         for i, p in enumerate(prop.split('.')):
             name = None
@@ -289,8 +289,8 @@ def collection_mapping(collection, embed=True):
                     subschema = subschema.get('items', subschema)
                     name = subschema.get('linkTo')
 
-            if name is None and p in new_merged_rev:
-                name, merged_rev_path = new_merged_rev[p]
+            if name is None and p in new_rev:
+                name, rev_path = new_rev[p]
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
@@ -308,7 +308,7 @@ def collection_mapping(collection, embed=True):
 
             if name is not None:
                 new_schema = root[name].schema
-                new_merged_rev = root[name].Item.merged_rev
+                new_rev = root[name].Item.rev
             elif subschema is not None:
                 new_schema = subschema
 

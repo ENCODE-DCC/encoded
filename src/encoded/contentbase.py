@@ -2,12 +2,10 @@
 import logging
 import sys
 import venusian
-from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
-    with_metaclass,
     itervalues,
 )
 from itertools import islice
@@ -78,7 +76,6 @@ from .storage import (
     Link,
 )
 from collections import (
-    OrderedDict,
     defaultdict,
 )
 from .validation import ValidationFailure
@@ -238,25 +235,20 @@ def location(name, **kw):
     Use as a decorator on Collection subclasses.
     """
 
-    def set_location(config, name, factory, **kw):
+    def set_location(config, Collection, name, Item, **kw):
         root = config.registry[LOCATION_ROOT]
-        collection = factory(root, name, **kw)
+        collection = Collection(root, name, Item, **kw)
         root[name] = collection
 
-    def decorate(factory):
-        if issubclass(factory, Item):
-            kw['Item'] = factory
-            collection_class = factory.Collection
-        else:
-            collection_class = factory
+    def decorate(Item):
 
         def callback(scanner, factory_name, factory):
             scanner.config.action(('location', name), set_location,
-                                  args=(scanner.config, name, collection_class),
+                                  args=(scanner.config, Item.Collection, name, Item),
                                   kw=kw,
                                   order=PHASE2_CONFIG)
-        venusian.attach(factory, callback, category='pyramid')
-        return factory
+        venusian.attach(Item, callback, category='pyramid')
+        return Item
 
     return decorate
 
@@ -352,7 +344,7 @@ class Root(object):
         self.by_item_type[value.item_type] = value
 
         # Calculate the reverse rev map
-        for prop_name, spec in value.Item.merged_rev.items():
+        for prop_name, spec in value.Item.rev.items():
             item_type, rel = spec
             back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
             back.add((value.item_type, prop_name))
@@ -412,53 +404,11 @@ class Root(object):
         return self.properties.copy()
 
 
-class MergedDictsMeta(type):
-    """ Merge dicts on the subclass with its bases
-    """
-    def __init__(self, name, bases, attrs):
-        super(MergedDictsMeta, self).__init__(name, bases, attrs)
-        for attr in self.__merged_dicts__:
-            merged = {}
-            setattr(self, 'merged_%s' % attr, merged)
-
-            for cls in reversed(self.mro()):
-                value = vars(cls).get(attr, None)
-                if value is not None:
-                    merged.update(value)
-
-
-class MergedKeysMeta(MergedDictsMeta):
-    """ Merge the keys from the subclass with its bases
-    """
-    def __init__(self, name, bases, attrs):
-        super(MergedKeysMeta, self).__init__(name, bases, attrs)
-
-        self.merged_keys = []
-        for cls in reversed(self.mro()):
-            for key in vars(cls).get('keys', []):
-                if isinstance(key, basestring):
-                    key = {'name': '{item_type}:' + key,
-                           'value': '{%s}' % key, '$templated': True}
-                self.merged_keys.append(key)
-
-        self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
-        if self.audit_inherit is None:
-            self.audit_inherit_paths = self.embedded_paths
-        else:
-            self.audit_inherit_paths = sorted(
-                {tuple(path.split('.')) for path in self.audit_inherit})
-
-
-class Item(with_metaclass(MergedKeysMeta, object)):
-    __merged_dicts__ = [
-        'template',
-        'rev',
-        'namespace_from_path',
-    ]
+class Item(object):
     base_types = ['item']
     keys = []
     name_key = None
-    rev = None
+    rev = {}
     embedded = ()
     audit_inherit = None
     namespace_from_path = {}
@@ -530,7 +480,7 @@ class Item(with_metaclass(MergedKeysMeta, object)):
     def rev_links(self):
         root = find_root(self)
         links = {}
-        for name, spec in self.merged_rev.items():
+        for name, spec in self.rev.items():
             links[name] = value = []
             for link in self.model.revs:
                 if (link.source.item_type, link.rel) == spec:
@@ -593,9 +543,9 @@ class Item(with_metaclass(MergedKeysMeta, object)):
             for name, value in self.rev_links().items():
                 ns[name] = [resource_path(item, '') for item in value]
 
-        if self.merged_namespace_from_path:
+        if self.namespace_from_path:
             root = find_root(self)
-            for name, paths in self.merged_namespace_from_path.items():
+            for name, paths in self.namespace_from_path.items():
                 # Treat a list of paths as a search path for the value
                 if isinstance(paths, basestring):
                     paths = [paths]
@@ -693,7 +643,10 @@ class Item(with_metaclass(MergedKeysMeta, object)):
     def update_keys(self):
         session = DBSession()
         ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate(self.merged_keys)
+        compiled = ObjectTemplate([
+            {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
+            if isinstance(key, basestring) else key for key in self.keys
+        ])
         _keys = [(key['name'], key['value']) for key in compiled(ns)]
         keys = set(_keys)
 
@@ -762,49 +715,11 @@ class Item(with_metaclass(MergedKeysMeta, object)):
         return to_add, to_remove
 
 
-class CustomItemMeta(MergedDictsMeta, ABCMeta):
-    """ Give each collection its own Item class to enable
-        specific view registration.
-    """
-    def __init__(self, name, bases, attrs):
-        super(CustomItemMeta, self).__init__(name, bases, attrs)
-
-        # XXX Remove this, too magical.
-        if self.item_type is None and 'item_type' not in attrs:
-            self.item_type = uncamel(self.__name__)
-
-        NAMES_TO_TRANSFER = [
-            'template',
-            'embedded',
-            'keys',
-            'rev',
-            'name_key',
-            'namespace_from_path',
-            'actions',
-        ]
-
-        if 'Item' in attrs:
-            for name in NAMES_TO_TRANSFER:
-                assert 'item_' + name not in attrs
-            return
-        item_bases = tuple(base.Item for base in bases
-                           if issubclass(base, Collection))
-        item_attrs = {'__module__': self.__module__}
-        for name in NAMES_TO_TRANSFER:
-            if 'item_' + name in attrs:
-                item_attrs[name] = attrs['item_' + name]
-        self.Item = type('Item', item_bases, item_attrs)
-
-
-class Collection(with_metaclass(CustomItemMeta, Mapping)):
-    __merged_dicts__ = [
-        'template',
-    ]
-    Item = Item
+class Collection(Mapping):
     schema = None
     schema_links = ()
     schema_version = None
-    properties = OrderedDict()
+    properties = {}
     item_type = None
     unique_key = None
     columns = {}
@@ -816,13 +731,12 @@ class Collection(with_metaclass(CustomItemMeta, Mapping)):
         ],
     }
 
-    def __init__(self, parent, name, Item=None, item_type=None, properties=None, acl=None, unique_key=None):
+    def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
         self.__name__ = name
         self.__parent__ = parent
-        if Item is not None:
-            self.Item = Item
-            self.item_type = Item.item_type
-            self.schema = Item.schema
+        self.Item = Item
+        self.item_type = Item.item_type
+        self.schema = Item.schema
         if properties is not None:
             self.properties = properties
         if acl is not None:
@@ -1042,7 +956,7 @@ def load_es(context, request):
 def collection_list(context, request):
     properties = context.__json__(request)
     ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.merged_template)
+    compiled = ObjectTemplate(context.template)
     templated = compiled(ns)
     properties.update(templated)
 
@@ -1135,7 +1049,6 @@ def item_view(context, request):
     return embed(request, path, as_user=True)
 
 
-
 def item_links(context, request):
     # This works from the schema rather than the links table
     # so that upgrade on GET can work.
@@ -1166,7 +1079,7 @@ def item_view_object(context, request):
     """
     properties = item_links(context, request)
     ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.merged_template)
+    compiled = ObjectTemplate(context.template)
     templated = compiled(ns)
     properties.update(templated)
     return properties
@@ -1177,7 +1090,7 @@ def item_view_object(context, request):
 def item_view_embedded(context, request):
     item_path = request.resource_path(context)
     properties = request.embed(item_path, '@@object')
-    for path in context.embedded_paths:
+    for path in context.embedded:
         expand_path(request, properties, path)
     return properties
 
@@ -1257,7 +1170,7 @@ def item_view_audit_self(context, request):
 def item_view_audit(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
-    audit = inherit_audits(request, properties, context.audit_inherit_paths)
+    audit = inherit_audits(request, properties, context.audit_inherit or context.embedded)
     return {
         '@id': path,
         'audit': audit,
@@ -1409,7 +1322,7 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = embed(request, join(path, '@@embedded'))
-    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
+    audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
 
     document = {
         'embedded': embedded,

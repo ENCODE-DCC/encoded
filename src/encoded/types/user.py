@@ -38,10 +38,11 @@ class User(Item):
     item_type = 'user'
     schema = load_schema('user.json')
     keys = ['email']
-    template = {
+    template = Item.template.copy()
+    template.update({
         'title': '{first_name} {last_name}',
         '$templated': True,
-    }
+    })
 
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.uuid

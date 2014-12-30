@@ -82,7 +82,8 @@ class File(Item):
             '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
         },
     ]
-    template = {
+    template = Item.template.copy()
+    template.update({
         'href': {
             '$value': '{item_uri}@@download/{accession}{file_extension}',
             '$templated': True,
@@ -92,7 +93,7 @@ class File(Item):
             '$condition': show_upload_credentials,
             '$value': lambda context: context.propsheets['external']['upload_credentials'],
         }
-    }
+    })
 
     def template_namespace(self, properties, request=None):
         ns = super(File, self).template_namespace(properties, request)

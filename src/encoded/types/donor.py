@@ -20,11 +20,12 @@ class Donor(Item):
     rev = {
         'characterizations': ('donor_characterization', 'characterizes'),
     }
-    template = {
+    template = Item.template.copy()
+    template.update({
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    }
+    })
 
 
 @location(
