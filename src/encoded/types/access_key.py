@@ -33,10 +33,6 @@ from ..contentbase import (
         'description': 'Programmatic access keys',
     },
     acl=[
-        (Allow, Authenticated, 'traverse'),
-        (Allow, 'remoteuser.INDEXER', 'traverse'),
-        (Allow, 'remoteuser.EMBED', 'traverse'),
-        (Deny, Everyone, 'traverse'),
         (Allow, 'role.owner', ['edit', 'view']),
         (Allow, 'group.admin', 'view'),
         (Allow, 'group.read-only-admin', 'view'),

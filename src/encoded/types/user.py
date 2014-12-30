@@ -32,7 +32,7 @@ from ..embedding import embed
         (Allow, 'role.owner', ['edit', 'view_details']),
         (Allow, 'remoteuser.INDEXER', ['list', 'view']),
         (Allow, 'remoteuser.EMBED', ['list', 'view']),
-        (Allow, Everyone, ['view', 'traverse']),
+        (Allow, Everyone, ['view']),
         (Deny, Everyone, ['list', 'view_details']),
     ])
 class User(Item):

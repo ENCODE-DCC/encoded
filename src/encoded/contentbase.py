@@ -11,14 +11,9 @@ from future.utils import (
 from itertools import islice
 from past.builtins import basestring
 from posixpath import join
-from pyramid.events import (
-    ContextFound,
-    subscriber,
-)
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
     HTTPConflict,
-    HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
     HTTPPreconditionFailed,
@@ -26,14 +21,12 @@ from pyramid.httpexceptions import (
 from pyramid.interfaces import (
     PHASE2_CONFIG,
 )
-from pyramid.location import lineage
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
     Authenticated,
     Deny,
     Everyone,
-    has_permission,
     principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
@@ -287,8 +280,8 @@ class Root(object):
     __parent__ = None
     schema = None
     builtin_acl = [
-        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
+        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
+        (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
     ]
 
     def __init__(self, registry, acl=None):
@@ -1000,22 +993,6 @@ def collection_add(context, request, render=None):
         '@graph': [rendered],
     }
     return result
-
-
-@subscriber(ContextFound)
-def traversal_security(event):
-    """ Check traversal was permitted at each step
-    """
-    request = event.request
-    traversed = reversed(list(lineage(request.context)))
-    # Required to view the root page as anonymous user
-    # XXX Needs test once login based browser tests work.
-    next(traversed)  # Skip root object
-    for resource in traversed:
-        result = has_permission('traverse', resource, request)
-        if not result:
-            msg = 'Unauthorized: traversal failed permission check'
-            raise HTTPForbidden(msg, result=result)
 
 
 @view_config(context=Item, permission='view', request_method='GET')

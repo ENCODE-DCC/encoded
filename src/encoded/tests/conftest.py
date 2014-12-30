@@ -26,7 +26,6 @@ _app_settings = {
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'allow.list': 'Everyone',
-    'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'load_test_only': True,

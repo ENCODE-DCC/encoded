@@ -59,9 +59,9 @@ ALLOW_CURRENT = [
 
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
-    (Allow, 'group.read-only-admin', ['traverse', 'view']),
-    (Allow, 'remoteuser.EMBED', ['view', 'traverse', 'expand', 'audit']),
-    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    (Allow, 'group.read-only-admin', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
 
