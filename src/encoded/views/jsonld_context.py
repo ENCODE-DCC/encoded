@@ -74,10 +74,10 @@ def make_jsonld_context(event):
     }
 
     for name, collection in root.by_item_type.items():
-        if name.startswith('testing_') or collection.schema is None:
+        if name.startswith('testing_') or collection.Item.schema is None:
             continue
         context.update(context_from_schema(
-            collection.schema, prefix, collection.item_type, collection.Item.base_types))
+            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types))
 
     namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
     context.update(namespaces)
@@ -119,10 +119,10 @@ def make_jsonld_context(event):
     ]
 
     for name, collection in root.by_item_type.items():
-        if name.startswith('testing_') or collection.schema is None:
+        if name.startswith('testing_') or collection.Item.schema is None:
             continue
         iter_defs = ontology_from_schema(
-            collection.schema, prefix, collection.item_type, collection.Item.base_types)
+            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):

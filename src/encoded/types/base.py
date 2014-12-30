@@ -169,5 +169,5 @@ class Item(contentbase.Item):
             super(Item.Collection, self).__init__(*args, **kw)
             if hasattr(self, '__acl__'):
                 return
-            if 'lab' in self.schema['properties']:
+            if 'lab' in self.Item.schema['properties']:
                 self.__acl__ = ALLOW_SUBMITTER_ADD

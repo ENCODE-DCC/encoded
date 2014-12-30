@@ -108,7 +108,7 @@ class File(Item):
 
             registry = find_root(parent).registry
             bucket = registry.settings['file_upload_bucket']
-            mapping = parent.schema['file_format_file_extension']
+            mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
             date = properties['date_created'].split('T')[0].replace('-', '/')
             key = '{date}/{uuid}/{accession}{file_extension}'.format(

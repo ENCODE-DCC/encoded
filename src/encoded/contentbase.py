@@ -122,7 +122,7 @@ def no_validate_item_content_patch(context, request):
 
 def validate_item_content_post(context, request):
     data = request.json
-    schema = context.schema
+    schema = context.Item.schema
     if schema is None:
         request.validated.update(data)
         return
@@ -706,7 +706,6 @@ class Collection(Mapping):
         self.__parent__ = parent
         self.Item = Item
         self.item_type = Item.item_type
-        self.schema = Item.schema
         if properties is not None:
             self.properties = properties
         if acl is not None:

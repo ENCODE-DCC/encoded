@@ -52,14 +52,14 @@ def digraph(root, exclude=None):
             subclasses[base].append(source)
 
     for source, collection in root.by_item_type.items():
-        if collection.schema is None:
+        if collection.Item.schema is None:
             continue
         if source.startswith('testing_'):
             continue
         if source == 'antibody_approval':
             continue
-        out.extend(node(source, collection.schema['properties']))
-        for name, prop in collection.schema['properties'].items():
+        out.extend(node(source, collection.Item.schema['properties']))
+        for name, prop in collection.Item.schema['properties'].items():
             if name in exclude:
                 continue
             prop = prop.get('items', prop)

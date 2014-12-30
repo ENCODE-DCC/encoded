@@ -124,7 +124,7 @@ def test_patch_new_schema_version(content, testapp, monkeypatch):
     from ..contentbase import LOCATION_ROOT
     root = testapp.app.registry[LOCATION_ROOT]
     collection = root['testing_post_put_patch']
-    properties = collection.schema['properties']
+    properties = collection.Item.schema['properties']
 
     url = content['@id']
     res = testapp.get(url)

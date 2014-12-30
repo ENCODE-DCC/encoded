@@ -257,7 +257,7 @@ def es_mapping(mapping):
 
 
 def collection_mapping(collection, embed=True):
-    schema = collection.schema
+    schema = collection.Item.schema
     if schema is None:
         return None
 
@@ -307,7 +307,7 @@ def collection_mapping(collection, embed=True):
             new_mapping = new_mapping['properties'][p]
 
             if name is not None:
-                new_schema = root[name].schema
+                new_schema = root[name].Item.schema
                 new_rev = root[name].Item.rev
             elif subschema is not None:
                 new_schema = subschema

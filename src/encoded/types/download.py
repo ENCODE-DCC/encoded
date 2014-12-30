@@ -101,7 +101,7 @@ class ItemWithAttachment(Item):
 
             # Make sure mimetype is not disallowed
             try:
-                allowed_types = parent.schema['properties'][prop_name]['properties']['type']['enum']
+                allowed_types = cls.schema['properties'][prop_name]['properties']['type']['enum']
             except KeyError:
                 pass
             else:
