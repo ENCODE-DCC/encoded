@@ -1007,6 +1007,8 @@ def templated_item_view_object(context, request):
     3. Templated properties (including reverse links.)
     """
     properties = item_view_object(context, request)
+    if not context.template:
+        return properties
     ns = context.template_namespace(properties, request)
     compiled = ObjectTemplate(context.template)
     templated = compiled(ns)
