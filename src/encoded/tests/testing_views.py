@@ -3,8 +3,8 @@ from pyramid.security import (
 )
 from pyramid.view import view_config
 from ..contentbase import (
-    Collection,
     Item,
+    TemplatedItem,
     location,
 )
 from ..types.base import paths_filtered_by_status
@@ -70,7 +70,7 @@ class TestingDownload(ItemWithAttachment):
     },
     unique_key='testing_accession',
 )
-class TestingKey(Item):
+class TestingKey(TemplatedItem):
     item_type = 'testing_key'
     schema = None
     keys = [
@@ -97,7 +97,7 @@ class TestingLinkSource(Item):
 
 
 @location('testing-link-targets')
-class TestingLinkTarget(Item):
+class TestingLinkTarget(TemplatedItem):
     item_type = 'testing_link_target'
     schema = {
         'type': 'object',
@@ -113,7 +113,7 @@ class TestingLinkTarget(Item):
     embedded = [
         'reverse',
     ]
-    template = Item.template.copy()
+    template = TemplatedItem.template.copy()
     template.update({
         'reverse': lambda request, reverse: paths_filtered_by_status(request, reverse),
     })

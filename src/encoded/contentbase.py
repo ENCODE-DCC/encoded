@@ -92,6 +92,12 @@ def root_factory(request):
     return request.registry[LOCATION_ROOT]
 
 
+def aslist(value):
+    if isinstance(value, basestring):
+        return [value]
+    return value
+
+
 # No-validation validators
 
 def no_validate_item_content_post(context, request):
@@ -279,7 +285,6 @@ def _get_by_unique_key_query():
 class Root(object):
     __name__ = ''
     __parent__ = None
-    schema = None
     builtin_acl = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
@@ -400,22 +405,11 @@ class Root(object):
 
 class Item(object):
     base_types = ['item']
-    keys = []
     name_key = None
     rev = {}
     embedded = ()
     audit_inherit = None
-    namespace_from_path = {}
     schema = None
-    template = {
-        '@id': {'$value': '{item_uri}', '$templated': True},
-        # 'collection': '{collection_uri}',
-        '@type': [
-            {'$value': '{item_type}', '$templated': True},
-            {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
-        ],
-        'uuid': {'$value': '{uuid}', '$templated': True},
-    }
     actions = []
 
     def __init__(self, collection, model):
@@ -476,16 +470,23 @@ class Item(object):
             merged.update(root.type_back_rev.get(item_type, ()))
         return merged
 
+    def links(self):
+        return {
+            name: aslist(self.properties.get(name, ()))
+            for name in self.schema_links
+        }
+
     def rev_links(self):
-        root = find_root(self)
         links = {}
         for name, spec in self.rev.items():
             links[name] = value = []
             for link in self.model.revs:
                 if (link.source.item_type, link.rel) == spec:
-                    item = root.get_by_uuid(link.source_rid)
-                    value.append(item)
+                    value.append(link.source_rid)
         return links
+
+    def unique_keys(self):
+        return ()
 
     def upgrade_properties(self, finalize=True):
         properties = self.properties.copy()
@@ -516,54 +517,6 @@ class Item(object):
         # Record linking objects
         request._linked_uuids.add(str(self.uuid))
         return None
-
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['item_type'] = self.item_type
-        ns['base_types'] = self.base_types
-        ns['uuid'] = self.uuid
-        ns['root'] = root = find_root(self)
-        ns['context'] = self
-        ns['registry'] = root.registry
-        ns['collection_uri'] = resource_path(self.__parent__, '')
-        ns['item_uri'] = resource_path(self, '')
-
-        # When called by update_keys() there is no request.
-        if request is not None:
-            ns['request'] = request
-            ns['permission'] = permission_checker(self, request)
-            # Use request.resource_path so that linked uuid is recorded
-            ns['item_uri'] = request.resource_path(self)
-            for name, value in self.rev_links().items():
-                ns[name] = [request.resource_path(item) for item in value]
-        else:
-            ns['item_uri'] = resource_path(self, '')
-            for name, value in self.rev_links().items():
-                ns[name] = [resource_path(item, '') for item in value]
-
-        if self.namespace_from_path:
-            root = find_root(self)
-            for name, paths in self.namespace_from_path.items():
-                # Treat a list of paths as a search path for the value
-                if isinstance(paths, basestring):
-                    paths = [paths]
-                for path in paths:
-                    path = path.split('.')
-                    last = path[-1]
-                    obj = self
-                    obj_props = obj.upgrade_properties(finalize=False)
-                    for n in path[:-1]:
-                        if n not in obj_props:
-                            break
-                        obj = root.get_by_uuid(obj_props[n])
-                        obj_props = obj.upgrade_properties(finalize=False)
-                    else:
-                        if last in obj_props:
-                            ns[name] = deepcopy(obj_props[last])
-                            break
-
-        return ns
 
     @classmethod
     def expand_page(cls, request, properties):
@@ -622,13 +575,7 @@ class Item(object):
                 self.model[key] = value
 
     def update_keys(self):
-        session = DBSession()
-        ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate([
-            {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
-            if isinstance(key, basestring) else key for key in self.keys
-        ])
-        _keys = [(key['name'], key['value']) for key in compiled(ns)]
+        _keys = self.unique_keys()
         keys = set(_keys)
 
         if len(keys) != len(_keys):
@@ -643,6 +590,7 @@ class Item(object):
         to_remove = existing - keys
         to_add = keys - existing
 
+        session = DBSession()
         for pk in to_remove:
             key = session.query(Key).get(pk)
             session.delete(key)
@@ -661,17 +609,10 @@ class Item(object):
         if self.schema is None:
             return
         session = DBSession()
-        properties = self.properties
         source = self.uuid
-        _rels = []
+        links = self.links()
 
-        for name in self.schema_links:
-            targets = properties.get(name, [])
-            if not isinstance(targets, list):
-                targets = [targets] if targets else []
-            for target in targets:
-                _rels.append((name, UUID(target)))
-
+        _rels = [(k, UUID(target)) for k, targets in links.items() for target in targets]
         rels = set(_rels)
         if len(rels) != len(_rels):
             msg = "Duplicate links: %r" % _rels
@@ -694,6 +635,76 @@ class Item(object):
             session.add(link)
 
         return to_add, to_remove
+
+
+class TemplatedItem(Item):
+    keys = []
+    namespace_from_path = {}
+    template = {
+        '@id': {'$value': '{item_uri}', '$templated': True},
+        # 'collection': '{collection_uri}',
+        '@type': [
+            {'$value': '{item_type}', '$templated': True},
+            {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
+        ],
+        'uuid': {'$value': '{uuid}', '$templated': True},
+    }
+
+    def template_namespace(self, properties, request=None):
+        ns = properties.copy()
+        ns['properties'] = properties
+        ns['item_type'] = self.item_type
+        ns['base_types'] = self.base_types
+        ns['uuid'] = self.uuid
+        ns['root'] = root = find_root(self)
+        ns['context'] = self
+        ns['registry'] = root.registry
+        ns['collection_uri'] = resource_path(self.__parent__, '')
+        ns['item_uri'] = resource_path(self, '')
+
+        # When called by update_keys() there is no request.
+        if request is not None:
+            ns['request'] = request
+            ns['permission'] = permission_checker(self, request)
+            # Use request.resource_path so that linked uuid is recorded
+            ns['item_uri'] = request.resource_path(self)
+            for name, value in self.rev_links().items():
+                ns[name] = [request.resource_path(root.get_by_uuid(uuid)) for uuid in value]
+        else:
+            ns['item_uri'] = resource_path(self, '')
+            for name, value in self.rev_links().items():
+                ns[name] = [resource_path(root.get_by_uuid(uuid), '') for uuid in value]
+
+        if self.namespace_from_path:
+            root = find_root(self)
+            for name, paths in self.namespace_from_path.items():
+                # Treat a list of paths as a search path for the value
+                if isinstance(paths, basestring):
+                    paths = [paths]
+                for path in paths:
+                    path = path.split('.')
+                    last = path[-1]
+                    obj = self
+                    obj_props = obj.upgrade_properties(finalize=False)
+                    for n in path[:-1]:
+                        if n not in obj_props:
+                            break
+                        obj = root.get_by_uuid(obj_props[n])
+                        obj_props = obj.upgrade_properties(finalize=False)
+                    else:
+                        if last in obj_props:
+                            ns[name] = deepcopy(obj_props[last])
+                            break
+
+        return ns
+
+    def unique_keys(self):
+        ns = self.template_namespace(self.properties)
+        compiled = ObjectTemplate([
+            {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
+            if isinstance(key, basestring) else key for key in self.keys
+        ])
+        return [(key['name'], key['value']) for key in compiled(ns)]
 
 
 class Collection(Mapping):
@@ -880,7 +891,7 @@ def load_es(context, request):
 @view_config(context=Collection, permission='list', request_method='GET',
              name='object')
 def collection_view_object(context, request):
-    uri = resource_path(context, '')
+    uri = request.resource_path(context)
     properties = context.__json__(request)
     properties.update({
         '@id': uri,
@@ -994,6 +1005,19 @@ def item_links(context, request):
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
 def item_view_object(context, request):
+    properties = item_links(context, request)
+    uri = request.resource_path(context)
+    properties.update({
+        '@id': uri,
+        '@type': [context.item_type] + context.base_types,
+        'uuid': str(context.uuid),
+    })
+    return properties
+
+
+@view_config(context=TemplatedItem, permission='view', request_method='GET',
+             name='object')
+def templated_item_view_object(context, request):
     """ Render json structure
 
     1. Fetch stored properties, possibly upgrading.

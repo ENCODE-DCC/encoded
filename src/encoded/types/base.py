@@ -99,7 +99,7 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     ]
 
 
-class Item(contentbase.Item):
+class Item(contentbase.TemplatedItem):
     STATUS_ACL = {
         # standard_status
         'released': ALLOW_CURRENT,

@@ -13,7 +13,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Root,
-    item_view_object,
+    templated_item_view_object,
     location,
 )
 from ..embedding import embed
@@ -53,13 +53,13 @@ class User(Item):
 @view_config(context=User, permission='view_details', request_method='GET',
              name='details')
 def user_details_view(context, request):
-    return item_view_object(context, request)
+    return templated_item_view_object(context, request)
 
 
 @view_config(context=User, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
-    properties = item_view_object(context, request)
+    properties = templated_item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:
