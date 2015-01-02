@@ -83,10 +83,9 @@ class AntibodyCharacterization(Characterization):
             'secondary_characterization_method',
         ],
     }
-    template = Item.template.copy()
-    template.update({
+    template = {
         'characterization_method': {
             '$value': '{characterization_method}',
             '$condition': 'characterization_method',
         },
-    })
+    }

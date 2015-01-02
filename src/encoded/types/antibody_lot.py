@@ -225,17 +225,14 @@ def lot_reviews(characterizations, targets, request):
 class AntibodyLot(Item):
     item_type = 'antibody_lot'
     schema = load_schema('antibody_lot.json')
-
-    template = Item.template.copy()
-    template.update({
+    name_key = 'accession'
+    template = {
         'lot_reviews': lot_reviews,
         'title': {'$value': '{accession}'},
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    })
-    name_key = 'accession'
-
+    }
     template_keys = [
         {
             'name': '{item_type}:source_product_lot',
@@ -249,11 +246,9 @@ class AntibodyLot(Item):
             '$templated': True,
         },
     ]
-
     rev = {
         'characterizations': ('antibody_characterization', 'characterizes'),
     }
-
     embedded = [
         'source',
         'host_organism',
@@ -268,7 +263,6 @@ class AntibodyLot(Item):
         'lot_reviews.targets.organism',
         'lot_reviews.organisms'
     ]
-
     audit_inherit = [
         'source',
         'host_organism',

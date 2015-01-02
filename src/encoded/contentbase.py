@@ -733,15 +733,7 @@ class Item(object):
 class TemplatedItem(Item):
     template_keys = []
     namespace_from_path = {}
-    template = {
-        '@id': {'$value': '{item_uri}', '$templated': True},
-        # 'collection': '{collection_uri}',
-        '@type': [
-            {'$value': '{item_type}', '$templated': True},
-            {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
-        ],
-        'uuid': {'$value': '{uuid}', '$templated': True},
-    }
+    template = {}
 
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
@@ -1014,7 +1006,7 @@ def templated_item_view_object(context, request):
     2. Link canonicalization (overwriting uuids.)
     3. Templated properties (including reverse links.)
     """
-    properties = item_links(context, request)
+    properties = item_view_object(context, request)
     ns = context.template_namespace(properties, request)
     compiled = ObjectTemplate(context.template)
     templated = compiled(ns)

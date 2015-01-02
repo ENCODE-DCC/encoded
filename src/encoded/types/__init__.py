@@ -92,12 +92,11 @@ class Construct(Item):
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
-    template = Item.template.copy()
-    template.update({
+    template = {
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    })
+    }
     embedded = ['target']
 
 
@@ -115,12 +114,11 @@ class Talen(Item):
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
-    template = Item.template.copy()
-    template.update({
+    template = {
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    })
+    }
     embedded = ['lab', 'submitted_by']
 
 
@@ -146,11 +144,10 @@ class Document(ItemWithAttachment, Item):
 class Platform(Item):
     item_type = 'platform'
     schema = load_schema('platform.json')
-    template = Item.template.copy()
-    template.update({
+    template = {
         'title': '{term_name}',
         '$templated': True,
-    })
+    }
     name_key = 'term_id'
 
 
@@ -180,12 +177,11 @@ class RNAi(Item):
     rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
-    template = Item.template.copy()
-    template.update({
+    template = {
         'characterizations': (
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
-    })
+    }
 
 
 @location(
@@ -198,13 +194,12 @@ class RNAi(Item):
 class Publication(Item):
     item_type = 'publication'
     schema = load_schema('publication.json')
-    template = Item.template.copy()
-    template.update({
+    template = {
         'publication_year': {
             '$value': lambda date_published: date_published.partition(' ')[0],
             '$condition': 'date_published',
         },
-    })
+    }
     embedded = ['datasets']
 
     # XXX the references mixin is only a key for this type

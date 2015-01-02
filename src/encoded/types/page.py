@@ -28,7 +28,6 @@ from pyramid.traversal import (
 class Page(Item):
     item_type = 'page'
     schema = load_schema('page.json')
-
     name_key = 'name'
     template_keys = [
         {'name': 'page:location', 'value': '{name}', '$templated': True,
@@ -36,14 +35,13 @@ class Page(Item):
         {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
          '$condition': 'parent', '$templated': True},
     ]
-
-    template = Item.template.copy()
-    template['canonical_uri'] = {
-        '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
-        '$condition': lambda collection_uri=None: collection_uri == '/pages/',
-        '$templated': True
+    template = {
+        'canonical_uri': {
+            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
+            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
+            '$templated': True
+        },
     }
-
     STATUS_ACL = {
         'in progress': [],
         'released': ALLOW_EVERYONE_VIEW,

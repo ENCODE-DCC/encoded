@@ -37,8 +37,7 @@ def assembly(request, original_files, related_files):
 class Dataset(Item):
     item_type = 'dataset'
     schema = load_schema('dataset.json')
-    template = Item.template.copy()
-    template.update({
+    template = {
         # XXX Still needed?
         'original_files': (
             lambda request, original_files: paths_filtered_by_status(request, original_files)
@@ -63,7 +62,7 @@ class Dataset(Item):
             '$value': assembly,
             '$condition': assembly,
         },
-    })
+    }
     embedded = [
         'files',
         'files.replicate',

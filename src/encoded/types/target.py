@@ -26,11 +26,10 @@ class Target(Item):
         'organism_name': 'organism.name',
         'scientific_name': 'organism.scientific_name',
     }
-    template = Item.template.copy()
-    template.update({
+    template = {
         'name': {'$value': '{label}-{organism_name}', '$templated': True},
         'title': {'$value': '{label} ({scientific_name})', '$templated': True},
-    })
+    }
     embedded = ['organism']
     template_keys = [
         {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
