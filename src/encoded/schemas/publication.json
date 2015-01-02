@@ -26,7 +26,8 @@
         "title": {
             "title": "Title",
             "description": "Title of the publication or communication.",
-            "type": "string"
+            "type": "string",
+            "uniqueKey": true
         },
         "abstract": {
             "rdfs:subPropertyOf": "dc:abstract",

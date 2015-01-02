@@ -2,7 +2,6 @@ from pyramid.security import effective_principals
 from pyramid.view import view_config
 from pyramid.security import (
     Allow,
-    Authenticated,
     Deny,
     Everyone,
 )
@@ -43,7 +42,6 @@ from ..contentbase import (
 class AccessKey(Item):
     item_type = 'access_key'
     schema = load_schema('access_key.json')
-    keys = ['access_key_id']
     name_key = 'access_key_id'
 
     def __ac_local_roles__(self):

@@ -26,7 +26,7 @@ class Image(ItemWithAttachment, Item):
         'image/gif',
     ]
     embedded = ['submitted_by']
-    keys = [
+    template_keys = [
         {
             'name': 'image:filename',
             'value': "{attachment[download]}",

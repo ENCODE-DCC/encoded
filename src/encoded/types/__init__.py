@@ -5,8 +5,6 @@ from ..schema_utils import (
     load_schema,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
     Item,
     paths_filtered_by_status,
 )
@@ -28,10 +26,6 @@ class Lab(Item):
     item_type = 'lab'
     schema = load_schema('lab.json')
     name_key = 'name'
-    keys = [
-        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
-        {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
-    ]
 
 
 @location(
@@ -45,7 +39,6 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('award.json')
     name_key = 'name'
-    keys = ['name']
 
 
 @location(
@@ -59,7 +52,6 @@ class Organism(Item):
     item_type = 'organism'
     schema = load_schema('organism.json')
     name_key = 'name'
-    keys = ['name']
 
 
 @location(
@@ -73,7 +65,6 @@ class Source(Item):
     item_type = 'source'
     schema = load_schema('source.json')
     name_key = 'name'
-    keys = ALIAS_KEYS + ['name']
 
 
 @location(
@@ -85,7 +76,7 @@ class Source(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('treatment.json')
-    keys = ALIAS_KEYS  # ['treatment_name']
+    # XXX 'treatment_name' as key?
 
 
 @location(
@@ -97,7 +88,7 @@ class Treatment(Item):
 class Construct(Item):
     item_type = 'construct'
     schema = load_schema('construct.json')
-    keys = ALIAS_KEYS  # ['vector_name']
+    # XXX 'vector_name' as key?
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
@@ -120,7 +111,6 @@ class Construct(Item):
 class Talen(Item):
     item_type = 'talen'
     schema = load_schema('talen.json')
-    keys = ALIAS_KEYS + ['name']
     name_key = 'name'
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -144,7 +134,6 @@ class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('document.json')
     embedded = ['lab', 'award', 'submitted_by']
-    keys = ALIAS_KEYS
 
 
 @location(
@@ -163,10 +152,6 @@ class Platform(Item):
         '$templated': True,
     })
     name_key = 'term_id'
-    keys = ALIAS_KEYS + [
-        {'name': '{item_type}:term_id', 'value': '{term_id}', '$templated': True},
-        {'name': '{item_type}:term_id', 'value': '{term_name}', '$templated': True},
-    ]
 
 
 @location(
@@ -180,7 +165,6 @@ class Library(Item):
     schema = load_schema('library.json')
     embedded = ['biosample']
     name_key = 'accession'
-    keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
 @location(
@@ -202,7 +186,6 @@ class RNAi(Item):
             lambda request, characterizations: paths_filtered_by_status(request, characterizations)
         ),
     })
-    keys = ALIAS_KEYS
 
 
 @location(
@@ -223,8 +206,10 @@ class Publication(Item):
         },
     })
     embedded = ['datasets']
-    keys = ALIAS_KEYS + [
-        {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
+
+    # XXX the references mixin is only a key for this type
+    # Should probably become 'identifiers' for publication
+    template_keys = [
         {
             'name': '{item_type}:reference',
             'value': '{reference}',
@@ -247,7 +232,3 @@ class Software(Item):
     schema = load_schema('software.json')
     name_key = 'name'
     embedded = ['references']
-    keys = ALIAS_KEYS + [
-        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
-        {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
-    ]

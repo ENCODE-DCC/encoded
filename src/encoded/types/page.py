@@ -30,7 +30,7 @@ class Page(Item):
     schema = load_schema('page.json')
 
     name_key = 'name'
-    keys = [
+    template_keys = [
         {'name': 'page:location', 'value': '{name}', '$templated': True,
          '$condition': lambda parent=None: parent is None},
         {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,

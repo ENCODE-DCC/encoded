@@ -5,7 +5,6 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ALIAS_KEYS,
     Item,
 )
 from pyramid.traversal import (
@@ -33,7 +32,7 @@ class Target(Item):
         'title': {'$value': '{label} ({scientific_name})', '$templated': True},
     })
     embedded = ['organism']
-    keys = ALIAS_KEYS + [
+    template_keys = [
         {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
     ]
 

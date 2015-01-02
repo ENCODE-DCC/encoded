@@ -7,33 +7,6 @@ from pyramid.security import (
 )
 from .. import contentbase
 
-ACCESSION_KEYS = [
-    {
-        'name': 'accession',
-        'value': '{accession}',
-        '$templated': True,
-        '$condition': lambda accession=None, status=None: accession and status != 'replaced'
-    },
-    {
-        'name': 'accession',
-        'value': '{accession}',
-        '$repeat': 'accession alternate_accessions',
-        '$templated': True,
-        '$condition': 'alternate_accessions',
-    },
-]
-
-ALIAS_KEYS = [
-    {
-        'name': 'alias',
-        'value': '{alias}',
-        '$repeat': 'alias aliases',
-        '$templated': True,
-        '$condition': 'aliases',
-    },
-]
-
-
 ALLOW_EVERYONE_VIEW = [
     (Allow, Everyone, 'view'),
 ]
@@ -161,6 +134,16 @@ class Item(contentbase.TemplatedItem):
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
         return roles
+
+    def keys(self):
+        keys = super(Item, self).keys()
+        if 'accession' not in self.schema['properties']:
+            return keys
+        properties = self.upgrade_properties(finalize=False)
+        keys.setdefault('accession', []).extend(properties.get('alternate_accessions', []))
+        if properties.get('status') != 'replaced' and 'accession' in properties:
+            keys['accession'].append(properties['accession'])
+        return keys
 
     class Collection(contentbase.Collection):
         actions = [ADD_ACTION]

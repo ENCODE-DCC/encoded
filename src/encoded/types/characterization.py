@@ -5,7 +5,6 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ALIAS_KEYS,
     Item,
 )
 from .download import ItemWithAttachment
@@ -14,7 +13,6 @@ from .download import ItemWithAttachment
 class Characterization(ItemWithAttachment, Item):
     base_types = ['characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
-    keys = ALIAS_KEYS
 
 
 @location(

@@ -70,13 +70,21 @@ class TestingDownload(ItemWithAttachment):
     },
     unique_key='testing_accession',
 )
-class TestingKey(TemplatedItem):
+class TestingKey(Item):
     item_type = 'testing_key'
-    schema = None
-    keys = [
-        'name',
-        {'name': 'testing_accession', 'value': '{accession}', '$templated': True},
-    ]
+    schema = {
+        'type': 'object',
+        'properties': {
+            'name': {
+                'type': 'string',
+                'uniqueKey': True,
+            },
+            'accession': {
+                'type': 'string',
+                'uniqueKey': 'testing_accession',
+            },
+        }
+    }
 
 
 @location('testing-link-sources')

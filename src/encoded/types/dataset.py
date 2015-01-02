@@ -5,8 +5,6 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
     Item,
     paths_filtered_by_status,
 )
@@ -97,7 +95,6 @@ class Dataset(Item):
     ]
 
     name_key = 'accession'
-    keys = ACCESSION_KEYS + ALIAS_KEYS
     rev = {
         'original_files': ('file', 'dataset'),
     }

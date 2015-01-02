@@ -5,8 +5,6 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
     Item,
     paths_filtered_by_status,
 )
@@ -16,7 +14,6 @@ class Donor(Item):
     base_types = ['donor'] + Item.base_types
     embedded = ['organism']
     name_key = 'accession'
-    keys = ACCESSION_KEYS + ALIAS_KEYS
     rev = {
         'characterizations': ('donor_characterization', 'characterizes'),
     }

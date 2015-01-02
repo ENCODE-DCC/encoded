@@ -36,7 +36,8 @@
             "title": "Construct name",
             "description": "The name of the TALEN construct.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "uniqueKey": true
         },
         "description": {
             "title": "Description",

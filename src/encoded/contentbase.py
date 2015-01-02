@@ -485,8 +485,25 @@ class Item(object):
                     value.append(link.source_rid)
         return links
 
-    def unique_keys(self):
-        return ()
+    @classreify
+    def schema_keys(cls):
+        if not cls.schema:
+            return ()
+        keys = defaultdict(list)
+        for key, prop in cls.schema['properties'].items():
+            uniqueKey = prop.get('items', prop).get('uniqueKey')
+            if uniqueKey is True:
+                uniqueKey = '%s:%s' % (cls.item_type, key)
+            if uniqueKey is not None:
+                keys[uniqueKey].append(key)
+        return keys
+
+    def keys(self):
+        properties = self.upgrade_properties(finalize=False)
+        return {
+            name: [v for prop in props for v in aslist(properties.get(prop, ()))]
+            for name, props in self.schema_keys.items()
+        }
 
     def upgrade_properties(self, finalize=True):
         properties = self.properties.copy()
@@ -539,11 +556,11 @@ class Item(object):
     def _update(self, properties, sheets=None):
         session = DBSession()
         sp = session.begin_nested()
-        session.add(self.model)
-        self.update_properties(properties, sheets)
-        keys_add, keys_remove = self.update_keys()
-        self.update_rels()
         try:
+            session.add(self.model)
+            self.update_properties(properties, sheets)
+            self.update_rels()
+            keys_add, keys_remove = self.update_keys()
             sp.commit()
         except (IntegrityError, FlushError):
             sp.rollback()
@@ -551,15 +568,15 @@ class Item(object):
             return
 
         # Try again more carefully
-        session.add(self.model)
-        self.update_properties(properties, sheets)
         try:
+            session.add(self.model)
+            self.update_properties(properties, sheets)
+            self.update_rels()
             session.flush()
         except (IntegrityError, FlushError):
             msg = 'UUID conflict'
             raise HTTPConflict(msg)
         conflicts = self.check_duplicate_keys(keys_add)
-        self.update_properties(properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
@@ -575,7 +592,7 @@ class Item(object):
                 self.model[key] = value
 
     def update_keys(self):
-        _keys = self.unique_keys()
+        _keys = [(k, v) for k, values in self.keys().items() for v in values]
         keys = set(_keys)
 
         if len(keys) != len(_keys):
@@ -638,7 +655,7 @@ class Item(object):
 
 
 class TemplatedItem(Item):
-    keys = []
+    template_keys = []
     namespace_from_path = {}
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
@@ -698,13 +715,16 @@ class TemplatedItem(Item):
 
         return ns
 
-    def unique_keys(self):
+    def keys(self):
+        keys = super(TemplatedItem, self).keys()
         ns = self.template_namespace(self.properties)
         compiled = ObjectTemplate([
             {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
-            if isinstance(key, basestring) else key for key in self.keys
+            if isinstance(key, basestring) else key for key in self.template_keys
         ])
-        return [(key['name'], key['value']) for key in compiled(ns)]
+        for key in compiled(ns):
+            keys.setdefault(key['name'], []).append(key['value'])
+        return keys
 
 
 class Collection(Mapping):

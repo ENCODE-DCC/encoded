@@ -41,7 +41,7 @@ class AntibodyApproval(Item):
         'characterizations.target.organism',
         'target.organism',
     ]
-    keys = [
+    template_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
 

@@ -5,8 +5,6 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
     Item,
     paths_filtered_by_status,
 )
@@ -238,7 +236,7 @@ class AntibodyLot(Item):
     })
     name_key = 'accession'
 
-    keys = ACCESSION_KEYS + ALIAS_KEYS + [
+    template_keys = [
         {
             'name': '{item_type}:source_product_lot',
             'value': '{source}/{product_id}/{lot_id}',

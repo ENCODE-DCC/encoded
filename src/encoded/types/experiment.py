@@ -6,7 +6,6 @@ from ..contentbase import (
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,
-    ALIAS_KEYS,
     Item,
     paths_filtered_by_status,
 )
@@ -163,7 +162,7 @@ class Replicates(Item):
         'lab': 'experiment.lab',
         'award': 'experiment.award',
     }
-    keys = ALIAS_KEYS + [
+    template_keys = [
         {
             'name': '{item_type}:experiment_biological_technical',
             'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',

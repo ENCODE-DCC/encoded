@@ -5,8 +5,6 @@ from ..schema_utils import (
     schema_validator,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
     Item,
 )
 from pyramid.httpexceptions import (
@@ -74,7 +72,7 @@ class File(Item):
     item_type = 'file'
     schema = load_schema('file.json')
     name_key = 'accession'
-    keys = ACCESSION_KEYS + ALIAS_KEYS + [
+    template_keys = [
         {
             'name': 'alias',
             'value': 'md5:{md5sum}',
