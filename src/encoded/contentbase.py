@@ -403,6 +403,81 @@ class Root(object):
         return self.properties.copy()
 
 
+class Collection(Mapping):
+    properties = {}
+    unique_key = None
+    actions = []
+
+    def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
+        self.__name__ = name
+        self.__parent__ = parent
+        self.Item = Item
+        self.item_type = Item.item_type
+        if properties is not None:
+            self.properties = properties
+        if acl is not None:
+            self.__acl__ = acl
+        if unique_key is not None:
+            self.unique_key = unique_key
+
+    def __getitem__(self, name):
+        try:
+            item = self.get(name)
+        except KeyError:
+            # Just in case we get an unexpected KeyError
+            # FIXME: exception logging.
+            raise HTTPInternalServerError('Traversal raised KeyError')
+        if item is None:
+            raise KeyError(name)
+        return item
+
+    def __iter__(self, batchsize=1000):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        ).order_by(Resource.rid)
+
+        for rid, in query.yield_per(batchsize):
+            yield rid
+
+    def __len__(self):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        )
+        return query.count()
+
+    def get(self, name, default=None):
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
+        if resource is not None:
+            if resource.collection is not self and resource.__parent__ is not self:
+                return default
+            return resource
+        if is_accession(name):
+            resource = root.get_by_unique_key('accession', name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        if ':' in name:
+            resource = root.get_by_unique_key('alias', name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        if self.unique_key is not None:
+            resource = root.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        return default
+
+    def __json__(self, request):
+        return self.properties.copy()
+
+
 class Item(object):
     base_types = ['item']
     name_key = None
@@ -411,6 +486,7 @@ class Item(object):
     audit_inherit = None
     schema = None
     actions = []
+    Collection = Collection
 
     def __init__(self, collection, model):
         self.collection = collection
@@ -727,112 +803,6 @@ class TemplatedItem(Item):
         return keys
 
 
-class Collection(Mapping):
-    properties = {}
-    unique_key = None
-    actions = []
-
-    def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
-        self.__name__ = name
-        self.__parent__ = parent
-        self.Item = Item
-        self.item_type = Item.item_type
-        if properties is not None:
-            self.properties = properties
-        if acl is not None:
-            self.__acl__ = acl
-        if unique_key is not None:
-            self.unique_key = unique_key
-
-    def __getitem__(self, name):
-        try:
-            item = self.get(name)
-        except KeyError:
-            # Just in case we get an unexpected KeyError
-            # FIXME: exception logging.
-            raise HTTPInternalServerError('Traversal raised KeyError')
-        if item is None:
-            raise KeyError(name)
-        return item
-
-    def __iter__(self, batchsize=1000):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        ).order_by(Resource.rid)
-
-        for rid, in query.yield_per(batchsize):
-            yield rid
-
-    def __len__(self):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        )
-        return query.count()
-
-    def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
-        if resource is not None:
-            if resource.collection is not self and resource.__parent__ is not self:
-                return default
-            return resource
-        if is_accession(name):
-            resource = root.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = root.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        return default
-
-    def __json__(self, request):
-        return self.properties.copy()
-
-
-Item.Collection = Collection
-
-
-def expand_column(request, obj, subset, path):
-    if isinstance(path, basestring):
-        path = path.split('.')
-    if not path:
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if not remaining:
-        subset[name] = value
-        return
-    if isinstance(value, list):
-        if name not in subset:
-            subset[name] = [{} for i in range(len(value))]
-        for index, member in enumerate(value):
-            if not isinstance(member, dict):
-                member = request.embed(member, '@@object')
-            expand_column(request, member, subset[name][index], remaining)
-    else:
-        if name not in subset:
-            subset[name] = {}
-        if not isinstance(value, dict):
-            value = request.embed(value, '@@object')
-        expand_column(request, value, subset[name], remaining)
-
-
 def etag_tid(view_callable):
     def wrapped(context, request):
         result = view_callable(context, request)
@@ -1103,6 +1073,34 @@ def item_view_expand(context, request):
     for path in request.params.getall('expand'):
         expand_path(request, properties, path)
     return properties
+
+
+def expand_column(request, obj, subset, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if not remaining:
+        subset[name] = value
+        return
+    if isinstance(value, list):
+        if name not in subset:
+            subset[name] = [{} for i in range(len(value))]
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = request.embed(member, '@@object')
+            expand_column(request, member, subset[name][index], remaining)
+    else:
+        if name not in subset:
+            subset[name] = {}
+        if not isinstance(value, dict):
+            value = request.embed(value, '@@object')
+        expand_column(request, value, subset[name], remaining)
 
 
 @view_config(context=Item, permission='view', request_method='GET',
