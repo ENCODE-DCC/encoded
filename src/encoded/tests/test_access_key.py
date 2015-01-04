@@ -146,14 +146,6 @@ def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key, f
     assert 'secret_access_key_hash' not in res.json
 
 
-def test_notfound_denied_anonymous(anontestapp):
-    anontestapp.get('/access-keys/badname', status=403)
-
-
-def test_notfound_admin(testapp):
-    testapp.get('/access-keys/badname', status=404)
-
-
 def test_access_key_uses_edw_hash(app, access_key):
     from encoded.edw_hash import EDWHash
     from encoded.contentbase import LOCATION_ROOT

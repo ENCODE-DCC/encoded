@@ -51,6 +51,7 @@
             "type": "array",
             "default": [],
             "items": {
+                "uniqueKey": "alias",
                 "title": "Lab alias",
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",

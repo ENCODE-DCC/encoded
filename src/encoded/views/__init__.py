@@ -59,7 +59,7 @@ def schema(context, request):
     except KeyError:
         raise HTTPNotFound(item_type)
 
-    schema = copy.deepcopy(collection.schema)
+    schema = copy.deepcopy(collection.Item.schema)
     properties = OrderedDict()
     for k, v in schema['properties'].items():
         if 'permission' in v:

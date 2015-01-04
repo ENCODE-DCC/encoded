@@ -139,10 +139,10 @@ def search(context, request, search_type=None):
             fields.add('audit.*')
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
-            if 'columns' not in (collection.schema or ()):
+            if 'columns' not in (collection.Item.schema or ()):
                 fields.add('object.*')
             else:
-                columns = collection.schema['columns']
+                columns = collection.Item.schema['columns']
                 fields.update(
                     ('embedded.@id', 'embedded.@type'),
                     ('embedded.' + column for column in columns),
@@ -211,8 +211,8 @@ def search(context, request, search_type=None):
     facets = [
         ('type', {'title': 'Data Type'}),
     ]
-    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets.extend(root[doc_types[0]].schema['facets'].items())
+    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].Item.schema:
+        facets.extend(root[doc_types[0]].Item.schema['facets'].items())
 
     if search_audit:
         facets.append(('audit.category', {'title': 'Audit category'}))
@@ -288,7 +288,7 @@ def search(context, request, search_type=None):
     else:  # columns
         for hit in hits:
             item_type = hit['_type']
-            if 'columns' in root[item_type].schema:
+            if 'columns' in root[item_type].Item.schema:
                 item = hit['_source']['embedded']
             else:
                 item = hit['_source']['object']

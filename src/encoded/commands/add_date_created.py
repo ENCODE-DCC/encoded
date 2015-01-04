@@ -24,7 +24,6 @@ EPILOG = __doc__
 logger = logging.getLogger(__name__)
 
 
-
 def internal_app(configfile, app_name=None, username=None):
     from webtest import TestApp
     from pyramid import paster
@@ -48,7 +47,8 @@ def run(testapp, collections=None, exclude=None, dry_run=False):
         if collection_name in exclude:
             continue
         collection = root[collection_name]
-        if collection.schema is None or 'date_created' not in collection.schema.get('properties', ()):
+        if collection.Item.schema is None or \
+                'date_created' not in collection.Item.schema.get('properties', ()):
             logger.info('Skipped %s', collection_name)
             continue
         count = 0

@@ -5,14 +5,19 @@ from ..contentbase import (
     location,
 )
 from .base import (
-    ADD_ACTION,
-    Collection,
+    Item,
 )
 from .download import ItemWithAttachment
 
 
-@location('images')
-class Image(Collection):
+@location(
+    name='images',
+    unique_key='image:filename',
+    properties={
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    })
+class Image(ItemWithAttachment, Item):
     item_type = 'image'
     schema = load_schema('image.json')
     schema['properties']['attachment']['properties']['type']['enum'] = [
@@ -20,21 +25,11 @@ class Image(Collection):
         'image/jpeg',
         'image/gif',
     ]
-    properties = {
-        'title': 'Image',
-        'description': 'Listing of portal images',
-    }
-    unique_key = 'image:filename'
-    template = {
-        'actions': [ADD_ACTION],
-    }
-
-    class Item(ItemWithAttachment, Collection.Item):
-        embedded = ['submitted_by']
-        keys = [
-            {
-                'name': 'image:filename',
-                'value': "{attachment[download]}",
-                '$templated': True,
-            },
-        ]
+    embedded = ['submitted_by']
+    template_keys = [
+        {
+            'name': 'image:filename',
+            'value': "{attachment[download]}",
+            '$templated': True,
+        },
+    ]

@@ -26,14 +26,16 @@
             "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the measurement device.",
             "comment": "NTR is a new term request identifier provided by the DCC.",
             "type": "string",
-            "pattern": "^(OBI|NTR):[0-9]{7}$"
+            "pattern": "^(OBI|NTR):[0-9]{7}$",
+            "uniqueKey": "platform:term_id"
         },
         "term_name": {
             "@id": null,
             "title": "Platform name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the measurement device.",
             "type":  "string",
-            "default": ""
+            "default": "",
+            "uniqueKey": "platform:term_id"
         },
         "dbxrefs": {
             "@type": "@id",

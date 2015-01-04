@@ -18,7 +18,8 @@
         "email": {
             "title": "Email",
             "type": "string",
-            "format": "email"
+            "format": "email",
+            "uniqueKey": true
         },
         "first_name": {
             "title": "First name",
