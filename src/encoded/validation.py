@@ -7,6 +7,7 @@ from pyramid.httpexceptions import (
     HTTPPreconditionFailed,
     HTTPUnprocessableEntity,
 )
+from past.builtins import basestring
 from pyramid.util import LAST
 import simplejson as json
 

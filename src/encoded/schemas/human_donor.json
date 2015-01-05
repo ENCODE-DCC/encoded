@@ -20,8 +20,24 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "age_units":  {
+            "not": {
+                "properties": {
+                    "age": {
+                        "enum": ["unknown"]
+                    }
+                }
+            }
+        },
         "age":  {
             "oneOf": [
+                {
+                    "properties": {
+                        "age": {
+                            "enum": ["unknown"]
+                        }
+                    }
+                },
                 {
                     "required": ["age_units"],
                     "properties": {

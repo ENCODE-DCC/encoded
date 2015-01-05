@@ -10,7 +10,7 @@ Example:
 import json
 import requests
 import sys
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 EPILOG = __doc__
 

@@ -1,5 +1,6 @@
 from ..migrator import upgrade_step
 from .shared import ENCODE2_AWARDS
+from past.builtins import long
 import re
 
 def number(value):

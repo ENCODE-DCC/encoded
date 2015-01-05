@@ -1,6 +1,9 @@
 language: python
-python:
-  - "2.7"
+sudo: false
+cache:
+  directories:
+    - eggs
+    - .npm
 env:
   global:
     - secure: |-
@@ -12,17 +15,21 @@ env:
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
-  matrix:
-    - BROWSER=
-    - BROWSER=Chrome
+matrix:
+  include:
+    - python: "2.7"
+      env: BROWSER=
+    - python: "2.7"
+      env: BROWSER=Chrome
+    - python: "3.4"
+      env: BROWSER=
 before_install:
   - whereis elasticsearch
-  - sudo service postgresql stop
   - postgres --version
   - initdb --version
-  - sudo service elasticsearch stop
   - elasticsearch -v
 install:
+  - npm config set python /usr/bin/python2.7
   - python bootstrap.py -v 2.2.5 --setuptools-version 7.0
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:

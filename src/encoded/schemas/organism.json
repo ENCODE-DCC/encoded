@@ -19,7 +19,8 @@
             "title": "Common name",
             "description": "A short unique name for the organism (e.g. 'mouse' or 'human').",
             "type": "string",
-            "pattern": "^[a-z0-9\\-]+$"
+            "pattern": "^[a-z0-9\\-]+$",
+            "uniqueKey": true
         },
         "scientific_name": {
             "title": "Binomial name",

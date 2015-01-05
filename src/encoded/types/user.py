@@ -7,61 +7,56 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
-from .base import Collection
+from .base import Item
 from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
     Root,
-    item_view_object,
+    templated_item_view_object,
     location,
 )
 from ..embedding import embed
 
 
-@location('users')
-class User(Collection):
-    item_type = 'user'
-    unique_key = 'user:email'
-    schema = load_schema('user.json')
-    properties = {
+@location(
+    name='users',
+    unique_key='user:email',
+    properties={
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
-    }
-
-    __acl__ = [
+    },
+    acl=[
         (Allow, 'group.admin', ['list', 'view_details']),
         (Allow, 'group.read-only-admin', ['list', 'view_details']),
         (Allow, 'role.owner', ['edit', 'view_details']),
         (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, Everyone, ['view', 'traverse']),
+        (Allow, 'remoteuser.EMBED', ['list', 'view']),
+        (Allow, Everyone, ['view']),
         (Deny, Everyone, ['list', 'view_details']),
-    ]
+    ])
+class User(Item):
+    item_type = 'user'
+    schema = load_schema('user.json')
+    template = {
+        'title': {'$value': '{first_name} {last_name}', '$templated': True},
+    }
 
-    class Item(Collection.Item):
-        keys = ['email']
-        unique_key = 'user.email'
-        template = {
-            'title': '{first_name} {last_name}',
-            '$templated': True,
-        }
-
-        def __ac_local_roles__(self):
-            owner = 'userid.%s' % self.uuid
-            return {owner: 'role.owner'}
+    def __ac_local_roles__(self):
+        owner = 'userid.%s' % self.uuid
+        return {owner: 'role.owner'}
 
 
-@view_config(context=User.Item, permission='view_details', request_method='GET',
+@view_config(context=User, permission='view_details', request_method='GET',
              name='details')
 def user_details_view(context, request):
-    return item_view_object(context, request)
+    return templated_item_view_object(context, request)
 
 
-
-@view_config(context=User.Item, permission='view', request_method='GET',
+@view_config(context=User, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
-    properties = item_view_object(context, request)
+    properties = templated_item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:

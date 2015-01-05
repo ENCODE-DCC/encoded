@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from ..migrator import upgrade_step
 from .shared import ENCODE2_AWARDS
 
