@@ -53,6 +53,10 @@ from uuid import (
     uuid4,
 )
 from .cache import ManagerLRUCache
+from .calculated import (
+    calculate_properties,
+    calculated_property,
+)
 from .decorator import classreify
 from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
@@ -479,6 +483,7 @@ class Collection(Mapping):
 
 
 class Item(object):
+    item_type = 'item'
     base_types = ['item']
     name_key = None
     rev = {}
@@ -504,10 +509,6 @@ class Item(object):
         if self.name_key is None:
             return self.uuid
         return self.properties.get(self.name_key, None) or self.uuid
-
-    @property
-    def item_type(self):
-        return type(self).__name__
 
     @classreify
     def schema_version(cls):
@@ -560,6 +561,14 @@ class Item(object):
                 if (link.source.item_type, link.rel) == spec:
                     value.append(link.source_rid)
         return links
+
+    def get_rev_links(self, name):
+        spec = self.rev[name]
+        return [
+            link.source_rid
+            for link in self.model.revs
+            if (link.source.item_type, link.rel) == spec
+        ]
 
     @classreify
     def schema_keys(cls):
@@ -728,6 +737,27 @@ class Item(object):
             session.add(link)
 
         return to_add, to_remove
+
+    @calculated_property(name='@id', schema={
+        "type": "string",
+    })
+    def jsonld_id(self, request):
+        return request.resource_path(self)
+
+    @calculated_property(name='@type', schema={
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def jsonld_type(self):
+        return [self.item_type] + self.base_types
+
+    @calculated_property(name='uuid', schema={
+        "type": "string",
+    })
+    def prop_uuid(self):
+        return str(self.uuid)
 
 
 class TemplatedItem(Item):
@@ -988,12 +1018,8 @@ def item_links(context, request):
              name='object')
 def item_view_object(context, request):
     properties = item_links(context, request)
-    uri = request.resource_path(context)
-    properties.update({
-        '@id': uri,
-        '@type': [context.item_type] + context.base_types,
-        'uuid': str(context.uuid),
-    })
+    calculated = calculate_properties(context, request, **properties)
+    properties.update(calculated)
     return properties
 
 

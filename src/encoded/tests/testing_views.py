@@ -4,7 +4,7 @@ from pyramid.security import (
 from pyramid.view import view_config
 from ..contentbase import (
     Item,
-    TemplatedItem,
+    calculated_property,
     location,
 )
 from ..types.base import paths_filtered_by_status
@@ -105,7 +105,7 @@ class TestingLinkSource(Item):
 
 
 @location('testing-link-targets')
-class TestingLinkTarget(TemplatedItem):
+class TestingLinkTarget(Item):
     item_type = 'testing_link_target'
     schema = {
         'type': 'object',
@@ -121,9 +121,10 @@ class TestingLinkTarget(TemplatedItem):
     embedded = [
         'reverse',
     ]
-    template = {
-        'reverse': lambda request, reverse: paths_filtered_by_status(request, reverse),
-    }
+
+    @calculated_property()
+    def reverse(self, request, reverse):
+        return paths_filtered_by_status(request, reverse)
 
 
 @location(
