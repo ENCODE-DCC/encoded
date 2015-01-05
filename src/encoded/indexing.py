@@ -214,7 +214,7 @@ def es_update_object(request, objects, xmin):
             try:
                 es.index(
                     index=INDEX, doc_type=doctype, body=result,
-                    id=str(uuid), version=xmin, version_type='external',
+                    id=str(uuid), version=xmin, version_type='external_gte',
                 )
             except ConflictError:
                 log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
