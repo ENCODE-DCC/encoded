@@ -1,5 +1,7 @@
+from past.builtins import basestring
 import inspect
 __all__ = ['ObjectTemplate']
+text = type(u'')
 _marker = object()
 TEMPLATE_NAMES = ('$templated', '$repeat', '$condition', '$value')
 
@@ -18,7 +20,7 @@ class ObjectTemplate(object):
 
 
 def string_template(template, namespace):
-    return unicode(template).format(**namespace)
+    return text(template).format(**namespace)
 
 
 def list_template(template, namespace):

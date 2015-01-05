@@ -26,7 +26,6 @@ _app_settings = {
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'allow.list': 'Everyone',
-    'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'load_test_only': True,
@@ -47,7 +46,7 @@ def engine_url(request):
         return
 
     # Ideally this would use a different database on the same postgres server
-    from urllib import quote
+    from urllib.parse import quote
     from .postgresql_fixture import initdb, server_process
     tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
     tmpdir = str(tmpdir)
@@ -260,10 +259,11 @@ def server_host_port():
 
 @fixture(scope='session')
 def authenticated_app(app):
-    import Cookie
+    from http.cookies import SimpleCookie
+
     def wsgi_filter(environ, start_response):
         # set REMOTE_USER from cookie
-        cookies = Cookie.SimpleCookie()
+        cookies = SimpleCookie()
         cookies.load(environ.get('HTTP_COOKIE', ''))
         if 'REMOTE_USER' in cookies:
             user = cookies['REMOTE_USER'].value
@@ -338,7 +338,7 @@ def connection(request, engine_url):
 
 @fixture
 def external_tx(request, connection):
-    print 'BEGIN external_tx'
+    print('BEGIN external_tx')
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     ## The database should be empty unless a data fixture was loaded
@@ -734,7 +734,7 @@ def dataset(datasets):
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server(request):
-    from urllib import quote
+    from urllib.parse import quote
     from .postgresql_fixture import initdb, server_process
     tmpdir = request.config._tmpdirhandler.mktemp('postgresql', numbered=True)
     tmpdir = str(tmpdir)

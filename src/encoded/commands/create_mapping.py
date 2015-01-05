@@ -51,7 +51,7 @@ def schema_mapping(name, schema):
 
     if type_ == 'object':
         properties = {}
-        all_props = schema['properties'].items() + schema.get('calculated_props', {}).items()
+        all_props = list(schema['properties'].items()) + list(schema.get('calculated_props', {}).items())
         for k, v in all_props:
             mapping = schema_mapping(k, v)
             if mapping is not None:
@@ -257,16 +257,16 @@ def es_mapping(mapping):
 
 
 def collection_mapping(collection, embed=True):
-    schema = collection.schema
+    schema = collection.Item.schema
     if schema is None:
         return None
 
     mapping = schema_mapping(collection.item_type, schema)
 
-    merged_rev = collection.Item.merged_rev
+    rev = collection.Item.rev
 
     mixins = ['@id', '@type']
-    mixins.extend(merged_rev.keys())
+    mixins.extend(rev.keys())
     for name in mixins:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
 
@@ -277,7 +277,7 @@ def collection_mapping(collection, embed=True):
     for prop in collection.Item.embedded:
         new_mapping = mapping
         new_schema = schema
-        new_merged_rev = merged_rev
+        new_rev = rev
 
         for i, p in enumerate(prop.split('.')):
             name = None
@@ -289,8 +289,8 @@ def collection_mapping(collection, embed=True):
                     subschema = subschema.get('items', subschema)
                     name = subschema.get('linkTo')
 
-            if name is None and p in new_merged_rev:
-                name, merged_rev_path = new_merged_rev[p]
+            if name is None and p in new_rev:
+                name, rev_path = new_rev[p]
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
@@ -307,8 +307,8 @@ def collection_mapping(collection, embed=True):
             new_mapping = new_mapping['properties'][p]
 
             if name is not None:
-                new_schema = root[name].schema
-                new_merged_rev = root[name].Item.merged_rev
+                new_schema = root[name].Item.schema
+                new_rev = root[name].Item.rev
             elif subschema is not None:
                 new_schema = subschema
 
@@ -343,7 +343,7 @@ def run(app, collections=None, dry_run=False):
                 es.indices.create(index=index, body=index_settings())
 
     if not collections:
-        collections = ['meta'] + root.by_item_type.keys()
+        collections = ['meta'] + list(root.by_item_type.keys())
 
     for collection_name in collections:
         if collection_name == 'meta':
@@ -357,8 +357,7 @@ def run(app, collections=None, dry_run=False):
         if mapping is None:
             continue  # Testing collections
         if dry_run:
-            print json.dumps(
-                sorted_dict({index: {doc_type: mapping}}), indent=4)
+            print(json.dumps(sorted_dict({index: {doc_type: mapping}}), indent=4))
             continue
 
         if collection_name is not 'meta':

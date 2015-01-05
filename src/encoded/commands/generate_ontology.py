@@ -313,7 +313,7 @@ def sort_uri_list_by_name(uri_list):
         return sorted(uri_list, key=lambda x: get_last_bit(x.__str__()))
     except:
         # TODO: do more testing.. maybe use a unicode-safe method instead of __str__
-        print "Error in <sort_uri_list_by_name>: possibly a UnicodeEncodeError"
+        print("Error in <sort_uri_list_by_name>: possibly a UnicodeEncodeError")
         return uri_list
 
 

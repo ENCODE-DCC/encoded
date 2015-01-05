@@ -15,7 +15,7 @@ def includeme(config):
         migrator = config.registry['migrator']
         root = config.registry[LOCATION_ROOT]
         for item_type, collection in root.by_item_type.items():
-            version = collection.schema_version
+            version = collection.Item.schema_version
             if version is not None:
                 migrator.add_upgrade(item_type, version)
 

@@ -30,7 +30,8 @@
     "minifyify": "^4.4.0",
     "moment": "^2.8.2",
     "react-tools": "^0.11.2",
-    "through": "^2.3.4"
+    "through": "^2.3.4",
+    "watchify": "^2.2.1"
   },
   "dependencies": {
     "brace": "^0.3.0",

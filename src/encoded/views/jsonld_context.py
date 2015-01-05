@@ -1,14 +1,16 @@
 from itertools import chain
+from past.builtins import basestring
 from pkg_resources import resource_stream
 from pyramid.events import (
     ApplicationCreated,
-    BeforeRender,
     subscriber,
 )
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
+import codecs
 import json
 
+utf8 = codecs.getreader("utf-8")
 
 jsonld_base = 'https://www.encodeproject.org/terms/'
 prefix = 'encode:'
@@ -23,8 +25,8 @@ def aslist(value):
 
 def allprops(schema):
     return chain(
-        schema.get('properties', {}).iteritems(),
-        schema.get('calculated_props', {}).iteritems(),
+        schema.get('properties', {}).items(),
+        schema.get('calculated_props', {}).items(),
     )
 
 
@@ -71,13 +73,13 @@ def make_jsonld_context(event):
         'collection': prefix + 'collection',
     }
 
-    for name, collection in root.by_item_type.iteritems():
-        if name.startswith('testing_') or collection.schema is None:
+    for name, collection in root.by_item_type.items():
+        if name.startswith('testing_') or collection.Item.schema is None:
             continue
         context.update(context_from_schema(
-            collection.schema, prefix, collection.item_type, collection.Item.base_types))
+            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types))
 
-    namespaces = json.load(resource_stream(__name__, '../schemas/namespaces.json'))
+    namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
     context.update(namespaces)
 
     ontology = {
@@ -116,11 +118,11 @@ def make_jsonld_context(event):
         'rdfs:domain',
     ]
 
-    for name, collection in root.by_item_type.iteritems():
-        if name.startswith('testing_') or collection.schema is None:
+    for name, collection in root.by_item_type.items():
+        if name.startswith('testing_') or collection.Item.schema is None:
             continue
         iter_defs = ontology_from_schema(
-            collection.schema, prefix, collection.item_type, collection.Item.base_types)
+            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):
@@ -182,7 +184,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
             jsonld_context[name] = None
             continue
         jsonld_context[name] = prop_ld = {
-            k: v for k, v in subschema.iteritems() if k.startswith('@')
+            k: v for k, v in subschema.items() if k.startswith('@')
         }
         if '@reverse' in prop_ld:
             continue

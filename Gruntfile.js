@@ -23,9 +23,6 @@ module.exports = function(grunt) {
                     'brace/mode/json',
                     'brace/theme/solarized_light',
                 ],
-                options: {
-                    debug: true,
-                },
                 plugin: [
                     ['minifyify', {
                         map: 'brace.js.map',
@@ -40,9 +37,6 @@ module.exports = function(grunt) {
                 src: [
                     './src/encoded/static/inline.js',
                 ],
-                options: {
-                    debug: true,
-                },
                 require: [
                     'scriptjs',
                     'google-analytics',
@@ -69,9 +63,6 @@ module.exports = function(grunt) {
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
-                options: {
-                    debug: true,
-                },
                 external: [
                     'brace',
                     'brace/mode/json',
@@ -105,7 +96,6 @@ module.exports = function(grunt) {
                 src: ['./src/encoded/static/server.js'],
                 options: {
                     builtins: false,
-                    debug: true,
                     detectGlobals: false,
                 },
                 transform: [
@@ -147,15 +137,24 @@ module.exports = function(grunt) {
         },
     });
 
-    grunt.registerMultiTask('browserify', function () {
+    grunt.registerMultiTask('browserify', function (watch) {
         var browserify = require('browserify');
+        var watchify = require('watchify');
+        var _ = grunt.util._;
         var path = require('path');
         var fs = require('fs');
         var data = this.data;
-        var done = this.async();
-        var options = data.options || {};
+        var options = _.extend({
+            debug: true,
+            cache: {},
+            packageCache: {},
+            fullPaths: watch
+        }, data.options);
 
         var b = browserify(options);
+        if (watch) {
+            b = watchify(b);
+        }
 
         var i;
         var reqs = [];
@@ -200,13 +199,26 @@ module.exports = function(grunt) {
         var dest = data.dest;
         grunt.file.mkdir(path.dirname(dest));
 
-        var out = fs.createWriteStream(dest);
-        b.bundle().pipe(out);
-        out.on('close', done);
+        var bundle = function(done) {
+            var out = fs.createWriteStream(dest);
+            b.bundle().pipe(out);
+            out.on('close', function() {
+                grunt.log.write('Wrote ' + dest + '\n');
+                if (done !== undefined) done();
+            });
+        };
+        b.on('update', function() { bundle(); });
+        var done = this.async();
+        bundle(done);
+    });
 
+    grunt.registerTask('wait', function() {
+        grunt.log.write('Waiting for changes...\n');
+        this.async();
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
 
     grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('watch', ['browserify:*:watch', 'wait']);
 };

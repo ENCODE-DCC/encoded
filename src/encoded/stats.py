@@ -3,7 +3,7 @@ import time
 from pyramid.threadlocal import manager as threadlocal_manager
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
-from urllib import urlencode
+from urllib.parse import urlencode
 
 
 def get_root_request():
