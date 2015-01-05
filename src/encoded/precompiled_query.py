@@ -57,7 +57,7 @@ def precompiled_query_builder(session_getter=None):
 
         @wraps(f)
         def wrapper(*args, **kwargs):
-            cache_key = (args, tuple(kwargs.iteritems()))
+            cache_key = (args, tuple(kwargs.items()))
             try:
                 qry = qry_cache[cache_key]
             except KeyError:
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     s = Session(e, query_cls=PrecompiledQuery)
     Base.metadata.create_all(e)
 
-    s.add_all([Foo(id=i, data="data: %d" % i) for i in xrange(100)])
+    s.add_all([Foo(id=i, data="data: %d" % i) for i in range(100)])
 
     cache = {}
 

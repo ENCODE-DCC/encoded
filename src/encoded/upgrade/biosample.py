@@ -1,6 +1,7 @@
 from ..migrator import upgrade_step
 from .shared import ENCODE2_AWARDS
-
+from past.builtins import long
+import re
 
 def number(value):
     if isinstance(value, (int, long, float, complex)):
@@ -121,9 +122,21 @@ def biosample_6_7(value, system):
                     value[val] = value[key]
             del value[key]
 
+
 @upgrade_step('biosample', '7', '8')
 def biosample_7_8(value, system):
     # http://redmine.encodedcc.org/issues/2456
 
     if value.get('worm_life_stage') == 'embryonic':
         value['worm_life_stage'] = 'mixed stage (embryonic)'
+
+
+@upgrade_step('biosample', '8', '9')
+def biosample_8_9(value, system):
+    # http://encode.stanford.edu/issues/1596
+
+    if 'model_organism_age' in value:
+        age = value['model_organism_age']
+        if re.match('\d+.0(-\d+.0)?', age):
+            new_age = age.replace('.0', '')
+            value['model_organism_age'] = new_age

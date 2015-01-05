@@ -11,7 +11,7 @@
             "type": "string"
         }
     },
-    "identifyingProperties": ["uuid", "title", "reference"],
+    "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -26,7 +26,8 @@
         "title": {
             "title": "Title",
             "description": "Title of the publication or communication.",
-            "type": "string"
+            "type": "string",
+            "uniqueKey": true
         },
         "abstract": {
             "rdfs:subPropertyOf": "dc:abstract",

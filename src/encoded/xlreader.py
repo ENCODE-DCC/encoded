@@ -49,7 +49,7 @@ def reader(stream, sheetname=None):
         sheet = book.sheet_by_name(sheetname)
 
     datemode = sheet.book.datemode
-    for index in xrange(sheet.nrows):
+    for index in range(sheet.nrows):
         yield [cell_value(cell, datemode) for cell in sheet.row(index)]
 
 

@@ -20,7 +20,7 @@ import socket
 import sqlalchemy.exc
 import threading
 import time
-import urlparse
+from urllib.parse import parse_qsl
 
 log = logging.getLogger(__name__)
 
@@ -91,7 +91,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                         log.debug(res.json)
                     result = res.json
                     result['stats'] = {
-                        k: int(v) for k, v in urlparse.parse_qsl(
+                        k: int(v) for k, v in parse_qsl(
                             res.headers.get('X-Stats', ''))
                     }
                     result['timestamp'] = timestamp

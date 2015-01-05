@@ -5,9 +5,7 @@ from ..schema_utils import (
     schema_validator,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
-    Collection,
+    Item,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -18,7 +16,7 @@ from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
-from urlparse import (
+from urllib.parse import (
     parse_qs,
     urlparse,
 )
@@ -63,63 +61,63 @@ def external_creds(bucket, key, name):
     }
 
 
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
+@location(
+    name='files',
+    unique_key='accession',
+    properties={
         'title': 'Files',
         'description': 'Listing of Files',
+    })
+class File(Item):
+    item_type = 'file'
+    schema = load_schema('file.json')
+    name_key = 'accession'
+    template_keys = [
+        {
+            'name': 'alias',
+            'value': 'md5:{md5sum}',
+            '$templated': True,
+            '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
+        },
+    ]
+    template = {
+        'href': {
+            '$value': '{item_uri}@@download/{accession}{file_extension}',
+            '$templated': True,
+        },
+        'upload_credentials': {
+            '$templated': True,
+            '$condition': show_upload_credentials,
+            '$value': lambda context: context.propsheets['external']['upload_credentials'],
+        }
     }
 
-    class Item(Collection.Item):
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {
-                'name': 'alias',
-                'value': 'md5:{md5sum}',
-                '$templated': True,
-                '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
-            },
-        ]
-        template = {
-            'href': {
-                '$value': '{item_uri}@@download/{accession}{file_extension}',
-                '$templated': True,
-            },
-            'upload_credentials': {
-                '$templated': True,
-                '$condition': show_upload_credentials,
-                '$value': lambda context: context.propsheets['external']['upload_credentials'],
-            }
-        }
+    def template_namespace(self, properties, request=None):
+        ns = super(File, self).template_namespace(properties, request)
+        mapping = self.schema['file_format_file_extension']
+        ns['file_extension'] = mapping[properties['file_format']]
+        return ns
 
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            mapping = self.schema['file_format_file_extension']
-            ns['file_extension'] = mapping[properties['file_format']]
-            return ns
+    @classmethod
+    def create(cls, parent, properties, sheets=None):
+        if properties.get('status') == 'uploading':
+            sheets = {} if sheets is None else sheets.copy()
 
-        @classmethod
-        def create(cls, parent, uuid, properties, sheets=None):
-            if properties.get('status') == 'uploading':
-                sheets = {} if sheets is None else sheets.copy()
+            registry = find_root(parent).registry
+            bucket = registry.settings['file_upload_bucket']
+            mapping = cls.schema['file_format_file_extension']
+            file_extension = mapping[properties['file_format']]
+            date = properties['date_created'].split('T')[0].replace('-', '/')
+            key = '{date}/{uuid}/{accession}{file_extension}'.format(
+                date=date, file_extension=file_extension, **properties)
+            name = 'upload-{time}-{accession}'.format(
+                time=time.time(), **properties)  # max 32 chars
 
-                registry = find_root(parent).registry
-                bucket = registry.settings['file_upload_bucket']
-                mapping = parent.schema['file_format_file_extension']
-                file_extension = mapping[properties['file_format']]
-                date = properties['date_created'].split('T')[0].replace('-', '/')
-                key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                    date=date, file_extension=file_extension, **properties)
-                name = 'upload-{time}-{accession}'.format(
-                    time=time.time(), **properties)  # max 32 chars
-
-                sheets['external'] = external_creds(bucket, key, name)
-            return super(File.Item, cls).create(parent, uuid, properties, sheets)
+            sheets['external'] = external_creds(bucket, key, name)
+        return super(File, cls).create(parent, properties, sheets)
 
 
-@view_config(name='upload', context=File.Item, request_method='GET',
+@view_config(name='upload', context=File, request_method='GET',
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
@@ -133,7 +131,7 @@ def get_upload(context, request):
     }
 
 
-@view_config(name='upload', context=File.Item, request_method='POST',
+@view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties(finalize=False)
@@ -166,7 +164,7 @@ class InternalResponse(Response):
         return list(self.headerlist)
 
 
-@view_config(name='download', context=File.Item, request_method='GET',
+@view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties(finalize=False)
