@@ -227,3 +227,28 @@ class Software(Item):
     schema = load_schema('software.json')
     name_key = 'name'
     embedded = ['references']
+    item_rev = {
+        'versions': ('software', 'software')
+    }
+
+
+@location(
+    name='software-versions',
+    unique_key='software_version:name',
+    properties={
+        'title': 'Software version',
+        'description': 'Software version pages',
+    })
+class SoftwareVersion(Item):
+    item_type = 'software_version'
+    schema = load_schema('software_version.json')
+
+    namespace_from_path = {
+        'software_name': 'software.name',
+        'software_title': 'software.title'
+    }
+    template = {
+        'name': {'$value': '{software_name}-{version}', '$templated': True},
+        'title': {'$value': '{software_title} ({version})', '$templated': True}
+    }
+    embedded = ['software', 'software.references']
