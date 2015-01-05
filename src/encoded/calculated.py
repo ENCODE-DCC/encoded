@@ -65,6 +65,16 @@ class CalculatedProperties(dict):
             props.update(self.get(item_type, {}))
         return props
 
+    def schema_for(self, cls):
+        props = self.props_for(cls)
+        schema = cls.schema or {'type': 'object', 'properties': {}}
+        schema = schema.copy()
+        schema['properties'] = schema['properties'].copy()
+        for name, prop in props.items():
+            if prop.schema is not None:
+                schema['properties'][name] = prop.schema
+        return schema
+
     def register(self, fn, name, item_type, condition=None, schema=None, attr=None):
         if not isinstance(item_type, str):
             item_type = item_type.item_type

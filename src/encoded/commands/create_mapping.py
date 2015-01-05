@@ -256,18 +256,12 @@ def es_mapping(mapping):
     }
 
 
-def collection_mapping(collection, embed=True):
-    schema = collection.Item.schema
-    if schema is None:
-        return None
-
+def collection_mapping(calculated_properties, collection, embed=True):
+    schema = calculated_properties.schema_for(collection.Item)
     mapping = schema_mapping(collection.item_type, schema)
-
     rev = collection.Item.rev
 
-    mixins = ['@id', '@type']
-    mixins.extend(rev.keys())
-    for name in mixins:
+    for name in rev.keys():
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
 
     if not embed:
@@ -302,7 +296,7 @@ def collection_mapping(collection, embed=True):
             # multiple subobjects may be embedded, so be carful here
             if name is not None and new_mapping['properties'][p]['type'] == 'string':
                 new_mapping['properties'][p] = collection_mapping(
-                    root.by_item_type[name], embed=False)
+                    calculated_properties, root.by_item_type[name], embed=False)
 
             new_mapping = new_mapping['properties'][p]
 
@@ -345,6 +339,8 @@ def run(app, collections=None, dry_run=False):
     if not collections:
         collections = ['meta'] + list(root.by_item_type.keys())
 
+    calculated_properties = app.registry['calculated_properties']
+
     for collection_name in collections:
         if collection_name == 'meta':
             doc_type = 'meta'
@@ -352,7 +348,7 @@ def run(app, collections=None, dry_run=False):
         else:
             doc_type = collection_name
             collection = root.by_item_type[collection_name]
-            mapping = collection_mapping(collection)
+            mapping = collection_mapping(calculated_properties, collection)
 
         if mapping is None:
             continue  # Testing collections
