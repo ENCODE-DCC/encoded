@@ -52,8 +52,7 @@
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the software.",
-            "type": "string",
-            "uniqueKey": "software:name"
+            "type": "string"
         },
         "bug_tracker_url": {
             "title": "Bug tracker URL",
