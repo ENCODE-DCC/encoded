@@ -227,6 +227,9 @@
                         "unique minus signal",
                         "unique plus signal",
                         "unique signal",
+                        "transcriptome alignments",
+                        "genome quantifications",
+                        "transcript quantifications",
                         "methyl CG",
                         "methyl CHG",
                         "methyl CHH"

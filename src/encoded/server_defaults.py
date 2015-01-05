@@ -56,7 +56,7 @@ def accession(property, subschema):
     factory = request.registry[ACCESSION_FACTORY]
     # With 17 576 000 options
     ATTEMPTS = 10
-    for attempt in xrange(ATTEMPTS):
+    for attempt in range(ATTEMPTS):
         new_accession = factory(subschema['accessionType'])
         if new_accession in request.root:
             continue

@@ -214,7 +214,7 @@ def es_update_object(request, objects, xmin):
             try:
                 es.index(
                     index=INDEX, doc_type=doctype, body=result,
-                    id=str(uuid), version=xmin, version_type='external',
+                    id=str(uuid), version=xmin, version_type='external_gte',
                 )
             except ConflictError:
                 log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
@@ -303,7 +303,7 @@ def es_update_data(event):
         uuid for uuid, names in updated_uuid_paths.items()
         if len(names) > 1
     ]
-    updated = data['updated'] = updated_uuid_paths.keys()
+    updated = data['updated'] = list(updated_uuid_paths.keys())
 
     response = request.response
     response.headers['X-Updated'] = ','.join(updated)
@@ -328,7 +328,7 @@ def es_update_data(event):
 
     if namespace != 'mailto':
         edits = request.session.setdefault('edits', [])
-        edits.append([xid, updated, renamed])
+        edits.append([xid, list(updated), list(renamed)])
         edits[:] = edits[-10:]
 
     # XXX How can we ensure consistency here but update written records
