@@ -115,5 +115,5 @@ def before_step(request, context, step):
         print("  Screenshot URL: %s" % context.browser.url)
         print("-" * 70)
         screenshot = context.browser.driver.get_screenshot_as_base64()
-        print '\n'.join(textwrap.wrap('data:image/png;base64,' + screenshot))
+        print('\n'.join(textwrap.wrap('data:image/png;base64,' + screenshot)))
         print("=" * 70)

@@ -21,7 +21,7 @@ class Anonymizer(object):
 
     def replace_emails(self, dictrows):
         for row in dictrows:
-            for k, v in list(row.iteritems()):
+            for k, v in list(row.items()):
                 if v is None:
                     continue
                 new_value, num_subs = self.email_re.subn(
@@ -39,7 +39,7 @@ class Anonymizer(object):
             yield row
 
     def _random_email(self):
-        for _ in xrange(1000):
+        for _ in range(1000):
             generated = "%s.%s@%s.%s" % \
                 tuple(random.choice(self.random_words) for n in range(4))
             if generated not in self.generated_emails:
@@ -60,7 +60,7 @@ class Anonymizer(object):
         return new
 
     def _random_name(self):
-        for _ in xrange(1000):
+        for _ in range(1000):
             if random.choice(range(4)):
                 generated = random.choice(self.random_words).capitalize()
             else:
@@ -76,7 +76,7 @@ class Anonymizer(object):
 def set_existing_key_value(**kw):
     def component(dictrows):
         for row in dictrows:
-            for k, v in kw.iteritems():
+            for k, v in kw.items():
                 if k in row:
                     row[k] = v
             yield row
@@ -87,7 +87,7 @@ def set_existing_key_value(**kw):
 def drop_rows_with_all_key_value(**kw):
     def component(dictrows):
         for row in dictrows:
-            if not all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+            if not all(row[k] == v if k in row else False for k, v in kw.items()):
                 yield row
 
     return component

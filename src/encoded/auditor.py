@@ -4,6 +4,7 @@ Schema validation allows for checking values within a single object.
 We also need to perform higher order checking between linked objects.
 """
 
+from past.builtins import basestring
 import logging
 import venusian
 from .embedding import embed
@@ -69,7 +70,7 @@ class Auditor(object):
     def add_audit_checker(self, checker, item_type, condition=None, frame='embedded'):
         checkers = self.type_checkers.setdefault(item_type, [])
         self._order += 1  # consistent execution ordering
-        if not isinstance(frame, basestring):
+        if isinstance(frame, list):
             frame = tuple(sorted(frame))
         checkers.append((self._order, checker, condition, frame))
 

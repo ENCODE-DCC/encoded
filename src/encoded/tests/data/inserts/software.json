@@ -25,7 +25,7 @@
     },
     {
         "name": "bedtools",
-        "title": "bedtools",
+        "title": "BEDtools",
         "description": "Collectively, the bedtools utilities are a swiss-army knife of tools for a wide-range of genomics analysis tasks. The most widely-used tools enable genome arithmetics: that is, set theory on the genome. For example, bedtools allows one to intersect, merge, count, complement, and shuffle genomic intervals from multiple files in widely-used genomic file formats such as BAM, BED, GFF/GTF, and VCF.",
         "used_by": ["ENCODE"],
         "status": "released",

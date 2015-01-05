@@ -9,7 +9,7 @@ Example.
 import boto
 import requests
 import sys
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 EPILOG = __doc__
 
@@ -48,6 +48,7 @@ def check_format(item, path):
     gzip_types = [
         "CEL",
         "bam",
+        "bed",
         "bed_bed3",
         "bed_bed6",
         "bed_bedLogR",
@@ -121,7 +122,7 @@ def check_format(item, path):
 def check_file(item):
     import hashlib
     import os.path
-    from urlparse import urlparse
+    from urllib.parse import urlparse
     result = None
     errors = {}
     r = requests.head(
