@@ -760,71 +760,6 @@ class Item(object):
         return str(self.uuid)
 
 
-class TemplatedItem(Item):
-    template_keys = []
-    namespace_from_path = {}
-    template = {}
-
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['item_type'] = self.item_type
-        ns['base_types'] = self.base_types
-        ns['uuid'] = self.uuid
-        ns['root'] = root = find_root(self)
-        ns['context'] = self
-        ns['registry'] = root.registry
-        ns['collection_uri'] = resource_path(self.__parent__, '')
-        ns['item_uri'] = resource_path(self, '')
-
-        # When called by update_keys() there is no request.
-        if request is not None:
-            ns['request'] = request
-            ns['permission'] = permission_checker(self, request)
-            # Use request.resource_path so that linked uuid is recorded
-            ns['item_uri'] = request.resource_path(self)
-            for name, value in self.rev_links().items():
-                ns[name] = [request.resource_path(root.get_by_uuid(uuid)) for uuid in value]
-        else:
-            ns['item_uri'] = resource_path(self, '')
-            for name, value in self.rev_links().items():
-                ns[name] = [resource_path(root.get_by_uuid(uuid), '') for uuid in value]
-
-        if self.namespace_from_path:
-            root = find_root(self)
-            for name, paths in self.namespace_from_path.items():
-                # Treat a list of paths as a search path for the value
-                if isinstance(paths, basestring):
-                    paths = [paths]
-                for path in paths:
-                    path = path.split('.')
-                    last = path[-1]
-                    obj = self
-                    obj_props = obj.upgrade_properties(finalize=False)
-                    for n in path[:-1]:
-                        if n not in obj_props:
-                            break
-                        obj = root.get_by_uuid(obj_props[n])
-                        obj_props = obj.upgrade_properties(finalize=False)
-                    else:
-                        if last in obj_props:
-                            ns[name] = deepcopy(obj_props[last])
-                            break
-
-        return ns
-
-    def keys(self):
-        keys = super(TemplatedItem, self).keys()
-        ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate([
-            {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
-            if isinstance(key, basestring) else key for key in self.template_keys
-        ])
-        for key in compiled(ns):
-            keys.setdefault(key['name'], []).append(key['value'])
-        return keys
-
-
 def etag_tid(view_callable):
     def wrapped(context, request):
         result = view_callable(context, request)
@@ -1017,28 +952,15 @@ def item_links(context, request):
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
 def item_view_object(context, request):
-    properties = item_links(context, request)
-    calculated = calculate_properties(context, request, **properties)
-    properties.update(calculated)
-    return properties
-
-
-@view_config(context=TemplatedItem, permission='view', request_method='GET',
-             name='object')
-def templated_item_view_object(context, request):
     """ Render json structure
 
     1. Fetch stored properties, possibly upgrading.
     2. Link canonicalization (overwriting uuids.)
-    3. Templated properties (including reverse links.)
+    3. Calculated properties (including reverse links.)
     """
-    properties = item_view_object(context, request)
-    if not context.template:
-        return properties
-    ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.template)
-    templated = compiled(ns)
-    properties.update(templated)
+    properties = item_links(context, request)
+    calculated = calculate_properties(context, request, **properties)
+    properties.update(calculated)
     return properties
 
 
