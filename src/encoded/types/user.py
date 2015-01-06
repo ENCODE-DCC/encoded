@@ -13,13 +13,14 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Root,
-    templated_item_view_object,
-    location,
+    calculated_property,
+    item_view_object,
+    collection,
 )
 from ..embedding import embed
 
 
-@location(
+@collection(
     name='users',
     unique_key='user:email',
     properties={
@@ -38,9 +39,13 @@ from ..embedding import embed
 class User(Item):
     item_type = 'user'
     schema = load_schema('user.json')
-    template = {
-        'title': {'$value': '{first_name} {last_name}', '$templated': True},
-    }
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, first_name, last_name):
+        return u'{} {}'.format(first_name, last_name)
 
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.uuid
@@ -50,13 +55,13 @@ class User(Item):
 @view_config(context=User, permission='view_details', request_method='GET',
              name='details')
 def user_details_view(context, request):
-    return templated_item_view_object(context, request)
+    return item_view_object(context, request)
 
 
 @view_config(context=User, permission='view', request_method='GET',
              name='object')
 def user_basic_view(context, request):
-    properties = templated_item_view_object(context, request)
+    properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:

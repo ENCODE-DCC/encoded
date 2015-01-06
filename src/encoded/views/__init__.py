@@ -1,12 +1,20 @@
 import copy
 import os
 from collections import OrderedDict
+from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from pyramid.response import Response
 from ..contentbase import (
     Root,
-    location_root,
+    root,
+)
+from pyramid.security import (
+    ALL_PERMISSIONS,
+    Allow,
+    Authenticated,
+    Deny,
+    Everyone,
 )
 from ..embedding import embed
 from .visualization import generate_batch_hubs
@@ -26,12 +34,48 @@ def includeme(config):
     config.scan()
 
 
-@location_root
+def acl_from_settings(settings):
+    # XXX Unsure if any of the demo instance still need this
+    acl = []
+    for k, v in settings.items():
+        if k.startswith('allow.'):
+            action = Allow
+            permission = k[len('allow.'):]
+            principals = v.split()
+        elif k.startswith('deny.'):
+            action = Deny
+            permission = k[len('deny.'):]
+            principals = v.split()
+        else:
+            continue
+        if permission == 'ALL_PERMISSIONS':
+            permission = ALL_PERMISSIONS
+        for principal in principals:
+            if principal == 'Authenticated':
+                principal = Authenticated
+            elif principal == 'Everyone':
+                principal = Everyone
+            acl.append((action, principal, permission))
+    return acl
+
+
+@root
 class EncodedRoot(Root):
     properties = {
         'title': 'Home',
         'portal_title': 'ENCODE',
     }
+
+    @reify
+    def __acl__(self):
+        acl = acl_from_settings(self.registry.settings) + [
+            (Allow, Everyone, ['list', 'search']),
+            (Allow, 'group.submitter', ['search_audit', 'audit']),
+            (Allow, 'group.admin', ALL_PERMISSIONS),
+            # Avoid schema validation errors during audit
+            (Allow, 'remoteuser.EMBED', 'import_items'),
+        ] + Root.__acl__
+        return acl
 
 
 @view_config(context=Root, request_method='GET')

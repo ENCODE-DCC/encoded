@@ -1,4 +1,3 @@
-from itertools import chain
 from past.builtins import basestring
 from pkg_resources import resource_stream
 from pyramid.events import (
@@ -21,13 +20,6 @@ def aslist(value):
     if isinstance(value, basestring):
         return [value]
     return value
-
-
-def allprops(schema):
-    return chain(
-        schema.get('properties', {}).items(),
-        schema.get('calculated_props', {}).items(),
-    )
 
 
 @subscriber(ApplicationCreated)
@@ -73,11 +65,13 @@ def make_jsonld_context(event):
         'collection': prefix + 'collection',
     }
 
+    calculated_properties = app.registry['calculated_properties']
     for name, collection in root.by_item_type.items():
-        if name.startswith('testing_') or collection.Item.schema is None:
+        if name.startswith('testing_'):
             continue
+        schema = calculated_properties.schema_for(collection.Item)
         context.update(context_from_schema(
-            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types))
+            schema, prefix, collection.item_type, collection.Item.base_types))
 
     namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
     context.update(namespaces)
@@ -119,10 +113,11 @@ def make_jsonld_context(event):
     ]
 
     for name, collection in root.by_item_type.items():
-        if name.startswith('testing_') or collection.Item.schema is None:
+        if name.startswith('testing_'):
             continue
+        schema = calculated_properties.schema_for(collection.Item)
         iter_defs = ontology_from_schema(
-            collection.Item.schema, prefix, collection.item_type, collection.Item.base_types)
+            schema, prefix, collection.item_type, collection.Item.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):
@@ -179,7 +174,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
     for type_name in base_types + [item_type, item_type + '_collection']:
         jsonld_context[type_name] = prefix + type_name
 
-    for name, subschema in allprops(schema):
+    for name, subschema in schema.get('properties', {}).items():
         if '@id' in subschema and subschema['@id'] is None:
             jsonld_context[name] = None
             continue
@@ -236,7 +231,7 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         'rdfs:subClassOf': [term_path + 'collection'],
     }
 
-    for name, subschema in allprops(schema):
+    for name, subschema in schema.get('properties', {}).items():
         if '@id' in subschema and subschema['@id'] is None:
             continue
         if '@reverse' in subschema:
