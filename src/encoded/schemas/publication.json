@@ -5,12 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
-    "calculated_props": {
-        "publication_year": {
-            "title": "Publication year",
-            "type": "string"
-        }
-    },
     "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [

@@ -2,7 +2,8 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
     Item,
@@ -17,17 +18,7 @@ def file_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-def assembly(request, original_files, related_files):
-    for path in chain(original_files, related_files):
-        properties = request.embed(path, '@@object')
-        if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                properties['status'] in ['released']:
-            if 'assembly' in properties:
-                return properties['assembly']
-    return None
-
-
-@location(
+@collection(
     name='datasets',
     unique_key='accession',
     properties={
@@ -37,32 +28,6 @@ def assembly(request, original_files, related_files):
 class Dataset(Item):
     item_type = 'dataset'
     schema = load_schema('dataset.json')
-    template = {
-        # XXX Still needed?
-        'original_files': (
-            lambda request, original_files: paths_filtered_by_status(request, original_files)
-        ),
-        'files': (
-            lambda request, original_files, related_files: paths_filtered_by_status(
-                request, chain(original_files, related_files),
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
-        ),
-        'revoked_files': (
-            lambda request, original_files, related_files: [
-                path for path in chain(original_files, related_files)
-                if file_is_revoked(request, path)
-            ]
-        ),
-        'hub': {
-            '$value': '{item_uri}@@hub/hub.txt',
-            '$condition': assembly,
-        },
-        'assembly': {
-            '$value': assembly,
-            '$condition': assembly,
-        },
-    }
     embedded = [
         'files',
         'files.replicate',
@@ -83,7 +48,6 @@ class Dataset(Item):
         'documents.award',
         'documents.submitted_by',
     ]
-
     audit_inherit = [
         'original_files',
         'revoked_files',
@@ -92,11 +56,68 @@ class Dataset(Item):
         'award',
         'documents.lab',
     ]
-
     name_key = 'accession'
     rev = {
         'original_files': ('file', 'dataset'),
     }
+
+    @calculated_property(schema={
+        "title": "Original files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "file",
+        },
+    })
+    def original_files(self, request, original_files):
+        return paths_filtered_by_status(request, original_files)
+
+    @calculated_property(schema={
+        "title": "Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "file",
+        },
+    })
+    def files(self, request, original_files, related_files):
+        return paths_filtered_by_status(
+            request, chain(original_files, related_files),
+            exclude=('revoked', 'deleted', 'replaced'),
+        )
+
+    @calculated_property(schema={
+        "title": "Related files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "file",
+        },
+    })
+    def revoked_files(self, request, original_files, related_files):
+        return [
+            path for path in chain(original_files, related_files)
+            if file_is_revoked(request, path)
+        ]
+
+    @calculated_property(define=True, schema={
+        "title": "Assembly",
+        "type": "string",
+    })
+    def assembly(self, request, original_files, related_files):
+        for path in chain(original_files, related_files):
+            properties = request.embed(path, '@@object')
+            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+                    properties['status'] in ['released']:
+                if 'assembly' in properties:
+                    return properties['assembly']
+
+    @calculated_property(condition='assembly', schema={
+        "title": "Hub",
+        "type": "string",
+    })
+    def hub(self, request):
+        return request.resource_path(self, '@@hub/hub.txt')
 
     @classmethod
     def expand_page(cls, request, properties):
