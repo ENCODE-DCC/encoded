@@ -18,13 +18,13 @@ from ..schema_utils import (
 from ..contentbase import (
     collection_add,
     item_edit,
-    location,
+    collection,
     validate_item_content_post,
     validate_item_content_put,
 )
 
 
-@location(
+@collection(
     name='access-keys',
     unique_key='access_key:access_key_id',
     properties={

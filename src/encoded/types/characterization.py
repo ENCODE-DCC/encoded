@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -16,7 +16,7 @@ class Characterization(ItemWithAttachment, Item):
     embedded = ['lab', 'award', 'submitted_by']
 
 
-@location(
+@collection(
     name='construct-characterizations',
     properties={
         'title': 'Construct characterizations',
@@ -27,7 +27,7 @@ class ConstructCharacterization(Characterization):
     schema = load_schema('construct_characterization.json')
 
 
-@location(
+@collection(
     name='rnai-characterizations',
     properties={
         'title': 'RNAi characterizations',
@@ -38,7 +38,7 @@ class RNAiCharacterization(Characterization):
     schema = load_schema('rnai_characterization.json')
 
 
-@location(
+@collection(
     name='donor-characterizations',
     properties={
         'title': 'Donor characterizations',
@@ -49,7 +49,7 @@ class DonorCharacterization(Characterization):
     schema = load_schema('donor_characterization.json')
 
 
-@location(
+@collection(
     name='biosample-characterizations',
     properties={
         'title': 'Biosample characterizations',
@@ -60,7 +60,7 @@ class BiosampleCharacterization(Characterization):
     schema = load_schema('biosample_characterization.json')
 
 
-@location(
+@collection(
     name='antibody-characterizations',
     properties={
         'title': 'Antibody characterizations',

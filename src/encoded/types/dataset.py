@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -18,7 +18,7 @@ def file_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-@location(
+@collection(
     name='datasets',
     unique_key='accession',
     properties={

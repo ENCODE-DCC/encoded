@@ -2,7 +2,7 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -10,7 +10,7 @@ from .base import (
 from .download import ItemWithAttachment
 
 
-@location(
+@collection(
     name='images',
     unique_key='image:filename',
     properties={

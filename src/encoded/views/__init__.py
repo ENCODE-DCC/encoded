@@ -6,7 +6,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from ..contentbase import (
     Root,
-    location_root,
+    root,
 )
 from ..embedding import embed
 from .visualization import generate_batch_hubs
@@ -26,7 +26,7 @@ def includeme(config):
     config.scan()
 
 
-@location_root
+@root
 class EncodedRoot(Root):
     properties = {
         'title': 'Home',

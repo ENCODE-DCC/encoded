@@ -15,12 +15,12 @@ from ..contentbase import (
     Root,
     calculated_property,
     item_view_object,
-    location,
+    collection,
 )
 from ..embedding import embed
 
 
-@location(
+@collection(
     name='users',
     unique_key='user:email',
     properties={

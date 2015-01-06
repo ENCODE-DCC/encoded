@@ -1,6 +1,6 @@
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from ..schema_utils import (
     load_schema,
@@ -16,7 +16,7 @@ def includeme(config):
     config.scan()
 
 
-@location(
+@collection(
     name='labs',
     unique_key='lab:name',
     properties={
@@ -29,7 +29,7 @@ class Lab(Item):
     name_key = 'name'
 
 
-@location(
+@collection(
     name='awards',
     unique_key='award:name',
     properties={
@@ -42,7 +42,7 @@ class Award(Item):
     name_key = 'name'
 
 
-@location(
+@collection(
     name='organisms',
     unique_key='organism:name',
     properties={
@@ -55,7 +55,7 @@ class Organism(Item):
     name_key = 'name'
 
 
-@location(
+@collection(
     name='sources',
     unique_key='source:name',
     properties={
@@ -68,7 +68,7 @@ class Source(Item):
     name_key = 'name'
 
 
-@location(
+@collection(
     name='treatments',
     properties={
         'title': 'Treatments',
@@ -80,7 +80,7 @@ class Treatment(Item):
     # XXX 'treatment_name' as key?
 
 
-@location(
+@collection(
     name='constructs',
     properties={
         'title': 'Constructs',
@@ -107,7 +107,7 @@ class Construct(Item):
         return paths_filtered_by_status(request, characterizations)
 
 
-@location(
+@collection(
     name='talens',
     unique_key='talen:name',
     properties={
@@ -135,7 +135,7 @@ class Talen(Item):
         return paths_filtered_by_status(request, characterizations)
 
 
-@location(
+@collection(
     name='documents',
     properties={
         'title': 'Documents',
@@ -147,7 +147,7 @@ class Document(ItemWithAttachment, Item):
     embedded = ['lab', 'award', 'submitted_by']
 
 
-@location(
+@collection(
     name='platforms',
     unique_key='platform:term_id',
     properties={
@@ -167,7 +167,7 @@ class Platform(Item):
         return term_name
 
 
-@location(
+@collection(
     name='libraries',
     properties={
         'title': 'Libraries',
@@ -180,7 +180,7 @@ class Library(Item):
     name_key = 'accession'
 
 
-@location(
+@collection(
     name='rnais',
     properties={
         'title': 'RNAi',
@@ -206,7 +206,7 @@ class RNAi(Item):
         return paths_filtered_by_status(request, characterizations)
 
 
-@location(
+@collection(
     name='publications',
     unique_key='publication:title',
     properties={
@@ -235,7 +235,7 @@ class Publication(Item):
         return date_published.partition(' ')[0]
 
 
-@location(
+@collection(
     name='software',
     unique_key='software:name',
     properties={

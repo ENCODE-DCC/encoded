@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -279,7 +279,7 @@ def lot_reviews(characterizations, targets, request):
     return list(char_reviews.values())
 
 
-@location(
+@collection(
     name='antibodies',
     properties={
         'title': 'Antibodies Registry',

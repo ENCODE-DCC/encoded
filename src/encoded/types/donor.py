@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -32,7 +32,7 @@ class Donor(Item):
         return paths_filtered_by_status(request, characterizations)
 
 
-@location(
+@collection(
     name='mouse-donors',
     acl=[],
     properties={
@@ -48,7 +48,7 @@ class MouseDonor(Donor):
         return {}
 
 
-@location(
+@collection(
     name='fly-donors',
     properties={
         'title': 'Fly donors',
@@ -60,7 +60,7 @@ class FlyDonor(Donor):
     embedded = ['organism', 'constructs', 'constructs.target']
 
 
-@location(
+@collection(
     name='worm-donors',
     properties={
         'title': 'Worm donors',
@@ -72,7 +72,7 @@ class WormDonor(Donor):
     embedded = ['organism', 'constructs', 'constructs.target']
 
 
-@location(
+@collection(
     name='human-donors',
     properties={
         'title': 'Human donors',

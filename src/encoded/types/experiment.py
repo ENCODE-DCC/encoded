@@ -4,7 +4,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,
@@ -15,7 +15,7 @@ from .dataset import Dataset
 import datetime
 
 
-@location(
+@collection(
     name='experiments',
     unique_key='accession',
     properties={
@@ -174,7 +174,7 @@ class Experiment(Dataset):
         return paths_filtered_by_status(request, replicates)
 
 
-@location(
+@collection(
     name='replicates',
     acl=ALLOW_SUBMITTER_ADD,
     properties={

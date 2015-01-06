@@ -214,8 +214,8 @@ def uncamel(string):
     return out
 
 
-def location_root(factory):
-    """ Set the location root
+def root(factory):
+    """ Set the root
     """
 
     def set_root(config, factory):
@@ -224,7 +224,7 @@ def location_root(factory):
         config.registry[LOCATION_ROOT] = root
 
     def callback(scanner, factory_name, factory):
-        scanner.config.action(('location_root',), set_root,
+        scanner.config.action(('root',), set_root,
                               args=(scanner.config, factory),
                               order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
@@ -232,13 +232,13 @@ def location_root(factory):
     return factory
 
 
-def location(name, **kw):
+def collection(name, **kw):
     """ Attach a collection at the location ``name``.
 
     Use as a decorator on Collection subclasses.
     """
 
-    def set_location(config, Collection, name, Item, **kw):
+    def set_collection(config, Collection, name, Item, **kw):
         root = config.registry[LOCATION_ROOT]
         collection = Collection(root, name, Item, **kw)
         root[name] = collection
@@ -246,7 +246,7 @@ def location(name, **kw):
     def decorate(Item):
 
         def callback(scanner, factory_name, factory):
-            scanner.config.action(('location', name), set_location,
+            scanner.config.action(('collection', name), set_collection,
                                   args=(scanner.config, Item.Collection, name, Item),
                                   kw=kw,
                                   order=PHASE2_CONFIG)

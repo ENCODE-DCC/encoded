@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -30,7 +30,7 @@ def age_display(request, donor=None, model_organism_age=None, model_organism_age
     return None
 
 
-@location(
+@collection(
     name='biosamples',
     unique_key='accession',
     properties={

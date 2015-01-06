@@ -5,7 +5,7 @@ from pyramid.view import view_config
 from ..contentbase import (
     Item,
     calculated_property,
-    location,
+    collection,
 )
 from ..types.base import paths_filtered_by_status
 from ..types.download import ItemWithAttachment
@@ -37,7 +37,7 @@ def allowed(context, request):
     }
 
 
-@location(
+@collection(
     'testing-downloads',
     properties={
         'title': 'Test download collection',
@@ -62,7 +62,7 @@ class TestingDownload(ItemWithAttachment):
     }
 
 
-@location(
+@collection(
     'testing-keys',
     properties={
         'title': 'Test keys',
@@ -87,7 +87,7 @@ class TestingKey(Item):
     }
 
 
-@location('testing-link-sources')
+@collection('testing-link-sources')
 class TestingLinkSource(Item):
     item_type = 'testing_link_source'
     schema = {
@@ -104,7 +104,7 @@ class TestingLinkSource(Item):
     }
 
 
-@location('testing-link-targets')
+@collection('testing-link-targets')
 class TestingLinkTarget(Item):
     item_type = 'testing_link_target'
     schema = {
@@ -127,7 +127,7 @@ class TestingLinkTarget(Item):
         return paths_filtered_by_status(request, reverse)
 
 
-@location(
+@collection(
     'testing-post-put-patch',
     acl=[
         (Allow, 'group.submitter', ['add', 'edit', 'view']),
@@ -181,7 +181,7 @@ class TestingPostPutPatch(Item):
     }
 
 
-@location('testing-server-defaults')
+@collection('testing-server-defaults')
 class TestingServerDefault(Item):
     item_type = 'testing_server_default'
     schema = {
@@ -211,7 +211,7 @@ class TestingServerDefault(Item):
     }
 
 
-@location('testing-dependencies')
+@collection('testing-dependencies')
 class TestingDependencies(Item):
     item_type = 'testing_dependencies'
     schema = {

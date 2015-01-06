@@ -1,6 +1,6 @@
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from ..embedding import embed
 from ..schema_utils import (
@@ -64,7 +64,7 @@ def external_creds(bucket, key, name):
     }
 
 
-@location(
+@collection(
     name='files',
     unique_key='accession',
     properties={

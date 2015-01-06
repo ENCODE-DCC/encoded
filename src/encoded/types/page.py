@@ -5,7 +5,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     ALLOW_EVERYONE_VIEW,
@@ -19,7 +19,7 @@ from pyramid.traversal import (
 )
 
 
-@location(
+@collection(
     name='pages',
     unique_key='page:location',
     properties={

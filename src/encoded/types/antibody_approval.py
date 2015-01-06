@@ -3,7 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     calculated_property,
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -13,7 +13,7 @@ from pyramid.traversal import (
 )
 
 
-@location(
+@collection(
     name='antibody-approvals',
     properties={
         'title': 'Antibody Approvals',
