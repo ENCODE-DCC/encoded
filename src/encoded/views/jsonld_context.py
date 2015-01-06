@@ -1,4 +1,3 @@
-from itertools import chain
 from past.builtins import basestring
 from pkg_resources import resource_stream
 from pyramid.events import (
@@ -21,13 +20,6 @@ def aslist(value):
     if isinstance(value, basestring):
         return [value]
     return value
-
-
-def allprops(schema):
-    return chain(
-        schema.get('properties', {}).items(),
-        schema.get('calculated_props', {}).items(),
-    )
 
 
 @subscriber(ApplicationCreated)
@@ -182,7 +174,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
     for type_name in base_types + [item_type, item_type + '_collection']:
         jsonld_context[type_name] = prefix + type_name
 
-    for name, subschema in allprops(schema):
+    for name, subschema in schema.get('properties', {}).items():
         if '@id' in subschema and subschema['@id'] is None:
             jsonld_context[name] = None
             continue
@@ -239,7 +231,7 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         'rdfs:subClassOf': [term_path + 'collection'],
     }
 
-    for name, subschema in allprops(schema):
+    for name, subschema in schema.get('properties', {}).items():
         if '@id' in subschema and subschema['@id'] is None:
             continue
         if '@reverse' in subschema:

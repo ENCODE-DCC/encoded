@@ -51,8 +51,7 @@ def schema_mapping(name, schema):
 
     if type_ == 'object':
         properties = {}
-        all_props = list(schema['properties'].items()) + list(schema.get('calculated_props', {}).items())
-        for k, v in all_props:
+        for k, v in schema.get('properties', {}).items():
             mapping = schema_mapping(k, v)
             if mapping is not None:
                 properties[k] = mapping
@@ -278,7 +277,7 @@ def collection_mapping(calculated_properties, collection, embed=True):
             subschema = None
 
             if name is None:
-                subschema = new_schema.get('properties', {}).get(p) or new_schema.get('calculated_props', {}).get(p)
+                subschema = new_schema.get('properties', {}).get(p)
                 if subschema is not None:
                     subschema = subschema.get('items', subschema)
                     name = subschema.get('linkTo')
@@ -315,7 +314,8 @@ def collection_mapping(calculated_properties, collection, embed=True):
             new_mapping = new_mapping[prop]['properties']
 
         new_mapping[last]['boost'] = boost_values[value]
-        new_mapping[last]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
+        new_mapping[last]['copy_to'] = \
+            ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
