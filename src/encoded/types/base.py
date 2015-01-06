@@ -72,7 +72,7 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     ]
 
 
-class Item(contentbase.TemplatedItem):
+class Item(contentbase.Item):
     STATUS_ACL = {
         # standard_status
         'released': ALLOW_CURRENT,
@@ -118,18 +118,12 @@ class Item(contentbase.TemplatedItem):
     def __acl__(self):
         # Don't finalize to avoid validation here.
         properties = self.upgrade_properties(finalize=False).copy()
-        if 'status' in self.namespace_from_path:
-            ns = self.template_namespace(properties)
-            properties.update(ns)
         status = properties.get('status')
         return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
     def __ac_local_roles__(self):
         roles = {}
         properties = self.upgrade_properties(finalize=False).copy()
-        if 'lab' in self.namespace_from_path:
-            ns = self.template_namespace(properties)
-            properties.update(ns)
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'

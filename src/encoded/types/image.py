@@ -2,7 +2,7 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    collection,
 )
 from .base import (
     Item,
@@ -10,7 +10,7 @@ from .base import (
 from .download import ItemWithAttachment
 
 
-@location(
+@collection(
     name='images',
     unique_key='image:filename',
     properties={
@@ -26,10 +26,10 @@ class Image(ItemWithAttachment, Item):
         'image/gif',
     ]
     embedded = ['submitted_by']
-    template_keys = [
-        {
-            'name': 'image:filename',
-            'value': "{attachment[download]}",
-            '$templated': True,
-        },
-    ]
+
+    def keys(self):
+        keys = super(Image, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        value = properties['attachment']['download']
+        keys.setdefault('image:filename', []).append(value)
+        return keys
