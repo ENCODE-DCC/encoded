@@ -1,8 +1,10 @@
+from pyramid.traversal import find_root
 from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,
@@ -13,16 +15,7 @@ from .dataset import Dataset
 import datetime
 
 
-def run_type(request, replicates):
-    for replicate in replicates:
-        properties = request.embed(replicate, '@@object')
-        if properties.get('status') in ('deleted', 'replaced'):
-            continue
-        if 'paired_ended' in properties:
-            return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
-
-
-@location(
+@collection(
     name='experiments',
     unique_key='accession',
     properties={
@@ -33,63 +26,6 @@ class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
     base_types = [Dataset.item_type] + Dataset.base_types
-    template = Dataset.template.copy()
-    template.update({
-        'organ_slims': {
-            '$value': (
-                lambda registry, biosample_term_id:
-                    registry['ontology'][biosample_term_id]['organs']
-                    if biosample_term_id in registry['ontology'] else []
-            ),
-            '$condition': 'biosample_term_id',
-        },
-        'system_slims': {
-            '$value': (
-                lambda registry, biosample_term_id:
-                    registry['ontology'][biosample_term_id]['systems']
-                    if biosample_term_id in registry['ontology'] else []
-            ),
-            '$condition': 'biosample_term_id',
-        },
-        'developmental_slims': {
-            '$value': (
-                lambda registry, biosample_term_id:
-                    registry['ontology'][biosample_term_id]['developmental']
-                    if biosample_term_id in registry['ontology'] else []
-            ),
-            '$condition': 'biosample_term_id',
-        },
-        'biosample_synonyms': {
-            '$value': (
-                lambda registry, biosample_term_id:
-                    registry['ontology'][biosample_term_id]['synonyms']
-                    if biosample_term_id in registry['ontology'] else []
-            ),
-            '$condition': 'biosample_term_id',
-        },
-        'assay_synonyms': {
-            '$value': (
-                lambda registry, assay_term_id:
-                    # Add synonym and names since using differnt names for facet display
-                    registry['ontology'][assay_term_id]['synonyms'] +
-                    [registry['ontology'][assay_term_id]['name']]
-                    if assay_term_id in registry['ontology'] else []
-            ),
-            '$condition': 'assay_term_id',
-        },
-        'month_released': {
-            '$value': lambda date_released: datetime.datetime.strptime(
-                date_released, '%Y-%m-%d').strftime('%B, %Y'),
-            '$condition': 'date_released',
-        },
-        'run_type': {
-            '$value': run_type,
-            '$condition': run_type,
-        },
-        'replicates': (
-            lambda request, replicates: paths_filtered_by_status(request, replicates)
-        ),
-    })
     embedded = Dataset.embedded + [
         'files.platform',
         'replicates.antibody',
@@ -110,7 +46,6 @@ class Experiment(Dataset):
         'possible_controls',
         'target.organism',
     ]
-
     audit_inherit = [
         'original_files',
         'original_files.replicate',
@@ -141,35 +76,129 @@ class Experiment(Dataset):
         'replicates.platform',
         'target.organism',
     ]
-
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('replicate', 'experiment'),
     })
 
+    @calculated_property(condition='biosample_term_id', schema={
+        "title": "Organ slims",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def organ_slims(self, registry, biosample_term_id):
+        if biosample_term_id in registry['ontology']:
+            return registry['ontology'][biosample_term_id]['organs']
+        return []
 
-@location(
+    @calculated_property(condition='biosample_term_id', schema={
+        "title": "System slims",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def system_slims(self, registry, biosample_term_id):
+        if biosample_term_id in registry['ontology']:
+            return registry['ontology'][biosample_term_id]['systems']
+        return []
+
+    @calculated_property(condition='biosample_term_id', schema={
+        "title": "Developmental slims",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def developmental_slims(self, registry, biosample_term_id):
+        if biosample_term_id in registry['ontology']:
+            return registry['ontology'][biosample_term_id]['developmental']
+        return []
+
+    @calculated_property(condition='biosample_term_id', schema={
+        "title": "Biosample synonyms",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def biosample_synonyms(self, registry, biosample_term_id):
+        if biosample_term_id in registry['ontology']:
+            return registry['ontology'][biosample_term_id]['synonyms']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay synonyms",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_synonyms(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['synonyms'] + [
+                registry['ontology'][assay_term_id]['name'],
+            ]
+        return []
+
+    @calculated_property(condition='date_released', schema={
+        "title": "Month released",
+        "type": "string",
+    })
+    def month_released(self, date_released):
+        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
+
+    @calculated_property(schema={
+        "title": "Run type",
+        "type": "string",
+    })
+    def run_type(self, request, replicates):
+        for replicate in replicates:
+            properties = request.embed(replicate, '@@object')
+            if properties.get('status') in ('deleted', 'replaced'):
+                continue
+            if 'paired_ended' in properties:
+                return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
+
+    @calculated_property(schema={
+        "title": "Replicates",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "replicate",
+        },
+    })
+    def replicates(self, request, replicates):
+        return paths_filtered_by_status(request, replicates)
+
+
+@collection(
     name='replicates',
     acl=ALLOW_SUBMITTER_ADD,
     properties={
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     })
-class Replicates(Item):
+class Replicate(Item):
     item_type = 'replicate'
     schema = load_schema('replicate.json')
-    namespace_from_path = {
-        'lab': 'experiment.lab',
-        'award': 'experiment.award',
-    }
-    template_keys = [
-        {
-            'name': '{item_type}:experiment_biological_technical',
-            'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
-            '$templated': True,
-        },
-    ]
     embedded = [
         'library',
         'platform',
     ]
+
+    def keys(self):
+        keys = super(Replicate, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
+            **properties)
+        keys.setdefault('replicate:experiment_biological_technical', []).append(value)
+        return keys
+
+    def __ac_local_roles__(self):
+        properties = self.upgrade_properties(finalize=False)
+        root = find_root(self)
+        experiment = root.get_by_uuid(properties['experiment'])
+        return experiment.__ac_local_roles__()
