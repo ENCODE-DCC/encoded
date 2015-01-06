@@ -45,7 +45,7 @@ class User(Item):
         "type": "string",
     })
     def title(self, first_name, last_name):
-        return '{} {}'.format(first_name, last_name)
+        return u'{} {}'.format(first_name, last_name)
 
     def __ac_local_roles__(self):
         owner = 'userid.%s' % self.uuid

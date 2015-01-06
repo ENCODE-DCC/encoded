@@ -324,7 +324,7 @@ class AntibodyLot(Item):
         source = properties['source']
         product_id = properties['product_id']
         lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
-        values = ('{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
+        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
         keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
         return keys
 

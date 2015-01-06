@@ -192,7 +192,7 @@ class Replicate(Item):
     def keys(self):
         keys = super(Replicate, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        value = '{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
+        value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
             **properties)
         keys.setdefault('replicate:experiment_biological_technical', []).append(value)
         return keys

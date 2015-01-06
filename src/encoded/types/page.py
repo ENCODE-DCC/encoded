@@ -41,7 +41,7 @@ class Page(Item):
         properties = self.upgrade_properties(finalize=False)
         parent = properties.get('parent')
         name = properties['name']
-        value = name if parent is None else '{}:{}'.format(parent, name)
+        value = name if parent is None else u'{}:{}'.format(parent, name)
         keys.setdefault('page:location', []).append(value)
         return keys
 

@@ -26,7 +26,7 @@ class AntibodyApproval(Item):
     def keys(self):
         keys = super(AntibodyApproval, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        value = '{antibody}/{target}'.format(**properties)
+        value = u'{antibody}/{target}'.format(**properties)
         keys.setdefault('antibody_approval:lot_target', []).append(value)
         return keys
 

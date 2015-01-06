@@ -21,9 +21,9 @@ def age_display(request, donor=None, model_organism_age=None, model_organism_age
         if 'age' in donor and 'age_units' in donor:
             if donor['age'] == 'unknown':
                 return ''
-            return '{age} {age_units}'.format(**donor)
+            return u'{age} {age_units}'.format(**donor)
     if model_organism_age is not None and model_organism_age_units is not None:
-        return '{age} {age_units}'.format(
+        return u'{age} {age_units}'.format(
             age=model_organism_age,
             age_units=model_organism_age_units,
         )
