@@ -3,7 +3,6 @@ import logging
 import sys
 import venusian
 from collections import Mapping
-from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
     itervalues,
