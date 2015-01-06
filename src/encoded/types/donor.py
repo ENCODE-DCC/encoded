@@ -2,6 +2,7 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
+    calculated_property,
     location,
 )
 from .base import (
@@ -11,18 +12,24 @@ from .base import (
 
 
 class Donor(Item):
+    item_type = 'donor'
     base_types = ['donor'] + Item.base_types
     embedded = ['organism']
     name_key = 'accession'
     rev = {
         'characterizations': ('donor_characterization', 'characterizes'),
     }
-    template = Item.template.copy()
-    template.update({
-        'characterizations': (
-            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-        ),
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "donor_characterization",
+        },
     })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
 
 
 @location(

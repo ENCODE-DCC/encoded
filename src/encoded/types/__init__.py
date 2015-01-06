@@ -1,5 +1,6 @@
 from ..contentbase import (
-    location
+    calculated_property,
+    location,
 )
 from ..schema_utils import (
     load_schema,
@@ -92,12 +93,18 @@ class Construct(Item):
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
-    template = {
-        'characterizations': (
-            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-        ),
-    }
     embedded = ['target']
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "construct_characterization",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
 
 
 @location(
@@ -114,12 +121,18 @@ class Talen(Item):
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
-    template = {
-        'characterizations': (
-            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-        ),
-    }
     embedded = ['lab', 'submitted_by']
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "construct_characterization",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
 
 
 @location(
@@ -144,11 +157,14 @@ class Document(ItemWithAttachment, Item):
 class Platform(Item):
     item_type = 'platform'
     schema = load_schema('platform.json')
-    template = {
-        'title': '{term_name}',
-        '$templated': True,
-    }
     name_key = 'term_id'
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, term_name):
+        return term_name
 
 
 @location(
@@ -177,11 +193,17 @@ class RNAi(Item):
     rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
-    template = {
-        'characterizations': (
-            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-        ),
-    }
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "rnai_characterization",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
 
 
 @location(
@@ -194,25 +216,23 @@ class RNAi(Item):
 class Publication(Item):
     item_type = 'publication'
     schema = load_schema('publication.json')
-    template = {
-        'publication_year': {
-            '$value': lambda date_published: date_published.partition(' ')[0],
-            '$condition': 'date_published',
-        },
-    }
     embedded = ['datasets']
 
     # XXX the references mixin is only a key for this type
     # Should probably become 'identifiers' for publication
-    template_keys = [
-        {
-            'name': '{item_type}:reference',
-            'value': '{reference}',
-            '$repeat': 'reference references',
-            '$templated': True,
-            '$condition': 'references',
-        },
-    ]
+    def keys(self):
+        keys = super(Publication, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        if properties.get('references'):
+            keys.setdefault('publication:reference', []).extend(properties['references'])
+        return keys
+
+    @calculated_property(condition='date_published', schema={
+        "title": "Publication year",
+        "type": "string",
+    })
+    def publication_year(self, date_published):
+        return date_published.partition(' ')[0]
 
 
 @location(
