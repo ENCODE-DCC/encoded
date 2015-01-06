@@ -10,9 +10,10 @@ def includeme(config):
 
 
 class ItemNamespace(object):
-    def __init__(self, context, request, **kw):
+    def __init__(self, context, request, defined=None, **kw):
         self.context = context
         self.request = request
+        self._defined = defined or {}
         self.__dict__.update(**kw)
 
     @reify
@@ -23,9 +24,17 @@ class ItemNamespace(object):
     def root(self):
         return find_root(self.context)
 
+    @reify
+    def registry(self):
+        return self.request.registry
+
     def __getattr__(self, name):
         context = self.context
         request = self.request
+        if name in self._defined:
+            value = self._defined[name](self)
+            setattr(self, name, value)
+            return value
         if name in self._properties:
             value = self._properties[name]
             if name in context.schema_links:
@@ -58,11 +67,14 @@ class ItemNamespace(object):
         return fn(**kw)
 
 
-class CalculatedProperties(dict):
+class CalculatedProperties(object):
+    def __init__(self):
+        self.item_type_props = {}
+
     def props_for(self, cls):
         props = {}
         for item_type in reversed([cls.item_type] + cls.base_types):
-            props.update(self.get(item_type, {}))
+            props.update(self.item_type_props.get(item_type, {}))
         return props
 
     def schema_for(self, cls):
@@ -75,20 +87,23 @@ class CalculatedProperties(dict):
                 schema['properties'][name] = prop.schema
         return schema
 
-    def register(self, fn, name, item_type, condition=None, schema=None, attr=None):
+    def register_prop(self, fn, name, item_type, condition=None,
+                      schema=None, attr=None, define=False):
         if not isinstance(item_type, str):
             item_type = item_type.item_type
-        self.setdefault(item_type, {})[name] = CalculatedProperty(fn, name, condition, schema, attr)
+        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
+        self.item_type_props.setdefault(item_type, {})[name] = prop
 
 
 class CalculatedProperty(object):
     condition_args = None
 
-    def __init__(self, fn, name, condition=None, schema=None, attr=None):
+    def __init__(self, fn, name, attr=None, condition=None, schema=None, define=False):
         self.fn = fn
         self.attr = attr
         self.name = name
         self.condition_fn = condition
+        self.define = define
 
         argspec = inspect.getargspec(fn)
         if argspec.keywords is not None:
@@ -100,7 +115,7 @@ class CalculatedProperty(object):
         else:
             self.args = argspec.args
 
-        if condition is not None:
+        if condition is not None and not isinstance(condition, str):
             argspec = inspect.getargspec(condition)
             if argspec.keywords is not None:
                 raise TypeError('Cannot register calculated property condition with keyword args')
@@ -115,26 +130,29 @@ class CalculatedProperty(object):
             schema['calculatedProperty'] = True
         self.schema = schema
 
-    def condition(self, ns):
+    def condition(self, namespace):
         if self.condition_fn is None:
             return True
-        return ns(self.condition_fn, self.condition_args)
+        if isinstance(self.condition_fn, str):
+            return getattr(namespace, self.condition_fn, None)
+        return namespace(self.condition_fn, self.condition_args)
 
-    def __call__(self, ns):
+    def __call__(self, namespace):
         if self.attr:
-            fn = getattr(ns.context, self.attr)
+            fn = getattr(namespace.context, self.attr)
         else:
             fn = self.fn
-        return ns(fn, self.args)
+        return namespace(fn, self.args)
 
 
 # Imperative configuration
-def add_calculated_property(config, fn, name, item_type, condition=None, schema=None, attr=None):
+def add_calculated_property(config, fn, name, item_type, condition=None,
+                            schema=None, attr=None, define=False):
     calculated_properties = config.registry['calculated_properties']
     config.action(
         ('calculated_property', item_type, name),
-        calculated_properties.register,
-        (fn, name, item_type, condition, schema, attr),
+        calculated_properties.register_prop,
+        (fn, name, item_type, condition, schema, attr, define),
     )
 
 
@@ -163,7 +181,7 @@ def calculated_property(**settings):
                 settings['name'] = wrapped.__name__
 
         elif settings.get('item_type') is None:
-            raise TypeError('must supply item_type for plain function')
+            raise TypeError('must supply item_type for function')
 
         return wrapped
 
@@ -173,9 +191,13 @@ def calculated_property(**settings):
 def calculate_properties(context, request, **kw):
     calculated_properties = request.registry['calculated_properties']
     props = calculated_properties.props_for(type(context))
-    ns = ItemNamespace(context, request, **kw)
+    defined = {name: prop for name, prop in props.items() if prop.define}
+    namespace = ItemNamespace(context, request, defined, **kw)
     return {
-        name: prop(ns)
-        for name, prop in props.items()
-        if prop.condition(ns)
+        name: value
+        for name, value in (
+            (name, prop(namespace))
+            for name, prop in props.items()
+            if prop.condition(namespace)
+        ) if value is not None
     }
