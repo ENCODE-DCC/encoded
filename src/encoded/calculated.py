@@ -1,7 +1,8 @@
-import inspect
+from __future__ import absolute_import
 import venusian
 from pyramid.decorator import reify
 from pyramid.traversal import find_root
+from types import MethodType
 
 
 def includeme(config):
@@ -15,6 +16,7 @@ class ItemNamespace(object):
         self.request = request
         self._defined = defined or {}
         self.__dict__.update(**kw)
+        self._results = {}
 
     @reify
     def _properties(self):
@@ -57,14 +59,28 @@ class ItemNamespace(object):
             return value
         raise AttributeError(name)
 
-    def __call__(self, fn, args):
+    def __call__(self, fn):
+        try:
+            return self._results[fn]
+        except KeyError:
+            pass
+
+        if isinstance(fn, str):
+            result = self._results[fn] = getattr(self, fn, None)
+            return result
+
+        start = 1 if isinstance(fn, MethodType) else 0
+        # Not using inspect.getargspec as it is slow
+        args = fn.func_code.co_varnames[start:fn.func_code.co_argcount]
         kw = {}
         for name in args:
             try:
                 kw[name] = getattr(self, name)
             except AttributeError:
                 pass
-        return fn(**kw)
+
+        result = self._results[fn] = fn(**kw)
+        return result
 
 
 class CalculatedProperties(object):
@@ -102,26 +118,8 @@ class CalculatedProperty(object):
         self.fn = fn
         self.attr = attr
         self.name = name
-        self.condition_fn = condition
+        self.condition = condition
         self.define = define
-
-        argspec = inspect.getargspec(fn)
-        if argspec.keywords is not None:
-            raise TypeError('Cannot register calculated property with keyword args')
-        if argspec.varargs is not None:
-            raise TypeError('Cannot register calculated property with varargs')
-        if attr is not None and not isinstance(fn, staticmethod):
-            self.args = argspec.args[1:]
-        else:
-            self.args = argspec.args
-
-        if condition is not None and not isinstance(condition, str):
-            argspec = inspect.getargspec(condition)
-            if argspec.keywords is not None:
-                raise TypeError('Cannot register calculated property condition with keyword args')
-            if argspec.varargs is not None:
-                raise TypeError('Cannot register calculated property condition with varargs')
-            self.condition_args = argspec.args
 
         if schema is not None:
             if 'default' in schema:
@@ -130,19 +128,15 @@ class CalculatedProperty(object):
             schema['calculatedProperty'] = True
         self.schema = schema
 
-    def condition(self, namespace):
-        if self.condition_fn is None:
-            return True
-        if isinstance(self.condition_fn, str):
-            return getattr(namespace, self.condition_fn, None)
-        return namespace(self.condition_fn, self.condition_args)
-
     def __call__(self, namespace):
+        if self.condition is not None:
+            if not namespace(self.condition):
+                return None
         if self.attr:
             fn = getattr(namespace.context, self.attr)
         else:
             fn = self.fn
-        return namespace(fn, self.args)
+        return namespace(fn)
 
 
 # Imperative configuration
@@ -198,6 +192,5 @@ def calculate_properties(context, request, **kw):
         for name, value in (
             (name, prop(namespace))
             for name, prop in props.items()
-            if prop.condition(namespace)
         ) if value is not None
     }
