@@ -26,6 +26,7 @@ from urllib.parse import (
 import boto
 import datetime
 import json
+import pytz
 import time
 
 
@@ -198,7 +199,7 @@ def download(context, request):
         return {
             '@type': ['SoftRedirect'],
             'location': location,
-            'expires': datetime.datetime.fromtimestamp(expires).isoformat(),
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
 
     # 307 redirect specifies to keep original method
