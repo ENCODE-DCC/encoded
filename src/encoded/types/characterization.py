@@ -2,6 +2,7 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
+    calculated_property,
     location,
 )
 from .base import (
@@ -77,15 +78,11 @@ class AntibodyCharacterization(Characterization):
         'documents',
         'characterizes.targets',
     ]
-    namespace_from_path = {
-        'characterization_method': [
-            'primary_characterization_method',
-            'secondary_characterization_method',
-        ],
-    }
-    template = {
-        'characterization_method': {
-            '$value': '{characterization_method}',
-            '$condition': 'characterization_method',
-        },
-    }
+
+    @calculated_property(schema={
+        "title": "Characterization method",
+        "type": "string",
+    })
+    def characterization_method(self, primary_characterization_method=None,
+                                secondary_characterization_method=None):
+        return primary_characterization_method or secondary_characterization_method

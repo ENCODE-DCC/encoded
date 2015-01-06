@@ -26,10 +26,10 @@ class Image(ItemWithAttachment, Item):
         'image/gif',
     ]
     embedded = ['submitted_by']
-    template_keys = [
-        {
-            'name': 'image:filename',
-            'value': "{attachment[download]}",
-            '$templated': True,
-        },
-    ]
+
+    def keys(self):
+        keys = super(Image, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        value = properties['attachment']['download']
+        keys.setdefault('image:filename', []).append(value)
+        return keys

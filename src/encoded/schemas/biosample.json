@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculatedProperties": ["model_organism_donor_constructs"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -829,65 +828,6 @@
         "constructs.length": {
             "title": "Constructs",
             "type": "array"
-        }
-    },
-    "calculated_props": {
-        "organ_slims": {
-            "title": "Organ slims",
-            "type": "string"
-        },
-        "system_slims": {
-            "title": "System slims",
-            "type": "string"
-        },
-        "developmental_slims": {
-            "title": "Developmental slims",
-            "type": "string"
-        },
-        "synonyms": {
-            "title": "Ontology synonyms",
-            "type": "string"
-        },
-        "sex": {
-            "title": "Sex",
-            "type": "string"
-        },
-        "age": {
-            "title": "Age",
-            "type": "string"
-        },
-        "age_units": {
-            "title": "Age units",
-            "type": "string"
-        },
-        "age_display": {
-            "title": "Age",
-            "type": "string"
-        },
-        "health_status": {
-            "title": "Health status",
-            "type": "string"
-        },
-        "life_stage": {
-            "title": "Life stage",
-            "type": "string"
-        },
-        "synchronization": {
-            "title": "Synchronization",
-            "type": "string"
-        },
-        "model_organism_donor_constructs": {
-            "default": [],
-            "items": {
-                "title": "DNA Constructs",
-                "description": "An expression or targeting vector stably or transiently transfected (not RNAi) into a donor organism.",
-                "comment": "See contstruct.json for available identifiers.",
-                "type": "string",
-                "linkTo": "construct"
-            },
-            "type": "array",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi) into a donor organism.",
-            "title": "DNA constructs"
         }
     },
     "boost_values": {
