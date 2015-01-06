@@ -21,10 +21,7 @@ from pyramid.interfaces import (
     PHASE2_CONFIG,
 )
 from pyramid.security import (
-    ALL_PERMISSIONS,
     Allow,
-    Authenticated,
-    Deny,
     Everyone,
     principals_allowed_by_permission,
 )
@@ -177,30 +174,6 @@ def permission_checker(context, request):
     return checker
 
 
-def acl_from_settings(settings):
-    acl = []
-    for k, v in settings.items():
-        if k.startswith('allow.'):
-            action = Allow
-            permission = k[len('allow.'):]
-            principals = v.split()
-        elif k.startswith('deny.'):
-            action = Deny
-            permission = k[len('deny.'):]
-            principals = v.split()
-        else:
-            continue
-        if permission == 'ALL_PERMISSIONS':
-            permission = ALL_PERMISSIONS
-        for principal in principals:
-            if principal == 'Authenticated':
-                principal = Authenticated
-            elif principal == 'Everyone':
-                principal = Everyone
-            acl.append((action, principal, permission))
-    return acl
-
-
 def uncamel(string):
     """ CamelCase -> camel_case
     """
@@ -219,8 +192,7 @@ def root(factory):
     """
 
     def set_root(config, factory):
-        acl = acl_from_settings(config.registry.settings)
-        root = factory(config.registry, acl)
+        root = factory(config.registry)
         config.registry[LOCATION_ROOT] = root
 
     def callback(scanner, factory_name, factory):
@@ -288,16 +260,13 @@ def _get_by_unique_key_query():
 class Root(object):
     __name__ = ''
     __parent__ = None
-    builtin_acl = [
+    __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
     ]
 
-    def __init__(self, registry, acl=None):
+    def __init__(self, registry):
         self.registry = registry
-        if acl is None:
-            acl = []
-        self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
