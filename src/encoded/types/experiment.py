@@ -93,7 +93,10 @@ class Experiment(Dataset):
     embedded = Dataset.embedded + [
         'files.platform',
         'files.step',
+        'files.pipeline',
         'files.step.analysis_step',
+        'files.step.analysis_step.software_versions',
+        'files.step.analysis_step.software_versions.software',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',

@@ -633,6 +633,13 @@ var ExperimentGraph = React.createClass({
                                             <dd>{selectedFile.output_type}</dd>
                                         </div>
                                     : null}
+
+                                    {selectedFile.pipeline ?
+                                        <div>
+                                            <dt>Pipeline</dt>
+                                            <dd><a href={selectedFile.pipeline['@id']}>{selectedFile.pipeline.title}</a></dd>
+                                        </div>
+                                    : null}
                                 </dl>
                             );
                         }
@@ -648,6 +655,7 @@ var ExperimentGraph = React.createClass({
 
                         if (selectedFile) {
                             var selectedStep = selectedFile.step.analysis_step;
+
                             meta = (
                                 <dl className="key-value">
                                     {selectedStep.input_file_types && selectedStep.input_file_types.length ?
@@ -661,6 +669,24 @@ var ExperimentGraph = React.createClass({
                                         <div>
                                             <dt>Output file types</dt>
                                             <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedStep.software_versions && selectedStep.software_versions.length ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {<ul>
+                                                    {selectedStep.software_versions.map(function(version, i) {
+                                                        return (
+                                                            <span>
+                                                                {i > 0 ? ', ' : ''}
+                                                                <a href={version.software['@id']}>{version.software.name}</a>
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </ul>}
+                                            </dd>
                                         </div>
                                     : null}
                                 </dl>
