@@ -71,7 +71,7 @@ class ItemNamespace(object):
 
         start = 1 if isinstance(fn, MethodType) else 0
         # Not using inspect.getargspec as it is slow
-        args = fn.func_code.co_varnames[start:fn.func_code.co_argcount]
+        args = fn.__code__.co_varnames[start:fn.__code__.co_argcount]
         kw = {}
         for name in args:
             try:
