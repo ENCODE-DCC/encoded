@@ -101,7 +101,7 @@ def fastq_pair_2(award, experiment, lab, replicate):
         'lab': lab['@id'],
         'replicate': replicate['@id'],
         'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
+        'md5sum': '2123456789abcdef0123456789abcdef',
         'output_type': 'raw data',
         'paired_end': '2',
         'status': 'in progress',
@@ -109,17 +109,17 @@ def fastq_pair_2(award, experiment, lab, replicate):
 
 
 @pytest.fixture
-def fastq_pair_2_paired_with(award, experiment, file, lab, replicate):
+def fastq_pair_2_paired_with(award, experiment, fastq_pair_1, lab, replicate):
     return {
         'award': award['@id'],
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'replicate': replicate['@id'],
         'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
+        'md5sum': '2123456789abcdef0123456789abcdef',
         'output_type': 'raw data',
         'paired_end': '2',
-        'paired_with': file['@id'],
+        'paired_with': 'md5:' + fastq_pair_1['md5sum'],
         'status': 'in progress',
     }
 
@@ -132,9 +132,19 @@ def test_file_post_fastq_pair_1(testapp, fastq_pair_1):
     testapp.post_json('/file', fastq_pair_1, status=201)
 
 
-def test_file_post_fastq_pair_2_paired_with(testapp, fastq_pair_2_paired_with):
+def test_file_post_fastq_pair_2_paired_with(testapp, fastq_pair_1, fastq_pair_2_paired_with):
+    testapp.post_json('/file', fastq_pair_1, status=201)
     testapp.post_json('/file', fastq_pair_2_paired_with, status=201)
 
 
 def test_file_post_fastq_pair_2(testapp, fastq_pair_2):
     testapp.post_json('/file', fastq_pair_2, status=422)
+
+
+def test_file_paired_with_back_calculated(testapp, fastq_pair_1, fastq_pair_2_paired_with):
+    res = testapp.post_json('/file', fastq_pair_1, status=201)
+    location1 = res.json['@graph'][0]['@id']
+    res = testapp.post_json('/file', fastq_pair_2_paired_with, status=201)
+    location2 = res.json['@graph'][0]['@id']
+    res = testapp.get(location1)
+    assert res.json['paired_with'] == location2
