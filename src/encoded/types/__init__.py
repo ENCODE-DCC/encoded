@@ -247,38 +247,48 @@ class Software(Item):
     schema = load_schema('software.json')
     name_key = 'name'
     embedded = ['references']
-    templated_keys = [
-        {
-            'name': '{item_type}:name', 
-            'value': '{name}', 
-            '$templated': True
-        },
-    ]
     rev = {
         'versions': ('software', 'software')
     }
 
 
-@location('software-versions')
+@collection(
+    name='software-versions',
+    unique_key='software_version:name',
+    properties={
+        'title': 'Software version',
+        'description': 'Software version pages',
+    })
 class SoftwareVersion(Collection):
     item_type = 'software_version'
     schema = load_schema('software_version.json')
-    properties = {
-        'title': 'Software version',
-        'description': 'Software version pages',
-    }
-    unique_key = 'software_version:name'
+    embedded = ['software', 'software.references']
 
-    class Item(Collection.Item):
-        namespace_from_path = {
-            'software_name': 'software.name',
-            'software_title': 'software.title'
-        }
-        template = {
-            'name': {'$value': '{software_name}-{version}', '$templated': True},
-            'title': {'$value': '{software_title} ({version})', '$templated': True}
-        }
-        embedded = ['software', 'software.references']
-        keys = ALIAS_KEYS + [
-             {'name': '{item_type}:name', 'value': '{software_name}-{version}', '$templated': True},
-        ]
+    def keys(self):
+        keys = super(SoftwareVersion,self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        keys.setdefault('software_version:name')
+        return keys
+
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+    })
+    def name(self):
+        return self.__name__
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, request, software, version):
+        software_props = request.embed(software, '@@object')
+        return u'{} ({})'.format(software_props['title'], version)
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties(finalize=False)
+        root = find_root(self)
+        software = root.get_by_uuid(properties['software'])
+        software_props = software.upgrade_properties(finalize=False)
+        return u'{}-{}'.format(software_props['name'], properties['version'])
