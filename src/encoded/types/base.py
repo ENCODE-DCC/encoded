@@ -135,7 +135,6 @@ def add(item_uri, item_type, has_permission):
             'title': 'Add',
             'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
             'href': '{item_uri}#!add'.format(item_uri=item_uri),
-            'className': 'btn-success',
         }
 
 
@@ -147,6 +146,4 @@ def edit(item_uri, item_type, has_permission):
             'title': 'Edit',
             'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
             'href': item_uri + ('#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
-            '$condition': 'permission:edit',
-            '$templated': True,
         }
