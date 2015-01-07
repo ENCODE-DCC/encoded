@@ -260,19 +260,20 @@ var Listing = React.createClass({
     render: function() {
         var context = this.props.context;
         var result = this.props.context;
-        return (<li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Pipeline</p>
-                            {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
-                        </div>
-                        <div className="accession">
-                            <a href={result['@id']}>
-                            	{result['title']}
-                            </a>
-                        </div>
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Pipeline</p>
+                        {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
                     </div>
+                    <div className="accession">
+                        <a href={result['@id']}>
+                        	{result['title']}
+                        </a>
+                    </div>
+                </div>
             </li>
         );
     }
