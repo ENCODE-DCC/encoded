@@ -54,7 +54,6 @@ from .calculated import (
     calculated_property,
 )
 from .decorator import classreify
-from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
 from .embedding import (
     embed,
@@ -378,7 +377,6 @@ class Root(object):
 class Collection(Mapping):
     properties = {}
     unique_key = None
-    actions = []
 
     def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
         self.__name__ = name
@@ -458,7 +456,6 @@ class Item(object):
     embedded = ()
     audit_inherit = None
     schema = None
-    actions = []
     Collection = Collection
 
     def __init__(self, collection, model):
@@ -927,7 +924,7 @@ def item_view_object(context, request):
     3. Calculated properties (including reverse links.)
     """
     properties = item_links(context, request)
-    calculated = calculate_properties(context, request, **properties)
+    calculated = calculate_properties(context, request, properties)
     properties.update(calculated)
     return properties
 
@@ -947,16 +944,14 @@ def item_view_embedded(context, request):
 @view_config(context=Collection, permission='list', request_method='GET',
              name='actions')
 def item_actions(context, request):
-    path = request.resource_path(context)
-    ns = {}
-    ns['permission'] = permission_checker(context, request)
-    ns['item_type'] = context.item_type
-    ns['item_uri'] = path
-    compiled = ObjectTemplate(context.actions)
-    actions = compiled(ns)
+    ns = {
+        'has_permission': request.has_permission,
+        'item_uri': request.resource_path(context),
+        'item_type': context.item_type,
+    }
+    actions = calculate_properties(context, request, ns, category='action')
     return {
-        '@id': path,
-        'actions': actions,
+        'actions': actions.values(),
     }
 
 
