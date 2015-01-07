@@ -11,25 +11,6 @@ from .base import (
 )
 
 
-@calculated_property(item_type='biosample', schema={
-    "title": "Age",
-    "type": "string",
-})
-def age_display(request, donor=None, model_organism_age=None, model_organism_age_units=None):
-    if donor is not None:
-        donor = request.embed(donor, '@@object')
-        if 'age' in donor and 'age_units' in donor:
-            if donor['age'] == 'unknown':
-                return ''
-            return u'{age} {age_units}'.format(**donor)
-    if model_organism_age is not None and model_organism_age_units is not None:
-        return u'{age} {age_units}'.format(
-            age=model_organism_age,
-            age_units=model_organism_age_units,
-        )
-    return None
-
-
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -234,3 +215,22 @@ class Biosample(Item):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+    @calculated_property(schema={
+        "title": "Age",
+        "type": "string",
+    })
+    def age_display(self, request, donor=None, model_organism_age=None,
+                    model_organism_age_units=None):
+        if donor is not None:
+            donor = request.embed(donor, '@@object')
+            if 'age' in donor and 'age_units' in donor:
+                if donor['age'] == 'unknown':
+                    return ''
+                return u'{age} {age_units}'.format(**donor)
+        if model_organism_age is not None and model_organism_age_units is not None:
+            return u'{age} {age_units}'.format(
+                age=model_organism_age,
+                age_units=model_organism_age_units,
+            )
+        return None

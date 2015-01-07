@@ -22,7 +22,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
-from .objtemplate import ObjectTemplate
+from .calculated import calculate_properties
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import json
@@ -394,16 +394,16 @@ def es_tween_factory(handler, registry):
             rendering_val = collection.Item.expand_page(request, properties)
 
             # Add actions
-            ns = {}
-            ns['permission'] = es_permission_checker(source, request)
-            ns['item_type'] = collection.item_type
-            ns['item_uri'] = source['object']['@id']
-            compiled = ObjectTemplate(collection.Item.actions)
-            actions = compiled(ns)
+            ns = {
+                'has_permission': es_permission_checker(source, request),
+                'item_uri': source['object']['@id'],
+                'item_type': collection.item_type,
+            }
+            actions = calculate_properties(collection.Item, request, ns, category='action')
             if actions:
-                rendering_val['actions'] = actions
+                rendering_val['actions'] = list(actions.values())
 
-            if ns['permission']('audit'):
+            if ns['has_permission']('audit'):
                 rendering_val['audit'] = source['audit']
 
         else:
