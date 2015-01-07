@@ -4,6 +4,25 @@ var React = require('react');
 var _ = require('underscore');
 var cx = require('react/lib/cx');
 
+var editTargetMap = {
+    'experiments': 'Experiment',
+    'antibodies': 'Antibody',
+    'antibody-characterizations': 'Antibody Characterization',
+    'biosamples': 'Biosample',
+    'documents': 'Document',
+    'libraries': 'Library',
+    'files': 'File',
+    'labs': 'Lab',
+    'platform': 'Platform',
+    'targets': 'Target',
+    'datasets': 'Dataset',
+    'publications': 'Publication',
+    'software': 'Software',
+    'pages': 'Page',
+    'awards': 'Award',
+    'replicates': 'Replicate'
+};
+
 var AuditMixin = module.exports.AuditMixin = {
     childContextTypes: {
         auditDetailOpen: React.PropTypes.bool, // Audit details open
@@ -36,8 +55,9 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
     },
 
     render: function() {
-        var auditCounts = {}  ;
-        var audits = this.props.audits;
+        var auditCounts = {};
+        var context = this.props.context;
+        var audits = context.audit;
 
         if (audits && audits.length) {
             // Count the errors at each level
@@ -86,7 +106,8 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
     },
 
     render: function() {
-        var audits = this.props.audits;
+        var context = this.props.context;
+        var audits = context.audit;
 
         // Sort audit records
         var audits_sorted = _.sortBy(audits, function(audit) {
@@ -101,15 +122,29 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var iconClass = 'icon audit-icon-' + level;
                         var alertClass = 'audit-detail-' + level;
                         var levelClass = 'audit-level-' + level;
+                        var editLink = this.props.forceEditLink || (audit.path !== context['@id']) ? audit.path : null;
+                        var editTarget;
+
+                        // Get the target string from the path
+                        if (editLink) {
+                            var start = audit.path.indexOf('/') + 1;
+                            var end = audit.path.indexOf('/', start);
+                            var editTargetType = audit.path.substring(start, end);
+                            editTarget = editTargetMap[editTargetType];
+                        }
+
                         return (
                             <div className={alertClass} key={i} role="alert">
                                 <i className={iconClass}></i>
                                 <strong className={levelClass}>{audit.level_name.split('_').join(' ')}</strong>
                                 &nbsp;&mdash;&nbsp;
                                 <strong>{audit.category}</strong>: {audit.detail}
+                                {editLink ?
+                                    <a className="audit-link" href={editLink}>Go to {editTarget}</a>
+                                : null}
                             </div>
                         );
-                    })}
+                    }, this)}
             </div>
             );
         } else {
