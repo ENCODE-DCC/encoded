@@ -11,11 +11,12 @@ def includeme(config):
 
 
 class ItemNamespace(object):
-    def __init__(self, context, request, defined=None, **kw):
+    def __init__(self, context, request, defined=None, ns=None):
         self.context = context
         self.request = request
         self._defined = defined or {}
-        self.__dict__.update(**kw)
+        if ns:
+            self.__dict__.update(ns)
         self._results = {}
 
     @reify
@@ -71,7 +72,7 @@ class ItemNamespace(object):
 
         start = 1 if isinstance(fn, MethodType) else 0
         # Not using inspect.getargspec as it is slow
-        args = fn.func_code.co_varnames[start:fn.func_code.co_argcount]
+        args = fn.__code__.co_varnames[start:fn.__code__.co_argcount]
         kw = {}
         for name in args:
             try:
@@ -85,17 +86,22 @@ class ItemNamespace(object):
 
 class CalculatedProperties(object):
     def __init__(self):
-        self.item_type_props = {}
+        self.category_cls_props = {}
 
-    def props_for(self, cls):
+    def props_for(self, context, category='object'):
+        if isinstance(context, type):
+            cls = context
+        else:
+            cls = type(context)
         props = {}
-        for item_type in reversed([cls.item_type] + cls.base_types):
-            props.update(self.item_type_props.get(item_type, {}))
+        cls_props = self.category_cls_props.get(category, {})
+        for base in reversed(cls.mro()):
+            props.update(cls_props.get(base, {}))
         return props
 
-    def schema_for(self, cls):
-        props = self.props_for(cls)
-        schema = cls.schema or {'type': 'object', 'properties': {}}
+    def schema_for(self, context):
+        props = self.props_for(context)
+        schema = context.schema or {'type': 'object', 'properties': {}}
         schema = schema.copy()
         schema['properties'] = schema['properties'].copy()
         for name, prop in props.items():
@@ -103,12 +109,11 @@ class CalculatedProperties(object):
                 schema['properties'][name] = prop.schema
         return schema
 
-    def register_prop(self, fn, name, item_type, condition=None,
-                      schema=None, attr=None, define=False):
-        if not isinstance(item_type, str):
-            item_type = item_type.item_type
+    def register_prop(self, fn, name, context, condition=None, schema=None,
+                      attr=None, define=False, category='object'):
         prop = CalculatedProperty(fn, name, attr, condition, schema, define)
-        self.item_type_props.setdefault(item_type, {})[name] = prop
+        cls_props = self.category_cls_props.setdefault(category, {})
+        cls_props.setdefault(context, {})[name] = prop
 
 
 class CalculatedProperty(object):
@@ -140,13 +145,13 @@ class CalculatedProperty(object):
 
 
 # Imperative configuration
-def add_calculated_property(config, fn, name, item_type, condition=None,
-                            schema=None, attr=None, define=False):
+def add_calculated_property(config, fn, name, context, condition=None, schema=None,
+                            attr=None, define=False, category='object'):
     calculated_properties = config.registry['calculated_properties']
     config.action(
-        ('calculated_property', item_type, name),
+        ('calculated_property', context, category, name),
         calculated_properties.register_prop,
-        (fn, name, item_type, condition, schema, attr, define),
+        (fn, name, context, condition, schema, attr, define, category),
     )
 
 
@@ -157,13 +162,13 @@ def calculated_property(**settings):
 
     def decorate(wrapped):
         def callback(scanner, factory_name, factory):
-            if settings.get('item_type') is None:
-                settings['item_type'] = factory
+            if settings.get('context') is None:
+                settings['context'] = factory
             if settings.get('name') is None:
                 settings['name'] = factory_name
             scanner.config.add_calculated_property(wrapped, **settings)
 
-        info = venusian.attach(wrapped, callback, category='calculated_property')
+        info = venusian.attach(wrapped, callback, category='object')
 
         if info.scope == 'class':
             # if the decorator was attached to a method in a class, or
@@ -174,19 +179,21 @@ def calculated_property(**settings):
             if settings.get('name') is None:
                 settings['name'] = wrapped.__name__
 
-        elif settings.get('item_type') is None:
-            raise TypeError('must supply item_type for function')
+        elif settings.get('context') is None:
+            raise TypeError('must supply context type for function')
 
         return wrapped
 
     return decorate
 
 
-def calculate_properties(context, request, **kw):
+def calculate_properties(context, request, ns=None, category='object'):
     calculated_properties = request.registry['calculated_properties']
-    props = calculated_properties.props_for(type(context))
+    props = calculated_properties.props_for(context, category)
     defined = {name: prop for name, prop in props.items() if prop.define}
-    namespace = ItemNamespace(context, request, defined, **kw)
+    if isinstance(context, type):
+        context = None
+    namespace = ItemNamespace(context, request, defined, ns)
     return {
         name: value
         for name, value in (

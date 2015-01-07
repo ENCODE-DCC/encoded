@@ -11,7 +11,75 @@ from .base import (
 )
 
 
-@calculated_property(item_type='antibody_lot', schema={
+@collection(
+    name='antibodies',
+    properties={
+        'title': 'Antibodies Registry',
+        'description': 'Listing of ENCODE antibodies',
+    })
+class AntibodyLot(Item):
+    item_type = 'antibody_lot'
+    schema = load_schema('antibody_lot.json')
+    name_key = 'accession'
+    rev = {
+        'characterizations': ('antibody_characterization', 'characterizes'),
+    }
+    embedded = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+    audit_inherit = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations',
+        'characterizations.documents',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+
+    def keys(self):
+        keys = super(AntibodyLot, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        source = properties['source']
+        product_id = properties['product_id']
+        lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
+        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
+        keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
+        return keys
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, accession):
+        return accession
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "antibody_characterization",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
+
+
+@calculated_property(context=AntibodyLot, schema={
     "title": "Antibody lot reviews",
     "description":
         "Review outcome of an antibody lot in each characterized cell type submitted for review.",
@@ -277,71 +345,3 @@ def lot_reviews(characterizations, targets, request):
             }]
 
     return list(char_reviews.values())
-
-
-@collection(
-    name='antibodies',
-    properties={
-        'title': 'Antibodies Registry',
-        'description': 'Listing of ENCODE antibodies',
-    })
-class AntibodyLot(Item):
-    item_type = 'antibody_lot'
-    schema = load_schema('antibody_lot.json')
-    name_key = 'accession'
-    rev = {
-        'characterizations': ('antibody_characterization', 'characterizes'),
-    }
-    embedded = [
-        'source',
-        'host_organism',
-        'targets',
-        'targets.organism',
-        'characterizations.award',
-        'characterizations.documents',
-        'characterizations.lab',
-        'characterizations.submitted_by',
-        'characterizations.target.organism',
-        'lot_reviews.targets',
-        'lot_reviews.targets.organism',
-        'lot_reviews.organisms'
-    ]
-    audit_inherit = [
-        'source',
-        'host_organism',
-        'targets',
-        'targets.organism',
-        'characterizations',
-        'characterizations.documents',
-        'lot_reviews.targets',
-        'lot_reviews.targets.organism',
-        'lot_reviews.organisms'
-    ]
-
-    def keys(self):
-        keys = super(AntibodyLot, self).keys()
-        properties = self.upgrade_properties(finalize=False)
-        source = properties['source']
-        product_id = properties['product_id']
-        lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
-        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
-        keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
-        return keys
-
-    @calculated_property(schema={
-        "title": "Title",
-        "type": "string",
-    })
-    def title(self, accession):
-        return accession
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "antibody_characterization",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
