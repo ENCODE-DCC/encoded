@@ -951,7 +951,7 @@ def item_actions(context, request):
     }
     actions = calculate_properties(context, request, ns, category='action')
     return {
-        'actions': actions.values(),
+        'actions': list(actions.values()),
     }
 
 

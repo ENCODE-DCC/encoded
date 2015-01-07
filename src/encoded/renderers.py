@@ -401,7 +401,7 @@ def es_tween_factory(handler, registry):
             }
             actions = calculate_properties(collection.Item, request, ns, category='action')
             if actions:
-                rendering_val['actions'] = actions.values()
+                rendering_val['actions'] = list(actions.values())
 
             if ns['permission']('audit'):
                 rendering_val['audit'] = source['audit']
