@@ -403,7 +403,7 @@ def es_tween_factory(handler, registry):
             if actions:
                 rendering_val['actions'] = list(actions.values())
 
-            if ns['permission']('audit'):
+            if ns['has_permission']('audit'):
                 rendering_val['audit'] = source['audit']
 
         else:
