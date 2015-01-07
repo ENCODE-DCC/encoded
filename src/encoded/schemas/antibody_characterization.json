@@ -237,11 +237,5 @@
             "title": "Lab",
             "type": "string"
         }
-    },
-    "calculated_props": {
-        "characterization_method":{
-            "title": "Characterization method",
-            "type": "string"
-        }
     }
 }

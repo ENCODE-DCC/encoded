@@ -44,26 +44,6 @@ TYPES_WITH_FORMS = [
     'page',
 ]
 
-ADD_ACTION = {
-    'name': 'add',
-    'title': 'Add',
-    'profile': '/profiles/{item_type}.json',
-    'href': '{item_uri}#!add',
-    'className': 'btn-success',
-    '$templated': True,
-    '$condition': lambda item_type, permission: item_type in TYPES_WITH_FORMS and permission('add'),
-}
-
-EDIT_ACTION = {
-    'name': 'edit',
-    'title': 'Edit',
-    'profile': '/profiles/{item_type}.json',
-    'href': lambda item_uri, item_type: item_uri + (
-        '#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
-    '$condition': 'permission:edit',
-    '$templated': True,
-}
-
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     return [
@@ -72,7 +52,7 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
     ]
 
 
-class Item(contentbase.TemplatedItem):
+class Item(contentbase.Item):
     STATUS_ACL = {
         # standard_status
         'released': ALLOW_CURRENT,
@@ -104,7 +84,6 @@ class Item(contentbase.TemplatedItem):
         # publication
         'published': ALLOW_CURRENT,
     }
-    actions = [EDIT_ACTION]
 
     @property
     def __name__(self):
@@ -118,18 +97,12 @@ class Item(contentbase.TemplatedItem):
     def __acl__(self):
         # Don't finalize to avoid validation here.
         properties = self.upgrade_properties(finalize=False).copy()
-        if 'status' in self.namespace_from_path:
-            ns = self.template_namespace(properties)
-            properties.update(ns)
         status = properties.get('status')
         return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
     def __ac_local_roles__(self):
         roles = {}
         properties = self.upgrade_properties(finalize=False).copy()
-        if 'lab' in self.namespace_from_path:
-            ns = self.template_namespace(properties)
-            properties.update(ns)
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
@@ -146,11 +119,31 @@ class Item(contentbase.TemplatedItem):
         return keys
 
     class Collection(contentbase.Collection):
-        actions = [ADD_ACTION]
-
         def __init__(self, *args, **kw):
             super(Item.Collection, self).__init__(*args, **kw)
             if hasattr(self, '__acl__'):
                 return
             if 'lab' in self.Item.schema['properties']:
                 self.__acl__ = ALLOW_SUBMITTER_ADD
+
+
+@contentbase.calculated_property(context=Item.Collection, category='action')
+def add(item_uri, item_type, has_permission):
+    if item_type in TYPES_WITH_FORMS and has_permission('add'):
+        return {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': '{item_uri}#!add'.format(item_uri=item_uri),
+        }
+
+
+@contentbase.calculated_property(context=Item, category='action')
+def edit(item_uri, item_type, has_permission):
+    if has_permission('edit'):
+        return {
+            'name': 'edit',
+            'title': 'Edit',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': item_uri + ('#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
+        }

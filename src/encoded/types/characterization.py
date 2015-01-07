@@ -2,7 +2,8 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
     Item,
@@ -15,7 +16,7 @@ class Characterization(ItemWithAttachment, Item):
     embedded = ['lab', 'award', 'submitted_by']
 
 
-@location(
+@collection(
     name='construct-characterizations',
     properties={
         'title': 'Construct characterizations',
@@ -26,7 +27,7 @@ class ConstructCharacterization(Characterization):
     schema = load_schema('construct_characterization.json')
 
 
-@location(
+@collection(
     name='rnai-characterizations',
     properties={
         'title': 'RNAi characterizations',
@@ -37,7 +38,7 @@ class RNAiCharacterization(Characterization):
     schema = load_schema('rnai_characterization.json')
 
 
-@location(
+@collection(
     name='donor-characterizations',
     properties={
         'title': 'Donor characterizations',
@@ -48,7 +49,7 @@ class DonorCharacterization(Characterization):
     schema = load_schema('donor_characterization.json')
 
 
-@location(
+@collection(
     name='biosample-characterizations',
     properties={
         'title': 'Biosample characterizations',
@@ -59,7 +60,7 @@ class BiosampleCharacterization(Characterization):
     schema = load_schema('biosample_characterization.json')
 
 
-@location(
+@collection(
     name='antibody-characterizations',
     properties={
         'title': 'Antibody characterizations',
@@ -77,15 +78,11 @@ class AntibodyCharacterization(Characterization):
         'documents',
         'characterizes.targets',
     ]
-    namespace_from_path = {
-        'characterization_method': [
-            'primary_characterization_method',
-            'secondary_characterization_method',
-        ],
-    }
-    template = {
-        'characterization_method': {
-            '$value': '{characterization_method}',
-            '$condition': 'characterization_method',
-        },
-    }
+
+    @calculated_property(schema={
+        "title": "Characterization method",
+        "type": "string",
+    })
+    def characterization_method(self, primary_characterization_method=None,
+                                secondary_characterization_method=None):
+        return primary_characterization_method or secondary_characterization_method

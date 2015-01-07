@@ -1,4 +1,7 @@
-from ..contentbase import location
+from ..contentbase import (
+    calculated_property,
+    collection,
+)
 from ..embedding import embed
 from ..schema_utils import (
     load_schema,
@@ -23,6 +26,7 @@ from urllib.parse import (
 import boto
 import datetime
 import json
+import pytz
 import time
 
 
@@ -61,7 +65,7 @@ def external_creds(bucket, key, name):
     }
 
 
-@location(
+@collection(
     name='files',
     unique_key='accession',
     properties={
@@ -72,31 +76,42 @@ class File(Item):
     item_type = 'file'
     schema = load_schema('file.json')
     name_key = 'accession'
-    template_keys = [
-        {
-            'name': 'alias',
-            'value': 'md5:{md5sum}',
-            '$templated': True,
-            '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
-        },
-    ]
-    template = {
-        'href': {
-            '$value': '{item_uri}@@download/{accession}{file_extension}',
-            '$templated': True,
-        },
-        'upload_credentials': {
-            '$templated': True,
-            '$condition': show_upload_credentials,
-            '$value': lambda context: context.propsheets['external']['upload_credentials'],
-        }
+
+    rev = {
+        'paired_with': ('file', 'paired_with'),
     }
 
-    def template_namespace(self, properties, request=None):
-        ns = super(File, self).template_namespace(properties, request)
-        mapping = self.schema['file_format_file_extension']
-        ns['file_extension'] = mapping[properties['file_format']]
-        return ns
+    def keys(self):
+        keys = super(File, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        if properties.get('md5sum') and properties.get('status') != 'replaced':
+            value = 'md5:{md5sum}'.format(**properties)
+            keys.setdefault('alias', []).append(value)
+        return keys
+
+    # Don't specify schema as this just overwrites the existing value
+    @calculated_property(
+        condition=lambda paired_end=None: paired_end == '1')
+    def paired_with(self, root, request):
+        paired_with = self.get_rev_links('paired_with')
+        if len(paired_with) != 1:
+            return None
+        item = root.get_by_uuid(paired_with[0])
+        return request.resource_path(item)
+
+    @calculated_property(schema={
+        "title": "Download URL",
+        "type": "string",
+    })
+    def href(self, request, accession, file_format):
+        file_extension = self.schema['file_format_file_extension'][file_format]
+        return request.resource_path(self, '@@download/{}{}'.format(accession, file_extension))
+
+    @calculated_property(condition=show_upload_credentials, schema={
+        "type": "object",
+    })
+    def upload_credentials(self):
+        return self.propsheets['external']['upload_credentials']
 
     @classmethod
     def create(cls, parent, properties, sheets=None):
@@ -168,13 +183,13 @@ class InternalResponse(Response):
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties(finalize=False)
-    ns = context.template_namespace(properties, request)
+    mapping = context.schema['file_format_file_extension']
+    file_extension = mapping[properties['file_format']]
+    filename = properties['accession'] + file_extension
     if request.subpath:
-        filename, = request.subpath
-        if filename != '{accession}{file_extension}'.format(**ns):
-            raise HTTPNotFound(filename)
-    else:
-        filename = '{accession}{file_extension}'.format(**ns)
+        _filename, = request.subpath
+        if filename != _filename:
+            raise HTTPNotFound(_filename)
 
     proxy = asbool(request.params.get('proxy'))
 
@@ -198,7 +213,7 @@ def download(context, request):
         return {
             '@type': ['SoftRedirect'],
             'location': location,
-            'expires': datetime.datetime.fromtimestamp(expires).isoformat(),
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
 
     # 307 redirect specifies to keep original method

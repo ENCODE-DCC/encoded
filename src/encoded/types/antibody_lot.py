@@ -2,7 +2,8 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
     Item,
@@ -10,6 +11,136 @@ from .base import (
 )
 
 
+@collection(
+    name='antibodies',
+    properties={
+        'title': 'Antibodies Registry',
+        'description': 'Listing of ENCODE antibodies',
+    })
+class AntibodyLot(Item):
+    item_type = 'antibody_lot'
+    schema = load_schema('antibody_lot.json')
+    name_key = 'accession'
+    rev = {
+        'characterizations': ('antibody_characterization', 'characterizes'),
+    }
+    embedded = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+    audit_inherit = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations',
+        'characterizations.documents',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+
+    def keys(self):
+        keys = super(AntibodyLot, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        source = properties['source']
+        product_id = properties['product_id']
+        lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
+        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
+        keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
+        return keys
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, accession):
+        return accession
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "antibody_characterization",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
+
+
+@calculated_property(context=AntibodyLot, schema={
+    "title": "Antibody lot reviews",
+    "description":
+        "Review outcome of an antibody lot in each characterized cell type submitted for review.",
+    "type": "array",
+    "items": {
+        "title": "Antibody lot review",
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "biosample_term_id": {
+                "title": "Ontology ID",
+                "description": "Ontology identifier describing biosample.",
+                "comment": "NTR is a new term request identifier provided by the DCC.",
+                "type": "string",
+                "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+            },
+            "biosample_term_name": {
+                "title": "Ontology term",
+                "description": "Ontology term describing biosample.",
+                "type":  "string"
+            },
+            "organisms": {
+                "title": "Organism",
+                "type": "array",
+                "items": {
+                    "comment": "See organism.json for available identifiers.",
+                    "type": "string",
+                    "linkTo": "organism"
+                }
+            },
+            "targets": {
+                "title": "Targets",
+                "type": "array",
+                "items": {
+                    "description":
+                        "The name of the gene whose expression or product is the intended goal of "
+                        "the antibody.",
+                    "comment": "See target.json for available identifiers.",
+                    "type": "string",
+                    "linkTo": "target"
+                }
+            },
+            "status": {
+                "title": "Status",
+                "description": "The current state of the antibody characterizations.",
+                "comment":
+                    "Do not submit, the value is assigned by server. "
+                    "The status is updated by the DCC.",
+                "type": "string",
+                "default": "awaiting lab characterization",
+                "enum": [
+                    "awaiting lab characterization",
+                    "pending dcc review",
+                    "eligible for new data",
+                    "not eligible for new data",
+                    "not pursued"
+                ]
+            }
+        }
+    },
+})
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
     organisms = set()
@@ -214,63 +345,3 @@ def lot_reviews(characterizations, targets, request):
             }]
 
     return list(char_reviews.values())
-
-
-@location(
-    name='antibodies',
-    properties={
-        'title': 'Antibodies Registry',
-        'description': 'Listing of ENCODE antibodies',
-    })
-class AntibodyLot(Item):
-    item_type = 'antibody_lot'
-    schema = load_schema('antibody_lot.json')
-    name_key = 'accession'
-    template = {
-        'lot_reviews': lot_reviews,
-        'title': {'$value': '{accession}'},
-        'characterizations': (
-            lambda request, characterizations: paths_filtered_by_status(request, characterizations)
-        ),
-    }
-    template_keys = [
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{lot_id}',
-            '$templated': True,
-        },
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{alias}',
-            '$repeat': 'alias lot_id_alias',
-            '$templated': True,
-        },
-    ]
-    rev = {
-        'characterizations': ('antibody_characterization', 'characterizes'),
-    }
-    embedded = [
-        'source',
-        'host_organism',
-        'targets',
-        'targets.organism',
-        'characterizations.award',
-        'characterizations.documents',
-        'characterizations.lab',
-        'characterizations.submitted_by',
-        'characterizations.target.organism',
-        'lot_reviews.targets',
-        'lot_reviews.targets.organism',
-        'lot_reviews.organisms'
-    ]
-    audit_inherit = [
-        'source',
-        'host_organism',
-        'targets',
-        'targets.organism',
-        'characterizations',
-        'characterizations.documents',
-        'lot_reviews.targets',
-        'lot_reviews.targets.organism',
-        'lot_reviews.organisms'
-    ]

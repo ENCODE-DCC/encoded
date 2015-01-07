@@ -3,7 +3,6 @@ import logging
 import sys
 import venusian
 from collections import Mapping
-from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
     itervalues,
@@ -22,10 +21,7 @@ from pyramid.interfaces import (
     PHASE2_CONFIG,
 )
 from pyramid.security import (
-    ALL_PERMISSIONS,
     Allow,
-    Authenticated,
-    Deny,
     Everyone,
     principals_allowed_by_permission,
 )
@@ -53,8 +49,11 @@ from uuid import (
     uuid4,
 )
 from .cache import ManagerLRUCache
+from .calculated import (
+    calculate_properties,
+    calculated_property,
+)
 from .decorator import classreify
-from .objtemplate import ObjectTemplate
 from .precompiled_query import precompiled_query_builder
 from .embedding import (
     embed,
@@ -174,30 +173,6 @@ def permission_checker(context, request):
     return checker
 
 
-def acl_from_settings(settings):
-    acl = []
-    for k, v in settings.items():
-        if k.startswith('allow.'):
-            action = Allow
-            permission = k[len('allow.'):]
-            principals = v.split()
-        elif k.startswith('deny.'):
-            action = Deny
-            permission = k[len('deny.'):]
-            principals = v.split()
-        else:
-            continue
-        if permission == 'ALL_PERMISSIONS':
-            permission = ALL_PERMISSIONS
-        for principal in principals:
-            if principal == 'Authenticated':
-                principal = Authenticated
-            elif principal == 'Everyone':
-                principal = Everyone
-            acl.append((action, principal, permission))
-    return acl
-
-
 def uncamel(string):
     """ CamelCase -> camel_case
     """
@@ -211,17 +186,16 @@ def uncamel(string):
     return out
 
 
-def location_root(factory):
-    """ Set the location root
+def root(factory):
+    """ Set the root
     """
 
     def set_root(config, factory):
-        acl = acl_from_settings(config.registry.settings)
-        root = factory(config.registry, acl)
+        root = factory(config.registry)
         config.registry[LOCATION_ROOT] = root
 
     def callback(scanner, factory_name, factory):
-        scanner.config.action(('location_root',), set_root,
+        scanner.config.action(('root',), set_root,
                               args=(scanner.config, factory),
                               order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
@@ -229,13 +203,13 @@ def location_root(factory):
     return factory
 
 
-def location(name, **kw):
+def collection(name, **kw):
     """ Attach a collection at the location ``name``.
 
     Use as a decorator on Collection subclasses.
     """
 
-    def set_location(config, Collection, name, Item, **kw):
+    def set_collection(config, Collection, name, Item, **kw):
         root = config.registry[LOCATION_ROOT]
         collection = Collection(root, name, Item, **kw)
         root[name] = collection
@@ -243,7 +217,7 @@ def location(name, **kw):
     def decorate(Item):
 
         def callback(scanner, factory_name, factory):
-            scanner.config.action(('location', name), set_location,
+            scanner.config.action(('collection', name), set_collection,
                                   args=(scanner.config, Item.Collection, name, Item),
                                   kw=kw,
                                   order=PHASE2_CONFIG)
@@ -285,16 +259,13 @@ def _get_by_unique_key_query():
 class Root(object):
     __name__ = ''
     __parent__ = None
-    builtin_acl = [
+    __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
     ]
 
-    def __init__(self, registry, acl=None):
+    def __init__(self, registry):
         self.registry = registry
-        if acl is None:
-            acl = []
-        self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
@@ -406,7 +377,6 @@ class Root(object):
 class Collection(Mapping):
     properties = {}
     unique_key = None
-    actions = []
 
     def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
         self.__name__ = name
@@ -479,13 +449,13 @@ class Collection(Mapping):
 
 
 class Item(object):
+    item_type = 'item'
     base_types = ['item']
     name_key = None
     rev = {}
     embedded = ()
     audit_inherit = None
     schema = None
-    actions = []
     Collection = Collection
 
     def __init__(self, collection, model):
@@ -504,10 +474,6 @@ class Item(object):
         if self.name_key is None:
             return self.uuid
         return self.properties.get(self.name_key, None) or self.uuid
-
-    @property
-    def item_type(self):
-        return type(self).__name__
 
     @classreify
     def schema_version(cls):
@@ -560,6 +526,14 @@ class Item(object):
                 if (link.source.item_type, link.rel) == spec:
                     value.append(link.source_rid)
         return links
+
+    def get_rev_links(self, name):
+        spec = self.rev[name]
+        return [
+            link.source_rid
+            for link in self.model.revs
+            if (link.source.item_type, link.rel) == spec
+        ]
 
     @classreify
     def schema_keys(cls):
@@ -729,70 +703,26 @@ class Item(object):
 
         return to_add, to_remove
 
+    @calculated_property(name='@id', schema={
+        "type": "string",
+    })
+    def jsonld_id(self, request):
+        return request.resource_path(self)
 
-class TemplatedItem(Item):
-    template_keys = []
-    namespace_from_path = {}
-    template = {}
+    @calculated_property(name='@type', schema={
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def jsonld_type(self):
+        return [self.item_type] + self.base_types
 
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['item_type'] = self.item_type
-        ns['base_types'] = self.base_types
-        ns['uuid'] = self.uuid
-        ns['root'] = root = find_root(self)
-        ns['context'] = self
-        ns['registry'] = root.registry
-        ns['collection_uri'] = resource_path(self.__parent__, '')
-        ns['item_uri'] = resource_path(self, '')
-
-        # When called by update_keys() there is no request.
-        if request is not None:
-            ns['request'] = request
-            ns['permission'] = permission_checker(self, request)
-            # Use request.resource_path so that linked uuid is recorded
-            ns['item_uri'] = request.resource_path(self)
-            for name, value in self.rev_links().items():
-                ns[name] = [request.resource_path(root.get_by_uuid(uuid)) for uuid in value]
-        else:
-            ns['item_uri'] = resource_path(self, '')
-            for name, value in self.rev_links().items():
-                ns[name] = [resource_path(root.get_by_uuid(uuid), '') for uuid in value]
-
-        if self.namespace_from_path:
-            root = find_root(self)
-            for name, paths in self.namespace_from_path.items():
-                # Treat a list of paths as a search path for the value
-                if isinstance(paths, basestring):
-                    paths = [paths]
-                for path in paths:
-                    path = path.split('.')
-                    last = path[-1]
-                    obj = self
-                    obj_props = obj.upgrade_properties(finalize=False)
-                    for n in path[:-1]:
-                        if n not in obj_props:
-                            break
-                        obj = root.get_by_uuid(obj_props[n])
-                        obj_props = obj.upgrade_properties(finalize=False)
-                    else:
-                        if last in obj_props:
-                            ns[name] = deepcopy(obj_props[last])
-                            break
-
-        return ns
-
-    def keys(self):
-        keys = super(TemplatedItem, self).keys()
-        ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate([
-            {'name': '{item_type}:' + key, 'value': '{%s}' % key, '$templated': True}
-            if isinstance(key, basestring) else key for key in self.template_keys
-        ])
-        for key in compiled(ns):
-            keys.setdefault(key['name'], []).append(key['value'])
-        return keys
+    @calculated_property(name='uuid', schema={
+        "type": "string",
+    })
+    def prop_uuid(self):
+        return str(self.uuid)
 
 
 def etag_tid(view_callable):
@@ -987,32 +917,15 @@ def item_links(context, request):
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
 def item_view_object(context, request):
-    properties = item_links(context, request)
-    uri = request.resource_path(context)
-    properties.update({
-        '@id': uri,
-        '@type': [context.item_type] + context.base_types,
-        'uuid': str(context.uuid),
-    })
-    return properties
-
-
-@view_config(context=TemplatedItem, permission='view', request_method='GET',
-             name='object')
-def templated_item_view_object(context, request):
     """ Render json structure
 
     1. Fetch stored properties, possibly upgrading.
     2. Link canonicalization (overwriting uuids.)
-    3. Templated properties (including reverse links.)
+    3. Calculated properties (including reverse links.)
     """
-    properties = item_view_object(context, request)
-    if not context.template:
-        return properties
-    ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.template)
-    templated = compiled(ns)
-    properties.update(templated)
+    properties = item_links(context, request)
+    calculated = calculate_properties(context, request, properties)
+    properties.update(calculated)
     return properties
 
 
@@ -1031,16 +944,14 @@ def item_view_embedded(context, request):
 @view_config(context=Collection, permission='list', request_method='GET',
              name='actions')
 def item_actions(context, request):
-    path = request.resource_path(context)
-    ns = {}
-    ns['permission'] = permission_checker(context, request)
-    ns['item_type'] = context.item_type
-    ns['item_uri'] = path
-    compiled = ObjectTemplate(context.actions)
-    actions = compiled(ns)
+    ns = {
+        'has_permission': request.has_permission,
+        'item_uri': request.resource_path(context),
+        'item_type': context.item_type,
+    }
+    actions = calculate_properties(context, request, ns, category='action')
     return {
-        '@id': path,
-        'actions': actions,
+        'actions': list(actions.values()),
     }
 
 

@@ -22,7 +22,7 @@ def audit_file_platform(value, system):
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
-    
+
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -66,11 +66,18 @@ def audit_paired_with(value, system):
 
     if 'paired_end' not in value:
         return
-    
-   # Disabling this code until we can get 1795    
+
     if value['paired_end'] == '1':
+        context = system['context']
+        paired_with = context.get_rev_links('paired_with')
+        if len(paired_with) > 1:
+            detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
+                value['accession'],
+                paired_with,
+            )
+            raise AuditFailure('multiple paired_with', detail, level='ERROR')
         return
-    
+
     if 'paired_with' not in value:
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
             value['accession'],

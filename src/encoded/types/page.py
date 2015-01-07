@@ -4,7 +4,8 @@ from ..schema_utils import (
     VALIDATOR_REGISTRY,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
     ALLOW_EVERYONE_VIEW,
@@ -18,7 +19,7 @@ from pyramid.traversal import (
 )
 
 
-@location(
+@collection(
     name='pages',
     unique_key='page:location',
     properties={
@@ -29,24 +30,31 @@ class Page(Item):
     item_type = 'page'
     schema = load_schema('page.json')
     name_key = 'name'
-    template_keys = [
-        {'name': 'page:location', 'value': '{name}', '$templated': True,
-         '$condition': lambda parent=None: parent is None},
-        {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
-         '$condition': 'parent', '$templated': True},
-    ]
-    template = {
-        'canonical_uri': {
-            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
-            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
-            '$templated': True
-        },
-    }
     STATUS_ACL = {
         'in progress': [],
         'released': ALLOW_EVERYONE_VIEW,
         'deleted': ONLY_ADMIN_VIEW,
     }
+
+    def keys(self):
+        keys = super(Page, self).keys()
+        properties = self.upgrade_properties(finalize=False)
+        parent = properties.get('parent')
+        name = properties['name']
+        value = name if parent is None else u'{}:{}'.format(parent, name)
+        keys.setdefault('page:location', []).append(value)
+        return keys
+
+    @calculated_property(
+        condition=lambda context, request: request.resource_path(context.__parent__) == '/pages/',
+        schema={
+            "title": "Canonical URI",
+            "type": "string",
+        })
+    def canonical_uri(self, name):
+        if name == 'homepage':
+            return '/'
+        return '/%s/' % name
 
     @property
     def __parent__(self):
