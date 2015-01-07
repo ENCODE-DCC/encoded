@@ -2,14 +2,14 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    collection,
 )
 from .base import (
     Item,
 )
 
 
-@location(
+@collection(
     name='pipelines',
     properties={
         'title': 'Pipelines',
@@ -30,7 +30,7 @@ class Pipeline(Item):
     ]
 
 
-@location(
+@collection(
     name='analysis-steps',
     properties={
         'title': 'Analysis steps',
@@ -47,7 +47,7 @@ class AnalysisStep(Item):
     ]
 
 
-@location(
+@collection(
     name='analysis-step-runs',
     properties={
         'title': 'Analysis step runs',

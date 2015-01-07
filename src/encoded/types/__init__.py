@@ -252,7 +252,7 @@ class Software(Item):
     }
 
 
-@location(
+@collection(
     name='software-versions',
     unique_key='software_version:name',
     properties={
