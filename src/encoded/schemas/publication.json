@@ -21,7 +21,7 @@
             "title": "Title",
             "description": "Title of the publication or communication.",
             "type": "string",
-            "uniqueKey": true
+            "uniqueKey":  "publication:identifer"
         },
         "abstract": {
             "rdfs:subPropertyOf": "dc:abstract",
