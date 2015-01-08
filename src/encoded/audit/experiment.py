@@ -19,6 +19,8 @@ controlRequiredAssayList = [
     'ChIP-seq',
     'RNA Bind-n-Seq',
     'RIP-seq',
+    'RAMPAGE',
+    'CAGE',
     ]
 
 seq_assays = [
