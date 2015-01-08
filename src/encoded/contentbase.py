@@ -642,7 +642,11 @@ class Item(object):
                 self.model[key] = value
 
     def update_keys(self):
-        _keys = [(k, v) for k, values in self.keys().items() for v in values]
+        _keys = [
+            (k, v)
+            for k, values in self.keys().items()
+            for v in ([values] if isinstance(values, basestring) else values)
+        ]
         keys = set(_keys)
 
         if len(keys) != len(_keys):
