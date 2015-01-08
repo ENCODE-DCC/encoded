@@ -33,28 +33,6 @@
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         },
-        "model_organism_mating_status": {
-            "oneOf": [
-                {
-                    "required": ["model_organism_sex"],
-                    "properties": {
-                        "model_organism_sex": {
-                            "enum": ["male", "female"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "required": ["model_organism_sex"],
-                        "properties": {
-                            "model_organism_sex": {
-                                "enum": ["mixed", "unknown", "hermaphrodite"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
         "biosample_type": {
             "oneOf": [
                 {
