@@ -23,7 +23,8 @@ EPILOG = __doc__
 logger = logging.getLogger(__name__)
 
 DEFAULT_COLLECTIONS = [
-    "publication"
+    "publication",
+    "file",
 ]
 
 
@@ -50,7 +51,7 @@ def run(app, collections=None):
             if update:
                 updated += 1
         logger.info('Collection %s: Updated %d of %d.' %
-            (collection_path, updated, count))
+                    (collection_path, updated, count))
 
 
 def main():
