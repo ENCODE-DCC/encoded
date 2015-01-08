@@ -250,6 +250,46 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <dd>{context.passage_number}</dd>
                             </div>
                         : null}
+
+                        {context.phase ?
+                            <div data-test="phase">
+                                <dt>Cell cycle</dt>
+                                <dd>{context.phase}</dd>
+                            </div>
+                        : null}
+
+                        {context.depleted_in_term_id && context.depleted_in_term_id.length &&
+                            context.depleted_in_term_name && context.depleted_in_term_name.length ?
+                            <div data-test="depletedin">
+                                <dt>Depleted in</dt>
+                                <dd>{context.depleted_in_term_id.map(function(termId, i) {
+                                    if (context.depleted_in_term_name && context.depleted_in_term_name[i]) {
+                                        return (
+                                            <span>
+                                                {i > 0 ? ', ' : ''}
+                                                {termId} ({context.depleted_in_term_name[i]})
+                                            </span>
+                                        );
+                                    } else {
+                                        return null;
+                                    }
+                                })}</dd>
+                            </div>
+                        : null}
+
+                        {context.subcellular_fraction_term_id ?
+                            <div data-test="subcellularid">
+                                <dt>Subcellular fraction ID</dt>
+                                <dd>{context.subcellular_fraction_term_id}</dd>
+                            </div>
+                        : null}
+
+                        {context.subcellular_fraction_term_name ?
+                            <div data-test="subcellularname">
+                                <dt>Subcellular fraction name</dt>
+                                <dd>{context.subcellular_fraction_term_name}</dd>
+                            </div>
+                        : null}
                     </dl>
 
                     {context.derived_from ?
