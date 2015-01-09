@@ -248,3 +248,10 @@ def test_post_object_with_child(testapp):
     parent_id = res.json['@graph'][0]['@id']
     source = res.json['@graph'][0]['reverse'][0]
     assert source['target'] == parent_id
+
+
+def test_etag_if_match_tid(testapp, organism):
+    res = testapp.get(organism['@id'] + '?frame=edit', status=200)
+    etag = res.etag
+    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=200)
+    testapp.patch_json(organism['@id'], {}, headers={'If-Match': etag}, status=412)
