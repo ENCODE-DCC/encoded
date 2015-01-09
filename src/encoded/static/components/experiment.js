@@ -687,16 +687,23 @@ var ExperimentGraph = React.createClass({
                             meta = (
                                 <dl className="key-value">
                                     {selectedStep.input_file_types && selectedStep.input_file_types.length ?
-                                        <div>
+                                        <div data-test="inputtypes">
                                             <dt>Input file types</dt>
                                             <dd>{selectedStep.input_file_types.join(', ')}</dd>
                                         </div>
                                     : null}
 
                                     {selectedStep.output_file_types && selectedStep.output_file_types.length ?
-                                        <div>
+                                        <div data-test="outputtypes">
                                             <dt>Output file types</dt>
                                             <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedStep.qa_stats_generated && selectedStep.qa_stats_generated.length ?
+                                        <div data-test="steptypes">
+                                            <dt>QA statistics</dt>
+                                            <dd>{selectedStep.qa_stats_generated.join(', ')}</dd>
                                         </div>
                                     : null}
 
