@@ -114,11 +114,9 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @classmethod
-    def create(cls, parent, properties, sheets=None):
+    def create(cls, registry, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
-
-            registry = find_root(parent).registry
             bucket = registry.settings['file_upload_bucket']
             mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
@@ -129,7 +127,7 @@ class File(Item):
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(parent, properties, sheets)
+        return super(File, cls).create(registry, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',
