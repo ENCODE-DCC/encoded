@@ -618,6 +618,7 @@ var ExperimentGraph = React.createClass({
                         });
 
                         if (selectedFile) {
+                            var analysisStep = selectedFile.step.analysis_step;
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -659,6 +660,24 @@ var ExperimentGraph = React.createClass({
                                         <div data-test="datecreated">
                                             <dt>Date added</dt>
                                             <dd>{selectedFile.date_created}</dd>
+                                        </div>
+                                    : null}
+
+                                    {analysisStep.software_versions && analysisStep.software_versions.length ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {<ul>
+                                                    {analysisStep.software_versions.map(function(version, i) {
+                                                        return (
+                                                            <span>
+                                                                {i > 0 ? ', ' : ''}
+                                                                <a href={version.software['@id']}>{version.software.name}</a>
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </ul>}
+                                            </dd>
                                         </div>
                                     : null}
 
