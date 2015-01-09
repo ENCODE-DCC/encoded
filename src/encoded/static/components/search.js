@@ -249,7 +249,12 @@ var AuditMixin = audit.AuditMixin;
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
-            var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
+            var constructs;
+            if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
+                constructs = result.model_organism_donor_constructs[0].target.label;
+            } else {
+                constructs = result.constructs[0] ? result.constructs[0].target.label : '';
+            }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
  
             // Build the text of the synchronization string

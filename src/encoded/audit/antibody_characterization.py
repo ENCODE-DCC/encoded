@@ -80,11 +80,11 @@ def audit_antibody_characterization_target(value, system):
             for investigated_as in antibody_target['investigated_as']:
                 unique_investigated_as.add(investigated_as)
         if 'tag' not in unique_investigated_as:
-            detail = 'Antibody {} is not to tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
+            detail = 'Antibody {} is not for a tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:
-                detail = '{} not found in target list for antibody {}'.format(prefix, antibody['accession'])
+                detail = '{} is not found in target list for antibody {}'.format(prefix, antibody['accession'])
                 raise AuditFailure('tag target mismatch', detail, level='ERROR')
     else:
         target_matches = False
@@ -92,7 +92,7 @@ def audit_antibody_characterization_target(value, system):
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
-            detail = 'Target {} not found in target list for antibody {}'.format(target['name'], antibody['accession'])
+            detail = 'Target {} is not found in target list for antibody {}'.format(target['name'], antibody['accession'])
             raise AuditFailure('target mismatch', detail, level='ERROR')
 
 

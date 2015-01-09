@@ -84,9 +84,13 @@ class File(Item):
     def keys(self):
         keys = super(File, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        if properties.get('md5sum') and properties.get('status') != 'replaced':
-            value = 'md5:{md5sum}'.format(**properties)
-            keys.setdefault('alias', []).append(value)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys['file:paired_with'] = properties['paired_with']
         return keys
 
     # Don't specify schema as this just overwrites the existing value
@@ -94,7 +98,7 @@ class File(Item):
         condition=lambda paired_end=None: paired_end == '1')
     def paired_with(self, root, request):
         paired_with = self.get_rev_links('paired_with')
-        if len(paired_with) != 1:
+        if not paired_with:
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
@@ -192,23 +196,30 @@ def download(context, request):
             raise HTTPNotFound(_filename)
 
     proxy = asbool(request.params.get('proxy'))
+    soft = asbool(request.params.get('soft'))
+    disposition = request.params.get('disposition')
+    if disposition not in ('inline', 'attachment'):
+        disposition = None
+    if disposition is None:
+        disposition = 'inline' if soft else 'attachment'
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
+        response_headers = {}
+        if disposition == 'attachment':
+            response_headers['response-content-disposition'] = "attachment; filename=" + filename
         location = conn.generate_url(
             36*60*60, method, external['bucket'], external['key'],
-            response_headers={
-                'response-content-disposition': "attachment; filename=" + filename,
-            })
+            response_headers=response_headers)
     else:
         raise ValueError(external.get('service'))
 
     if proxy:
         return InternalResponse(location='/_proxy/' + location)
 
-    if asbool(request.params.get('soft')):
+    if soft:
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
         return {
             '@type': ['SoftRedirect'],

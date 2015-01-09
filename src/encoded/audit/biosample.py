@@ -112,7 +112,7 @@ def audit_biosample_donor(value, system):
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
-        detail = 'Biosample {} has organism {}, yet its donor {} has organism {}. Biosamples require a donor of the same species'.format(
+        detail = 'Biosample {} is organism {}, yet its donor {} is organism {}. Biosamples require a donor of the same species'.format(
             value['accession'],
             value['organism']['name'],
             donor['accession'],
@@ -135,7 +135,7 @@ def audit_biosample_subcellular_term_match(value, system):
 
     expected_name = term_mapping[value['subcellular_fraction_term_name']]
     if expected_name != (value['subcellular_fraction_term_id']):
-        detail = 'Biosample {} has mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
+        detail = 'Biosample {} has a mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
             value['accession'],
             value['subcellular_fraction_term_name'],
             value['subcellular_fraction_term_id'])
@@ -156,7 +156,7 @@ def audit_biosample_depleted_term_match(value, system):
         return
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'Biosample {} has depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
+        detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
             value['accession'])
         raise AuditFailure('mismatched depleted_in_term length', detail, level='ERROR')
         return
