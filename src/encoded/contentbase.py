@@ -265,6 +265,7 @@ class Root(object):
     __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
+        (Allow, 'group.forms', ('forms',)),
     ]
 
     def __init__(self, registry):
