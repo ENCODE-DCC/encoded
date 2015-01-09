@@ -621,21 +621,49 @@ var ExperimentGraph = React.createClass({
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
-                                        <div>
+                                        <div data-test="format">
                                             <dt>Format</dt>
                                             <dd>{selectedFile.file_format}</dd>
                                         </div>
                                     : null}
 
                                     {selectedFile.output_type ?
-                                        <div>
+                                        <div data-test="output">
                                             <dt>Output</dt>
                                             <dd>{selectedFile.output_type}</dd>
                                         </div>
                                     : null}
 
+                                    {selectedFile.paired_end ?
+                                        <div data-test="pairedend">
+                                            <dt>Paired end</dt>
+                                            <dd>{selectedFile.paired_end}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.replicate ?
+                                        <div data-test="replicate">
+                                            <dt>Associated replicates</dt>
+                                            <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.submitted_by && selectedFile.submitted_by.title ?
+                                        <div data-test="submitted">
+                                            <dt>Added by</dt>
+                                            <dd>{selectedFile.submitted_by.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.date_created ?
+                                        <div data-test="datecreated">
+                                            <dt>Date added</dt>
+                                            <dd>{selectedFile.date_created}</dd>
+                                        </div>
+                                    : null}
+
                                     {selectedFile.pipeline ?
-                                        <div>
+                                        <div data-test="pipeline">
                                             <dt>Pipeline</dt>
                                             <dd><a href={selectedFile.pipeline['@id']}>{selectedFile.pipeline.title}</a></dd>
                                         </div>
