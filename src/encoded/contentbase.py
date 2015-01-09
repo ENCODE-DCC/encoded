@@ -885,7 +885,7 @@ def update_children(context, request, propname_children):
         found = set()
 
         # Add or update children included in properties
-        for child_props in children:
+        for i, child_props in enumerate(children):
             if isinstance(child_props, basestring):  # IRI of (existing) child
                 child = lookup_resource(root, child_collection, child_props)
             else:
@@ -894,8 +894,18 @@ def update_children(context, request, propname_children):
                 if 'uuid' in child_props:  # update existing child
                     child_id = child_props.pop('uuid')
                     child = root.get_by_uuid(child_id)
-                    update_item(child, request, child_props)
+                    if not request.has_permission('edit', child):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
+                    try:
+                        update_item(child, request, child_props)
+                    except ValidationFailure as e:
+                        e.location = [propname, i] + e.location
+                        raise
                 else:  # add new child
+                    if not request.has_permission('add', child_collection):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
                     child = create_item(child_collection.Item, request, child_props)
             found.add(child.uuid)
 
@@ -906,9 +916,16 @@ def update_children(context, request, propname_children):
             if link.source_rid in found:
                 continue
             child = root.get_by_uuid(link.source_rid)
+            if not request.has_permission('edit', child):
+                msg = u'edit forbidden to %s' % request.resource_path(child)
+                raise ValidationFailure('body', [propname, i], msg)
             child_props = child.properties.copy()
             child_props['status'] = 'deleted'
-            update_item(child, request, child_props)
+            try:
+                update_item(child, request, child_props)
+            except ValidationFailure as e:
+                e.location = [propname, i] + e.location
+                raise
 
 
 def create_item(cls, request, properties, sheets=None):
