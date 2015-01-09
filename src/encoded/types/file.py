@@ -196,23 +196,30 @@ def download(context, request):
             raise HTTPNotFound(_filename)
 
     proxy = asbool(request.params.get('proxy'))
+    soft = asbool(request.params.get('soft'))
+    disposition = request.params.get('disposition')
+    if disposition not in ('inline', 'attachment'):
+        disposition = None
+    if disposition is None:
+        disposition = 'inline' if soft else 'attachment'
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
+        response_headers = {}
+        if disposition == 'attachment':
+            response_headers['response-content-disposition'] = "attachment; filename=" + filename
         location = conn.generate_url(
             36*60*60, method, external['bucket'], external['key'],
-            response_headers={
-                'response-content-disposition': "attachment; filename=" + filename,
-            })
+            response_headers=response_headers)
     else:
         raise ValueError(external.get('service'))
 
     if proxy:
         return InternalResponse(location='/_proxy/' + location)
 
-    if asbool(request.params.get('soft')):
+    if soft:
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
         return {
             '@type': ['SoftRedirect'],
