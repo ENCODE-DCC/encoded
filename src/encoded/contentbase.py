@@ -10,6 +10,7 @@ from future.utils import (
 from itertools import islice
 from past.builtins import basestring
 from posixpath import join
+from pyramid.decorator import reify
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
     HTTPConflict,
@@ -26,7 +27,6 @@ from pyramid.security import (
     principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
-from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
     resource_path,
@@ -344,7 +344,7 @@ class Root(object):
                 return default
 
         collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
+        item = collection.Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
 
@@ -369,7 +369,7 @@ class Root(object):
             return cached
 
         collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
+        item = collection.Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
 
@@ -461,12 +461,17 @@ class Item(object):
     schema = None
     Collection = Collection
 
-    def __init__(self, collection, model):
-        self.collection = collection
+    def __init__(self, registry, model):
+        self.registry = registry
         self.model = model
 
     def __repr__(self):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
+
+    @reify
+    def collection(self):
+        root = self.registry[LOCATION_ROOT]
+        return root.by_item_type[self.item_type]
 
     @property
     def __parent__(self):
@@ -505,19 +510,6 @@ class Item(object):
             key for key, prop in cls.schema['properties'].items()
             if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
         ]
-
-    @classreify
-    def schema_rev_links(cls):
-        schema = get_current_request().registry['calculated_properties'].schema_for(cls)
-
-        revs = {}
-        for key, prop in schema['properties'].items():
-            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
-            if linkFrom is None:
-                continue
-            linkType, linkProp = linkFrom.split('.')
-            revs[key] = linkType, linkProp
-        return revs
 
     @property
     def merged_back_rev(self):
@@ -606,13 +598,13 @@ class Item(object):
         return properties
 
     @classmethod
-    def create(cls, parent, properties, sheets=None):
+    def create(cls, registry, properties, sheets=None):
         if 'uuid' in properties:
             uuid = UUID(properties['uuid'])
         else:
             uuid = uuid4()
         resource = Resource(cls.item_type, rid=uuid)
-        self = cls(parent, resource)
+        self = cls(registry, resource)
         self._update(properties, sheets)
         return self
 
@@ -625,8 +617,8 @@ class Item(object):
         try:
             session.add(self.model)
             self.update_properties(properties, sheets)
-            keys_add, keys_remove = self.update_keys()
             self.update_rels()
+            keys_add, keys_remove = self.update_keys()
             sp.commit()
         except (IntegrityError, FlushError):
             sp.rollback()
@@ -649,60 +641,13 @@ class Item(object):
 
     def update_properties(self, properties, sheets=None):
         if properties is not None:
-            if 'uuid' in properties or self.schema_rev_links:
-                properties = properties.copy()
             if 'uuid' in properties:
+                properties = properties.copy()
                 del properties['uuid']
-            if self.schema_rev_links:
-                child_props = {}
-                for key, spec in self.schema_rev_links.items():
-                    if key in properties:
-                        child_props[key] = properties.pop(key)
-                if child_props:
-                    self.update_children(child_props)
             self.model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
                 self.model[key] = value
-
-    def update_children(self, properties):
-        request = get_current_request()
-        root = request.root
-
-        for propname, children in properties.items():
-            link_type, link_attr = spec = self.schema_rev_links[propname]
-            child_collection = root.by_item_type[link_type]
-            found = set()
-
-            # Add or update children included in properties
-            for child_props in children:
-                if isinstance(child_props, basestring):  # IRI of (existing) child
-                    child = lookup_resource(root, root, child_props)
-                else:
-                    child_props = child_props.copy()
-                    child_props[link_attr] = str(self.model.rid)
-                    if 'uuid' in child_props:  # update existing child
-                        child_id = child_props.pop('uuid')
-                        child = root.get_by_uuid(child_id)
-                        request.registry.notify(BeforeModified(child, request))
-                        child.update(child_props)
-                        request.registry.notify(AfterModified(child, request))
-                    else:  # add new child
-                        child_props = child_props.copy()
-                        child = child_collection.Item.create(child_collection, child_props)
-                        request.registry.notify(Created(child, request))
-                found.add(child.uuid)
-
-            # Remove existing children that are not in properties
-            for link in self.model.revs:
-                if (link.source.item_type, link.rel) != spec:
-                    continue
-                if link.source_rid in found:
-                    continue
-                child = root.get_by_uuid(link.source_rid)
-                props = child.properties.copy()
-                props['status'] = 'deleted'
-                child.update(props)
 
     def update_keys(self):
         _keys = [(k, v) for k, values in self.keys().items() for v in values]
@@ -906,6 +851,82 @@ def collection_list(context, request):
     return result
 
 
+def split_child_props(registry, cls, properties):
+    calculated_properties = registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(cls)
+    propname_children = {}
+    if schema_rev_links:
+        properties = properties.copy()
+        for key, spec in schema_rev_links.items():
+            if key in properties:
+                propname_children[key] = properties.pop(key)
+    return properties, propname_children
+
+
+def update_children(context, request, propname_children):
+    registry = request.registry
+    root = request.root
+    calculated_properties = registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
+
+    for propname, children in propname_children.items():
+        link_type, link_attr = spec = schema_rev_links[propname]
+        child_collection = root.by_item_type[link_type]
+        found = set()
+
+        # Add or update children included in properties
+        for child_props in children:
+            if isinstance(child_props, basestring):  # IRI of (existing) child
+                child = lookup_resource(root, child_collection, child_props)
+            else:
+                child_props = child_props.copy()
+                child_props[link_attr] = str(context.uuid)
+                if 'uuid' in child_props:  # update existing child
+                    child_id = child_props.pop('uuid')
+                    child = root.get_by_uuid(child_id)
+                    update_item(child, request, child_props)
+                else:  # add new child
+                    child = create_item(child_collection.Item, request, child_props)
+            found.add(child.uuid)
+
+        # Remove existing children that are not in properties
+        for link in context.model.revs:
+            if (link.source.item_type, link.rel) != spec:
+                continue
+            if link.source_rid in found:
+                continue
+            child = root.get_by_uuid(link.source_rid)
+            child_props = child.properties.copy()
+            child_props['status'] = 'deleted'
+            update_item(child, request, child_props)
+
+
+def create_item(cls, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(
+        registry, cls, properties)
+
+    item = cls.create(registry, item_properties, sheets)
+    registry.notify(Created(item, request))
+
+    if propname_children:
+        update_children(item, request, propname_children)
+    return item
+
+
+def update_item(context, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(
+        registry, type(context), properties)
+
+    registry.notify(BeforeModified(context, request))
+    context.update(item_properties, sheets)
+    registry.notify(AfterModified(context, request))
+
+    if propname_children:
+        update_children(context, request, propname_children)
+
+
 @view_config(context=Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
 @view_config(context=Collection, permission='add_unvalidated', request_method='POST',
@@ -914,9 +935,9 @@ def collection_list(context, request):
 def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
-    item = context.Item.create(context, properties)
-    request.registry.notify(Created(item, request))
+
+    item = create_item(context.Item, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid
     else:
@@ -1128,8 +1149,10 @@ def item_view_raw(context, request):
 def item_view_edit(context, request):
     properties = item_links(context, request)
     calculated = calculate_properties(context, request, properties)
+    calculated_properties = request.registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
     for key, value in calculated.items():
-        if key in context.schema_rev_links:
+        if key in schema_rev_links:
             properties[key] = value
     return properties
 
@@ -1152,11 +1175,10 @@ def item_edit(context, request, render=None):
     """
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
+
     # This *sets* the property sheet
-    request.registry.notify(BeforeModified(context, request))
-    context.update(properties)
-    request.registry.notify(AfterModified(context, request))
+    update_item(context, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s' % context.uuid
     else:
