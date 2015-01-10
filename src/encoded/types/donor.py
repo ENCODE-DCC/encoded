@@ -24,8 +24,8 @@ class Donor(Item):
         "title": "Characterizations",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "donor_characterization",
+            "type": ['string', 'object'],
+            "linkFrom": "donor_characterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):
