@@ -208,6 +208,12 @@ class Resource(Base):
     def keys(self):
         return self.data.keys()
 
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
 
 class Blob(Base):
     """ Binary data
