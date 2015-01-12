@@ -288,7 +288,7 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-human",
         "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
-    }
+    },
     {
         "_test": "ENCODE 2 pipeline ChIP-seq",
         "accession": "ENCSR000DZQ",
