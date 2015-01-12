@@ -10,6 +10,9 @@ from .base import (
     paths_filtered_by_status,
 )
 from .download import ItemWithAttachment
+from pyramid.traversal import (
+    find_root,
+)
 
 
 def includeme(config):
@@ -265,9 +268,10 @@ class SoftwareVersion(Item):
     embedded = ['software', 'software.references']
 
     def keys(self):
-        keys = super(SoftwareVersion,self).keys()
+        keys = super(SoftwareVersion, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        keys.setdefault('software_version:name')
+        if properties.get('name'):
+            keys.setdefault('software_version:identifier', []).extend(properties['name'])
         return keys
 
     @calculated_property(schema={

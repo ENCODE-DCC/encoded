@@ -2,7 +2,6 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    calculated_property,
     collection,
 )
 from .base import (
@@ -12,7 +11,7 @@ from .base import (
 
 @collection(
     name=' pipelines',
-    properties = {
+    properties={
         'title': 'Pipelines',
         'description': 'Listing of Pipelines'
     })
@@ -31,7 +30,7 @@ class Pipeline(Item):
 
 @collection(
     name='analysis-steps',
-    properties = {
+    properties={
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps'
     })
@@ -44,9 +43,10 @@ class AnalysisStep(Item):
         'parents'
     ]
 
+
 @collection(
     name='analysis-step-runs',
-    properties = {
+    properties={
         'title': 'Analysis step runs',
         'description': 'Listing of Analysis Step Runs'
     })
@@ -61,7 +61,7 @@ class AnalysisStepRun(Item):
 
 @collection(
     name='quality-metrics',
-    properties = {
+    properties={
         'title': "QC metrics",
         'description': 'Listing of the QC metrics'
     })
@@ -69,13 +69,13 @@ class QualityMetric(Item):
     item_type = 'quality_metric',
     schema = load_schema('quality_metric.json')
     embedded = [
-            'file'
+        'file'
     ]
 
 
 @collection(
     name='workflow-runs',
-    properties = {
+    properties={
         'title': 'Workflow runs',
         'description': 'Listing of (DNANexus) Workflow Runs'
     })
