@@ -1283,13 +1283,8 @@ def inherit_audits(request, embedded, embedded_paths):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    links = defaultdict(list)
-    for link in context.model.rels:
-        links[link.rel].append(link.target_rid)
-
-    keys = defaultdict(list)
-    for key in context.model.unique_keys:
-        keys[key.name].append(key.value)
+    links = context.links()
+    keys = context.keys()
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
