@@ -11,93 +11,78 @@ from .base import (
 )
 
 
-@location('pipelines')
-class Pipeline(Collection):
-    item_type = 'pipeline'
-    schema = load_schema('pipeline.json')
+@collection(
+    name=' pipelines',
     properties = {
         'title': 'Pipelines',
         'description': 'Listing of Pipelines'
-    }
+    })
+class Pipeline(Item):
+    item_type = 'pipeline'
+    schema = load_schema('pipeline.json')
+    name_key = 'accesion'
+    embedded = [
+        'documents',
+        'analysis_steps',
+        'analysis_steps.software_versions',
+        'analysis_steps.software_versions.software',
+        'analysis_steps.software_versions.software.references'
+    ]
 
-    class Item(Collection.Item):
-        name_key = 'accesion'
-        keys = ACCESSION_KEYS + ALIAS_KEYS
 
-        embedded = [
-            'documents',
-            'analysis_steps',
-            'analysis_steps.software_versions',
-            'analysis_steps.software_versions.software',
-            'analysis_steps.software_versions.software.references'
-        ]
-
-
-@location('analysis-steps')
-class AnalysisStep(Collection):
-    item_type = 'analysis_step'
-    schema = load_schema('analysis_step.json')
+@collection(
+    name='analysis-steps',
     properties = {
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps'
-    }
+    })
+class AnalysisStep(Item):
+    item_type = 'analysis_step'
+    schema = load_schema('analysis_step.json')
+    embedded = [
+        'software_versions',
+        'software_versions.software',
+        'parents'
+    ]
 
-    class Item(Collection.Item):
-        keys = ALIAS_KEYS
-
-        embedded = [
-            'software_versions',
-            'software_versions.software',
-            'parents'
-        ]
-
-
-@location('analysis-step-runs')
-class AnalysisStepRun(Collection):
-    item_type = 'analysis_step_run'
-    schema = load_schema('analysis_step_run.json')
+@collection(
+    name='analysis-step-runs',
     properties = {
         'title': 'Analysis step runs',
         'description': 'Listing of Analysis Step Runs'
-    }
+    })
+class AnalysisStepRun(Item):
+    item_type = 'analysis_step_run'
+    schema = load_schema('analysis_step_run.json')
+    embedded = [
+        'analysis_step',
+        'workflow_run'
+    ]
 
-    class Item(Collection.Item):
-        keys = ALIAS_KEYS
 
-        embedded = [
-            'analysis_step',
-            'workflow_run'
-        ]
-
-
-@location('qc-metrics')
-class QcMetric(Collection):
-    item_type = 'qc_metric',
-    schema = load_schema('qc_metric')
+@collection(
+    name='qc-metrics',
     properties = {
         'title': "QC metrics",
         'description': 'Listing of the QC metrics'
-    }
-
-    class Item(Collection.Item):
-
-        embedded = [
+    })
+class QcMetric(Item):
+    item_type = 'qc_metric',
+    schema = load_schema('qc_metric')
+    embedded = [
             'file'
-        ]
+    ]
 
 
-@location('workflow-runs')
-class WorkflowRun(Collection):
-    item_type = 'workflow_run'
-    schema = load_schema('workflow_run.json')
+@collection(
+    name='workflow-runs'
     properties = {
         'title': 'Workflow runs',
         'description': 'Listing of (DNANexus) Workflow Runs'
-    }
-
-    class Item(Collection.Item):
-        keys = ALIAS_KEYS
-
-        embedded = [
-            'pipeline',
-        ]
+    })
+class WorkflowRun(Item):
+    item_type = 'workflow_run'
+    schema = load_schema('workflow_run.json')
+    embedded = [
+        'pipeline',
+    ]
