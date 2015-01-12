@@ -9,7 +9,10 @@ Example.
 import boto
 import requests
 import sys
-from urllib.parse import urljoin
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
 
 EPILOG = __doc__
 
@@ -122,7 +125,11 @@ def check_format(item, path):
 def check_file(item):
     import hashlib
     import os.path
-    from urllib.parse import urlparse
+    try:
+        from urllib.parse import urlparse
+    except ImportError:
+        from urlparse import urlparse
+
     result = None
     errors = {}
     r = requests.head(

@@ -71,8 +71,8 @@ class AntibodyLot(Item):
         "title": "Characterizations",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "antibody_characterization",
+            "type": ['string', 'object'],
+            "linkFrom": "antibody_characterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

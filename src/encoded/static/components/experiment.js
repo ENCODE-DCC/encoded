@@ -472,6 +472,22 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                         </dd>
                     </div>
                 : null}
+
+                {lib.spikeins_used && lib.spikeins_used.length ?
+                    <div data-test="spikeins">
+                        <dt>Spike-ins datasets</dt>
+                        <dd>
+                            {lib.spikeins_used.map(function(dataset, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={dataset['@id']}>{dataset.accession}</a>
+                                    </span>
+                                );
+                            })}
+                        </dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );

@@ -1,4 +1,3 @@
-import copy
 import os
 from collections import OrderedDict
 from pyramid.decorator import reify
@@ -23,6 +22,7 @@ from .visualization import generate_batch_hubs
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('schemas', '/profiles/')
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('jsonld_context', '/terms/')
     config.add_route('jsonld_context_no_slash', '/terms')
@@ -95,15 +95,9 @@ def home(context, request):
     return result
 
 
-@view_config(route_name='schema', request_method='GET')
-def schema(context, request):
-    item_type = request.matchdict['item_type']
-    try:
-        collection = context.by_item_type[item_type]
-    except KeyError:
-        raise HTTPNotFound(item_type)
+def _filtered_schema(collection, request):
+    schema = request.registry['calculated_properties'].schema_for(collection.Item)
 
-    schema = copy.deepcopy(collection.Item.schema)
     properties = OrderedDict()
     for k, v in schema['properties'].items():
         if 'permission' in v:
@@ -112,6 +106,25 @@ def schema(context, request):
         properties[k] = v
     schema['properties'] = properties
     return schema
+
+
+@view_config(route_name='schema', request_method='GET')
+def schema(context, request):
+    item_type = request.matchdict['item_type']
+    try:
+        collection = context.by_item_type[item_type]
+    except KeyError:
+        raise HTTPNotFound(item_type)
+
+    return _filtered_schema(collection, request)
+
+
+@view_config(route_name='schemas', request_method='GET')
+def schemas(context, request):
+    schemas = {}
+    for typename, collection in context.by_item_type.items():
+        schemas[typename] = _filtered_schema(collection, request)
+    return schemas
 
 
 @view_config(route_name='batch_hub')

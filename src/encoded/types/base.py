@@ -5,6 +5,7 @@ from pyramid.security import (
     DENY_ALL,
     Everyone,
 )
+from pyramid.threadlocal import get_current_request
 from .. import contentbase
 
 ALLOW_EVERYONE_VIEW = [
@@ -36,12 +37,6 @@ ONLY_ADMIN_VIEW = [
     (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
-]
-
-
-TYPES_WITH_FORMS = [
-    'image',
-    'page',
 ]
 
 
@@ -127,9 +122,14 @@ class Item(contentbase.Item):
                 self.__acl__ = ALLOW_SUBMITTER_ADD
 
 
+def contextless_has_permission(permission):
+    request = get_current_request()
+    return request.has_permission('forms', request.root)
+
+
 @contentbase.calculated_property(context=Item.Collection, category='action')
 def add(item_uri, item_type, has_permission):
-    if item_type in TYPES_WITH_FORMS and has_permission('add'):
+    if has_permission('add') and contextless_has_permission('forms'):
         return {
             'name': 'add',
             'title': 'Add',
@@ -140,10 +140,21 @@ def add(item_uri, item_type, has_permission):
 
 @contentbase.calculated_property(context=Item, category='action')
 def edit(item_uri, item_type, has_permission):
-    if has_permission('edit'):
+    if has_permission('edit') and contextless_has_permission('forms'):
         return {
             'name': 'edit',
             'title': 'Edit',
             'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + ('#!edit' if item_type in TYPES_WITH_FORMS else '#!edit-json'),
+            'href': item_uri + '#!edit',
+        }
+
+
+@contentbase.calculated_property(context=Item, category='action')
+def edit_json(item_uri, item_type, has_permission):
+    if has_permission('edit'):
+        return {
+            'name': 'edit-json',
+            'title': 'Edit JSON',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': item_uri + '#!edit-json',
         }
