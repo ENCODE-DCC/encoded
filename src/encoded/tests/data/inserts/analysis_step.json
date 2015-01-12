@@ -77,7 +77,7 @@
         "status": "released",
         "parents": ["1b7bec83-dd21-4086-8673-2e08cf8f1c0f"],
         "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105"
-    }
+    },
     {
         "analysis_step_types": ["alignment"],
         "software_versions": [
