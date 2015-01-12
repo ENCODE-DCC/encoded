@@ -77,13 +77,31 @@ class File(Item):
     schema = load_schema('file.json')
     name_key = 'accession'
 
+    rev = {
+        'paired_with': ('file', 'paired_with'),
+    }
+
     def keys(self):
         keys = super(File, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        if properties.get('md5sum') and properties.get('status') != 'replaced':
-            value = 'md5:{md5sum}'.format(**properties)
-            keys.setdefault('alias', []).append(value)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys['file:paired_with'] = properties['paired_with']
         return keys
+
+    # Don't specify schema as this just overwrites the existing value
+    @calculated_property(
+        condition=lambda paired_end=None: paired_end == '1')
+    def paired_with(self, root, request):
+        paired_with = self.get_rev_links('paired_with')
+        if not paired_with:
+            return None
+        item = root.get_by_uuid(paired_with[0])
+        return request.resource_path(item)
 
     @calculated_property(schema={
         "title": "Download URL",

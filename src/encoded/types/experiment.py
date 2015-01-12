@@ -166,8 +166,8 @@ class Experiment(Dataset):
         "title": "Replicates",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "replicate",
+            "type": ['string', 'object'],
+            "linkFrom": "replicate.experiment",
         },
     })
     def replicates(self, request, replicates):

@@ -246,21 +246,23 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         if 'rdfs:subPropertyOf' in subschema:
             prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
 
-        subschema.get('items', subschema)
+        subschema = subschema.get('items', subschema)
         if 'title' in subschema:
             prop_ld['rdfs:label'] = subschema['title']
 
         if 'description' in subschema:
             prop_ld['rdfs:comment'] = subschema['description']
 
-        linkTo = aslist(subschema.get('linkTo', []))
-        if len(linkTo) == 1:
-            linkTo, = linkTo
-            prop_ld['rdfs:range'] = term_path + linkTo
-        elif len(linkTo) > 1:
+        links = aslist(subschema.get('linkTo', []))
+        if subschema.get('linkFrom'):
+            links.append(subschema['linkFrom'].split('.')[0])
+        if len(links) == 1:
+            links, = links
+            prop_ld['rdfs:range'] = term_path + links
+        elif len(links) > 1:
             prop_ld['rdfs:range'] = {
                 '@type': 'owl:Class',
-                'owl:unionOf': [term_path + type_name for type_name in aslist(linkTo)],
+                'owl:unionOf': [term_path + type_name for type_name in aslist(links)],
             }
 
         yield prop_ld

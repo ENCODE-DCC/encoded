@@ -7,7 +7,7 @@ def file1(experiment, award, lab, replicate, testapp):
         'dataset': experiment['uuid'],
         'replicate': replicate['uuid'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'md5sum': '100d8cd98f00b204e9800998ecf8427e',
         'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],

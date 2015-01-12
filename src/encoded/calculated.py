@@ -1,7 +1,8 @@
-import inspect
+from __future__ import absolute_import
 import venusian
 from pyramid.decorator import reify
 from pyramid.traversal import find_root
+from types import MethodType
 
 
 def includeme(config):
@@ -10,11 +11,13 @@ def includeme(config):
 
 
 class ItemNamespace(object):
-    def __init__(self, context, request, defined=None, **kw):
+    def __init__(self, context, request, defined=None, ns=None):
         self.context = context
         self.request = request
         self._defined = defined or {}
-        self.__dict__.update(**kw)
+        if ns:
+            self.__dict__.update(ns)
+        self._results = {}
 
     @reify
     def _properties(self):
@@ -57,29 +60,54 @@ class ItemNamespace(object):
             return value
         raise AttributeError(name)
 
-    def __call__(self, fn, args):
+    def __call__(self, fn):
+        try:
+            return self._results[fn]
+        except KeyError:
+            pass
+
+        if isinstance(fn, str):
+            result = self._results[fn] = getattr(self, fn, None)
+            return result
+
+        start = 1 if isinstance(fn, MethodType) else 0
+        # Not using inspect.getargspec as it is slow
+        args = fn.__code__.co_varnames[start:fn.__code__.co_argcount]
         kw = {}
         for name in args:
             try:
                 kw[name] = getattr(self, name)
             except AttributeError:
                 pass
-        return fn(**kw)
+
+        result = self._results[fn] = fn(**kw)
+        return result
 
 
 class CalculatedProperties(object):
     def __init__(self):
-        self.item_type_props = {}
+        self.category_cls_props = {}
 
-    def props_for(self, cls):
+    def register_prop(self, fn, name, context, condition=None, schema=None,
+                      attr=None, define=False, category='object'):
+        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
+        cls_props = self.category_cls_props.setdefault(category, {})
+        cls_props.setdefault(context, {})[name] = prop
+
+    def props_for(self, context, category='object'):
+        if isinstance(context, type):
+            cls = context
+        else:
+            cls = type(context)
         props = {}
-        for item_type in reversed([cls.item_type] + cls.base_types):
-            props.update(self.item_type_props.get(item_type, {}))
+        cls_props = self.category_cls_props.get(category, {})
+        for base in reversed(cls.mro()):
+            props.update(cls_props.get(base, {}))
         return props
 
-    def schema_for(self, cls):
-        props = self.props_for(cls)
-        schema = cls.schema or {'type': 'object', 'properties': {}}
+    def schema_for(self, context):
+        props = self.props_for(context)
+        schema = context.schema or {'type': 'object', 'properties': {}}
         schema = schema.copy()
         schema['properties'] = schema['properties'].copy()
         for name, prop in props.items():
@@ -87,12 +115,17 @@ class CalculatedProperties(object):
                 schema['properties'][name] = prop.schema
         return schema
 
-    def register_prop(self, fn, name, item_type, condition=None,
-                      schema=None, attr=None, define=False):
-        if not isinstance(item_type, str):
-            item_type = item_type.item_type
-        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
-        self.item_type_props.setdefault(item_type, {})[name] = prop
+    def schema_rev_links_for(self, cls):
+        schema = self.schema_for(cls)
+
+        revs = {}
+        for key, prop in schema['properties'].items():
+            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
+            if linkFrom is None:
+                continue
+            linkType, linkProp = linkFrom.split('.')
+            revs[key] = linkType, linkProp
+        return revs
 
 
 class CalculatedProperty(object):
@@ -102,57 +135,36 @@ class CalculatedProperty(object):
         self.fn = fn
         self.attr = attr
         self.name = name
-        self.condition_fn = condition
+        self.condition = condition
         self.define = define
-
-        argspec = inspect.getargspec(fn)
-        if argspec.keywords is not None:
-            raise TypeError('Cannot register calculated property with keyword args')
-        if argspec.varargs is not None:
-            raise TypeError('Cannot register calculated property with varargs')
-        if attr is not None and not isinstance(fn, staticmethod):
-            self.args = argspec.args[1:]
-        else:
-            self.args = argspec.args
-
-        if condition is not None and not isinstance(condition, str):
-            argspec = inspect.getargspec(condition)
-            if argspec.keywords is not None:
-                raise TypeError('Cannot register calculated property condition with keyword args')
-            if argspec.varargs is not None:
-                raise TypeError('Cannot register calculated property condition with varargs')
-            self.condition_args = argspec.args
 
         if schema is not None:
             if 'default' in schema:
                 raise ValueError('schema may not specify default for calculated property')
-            schema = schema.copy()
-            schema['calculatedProperty'] = True
+            if 'linkFrom' not in schema.get('items', {}):
+                schema = schema.copy()
+                schema['calculatedProperty'] = True
         self.schema = schema
 
-    def condition(self, namespace):
-        if self.condition_fn is None:
-            return True
-        if isinstance(self.condition_fn, str):
-            return getattr(namespace, self.condition_fn, None)
-        return namespace(self.condition_fn, self.condition_args)
-
     def __call__(self, namespace):
+        if self.condition is not None:
+            if not namespace(self.condition):
+                return None
         if self.attr:
             fn = getattr(namespace.context, self.attr)
         else:
             fn = self.fn
-        return namespace(fn, self.args)
+        return namespace(fn)
 
 
 # Imperative configuration
-def add_calculated_property(config, fn, name, item_type, condition=None,
-                            schema=None, attr=None, define=False):
+def add_calculated_property(config, fn, name, context, condition=None, schema=None,
+                            attr=None, define=False, category='object'):
     calculated_properties = config.registry['calculated_properties']
     config.action(
-        ('calculated_property', item_type, name),
+        ('calculated_property', context, category, name),
         calculated_properties.register_prop,
-        (fn, name, item_type, condition, schema, attr, define),
+        (fn, name, context, condition, schema, attr, define, category),
     )
 
 
@@ -163,13 +175,13 @@ def calculated_property(**settings):
 
     def decorate(wrapped):
         def callback(scanner, factory_name, factory):
-            if settings.get('item_type') is None:
-                settings['item_type'] = factory
+            if settings.get('context') is None:
+                settings['context'] = factory
             if settings.get('name') is None:
                 settings['name'] = factory_name
             scanner.config.add_calculated_property(wrapped, **settings)
 
-        info = venusian.attach(wrapped, callback, category='calculated_property')
+        info = venusian.attach(wrapped, callback, category='object')
 
         if info.scope == 'class':
             # if the decorator was attached to a method in a class, or
@@ -180,24 +192,25 @@ def calculated_property(**settings):
             if settings.get('name') is None:
                 settings['name'] = wrapped.__name__
 
-        elif settings.get('item_type') is None:
-            raise TypeError('must supply item_type for function')
+        elif settings.get('context') is None:
+            raise TypeError('must supply context type for function')
 
         return wrapped
 
     return decorate
 
 
-def calculate_properties(context, request, **kw):
+def calculate_properties(context, request, ns=None, category='object'):
     calculated_properties = request.registry['calculated_properties']
-    props = calculated_properties.props_for(type(context))
+    props = calculated_properties.props_for(context, category)
     defined = {name: prop for name, prop in props.items() if prop.define}
-    namespace = ItemNamespace(context, request, defined, **kw)
+    if isinstance(context, type):
+        context = None
+    namespace = ItemNamespace(context, request, defined, ns)
     return {
         name: value
         for name, value in (
             (name, prop(namespace))
             for name, prop in props.items()
-            if prop.condition(namespace)
         ) if value is not None
     }
