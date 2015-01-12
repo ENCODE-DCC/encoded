@@ -618,7 +618,7 @@ var ExperimentGraph = React.createClass({
                         });
 
                         if (selectedFile) {
-                            var analysisStep = selectedFile.step.analysis_step;
+                            var analysisStep = selectedFile.step && selectedFile.step.analysis_step;
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -663,7 +663,7 @@ var ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {analysisStep.software_versions && analysisStep.software_versions.length ?
+                                    {analysisStep && analysisStep.software_versions && analysisStep.software_versions.length ?
                                         <div>
                                             <dt>Software</dt>
                                             <dd>

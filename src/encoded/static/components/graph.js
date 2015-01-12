@@ -8,34 +8,38 @@ var $script = require('scriptjs');
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
 // with the constructor, then add edges and nodes with the methods.
-// Uses a variation of the JSON Graph structure described in:
+// This merges the hierarchical structure from the JSON Graph structure described in:
 // http://rtsys.informatik.uni-kiel.de/confluence/display/KIELER/JSON+Graph+Format
-// The variation is that this one doesn't use 'width' and 'height' in the node, and it
-// adds 'cssClass' and 'type' to the node.
+// and the overall structure of https://github.com/jsongraph/json-graph-specification.
+// In this implementation, all edges are in the root object, not in the nodes array.
+// This allows edges to cross between children and parents.
 
 // Constructor for a graph architecture
 function JsonGraph(id) {
     this.id = id;
     this.type = '';
-    this.children = [];
+    this.label = '';
+    this.metadata = {};
+    this.nodes = [];
     this.edges = [];
-    this.cssClass = '';
 }
 
-// Add node to the graph architecture
+// Add node to the graph architecture. The caller must keep track that all node IDs
+// are unique -- this code doesn't verify this.
 // id: uniquely identify the node
 // label: text to display in the node
 // cssClass: optional CSS class to assign to the SVG object for this node
 // type: Optional text type to track the type of node this is
-JsonGraph.prototype.addNode = function(id, label, cssClass, type) {
+// parentNode: Optional reference to parent node; defaults to graph root
+JsonGraph.prototype.addNode = function(id, label, cssClass, type, parentNode) {
     var newNode = {};
     newNode.id = id;
     newNode.type = type;
-    newNode.labels = [];
-    newNode.labels[0] = {};
-    newNode.labels[0].text = label;
-    newNode.cssClass = cssClass;
-    this.children.push(newNode);
+    newNode.label = label;
+    newNode.metadata = {cssClass: cssClass};
+    newNode.nodes = [];
+    var target = (parentNode && parentNode.nodes) || this.nodes;
+    target.push(newNode);
 };
 
 // Add edge to the graph architecture
@@ -49,13 +53,21 @@ JsonGraph.prototype.addEdge = function(source, target) {
     this.edges.push(newEdge);
 };
 
-// Return the JSON graph node matching the given ID
-JsonGraph.prototype.getNode = function(id) {
-    var node;
+// Return the JSON graph node matching the given ID, and its parent node.
+// This function finds the node regardless of where it is in the hierarchy of nodes.
+// id: ID of the node to search for
+// parent: Optional parent node to begin the search; graph root by default
+JsonGraph.prototype.getNode = function(id, parent) {
+    var nodes = (parent && parent.nodes) || this.nodes;
 
-    return _(this.children).find(function(child) {
-        return child.id === id;
-    });
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === id) {
+            return nodes[i];
+        } else if (nodes[i].nodes.length) {
+            return this.getNode(id, nodes[i]);
+        }
+    }
+    return undefined;
 };
 
 module.exports.JsonGraph = JsonGraph;
@@ -74,8 +86,8 @@ var Graph = module.exports.Graph = React.createClass({
     // graph: Initialized empty Dagre-D3 graph.
     convertGraph: function(jsonGraph, graph) {
         // Convert the nodes
-        jsonGraph.children.forEach(function(node) {
-            graph.setNode(node.id, {label: node.labels[0].text, rx: 4, ry: 4, class: node.cssClass});
+        jsonGraph.nodes.forEach(function(node) {
+            graph.setNode(node.id, {label: node.label, rx: 4, ry: 4, class: node.metadata.cssClass});
         });
 
         // Convert the edges
