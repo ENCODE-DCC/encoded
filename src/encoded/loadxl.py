@@ -45,7 +45,7 @@ ORDER = [
     'workflow_run',
     'analysis_step_run',
     'file',
-    "quality_metric",
+    'quality_metric',
     'image',
     'page',
 ]
