@@ -62,7 +62,12 @@ write_files:
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
 - path: /etc/postgresql/9.3/main/recovery.conf
-  content: restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
+  content: |
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
+    standby_mode = on
+- path: /etc/postgresql/9.3/main/custom.conf
+  content: |
+    hot_standby = on
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -71,6 +76,8 @@ runcmd:
 - sudo update-rc.d elasticsearch defaults
 - sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
+- chown postgres:postgres /etc/postgresql/9.3/main/custom.conf
+- sudo -u postgres echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
@@ -92,8 +99,8 @@ runcmd:
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/update-keys-links production.ini
-- sudo -u encoded bin/create-mapping production.ini
+# - sudo -u encoded bin/update-keys-links production.ini
+# - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - sudo ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - sudo a2enmod headers
@@ -110,7 +117,7 @@ runcmd:
 - sudo a2disconf serve-cgi-bin
 - sudo service apache2 reload
 - sleep 10
-- sudo -u encoded bin/upgrade production.ini
+# - sudo -u encoded bin/upgrade production.ini
 #- sleep 60
 #- PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd"
 
