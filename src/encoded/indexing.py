@@ -89,7 +89,7 @@ def index(request):
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     query = connection.execute("""
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
+        SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY, DEFERRABLE;
         SELECT txid_snapshot_xmin(txid_current_snapshot());
     """)
     xmin = query.scalar()  # lowest xid that is still in progress
