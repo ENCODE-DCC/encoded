@@ -75,7 +75,7 @@ class QcMetric(Item):
 
 
 @collection(
-    name='workflow-runs'
+    name='workflow-runs',
     properties = {
         'title': 'Workflow runs',
         'description': 'Listing of (DNANexus) Workflow Runs'

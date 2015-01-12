@@ -259,7 +259,7 @@ class Software(Item):
         'title': 'Software version',
         'description': 'Software version pages',
     })
-class SoftwareVersion(Collection):
+class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('software_version.json')
     embedded = ['software', 'software.references']
