@@ -2,12 +2,11 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
-    Collection,
+    Item,
 )
 
 
@@ -61,14 +60,14 @@ class AnalysisStepRun(Item):
 
 
 @collection(
-    name='qc-metrics',
+    name='quality-metrics',
     properties = {
         'title': "QC metrics",
         'description': 'Listing of the QC metrics'
     })
-class QcMetric(Item):
-    item_type = 'qc_metric',
-    schema = load_schema('qc_metric')
+class QualityMetric(Item):
+    item_type = 'quality_metric',
+    schema = load_schema('quality_metric.json')
     embedded = [
             'file'
     ]
