@@ -64,7 +64,10 @@ JsonGraph.prototype.getNode = function(id, parent) {
         if (nodes[i].id === id) {
             return nodes[i];
         } else if (nodes[i].nodes.length) {
-            return this.getNode(id, nodes[i]);
+            var matching = this.getNode(id, nodes[i]);
+            if (matching) {
+                return matching;
+            }
         }
     }
     return undefined;

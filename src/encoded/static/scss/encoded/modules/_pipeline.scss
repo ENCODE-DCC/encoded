@@ -33,6 +33,13 @@ g.node {
     }
 }
 
+g.cluster {
+    rect {
+        fill: #f0f8f0;
+        stroke: #c0c0c0;
+    }
+}
+
 g.edgePath {
     path {
         stroke: #c0c0c0;
