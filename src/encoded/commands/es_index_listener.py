@@ -55,14 +55,20 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         conn = connection.connection
         conn.autocommit = True
         with conn.cursor() as cursor:
-            sockets = [conn]
+            sockets = []
             if control is not None:
                 sockets.append(control)
-            # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
-            cursor.execute("""LISTEN "encoded.transaction";""")
-            log.debug("Listener connected")
+            # cannot execute LISTEN during recovery
+            cursor.execute("""SELECT pg_is_in_recovery();""")
+            recovery, = cursor.fetchone()
+            if not recovery:
+                # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
+                cursor.execute("""LISTEN "encoded.transaction";""")
+                log.debug("Listener connected")
+                sockets.append(conn)
             timestamp = datetime.datetime.now().isoformat()
             update_status(
+                recovery=recovery,
                 status='connected',
                 timestamp=timestamp,
                 connected=timestamp,
