@@ -160,6 +160,16 @@ def es_mapping(mapping):
             'analyzer': 'encoded_index_analyzer'
         },
         'properties': {
+            'uuid': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'item_type': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
             'embedded': mapping,
             'encoded_all_ngram': {
                 'type': 'string',

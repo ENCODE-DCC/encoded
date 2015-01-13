@@ -1283,13 +1283,9 @@ def inherit_audits(request, embedded, embedded_paths):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    links = defaultdict(list)
-    for link in context.model.rels:
-        links[link.rel].append(link.target_rid)
-
-    keys = defaultdict(list)
-    for key in context.model.unique_keys:
-        keys[key.name].append(key.value)
+    uuid = str(context.uuid)
+    links = context.links()
+    keys = context.keys()
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
@@ -1311,7 +1307,7 @@ def item_index_data(context, request):
         for key_name in ('accession', 'alias'):
             if key_name not in keys:
                 continue
-            paths.add(resource_path(base, str(context.uuid)))
+            paths.add(resource_path(base, uuid))
             paths.update(
                 resource_path(base, key)
                 for key in keys[key_name])
@@ -1321,6 +1317,8 @@ def item_index_data(context, request):
     audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
 
     document = {
+        'uuid': uuid,
+        'item_type': context.item_type,
         'embedded': embedded,
         'object': embed(request, join(path, '@@object')),
         'links': links,
