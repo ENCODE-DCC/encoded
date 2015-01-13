@@ -10,7 +10,7 @@ from .base import (
 
 
 @collection(
-    name=' pipelines',
+    name='pipelines',
     properties={
         'title': 'Pipelines',
         'description': 'Listing of Pipelines'
