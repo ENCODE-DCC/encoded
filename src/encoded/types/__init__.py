@@ -268,7 +268,6 @@ class Software(Item):
 
 @collection(
     name='software-versions',
-    unique_key='software_version:name',
     properties={
         'title': 'Software version',
         'description': 'Software version pages',
@@ -277,31 +276,3 @@ class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('software_version.json')
     embedded = ['software', 'software.references']
-
-    def keys(self):
-        keys = super(SoftwareVersion, self).keys()
-        keys.setdefault('software_version:name', []).extend(self.__name__)
-        return keys
-
-    @calculated_property(schema={
-        "title": "Name",
-        "type": "string",
-    })
-    def name(self):
-        return self.__name__
-
-    @calculated_property(schema={
-        "title": "Title",
-        "type": "string",
-    })
-    def title(self, request, software, version):
-        software_props = request.embed(software, '@@object')
-        return u'{} ({})'.format(software_props['name'], version)
-
-    @property
-    def __name__(self):
-        properties = self.upgrade_properties(finalize=False)
-        root = find_root(self)
-        software = root.get_by_uuid(properties['software'])
-        software_props = software.upgrade_properties(finalize=False)
-        return u'{}-{}'.format(software_props['name'], properties['version'])

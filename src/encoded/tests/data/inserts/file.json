@@ -850,7 +850,7 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 370148294,
-        "output_type": "methyl_CG",
+        "output_type": "methyl CG",
         "lab": "/labs/richard-myers/",
         "derived_from": ["ENCFF434GXF"],
         "pipeline": "ENCPL002BIS",
@@ -870,7 +870,7 @@
         "alternate_accessions": [],
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
-        "output_type": "methyl_CHH",
+        "output_type": "methyl CHH",
         "derived_from": ["ENCFF434GXF"],
         "pipeline": "ENCPL002BIS",
         "aliases": []
@@ -888,7 +888,7 @@
         "flowcell_details": [],
         "alternate_accessions": [],
         "lab": "/labs/richard-myers/",
-        "output_type": "methyl_CHG",
+        "output_type": "methyl CHG",
         "aliases": [],
         "pipeline": "ENCPL002BIS",
         "derived_from": ["ENCFF434GXF"]
@@ -979,7 +979,7 @@
     {
         "accession": "ENCFF002COS",
         "award": "ENCODE2",
-        "dataset": "ENCSR000DZQ/",
+        "dataset": "ENCSR000DZQ",
         "file_format": "bed_narrowPeak",
         "file_size": 2433593,
         "lab": "j-michael-cherry",
