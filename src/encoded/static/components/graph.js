@@ -53,8 +53,8 @@ JsonGraph.prototype.addEdge = function(source, target) {
     this.edges.push(newEdge);
 };
 
-// Return the JSON graph node matching the given ID, and its parent node.
-// This function finds the node regardless of where it is in the hierarchy of nodes.
+// Return the JSON graph node matching the given ID. This function finds the node
+// regardless of where it is in the hierarchy of nodes.
 // id: ID of the node to search for
 // parent: Optional parent node to begin the search; graph root by default
 JsonGraph.prototype.getNode = function(id, parent) {
@@ -85,10 +85,24 @@ var Graph = module.exports.Graph = React.createClass({
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
     convertGraph: function(jsonGraph, graph) {
+
+        // graph: dagre graph object
+        // parent: JsonGraph node to insert nodes into
+        function convertGraphInner(graph, parent) {
+            // For each node in parent node (or top-level graph)
+            parent.nodes.forEach(function(node) {
+                graph.setNode(node.id + '', {label: node.label + '', rx: 4, ry: 4, class: node.metadata.cssClass});
+                if (parent.id) {
+                    graph.setParent(node.id + '', parent.id + '');
+                }
+                if (node.nodes.length) {
+                    convertGraphInner(graph, node);
+                }
+            });
+        }
+
         // Convert the nodes
-        jsonGraph.nodes.forEach(function(node) {
-            graph.setNode(node.id, {label: node.label, rx: 4, ry: 4, class: node.metadata.cssClass});
-        });
+        convertGraphInner(graph, jsonGraph);
 
         // Convert the edges
         jsonGraph.edges.forEach(function(edge) {
@@ -104,7 +118,7 @@ var Graph = module.exports.Graph = React.createClass({
         var svg = d3.select(el).select('svg');
 
         // Create a new empty graph
-        var g = new dagreD3.graphlib.Graph()
+        var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
             .setGraph({rankdir: "TB"})
             .setDefaultEdgeLabel(function() { return {}; });
 
