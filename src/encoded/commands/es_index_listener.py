@@ -54,28 +54,30 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         connection.detach()
         conn = connection.connection
         conn.autocommit = True
+        sockets = [conn]
+        if control is not None:
+            sockets.append(control)
+        recovery = None
+        listening = False
         with conn.cursor() as cursor:
-            sockets = []
-            if control is not None:
-                sockets.append(control)
-            # cannot execute LISTEN during recovery
-            cursor.execute("""SELECT pg_is_in_recovery();""")
-            recovery, = cursor.fetchone()
-            if not recovery:
-                # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
-                cursor.execute("""LISTEN "encoded.transaction";""")
-                log.debug("Listener connected")
-                sockets.append(conn)
-            timestamp = datetime.datetime.now().isoformat()
-            update_status(
-                recovery=recovery,
-                status='connected',
-                timestamp=timestamp,
-                connected=timestamp,
-            )
             while True:
+                if not listening:
+                    # cannot execute LISTEN during recovery
+                    cursor.execute("""SELECT pg_is_in_recovery();""")
+                    recovery, = cursor.fetchone()
+                    if not recovery:
+                        # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
+                        cursor.execute("""LISTEN "encoded.transaction";""")
+                        log.debug("Listener connected")
+                        listening = True
+
+                cursor.execute("""SELECT txid_current_snapshot();""")
+                snapshot, = cursor.fetchone()
                 timestamp = datetime.datetime.now().isoformat()
                 update_status(
+                    listening=listening,
+                    recovery=recovery,
+                    snapshot=snapshot,
                     status='indexing',
                     timestamp=timestamp,
                     max_xid=max_xid,
@@ -106,7 +108,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                         update_status(result=result)
 
                 update_status(
-                    status='listening',
+                    status='waiting',
                     timestamp=timestamp,
                     max_xid=max_xid,
                 )
