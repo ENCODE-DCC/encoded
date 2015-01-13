@@ -9,7 +9,8 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitted"}
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/standard_status"}
     ],
     "properties": {
         "schema_version": {
@@ -17,13 +18,13 @@
         },
         "step": {
             "title": "Analysis Step",
-            "description": "Reference to template step in pipeline",
+            "description": "Reference to analysis step run in pipeline",
             "type": "string",
             "linkTo": "analysis_step_run"
         },
         "files": {
-            "title": "Workflow Input files",
-            "description": "All ENCFF files used to initiate the workflow run",
+            "title": "QC Input files",
+            "description": "All ENCFF files used to initiate the qc metrics",
             "type": "array",
             "items": {
                 "title": "Input File",
@@ -70,9 +71,9 @@
                     },
                     "value": {
                         "title": "QC value",
-                        "anyOf": [
-                            {"type": "string"},
-                            {"format": "number"}
+                        "type": [
+                            "string",
+                            "number"
                         ]
                     },
                     "level": {

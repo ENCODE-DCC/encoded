@@ -1,2 +1,42 @@
 [
+    {
+    	"step": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
+    	"files": ["ENCFF000VUQ"],
+    	"qc_details": [
+    		{
+    			"metric": "SPOT",
+    			"value": 0.11906231714263
+    		},
+		{
+    			"metric": "NSC",
+    			"value": 1.61437706164671
+    		},
+		{
+    			"metric": "RSC",
+    			"value": 1.71
+    		}
+    	],
+            "status": "released",
+    	"uuid": "4a61b110-9ab2-11e4-bd06-0800200c9a66"
+    },
+    {
+    	"step": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
+    	"files": ["ENCFF000VUS"],
+    	"qc_details": [
+    		{
+    			"metric": "SPOT",
+    			"value": 0.28479310889427
+    		},
+		{
+    			"metric": "NSC",
+    			"value": 2.44662908860751
+    		},
+		{
+    			"metric": "RSC",
+    			"value": 1.55
+    		}
+    	],
+            "status": "released",
+    	"uuid": "9cdd9120-9ab2-11e4-bd06-0800200c9a66"
+    }
 ]

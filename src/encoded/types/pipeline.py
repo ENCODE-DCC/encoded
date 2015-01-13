@@ -60,20 +60,6 @@ class AnalysisStepRun(Item):
 
 
 @collection(
-    name='quality-metrics',
-    properties={
-        'title': "QC metrics",
-        'description': 'Listing of the QC metrics'
-    })
-class QualityMetric(Item):
-    item_type = 'quality_metric',
-    schema = load_schema('quality_metric.json')
-    embedded = [
-        'file'
-    ]
-
-
-@collection(
     name='workflow-runs',
     properties={
         'title': 'Workflow runs',
@@ -83,5 +69,16 @@ class WorkflowRun(Item):
     item_type = 'workflow_run'
     schema = load_schema('workflow_run.json')
     embedded = [
-        'pipeline',
+        'pipeline'
     ]
+
+
+@collection(
+    name='quality-metrics',
+    properties={
+        'title': "QC metrics",
+        'description': 'Listing of the QC metrics'
+    })
+class QualityMetric(Item):
+    item_type = 'quality_metric'
+    schema = load_schema('quality_metric.json')

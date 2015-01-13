@@ -251,8 +251,19 @@ class Software(Item):
     name_key = 'name'
     embedded = ['references']
     rev = {
-        'versions': ('software', 'software')
+        'versions': ('software_version', 'software')
     }
+
+    @calculated_property(schema={
+        "title": "Versions",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "software_version",
+        },
+    })
+    def versions(self, request, versions):
+        return paths_filtered_by_status(request, versions)
 
 
 @collection(
@@ -269,9 +280,7 @@ class SoftwareVersion(Item):
 
     def keys(self):
         keys = super(SoftwareVersion, self).keys()
-        properties = self.upgrade_properties(finalize=False)
-        if properties.get('name'):
-            keys.setdefault('software_version:identifier', []).extend(properties['name'])
+        keys.setdefault('software_version:name', []).extend(self.__name__)
         return keys
 
     @calculated_property(schema={
@@ -287,7 +296,7 @@ class SoftwareVersion(Item):
     })
     def title(self, request, software, version):
         software_props = request.embed(software, '@@object')
-        return u'{} ({})'.format(software_props['title'], version)
+        return u'{} ({})'.format(software_props['name'], version)
 
     @property
     def __name__(self):
