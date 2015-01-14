@@ -58,10 +58,31 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        jsonGraph.addEdge(parent, stepId);
+                        jsonGraph.addEdge(parent['@id'], stepId);
                     });
                 }
             }, this);
+
+            // If any analysis step parents haven't been seen yet,
+            // add them to the graph too
+            this.props.context.analysis_steps.forEach(function(step) {
+                if (step.parents) {
+                    step.parents.forEach(function(parent) {
+                        var stepId = parent['@id'];
+                        if (!jsonGraph.getNode(stepId)) {
+                            // Make an array of step types
+                            var stepTypesList = parent.analysis_step_types.map(function(type) {
+                                return type;
+                            });
+
+                            // Assemble a single analysis step node.
+                            jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''));
+                        }
+                    }, this);
+                }
+            }, this);
+
         }
         return jsonGraph;
     },

@@ -22,6 +22,7 @@ class Pipeline(Item):
     embedded = [
         'documents',
         'analysis_steps',
+        'analysis_steps.parents',
         'analysis_steps.software_versions',
         'analysis_steps.software_versions.software',
         'analysis_steps.software_versions.software.references',
