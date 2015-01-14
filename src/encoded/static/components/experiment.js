@@ -588,11 +588,12 @@ var ExperimentGraph = React.createClass({
             // Add files and their steps as nodes to the graph
             context.files.forEach(function(file) {
                 var fileId = file['@id'];
+                var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
 
                 // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
                 // to show that this is a file node.
                 jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', jsonGraph.getNode(file.replicate.biological_replicate_number));
+                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', replicateNode);
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.step) {
@@ -605,7 +606,7 @@ var ExperimentGraph = React.createClass({
                     // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
                     // analysis step.
                     jsonGraph.addNode(stepId, step.analysis_step_types.join(', '),
-                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', jsonGraph.getNode(file.replicate.biological_replicate_number));
+                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', replicateNode);
                     jsonGraph.addEdge(stepId, fileId);
 
                     // Draw an edge from the analysis step to each of the derived_from files
