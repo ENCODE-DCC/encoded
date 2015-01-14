@@ -68,6 +68,8 @@ write_files:
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
+    max_standby_archive_delay = -1
+    wal_level = hot_standby
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
