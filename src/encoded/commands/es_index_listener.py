@@ -41,11 +41,6 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         timestamp=timestamp,
         timeout=timeout,
     )
-
-    post_data = {'record': True}
-    if dry_run:
-        post_data['dry_run'] = True
-
     max_xid = 0
     engine = DBSession.bind  # DBSession.bind is configured by app init
     # noqa http://docs.sqlalchemy.org/en/latest/faq.html#how-do-i-get-at-the-raw-dbapi-connection-when-using-an-engine
@@ -84,7 +79,11 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                 )
 
                 try:
-                    res = testapp.post_json('/index', post_data)
+                    res = testapp.post_json('/index', {
+                        'record': True,
+                        'dry_run': dry_run,
+                        'recovery': recovery,
+                    })
                 except Exception as e:
                     timestamp = datetime.datetime.now().isoformat()
                     log.exception('index failed at max xid: %d', max_xid)
