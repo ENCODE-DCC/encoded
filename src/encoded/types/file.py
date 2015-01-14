@@ -109,7 +109,8 @@ class File(Item):
     })
     def href(self, request, accession, file_format):
         file_extension = self.schema['file_format_file_extension'][file_format]
-        return request.resource_path(self, '@@download/{}{}'.format(accession, file_extension))
+        filename = '{}{}'.format(accession, file_extension)
+        return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
         "type": "object",

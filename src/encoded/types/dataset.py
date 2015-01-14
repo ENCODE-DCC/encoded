@@ -117,7 +117,7 @@ class Dataset(Item):
         "type": "string",
     })
     def hub(self, request):
-        return request.resource_path(self, '@@hub/hub.txt')
+        return request.resource_path(self, '@@hub', 'hub.txt')
 
     @classmethod
     def expand_page(cls, request, properties):

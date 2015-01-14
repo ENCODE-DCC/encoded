@@ -1,5 +1,18 @@
 [
-    {
+     {
+        "accession": "ENCPL000MEG",
+        "assay_term_id": "OBI:0000748",
+        "assay_term_name": "whole genome bisulfite sequencing",
+        "name": "dna-methylation-pipeline-genome-prep",
+        "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
+        "title": "WGBS Methlyation Pipeline - Genome Conversion",
+        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
+        "analysis_steps": [
+            "a25381ab-1740-42f7-8d5a-20bb2a2b9549"
+        ],
+        "status": "released"
+    },
+   {
         "accession": "ENCPL002BIS",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
@@ -8,7 +21,6 @@
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
         "analysis_steps": [
-            "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
             "36a667fe-e98c-402d-babf-88a9d39df5ff",
             "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
             "aa598eaa-eda4-4fb3-b313-072f95de58a4"
@@ -82,18 +94,12 @@
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
         "end_points": [
-            "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
-            "7bdab3ce-d4e7-47ef-9584-84273adecc08",
-            "11440ed3-1228-4430-aa5a-54cd408ff105",
-            "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
+            "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
+            "11440ed3-1228-4430-aa5a-54cd408ff105"
         ],
         "analysis_steps": [
             "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
-            "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
-            "7bdab3ce-d4e7-47ef-9584-84273adecc08",
-            "709bba59-7717-41c3-b829-ae9dfba9ffd8",
-            "11440ed3-1228-4430-aa5a-54cd408ff105",
-            "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
+            "11440ed3-1228-4430-aa5a-54cd408ff105"
         ],
         "documents": [
             "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram",

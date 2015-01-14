@@ -28,20 +28,32 @@
             "type": "string",
             "linkTo": "software_version"
         },
+        "input_files": {
+            "title": "Workflow Input files",
+            "description": "All ENCFF files used to initiate the workflow run",
+            "type": "array",
+            "items": {
+                "title": "Input File",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
         "dx_workflow_id": {
             "title": "DNA Nexus workflow id",
             "description": "Workflow Identifier in the DNA Nexus system",
-            "type:": "string"
+            "type": "string"
         },
         "dx_analysis_id": {
             "title": "DNA Nexus workflow id",
             "description": "Analysis (actual run) in the DNA Nexus system",
-            "type:": "string"
+            "type": "string"
         },
         "dx_workflow_json": {
             "title": "DNA Nexus workflow json",
             "description": "dxapp.json file for the submitted workflow",
-            "type": "object"
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
         },
         "started_running": {
             "title": "Start time",
@@ -49,7 +61,7 @@
             "type": "string",
             "format": "date-time"
         },
-        "finished_running": {
+        "stopped_running": {
             "title": "Finish time",
             "description": "When the workflow ended",
             "type": "string",

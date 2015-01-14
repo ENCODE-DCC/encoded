@@ -104,7 +104,7 @@
     },
     {
         "name": "bwa",
-        "title": "bwa",
+        "title": "BWA",
         "description": "BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.",
         "software_type": ["aligner"],
         "source_url": "http://sourceforge.net/projects/bio-bwa/files/",
@@ -113,7 +113,7 @@
     },
     {
         "name": "bwa_wrapper",
-        "title":  "bwa wrapper",
+        "title":  "BWA wrapper",
         "description": "Wrapper to run bwa.",
         "software_type": ["other"],
         "source_url": "https://github.com/",
@@ -137,7 +137,7 @@
         "uuid": "f819726b-364e-4194-b71b-8c95f46e8c3c"
     },
     {
-        "name": "phantompeakqualtools",
+        "name": "phantompeak_qualtools",
         "title": "phantompeakqualtools",
         "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays. ",
         "software_type": ["other"],

@@ -40,7 +40,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         // Only produce a graph if there's at least one analysis step
         if (this.props.context.analysis_steps) {
             // Create an empty graph architecture
-            jsonGraph = new JsonGraph('experiment');
+            jsonGraph = new JsonGraph('');
 
             // Add files and their steps as nodes to the graph
             this.props.context.analysis_steps.forEach(function(step) {

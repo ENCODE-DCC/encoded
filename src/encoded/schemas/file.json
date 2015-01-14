@@ -221,6 +221,8 @@
                         "unique minus signal",
                         "unique plus signal",
                         "unique signal",
+                        "genome reference",
+                        "genome index",
                         "transcriptome alignments",
                         "genome quantifications",
                         "transcript quantifications",

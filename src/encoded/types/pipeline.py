@@ -19,14 +19,12 @@ class Pipeline(Item):
     item_type = 'pipeline'
     schema = load_schema('pipeline.json')
     name_key = 'accession'
-
     embedded = [
         'documents',
         'analysis_steps',
         'analysis_steps.software_versions',
         'analysis_steps.software_versions.software',
         'analysis_steps.software_versions.software.references',
-        'end_points',
     ]
 
 
@@ -39,7 +37,6 @@ class Pipeline(Item):
 class AnalysisStep(Item):
     item_type = 'analysis_step'
     schema = load_schema('analysis_step.json')
-
     embedded = [
         'software_versions',
         'software_versions.software',
@@ -56,7 +53,32 @@ class AnalysisStep(Item):
 class AnalysisStepRun(Item):
     item_type = 'analysis_step_run'
     schema = load_schema('analysis_step_run.json')
-
     embedded = [
         'analysis_step',
+        'workflow_run'
     ]
+
+
+@collection(
+    name='workflow-runs',
+    properties={
+        'title': 'Workflow runs',
+        'description': 'Listing of (DNANexus) Workflow Runs'
+    })
+class WorkflowRun(Item):
+    item_type = 'workflow_run'
+    schema = load_schema('workflow_run.json')
+    embedded = [
+        'pipeline'
+    ]
+
+
+@collection(
+    name='quality-metrics',
+    properties={
+        'title': "QC metrics",
+        'description': 'Listing of the QC metrics'
+    })
+class QualityMetric(Item):
+    item_type = 'quality_metric'
+    schema = load_schema('quality_metric.json')
