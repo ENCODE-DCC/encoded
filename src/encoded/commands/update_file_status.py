@@ -41,6 +41,7 @@ def run(fp, url, username, password):
             continue
         if r.json()['status'] != 'uploading':
             print('skipped %s: status %r is not "uploading"' % (item['@id'], r.json()['status']))
+            continue
         r = requests.patch(
             item_url,
             data=json.dumps({'status': 'in progress'}),
