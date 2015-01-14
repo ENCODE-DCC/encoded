@@ -88,6 +88,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     },
 
     detailNodes: function(jsonGraph, infoNodeId) {
+        var context = this.props.context;
         var meta;
 
         if (infoNodeId) {
@@ -95,9 +96,22 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             var selectedStep;
             var node = jsonGraph.getNode(infoNodeId);
             if (node) {
-                selectedStep = _.find(this.props.context.analysis_steps, function(step) {
+                // See if the selected step is in the analysis steps
+                selectedStep = _(context.analysis_steps).find(function(step) {
                     return step['@id'] === infoNodeId;
                 });
+
+                // If no match in analysis step; see if there's one in any analysis step's parents
+                if (!selectedStep) {
+                    context.analysis_steps.some(function(step) {
+                        if (step.parents && step.parents.length) {
+                            selectedStep = _(step.parents).find(function(parentStep) {
+                                return parentStep['@id'] === infoNodeId;
+                            });
+                        }
+                        return !!selectedStep;
+                    });
+                }
             }
 
             if (selectedStep) {
@@ -147,6 +161,17 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <dd>
                                     {selectedStep.output_file_types.map(function(type) {
                                         return type;
+                                    }).join(', ')}
+                                </dd>
+                            </div>
+                        : null}
+
+                        {selectedStep.qa_stats_generated ?
+                            <div>
+                                <dt>QA statistics</dt>
+                                <dd>
+                                    {selectedStep.qa_stats_generated.map(function(stats) {
+                                        return stats;
                                     }).join(', ')}
                                 </dd>
                             </div>
