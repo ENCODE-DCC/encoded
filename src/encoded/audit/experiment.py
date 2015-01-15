@@ -205,13 +205,8 @@ def audit_experiment_control(value, system):
     if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
-    # If there is no targets, for now we will just ignore it, likely this is an error
-    if 'target' not in value:
-        return
-
     # We do not want controls
-    target = value['target']
-    if 'control' in target['investigated_as']:
+    if 'target' in value and 'control' in value['target']['investigated_as']:
         return
 
     if value['possible_controls'] == []:
