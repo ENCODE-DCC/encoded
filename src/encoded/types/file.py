@@ -17,6 +17,7 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
+from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -80,14 +81,6 @@ class File(Item):
         'paired_with': ('file', 'paired_with'),
     }
 
-    embedded = [
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
-        'submitted_by',
-    ]
-
     def keys(self):
         keys = super(File, self).keys()
         properties = self.upgrade_properties(finalize=False)
@@ -126,10 +119,11 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @classmethod
-    def create(cls, registry, properties, sheets=None):
+    def create(cls, parent, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
+            registry = find_root(parent).registry
             bucket = registry.settings['file_upload_bucket']
             mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
@@ -140,7 +134,7 @@ class File(Item):
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(registry, properties, sheets)
+        return super(File, cls).create(parent, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',

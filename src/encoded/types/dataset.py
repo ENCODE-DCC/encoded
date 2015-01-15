@@ -80,17 +80,11 @@ class Dataset(Item):
             "linkTo": "file",
         },
     })
-    def files(self, request, original_files, related_files, status):
-        if status in ('release ready', 'released'):
-            return paths_filtered_by_status(
-                request, chain(original_files, related_files),
-                include=('released',),
-            )
-        else:
-            return paths_filtered_by_status(
-                request, chain(original_files, related_files),
-                exclude=('revoked', 'deleted', 'replaced'),
-            )
+    def files(self, request, original_files, related_files):
+        return paths_filtered_by_status(
+            request, chain(original_files, related_files),
+            exclude=('revoked', 'deleted', 'replaced'),
+        )
 
     @calculated_property(schema={
         "title": "Related files",

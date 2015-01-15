@@ -40,17 +40,11 @@ ONLY_ADMIN_VIEW = [
 ]
 
 
-def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
-    if include is not None:
-        return [
-            path for path in paths
-            if request.embed(path, '@@object').get('status') in include
-        ]
-    else:
-        return [
-            path for path in paths
-            if request.embed(path, '@@object').get('status') not in exclude
-        ]
+def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced')):
+    return [
+        path for path in paths
+        if request.embed(path, '@@object').get('status') not in exclude
+    ]
 
 
 class Item(contentbase.Item):

@@ -4,12 +4,10 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
-var fetched = require('./fetched');
 var statuslabel = require('./statuslabel');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
@@ -106,43 +104,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 : null }
 
-                {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
-                    <FetchedItems url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                ): null}
-
             </div>
         );
     }
 });
 
 globals.content_views.register(Dataset, 'dataset');
-
-
-var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
-    var file_states = [
-        '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress"
-    ].map(encodeURIComponent).join('&status=');
-    return '/search/?frame=embedded&type=file&dataset=' + context['@id'] + file_states;
-};
-
-var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Unreleased files linked to {context.accession}</h3>
-                {this.transferPropsTo(
-                    <FileTable />
-                )}
-            </div>
-        );
-    }
-});
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
