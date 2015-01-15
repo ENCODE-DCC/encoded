@@ -210,7 +210,7 @@ def audit_experiment_control(value, system):
         return
 
     if value['possible_controls'] == []:
-        detail = '{} experiments require a value in possible_control unless the target is a control'.format(
+        detail = '{} experiments require a value in possible_control'.format(
             value['assay_term_name']
             )
         raise AuditFailure('missing possible_controls', detail, level='NOT_COMPLIANT')
