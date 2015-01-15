@@ -8,10 +8,13 @@ var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
+var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
+var UnreleasedFiles = dataset.UnreleasedFiles;
+var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
@@ -337,6 +340,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <FileTable items={context.files} encodevers={encodevers} />
                     </div>
                 : null }
+
+                {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
+                    <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                ): null}
 
                 <ExperimentGraph context={context} />
 
