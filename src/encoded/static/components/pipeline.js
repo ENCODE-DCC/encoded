@@ -113,3 +113,61 @@ var Listing = React.createClass({
     }
 });
 globals.listing_views.register(Listing, 'pipeline');
+
+
+var PipelineTable = module.exports.PipelineTable = React.createClass({
+    render: function() {
+        var pipelines;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the pipelines list by cloning first {limit} elements
+            pipelines = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            pipelines = this.props.items;
+        }
+
+        return (
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Assay</th>
+                            <th>Pipeline</th>
+                            <th>Download URL</th>
+                            <th>Download checksum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {pipelines.map(function (pipeline) {
+                        // Ensure this can work with search result columns too
+                        return (
+                            <tr key={pipeline['@id']}>
+                                <td>{pipeline['analysis_steps.software_versions.version'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.version}</td>
+                                <td>{pipeline.assay_term_name}</td>
+                                <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
+                                <td>{pipeline['analysis_steps.software_versions.downloaded_url'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.downloaded_url}</td>
+                                <td>{pipeline['analysis_steps.software_versions.download_checksum'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.download_checksum}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="6">
+                                {this.props.limit && (this.props.limit < this.props.total) ?
+                                    <div>
+                                        {'Displaying '}{this.props.limit}{' pipelines out of '}{this.props.total}{' total related pipelines'}
+                                    </div>
+                                : ''}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        );
+    }
+});
