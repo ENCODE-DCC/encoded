@@ -90,40 +90,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 globals.content_views.register(Pipeline, 'pipeline');
 
 
-var AnalysisStep = module.exports.AnalysisStep = function (props) {
-    var typesList = props.analysis_step_types.join(", ");
-
-    return (
-        <div key={props.key} className="panel-replicate">
-            <dl className="panel key-value">
-                {props.analysis_step_types.length ?
-                    <dl data-test="analysis_step_types">
-                        <dt>Category</dt>
-                        <dd>{typesList}</dd>
-                    </dl>
-                : null}
-                {props.software_versions.length ?
-                	<dl>
-                	<dt> Software</dt>
-                	<dd>
-                	{props.software_versions.map(function(software_version, i) {
-                		return ( <span> {
-                			i > 0 ? ", ": ""
-                		}
-                		<a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                		</span>)
-                	}
-                	)}
-                	</dd>
-                	</dl>
-                : null}
-            </dl>
-        </div>
-    );
-};
-
-
-
 var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
     render: function() {
