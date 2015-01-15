@@ -105,12 +105,8 @@ var Form = module.exports.Form = React.createClass({
             this.state.unsavedToken.release();
             this.setState({unsavedToken: null});
         }
-        var url = data['@graph'][0]['@id'] + '?datastore=database';
-        if (this.props.historyEnabled) {
-            this.props.navigate();
-        } else {
-            window.location.assign(url);
-        }
+        var url = data['@graph'][0]['@id'];
+        this.props.navigate(url);
     },
 
     fail: function (xhr, status, error) {
