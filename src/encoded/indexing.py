@@ -326,7 +326,7 @@ def es_update_data(event):
     if login is not None:
         namespace, userid = login.split('.', 1)
 
-    if namespace != 'mailto':
+    if namespace == 'mailto':
         edits = request.session.setdefault('edits', [])
         edits.append([xid, list(updated), list(renamed)])
         edits[:] = edits[-10:]
