@@ -80,6 +80,14 @@ class File(Item):
         'paired_with': ('file', 'paired_with'),
     }
 
+    embedded = [
+        'replicate',
+        'replicate.experiment',
+        'replicate.experiment.lab',
+        'replicate.experiment.target',
+        'submitted_by',
+    ]
+
     def keys(self):
         keys = super(File, self).keys()
         properties = self.upgrade_properties(finalize=False)
