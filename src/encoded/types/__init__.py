@@ -208,7 +208,7 @@ class RNAi(Item):
 
 @collection(
     name='publications',
-    unique_key='publication:title',
+    unique_key='publication:identifier',
     properties={
         'title': 'Publications',
         'description': 'Publication pages',
@@ -224,7 +224,7 @@ class Publication(Item):
         keys = super(Publication, self).keys()
         properties = self.upgrade_properties(finalize=False)
         if properties.get('references'):
-            keys.setdefault('publication:reference', []).extend(properties['references'])
+            keys.setdefault('publication:identifier', []).extend(properties['references'])
         return keys
 
     @calculated_property(condition='date_published', schema={

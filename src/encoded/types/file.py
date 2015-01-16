@@ -17,7 +17,6 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
-from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -81,12 +80,24 @@ class File(Item):
         'paired_with': ('file', 'paired_with'),
     }
 
+    embedded = [
+        'replicate',
+        'replicate.experiment',
+        'replicate.experiment.lab',
+        'replicate.experiment.target',
+        'submitted_by',
+    ]
+
     def keys(self):
         keys = super(File, self).keys()
         properties = self.upgrade_properties(finalize=False)
-        if properties.get('md5sum') and properties.get('status') != 'replaced':
-            value = 'md5:{md5sum}'.format(**properties)
-            keys.setdefault('alias', []).append(value)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys['file:paired_with'] = properties['paired_with']
         return keys
 
     # Don't specify schema as this just overwrites the existing value
@@ -94,7 +105,7 @@ class File(Item):
         condition=lambda paired_end=None: paired_end == '1')
     def paired_with(self, root, request):
         paired_with = self.get_rev_links('paired_with')
-        if len(paired_with) != 1:
+        if not paired_with:
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
@@ -105,7 +116,8 @@ class File(Item):
     })
     def href(self, request, accession, file_format):
         file_extension = self.schema['file_format_file_extension'][file_format]
-        return request.resource_path(self, '@@download/{}{}'.format(accession, file_extension))
+        filename = '{}{}'.format(accession, file_extension)
+        return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
         "type": "object",
@@ -114,11 +126,10 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @classmethod
-    def create(cls, parent, properties, sheets=None):
+    def create(cls, registry, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
-            registry = find_root(parent).registry
             bucket = registry.settings['file_upload_bucket']
             mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
@@ -129,7 +140,7 @@ class File(Item):
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(parent, properties, sheets)
+        return super(File, cls).create(registry, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',

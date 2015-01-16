@@ -21,8 +21,10 @@
     ],
     "dependencies": {
         "age_units":  {
+            "required": ["age"],
             "not": {
                 "properties": {
+                    "required": ["age"],
                     "age": {
                         "enum": ["unknown"]
                     }
@@ -45,7 +47,7 @@
                             "enum": ["year"]
                         },
                         "age": {
-                            "pattern": "^([1-8]?\\d)|(90 or above)|(unknown)$"
+                            "pattern": "^(([1-8]?\\d)|(90 or above))$"
                         }
                     }
                 },
@@ -56,7 +58,7 @@
                             "enum": ["day", "week","month"]
                         },
                         "age": {
-                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)$"
                         }
                     }
                 }
@@ -76,7 +78,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above)$"
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
         },
         "age_units": {
             "title": "Donor age units",

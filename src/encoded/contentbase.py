@@ -10,6 +10,7 @@ from future.utils import (
 from itertools import islice
 from past.builtins import basestring
 from posixpath import join
+from pyramid.decorator import reify
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
     HTTPConflict,
@@ -60,6 +61,7 @@ from .embedding import (
     expand_path,
 )
 from .schema_formats import is_accession
+from .schema_utils import lookup_resource
 from .schema_utils import validate_request
 from .storage import (
     DBSession,
@@ -127,7 +129,7 @@ def no_validate_item_content_patch(context, request):
 
 def validate_item_content_post(context, request):
     data = request.json
-    schema = context.Item.schema
+    schema = request.registry['calculated_properties'].schema_for(context.Item)
     if schema is None:
         request.validated.update(data)
         return
@@ -136,7 +138,7 @@ def validate_item_content_post(context, request):
 
 def validate_item_content_put(context, request):
     data = request.json
-    schema = context.schema
+    schema = request.registry['calculated_properties'].schema_for(context.__class__)
     if schema is None:
         if 'uuid' in data:
             if UUID(data['uuid']) != context.uuid:
@@ -144,6 +146,7 @@ def validate_item_content_put(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
+
     current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
@@ -154,7 +157,7 @@ def validate_item_content_patch(context, request):
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
-    schema = context.schema
+    schema = request.registry['calculated_properties'].schema_for(context.__class__)
     if schema is None:
         if 'uuid' in data:
             if UUID(data['uuid']) != context.uuid:
@@ -262,6 +265,7 @@ class Root(object):
     __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
+        (Allow, 'group.forms', ('forms',)),
     ]
 
     def __init__(self, registry):
@@ -341,7 +345,7 @@ class Root(object):
                 return default
 
         collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
+        item = collection.Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
 
@@ -366,7 +370,7 @@ class Root(object):
             return cached
 
         collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
+        item = collection.Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
 
@@ -458,12 +462,17 @@ class Item(object):
     schema = None
     Collection = Collection
 
-    def __init__(self, collection, model):
-        self.collection = collection
+    def __init__(self, registry, model):
+        self.registry = registry
         self.model = model
 
     def __repr__(self):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
+
+    @reify
+    def collection(self):
+        root = self.registry[LOCATION_ROOT]
+        return root.by_item_type[self.item_type]
 
     @property
     def __parent__(self):
@@ -590,13 +599,13 @@ class Item(object):
         return properties
 
     @classmethod
-    def create(cls, parent, properties, sheets=None):
+    def create(cls, registry, properties, sheets=None):
         if 'uuid' in properties:
             uuid = UUID(properties['uuid'])
         else:
             uuid = uuid4()
         resource = Resource(cls.item_type, rid=uuid)
-        self = cls(parent, resource)
+        self = cls(registry, resource)
         self._update(properties, sheets)
         return self
 
@@ -642,7 +651,11 @@ class Item(object):
                 self.model[key] = value
 
     def update_keys(self):
-        _keys = [(k, v) for k, values in self.keys().items() for v in values]
+        _keys = [
+            (k, v)
+            for k, values in self.keys().items()
+            for v in ([values] if isinstance(values, basestring) else values)
+        ]
         keys = set(_keys)
 
         if len(keys) != len(_keys):
@@ -718,9 +731,7 @@ class Item(object):
     def jsonld_type(self):
         return [self.item_type] + self.base_types
 
-    @calculated_property(name='uuid', schema={
-        "type": "string",
-    })
+    @calculated_property(name='uuid')
     def prop_uuid(self):
         return str(self.uuid)
 
@@ -728,8 +739,10 @@ class Item(object):
 def etag_tid(view_callable):
     def wrapped(context, request):
         result = view_callable(context, request)
-        etag = 'tid:%s' % context.model.data[''].propsheet.tid
-        request.response.etag = etag
+        root = request.root
+        embedded = (root.get_by_uuid(uuid) for uuid in sorted(request._embedded_uuids))
+        uuid_tid = ((item.uuid, item.model.data[''].propsheet.tid) for item in embedded)
+        request.response.etag = '&'.join('%s=%s' % (u, t) for u, t in uuid_tid)
         cache_control = request.response.cache_control
         cache_control.private = True
         cache_control.max_age = 0
@@ -745,8 +758,15 @@ def if_match_tid(view_callable):
     Returns 412 Precondition Failed when etag does not match.
     """
     def wrapped(context, request):
-        etag = 'tid:%s' % context.model.data[''].propsheet.tid
-        if etag not in request.if_match:
+        if_match = str(request.if_match)
+        if if_match == '*':
+            return view_callable(context, request)
+        uuid_tid = (v.split('=', 1) for v in if_match.strip('"').split('&'))
+        root = request.root
+        mismatching = (
+            root.get_by_uuid(uuid).model.data[''].propsheet.tid != UUID(tid)
+            for uuid, tid in uuid_tid)
+        if any(mismatching):
             raise HTTPPreconditionFailed("The resource has changed.")
         return view_callable(context, request)
 
@@ -845,6 +865,99 @@ def collection_list(context, request):
     return result
 
 
+def split_child_props(registry, cls, properties):
+    calculated_properties = registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(cls)
+    propname_children = {}
+    if schema_rev_links:
+        properties = properties.copy()
+        for key, spec in schema_rev_links.items():
+            if key in properties:
+                propname_children[key] = properties.pop(key)
+    return properties, propname_children
+
+
+def update_children(context, request, propname_children):
+    registry = request.registry
+    root = request.root
+    calculated_properties = registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
+
+    for propname, children in propname_children.items():
+        link_type, link_attr = spec = schema_rev_links[propname]
+        child_collection = root.by_item_type[link_type]
+        found = set()
+
+        # Add or update children included in properties
+        for i, child_props in enumerate(children):
+            if isinstance(child_props, basestring):  # IRI of (existing) child
+                child = lookup_resource(root, child_collection, child_props)
+            else:
+                child_props = child_props.copy()
+                child_props[link_attr] = str(context.uuid)
+                if 'uuid' in child_props:  # update existing child
+                    child_id = child_props.pop('uuid')
+                    child = root.get_by_uuid(child_id)
+                    if not request.has_permission('edit', child):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
+                    try:
+                        update_item(child, request, child_props)
+                    except ValidationFailure as e:
+                        e.location = [propname, i] + e.location
+                        raise
+                else:  # add new child
+                    if not request.has_permission('add', child_collection):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
+                    child = create_item(child_collection.Item, request, child_props)
+            found.add(child.uuid)
+
+        # Remove existing children that are not in properties
+        for link in context.model.revs:
+            if (link.source.item_type, link.rel) != spec:
+                continue
+            if link.source_rid in found:
+                continue
+            child = root.get_by_uuid(link.source_rid)
+            if not request.has_permission('edit', child):
+                msg = u'edit forbidden to %s' % request.resource_path(child)
+                raise ValidationFailure('body', [propname, i], msg)
+            child_props = child.properties.copy()
+            child_props['status'] = 'deleted'
+            try:
+                update_item(child, request, child_props)
+            except ValidationFailure as e:
+                e.location = [propname, i] + e.location
+                raise
+
+
+def create_item(cls, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(
+        registry, cls, properties)
+
+    item = cls.create(registry, item_properties, sheets)
+    registry.notify(Created(item, request))
+
+    if propname_children:
+        update_children(item, request, propname_children)
+    return item
+
+
+def update_item(context, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(
+        registry, type(context), properties)
+
+    registry.notify(BeforeModified(context, request))
+    context.update(item_properties, sheets)
+    registry.notify(AfterModified(context, request))
+
+    if propname_children:
+        update_children(context, request, propname_children)
+
+
 @view_config(context=Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
 @view_config(context=Collection, permission='add_unvalidated', request_method='POST',
@@ -853,9 +966,9 @@ def collection_list(context, request):
 def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
-    item = context.Item.create(context, properties)
-    request.registry.notify(Created(item, request))
+
+    item = create_item(context.Item, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid
     else:
@@ -1065,7 +1178,14 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
-    return item_links(context, request)
+    properties = item_links(context, request)
+    calculated = calculate_properties(context, request, properties)
+    calculated_properties = request.registry['calculated_properties']
+    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
+    for key, value in calculated.items():
+        if key in schema_rev_links:
+            properties[key] = value
+    return properties
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',
@@ -1086,11 +1206,10 @@ def item_edit(context, request, render=None):
     """
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
+
     # This *sets* the property sheet
-    request.registry.notify(BeforeModified(context, request))
-    context.update(properties)
-    request.registry.notify(AfterModified(context, request))
+    update_item(context, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s' % context.uuid
     else:
@@ -1164,13 +1283,9 @@ def inherit_audits(request, embedded, embedded_paths):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    links = defaultdict(list)
-    for link in context.model.rels:
-        links[link.rel].append(link.target_rid)
-
-    keys = defaultdict(list)
-    for key in context.model.unique_keys:
-        keys[key.name].append(key.value)
+    uuid = str(context.uuid)
+    links = context.links()
+    keys = context.keys()
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
@@ -1192,7 +1307,7 @@ def item_index_data(context, request):
         for key_name in ('accession', 'alias'):
             if key_name not in keys:
                 continue
-            paths.add(resource_path(base, str(context.uuid)))
+            paths.add(resource_path(base, uuid))
             paths.update(
                 resource_path(base, key)
                 for key in keys[key_name])
@@ -1202,6 +1317,8 @@ def item_index_data(context, request):
     audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
 
     document = {
+        'uuid': uuid,
+        'item_type': context.item_type,
         'embedded': embedded,
         'object': embed(request, join(path, '@@object')),
         'links': links,

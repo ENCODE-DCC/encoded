@@ -11,6 +11,21 @@ var _ = require('underscore');
 var FormFor = ReactForms.FormFor;
 
 
+var filterValue = function(value) {
+    if (Array.isArray(value)) {
+        value.map(filterValue);
+    } else if (typeof value == 'object') {
+        _.each(value, function(v, k) {
+            if (v === null || k == 'schema_version') {
+                delete value[k];
+            } else {
+                filterValue(v);
+            }
+        });
+    }
+};
+
+
 var Form = module.exports.Form = React.createClass({
     mixins: [ReactForms.FormMixin],
 
@@ -32,7 +47,7 @@ var Form = module.exports.Form = React.createClass({
             var $ = require('jquery');
             var $error = $('alert-danger:first');
             if (!$error.length) {
-                $error = $('.rf-Message:first').closest('.rf-Field');
+                $error = $('.rf-Message:first').closest('.rf-Field,.rf-RepeatingFieldset');
             }
             if ($error.length) {
                 $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
@@ -43,13 +58,13 @@ var Form = module.exports.Form = React.createClass({
     render: function() {
         return (
           <form>
-            {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             <FormFor externalValidation={this.state.externalValidation} />
             <div className="pull-right">
                 <a href="" className="btn btn-default">Cancel</a>
                 {' '}
                 <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
             </div>
+            {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
           </form>
         );
     },
@@ -64,11 +79,7 @@ var Form = module.exports.Form = React.createClass({
         e.preventDefault();
         var $ = require('jquery');
         var value = this.value().value;
-        _.each(value, function(v, k) {
-            if (v === null || k == 'schema_version') {
-                delete value[k];
-            }
-        });
+        filterValue(value);
         var method = this.props.method;
         var url = this.props.action;
         var xhr = $.ajax({
@@ -94,12 +105,8 @@ var Form = module.exports.Form = React.createClass({
             this.state.unsavedToken.release();
             this.setState({unsavedToken: null});
         }
-        var url = data['@graph'][0]['@id'] + '?datastore=database';
-        if (this.props.historyEnabled) {
-            this.props.navigate();
-        } else {
-            window.location.assign(url);
-        }
+        var url = data['@graph'][0]['@id'];
+        this.props.navigate(url);
     },
 
     fail: function (xhr, status, error) {
@@ -113,19 +120,27 @@ var Form = module.exports.Form = React.createClass({
     },
 
     receive: function (data, status, xhr) {
-        var externalValidation = {children: {}};
+        var externalValidation = {children: {}, validation: {}};
         var schemaErrors = [];
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
                 var name = error.name;
                 var match = /u'(\w+)' is a required property/.exec(error.description);
                 if (match) {
-                    name = [match[1]];
+                    name.push(match[1]);
                 }
                 if (name.length) {
-                    externalValidation.children[name[0]] = {
-                        validation: {failure: error.description,
-                                     validation: {failure: error.description}}};
+                    var v = externalValidation;
+                    for (var i = 0; i < name.length; i++) {
+                        if (v.children[name[i]] === undefined) {
+                            v.children[name[i]] = {children: {}, validation: {}};
+                        }
+                        v = v.children[name[i]];
+                    }
+                    v.validation = {
+                        failure: error.description,
+                        validation: {failure: error.description}
+                    };
                 } else {
                     schemaErrors.push(error.description);
                 }

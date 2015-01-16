@@ -10,6 +10,7 @@ var Layout = require('./layout').Layout;
 var ObjectPicker = require('./inputs').ObjectPicker;
 var FileInput = require('./inputs').FileInput;
 var _ = require('underscore');
+var cx = require('react/lib/cx');
 
 
 var Fallback = module.exports.Fallback = React.createClass({
@@ -110,7 +111,63 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var jsonSchemaToFormSchema = function(p, props) {
+var FetchedFieldset = React.createClass({
+    mixins: [ReactForms.FieldsetMixin],
+
+    getInitialState: function() {
+        return {url: null};
+    },
+
+    render: function() {
+        var schema = this.props.schema;
+        var value = this.value().value;
+        var externalValidation = this.externalValidation();
+        var failure = externalValidation.validation.failure;
+        var url;
+        if (this.state.url) {
+            url = this.state.url;
+        } else if (typeof value == 'string') {
+            url = value;
+            this.setState({url: url});
+        }
+        if (url) {
+            return (
+                <div>
+                  {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
+                  <fetched.FetchedData>
+                    <fetched.Param name="defaultValue" url={url + '?frame=edit'} />
+                    {this.transferPropsTo(<ReactForms.Form schema={schema} onChange={this.onChange}
+                                                           externalValidation={externalValidation} />)}
+                  </fetched.FetchedData>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                  {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
+                  {this.transferPropsTo(<ReactForms.Form
+                      defaultValue={value} schema={schema} onChange={this.onChange}
+                      externalValidation={externalValidation} />)}
+                </div>
+            );
+        }
+    },
+
+    onChange: function(value) {
+        value['@id'] = this.state.url;
+        value = this.value().updateSerialized(value);
+        this.onValueUpdate(value);
+    }
+
+});
+
+
+var jsonSchemaToFormSchema = function(attrs) {
+    var schemas = attrs.schemas,
+        p = attrs.jsonNode,
+        props = attrs.props,
+        id = attrs.id,
+        skip = attrs.skip || [];
     if (props === undefined) {
         props = {};
     }
@@ -126,16 +183,22 @@ var jsonSchemaToFormSchema = function(p, props) {
             props.input = <Layout editable={true} />;
             return ReactForms.schema.Property(props);
         }
-        var properties = [];
-        for (var name in p.properties) {
+        var properties = [], name;
+        for (name in p.properties) {
             if (name == 'uuid') continue;
+            if (p.properties[name].calculatedProperty) continue;
+            if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
-            properties.push(jsonSchemaToFormSchema(p.properties[name], {name: name, required: required}));
+            properties.push(jsonSchemaToFormSchema({
+                schemas: schemas,
+                jsonNode: p.properties[name],
+                props: {name: name, required: required}
+            }));
         }
         return ReactForms.schema.Schema(props, properties);
     } else if (p.type == 'array') {
         if (props.required) props.component = <ReactForms.RepeatingFieldset className="required" />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema(p.items));
+        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
@@ -153,6 +216,25 @@ var jsonSchemaToFormSchema = function(p, props) {
             props.input = (
                 <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
             );
+        } else if (p.linkFrom) {
+            // Backrefs have a linkFrom property in the form
+            // (object type).(property name)
+            var a = p.linkFrom.split('.'), linkType = a[0], linkProp = a[1];
+            // Get the schema for the child object, omitting the attribute that
+            // refers to the parent.
+            var linkFormSchema = jsonSchemaToFormSchema({
+                schemas: schemas,
+                jsonNode: schemas[linkType],
+                skip: [linkProp]
+            });
+            // Use a special FetchedFieldset component which can take either an IRI
+            // or a full object as its value, and render a sub-form using the child
+            // object schema.
+            var component = <FetchedFieldset schema={linkFormSchema} />;
+            // Default value for new children needs to refer to the parent.
+            var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
+            defaultValue[linkProp] = id;
+            return <ReactForms.schema.Property component={component} defaultValue={defaultValue} />;
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
@@ -176,33 +258,49 @@ var jsonSchemaToDefaultValue = function(schema) {
 };
 
 
+var FetchedForm = React.createClass({
+
+    render: function() {
+        var type = this.props.type;
+        var schemas = this.props.schemas;
+        var schema = jsonSchemaToFormSchema({
+            schemas: schemas,
+            jsonNode: schemas[type],
+            id: this.props.id
+        });
+        var value = this.props.context || jsonSchemaToDefaultValue(schemas[type]);
+        return this.transferPropsTo(<Form defaultValue={value} schema={schema} />);
+    }
+
+});
+
+
 var ItemEdit = module.exports.ItemEdit = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var action, form, schemaUrl;
+        var action, form, schemaUrl, type;
         if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
+            type = context['@type'][0].substr(0, context['@type'][0].length - 11);
             title = title + ': Add';
-            schemaUrl = context.actions[0].profile;
             action = context['@id'];
             form = (
                 <fetched.FetchedData>
-                    <fetched.Param name="defaultValue" url={schemaUrl} converter={jsonSchemaToDefaultValue} />
-                    <fetched.Param name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
-                    {this.transferPropsTo(<Form action={action} method="POST" />)}
+                    <fetched.Param name="schemas" url="/profiles/" />
+                    {this.transferPropsTo(<FetchedForm context={null} type={type} action={action} method="POST" />)}
                 </fetched.FetchedData>
             );
         } else {  // edit form
+            type = context['@type'][0];
             title = 'Edit ' + title;
-            var url = this.props.context['@id'] + '?frame=edit';
-            schemaUrl = '/profiles/' + context['@type'][0] + '.json';
-            action = this.props.context['@id'];
+            var id = this.props.context['@id'];
+            var url = id + '?frame=edit';
             form = (
                 <fetched.FetchedData>
-                    <fetched.Param name="defaultValue" url={url} etagName="etag" />
-                    <fetched.Param name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
-                    {this.transferPropsTo(<Form action={action} method="PUT" />)}
+                    <fetched.Param name="context" url={url} etagName="etag" />
+                    <fetched.Param name="schemas" url="/profiles/" />
+                    {this.transferPropsTo(<FetchedForm id={id} type={type} action={id} method="PUT" />)}
                 </fetched.FetchedData>
             );
         }

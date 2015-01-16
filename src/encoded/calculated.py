@@ -88,6 +88,12 @@ class CalculatedProperties(object):
     def __init__(self):
         self.category_cls_props = {}
 
+    def register_prop(self, fn, name, context, condition=None, schema=None,
+                      attr=None, define=False, category='object'):
+        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
+        cls_props = self.category_cls_props.setdefault(category, {})
+        cls_props.setdefault(context, {})[name] = prop
+
     def props_for(self, context, category='object'):
         if isinstance(context, type):
             cls = context
@@ -109,11 +115,17 @@ class CalculatedProperties(object):
                 schema['properties'][name] = prop.schema
         return schema
 
-    def register_prop(self, fn, name, context, condition=None, schema=None,
-                      attr=None, define=False, category='object'):
-        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
-        cls_props = self.category_cls_props.setdefault(category, {})
-        cls_props.setdefault(context, {})[name] = prop
+    def schema_rev_links_for(self, cls):
+        schema = self.schema_for(cls)
+
+        revs = {}
+        for key, prop in schema['properties'].items():
+            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
+            if linkFrom is None:
+                continue
+            linkType, linkProp = linkFrom.split('.')
+            revs[key] = linkType, linkProp
+        return revs
 
 
 class CalculatedProperty(object):
@@ -129,8 +141,9 @@ class CalculatedProperty(object):
         if schema is not None:
             if 'default' in schema:
                 raise ValueError('schema may not specify default for calculated property')
-            schema = schema.copy()
-            schema['calculatedProperty'] = True
+            if 'linkFrom' not in schema.get('items', {}):
+                schema = schema.copy()
+                schema['calculatedProperty'] = True
         self.schema = schema
 
     def __call__(self, namespace):

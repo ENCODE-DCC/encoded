@@ -89,9 +89,11 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
         var audits = this.props.audits;
 
         // Sort audit records
-        var audits_sorted = _.sortBy(audits, function(audit) {
+        var audits_sorted = _.chain(audits).sortBy(function(audit) {
+            return audit.category.toLowerCase();
+        }).sortBy(function(audit) {
             return -audit.level;
-        });
+        }).value();
 
         if (audits_sorted && this.context.auditDetailOpen) {
             return (

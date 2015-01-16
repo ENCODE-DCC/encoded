@@ -33,28 +33,6 @@
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         },
-        "model_organism_mating_status": {
-            "oneOf": [
-                {
-                    "required": ["model_organism_sex"],
-                    "properties": {
-                        "model_organism_sex": {
-                            "enum": ["male", "female"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "required": ["model_organism_sex"],
-                        "properties": {
-                            "model_organism_sex": {
-                                "enum": ["mixed", "unknown", "hermaphrodite"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
         "biosample_type": {
             "oneOf": [
                 {
@@ -660,7 +638,7 @@
             "title": "Model organism donor age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
             "title": "Model organism donor age units",
@@ -819,6 +797,10 @@
         },
         "date_obtained": {
             "title": "Date obtained",
+            "type": "string"
+        },
+        "model_organism_donor_constructs.target.label": {
+            "title": "Constructs",
             "type": "string"
         },
         "treatments.length": {

@@ -225,14 +225,21 @@ describe('Experiment Page', function() {
 
             it('has one assay panel and seven key-value pairs', function() {
                 expect(assay.length).toEqual(1);
-                expect(defTerms.length).toEqual(7);
-                expect(defDescs.length).toEqual(7);
+                expect(defTerms.length).toEqual(8);
+                expect(defDescs.length).toEqual(8);
             });
 
             it('has a proper link to a platform in the seventh key-value pair', function() {
                 var anchors = defDescs[6].getElementsByTagName('a');
                 expect(anchors.length).toEqual(1);
                 expect(anchors[0].getAttribute('href')).toEqual('/platforms/NTR%3A0000007');
+            });
+
+            it('has good spikeins links', function() {
+                var item = assay[0].getDOMNode().querySelector('[data-test="spikeins"]');
+                var spikeins = item.getElementsByTagName('dd')[0];
+                var spikeinsa = spikeins.getElementsByTagName('a')[0];
+                expect(spikeinsa.getAttribute('href')).toEqual('/datasets/ENCSR000AJW/');
             });
         });
     });
