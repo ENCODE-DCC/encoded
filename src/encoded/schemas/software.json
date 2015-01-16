@@ -133,7 +133,7 @@
             "title": "Created by",
             "type": "array"
         },
-        "versions": {
+        "versions.version": {
             "title": "Version",
             "type": "array"
         }
