@@ -6,11 +6,13 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var statuslabel = require('./statuslabel');
+var graph = require('./graph');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
+var ExperimentGraph = graph.ExperimentGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -139,6 +141,7 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
                 {this.transferPropsTo(
                     <FileTable />
                 )}
+                <ExperimentGraph context={context} files={context.files.concat(this.props.items)} />
             </div>
         );
     }
