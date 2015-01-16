@@ -349,6 +349,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} loadingComplete={this.loaded} />
                 ): null}
 
+                <ExperimentGraph context={context} />
+
             </div>
         );
     }
