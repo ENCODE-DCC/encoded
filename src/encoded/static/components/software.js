@@ -5,13 +5,14 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
 var dataset = require('./dataset');
+var pipeline = require('./pipeline');
 var fetched = require('./fetched');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
-var PipelineTable = dataset.PipelineTable;
+var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
 
 // Count the total number of references in all the publications passed
@@ -79,7 +80,7 @@ var Software = module.exports.Software = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
 
-        var pipeline_url = '/search/?type=pipeline&ranalysis_steps.software_versions.software.uuid=' + context.uuid;
+        var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
 
         return (
             <div className={itemClass}>
