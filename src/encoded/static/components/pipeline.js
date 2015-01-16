@@ -62,16 +62,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
                     </dl>
-                      {context.analysis_steps && context.analysis_steps.length ?
-                          <div>
-                              <h3>Steps</h3>
-                              <div className="panel view-detail" data-test="supplementarydata">
-                                  {context.analysis_steps.map(function(props, i) {
-                                      return AnalysisStep (props, i) ;
-                                  })}
-                              </div>
-                          </div>
-                      : null}
                 </div>
                      {Object.keys(documents).length ?
                      <div data-test="protocols">
