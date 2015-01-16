@@ -62,7 +62,7 @@ def run(app, collections=None):
             if update:
                 updated += 1
         logger.info('Collection %s: Updated %d of %d (errors %d)' %
-                    (collection_path, updated, count, errors))
+                    (collection_path, updated, count + 1, errors))
 
 
 def main():
