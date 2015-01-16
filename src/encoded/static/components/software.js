@@ -4,13 +4,15 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var dataset = require('./dataset');
+var fetched = require('./fetched');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = dataset.PipelineTable;
-
+var FetchedItems - fetched.FetchedItems;
 
 // Count the total number of references in all the publications passed
 // in the pubs array parameter.
