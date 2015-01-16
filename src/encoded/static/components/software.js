@@ -12,7 +12,7 @@ var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = dataset.PipelineTable;
-var FetchedItems - fetched.FetchedItems;
+var FetchedItems = fetched.FetchedItems;
 
 // Count the total number of references in all the publications passed
 // in the pubs array parameter.
