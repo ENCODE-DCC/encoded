@@ -350,7 +350,7 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                 var matchedSwVers = _(analysis_step.software_versions).find(function(software_version) {
                     return software_version.software['@id'] === softwareId;
                 });
-                if (!!matchedSwVers) {
+                if (matchedSwVers) {
                     swVers[i] = matchedSwVers;
                 }
                 return !!matchedSwVers;

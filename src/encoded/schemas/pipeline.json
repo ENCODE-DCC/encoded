@@ -132,6 +132,14 @@
             "title": "Software",
             "type": "string"
         },
+        "analysis_steps.software_versions.downloaded_url": {
+            "title": "Download URL",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.download_checksum": {
+            "title": "Download checksum",
+            "type": "string"
+        },
         "analysis_steps.software_versions.software.@id": {
             "title": "ID",
             "type": "string"
