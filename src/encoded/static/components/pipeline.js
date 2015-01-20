@@ -137,7 +137,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                         return (
                                             <span>
                                                 {i > 0 ? ', ' : null}
-                                                <a href={sw.software['@id']}>{sw.software.title}</a>
+                                                <a href={sw.software['@id']}>{sw.software.title} ({sw.version})</a>
                                             </span>
                                         );
                                     })}
@@ -284,14 +284,13 @@ var AnalysisStep = module.exports.AnalysisStep = function (props) {
                     <dl>
                         <dt> Software</dt>
                         <dd>
-                        {props.software_versions.map(function(software_version, i) {
-                            return ( <span> {
-                                i > 0 ? ", ": ""
-                            }
-                            <a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                            </span>)
-                        }
-                        )}
+                            {props.software_versions.map(function(software_version, i) {
+                                return ( <span> {
+                                    i > 0 ? ", ": ""
+                                }
+                                <a href ={software_version.software['@id']}>{software_version.software.title}</a>
+                                </span>)
+                            })}
                         </dd>
                     </dl>
                 : null}
