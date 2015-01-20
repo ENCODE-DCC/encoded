@@ -142,9 +142,9 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                 <table className="table table-panel table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Version</th>
-                            <th>Assay</th>
                             <th>Pipeline</th>
+                            <th>Assay</th>
+                            <th>Version</th>
                             <th>Download URL</th>
                             <th>Download checksum</th>
                         </tr>
@@ -154,11 +154,11 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                         // Ensure this can work with search result columns too
                         return (
                             <tr key={pipeline['@id']}>
-                                <td>{swVers[i].version}</td>
-                                <td>{pipeline.assay_term_name}</td>
                                 <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
-                                <td>{pipeline['analysis_steps.software_versions.downloaded_url'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.downloaded_url}</td>
-                                <td>{pipeline['analysis_steps.software_versions.download_checksum'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.download_checksum}</td>
+                                <td>{pipeline.assay_term_name}</td>
+                                <td>{swVers[i].version}</td>
+                                <td>{<a href={swVers[i].download_url}>{swVers[i].download_url}</a></td>
+                                <td>{swVers[i].download_checksum}</td>
                             </tr>
                         );
                     })}
