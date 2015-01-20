@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var url = require('url');
+var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
@@ -119,6 +121,22 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
             pipelines = this.props.items;
         }
 
+        // Get the software version numbers for all matching software
+        var softwareId = url.parse(this.props.href).pathname;
+        var swVers = [];
+        pipelines.forEach(function(pipeline, i) {
+            return pipeline.analysis_steps.some(function(analysis_step) {
+                // Get the software_version object for any with a software @id matching softwareId, and save to array
+                var matchedSwVers = _(analysis_step.software_versions).find(function(software_version) {
+                    return software_version.software['@id'] === softwareId;
+                });
+                if (!!matchedSwVers) {
+                    swVers[i] = matchedSwVers;
+                }
+                return !!matchedSwVers;
+            });
+        });
+
         return (
             <div className="table-responsive">
                 <table className="table table-panel table-striped table-hover">
@@ -132,11 +150,11 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                    {pipelines.map(function (pipeline) {
+                    {pipelines.map(function (pipeline, i) {
                         // Ensure this can work with search result columns too
                         return (
                             <tr key={pipeline['@id']}>
-                                <td>{pipeline['analysis_steps.software_versions.version'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.version}</td>
+                                <td>{swVers[i].version}</td>
                                 <td>{pipeline.assay_term_name}</td>
                                 <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
                                 <td>{pipeline['analysis_steps.software_versions.downloaded_url'] || pipeline.analysis_steps.software_versions && pipeline.analysis_steps.software_versions.downloaded_url}</td>

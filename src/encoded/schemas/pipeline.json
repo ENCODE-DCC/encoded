@@ -123,9 +123,17 @@
             "title": "Status",
             "type": "string"
         },
+        "analysis_steps.software_versions.version": {
+            "title": "Software",
+            "type": "string"
+        },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
-            "type": "array"
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.@id": {
+            "title": "ID",
+            "type": "string"
         }
     },
     "boost_values": {
