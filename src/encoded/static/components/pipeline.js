@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
 var globals = require('./globals');
@@ -280,19 +281,19 @@ var AnalysisStep = module.exports.AnalysisStep = function (props) {
                     </dl>
                 : null}
                 {props.software_versions.length ?
-                	<dl>
-                	<dt> Software</dt>
-                	<dd>
-                	{props.software_versions.map(function(software_version, i) {
-                		return ( <span> {
-                			i > 0 ? ", ": ""
-                		}
-                		<a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                		</span>)
-                	}
-                	)}
-                	</dd>
-                	</dl>
+                    <dl>
+                        <dt> Software</dt>
+                        <dd>
+                        {props.software_versions.map(function(software_version, i) {
+                            return ( <span> {
+                                i > 0 ? ", ": ""
+                            }
+                            <a href ={software_version.software['@id']}>{software_version.software.title}</a>
+                            </span>)
+                        }
+                        )}
+                        </dd>
+                    </dl>
                 : null}
             </dl>
         </div>
@@ -316,7 +317,7 @@ var Listing = React.createClass({
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
-                        	{result['title']}
+                            {result['title']}
                         </a>
                     </div>
                 </div>
@@ -325,3 +326,77 @@ var Listing = React.createClass({
     }
 });
 globals.listing_views.register(Listing, 'pipeline');
+
+
+var PipelineTable = module.exports.PipelineTable = React.createClass({
+    render: function() {
+        var pipelines;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the pipelines list by cloning first {limit} elements
+            pipelines = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            pipelines = this.props.items;
+        }
+
+        // Get the software version numbers for all matching software
+        var softwareId = url.parse(this.props.href).pathname;
+        var swVers = [];
+        pipelines.forEach(function(pipeline, i) {
+            return pipeline.analysis_steps.some(function(analysis_step) {
+                // Get the software_version object for any with a software @id matching softwareId, and save to array
+                var matchedSwVers = _(analysis_step.software_versions).find(function(software_version) {
+                    return software_version.software['@id'] === softwareId;
+                });
+                if (!!matchedSwVers) {
+                    swVers[i] = matchedSwVers;
+                }
+                return !!matchedSwVers;
+            });
+        });
+
+        return (
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Pipeline</th>
+                            <th>Assay</th>
+                            <th>Version</th>
+                            <th>Download URL</th>
+                            <th>Download checksum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {pipelines.map(function (pipeline, i) {
+                        // Ensure this can work with search result columns too
+                        return (
+                            <tr key={pipeline['@id']}>
+                                <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
+                                <td>{pipeline.assay_term_name}</td>
+                                <td>{swVers[i].version}</td>
+                                <td><a href={swVers[i].download_url}>{swVers[i].download_url}</a></td>
+                                <td>{swVers[i].download_checksum}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="6">
+                                {this.props.limit && (this.props.limit < this.props.total) ?
+                                    <div>
+                                        {'Displaying '}{this.props.limit}{' pipelines out of '}{this.props.total}{' total related pipelines'}
+                                    </div>
+                                : ''}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        );
+    }
+});

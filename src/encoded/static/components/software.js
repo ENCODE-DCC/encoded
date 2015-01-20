@@ -4,12 +4,15 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var pipeline = require('./pipeline');
+var fetched = require('./fetched');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
-
+var PipelineTable = pipeline.PipelineTable;
+var FetchedItems = fetched.FetchedItems;
 
 // Count the total number of references in all the publications passed
 // in the pubs array parameter.
@@ -75,6 +78,9 @@ var Software = module.exports.Software = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+
+        var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -123,12 +129,30 @@ var Software = module.exports.Software = React.createClass({
                         : null}
                     </dl>
                 </div>
+
+                {this.transferPropsTo(
+                    <FetchedItems url={pipeline_url} Component={PipelinesUsingSoftwareVersion} />
+                )}
             </div>
         );
     }
 });
 globals.content_views.register(Software, 'software');
 
+
+var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Pipelines using software {context.title}</h3>
+                {this.transferPropsTo(
+                    <PipelineTable />
+                )}
+            </div>
+        );
+    }
+});
 
 var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
