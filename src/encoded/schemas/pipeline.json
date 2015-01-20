@@ -127,6 +127,16 @@
             "title": "Software",
             "type": "string"
         },
+        "analysis_steps.software_versions.downloaded_url": {
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "analysis_steps.software_versions.download_checksum": {
+            "title": "Checksum",
+            "type": "string",
+            "format": "hex"
+        },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "string"
