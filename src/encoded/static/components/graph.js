@@ -476,15 +476,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                             <dt>Software</dt>
                                             <dd>
                                                 {<ul>
-                                                    {selectedStep.software_versions.map(function(version, i) {
+                                                    {selectedStep.software_versions.map(function(version) {
                                                         return (
-                                                            <span>
-                                                                {i > 0 ? ', ' : ''}
-                                                                <a href={version.software['@id']}>{version.software.name}</a>&nbsp;
+                                                            <a href={version.software['@id']} className="software-version">
+                                                                <span className="software">{version.software.name}</span>
                                                                 {version.version ?
                                                                     <span className="version">{version.version}</span>
                                                                 : null}
-                                                            </span>
+                                                            </a>
                                                         );
                                                     })}
                                                 </ul>}

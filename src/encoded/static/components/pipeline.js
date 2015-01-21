@@ -135,13 +135,12 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <dd>
                                     {selectedStep.software_versions.map(function(sw, i) {
                                         return (
-                                            <span>
-                                                {i > 0 ? ', ' : null}
-                                                <a href={sw.software['@id']}>{sw.software.title}</a>&nbsp;
+                                            <a href={sw.software['@id']} className="software-version">
+                                                <span className="software">{sw.software.title}</span>
                                                 {sw.version ?
                                                     <span className="version">{sw.version}</span>
                                                 : null}
-                                            </span>
+                                            </a>
                                         );
                                     })}
                                 </dd>
