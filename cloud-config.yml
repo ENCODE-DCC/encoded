@@ -45,8 +45,8 @@ bootcmd:
 - echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 
 mounts:
-- [ xvdf, /var/lib/postgresql/9.3, "auto", "defaults,nobootwait", "0", "2" ]
-- [ xvdg, /var/lib/elasticsearch/elasticsearch, "auto", "defaults,nobootwait", "0", "2" ]
+- [ xvdf, /var/lib/postgresql/9.3, "auto", "defaults,nobootwait,nodelalloc", "0", "2" ]
+- [ xvdg, /var/lib/elasticsearch/elasticsearch, "auto", "defaults,nobootwait,nodelalloc", "0", "2" ]
 
 users:
 - default
