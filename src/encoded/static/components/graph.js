@@ -480,7 +480,10 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                                         return (
                                                             <span>
                                                                 {i > 0 ? ', ' : ''}
-                                                                <a href={version.software['@id']}>{version.software.name}</a>
+                                                                <a href={version.software['@id']}>{version.software.name}</a>&nbsp;
+                                                                {version.version ?
+                                                                    <span className="version">{version.version}</span>
+                                                                : null}
                                                             </span>
                                                         );
                                                     })}

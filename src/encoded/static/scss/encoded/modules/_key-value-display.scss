@@ -129,3 +129,14 @@ dd ul, .multi-value {
 .para-text {
     line-height: 1.6 !important;
 }
+
+.version {
+    display: inline-block;
+    position: relative;
+    top: -1px;
+    padding: 0 5px;
+    font-size: 11px;
+    font-weight: bold;
+    background-color: #e0e0e0;
+    @include border-radius(2px);
+}

@@ -137,7 +137,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                         return (
                                             <span>
                                                 {i > 0 ? ', ' : null}
-                                                <a href={sw.software['@id']}>{sw.software.title} ({sw.version})</a>
+                                                <a href={sw.software['@id']}>{sw.software.title}</a>&nbsp;
+                                                {sw.version ?
+                                                    <span className="version">{sw.version}</span>
+                                                : null}
                                             </span>
                                         );
                                     })}
