@@ -145,7 +145,7 @@ class Biosample(Item):
         if donor is not None:
             return request.embed(donor, '@@object').get('age_units')
 
-    @calculated_property(condition='health_status', schema={
+    @calculated_property(schema={
         "title": "Health status",
         "type": "string",
     })
