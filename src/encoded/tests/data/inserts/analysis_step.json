@@ -110,7 +110,6 @@
         "name": "mott-trim",
         "uuid": "36a667fe-e98c-402d-babf-88a9d39df5ff",
         "input_file_types": ["fastq"],
-        "parents": ["a25381ab-1740-42f7-8d5a-20bb2a2b9549"],
         "analysis_step_types": ["filtering"],
         "software_versions": ["a86c9d15-deaf-4abd-8bce-bfa6595d70bb"]
     },
@@ -119,7 +118,7 @@
         "uuid": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
         "input_file_types": ["fastq"],
         "output_file_types": ["sam"],
-        "parents": ["a25381ab-1740-42f7-8d5a-20bb2a2b9549"],
+        "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
         "analysis_step_types": ["alignment"],
         "software_versions": [
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
