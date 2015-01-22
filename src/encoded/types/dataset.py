@@ -93,7 +93,7 @@ class Dataset(Item):
             )
 
     @calculated_property(schema={
-        "title": "Related files",
+        "title": "Revoked files",
         "type": "array",
         "items": {
             "type": "string",
