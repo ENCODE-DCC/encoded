@@ -10,7 +10,7 @@ $pipeline-node-types:
         &.active {
             fill: desaturate(darken($color, 20%), 30%);
 
-            rect {
+            rect, ellipse {
                 stroke: #606060;
                 stroke-width: 3px;
             }
@@ -27,7 +27,7 @@ $pipeline-node-types:
 }
 
 g.node {
-    rect {
+    rect, ellipse {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
     }

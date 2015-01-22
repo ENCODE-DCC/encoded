@@ -9,10 +9,14 @@ var dbxref = require('./dbxref');
 var search = require('./search');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
+var audit = require('./audit');
+
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
-var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
 
@@ -29,6 +33,8 @@ var Panel = function (props) {
 
 
 var Pipeline = module.exports.Pipeline = React.createClass({
+    mixins: [AuditMixin],
+
     getInitialState: function() {
         return {
             infoNodeId: '' // ID of node whose info panel is open
@@ -54,7 +60,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''));
+                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect');
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -78,7 +84,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                             // Assemble a single analysis step node.
                             jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''));
+                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect');
                         }
                     }, this);
                 }
@@ -213,11 +219,14 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     <div className="col-sm-12">
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
+                            <AuditIndicators audits={context.audit} key="biosample-audit" />
                         </div>
                     </div>
                 </header>
-
+                <AuditDetail audits={context.audit} key="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="title">
@@ -291,7 +300,7 @@ var AnalysisStep = module.exports.AnalysisStep = function (props) {
                                     i > 0 ? ", ": ""
                                 }
                                 <a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                                </span>)
+                                </span>);
                             })}
                         </dd>
                     </dl>
@@ -304,9 +313,8 @@ var AnalysisStep = module.exports.AnalysisStep = function (props) {
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
-        var context = this.props.context;
         var result = this.props.context;
         return (
             <li>
@@ -314,7 +322,8 @@ var Listing = React.createClass({
                     {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
-                        {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
+                        {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
+                        <AuditIndicators audits={result.audit} key={result['@id']} search />
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -322,6 +331,7 @@ var Listing = React.createClass({
                         </a>
                     </div>
                 </div>
+                <AuditDetail audits={result.audit} key={this.props.context['@id']} />
             </li>
         );
     }
