@@ -25,12 +25,15 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
 
     conn = boto.ec2.connect_to_region("us-west-2")
     bdm = BlockDeviceMapping()
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True)
     if persistent:
-        bdm['/dev/xvdf'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
-        bdm['/dev/xvdg'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdf'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdg'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
     else:
-        bdm['/dev/xvdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
-        bdm['/dev/xvdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
+        bdm['/dev/sdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
+        bdm['/dev/sdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
 
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
