@@ -196,6 +196,25 @@ def test_put_object_adding_child(content_with_child, testapp):
     assert len(res.json['reverse']) == 2
 
 
+def test_submitter_put_object_adding_disallowed_child(content_with_child, submitter_testapp):
+    from ..contentbase import LOCATION_ROOT
+    root = submitter_testapp.app.registry[LOCATION_ROOT]
+    root['testing-link-sources'].__acl__ = ()
+    from pyramid.security import Allow
+    root['testing-link-targets'].__acl__ = ((Allow, 'group.submitter', 'edit'),)
+    edit = {
+        'reverse': [
+            content_with_child['child'],
+            {
+                'status': 'released',
+            }
+        ]
+    }
+    res = submitter_testapp.put_json(content_with_child['@id'], edit, status=422)
+    assert res.json['errors'][0]['description'].startswith(
+        'edit forbidden to /testing-link-sources/')
+
+
 def test_put_object_removing_child(content_with_child, testapp):
     edit = {
         'reverse': [],
