@@ -15,7 +15,7 @@ HUB_TXT = 'hub.txt'
 GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
-BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed']
+BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed', 'bedRnaElements', 'bedMethyl', 'bedLogR']
 FILE_QUERY = {
     'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
     'limit': ['all'],
