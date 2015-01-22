@@ -294,13 +294,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var files = this.props.files || context.files;
         var jsonGraph;
 
-        // Save list of files so we can click-test them later
+        // Save list of files and analysis steps so we can click-test them later
         this.fileList = files;
+        this.stepList = [];
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
         if (files && files.some(function(file) {
-            return file.derived_from && file.derived_from.length && file.step;
+            return file.derived_from && file.derived_from.length && file.steps && file.steps.length;
         })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('');
@@ -321,23 +322,28 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'ellipse', replicateNode);
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
-                if (file.derived_from && file.derived_from.length && file.step) {
-                    var step = file.step.analysis_step;
-                    var stepId = step['@id'] + '&' + file['@id'];
+                if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
+                    var steps = file.steps.analysis_step;
+                    file.steps.forEach(function(step) {
+                        // Remember this analysis step for click-testing later
+                        this.stepList.push(step.analysis_step);
 
-                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                    // points to it; there may be more than one copy of this step on the graph if more than one
-                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                    // analysis step.
-                    jsonGraph.addNode(stepId, step.analysis_step_types.join(', '),
-                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', replicateNode);
-                    jsonGraph.addEdge(stepId, fileId);
+                        var stepId = step.analysis_step['@id'] + '&' + file['@id'];
 
-                    // Draw an edge from the analysis step to each of the derived_from files
-                    file.derived_from.forEach(function(derived) {
-                        jsonGraph.addEdge(derived['@id'], stepId);
-                    });
+                        // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                        // points to it; there may be more than one copy of this step on the graph if more than one
+                        // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                        // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                        // analysis step.
+                        jsonGraph.addNode(stepId, step.analysis_step.analysis_step_types.join(', '),
+                            'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', replicateNode);
+                        jsonGraph.addEdge(stepId, fileId);
+
+                        // Draw an edge from the analysis step to each of the derived_from files
+                        file.derived_from.forEach(function(derived) {
+                            jsonGraph.addEdge(derived['@id'], stepId);
+                        });
+                    }, this);
                 }
             }, this);
         }
@@ -366,7 +372,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         });
 
                         if (selectedFile) {
-                            var analysisStep = selectedFile.step && selectedFile.step.analysis_step;
+                            var analysisSteps = selectedFile.steps && selectedFile.steps.length ? selectedFile.steps : null;
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -411,20 +417,26 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {analysisStep && analysisStep.software_versions && analysisStep.software_versions.length ?
+                                    {analysisSteps ?
                                         <div>
                                             <dt>Software</dt>
                                             <dd>
-                                                {<ul>
-                                                    {analysisStep.software_versions.map(function(version, i) {
-                                                        return (
-                                                            <span>
-                                                                {i > 0 ? ', ' : ''}
-                                                                <a href={version.software['@id']}>{version.software.name}</a>
-                                                            </span>
-                                                        );
-                                                    })}
-                                                </ul>}
+                                                {analysisSteps.map(function(step) {
+                                                    return (
+                                                        <span>
+                                                            {step.analysis_step.software_versions.map(function(version, i) {
+                                                                return (
+                                                                    <a href={version.software['@id']} className="software-version">
+                                                                        <span className="software">{version.software.name}</span>
+                                                                        {version.version ?
+                                                                            <span className="version">{version.version}</span>
+                                                                        : null}
+                                                                    </a>
+                                                                );
+                                                            })}
+                                                        </span>
+                                                    );
+                                                })}
                                             </dd>
                                         </div>
                                     : null}
@@ -444,13 +456,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        selectedFile = _(this.fileList).find(function(file) {
-                            return file.step && file.step.analysis_step['@id'] === analysisStepId;
+                        var selectedStep = _(this.stepList).find(function(step) {
+                            return step['@id'] === analysisStepId;
                         });
 
-                        if (selectedFile) {
-                            var selectedStep = selectedFile.step.analysis_step;
-
+                        if (selectedStep) {
                             meta = (
                                 <dl className="key-value">
                                     {selectedStep.input_file_types && selectedStep.input_file_types.length ?
@@ -478,18 +488,16 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         <div>
                                             <dt>Software</dt>
                                             <dd>
-                                                {<ul>
-                                                    {selectedStep.software_versions.map(function(version) {
-                                                        return (
-                                                            <a href={version.software['@id']} className="software-version">
-                                                                <span className="software">{version.software.name}</span>
-                                                                {version.version ?
-                                                                    <span className="version">{version.version}</span>
-                                                                : null}
-                                                            </a>
-                                                        );
-                                                    })}
-                                                </ul>}
+                                                {selectedStep.software_versions.map(function(version) {
+                                                    return (
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{version.version}</span>
+                                                            : null}
+                                                        </a>
+                                                    );
+                                                })}
                                             </dd>
                                         </div>
                                     : null}
