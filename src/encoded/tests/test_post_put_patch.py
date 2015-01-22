@@ -130,9 +130,7 @@ def test_patch(content, testapp):
     assert res.json['@graph'][0]['simple2'] == 'supplied simple2'
 
 
-def test_patch_new_schema_version(content, testapp, monkeypatch):
-    from ..contentbase import LOCATION_ROOT
-    root = testapp.app.registry[LOCATION_ROOT]
+def test_patch_new_schema_version(content, root, testapp, monkeypatch):
     collection = root['testing_post_put_patch']
     properties = collection.Item.schema['properties']
 
@@ -196,12 +194,13 @@ def test_put_object_adding_child(content_with_child, testapp):
     assert len(res.json['reverse']) == 2
 
 
-def test_submitter_put_object_adding_disallowed_child(content_with_child, submitter_testapp):
-    from ..contentbase import LOCATION_ROOT
-    root = submitter_testapp.app.registry[LOCATION_ROOT]
-    root['testing-link-sources'].__acl__ = ()
+def test_submitter_put_object_adding_disallowed_child(
+        root, monkeypatch, content_with_child, submitter_testapp):
     from pyramid.security import Allow
-    root['testing-link-targets'].__acl__ = ((Allow, 'group.submitter', 'edit'),)
+    monkeypatch.setattr(root['testing-link-sources'], '__acl__', (), raising=False)
+    monkeypatch.setattr(
+        root['testing-link-targets'], '__acl__',
+        ((Allow, 'group.submitter', 'edit'),), raising=False)
     edit = {
         'reverse': [
             content_with_child['child'],
