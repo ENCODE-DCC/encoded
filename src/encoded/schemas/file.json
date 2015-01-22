@@ -412,12 +412,17 @@
             "type": "string",
             "linkTo": "pipeline"
         },
-        "step": {
-            "title": "Analysis step",
-            "description": "The run instance of the step the file was generated from.",
-            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
-            "type": "string",
-            "linkTo": "analysis_step_run"
+        "steps": {
+            "title": "Analysis steps" ,
+            "description": "The runs of the step the file was generated from.",
+            "type": "array",
+            "items": {
+                "title": "Analysis step",
+                "description": "The run instance of the step the file was generated from.",
+                "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
+                "type": "string",
+                "linkTo": "analysis_step_run"
+            }
         }
     },
     "columns": {
