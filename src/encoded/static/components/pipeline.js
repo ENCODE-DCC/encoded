@@ -377,7 +377,6 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                             <th>Pipeline</th>
                             <th>Assay</th>
                             <th>Version</th>
-                            <th>Download URL</th>
                             <th>Download checksum</th>
                         </tr>
                     </thead>
@@ -388,8 +387,7 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                             <tr key={pipeline['@id']}>
                                 <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
                                 <td>{pipeline.assay_term_name}</td>
-                                <td>{swVers[i].version}</td>
-                                <td><a href={swVers[i].downloaded_url}>{swVers[i].downloaded_url}</a></td>
+                                <td><a href={swVers[i].downloaded_url}>{swVers[i].version}</a></td>
                                 <td>{swVers[i].download_checksum}</td>
                             </tr>
                         );
