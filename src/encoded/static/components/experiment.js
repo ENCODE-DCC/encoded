@@ -35,10 +35,6 @@ var Panel = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
-    loaded: function() {
-        console.log('loaded');
-    },
-
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -346,7 +342,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
-                    <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} loadingComplete={this.loaded} />
+                    <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 ): null}
 
                 <ExperimentGraph context={context} />
