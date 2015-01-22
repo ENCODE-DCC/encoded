@@ -112,6 +112,7 @@ def login(request):
         request.session['user_properties'] = {}
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()
+    request.session.get_csrf_token()
     request.session['user_properties'] = embed(request, '/current-user', as_user=userid)
     request.response.headerlist.extend(remember(request, 'mailto.' + userid))
     return request.session
