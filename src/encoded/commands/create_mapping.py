@@ -154,6 +154,26 @@ def index_settings():
     }
 
 
+def audit_mapping():
+    return {
+        'category': {
+            'type': 'string',
+            'index': 'not_analyzed',
+        },
+        'detail': {
+            'type': 'string',
+            'index': 'not_analyzed',
+        },
+        'level_name': {
+            'type': 'string',
+            'index': 'not_analyzed',
+        },
+        'level': {
+            'type': 'integer',
+        }
+    }
+
+
 def es_mapping(mapping):
     return {
         '_all': {
@@ -244,20 +264,21 @@ def es_mapping(mapping):
                 'type': 'object',
                 'include_in_all': False,
                 'properties': {
-                    'category': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
+                    'ERROR': {
+                        'type': 'object',
+                        'properties': audit_mapping()
                     },
-                    'detail': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
+                    'NOT_COMPLIANT': {
+                        'type': 'object',
+                        'properties': audit_mapping()
                     },
-                    'level_name': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
+                    'WARNING': {
+                        'type': 'object',
+                        'properties': audit_mapping()
                     },
-                    'level': {
-                        'type': 'integer',
+                    'DCC_ACTION': {
+                        'type': 'object',
+                        'properties': audit_mapping()
                     },
                 },
             }
