@@ -61,9 +61,11 @@ users:
 write_files:
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+- path: /etc/postgresql/9.3/main/wale_s3_prefix
+  content: "%(WALE_S3_PREFIX)s"
 - path: /etc/postgresql/9.3/main/recovery.conf
   content: |
-    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-fetch "%%f" "%%p"'
     standby_mode = on
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
@@ -74,7 +76,7 @@ write_files:
     archive_timeout = 60
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
-    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="%(WALE_S3_PREFIX)s" wal-push "%%p"'
+    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-push "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -96,7 +98,7 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - sudo /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start
