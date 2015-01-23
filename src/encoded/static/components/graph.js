@@ -293,28 +293,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var files = this.props.files || context.files;
         var jsonGraph;
 
-        // Make a list of all files and derived_files.
-        var allFiles = {};
-        var stepFound = false; // Ends up true if any steps were found
-        var derivedFound = false; // Ends up true if any derived_from files are found
-        files.forEach(function(file) {
-            allFiles[file['@id']] = file;
-            stepFound = stepFound || (file.steps && file.steps.length);
-            derivedFound = derivedFound || (file.derived_from && file.derived_from.length);
-            if (derivedFound) {
-                file.derived_from.forEach(function(derived) {
-                    allFiles[derived['@id']] = derived;
-                });
-            }
-        });
-
         // Save list of files and analysis steps so we can click-test them later
-        this.fileList = allFiles; // Copy so we can modify
+        this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
         this.stepList = [];
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
-        if (stepFound || derivedFound) {
+        if (files && files.some(function(file) {
+            return file.derived_from && file.derived_from.length && file.steps && file.steps.length;
+        })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('');
 
@@ -356,14 +343,20 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         // Draw an edge from the analysis step to each of the derived_from files
                         file.derived_from.forEach(function(derived) {
                             jsonGraph.addEdge(derived['@id'], stepId);
-
-                            // If derived_from file doesn‘t yet exist in graph, add it in case
-                            if (!jsonGraph.getNode(derived['@id'])) {
-                                jsonGraph.addNode(derived['@id'], derived.accession + ' (' + derived.output_type + ')',
-                                    'pipeline-node-file' + (this.state.infoNodeId === derived['@id'] ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
-                            }
                         }, this);
                     }, this);
+                }
+            }, this);
+
+            // Add contributing files to the graph
+            context.contributing_files.forEach(function(file) {
+                var fileId = file['@id'];
+
+                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                // to show that this is a file node.
+                if (!jsonGraph.getNode(fileId)) {
+                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16);
                 }
             }, this);
         }
