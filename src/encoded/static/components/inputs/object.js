@@ -18,11 +18,10 @@ var SearchBlockEdit = React.createClass({
 });
 
 
-var ItemPreview = React.createClass({
+var ItemPreview = module.exports.ItemPreview = React.createClass({
     render: function() {
         var context = this.props.data['@graph'][0];
         if (context === undefined) return null;
-        var style = {width: '80%'};
         var Listing = globals.listing_views.lookup(context);
         return (
             <ul className="nav result-table">
@@ -33,7 +32,7 @@ var ItemPreview = React.createClass({
 });
 
 
-var ObjectPicker = React.createClass({
+var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -98,6 +97,3 @@ var ObjectPicker = React.createClass({
         return false;
     }
 });
-
-
-module.exports = ObjectPicker;

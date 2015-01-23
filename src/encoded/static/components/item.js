@@ -7,6 +7,7 @@ var Form = require('./form').Form;
 var globals = require('./globals');
 var LayoutType = require('./page').LayoutType;
 var Layout = require('./layout').Layout;
+var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
 var FileInput = require('./inputs').FileInput;
 var _ = require('underscore');
@@ -115,7 +116,14 @@ var FetchedFieldset = React.createClass({
     mixins: [ReactForms.FieldsetMixin],
 
     getInitialState: function() {
-        return {url: null};
+        var value = this.value().value;
+        var url = typeof value == 'string' ? value : null;
+        var externalValidation = this.externalValidation();
+        var failure = externalValidation.validation.failure;
+        return {
+            url: url,
+            collapsed: url && !failure,
+        };
     },
 
     render: function() {
@@ -123,37 +131,52 @@ var FetchedFieldset = React.createClass({
         var value = this.value().value;
         var externalValidation = this.externalValidation();
         var failure = externalValidation.validation.failure;
-        var url;
+        var url = typeof value == 'string' ? value : null;
+        var preview, fieldset;
+
         if (this.state.url) {
-            url = this.state.url;
-        } else if (typeof value == 'string') {
-            url = value;
-            this.setState({url: url});
-        }
-        if (url) {
-            return (
-                <div>
-                  {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
-                  <fetched.FetchedData>
-                    <fetched.Param name="defaultValue" url={url + '?frame=edit'} />
-                    {this.transferPropsTo(<ReactForms.Form schema={schema} onChange={this.onChange}
-                                                           externalValidation={externalValidation} />)}
-                  </fetched.FetchedData>
-                </div>
+            var previewUrl = '/search?mode=picker&@id=' + this.state.url;
+            preview = (
+                <fetched.FetchedData>
+                    <fetched.Param name="data" url={previewUrl} />
+                    <ItemPreview />
+                </fetched.FetchedData>
+            );
+            fieldset = (
+                <fetched.FetchedData>
+                    <fetched.Param name="defaultValue" url={this.state.url + '?frame=edit'} />
+                    <ReactForms.Form schema={schema} onUpdate={this.onUpdate}
+                                     externalValidation={externalValidation} />
+                </fetched.FetchedData>
             );
         } else {
-            return (
-                <div>
-                  {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
-                  {this.transferPropsTo(<ReactForms.Form
-                      defaultValue={value} schema={schema} onChange={this.onChange}
-                      externalValidation={externalValidation} />)}
-                </div>
+            preview = (
+                <ul className="nav result-table">
+                  <li>
+                    <div className="accession">{'New ' + schema.props.label}</div>
+                  </li>
+                </ul>
             );
+            fieldset = <ReactForms.Form
+                defaultValue={value} schema={schema} onUpdate={this.onUpdate}
+                externalValidation={externalValidation} />;
         }
+
+        return (
+            <div className="collapsible">
+                <span className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</span>
+                {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
+                <div style={{display: this.state.collapsed ? 'block' : 'none'}}>{preview}</div>
+                <div style={{display: this.state.collapsed ? 'none' : 'block'}}>{fieldset}</div>
+            </div>
+        );
     },
 
-    onChange: function(value) {
+    toggleCollapsed: function() {
+        this.setState({collapsed: !this.state.collapsed});
+    },
+
+    onUpdate: function(value) {
         value['@id'] = this.state.url;
         value = this.value().updateSerialized(value);
         this.onValueUpdate(value);
