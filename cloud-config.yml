@@ -70,6 +70,11 @@ write_files:
     hot_standby = on
     max_standby_archive_delay = -1
     wal_level = hot_standby
+    archive_mode = on
+    archive_timeout = 60
+- path: /etc/postgresql/9.3/main/master.conf
+  content: |
+    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="%(WALE_S3_PREFIX)s" wal-push %p'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -77,8 +82,7 @@ runcmd:
 - set -e
 - sudo update-rc.d elasticsearch defaults
 - sudo service elasticsearch start
-- chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
-- chown postgres:postgres /etc/postgresql/9.3/main/custom.conf
+- chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - sudo -u postgres echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
