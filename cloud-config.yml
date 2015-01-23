@@ -74,7 +74,7 @@ write_files:
     archive_timeout = 60
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
-    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="%(WALE_S3_PREFIX)s" wal-push %p'
+    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="%(WALE_S3_PREFIX)s" wal-push "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
