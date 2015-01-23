@@ -32,13 +32,12 @@ function JsonGraph(id) {
 // cssClass: optional CSS class to assign to the SVG object for this node
 // type: Optional text type to track the type of node this is
 // parentNode: Optional reference to parent node; defaults to graph root
-JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, parentNode) {
+JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerRadius, parentNode) {
     var newNode = {};
     newNode.id = id;
     newNode.type = type;
     newNode.label = label;
-    newNode.shape = shape;
-    newNode.metadata = {cssClass: cssClass};
+    newNode.metadata = {cssClass: cssClass, shape: shape, cornerRadius: cornerRadius};
     newNode.nodes = [];
     var target = (parentNode && parentNode.nodes) || this.nodes;
     target.push(newNode);
@@ -95,7 +94,7 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label + '', rx: 4, ry: 4, class: node.metadata.cssClass, shape: node.shape,
+                graph.setNode(node.id + '', {label: node.label + '', rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');
@@ -308,7 +307,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect');
+                jsonGraph.addNode(replicate.biological_replicate_number, replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
             });
 
             // Add files and their steps as nodes to the graph
@@ -319,7 +318,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
                 // to show that this is a file node.
                 jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'ellipse', replicateNode);
+                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
@@ -336,7 +335,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
                         // analysis step.
                         jsonGraph.addNode(stepId, step.analysis_step.analysis_step_types.join(', '),
-                            'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', replicateNode);
+                            'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
                         jsonGraph.addEdge(stepId, fileId);
 
                         // Draw an edge from the analysis step to each of the derived_from files

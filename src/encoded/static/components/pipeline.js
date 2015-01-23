@@ -60,7 +60,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect');
+                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -84,7 +84,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                             // Assemble a single analysis step node.
                             jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect');
+                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
                         }
                     }, this);
                 }
