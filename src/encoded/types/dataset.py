@@ -41,6 +41,11 @@ class Dataset(Item):
         'revoked_files.replicate.experiment.lab',
         'revoked_files.replicate.experiment.target',
         'revoked_files.submitted_by',
+        'contributing_files',
+        'contributing_files.replicate.experiment',
+        'contributing_files.replicate.experiment.lab',
+        'contributing_files.replicate.experiment.target',
+        'contributing_files.submitted_by',
         'submitted_by',
         'lab',
         'award',
@@ -51,6 +56,7 @@ class Dataset(Item):
     audit_inherit = [
         'original_files',
         'revoked_files',
+        'contributing_files',
         'submitted_by',
         'lab',
         'award',
@@ -71,7 +77,34 @@ class Dataset(Item):
     })
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
-
+    
+    @calculated_property(schema={
+        "title": "Contributing files",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "file",
+        },
+    })
+    def contributing_files(self, request, original_files, related_files, status):
+        files = set(original_files + related_files)
+        derived_from = set()
+        for path in files:
+            properties = request.embed(path, '@@object')
+            derived_from.update(paths_filtered_by_status(request, properties.get('derived_from', [])))
+        outside_files  = list(derived_from.difference(files))
+        if status in ('release ready', 'released'):
+            return paths_filtered_by_status(
+                request, outside_files,
+                include=('released',),
+            )
+        else:
+            return paths_filtered_by_status(
+                request, outside_files,
+                exclude=('revoked', 'deleted', 'replaced'),
+            )
+        
+    
     @calculated_property(schema={
         "title": "Files",
         "type": "array",
