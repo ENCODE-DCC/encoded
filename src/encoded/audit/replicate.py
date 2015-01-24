@@ -17,3 +17,18 @@ def audit_file_platform(value, system):
             value['platform']  # ['name']
             )
         yield AuditFailure('replicate with platform', detail, level='DCC_ACTION')
+
+
+@audit_checker('replicate', frame='embedded')
+def audit_status_replicate(value, system):
+    '''
+    An in progress replicate should not have a released experiment
+    '''
+
+    if value['status'] > value['experiment']['status']:
+        detail = 'Replicate {} has status {} while its experiment has {}'.format(
+            value['uuid'],
+            value['status'].
+            value['experiment']['status']
+            )
+        yield AuditFailure('status mismatch', detail, level='DCC_ACTION')
