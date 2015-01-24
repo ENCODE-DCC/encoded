@@ -295,7 +295,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Save list of files and analysis steps so we can click-test them later
         this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
-        this.stepList = [];
+        this.stepLists = [];
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
@@ -325,7 +325,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
                     // Remember this step for later hit testing
-                    this.stepList.push(file.steps[0].analysis_step);
+                    this.stepLists.push(file.steps);
 
                     // Make the ID of the node using the first step in the array, and it connects to
                     var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
@@ -474,54 +474,68 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        var selectedStep = _(this.stepList).find(function(step) {
-                            return step['@id'] === analysisStepId;
+                        console.log('ASI: ', analysisStepId);
+                        var selectedSteps = _(this.stepLists).find(function(stepList) {
+                            var selectedStep = _(stepList).find(function(step) {
+                                return step.analysis_step['@id'] === analysisStepId;
+                            });
+                            return !!selectedStep;
                         });
+                        console.log(selectedSteps);
 
-                        if (selectedStep) {
-                            meta = (
-                                <dl className="key-value">
-                                    {selectedStep.input_file_types && selectedStep.input_file_types.length ?
-                                        <div data-test="inputtypes">
-                                            <dt>Input file types</dt>
-                                            <dd>{selectedStep.input_file_types.join(', ')}</dd>
+                        meta = selectedSteps.map(function(stepRun, i) {
+                            var step = stepRun.analysis_step;
+                            return (
+                                <div>
+                                    {i > 0 ? <hr /> : null}
+                                    <dl className="key-value">
+                                        <div data-test="steptype">
+                                            <dt>Step type</dt>
+                                            <dd>{step.analysis_step_types.join(', ')}</dd>
                                         </div>
-                                    : null}
 
-                                    {selectedStep.output_file_types && selectedStep.output_file_types.length ?
-                                        <div data-test="outputtypes">
-                                            <dt>Output file types</dt>
-                                            <dd>{selectedStep.output_file_types.join(', ')}</dd>
-                                        </div>
-                                    : null}
+                                        {step.input_file_types && step.input_file_types.length ?
+                                            <div data-test="inputtypes">
+                                                <dt>Input file types</dt>
+                                                <dd>{step.input_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
 
-                                    {selectedStep.qa_stats_generated && selectedStep.qa_stats_generated.length ?
-                                        <div data-test="steptypes">
-                                            <dt>QA statistics</dt>
-                                            <dd>{selectedStep.qa_stats_generated.join(', ')}</dd>
-                                        </div>
-                                    : null}
+                                        {step.output_file_types && step.output_file_types.length ?
+                                            <div data-test="outputtypes">
+                                                <dt>Output file types</dt>
+                                                <dd>{step.output_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
 
-                                    {selectedStep.software_versions && selectedStep.software_versions.length ?
-                                        <div>
-                                            <dt>Software</dt>
-                                            <dd>
-                                                {selectedStep.software_versions.map(function(version) {
-                                                    return (
-                                                        <a href={version.software['@id']} className="software-version">
-                                                            <span className="software">{version.software.name}</span>
-                                                            {version.version ?
-                                                                <span className="version">{version.version}</span>
-                                                            : null}
-                                                        </a>
-                                                    );
-                                                })}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
+                                        {step.qa_stats_generated && step.qa_stats_generated.length ?
+                                            <div data-test="steptypes">
+                                                <dt>QA statistics</dt>
+                                                <dd>{step.qa_stats_generated.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.software_versions && step.software_versions.length ?
+                                            <div>
+                                                <dt>Software</dt>
+                                                <dd>
+                                                    {step.software_versions.map(function(version) {
+                                                        return (
+                                                            <a href={version.software['@id']} className="software-version">
+                                                                <span className="software">{version.software.name}</span>
+                                                                {version.version ?
+                                                                    <span className="version">{version.version}</span>
+                                                                : null}
+                                                            </a>
+                                                        );
+                                                    })}
+                                                </dd>
+                                            </div>
+                                        : null}
+                                    </dl>
+                                </div>
                             );
-                        }
+                        });
 
                         break;
 
