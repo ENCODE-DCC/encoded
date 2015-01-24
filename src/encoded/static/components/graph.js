@@ -324,8 +324,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
+                    // Remember this step for later hit testing
+                    this.stepList.push(file.steps[0].analysis_step);
+
+                    // Make the ID of the node using the first step in the array, and it connects to
                     var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
 
+                    // Make a label for the step node
                     var label = file.steps.map(function(step, i) {
                         return step.analysis_step.analysis_step_types.join(', ');
                     });
@@ -343,8 +348,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         // Draw an edge from the analysis step to each of the derived_from files
                         file.derived_from.forEach(function(derived) {
                             jsonGraph.addEdge(derived['@id'], stepId);
-                        }, this);
-                    }, this);
+                        });
+                    });
                 }
             }, this);
 
