@@ -324,22 +324,22 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
-                    var steps = file.steps.analysis_step;
+                    var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
+
+                    var label = file.steps.map(function(step, i) {
+                        return step.analysis_step.analysis_step_types.join(', ');
+                    });
+
+                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                    // points to it; there may be more than one copy of this step on the graph if more than one
+                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                    // analysis step.
+                    jsonGraph.addNode(stepId, label.join(', '),
+                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
+                    jsonGraph.addEdge(stepId, fileId);
+
                     file.steps.forEach(function(step) {
-                        // Remember this analysis step for click-testing later
-                        this.stepList.push(step.analysis_step);
-
-                        var stepId = step.analysis_step['@id'] + '&' + file['@id'];
-
-                        // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                        // points to it; there may be more than one copy of this step on the graph if more than one
-                        // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                        // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                        // analysis step.
-                        jsonGraph.addNode(stepId, step.analysis_step.analysis_step_types.join(', '),
-                            'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
-                        jsonGraph.addEdge(stepId, fileId);
-
                         // Draw an edge from the analysis step to each of the derived_from files
                         file.derived_from.forEach(function(derived) {
                             jsonGraph.addEdge(derived['@id'], stepId);
