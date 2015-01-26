@@ -18,7 +18,7 @@ var $script = require('scriptjs');
 function JsonGraph(id) {
     this.id = id;
     this.type = '';
-    this.label = '';
+    this.label = [];
     this.shape = '';
     this.metadata = {};
     this.nodes = [];
@@ -36,7 +36,14 @@ JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerR
     var newNode = {};
     newNode.id = id;
     newNode.type = type;
-    newNode.label = label;
+    newNode.label = [];
+    if (typeof label === 'string' || typeof label === 'number') {
+        // label is a string; assign to first array element
+        newNode.label[0] = label;
+    } else {
+        // Otherwise, assume label is an array; clone it
+        newNode.label = label.slice(0);
+    }
     newNode.metadata = {cssClass: cssClass, shape: shape, cornerRadius: cornerRadius};
     newNode.nodes = [];
     var target = (parentNode && parentNode.nodes) || this.nodes;
@@ -94,7 +101,7 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label + '', rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
+                graph.setNode(node.id + '', {label: node.label.join('\n') + '', rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');
@@ -340,7 +347,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
                     // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
                     // analysis step.
-                    jsonGraph.addNode(stepId, label.join(', '),
+                    jsonGraph.addNode(stepId, label,
                         'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
                     jsonGraph.addEdge(stepId, fileId);
 
