@@ -101,7 +101,7 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label.join('\n') + '', rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
+                graph.setNode(node.id + '', {label: node.label, rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');

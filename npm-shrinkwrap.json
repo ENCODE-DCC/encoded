@@ -218,7 +218,7 @@
                     },
                     "async": {
                       "version": "0.9.0",
-                      "from": "async@0.9.0",
+                      "from": "https://registry.npmjs.org/async/-/async-0.9.0.tgz",
                       "resolved": "https://registry.npmjs.org/async/-/async-0.9.0.tgz"
                     }
                   }
@@ -328,9 +328,9 @@
       }
     },
     "dagre-d3": {
-      "version": "0.4.2",
-      "from": "dagre-d3@*",
-      "resolved": "https://registry.npmjs.org/dagre-d3/-/dagre-d3-0.4.2.tgz",
+      "version": "0.4.3-pre",
+      "from": "../../../../var/folders/yb/9lps1nd934596x90mx1vkl580000gq/T/npm-81538-1a9478a8/1422302489920-0.5189486707095057/db1487e73b1c8835af4584284c8fc1950ab4aa0e",
+      "resolved": "git://github.com/ENCODE-DCC/dagre-d3.git#db1487e73b1c8835af4584284c8fc1950ab4aa0e",
       "dependencies": {
         "dagre": {
           "version": "0.7.1",
@@ -403,7 +403,7 @@
             },
             "jstransform": {
               "version": "3.0.0",
-              "from": "jstransform@3.0.0",
+              "from": "https://registry.npmjs.org/jstransform/-/jstransform-3.0.0.tgz",
               "resolved": "https://registry.npmjs.org/jstransform/-/jstransform-3.0.0.tgz",
               "dependencies": {
                 "base62": {

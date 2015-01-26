@@ -38,7 +38,7 @@
     "cookie-cutter": "^0.1.1",
     "d3": "^3.4.6",
     "dagre": "^0.6.4",
-    "dagre-d3": "^0.4.2",
+    "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#master",
     "domready": "^0.3.0",
     "es5-shim": "^4.0.3",
     "html5shiv": "^3.7.2",
