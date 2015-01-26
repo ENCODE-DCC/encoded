@@ -16,7 +16,6 @@ var portal = {
             {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
-            {id: 'pipelines', title: 'Pipelines', url: '/search/?type=pipeline'},
             {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
             {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
         ]},

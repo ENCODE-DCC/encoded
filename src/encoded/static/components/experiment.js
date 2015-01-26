@@ -334,6 +334,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
+                <ExperimentGraph context={context} />
+
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
@@ -344,8 +346,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
                     <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 ): null}
-
-                <ExperimentGraph context={context} />
 
             </div>
         );
