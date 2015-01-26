@@ -25,9 +25,9 @@ class Target(Item):
     schema = load_schema('target.json')
     embedded = ['organism']
 
-    def keys(self):
-        keys = super(Target, self).keys()
-        keys.setdefault('target:name', []).append(self.__name__)
+    def keys(self, properties):
+        keys = super(Target, self).keys(properties)
+        keys.setdefault('target:name', []).append(self._name(properties))
         return keys
 
     @calculated_property(schema={
@@ -48,6 +48,9 @@ class Target(Item):
     @property
     def __name__(self):
         properties = self.upgrade_properties(finalize=False)
+        return self._name(properties)
+
+    def _name(self, properties):
         root = find_root(self)
         organism = root.get_by_uuid(properties['organism'])
         organism_props = organism.upgrade_properties(finalize=False)

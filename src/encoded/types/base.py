@@ -109,11 +109,10 @@ class Item(contentbase.Item):
             roles[lab_submitters] = 'role.lab_submitter'
         return roles
 
-    def keys(self):
-        keys = super(Item, self).keys()
+    def keys(self, properties):
+        keys = super(Item, self).keys(properties)
         if 'accession' not in self.schema['properties']:
             return keys
-        properties = self.upgrade_properties(finalize=False)
         keys.setdefault('accession', []).extend(properties.get('alternate_accessions', []))
         if properties.get('status') != 'replaced' and 'accession' in properties:
             keys['accession'].append(properties['accession'])

@@ -1,9 +1,11 @@
 from ..schema_utils import (
     load_schema,
-    lookup_resource,
     VALIDATOR_REGISTRY,
 )
 from ..contentbase import (
+    COLLECTIONS,
+    CONNECTION,
+    ROOT,
     calculated_property,
     collection,
 )
@@ -15,7 +17,7 @@ from .base import (
 from pyramid.location import lineage
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
-    find_root,
+    find_resource,
 )
 
 
@@ -36,9 +38,8 @@ class Page(Item):
         'deleted': ONLY_ADMIN_VIEW,
     }
 
-    def keys(self):
-        keys = super(Page, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def keys(self, properties):
+        keys = super(Page, self).keys(properties)
         parent = properties.get('parent')
         name = properties['name']
         value = name if parent is None else u'{}:{}'.format(parent, name)
@@ -60,21 +61,22 @@ class Page(Item):
     def __parent__(self):
         parent_uuid = self.properties.get('parent')
         name = self.__name__
-        root = find_root(self.collection)
+        collections = self.registry[COLLECTIONS]
+        connection = self.registry[CONNECTION]
         if parent_uuid:  # explicit parent
-            return root.get_by_uuid(parent_uuid)
-        elif name in root.collections or name == 'homepage':
+            return connection.get_by_uuid(parent_uuid)
+        elif name in collections or name == 'homepage':
             # collection default page; use pages collection as canonical parent
             return self.collection
         else:  # top level
-            return root
+            return self.registry[ROOT]
 
     def is_default_page(self):
         name = self.__name__
-        root = find_root(self.collection)
+        collections = self.registry[COLLECTIONS]
         if self.properties.get('parent'):
             return False
-        return name in root.collections or name == 'homepage'
+        return name in collections or name == 'homepage'
 
     # Handle traversal to nested pages
 
@@ -88,9 +90,9 @@ class Page(Item):
         return self.get(name, None) is not None
 
     def get(self, name, default=None):
-        root = find_root(self)
         location = str(self.uuid) + ':' + name
-        resource = root.get_by_unique_key('page:location', location)
+        connection = self.registry[CONNECTION]
+        resource = connection.get_by_unique_key('page:location', location)
         if resource is not None:
             return resource
         return default
@@ -108,7 +110,7 @@ class Page(Item):
 def isNotCollectionDefaultPage(value, schema):
     if value:
         request = get_current_request()
-        page = lookup_resource(request.root, request.root, value)
+        page = find_resource(request.root, value)
         if page.is_default_page():
             return 'You may not place pages inside an object collection.'
 

@@ -223,9 +223,8 @@ class Publication(Item):
 
     # XXX the references mixin is only a key for this type
     # Should probably become 'identifiers' for publication
-    def keys(self):
-        keys = super(Publication, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def keys(self, properties):
+        keys = super(Publication, self).keys(properties)
         if properties.get('references'):
             keys.setdefault('publication:identifier', []).extend(properties['references'])
         return keys
