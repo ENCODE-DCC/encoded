@@ -129,7 +129,7 @@ var unreleased_files_url = module.exports.unreleased_files_url = function (conte
         "format check failed",
         "in progress"
     ].map(encodeURIComponent).join('&status=');
-    return '/search/?frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
 };
 
 var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
