@@ -133,5 +133,17 @@
         "status": "released",
         "title": "iCLIP-seq Analysis Pipeline",
         "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"
+    },
+    {
+        "accession": "ENCPL001FVD",
+        "end_points": [
+            "d358e1a0-a5a2-11e4-bcd8-0800200c9a66"
+        ],
+        "analysis_steps": [
+            "d358e1a0-a5a2-11e4-bcd8-0800200c9a66"
+        ],
+        "status": "released",
+        "title": "ENCODE File Validation",
+        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
     }
 ]
