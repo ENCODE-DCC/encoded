@@ -111,6 +111,40 @@ globals.listing_titles.fallback = function () {
 };
 
 
+var RepeatingItem = React.createClass({
+
+  render: function() {
+    return this.transferPropsTo(
+      <div className="rf-RepeatingFieldset__item">
+        {this.props.children}
+        <button
+          onClick={this.onRemove}
+          type="button"
+          className="rf-RepeatingFieldset__remove">&times;</button>
+      </div>
+    );
+  },
+
+  onRemove: function() {
+    if (this.props.children.constructor.displayName.indexOf('Fieldset') !== -1) {
+        var label;
+        try {
+            label = this.props.children.props.schema.props.label;
+        } catch (e) {
+            label = 'item';
+        }
+        if (!confirm('Are you sure you want to remove this ' + label + '?')) {
+            return false;
+        }
+    }
+    if (this.props.onRemove) {
+      this.props.onRemove(this.props.name);
+    }
+  }
+
+});
+
+
 var FetchedFieldset = React.createClass({
     mixins: [ReactForms.FieldsetMixin],
 
@@ -197,7 +231,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         return ReactForms.schema.Schema(props, properties);
     } else if (p.type == 'array') {
-        if (props.required) props.component = <ReactForms.RepeatingFieldset className="required" />;
+        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
