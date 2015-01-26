@@ -329,8 +329,8 @@
     },
     "dagre-d3": {
       "version": "0.4.3-pre",
-      "from": "../../../../var/folders/yb/9lps1nd934596x90mx1vkl580000gq/T/npm-81538-1a9478a8/1422302489920-0.5189486707095057/db1487e73b1c8835af4584284c8fc1950ab4aa0e",
-      "resolved": "git://github.com/ENCODE-DCC/dagre-d3.git#db1487e73b1c8835af4584284c8fc1950ab4aa0e",
+      "from": "../../../../var/folders/yb/9lps1nd934596x90mx1vkl580000gq/T/npm-91797-f34ec192/1422311280324-0.21883637178689241/4ca7ab3c85d2b8ecb13171387d1306ee3e9ec540",
+      "resolved": "git://github.com/ENCODE-DCC/dagre-d3.git#4ca7ab3c85d2b8ecb13171387d1306ee3e9ec540",
       "dependencies": {
         "dagre": {
           "version": "0.7.1",
