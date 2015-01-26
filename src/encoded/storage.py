@@ -1,7 +1,10 @@
+from past.builtins import basestring
+from pyramid.httpexceptions import HTTPConflict
 from sqlalchemy import (
     Column,
     DDL,
     ForeignKey,
+    bindparam,
     event,
     func,
     null,
@@ -10,10 +13,17 @@ from sqlalchemy import (
     types,
 )
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
-from .precompiled_query import PrecompiledQuery
+from sqlalchemy.orm.exc import (
+    FlushError,
+    NoResultFound,
+)
+from .precompiled_query import (
+    PrecompiledQuery,
+    precompiled_query_builder,
+)
 from .renderers import json_renderer
 import json
 import transaction
@@ -23,6 +33,181 @@ import zope.sqlalchemy
 DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
+
+
+def _get_by_uuid_instance_map(rid):
+    # Internals from sqlalchemy/orm/query.py:Query.get
+    session = DBSession()
+    mapper = orm.class_mapper(Resource)
+    ident = [rid]
+    key = mapper.identity_key_from_primary_key(ident)
+    return orm.loading.get_from_identity(
+        session, key, orm.attributes.PASSIVE_OFF)
+
+
+@precompiled_query_builder(DBSession)
+def _get_by_uuid_query():
+    session = DBSession()
+    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
+
+
+@precompiled_query_builder(DBSession)
+def _get_by_unique_key_query():
+    session = DBSession()
+    return session.query(Key).options(
+        orm.joinedload_all(
+            Key.resource,
+            Resource.data,
+            CurrentPropertySheet.propsheet,
+            innerjoin=True,
+        ),
+    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+
+
+class RDBStorage(object):
+    def get_by_uuid(self, rid, default=None):
+        if isinstance(rid, basestring):
+            try:
+                rid = uuid.UUID(rid)
+            except ValueError:
+                return default
+        elif not isinstance(rid, uuid.UUID):
+            raise TypeError(rid)
+
+        model = _get_by_uuid_instance_map(rid)
+
+        if model is None:
+            try:
+                model = _get_by_uuid_query().params(rid=rid).one()
+            except NoResultFound:
+                return default
+
+        return model
+
+    def get_by_unique_key(self, unique_key, name, default=None):
+        try:
+            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
+        except NoResultFound:
+            return default
+        else:
+            return key.resource
+
+    def __iter__(self, item_type=None, batchsize=1000):
+        session = DBSession()
+        query = session.query(Resource.rid)
+
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+
+        for rid, in query.yield_per(batchsize):
+            yield rid
+
+    def __len__(self, item_type=None):
+        session = DBSession()
+        query = session.query(Resource.rid)
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+        return query.count()
+
+    def create(self, item_type, rid):
+        return Resource(item_type, rid=rid)
+
+    def update(self, model, properties=None, sheets=None, keys=None, links=None):
+        session = DBSession()
+        sp = session.begin_nested()
+        try:
+            session.add(model)
+            update_properties(model, properties, sheets)
+            if links is not None:
+                update_rels(model, links)
+            if keys is not None:
+                keys_add, keys_remove = update_keys(model, keys)
+            sp.commit()
+        except (IntegrityError, FlushError):
+            sp.rollback()
+        else:
+            return
+
+        # Try again more carefully
+        try:
+            session.add(model)
+            update_properties(model, properties, sheets)
+            if links is not None:
+                update_rels(model, links)
+            session.flush()
+        except (IntegrityError, FlushError):
+            msg = 'UUID conflict'
+            raise HTTPConflict(msg)
+        assert keys is not None
+        conflicts = check_duplicate_keys(model, keys_add)
+        assert conflicts
+        msg = 'Keys conflict: %r' % conflicts
+        raise HTTPConflict(msg)
+
+
+def update_properties(model, properties, sheets=None):
+    if properties is not None:
+        model.propsheets[''] = properties
+    if sheets is not None:
+        for key, value in sheets.items():
+            model.propsheets[key] = value
+
+
+def update_keys(model, keys):
+    keys_set = {(k, v) for k, values in keys.items() for v in values}
+
+    existing = {
+        (key.name, key.value)
+        for key in model.unique_keys
+    }
+
+    to_remove = existing - keys_set
+    to_add = keys_set - existing
+
+    session = DBSession()
+    for pk in to_remove:
+        key = session.query(Key).get(pk)
+        session.delete(key)
+
+    for name, value in to_add:
+        key = Key(rid=model.rid, name=name, value=value)
+        session.add(key)
+
+    return to_add, to_remove
+
+
+def check_duplicate_keys(model, keys):
+    session = DBSession()
+    return [pk for pk in keys if session.query(Key).get(pk) is not None]
+
+
+def update_rels(model, links):
+    session = DBSession()
+    source = model.rid
+
+    rels = {(k, uuid.UUID(target)) for k, targets in links.items() for target in targets}
+
+    existing = {
+        (link.rel, link.target_rid)
+        for link in model.rels
+    }
+
+    to_remove = existing - rels
+    to_add = rels - existing
+
+    for rel, target in to_remove:
+        link = session.query(Link).get((source, rel, target))
+        session.delete(link)
+
+    for rel, target in to_add:
+        link = Link(source_rid=source, rel=rel, target_rid=target)
+        session.add(link)
+
+    return to_add, to_remove
 
 
 class UUID(types.TypeDecorator):
@@ -193,7 +378,7 @@ class Resource(Base):
         super(Resource, self).__init__(item_type=item_type, rid=rid)
         if data is not None:
             for k, v in data.items():
-                self[k] = v
+                self.propsheets[k] = v
 
     def __getitem__(self, key):
         return self.data[key].propsheet.properties
@@ -210,9 +395,25 @@ class Resource(Base):
 
     def get(self, key, default=None):
         try:
-            return self[key]
+            return self.propsheets[key]
         except KeyError:
             return default
+
+    @property
+    def properties(self):
+        return self.propsheets['']
+
+    @property
+    def propsheets(self):
+        return self
+
+    @property
+    def uuid(self):
+        return self.rid
+
+    @property
+    def tid(self):
+        return self.data[''].propsheet.tid
 
 
 class Blob(Base):
