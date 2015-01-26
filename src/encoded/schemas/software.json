@@ -132,10 +132,6 @@
         "references.published_by": {
             "title": "Created by",
             "type": "array"
-        },
-        "versions.version": {
-            "title": "Version",
-            "type": "array"
         }
     },
    "columns": {
