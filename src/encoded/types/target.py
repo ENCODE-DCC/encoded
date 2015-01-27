@@ -25,8 +25,8 @@ class Target(Item):
     schema = load_schema('target.json')
     embedded = ['organism']
 
-    def keys(self, properties):
-        keys = super(Target, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(Target, self).unique_keys(properties)
         keys.setdefault('target:name', []).append(self._name(properties))
         return keys
 

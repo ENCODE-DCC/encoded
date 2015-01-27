@@ -38,8 +38,8 @@ class Page(Item):
         'deleted': ONLY_ADMIN_VIEW,
     }
 
-    def keys(self, properties):
-        keys = super(Page, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(Page, self).unique_keys(properties)
         parent = properties.get('parent')
         name = properties['name']
         value = name if parent is None else u'{}:{}'.format(parent, name)

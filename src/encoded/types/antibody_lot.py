@@ -50,8 +50,8 @@ class AntibodyLot(Item):
         'lot_reviews.organisms'
     ]
 
-    def keys(self, properties):
-        keys = super(AntibodyLot, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(AntibodyLot, self).unique_keys(properties)
         source = properties['source']
         product_id = properties['product_id']
         lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])

@@ -116,7 +116,7 @@ class RDBStorage(object):
     def create(self, item_type, rid):
         return Resource(item_type, rid=rid)
 
-    def update(self, model, properties=None, sheets=None, keys=None, links=None):
+    def update(self, model, properties=None, sheets=None, unique_keys=None, links=None):
         session = DBSession()
         sp = session.begin_nested()
         try:
@@ -124,8 +124,8 @@ class RDBStorage(object):
             update_properties(model, properties, sheets)
             if links is not None:
                 update_rels(model, links)
-            if keys is not None:
-                keys_add, keys_remove = update_keys(model, keys)
+            if unique_keys is not None:
+                keys_add, keys_remove = update_keys(model, unique_keys)
             sp.commit()
         except (IntegrityError, FlushError):
             sp.rollback()
@@ -142,7 +142,7 @@ class RDBStorage(object):
         except (IntegrityError, FlushError):
             msg = 'UUID conflict'
             raise HTTPConflict(msg)
-        assert keys is not None
+        assert unique_keys is not None
         conflicts = check_duplicate_keys(model, keys_add)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
@@ -157,8 +157,8 @@ def update_properties(model, properties, sheets=None):
             model.propsheets[key] = value
 
 
-def update_keys(model, keys):
-    keys_set = {(k, v) for k, values in keys.items() for v in values}
+def update_keys(model, unique_keys):
+    keys_set = {(k, v) for k, values in unique_keys.items() for v in values}
 
     existing = {
         (key.name, key.value)

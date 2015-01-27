@@ -202,8 +202,8 @@ class Replicate(Item):
         'platform',
     ]
 
-    def keys(self, properties):
-        keys = super(Replicate, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(Replicate, self).unique_keys(properties)
         value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
             **properties)
         keys.setdefault('replicate:experiment_biological_technical', []).append(value)

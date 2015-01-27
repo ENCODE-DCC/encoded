@@ -23,8 +23,8 @@ class AntibodyApproval(Item):
     schema = load_schema('antibody_approval.json')
     item_type = 'antibody_approval'
 
-    def keys(self, properties):
-        keys = super(AntibodyApproval, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(AntibodyApproval, self).unique_keys(properties)
         value = u'{antibody}/{target}'.format(**properties)
         keys.setdefault('antibody_approval:lot_target', []).append(value)
         return keys

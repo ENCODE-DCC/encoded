@@ -109,8 +109,8 @@ class Item(contentbase.Item):
             roles[lab_submitters] = 'role.lab_submitter'
         return roles
 
-    def keys(self, properties):
-        keys = super(Item, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(Item, self).unique_keys(properties)
         if 'accession' not in self.schema['properties']:
             return keys
         keys.setdefault('accession', []).extend(properties.get('alternate_accessions', []))

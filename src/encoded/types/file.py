@@ -94,8 +94,8 @@ class File(Item):
         'submitted_by',
     ]
 
-    def keys(self, properties):
-        keys = super(File, self).keys(properties)
+    def unique_keys(self, properties):
+        keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)

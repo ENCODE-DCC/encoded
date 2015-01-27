@@ -316,8 +316,8 @@ class Connection(object):
     def create(self, item_type, uuid):
         return self.storage.create(item_type, uuid)
 
-    def update(self, model, properties, sheets=None, keys=None, links=None):
-        self.storage.update(model, properties, sheets, keys, links)
+    def update(self, model, properties, sheets=None, unique_keys=None, links=None):
+        self.storage.update(model, properties, sheets, unique_keys, links)
 
 
 class Root(object):
@@ -557,7 +557,7 @@ class Item(object):
                 keys[uniqueKey].append(key)
         return keys
 
-    def keys(self, properties):
+    def unique_keys(self, properties):
         return {
             name: [v for prop in props for v in aslist(properties.get(prop, ()))]
             for name, props in self.schema_keys.items()
@@ -611,17 +611,17 @@ class Item(object):
         self._update(properties, sheets)
 
     def _update(self, properties, sheets=None):
-        keys = None
+        unique_keys = None
         links = None
         if properties is not None:
             if 'uuid' in properties:
                 properties = properties.copy()
                 del properties['uuid']
 
-            keys = self.keys(properties)
-            for k, values in keys.items():
+            unique_keys = self.unique_keys(properties)
+            for k, values in unique_keys.items():
                 if isinstance(values, basestring):
-                    keys[k] = values = [values]
+                    unique_keys[k] = values = [values]
                 if len(set(values)) != len(values):
                     msg = "Duplicate keys for %r: %r" % (k, values)
                     raise ValidationFailure('body', [], msg)
@@ -633,7 +633,7 @@ class Item(object):
                     raise ValidationFailure('body', [], msg)
 
         connection = self.registry[CONNECTION]
-        connection.update(self.model, properties, sheets, keys, links)
+        connection.update(self.model, properties, sheets, unique_keys, links)
 
     @calculated_property(name='@id', schema={
         "type": "string",
@@ -1205,7 +1205,7 @@ def item_index_data(context, request):
     uuid = str(context.uuid)
     properties = context.upgrade_properties(finalize=False)
     links = context.links(properties)
-    keys = context.keys(properties)
+    unique_keys = context.unique_keys(properties)
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
@@ -1218,19 +1218,19 @@ def item_index_data(context, request):
     paths = {path}
     collection = context.collection
 
-    if collection.unique_key in keys:
+    if collection.unique_key in unique_keys:
         paths.update(
             resource_path(collection, key)
-            for key in keys[collection.unique_key])
+            for key in unique_keys[collection.unique_key])
 
     for base in (collection, request.root):
         for key_name in ('accession', 'alias'):
-            if key_name not in keys:
+            if key_name not in unique_keys:
                 continue
             paths.add(resource_path(base, uuid))
             paths.update(
                 resource_path(base, key)
-                for key in keys[key_name])
+                for key in unique_keys[key_name])
 
     path = path + '/'
     embedded = embed(request, join(path, '@@embedded'))
@@ -1242,7 +1242,7 @@ def item_index_data(context, request):
         'embedded': embedded,
         'object': embed(request, join(path, '@@object')),
         'links': links,
-        'keys': keys,
+        'unique_keys': unique_keys,
         'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,
