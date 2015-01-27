@@ -905,8 +905,6 @@ def collection_add(context, request, render=None):
 
 
 @view_config(context=Item, permission='view', request_method='GET')
-@view_config(context=Item, permission='view', request_method='GET',
-             name='details')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
@@ -946,6 +944,8 @@ def item_links(context, request):
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
+@view_config(context=Item, permission='view', request_method='GET',
+             name='details')
 def item_view_object(context, request):
     """ Render json structure
 
