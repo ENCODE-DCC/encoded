@@ -37,11 +37,17 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
-    'file',
-    'image',
-    'page',
     'publication',
     'software',
+    'software_version',
+    'analysis_step',
+    'pipeline',
+    'workflow_run',
+    'analysis_step_run',
+    'file',
+    'quality_metric',
+    'image',
+    'page',
 ]
 
 ##############################################################################
@@ -503,6 +509,9 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('related_files', 'possible_controls'),
     ],
+    'workflow_run': [
+        remove_keys('input_files'),
+    ],
 }
 
 
@@ -528,6 +537,9 @@ PHASE2_PIPELINES = {
     ],
     'dataset': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'workflow_run': [
+        skip_rows_missing_all_keys('input_files'),
     ],
 }
 

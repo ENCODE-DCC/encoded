@@ -85,6 +85,12 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
+        'derived_from',
+        'steps',
+        'steps.analysis_step',
+        'steps.analysis_step.software_versions',
+        'steps.analysis_step.software_versions.software',
+        'pipeline',
         'submitted_by',
     ]
 

@@ -424,7 +424,8 @@
                 "nuclear matrix",
                 "nucleolus",
                 "nucleoplasm",
-                "polysome"
+                "polysome",
+                "insoluble cytoplasmic fraction"
             ]
         },
         "subcellular_fraction_term_id": {
@@ -442,7 +443,8 @@
                 "GO:0016363",
                 "GO:0005730",
                 "GO:0005654",
-                "GO:0005844"
+                "GO:0005844",
+                "NTR:0002594"
             ]
 
         },
