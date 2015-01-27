@@ -3,7 +3,7 @@
     "id": "/profiles/quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step", "files"],
+    "required": ["step_run", "files"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
