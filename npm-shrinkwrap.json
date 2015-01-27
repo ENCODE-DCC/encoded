@@ -310,26 +310,9 @@
         }
       }
     },
-    "dagre": {
-      "version": "0.6.4",
-      "from": "https://registry.npmjs.org/dagre/-/dagre-0.6.4.tgz",
-      "resolved": "https://registry.npmjs.org/dagre/-/dagre-0.6.4.tgz",
-      "dependencies": {
-        "graphlib": {
-          "version": "1.0.1",
-          "from": "https://registry.npmjs.org/graphlib/-/graphlib-1.0.1.tgz",
-          "resolved": "https://registry.npmjs.org/graphlib/-/graphlib-1.0.1.tgz"
-        },
-        "lodash": {
-          "version": "2.4.1",
-          "from": "https://registry.npmjs.org/lodash/-/lodash-2.4.1.tgz",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-2.4.1.tgz"
-        }
-      }
-    },
     "dagre-d3": {
       "version": "0.4.3-pre",
-      "from": "../../../../var/folders/yb/9lps1nd934596x90mx1vkl580000gq/T/npm-91797-f34ec192/1422311280324-0.21883637178689241/4ca7ab3c85d2b8ecb13171387d1306ee3e9ec540",
+      "from": "../../../../var/folders/yb/9lps1nd934596x90mx1vkl580000gq/T/npm-832-eb42471d/1422319924445-0.8950348328799009/4ca7ab3c85d2b8ecb13171387d1306ee3e9ec540",
       "resolved": "git://github.com/ENCODE-DCC/dagre-d3.git#4ca7ab3c85d2b8ecb13171387d1306ee3e9ec540",
       "dependencies": {
         "dagre": {

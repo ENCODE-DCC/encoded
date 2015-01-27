@@ -365,7 +365,7 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
                 if (matchedSwVers) {
                     swVers[i] = matchedSwVers;
                 }
-                return !!matchedSwVers;
+                return matchedSwVers;
             });
         });
 

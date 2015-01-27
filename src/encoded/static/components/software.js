@@ -130,15 +130,19 @@ var Software = module.exports.Software = React.createClass({
                     </dl>
                 </div>
 
-                {this.transferPropsTo(
-                    <FetchedItems url={pipeline_url} Component={PipelinesUsingSoftwareVersion} />
-                )}
+                {context.versions.length ?
+                    <div>
+                        <h3>Software Versions</h3>
+                        <SoftwareVersionTable items={context.versions} />
+                    </div>
+                : null }
             </div>
         );
     }
 });
 globals.content_views.register(Software, 'software');
 
+// Commenting out until pipelines are used.
 
 var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
     render: function () {
@@ -153,6 +157,40 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
         );
     }
 });
+
+
+var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
+    render: function() {
+        var rows = {};
+        this.props.items.forEach(function (version) {
+            rows[version['@id']] = (
+                <tr>
+                    <td><a href={version.downloaded_url}>{version.version}</a></td>
+                    <td>{version.download_checksum}</td>
+                </tr>
+            );
+        });
+        return (
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Download checksum</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        );
+    }
+});
+
 
 var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
