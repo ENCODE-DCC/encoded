@@ -36,7 +36,6 @@ def audit_status_replicate(value, system):
         (rep_status in ['released', 'revoked'] and exp_status not in ['released', 'revoked']) or
         (exp_status in ['deleted'] and rep_status not in ['deleted'])):
         #  If any of the three cases exist, there is an error
-
         detail = '{} replicate {} is in {} experiment'.format(
             rep_status,
             value['uuid'],
