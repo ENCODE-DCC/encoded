@@ -620,8 +620,6 @@ class Item(object):
 
             unique_keys = self.unique_keys(properties)
             for k, values in unique_keys.items():
-                if isinstance(values, basestring):
-                    unique_keys[k] = values = [values]
                 if len(set(values)) != len(values):
                     msg = "Duplicate keys for %r: %r" % (k, values)
                     raise ValidationFailure('body', [], msg)

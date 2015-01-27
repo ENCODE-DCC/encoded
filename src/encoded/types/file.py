@@ -102,7 +102,7 @@ class File(Item):
                 keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
-                keys['file:paired_with'] = properties['paired_with']
+                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
         return keys
 
     # Don't specify schema as this just overwrites the existing value
