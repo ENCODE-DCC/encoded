@@ -219,7 +219,7 @@ def es_mapping(mapping):
                 'include_in_all': False,
                 'index': 'not_analyzed'
             },
-            'keys': {
+            'unique_keys': {
                 'type': 'object',
                 'include_in_all': False,
                 '_default_': {
