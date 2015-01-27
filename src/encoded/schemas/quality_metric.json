@@ -16,7 +16,7 @@
         "schema_version": {
             "default": "1"
         },
-        "step": {
+        "step_run": {
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
