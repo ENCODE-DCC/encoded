@@ -69,7 +69,16 @@
                             "Per sequence quality scores",
                             "C methylated in CpG context",
                             "C methylated in CHG context",
-                            "C methylated in CHH context"
+                            "C methylated in CHH context",
+                            "read1 mapped",
+                            "read2 mapped",
+                            "singletons",
+                            "properly paired",
+                            "in total",
+                            "mapped reads",
+                            "paired in sequencing",
+                            "mate mapped different chr",
+                            "mate mapped different chr (mapQ>=5)"
                         ]
                     },
                     "value": {
