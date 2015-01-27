@@ -34,7 +34,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='embedded', condition=rfa('ENCODE2','ENCODE2-Mouse','ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='embedded', condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'FlyWormChIP'))
 def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
@@ -45,15 +45,18 @@ def audit_file_controlled_by(value, system):
 
     if value['file_format'] not in ['fastq']:
         return
-    
+
     if value['dataset'].get('assay') not in ['ChIP-seq, RAMPAGE, CAGE']:
         return
-    
+
     if value['dataset']['target'].get('investigated_as') == 'Control':
         return
-    
+
     if 'controlled_by' not in value or (value['controlled_by'] == []):
-        detail = 'Fastq file {} from {} should have a controlled_by value'.format(value['accession'],value['dataset']['assay'])
+        detail = 'Fastq file {} from {} requires controlled_by'.format(
+            value['accession'],
+            value['dataset']['assay']
+            )
         raise AuditFailure('missing controlled_by', detail, level='ERROR')
 
 
