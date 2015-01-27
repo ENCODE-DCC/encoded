@@ -130,7 +130,7 @@ var Software = module.exports.Software = React.createClass({
                     </dl>
                 </div>
 
-                {context.versions.length ?
+                {context.versions && context.versions.length ?
                     <div>
                         <h3>Software Versions</h3>
                         <SoftwareVersionTable items={context.versions} />
