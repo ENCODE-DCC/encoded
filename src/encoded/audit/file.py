@@ -59,6 +59,24 @@ def audit_file_controlled_by(value, system):
             )
         raise AuditFailure('missing controlled_by', detail, level='ERROR')
 
+    possible_controls = value['dataset'].get('possible_controls')
+    for ff in value['controlled_by']:
+        if ff['dataset'] not in possible_controls:
+            detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
+                value['accession'],
+                ff['accession'],
+                ff['dataset']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
+        if ff['file_format'] != value['file_format']:
+            detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
+                value['accession'],
+                value['file_format'],
+                ff['accession'],
+                ff['file_format']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_flowcells(value, system):

@@ -27,3 +27,9 @@ def test_audit_file_size(testapp, file1):
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing file_size' for error in errors)
+
+
+def test_audit_file_controlled_by(testapp, file1):
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing controlled_by' for error in errors)
