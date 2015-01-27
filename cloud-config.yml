@@ -125,6 +125,12 @@ runcmd:
 - sudo a2disconf other-vhosts-access-log
 - sudo a2disconf serve-cgi-bin
 - sudo service apache2 reload
+- if test -z "%(CANDIDATE)s"
+- then
+-   sudo pg_ctlcluster 9.3 main promote
+-   sudo -u encoded bin/update-keys-links production.ini
+-   sudo -u encoded bin/upgrade production.ini
+- fi
 # - sleep 10
 # - sudo pg_ctlcluster 9.3 main promote
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf

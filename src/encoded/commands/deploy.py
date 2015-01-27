@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-def run(wale_s3_prefix, branch=None, name=None, persistent=False):
+def run(wale_s3_prefix, branch=None, name=None, persistent=False, candidate=''):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -39,6 +39,7 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
+        'CANDIDATE': candidate,
     }
 
     reservation = conn.run_instances(
@@ -79,6 +80,7 @@ def main():
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
+    parser.add_argument('--candidate', action='store_const', default='', const='CANDIDATE', help="Deploy candidate instance")
     args = parser.parse_args()
 
     return run(**vars(args))
