@@ -50,7 +50,6 @@ from .embedding import (
     embed,
     expand_path,
 )
-from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import RDBStorage
 from collections import (
@@ -326,7 +325,6 @@ class Root(object):
     __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
-        (Allow, 'group.forms', ('forms',)),
     ]
 
     def __init__(self, registry):
@@ -359,17 +357,6 @@ class Root(object):
         resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
             return resource
-        resource = self.connection.get_by_unique_key('page:location', name)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.connection.get_by_unique_key('accession', name)
-            if resource is not None:
-                return resource
-        if ':' in name:
-            resource = self.connection.get_by_unique_key('alias', name)
-            if resource is not None:
-                return resource
         return default
 
     def __json__(self, request=None):
@@ -425,18 +412,6 @@ class Collection(Mapping):
             if resource.collection is not self and resource.__parent__ is not self:
                 return default
             return resource
-        if is_accession(name):
-            resource = self.connection.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = self.connection.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
         if self.unique_key is not None:
             resource = self.connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
