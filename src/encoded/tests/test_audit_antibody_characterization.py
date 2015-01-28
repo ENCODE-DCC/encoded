@@ -115,7 +115,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'status': 'pending dcc review'})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'term name mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched term_name' for error in errors)
 
 
 def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_characterization, base_characterization_review, base_document):
@@ -134,7 +134,7 @@ def test_audit_antibody_target_mismatch(testapp, base_antibody_characterization,
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': base_target['@id']})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'target mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched target' for error in errors)
 
 
 def test_audit_antibody_not_tag_antibody(testapp, base_antibody_characterization, recombinant_target, base_characterization_review,):
@@ -154,7 +154,7 @@ def test_audit_antibody_target_tag_antibody(testapp, base_antibody_characterizat
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': recombinant_target['@id'], 'characterizes': tag_antibody['@id']})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'tag target mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched tag target' for error in errors)
 
 
 def test_audit_antibody_lane_status_pending_mismatch1(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, wrangler, standards_document):
@@ -174,7 +174,7 @@ def test_audit_antibody_lane_status_pending_mismatch2(testapp, base_antibody_cha
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'pending dcc review'})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'lane status mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched lane status' for error in errors)
 
 
 def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, base_characterization_review2, wrangler, standards_document):
@@ -186,7 +186,7 @@ def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_ch
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'not compliant', 'reviewed_by': reviewed_by, 'documents': [standards_document['uuid']]})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'lane status mismatch' for error in errors)
+    assert any(error['category'] == 'mismatched lane status' for error in errors)
 
 
 def test_audit_unapproved_antibody_characterization_method1(testapp, base_antibody_characterization):

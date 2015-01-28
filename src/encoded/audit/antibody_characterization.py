@@ -34,7 +34,7 @@ def audit_antibody_characterization_review(value, system):
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
                 detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
-                raise AuditFailure('term name mismatch', detail, level='ERROR')
+                raise AuditFailure('mismatched term_name', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization')
@@ -85,7 +85,7 @@ def audit_antibody_characterization_target(value, system):
         else:
             if prefix not in unique_antibody_target:
                 detail = '{} not found in target list for antibody {}'.format(prefix, antibody['accession'])
-                raise AuditFailure('tag target mismatch', detail, level='ERROR')
+                raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
         target_matches = False
         for antibody_target in antibody['targets']:
@@ -93,7 +93,7 @@ def audit_antibody_characterization_target(value, system):
                 target_matches = True
         if not target_matches:
             detail = 'Target {} not found in target list for antibody {}'.format(target['name'], antibody['accession'])
-            raise AuditFailure('target mismatch', detail, level='ERROR')
+            raise AuditFailure('mismatched target', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization')
@@ -121,7 +121,7 @@ def audit_antibody_characterization_status(value, system):
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
             detail = 'A lane.status of {} is incompatible with antibody_characterization.status of pending dcc review'.format(lane['lane_status'])
-            raise AuditFailure('lane status mismatch', detail, level='WARNING')
+            raise AuditFailure('mismatched lane status', detail, level='WARNING')
             continue
 
         if lane['lane_status'] == 'compliant':
@@ -129,7 +129,7 @@ def audit_antibody_characterization_status(value, system):
 
     if has_compliant_lane and value['status'] != 'compliant':
         detail = 'A lane.status of {} is incompatible with antibody_characterization status of {}'.format(lane['lane_status'], value['status'])
-        raise AuditFailure('lane status mismatch', detail, level='DCC_ACTION')
+        raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
 
 
 @audit_checker('antibody_characterization')
