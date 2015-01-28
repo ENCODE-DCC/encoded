@@ -15,4 +15,7 @@ def rep1(experiment, testapp):
 def test_audit_status_replicate(testapp, rep1):
     res = testapp.get(rep1['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'rep status mismatch' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'rep status mismatch' for error in errors_list)

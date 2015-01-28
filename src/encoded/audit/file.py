@@ -34,6 +34,66 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
+@audit_checker('file',
+               frame=['dataset', 'dataset.target', 'controlled_by',
+                      'controlled_by.dataset'],
+               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'FlyWormChIP'))
+def audit_file_controlled_by(value, system):
+    '''
+    A fastq in a ChIP-seq experiment should have a controlled_by
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
+        return
+
+    if 'target' in value['dataset'] and value['dataset']['target'].get('investigated_as') == 'Control':
+        return
+
+    if 'controlled_by' not in value:
+        value['controlled_by'] = []
+
+    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
+        detail = 'Fastq file {} from {} requires controlled_by'.format(
+            value['accession'],
+            value['dataset']['assay_term_name']
+            )
+        raise AuditFailure('missing controlled_by', detail, level='ERROR')
+
+    possible_controls = value['dataset'].get('possible_controls')
+    biosample = value['dataset']['biosample_term_id']
+
+    for ff in value['controlled_by']:
+        control_bs = ff['dataset']['biosample_term_id']
+
+        if control_bs != biosample:
+            detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
+                value['accession'],
+                ff['accession'],
+                control_bs)
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+            return
+
+        if ff['file_format'] != value['file_format']:
+            detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
+                value['accession'],
+                value['file_format'],
+                ff['accession'],
+                ff['file_format']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+
+        if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
+            detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
+                value['accession'],
+                ff['accession'],
+                ff['dataset']['accession']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
+
+
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_flowcells(value, system):
     '''
