@@ -54,7 +54,7 @@ paired_end_assays = [
     ]
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):
     '''
     Released experiments need release date.
@@ -65,7 +65,7 @@ def audit_experiment_release_date(value, system):
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_description(value, system):
     '''
     Experiments should have descriptions that contain the experimental variables and
@@ -84,7 +84,7 @@ def audit_experiment_description(value, system):
         raise AuditFailure('malformed description', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_assay(value, system):
     '''
     Experiments should have assays with valid ontologies term ids and names that
@@ -132,7 +132,7 @@ def audit_experiment_assay(value, system):
         return
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['replicates.antibody', 'target'])
 def audit_experiment_target(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
@@ -191,7 +191,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['target', 'possible_controls'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -242,7 +242,7 @@ def audit_experiment_control(value, system):
 #             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_readlength(value, system):
     '''
     All ENCODE 3 experiments of sequencing type should specify their read_length
@@ -276,7 +276,7 @@ def audit_experiment_readlength(value, system):
         yield AuditFailure('mismatched read_length', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_platform(value, system):
     '''
     Platform has moved to file.  It is checked for presence there.
@@ -307,7 +307,7 @@ def audit_experiment_platform(value, system):
         yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_spikeins(value, system):
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
@@ -338,7 +338,7 @@ def audit_experiment_spikeins(value, system):
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
@@ -403,7 +403,7 @@ def audit_experiment_biosample_term(value, system):
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='embedded')
 def audit_experiment_paired_end(value, system):
     '''
     Libraries and replicates of certain assays should be paired end.
