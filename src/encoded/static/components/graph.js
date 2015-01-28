@@ -85,13 +85,6 @@ module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
-    getInitialState: function() {
-        return {
-            leftScrollDisabled: true,
-            rightScrollDisabled: true
-        };
-    },
-
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
@@ -101,7 +94,8 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label, rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
+                graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');
@@ -145,8 +139,8 @@ var Graph = module.exports.Graph = React.createClass({
         // Round the graph dimensions up to avoid problems detecting the end of scrolling.
         var width = Math.ceil(g.graph().width);
         var height = Math.ceil(g.graph().height);
-        svg.attr("width", width + 40).attr("height", height + 40)
-            .attr("viewBox", "-20 -20 " + (width + 40) + " " + (height + 40));
+        svg.attr("width", width + 40).attr("height", height + 60)
+            .attr("viewBox", "-20 -40 " + (width + 40) + " " + (height + 60));
     },
 
     componentDidMount: function () {
@@ -161,7 +155,7 @@ var Graph = module.exports.Graph = React.createClass({
             this.dagreLoaded = true;
 
             // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '#scroll-buttons')
+            var svg = d3.select(el).insert('svg', '#graph-node-info')
                 .attr('id', 'graphsvg')
                 .attr('preserveAspectRatio', 'xMidYMid');
             var svgGroup = svg.append("g");
@@ -176,9 +170,6 @@ var Graph = module.exports.Graph = React.createClass({
                     reactThis.props.nodeClickHandler(e, nodeId);
                 });
             });
-
-            // Make sure the left and right scroll buttons are enabled/disabled appropriately
-            this.scrollHandler();
         }.bind(this));
     },
 
@@ -190,98 +181,10 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
-    // Handle window resizing for doing the right thing with scrolling the graph
-    handleResize: function() {
-        this.scrollHandler();
-    },
-
-    componentWillUnmount: function() {
-        globals.unbindEvent(window, 'resize', this.handleResize);
-    },
-
-    // Handle a click in the left scroll button
-    scrollLeftStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft - 30;
-        if (newScrollLeft > 0) {
-            // The graph isn't scrolled all the way left yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
-        } else {
-            // The graph is scrolled all the way to the left; that's it for scrolling
-            displayNode.scrollLeft = 0;
-        }
-    },
-
-    // Handle a click in the right scroll button
-    scrollRightStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft + 30;
-        var svg = document.getElementById('graphsvg');
-        var widthDiff = svg.scrollWidth - displayNode.clientWidth;
-        if (newScrollLeft < widthDiff) {
-            // The graph isn't scrolled all the way right yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollRightStart, 100);
-        } else {
-            // The graph is scrolled all the way to the right; that's it for scrolling
-            displayNode.scrollLeft = widthDiff;
-        }
-    },
-
-    // Called when the visitor releases the mouse button from either scroll button
-    // Cancel the timer if any, and update the scroll button enable/disable state
-    scrollStop: function() {
-        if (this.scrollTimer) {
-            clearTimeout(this.scrollTimer);
-            this.scrollTimer = null;
-            this.scrollHandler();
-        }
-    },
-
-    // Handle scrolling either through the scroll buttons or the mouse
-    // Only handle if the scroll timer isn't running so that we don't update the
-    // display a bunch of times while the visitor's holding down a scroll button
-    scrollHandler: function() {
-        if (!this.scrollTimer) {
-            var leftScrollDisabled = true;
-            var rightScrollDisabled = true;
-            var container = this.refs.graphdisplay.getDOMNode();
-            var svg = document.getElementById('graphsvg');
-            var containerWidth = container.clientWidth;
-            var svgWidth = svg.scrollWidth;
-            if (containerWidth < svgWidth) {
-                // The graph is wide enough within the panel to scroll
-                // Enable or disable the left or right scroll buttons depending on
-                // whether we've scrolled all the way in that direction or not
-                leftScrollDisabled = container.scrollLeft === 0;
-                rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
-            }
-            if (this.state.rightScrollDisabled !== rightScrollDisabled) {
-                this.setState({rightScrollDisabled: rightScrollDisabled});
-            }
-            if (this.state.leftScrollDisabled !== leftScrollDisabled) {
-                this.setState({leftScrollDisabled: leftScrollDisabled});
-            }
-        }
-    },
-
     render: function() {
         return (
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
-                </div>
-                <div id="scroll-buttons">
-                    <button className="scroll-graph icon icon-arrow-left"
-                            onMouseDown={this.scrollLeftStart} onTouchStart={this.scrollLeftStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                            disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
-                    <button className="scroll-graph icon icon-arrow-right"
-                        onMouseDown={this.scrollRightStart} onTouchStart={this.scrollRightStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                        disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
                 </div>
                 {this.props.children}
             </div>
@@ -314,7 +217,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
             });
 
             // Add files and their steps as nodes to the graph
@@ -571,7 +474,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 <div>
                     <h3>Files generated by pipeline</h3>
                     <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                        <div className="graph-node-info">
+                        <div id="graph-node-info">
                             {meta ? <div className="panel-insert">{meta}</div> : null}
                         </div>
                     </Graph>
