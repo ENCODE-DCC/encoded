@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def file_exp(lab, award, testapp):
+def file_exp(lab, award, testapp, experiment):
     item = {
         'lab': lab['uuid'],
         'award': award['uuid'],
@@ -10,6 +10,7 @@ def file_exp(lab, award, testapp):
         'assay_term_id': 'OBI:0001864',
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
+        'possible_controls': [experiment['uuid']],
         'status': 'released'
         }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]

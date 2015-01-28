@@ -85,11 +85,11 @@ def audit_file_controlled_by(value, system):
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
 
-        if (possible_controls is None) or ff['dataset'] not in possible_controls:
+        if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
             detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
                 value['accession'],
                 ff['accession'],
-                ff['dataset']
+                ff['dataset']['accession']
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
 
