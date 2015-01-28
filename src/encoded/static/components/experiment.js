@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -17,6 +18,8 @@ var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
+var Graph = graph.Graph;
+var ExperimentGraph = graph.ExperimentGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -31,6 +34,7 @@ var Panel = function (props) {
 
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -330,6 +334,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
+                <ExperimentGraph context={context} />
+
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
@@ -340,6 +346,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
                     <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 ): null}
+
             </div>
         );
     }
@@ -560,6 +567,7 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
+
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');

@@ -67,24 +67,26 @@ def mixinProperties(schema, resolver):
     return schema
 
 
-def lookup_resource(root, base, path):
+def lookup_resource(registry, base, path):
+    from .contentbase import CONNECTION
     path = unquote_bytes_to_wsgi(native_(path))
+    connection = registry[CONNECTION]
     try:
         UUID(path)
     except ValueError:
         pass
     else:
-        item = root.get_by_uuid(path)
+        item = connection.get_by_uuid(path)
         if item is None:
             raise KeyError(path)
         return item
     if is_accession(path):
-        item = root.get_by_unique_key('accession', path)
+        item = connection.get_by_unique_key('accession', path)
         if item is None:
             raise KeyError(path)
         return item
     if ':' in path:
-        item = root.get_by_unique_key('alias', path)
+        item = connection.get_by_unique_key('alias', path)
         if item is None:
             raise KeyError(path)
         return item
@@ -107,7 +109,7 @@ def linkTo(validator, linkTo, instance, schema):
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = lookup_resource(request.root, base, instance)
+        item = lookup_resource(request.registry, base, instance)
         if item is None:
             raise KeyError()
     except KeyError:
@@ -164,7 +166,7 @@ def linkFrom(validator, linkFrom, instance, schema):
         request = get_current_request()
         base = request.root.by_item_type[linkType]
         try:
-            item = lookup_resource(request.root, base, instance.encode('utf-8'))
+            item = lookup_resource(request.registry, base, instance.encode('utf-8'))
             if item is None:
                 raise KeyError()
         except KeyError:
@@ -203,7 +205,7 @@ def linkFrom(validator, linkFrom, instance, schema):
             validated_instance = validator._validated[lv]
             del validator._validated[lv:]
             if path is not None:
-                item = lookup_resource(request.root, request.root, path)
+                item = lookup_resource(request.registry, request.root, path)
                 validated_instance['uuid'] = str(item.uuid)
             elif 'uuid' in validated_instance:  # where does this come from?
                 del validated_instance['uuid']

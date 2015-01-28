@@ -228,9 +228,6 @@ def es_update_object(request, objects, xmin):
                 if (i + 1) % 50 == 0:
                     log.info('Indexing %s %d', result['object']['@id'], i + 1)
 
-        if (i + 1) % 50 == 0:
-            es.indices.flush(index=INDEX)
-
     return i + 1
 
 

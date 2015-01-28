@@ -221,6 +221,8 @@
                         "unique minus signal",
                         "unique plus signal",
                         "unique signal",
+                        "genome reference",
+                        "genome index",
                         "transcriptome alignments",
                         "genome quantifications",
                         "transcript quantifications",
@@ -388,6 +390,39 @@
                 "revoked",
                 "released"
                 ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            }
+        },
+        "pipeline": {
+            "title": "Pipeline",
+            "description": "The pipeline the file was generated from.",
+            "comment": "For pipelines, see pipeline.json for available identifiers.",
+            "type": "string",
+            "linkTo": "pipeline"
+        },
+        "steps": {
+            "title": "Analysis steps" ,
+            "description": "The runs of the step the file was generated from.",
+            "type": "array",
+            "items": {
+                "title": "Analysis step",
+                "description": "The run instance of the step the file was generated from.",
+                "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
+                "type": "string",
+                "linkTo": "analysis_step_run"
+            }
         }
     },
     "columns": {

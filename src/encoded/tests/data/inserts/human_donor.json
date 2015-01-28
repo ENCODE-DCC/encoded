@@ -92,5 +92,24 @@
         "organism": "human",
         "sex": "unknown",
         "uuid": "f585f150-e6b2-11e3-ac10-0800200c9a66"
+    },
+    {
+        "accession": "ENCDO000AAK",
+        "age": "53",
+        "age_units": "year",
+        "aliases": [
+            "encode:donor_of_GM12878",
+            "encode:donor of GM12878"
+        ],
+        "award": "U41HG006992",
+        "ethnicity": "Caucasian",
+        "health_status": "unknown",
+        "lab": "j-michael-cherry",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "url": "http://ccr.coriell.org/Sections/BrowseCatalog/FamilyTypeSubDetail.aspx?PgId=402&fam=1463&coll=GM",
+        "uuid": "44d24e3f-bc5b-469a-8500-7ebd728f8ed5"
     }
 ]
