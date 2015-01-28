@@ -27,10 +27,35 @@ def file_rep(replicate, file_exp, testapp):
 
 
 @pytest.fixture
-def file2(file_exp, award, lab, file_rep, testapp):
+def file_exp2(lab, award, testapp):
     item = {
-        'dataset': file_exp['uuid'],
-        'replicate': file_rep['uuid'],
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'assay_term_name': 'RAMPAGE',
+        'assay_term_id': 'OBI:0001864',
+        'biosample_term_id': 'NTR:000013',
+        'biosample_term_name': 'Some other body part',
+        'status': 'released'
+        }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file_rep2(replicate, file_exp2, testapp):
+    item = {
+        'experiment': file_exp2['uuid'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'paired_ended': False
+        }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file2(file_exp2, award, lab, file_rep2, testapp):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8c998f00b204e9800998ecf8427e',
         'output_type': 'raw data',
