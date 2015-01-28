@@ -1,6 +1,6 @@
 [
     {
-    	"step": "63b1b347-f008-4103-8d20-0e12f54d1882",
+    	"step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
     	"files": ["ENCFF000VUQ"],
     	"qc_details": [
     		{
@@ -20,7 +20,7 @@
     	"uuid": "4a61b110-9ab2-11e4-bd06-0800200c9a66"
     },
     {
-    	"step": "63b1b347-f008-4103-8d20-0e12f54d1882",
+    	"step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
     	"files": ["ENCFF000VUS"],
     	"qc_details": [
     		{

@@ -224,6 +224,7 @@
                         "genome reference",
                         "genome index",
                         "transcriptome alignments",
+                        "exon quantifications",
                         "genome quantifications",
                         "transcript quantifications",
                         "methyl CG",

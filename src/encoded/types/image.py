@@ -27,9 +27,8 @@ class Image(ItemWithAttachment, Item):
     ]
     embedded = ['submitted_by']
 
-    def keys(self):
-        keys = super(Image, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(Image, self).unique_keys(properties)
         value = properties['attachment']['download']
         keys.setdefault('image:filename', []).append(value)
         return keys
