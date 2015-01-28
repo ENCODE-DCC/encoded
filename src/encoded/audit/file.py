@@ -52,8 +52,10 @@ def audit_file_controlled_by(value, system):
     if 'target' in value['dataset'] and value['dataset']['target'].get('investigated_as') == 'Control':
         return
 
-    if (('controlled_by' not in value) or
-        (value['controlled_by'] == [])) and (value['file_format'] in ['fastq']):
+    if 'controlled_by' not in value:
+        value['controlled_by'] = []
+
+    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
         detail = 'Fastq file {} from {} requires controlled_by'.format(
             value['accession'],
             value['dataset']['assay_term_name']
