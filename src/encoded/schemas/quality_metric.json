@@ -1,0 +1,106 @@
+{
+    "description": "Schema for reporting the specific calculation of an quality metrics",
+    "id": "/profiles/quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run", "files"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/standard_status"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "step_run": {
+            "title": "Analysis Step",
+            "description": "Reference to analysis step run in pipeline",
+            "type": "string",
+            "linkTo": "analysis_step_run"
+        },
+        "files": {
+            "title": "QC Input files",
+            "description": "All ENCFF files used to initiate the qc metrics",
+            "type": "array",
+            "items": {
+                "title": "Input File",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
+        "qc_details": {
+            "title": "QC details",
+            "description": "QC metric, values and level of qc",
+            "type": "array",
+            "items": {
+                "title": "QC detail",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "metric": {
+                        "title": "QC Metric",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string",
+                        "enum": [
+                            "SPOT",
+                            "Pearson correlation coefficient",
+                            "IDR",
+                            "PBC",
+                            "NSC",
+                            "RSC",
+                            "Minimum unique reads",
+                            "Minimum uniquely mapped reads",
+                            "sequencing coverage",
+                            "Per tile sequence quality",
+                            "Per base sequence quality",
+                            "Sequence Duplication Levels",
+                            "Per base sequence content",
+                            "Per sequence GC content",
+                            "Sequence Length Distribution",
+                            "Kmer Content",
+                            "Basic Statistics",
+                            "Adapter Content",
+                            "Overrepresented sequences",
+                            "Per base N content",
+                            "Per sequence quality scores",
+                            "C methylated in CpG context",
+                            "C methylated in CHG context",
+                            "C methylated in CHH context",
+                            "read1 mapped",
+                            "read2 mapped",
+                            "singletons",
+                            "properly paired",
+                            "in total",
+                            "mapped reads",
+                            "paired in sequencing",
+                            "mate mapped different chr",
+                            "mate mapped different chr (mapQ>=5)"
+                        ]
+                    },
+                    "value": {
+                        "title": "QC value",
+                        "type": [
+                            "string",
+                            "number"
+                        ]
+                    },
+                    "level": {
+                        "title": "QC level",
+                        "description": "The level at which comparisons should be visualized.",
+                        "type": "string",
+                        "enum": [
+                            "file",
+                            "replicate",
+                            "library",
+                            "experiment"
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}

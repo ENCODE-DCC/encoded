@@ -85,19 +85,24 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
+        'derived_from',
+        'steps',
+        'steps.analysis_step',
+        'steps.analysis_step.software_versions',
+        'steps.analysis_step.software_versions.software',
+        'pipeline',
         'submitted_by',
     ]
 
-    def keys(self):
-        keys = super(File, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(File, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
-                keys['file:paired_with'] = properties['paired_with']
+                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
         return keys
 
     # Don't specify schema as this just overwrites the existing value

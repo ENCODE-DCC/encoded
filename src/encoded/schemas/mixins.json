@@ -295,5 +295,21 @@
                 "linkTo": "construct"
             }
         }
+    },
+    "assay": {
+        "assay_term_name": {
+            "@id": null,
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "default": "",
+            "type": "string"
+        },
+        "assay_term_id": {
+            "@type": "@id",
+            "title": "Assay ID",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
+            "type": "string",
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
+        }
     }
 }

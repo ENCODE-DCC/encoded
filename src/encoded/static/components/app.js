@@ -107,17 +107,6 @@ var App = React.createClass({
         }
     },
 
-    // Different browsers handle event listeners differently; this function covers all
-    bindEvent: function (el, eventName, eventHandler) {
-        if (el.addEventListener) {
-            // Modern browsers
-            el.addEventListener(eventName, eventHandler, false); 
-        } else if (el.attachEvent) {
-            // IE8 specific
-            el.attachEvent('on' + eventName, eventHandler);
-        }
-    },
-
     // If ESC pressed while drop-down menu open, close the menu
     handleKey: function(e) {
         if (e.which === 27 && this.state.dropdownComponent !== undefined) {
@@ -128,7 +117,7 @@ var App = React.createClass({
 
     // Once the app component is mounted, bind keydowns to handleKey function
     componentDidMount: function() {
-        this.bindEvent(window, 'keydown', this.handleKey);
+        globals.bindEvent(window, 'keydown', this.handleKey);
     },
 
     render: function() {

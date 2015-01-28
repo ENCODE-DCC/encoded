@@ -28,6 +28,19 @@ class Experiment(Dataset):
     base_types = [Dataset.item_type] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.platform',
+        'files.steps',
+        'files.pipeline',
+        'files.derived_from',
+        'files.steps.analysis_step',
+        'files.steps.analysis_step.software_versions',
+        'files.steps.analysis_step.software_versions.software',
+        'contributing_files.platform',
+        'contributing_files.steps',
+        'contributing_files.pipeline',
+        'contributing_files.derived_from',
+        'contributing_files.steps.analysis_step',
+        'contributing_files.steps.analysis_step.software_versions',
+        'contributing_files.steps.analysis_step.software_versions.software',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',
@@ -189,9 +202,8 @@ class Replicate(Item):
         'platform',
     ]
 
-    def keys(self):
-        keys = super(Replicate, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(Replicate, self).unique_keys(properties)
         value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
             **properties)
         keys.setdefault('replicate:experiment_biological_technical', []).append(value)
