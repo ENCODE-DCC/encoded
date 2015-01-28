@@ -15,4 +15,7 @@ def test_audit_publication(testapp, dataset):
     testapp.patch_json(dataset['@id'], {'dataset_type': 'publication'})
     res = testapp.get(dataset['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing reference' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing reference' for error in errors_list)

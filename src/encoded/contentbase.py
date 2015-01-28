@@ -49,6 +49,7 @@ from .decorator import classreify
 from .embedding import (
     embed,
     expand_path,
+    make_subrequest,
 )
 from .schema_utils import validate_request
 from .storage import RDBStorage
@@ -1166,11 +1167,15 @@ def inherit_audits(request, embedded, embedded_paths):
     for embedded_path in embedded_paths:
         audit_paths.update(path_ids(request, embedded, embedded_path))
 
-    audit = []
+    audits = {}
     for audit_path in audit_paths:
         result = embed(request, join(audit_path, '@@audit-self'))
-        audit.extend(result['audit'])
-    return audit
+        for audit in result['audit']:
+            if audit['level_name'] in audits:
+                audits[audit['level_name']].append(audit)
+            else:
+                audits[audit['level_name']] = [audit]
+    return audits
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
@@ -1206,8 +1211,8 @@ def item_index_data(context, request):
                 for key in unique_keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, join(path, '@@embedded'))
-    audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
+    embedded = request.embed(path, '@@embedded')
+    audit = request.embed(path, '@@audit')['audit']
 
     document = {
         'uuid': uuid,

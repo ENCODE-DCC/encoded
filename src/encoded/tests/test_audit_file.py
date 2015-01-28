@@ -102,22 +102,34 @@ def test_audit_paired_with(testapp, file1):
     testapp.patch_json(file1['@id'] + '?validate=false', {'paired_end': '2'})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing paired_with' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing paired_with' for error in errors_list)
 
 
 def test_audit_file_size(testapp, file1):
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing file_size' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file_size' for error in errors_list)
 
 
 def test_audit_file_missing_controlled_by(testapp, file3):
     res = testapp.get(file3['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing controlled_by' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file_size' for error in errors_list)
 
 
 def test_audit_file_mismatched_controlled_by(testapp, file1):
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched controlled_by' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file_size' for error in errors_list)
