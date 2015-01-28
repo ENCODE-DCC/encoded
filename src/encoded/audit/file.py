@@ -108,7 +108,6 @@ def audit_file_output_type(value, system):
         return
 
     undesirable_output_type = [
-        'Alignability',
         'Base_Overlap_Signal',
         'enhancers_forebrain',
         'enhancers_heart',
@@ -125,17 +124,14 @@ def audit_file_output_type(value, system):
         'GeneGencV10',
         'GeneGencV3c',
         'GeneGencV7',
-        'HMM',
         'Junctions',
         'library_fraction',
         'Matrix',
-        'minus signal',
         'mPepMapGcFt',
         'mPepMapGcUnFt'
         'PctSignal'
         'pepMapGcFt',
         'pepMapGcUnFt',
-        'Primer',
         'PrimerPeaks',
         'RbpAssocRna',
         'SumSignal',
@@ -149,7 +145,6 @@ def audit_file_output_type(value, system):
         'TssGencV7',
         'TssHmm',
         'UniformlyProcessedPeakCalls',
-        'Uniqueness',
         'Validation',
         'Valleys',
         'WaveSignal',
@@ -160,4 +155,4 @@ def audit_file_output_type(value, system):
             detail = 'File {} has output_type "{}" which is not a standard value'.format(
                 value['accession'],
                 value['output_type'])
-            raise AuditFailure('undesirable output type', detail, level='DCC_ACTION')
+            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
