@@ -364,6 +364,7 @@
             "type": "string",
             "permission": "import_items",
             "enum": [
+                "None",
                 "M2",
                 "M3",
                 "M4",
