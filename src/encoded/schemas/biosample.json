@@ -342,7 +342,9 @@
                     "digestive system",
                     "arthropod fat body",
                     "antenna",
-                    "adult maxillary segment"
+                    "adult maxillary segment",
+                    "female reproductive system",
+                    "male reproductive system"
                 ]
             }
         },
@@ -364,7 +366,9 @@
                     "UBERON:0001007",
                     "UBERON:0003917",
                     "UBERON:0000972",
-                    "FBbt:00003016"
+                    "FBbt:00003016",
+                    "UBERON:0000474",
+                    "UBERON:0000079"
                 ]
             }
         },
@@ -424,7 +428,8 @@
                 "nuclear matrix",
                 "nucleolus",
                 "nucleoplasm",
-                "polysome"
+                "polysome",
+                "insoluble cytoplasmic fraction"
             ]
         },
         "subcellular_fraction_term_id": {
@@ -442,7 +447,8 @@
                 "GO:0016363",
                 "GO:0005730",
                 "GO:0005654",
-                "GO:0005844"
+                "GO:0005844",
+                "NTR:0002594"
             ]
 
         },

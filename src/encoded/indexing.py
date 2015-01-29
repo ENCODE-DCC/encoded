@@ -18,6 +18,7 @@ from .contentbase import (
     BeforeModified,
     Created,
 )
+from sqlalchemy.exc import StatementError
 from .embedding import embed
 from .renderers import json_renderer
 from .stats import ElasticsearchConnectionMixin
@@ -29,11 +30,13 @@ import datetime
 import functools
 import json
 import logging
+import pytz
 import transaction
 
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
 INDEX = 'encoded'
+SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 
 def includeme(config):
@@ -82,15 +85,18 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 def index(request):
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
+    recovery = request.json.get('recovery', False)
     es = request.registry[ELASTIC_SEARCH]
 
     session = DBSession()
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     query = connection.execute("""
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
+        SET TRANSACTION ISOLATION LEVEL {}, READ ONLY, DEFERRABLE;
         SELECT txid_snapshot_xmin(txid_current_snapshot());
-    """)
+    """.format('REPEATABLE READ' if recovery else 'SERIALIZABLE'))
+    # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
+    # which is not available in recovery.
     xmin = query.scalar()  # lowest xid that is still in progress
 
     first_txn = None
@@ -138,7 +144,7 @@ def index(request):
             return result
 
         es.indices.refresh(index=INDEX)
-        res = es.search(index=INDEX, body={
+        res = es.search(index=INDEX, size=SEARCH_MAX, body={
             'filter': {
                 'or': [
                     {
@@ -157,17 +163,20 @@ def index(request):
             },
             '_source': False,
         })
-        referencing = {hit['_id'] for hit in res['hits']['hits']}
-        invalidated = referencing | updated
-        result.update(
-            max_xid=max_xid,
-            renamed=renamed,
-            updated=updated,
-            referencing=len(referencing),
-            invalidated=len(invalidated),
-            txn_count=txn_count,
-            first_txn_timestamp=first_txn.isoformat(),
-        )
+        if res['hits']['total'] > SEARCH_MAX:
+            invalidated = all_uuids(request.root)
+        else:
+            referencing = {hit['_id'] for hit in res['hits']['hits']}
+            invalidated = referencing | updated
+            result.update(
+                max_xid=max_xid,
+                renamed=renamed,
+                updated=updated,
+                referencing=len(referencing),
+                invalidated=len(invalidated),
+                txn_count=txn_count,
+                first_txn_timestamp=first_txn.isoformat(),
+            )
 
     if not dry_run:
         result['indexed'] = es_update_object(request, invalidated, xmin)
@@ -177,7 +186,7 @@ def index(request):
         es.indices.refresh(index=INDEX)
 
     if first_txn is not None:
-        result['lag'] = str(datetime.datetime.now() - first_txn)
+        result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
 
     return result
 
@@ -207,6 +216,9 @@ def es_update_object(request, objects, xmin):
     for i, uuid in enumerate(objects):
         try:
             result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
+        except StatementError:
+            # Can't reconnect until invalid transaction is rolled back
+            raise
         except Exception:
             log.warning('Error indexing %s', uuid, exc_info=True)
         else:
@@ -223,9 +235,6 @@ def es_update_object(request, objects, xmin):
             else:
                 if (i + 1) % 50 == 0:
                     log.info('Indexing %s %d', result['object']['@id'], i + 1)
-
-        if (i + 1) % 50 == 0:
-            es.indices.flush(index=INDEX)
 
     return i + 1
 

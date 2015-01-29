@@ -54,7 +54,7 @@ paired_end_assays = [
     ]
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):
     '''
     Released experiments need release date.
@@ -65,7 +65,7 @@ def audit_experiment_release_date(value, system):
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_description(value, system):
     '''
     Experiments should have descriptions that contain the experimental variables and
@@ -78,13 +78,40 @@ def audit_experiment_description(value, system):
     if 'description' not in value:
         return
 
-    notallowed = ['=', ':', '!',';']
+    notallowed = ['=', ':', '!', ';']
     if any(c in notallowed for c in value['description']):
         detail = 'Experiment {} has odd character(s) in the description'.format(value['accession'])
         raise AuditFailure('malformed description', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
+def audit_experiment_documents(value, system):
+    '''
+    Experiments should have documents.  Protocol documents or some sort of document.
+    '''
+    if value['status'] in ['deleted', 'replaced', 'proposed', 'preliminary']:
+        return
+
+    # If the experiment has documents, we are good
+    if len(value.get('documents')) > 0:
+        return
+
+    # If there are no replicates to check yet, why bother
+    if 'replicates' not in value:
+        return
+
+    lib_docs = 0
+    for rep in value['replicates']:
+        if 'library' in rep:
+            lib_docs += len(rep['library']['documents'])
+
+    # If there are no library documents anywhere, then we say something
+    if lib_docs == 0:
+        detail = 'Experiment {} has no attached documents'.format(value['accession'])
+        raise AuditFailure('missing documents', detail, level='WARNING')
+
+
+@audit_checker('experiment', frame='object')
 def audit_experiment_assay(value, system):
     '''
     Experiments should have assays with valid ontologies term ids and names that
@@ -132,7 +159,7 @@ def audit_experiment_assay(value, system):
         return
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['replicates.antibody', 'target', 'replicates.antibody.targets'])
 def audit_experiment_target(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
@@ -191,7 +218,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['target', 'possible_controls'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -242,7 +269,7 @@ def audit_experiment_control(value, system):
 #             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_experiment_readlength(value, system):
     '''
     All ENCODE 3 experiments of sequencing type should specify their read_length
@@ -254,9 +281,6 @@ def audit_experiment_readlength(value, system):
         return
 
     if value.get('assay_term_name') not in seq_assays:
-        return
-
-    if value['award'].get('rfa') in ['ENCODE2', 'ENCODE2-Mouse']:
         return
 
     read_lengths = []
@@ -276,7 +300,7 @@ def audit_experiment_readlength(value, system):
         yield AuditFailure('mismatched read_length', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['files','files.platform'])
 def audit_experiment_platform(value, system):
     '''
     Platform has moved to file.  It is checked for presence there.
@@ -307,7 +331,7 @@ def audit_experiment_platform(value, system):
         yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_spikeins(value, system):
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
@@ -338,7 +362,7 @@ def audit_experiment_spikeins(value, system):
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='object')
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
@@ -377,7 +401,12 @@ def audit_experiment_biosample_term(value, system):
     else:
         ontology_name = ontology[term_id]['name']
         if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-            detail = '{} has {} - {} - {}'.format(value['accession'], term_id, term_name, ontology_name)
+            detail = '{} has {} - {} - {}'.format(
+                value['accession'],
+                term_id,
+                term_name,
+                ontology_name
+                )
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
     for rep in value['replicates']:
@@ -395,7 +424,11 @@ def audit_experiment_biosample_term(value, system):
         bs_name = biosample.get('biosample_term_name')
 
         if bs_type != term_type:
-            detail = '{} has mismatched biosample_type, {} - {}'.format(lib['accession'], term_type, bs_type)
+            detail = '{} has mismatched biosample_type, {} - {}'.format(
+                lib['accession'],
+                term_type,
+                bs_type
+                )
             yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
 
         if bs_name != term_name:
@@ -403,7 +436,7 @@ def audit_experiment_biosample_term(value, system):
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
 
-@audit_checker('experiment')
+@audit_checker('experiment', frame='embedded')
 def audit_experiment_paired_end(value, system):
     '''
     Libraries and replicates of certain assays should be paired end.
