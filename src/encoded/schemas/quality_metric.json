@@ -3,7 +3,7 @@
     "id": "/profiles/quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step", "files"],
+    "required": ["step_run", "files"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -16,7 +16,7 @@
         "schema_version": {
             "default": "1"
         },
-        "step": {
+        "step_run": {
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
@@ -66,7 +66,19 @@
                             "Adapter Content",
                             "Overrepresented sequences",
                             "Per base N content",
-                            "Per sequence quality scores"
+                            "Per sequence quality scores",
+                            "C methylated in CpG context",
+                            "C methylated in CHG context",
+                            "C methylated in CHH context",
+                            "read1 mapped",
+                            "read2 mapped",
+                            "singletons",
+                            "properly paired",
+                            "in total",
+                            "mapped reads",
+                            "paired in sequencing",
+                            "mate mapped different chr",
+                            "mate mapped different chr (mapQ>=5)"
                         ]
                     },
                     "value": {

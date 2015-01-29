@@ -49,8 +49,8 @@ from .decorator import classreify
 from .embedding import (
     embed,
     expand_path,
+    make_subrequest,
 )
-from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import RDBStorage
 from collections import (
@@ -326,7 +326,6 @@ class Root(object):
     __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
-        (Allow, 'group.forms', ('forms',)),
     ]
 
     def __init__(self, registry):
@@ -359,17 +358,6 @@ class Root(object):
         resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
             return resource
-        resource = self.connection.get_by_unique_key('page:location', name)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.connection.get_by_unique_key('accession', name)
-            if resource is not None:
-                return resource
-        if ':' in name:
-            resource = self.connection.get_by_unique_key('alias', name)
-            if resource is not None:
-                return resource
         return default
 
     def __json__(self, request=None):
@@ -425,18 +413,6 @@ class Collection(Mapping):
             if resource.collection is not self and resource.__parent__ is not self:
                 return default
             return resource
-        if is_accession(name):
-            resource = self.connection.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = self.connection.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
         if self.unique_key is not None:
             resource = self.connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
@@ -905,8 +881,6 @@ def collection_add(context, request, render=None):
 
 
 @view_config(context=Item, permission='view', request_method='GET')
-@view_config(context=Item, permission='view', request_method='GET',
-             name='details')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
@@ -946,6 +920,8 @@ def item_links(context, request):
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
+@view_config(context=Item, permission='view', request_method='GET',
+             name='details')
 def item_view_object(context, request):
     """ Render json structure
 
@@ -1191,11 +1167,15 @@ def inherit_audits(request, embedded, embedded_paths):
     for embedded_path in embedded_paths:
         audit_paths.update(path_ids(request, embedded, embedded_path))
 
-    audit = []
+    audits = {}
     for audit_path in audit_paths:
         result = embed(request, join(audit_path, '@@audit-self'))
-        audit.extend(result['audit'])
-    return audit
+        for audit in result['audit']:
+            if audit['level_name'] in audits:
+                audits[audit['level_name']].append(audit)
+            else:
+                audits[audit['level_name']] = [audit]
+    return audits
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
@@ -1231,8 +1211,8 @@ def item_index_data(context, request):
                 for key in unique_keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, join(path, '@@embedded'))
-    audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
+    embedded = request.embed(path, '@@embedded')
+    audit = request.embed(path, '@@audit')['audit']
 
     document = {
         'uuid': uuid,

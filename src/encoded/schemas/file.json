@@ -224,6 +224,7 @@
                         "genome reference",
                         "genome index",
                         "transcriptome alignments",
+                        "exon quantifications",
                         "genome quantifications",
                         "transcript quantifications",
                         "methyl CG",
@@ -364,9 +365,13 @@
             "type": "string",
             "permission": "import_items",
             "enum": [
+                "None",
                 "M2",
                 "M3",
                 "M4",
+                "V3c",
+                "V7",
+                "V10",
                 "V19"
                 ]
         },
