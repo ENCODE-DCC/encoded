@@ -133,3 +133,13 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing file_size' for error in errors_list)
+
+
+def test_audit_file_replicate_match(testapp, file1, file_rep2):
+    testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched replicate' for error in errors_list)

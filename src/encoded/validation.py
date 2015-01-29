@@ -5,10 +5,12 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPForbidden,
     HTTPPreconditionFailed,
+    HTTPServiceUnavailable,
     HTTPUnprocessableEntity,
 )
 from past.builtins import basestring
 from pyramid.util import LAST
+from sqlalchemy.exc import InternalError
 import simplejson as json
 
 
@@ -16,6 +18,7 @@ def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
     config.add_view(view=http_error, context=HTTPError)
+    config.add_view(view=database_is_read_only, context=InternalError)
     config.add_view(view=refresh_session, context=CSRFTokenError)
     config.add_view(view=refresh_session, context=HTTPForbidden)
     config.add_view(view=refresh_session, context=HTTPPreconditionFailed)
@@ -111,6 +114,12 @@ def http_error(exc, request):
     if exc.comment is not None:
         result['comment'] = exc.comment
     return result
+
+
+def database_is_read_only(exc, request):
+    if 'read-only transaction' not in str(exc):
+        raise exc
+    return http_error(HTTPServiceUnavailable(), request)
 
 
 def jsondecode_error(exc, request):
