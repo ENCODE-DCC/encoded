@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-def run(wale_s3_prefix, branch=None, name=None, persistent=False):
+def run(wale_s3_prefix, image_id, instance_type, branch=None, name=None, persistent=False, candidate=''):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -39,11 +39,12 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
+        'CANDIDATE': candidate,
     }
 
     reservation = conn.run_instances(
-        'ami-199add29',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140829
-        instance_type='m3.xlarge',
+        image_id=image_id,
+        instance_type=instance_type,
         security_groups=['ssh-http-https'],
         user_data=user_data,
         block_device_map=bdm,
@@ -65,7 +66,7 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         time.sleep(1)
         instance.update()
 
-    print()
+    print('')
     print(instance.state)
     print(instance.public_dns_name)  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
 
@@ -78,7 +79,14 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument(
+        '--candidate', action='store_const', default='', const='CANDIDATE',
+        help="Deploy candidate instance")
+    parser.add_argument(
+        '--image-id', default='ami-3d50120d',
+        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
+    parser.add_argument('--instance-type', default='m3.xlarge')
     args = parser.parse_args()
 
     return run(**vars(args))

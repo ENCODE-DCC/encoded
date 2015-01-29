@@ -16,6 +16,30 @@ raw_data_formats = [
     ]
 
 
+@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
+def audit_file_replicate_match(value, system):
+    '''
+    A file's replicate should belong to the same experiment that the file
+    does.  These tend to get confused when replacing objects.
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    rep_exp = value['replicate']['experiment']['uuid']
+    file_exp = value['dataset']['uuid']
+
+    if rep_exp != file_exp:
+        detail = 'File {} has a replicate {} in experiment {}'.format(
+            value['accession'],
+            value['replicate']['uuid'],
+            value['replicate']['experiment']['accession'])
+        raise AuditFailure('mismatched replicate', detail, level='ERROR')
+
+
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_platform(value, system):
     '''
