@@ -258,7 +258,7 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not eligible histone antibody' for error in errors_list)
+    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):

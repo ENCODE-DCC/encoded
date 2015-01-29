@@ -554,10 +554,10 @@ def audit_experiment_antibody_eligible(value, system):
                             organism_match = True
                     if not organism_match:
                         detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                        yield AuditFailure('not eligible histone antibody', detail, level='NOT_COMPLIANT')
+                        yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
                 else:
                     detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                    yield AuditFailure('not eligible histone antibody', detail, level='NOT_COMPLIANT')
+                    yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']

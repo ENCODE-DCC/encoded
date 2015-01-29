@@ -29,7 +29,7 @@ def audit_antibody_characterization_review(value, system):
                     term_id,
                     term_name
                     )
-                raise AuditFailure('NTR', detail, level='DCC_ACTION')
+                raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
                 detail = 'Antibody characterization {} contains a biosample_term_id {} that is not in the ontology'.format(
