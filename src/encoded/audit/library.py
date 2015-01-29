@@ -54,7 +54,9 @@ def audit_library_documents(value, system):
 
     for method in list_of_methods:
         if value.get(method) == "see document" and value['documents'] == []:
-            detail = 'Library {} has a method that specifies "see document" yet has no document'.format(value['accession'])
+            detail = 'Library {} has a method that specifies "see document" yet has no document'.format(
+                value['accession']
+                )
             raise AuditFailure('missing document', detail, level='ERROR')
 
 

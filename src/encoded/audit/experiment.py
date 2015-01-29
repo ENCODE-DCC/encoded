@@ -78,7 +78,7 @@ def audit_experiment_description(value, system):
     if 'description' not in value:
         return
 
-    notallowed = ['=', ':', '!',';']
+    notallowed = ['=', ':', '!', ';']
     if any(c in notallowed for c in value['description']):
         detail = 'Experiment {} has odd character(s) in the description'.format(value['accession'])
         raise AuditFailure('malformed description', detail, level='WARNING')

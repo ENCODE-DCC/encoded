@@ -65,7 +65,11 @@ def audit_antibody_characterization_unique_reviews(value, system):
         if review_lane not in unique_reviews:
             unique_reviews.add(review_lane)
         else:
-            detail = 'Characterization_review.lane {} is a duplicate review for {} - {}'.format(lane, term_id, organism)
+            detail = 'Characterization_review.lane {} is a duplicate review for {} - {}'.format(
+                lane,
+                term_id,
+                organism
+                )
             raise AuditFailure('duplicate lane review', detail, level='ERROR')
 
 
@@ -91,16 +95,22 @@ def audit_antibody_characterization_target(value, system):
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:
-                detail = '{} not found in target list for antibody {}'.format(prefix, antibody['accession'])
-                raise AuditFailure('mismatched tag target', detail, level='ERROR')
+                detail = '{} is not found in target list for antibody {}'.format(
+                    prefix,
+                    antibody['accession']
+                    )
+                raise AuditFailure('tag target mismatch', detail, level='ERROR')
     else:
         target_matches = False
         for antibody_target in antibody['targets']:
             if target['name'] == antibody_target.get('name'):
                 target_matches = True
         if not target_matches:
-            detail = 'Target {} not found in target list for antibody {}'.format(target['name'], antibody['accession'])
-            raise AuditFailure('mismatched target', detail, level='ERROR')
+            detail = 'Target {} is not found in target list for antibody {}'.format(
+                target['name'],
+                antibody['accession']
+                )
+            raise AuditFailure('target mismatch', detail, level='ERROR')
 
 
 @audit_checker('antibody_characterization')
