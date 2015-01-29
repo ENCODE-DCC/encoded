@@ -8,7 +8,7 @@ pytestmark = [
 
 def persona_test_data(audience):
     import requests
-    from urllib import quote
+    from urllib.parse import quote
     url = 'http://personatestuser.org/email_with_assertion/%s' % quote(audience, '')
     try:
         res = requests.get(url)

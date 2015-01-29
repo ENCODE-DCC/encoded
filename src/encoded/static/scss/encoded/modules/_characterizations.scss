@@ -241,8 +241,18 @@ $characterization-figure-height: 200px;
 }
 
 .characterization-status-labels {
+    display: block;
     font-weight: bold;
     font-size: 20px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        margin-right: 5px;
+
+        .status-list li {
+            height: 28px;
+        }
+    }
 }
 
 
@@ -696,4 +706,8 @@ $characterization-figure-height: 200px;
     &.active {
         display: none;
     }
+}
+
+.status-line {
+    vertical-align: top;
 }

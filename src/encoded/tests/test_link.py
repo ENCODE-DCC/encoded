@@ -72,4 +72,3 @@ def test_links_reverse(content, testapp, session):
     target = targets[1]
     res = testapp.get('/testing-link-targets/%s/' % target['uuid'])
     assert res.json['reverse'] == []
-    

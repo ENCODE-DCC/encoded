@@ -2,35 +2,158 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
-    Collection,
+    Item,
     paths_filtered_by_status,
 )
-from pyramid.traversal import (
-    find_resource,
-    resource_path,
-)
 
 
-def lot_reviews(root, characterizations, targets):
-    characterizations = paths_filtered_by_status(root, characterizations)
+@collection(
+    name='antibodies',
+    properties={
+        'title': 'Antibodies Registry',
+        'description': 'Listing of ENCODE antibodies',
+    })
+class AntibodyLot(Item):
+    item_type = 'antibody_lot'
+    schema = load_schema('antibody_lot.json')
+    name_key = 'accession'
+    rev = {
+        'characterizations': ('antibody_characterization', 'characterizes'),
+    }
+    embedded = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+    audit_inherit = [
+        'source',
+        'host_organism',
+        'targets',
+        'targets.organism',
+        'characterizations',
+        'characterizations.documents',
+        'lot_reviews.targets',
+        'lot_reviews.targets.organism',
+        'lot_reviews.organisms'
+    ]
+
+    def unique_keys(self, properties):
+        keys = super(AntibodyLot, self).unique_keys(properties)
+        source = properties['source']
+        product_id = properties['product_id']
+        lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
+        values = (u'{}/{}/{}'.format(source, product_id, lot_id) for lot_id in lot_ids)
+        keys.setdefault('antibody_lot:source_product_lot', []).extend(values)
+        return keys
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, accession):
+        return accession
+
+    @calculated_property(schema={
+        "title": "Characterizations",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "antibody_characterization.characterizes",
+        },
+    })
+    def characterizations(self, request, characterizations):
+        return paths_filtered_by_status(request, characterizations)
+
+
+@calculated_property(context=AntibodyLot, schema={
+    "title": "Antibody lot reviews",
+    "description":
+        "Review outcome of an antibody lot in each characterized cell type submitted for review.",
+    "type": "array",
+    "items": {
+        "title": "Antibody lot review",
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "biosample_term_id": {
+                "title": "Ontology ID",
+                "description": "Ontology identifier describing biosample.",
+                "comment": "NTR is a new term request identifier provided by the DCC.",
+                "type": "string",
+                "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+            },
+            "biosample_term_name": {
+                "title": "Ontology term",
+                "description": "Ontology term describing biosample.",
+                "type":  "string"
+            },
+            "organisms": {
+                "title": "Organism",
+                "type": "array",
+                "items": {
+                    "comment": "See organism.json for available identifiers.",
+                    "type": "string",
+                    "linkTo": "organism"
+                }
+            },
+            "targets": {
+                "title": "Targets",
+                "type": "array",
+                "items": {
+                    "description":
+                        "The name of the gene whose expression or product is the intended goal of "
+                        "the antibody.",
+                    "comment": "See target.json for available identifiers.",
+                    "type": "string",
+                    "linkTo": "target"
+                }
+            },
+            "status": {
+                "title": "Status",
+                "description": "The current state of the antibody characterizations.",
+                "comment":
+                    "Do not submit, the value is assigned by server. "
+                    "The status is updated by the DCC.",
+                "type": "string",
+                "default": "awaiting lab characterization",
+                "enum": [
+                    "awaiting lab characterization",
+                    "pending dcc review",
+                    "eligible for new data",
+                    "not eligible for new data",
+                    "not pursued"
+                ]
+            }
+        }
+    },
+})
+def lot_reviews(characterizations, targets, request):
+    characterizations = paths_filtered_by_status(request, characterizations)
     organisms = set()
 
     if not characterizations:
         # If there are no characterizations, then default to awaiting lab characterization.
         is_control = False
         for t in targets:
-            target = find_resource(root, t)
-            target_properties = target.upgrade_properties(finalize=False)
-            if 'control' in target_properties['investigated_as']:
+            target = request.embed(t, '@@object')
+            if 'control' in target['investigated_as']:
                 is_control = True
 
-            organism = find_resource(root, target_properties['organism'])
-            organisms.add(resource_path(organism, ''))
+            organism = target['organism']
+            organisms.add(organism)
 
         return [{
             'biosample_term_name': 'not specified',
@@ -50,36 +173,33 @@ def lot_reviews(root, characterizations, targets):
     secondary_chars = []
 
     for characterization_path in characterizations:
-        characterization = find_resource(root, characterization_path)
-        characterization_properties = characterization.upgrade_properties(finalize=False)
-        target = find_resource(root, characterization_properties['target'])
-        target_properties = target.upgrade_properties(finalize=False)
-        organism = find_resource(root, target_properties['organism'])
+        characterization = request.embed(characterization_path, '@@object')
+        target = request.embed(characterization['target'], '@@object')
+        organism = target['organism']
 
-        review_targets.add(resource_path(target, ''))
+        review_targets.add(target['@id'])
 
         # All characterization targets should be a histone_mod_target or all not.
         # (Checked by an audit.)
-        if 'histone modification' in target_properties['investigated_as']:
+        if 'histone modification' in target['investigated_as']:
             histone_mod_target = True
 
-        if resource_path(organism, '') not in organisms:
-            organisms.add(resource_path(organism, ''))
+        organisms.add(organism)
 
-        if characterization_properties['status'] == 'not submitted for review by lab':
+        if characterization['status'] == 'not submitted for review by lab':
             lab_not_reviewed_chars += 1
             total_characterizations += 1
-        elif characterization_properties['status'] == 'not reviewed':
+        elif characterization['status'] == 'not reviewed':
             not_reviewed_chars += 1
             total_characterizations += 1
-        elif characterization_properties['status'] == 'in progress':
+        elif characterization['status'] == 'in progress':
             in_progress_chars += 1
             total_characterizations += 1
         else:
             total_characterizations += 1
 
         # Split into primary and secondary to treat separately
-        if 'primary_characterization_method' in characterization_properties:
+        if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
         else:
             secondary_chars.append(characterization)
@@ -121,13 +241,12 @@ def lot_reviews(root, characterizations, targets):
     pending_secondary = False
 
     for secondary in secondary_chars:
-        secondary_properties = secondary.upgrade_properties(finalize=False)
-        if secondary_properties['status'] == 'compliant':
+        if secondary['status'] == 'compliant':
             compliant_secondary = True
             break
-        elif secondary_properties['status'] == 'pending dcc review':
+        elif secondary['status'] == 'pending dcc review':
             pending_secondary = True
-        elif secondary_properties['status'] == 'not compliant':
+        elif secondary['status'] == 'not compliant':
             not_compliant_secondary = True
 
     # Now check the primaries and update their status accordingly
@@ -135,21 +254,20 @@ def lot_reviews(root, characterizations, targets):
     histone_organisms = set()
 
     for primary in primary_chars:
-        primary_properties = primary.upgrade_properties(finalize=False)
-        if primary_properties['status'] in ['not reviewed', 'not submitted for review by lab']:
+        if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
             continue
 
-        for lane_review in primary_properties.get('characterization_reviews', []):
+        for lane_review in primary.get('characterization_reviews', []):
             # Get the organism information from the lane, not from the target since there are lanes
-            lane_organism = find_resource(root, lane_review['organism'])
+            lane_organism = lane_review['organism']
 
             new_review = {
                 'biosample_term_name': lane_review['biosample_term_name'],
                 'biosample_term_id': lane_review['biosample_term_id'],
-                'organisms': [resource_path(lane_organism, '')],
+                'organisms': [lane_organism],
                 'targets':
                     sorted(review_targets) if histone_mod_target
-                    else [resource_path(find_resource(root, primary_properties['target']), '')],
+                    else [primary['target']],
                 'status': 'awaiting lab characterization'
             }
 
@@ -157,7 +275,7 @@ def lot_reviews(root, characterizations, targets):
                 if pending_secondary or compliant_secondary:
                     new_review['status'] = 'pending dcc review'
             elif lane_review['lane_status'] == 'not compliant':
-                if compliant_secondary or not_compliant_secondary:
+                if not_compliant_secondary:
                     new_review['status'] = 'not eligible for new data'
             elif lane_review['lane_status'] == 'compliant':
                 if compliant_secondary:
@@ -168,7 +286,7 @@ def lot_reviews(root, characterizations, targets):
 
                         # Keep track of compliant organisms for histones and we
                         # will fill them in after going through all the lanes
-                        histone_organisms.add(resource_path(lane_organism, ''))
+                        histone_organisms.add(lane_organism)
 
                 if pending_secondary:
                     new_review['status'] = 'pending dcc review'
@@ -181,7 +299,7 @@ def lot_reviews(root, characterizations, targets):
                 lane_review['biosample_term_name'],
                 lane_review['biosample_term_id'],
                 lane_review['organism'],
-                resource_path(target, ''),
+                target['@id'],
             )
             if key not in char_reviews:
                 char_reviews[key] = new_review
@@ -225,55 +343,4 @@ def lot_reviews(root, characterizations, targets):
                 'status': 'eligible for new data'
             }]
 
-    return char_reviews.values()
-
-
-@location('antibodies')
-class AntibodyLot(Collection):
-    item_type = 'antibody_lot'
-    schema = load_schema('antibody_lot.json')
-    properties = {
-        'title': 'Antibodies Registry',
-        'description': 'Listing of ENCODE antibodies',
-    }
-
-    class Item(Collection.Item):
-        template = {
-            'lot_reviews': lot_reviews,
-            'title': {'$value': '{accession}'},
-            'characterizations': (
-                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
-            ),
-        }
-        name_key = 'accession'
-
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {
-                'name': '{item_type}:source_product_lot',
-                'value': '{source}/{product_id}/{lot_id}',
-                '$templated': True,
-            },
-            {
-                'name': '{item_type}:source_product_lot',
-                'value': '{source}/{product_id}/{alias}',
-                '$repeat': 'alias lot_id_alias',
-                '$templated': True,
-            },
-        ]
-
-        rev = {
-            'characterizations': ('antibody_characterization', 'characterizes'),
-        }
-
-        embedded = [
-            'source',
-            'host_organism',
-            'characterizations.award',
-            'characterizations.documents',
-            'characterizations.lab',
-            'characterizations.submitted_by',
-            'characterizations.target.organism',
-            'lot_reviews.targets',
-            'lot_reviews.targets.organism',
-            'lot_reviews.organisms'
-        ]
+    return list(char_reviews.values())

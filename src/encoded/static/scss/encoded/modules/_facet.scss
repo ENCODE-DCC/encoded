@@ -90,6 +90,7 @@
     position: relative;
     font-size: 1.3em;
     font-weight: bold;
+    z-index: 0;
 
     a {
         &:hover {
@@ -114,13 +115,28 @@
 }
 
 .search-meta {
+    position: relative;
     padding: 2px 5px;
+    text-align: right;
+    z-index: 1;
 
     p {
         color: #909090;
         margin: 0;
         line-height: 1.2;
         text-align: right;
+
+        &.meta-audit {
+            margin: 3px 0;
+
+            .audit {
+                margin: 0 3px;
+                padding: 0;
+                border: none;
+                background-color: transparent;
+                font-size: 18px;
+            }
+        }
     }
 }
 
@@ -192,6 +208,11 @@ div.meta-status {
     &:before {
         content: none;
         display: block;
+    }
+
+    .pull-right {
+        position: relative;
+        z-index: 2;
     }
 }
 

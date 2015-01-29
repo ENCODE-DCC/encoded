@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-def run(wale_s3_prefix, branch=None, name=None, persistent=False):
+def run(wale_s3_prefix, image_id, instance_type, branch=None, name=None, persistent=False, candidate=''):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -25,22 +25,26 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
 
     conn = boto.ec2.connect_to_region("us-west-2")
     bdm = BlockDeviceMapping()
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True)
     if persistent:
-        bdm['/dev/xvdf'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
-        bdm['/dev/xvdg'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdf'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdg'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
     else:
-        bdm['/dev/xvdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
-        bdm['/dev/xvdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
+        bdm['/dev/sdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
+        bdm['/dev/sdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
 
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
+        'CANDIDATE': candidate,
     }
 
     reservation = conn.run_instances(
-        'ami-199add29',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140829
-        instance_type='m3.xlarge',
+        image_id=image_id,
+        instance_type=instance_type,
         security_groups=['ssh-http-https'],
         user_data=user_data,
         block_device_map=bdm,
@@ -48,12 +52,13 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         instance_profile_name='demo-instance',
     )
 
+    time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
     instance.add_tag('Name', name)
     instance.add_tag('commit', commit)
     instance.add_tag('started_by', username)
-    print instance
-    print instance.state,
+    print(instance)
+    sys.stdout.write(instance.state)
 
     while instance.state == 'pending':
         sys.stdout.write('.')
@@ -61,10 +66,9 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         time.sleep(1)
         instance.update()
 
-    print
-    print instance.state
-
-    print instance.public_dns_name  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
+    print('')
+    print(instance.state)
+    print(instance.public_dns_name)  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
 
 
 def main():
@@ -75,7 +79,14 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument(
+        '--candidate', action='store_const', default='', const='CANDIDATE',
+        help="Deploy candidate instance")
+    parser.add_argument(
+        '--image-id', default='ami-3d50120d',
+        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
+    parser.add_argument('--instance-type', default='m3.xlarge')
     args = parser.parse_args()
 
     return run(**vars(args))

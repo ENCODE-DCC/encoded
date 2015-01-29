@@ -31,7 +31,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python2.7 bootstrap.py
+    $ python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
     $ bin/buildout
 
 If you see a clang error like this::

@@ -6,7 +6,7 @@
     "type": "object",
     "required": ["name", "description", "title"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "alias", "title"],
+    "identifyingProperties": ["uuid", "alias", "title", "name"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
@@ -37,7 +37,8 @@
                     "genome segmentation",
                     "qualification",
                     "transcript identification",
-                    "transcriptome assembly"
+                    "transcriptome assembly",
+                    "other"
                 ]
             }
         },
@@ -45,7 +46,8 @@
             "title": "Name",
             "description": "Unique name of the software package, lower cased version of title.",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+"
+            "pattern": "^[a-z0-9\\-\\_]+",
+            "uniqueKey": "software:name"
         },
         "title": {
             "title": "Title",

@@ -2,11 +2,11 @@ from pyramid.security import effective_principals
 from pyramid.view import view_config
 from pyramid.security import (
     Allow,
-    Authenticated,
     Deny,
     Everyone,
 )
-from .base import Collection
+from pyramid.settings import asbool
+from .base import Item
 from ..authentication import (
     generate_password,
     generate_user,
@@ -18,48 +18,46 @@ from ..schema_utils import (
 from ..contentbase import (
     collection_add,
     item_edit,
-    item_view,
-    item_view_edit,
-    item_view_raw,
-    location,
+    collection,
     validate_item_content_post,
     validate_item_content_put,
 )
 
 
-@location('access-keys')
-class AccessKey(Collection):
-    item_type = 'access_key'
-    schema = load_schema('access_key.json')
-    unique_key = 'access_key:access_key_id'
-    properties = {
+@collection(
+    name='access-keys',
+    unique_key='access_key:access_key_id',
+    properties={
         'title': 'Access keys',
         'description': 'Programmatic access keys',
-    }
-
-    __acl__ = [
-        (Allow, Authenticated, 'traverse'),
-        (Allow, 'remoteuser.INDEXER', 'traverse'),
-        (Allow, 'remoteuser.EMBED', 'traverse'),
-        (Deny, Everyone, 'traverse'),
+    },
+    acl=[
         (Allow, 'role.owner', ['edit', 'view']),
         (Allow, 'group.admin', 'view'),
         (Allow, 'group.read-only-admin', 'view'),
         (Allow, 'remoteuser.INDEXER', 'view'),
         (Allow, 'remoteuser.EMBED', 'view'),
         (Deny, Everyone, 'view'),
-    ]
+    ])
+class AccessKey(Item):
+    item_type = 'access_key'
+    schema = load_schema('access_key.json')
+    name_key = 'access_key_id'
 
-    class Item(Collection.Item):
-        keys = ['access_key_id']
-        name_key = 'access_key_id'
+    def __ac_local_roles__(self):
+        owner = 'userid.%s' % self.properties['user']
+        return {owner: 'role.owner'}
 
-        def __ac_local_roles__(self):
-            owner = 'userid.%s' % self.properties['user']
-            return {owner: 'role.owner'}
+    def __json__(self, request):
+        properties = super(AccessKey, self).__json__(request)
+        del properties['secret_access_key_hash']
+        return properties
+
+    class Collection(Item.Collection):
+        pass
 
 
-@view_config(context=AccessKey, permission='add', request_method='POST',
+@view_config(context=AccessKey.Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
@@ -91,7 +89,7 @@ def access_key_add(context, request):
     return result
 
 
-@view_config(name='reset-secret', context=AccessKey.Item, permission='edit',
+@view_config(name='reset-secret', context=AccessKey, permission='edit',
              request_method='POST', subpath_segments=0)
 def access_key_reset_secret(context, request):
     request.validated = context.properties.copy()
@@ -105,7 +103,7 @@ def access_key_reset_secret(context, request):
     return result
 
 
-@view_config(name='disable-secret', context=AccessKey.Item, permission='edit',
+@view_config(name='disable-secret', context=AccessKey, permission='edit',
              request_method='POST', subpath_segments=0)
 def access_key_disable_secret(context, request):
     request.validated = context.properties.copy()
@@ -117,7 +115,7 @@ def access_key_disable_secret(context, request):
     return result
 
 
-@view_config(context=AccessKey.Item, permission='edit', request_method='PUT',
+@view_config(context=AccessKey, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()
@@ -126,26 +124,12 @@ def access_key_edit(context, request):
     return item_edit(context, request)
 
 
-def remove_secret_access_key_hash(properties):
-    try:
-        del properties['secret_access_key_hash']
-    except KeyError:
-        pass
+@view_config(context=AccessKey, permission='view_raw', request_method='GET',
+             name='raw')
+def item_view_raw(context, request):
+    if asbool(request.params.get('upgrade', True)):
+        properties = context.upgrade_properties()
+    else:
+        properties = context.properties.copy()
+    del properties['secret_access_key_hash']
     return properties
-
-
-@view_config(context=AccessKey.Item, permission='view', request_method='GET')
-def access_key_view(context, request):
-    return remove_secret_access_key_hash(item_view(context, request))
-
-
-@view_config(context=AccessKey.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=raw'])
-def access_key_view_raw(context, request):
-    return remove_secret_access_key_hash(item_view_raw(context, request))
-
-
-@view_config(context=AccessKey.Item, permission='edit', request_method='GET',
-             request_param=['frame=edit'])
-def access_key_view_edit(context, request):
-    return remove_secret_access_key_hash(item_view_edit(context, request))

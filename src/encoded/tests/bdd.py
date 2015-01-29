@@ -278,7 +278,7 @@ class FixtureRequestMixin(object):
 
     def _init_fixtures(self, markers=()):
         self.obj = lambda: None
-        self.obj.__name__ = self.name.encode('utf-8')
+        self.obj.__name__ = str(self.name)
         if hasattr(self.parent.obj, 'usefixtures'):
             info = self.parent.obj.usefixtures
             pytest.mark.usefixtures(*info.args, **info.kwargs)(self.obj)
@@ -485,7 +485,7 @@ class Step(FixtureRequestMixin, pytest.Item):
 
     def __init__(self, model, parent):
         name = u'%s %s' % (model.keyword, model.name)
-        name = name.encode('ascii', 'backslashreplace')
+        name = str(name.encode('ascii', 'backslashreplace'))
         super(Step, self).__init__(name, parent)
         self.step = self.model = model
         self._init_fixtures()

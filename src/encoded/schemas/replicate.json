@@ -24,7 +24,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "antibody": {
             "title": "Antibody",
@@ -64,37 +64,8 @@
             "description": "The measurement device used to collect data.",
             "comment": "See platform.json for available identifiers.",
             "type": "string",
+            "permission": "import_items",
             "linkTo": "platform"
-        },
-        "flowcell_details": {
-            "title": "Flowcells",
-            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Flowcell details",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "machine": {
-                        "title": "Machine Name",
-                        "description": "The lab specific name of the machine used.",
-                        "type": "string"
-                    },
-                    "flowcell": {
-                        "title": "Flowcell ID",
-                        "type": "string"
-                    },
-                    "lane": {
-                        "title": "Lane",
-                        "type": "string"
-                    },
-                    "barcode": {
-                        "title": "Barcode",
-                        "type": "string"
-                    }
-                }
-            }
         },
         "paired_ended": {
             "title": "Paired-end sequencing",
@@ -125,7 +96,8 @@
             "comment": "The unit for the dependant rbns_protein_concentration.",
             "type": "string",
             "enum": [
-                "nM" 
+                "nM",
+                "pM"
             ]
         },
         "status": {

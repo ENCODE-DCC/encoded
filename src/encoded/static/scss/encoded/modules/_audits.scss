@@ -1,0 +1,140 @@
+.audit-indicators {
+    margin-top: 5px;
+    height: 28px;
+    vertical-align: top;
+    padding: 0 5px;
+    background: #fff;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        margin: 0;
+    }
+
+    .search-meta & {
+        margin: 5px 0 5px 5px;
+    }
+
+    &.audit-search {
+        font-size: 12px;
+        height: 24px;
+    }
+}
+
+// Audit icon for display only
+%audit-icon {
+    display: inline-block;
+    line-height: 28px;
+    font-size: 18px;
+    text-align: center;
+    border: none;
+    background-color: transparent;
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    .audit-search & {
+        font-size: 12px;
+        line-height: 24px;
+    }
+}
+
+// Audit icon that's clickable as well as displayable
+%audit-active-icon {
+    @extend %audit-icon;
+    margin: 0 5px 2px 0;
+}
+
+// Connect audit types to fontawesome icon suffixes and colors.
+// Set audit type icons and colors here.
+// Icon names are for font-awesome and are suffixed to 'icon-'.
+// BG colors automatically generated from the FG colors set here.
+$audit-types:
+    (error, warning, #cc0700),
+    (warning, exclamation-circle, #e0e000),
+    (not_compliant, file-text, #ff8000),
+    (dcc_action, ambulance, #a0a0a0);
+
+// Function for an inverse curve; used for saturation and lightness of backgrounds
+@function inverse-curve($value) {
+    @return (1 / ($value + 9.1)) * -800 + 109.1;
+}
+
+// Calculate bg color based on color using inverse function
+@function fg-to-bg-color($basecolor) {
+    @return hsl(hue($basecolor), inverse-curve(saturation($basecolor)), inverse-curve(lightness($basecolor)));
+}
+
+@function audit-level-color($basecolor) {
+    @if lightness($basecolor) <= 40 {
+        @return $basecolor;
+    } @else {
+        @return darken($basecolor,10%);
+    }
+}
+
+.btn-audit {
+    display: inline-block;
+    margin: 0 10px;
+
+    .audit-search & {
+        margin: 0 6px;
+    }
+}
+
+
+// Generate the audit icon classes for each of the audit types
+@each $audit-type, $suffix, $color in $audit-types {
+    // Audit icons
+    .audit-icon-#{$audit-type} {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %audit-icon;
+        color: $color;
+    }
+
+    // Clickable audit icons
+    .audit-activeicon-#{$audit-type} {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %audit-active-icon;
+        color: $color;
+        font-size: 16px;
+    }
+
+    // Button for each class of audit error
+    .btn-audit-#{$audit-type} {
+        color: $color;
+
+        &:hover, &:focus {
+            color: $color;
+        }
+    }
+
+    // Audit detail
+    .audit-detail-#{$audit-type} {
+        padding: 5px 10px;
+        border-top: 1px solid #a0a0a0;
+        background-color: fg-to-bg-color($color);
+
+        &:first-child {
+            border-top: none;
+        }
+    }
+
+    // Audit level name text
+    .audit-level-#{$audit-type} {
+        margin-left: 5px !important;
+        color: audit-level-color($color);
+    }
+}
+
+// Area that displays audit detail
+.audit-details {
+    margin: 10px 0;
+    overflow: hidden;
+    @include border-radius(4px);
+    border: 1px solid #a0a0a0;
+
+    strong {
+        display: inline-block;
+    }
+}
