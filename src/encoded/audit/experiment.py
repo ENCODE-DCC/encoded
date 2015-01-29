@@ -132,7 +132,7 @@ def audit_experiment_assay(value, system):
         return
 
 
-@audit_checker('experiment', frame=['replicates.antibody', 'target'])
+@audit_checker('experiment', frame=['replicates.antibody', 'target', 'replicates.antibody.targets'])
 def audit_experiment_target(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
@@ -242,7 +242,7 @@ def audit_experiment_control(value, system):
 #             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame='object')
+@audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_experiment_readlength(value, system):
     '''
     All ENCODE 3 experiments of sequencing type should specify their read_length
@@ -254,9 +254,6 @@ def audit_experiment_readlength(value, system):
         return
 
     if value.get('assay_term_name') not in seq_assays:
-        return
-
-    if value['award'].get('rfa') in ['ENCODE2', 'ENCODE2-Mouse']:
         return
 
     read_lengths = []
@@ -307,7 +304,7 @@ def audit_experiment_platform(value, system):
         yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
-@audit_checker('experiment', frame='object')
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_spikeins(value, system):
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
