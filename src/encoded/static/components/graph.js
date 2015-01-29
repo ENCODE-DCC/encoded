@@ -210,7 +210,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
         if (files && files.some(function(file) {
-            return file.derived_from && file.derived_from.length && file.steps && file.steps.length;
+            return file.derived_from && file.derived_from.length && file.step_run;
         })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('');
@@ -233,17 +233,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 }
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
-                if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
+                if (file.derived_from && file.derived_from.length && file.step_run) {
                     // Remember this step for later hit testing
-                    this.stepLists.push(file.steps);
+                    this.stepLists.push(file.step_run);
 
                     // Make the ID of the node using the first step in the array, and it connects to
-                    var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
+                    var stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
 
                     // Make a label for the step node
-                    var label = file.steps.map(function(step, i) {
-                        return step.analysis_step.analysis_step_types.join(', ');
-                    });
+                    var label = file.step_run.analysis_step.analysis_step_types;
 
                     // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
                     // points to it; there may be more than one copy of this step on the graph if more than one
@@ -254,11 +252,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
                     jsonGraph.addEdge(stepId, fileId);
 
-                    file.steps.forEach(function(step) {
-                        // Draw an edge from the analysis step to each of the derived_from files
-                        file.derived_from.forEach(function(derived) {
-                            jsonGraph.addEdge(derived['@id'], stepId);
-                        });
+                    // Draw an edge from the analysis step to each of the derived_from files
+                    file.derived_from.forEach(function(derived) {
+                        jsonGraph.addEdge(derived['@id'], stepId);
                     });
                 }
             }, this);
@@ -300,7 +296,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         });
 
                         if (selectedFile) {
-                            var analysisSteps = selectedFile.steps && selectedFile.steps.length ? selectedFile.steps : null;
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -345,29 +340,21 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {analysisSteps ?
-                                        <div>
-                                            <dt>Software</dt>
-                                            <dd>
-                                                {analysisSteps.map(function(step) {
-                                                    return (
-                                                        <span>
-                                                            {step.analysis_step.software_versions.map(function(version, i) {
-                                                                return (
-                                                                    <a href={version.software['@id']} className="software-version">
-                                                                        <span className="software">{version.software.name}</span>
-                                                                        {version.version ?
-                                                                            <span className="version">{version.version}</span>
-                                                                        : null}
-                                                                    </a>
-                                                                );
-                                                            })}
-                                                        </span>
-                                                    );
-                                                })}
-                                            </dd>
-                                        </div>
-                                    : null}
+                                    <div>
+                                        <dt>Software</dt>
+                                        <dd>
+                                            {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                                                return (
+                                                    <a href={version.software['@id']} className="software-version">
+                                                        <span className="software">{version.software.name}</span>
+                                                        {version.version ?
+                                                            <span className="version">{version.version}</span>
+                                                        : null}
+                                                    </a>
+                                                );
+                                            })}
+                                        </dd>
+                                    </div>
 
                                     {selectedFile.pipeline ?
                                         <div data-test="pipeline">
@@ -384,68 +371,60 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        console.log('ASI: ', analysisStepId);
-                        var selectedSteps = _(this.stepLists).find(function(stepList) {
-                            var selectedStep = _(stepList).find(function(step) {
-                                return step.analysis_step['@id'] === analysisStepId;
-                            });
-                            return !!selectedStep;
+                        var selectedStep = _(this.stepLists).find(function(step) {
+                            return step.analysis_step['@id'] === analysisStepId;
                         });
-                        console.log(selectedSteps);
 
-                        meta = selectedSteps.map(function(stepRun, i) {
-                            var step = stepRun.analysis_step;
-                            return (
-                                <div>
-                                    {i > 0 ? <hr /> : null}
-                                    <dl className="key-value">
-                                        <div data-test="steptype">
-                                            <dt>Step type</dt>
-                                            <dd>{step.analysis_step_types.join(', ')}</dd>
+                        var step = selectedStep.analysis_step;
+                        return (
+                            <div>
+                                <dl className="key-value">
+                                    <div data-test="steptype">
+                                        <dt>Step type</dt>
+                                        <dd>{step.analysis_step_types.join(', ')}</dd>
+                                    </div>
+
+                                    {step.input_file_types && step.input_file_types.length ?
+                                        <div data-test="inputtypes">
+                                            <dt>Input file types</dt>
+                                            <dd>{step.input_file_types.join(', ')}</dd>
                                         </div>
+                                    : null}
 
-                                        {step.input_file_types && step.input_file_types.length ?
-                                            <div data-test="inputtypes">
-                                                <dt>Input file types</dt>
-                                                <dd>{step.input_file_types.join(', ')}</dd>
-                                            </div>
-                                        : null}
+                                    {step.output_file_types && step.output_file_types.length ?
+                                        <div data-test="outputtypes">
+                                            <dt>Output file types</dt>
+                                            <dd>{step.output_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                                        {step.output_file_types && step.output_file_types.length ?
-                                            <div data-test="outputtypes">
-                                                <dt>Output file types</dt>
-                                                <dd>{step.output_file_types.join(', ')}</dd>
-                                            </div>
-                                        : null}
+                                    {step.qa_stats_generated && step.qa_stats_generated.length ?
+                                        <div data-test="steptypes">
+                                            <dt>QA statistics</dt>
+                                            <dd>{step.qa_stats_generated.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                                        {step.qa_stats_generated && step.qa_stats_generated.length ?
-                                            <div data-test="steptypes">
-                                                <dt>QA statistics</dt>
-                                                <dd>{step.qa_stats_generated.join(', ')}</dd>
-                                            </div>
-                                        : null}
-
-                                        {step.software_versions && step.software_versions.length ?
-                                            <div>
-                                                <dt>Software</dt>
-                                                <dd>
-                                                    {step.software_versions.map(function(version) {
-                                                        return (
-                                                            <a href={version.software['@id']} className="software-version">
-                                                                <span className="software">{version.software.name}</span>
-                                                                {version.version ?
-                                                                    <span className="version">{version.version}</span>
-                                                                : null}
-                                                            </a>
-                                                        );
-                                                    })}
-                                                </dd>
-                                            </div>
-                                        : null}
-                                    </dl>
-                                </div>
-                            );
-                        });
+                                    {step.software_versions && step.software_versions.length ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {step.software_versions.map(function(version) {
+                                                    return (
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{version.version}</span>
+                                                            : null}
+                                                        </a>
+                                                    );
+                                                })}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+                        );
 
                         break;
 
