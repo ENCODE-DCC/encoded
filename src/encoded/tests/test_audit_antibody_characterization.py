@@ -119,7 +119,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched term name' for error in errors_list)
+    assert any(error['category'] == 'mismatched term_name' for error in errors_list)
 
 
 def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_characterization, base_characterization_review, base_document):
@@ -170,7 +170,7 @@ def test_audit_antibody_target_tag_antibody(testapp, base_antibody_characterizat
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched tag target mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched tag target' for error in errors_list)
 
 
 def test_audit_antibody_lane_status_pending_mismatch1(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, wrangler, standards_document):
@@ -183,7 +183,7 @@ def test_audit_antibody_lane_status_pending_mismatch1(testapp, base_antibody_cha
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'lane status mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched lane status' for error in errors_list)
 
 
 def test_audit_antibody_lane_status_pending_mismatch2(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review):

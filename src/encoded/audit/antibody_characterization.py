@@ -2,9 +2,10 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from .conditions import rfa
 
 
-@audit_checker('antibody_characterization')
+@audit_checker('antibody_characterization', frame=['characterization_reviews'])
 def audit_antibody_characterization_review(value, system):
     '''
     Make sure that biosample terms are in ontology
@@ -19,32 +20,38 @@ def audit_antibody_characterization_review(value, system):
     if value['characterization_reviews']:
         ontology = system['registry']['ontology']
         for review in value['characterization_reviews']:
-
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
 
             if term_id.startswith('NTR:'):
-                detail = 'Characterization_review {} contains a New Term Request {} - {}'.format(
-                    review['uuid'],
+                detail = 'Antibody_characterization {} contains a New Term Request {} - {}'.format(
+                    value['uuid'],
                     term_id,
                     term_name
                     )
                 raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                detail = 'Characterization_review {} contains a biosample_term_id {} that is not in the ontology'.format(
-                    review['uuid'],
+                detail = 'Antibody characterization {} contains a biosample_term_id {} that is not in the ontology'.format(
+                    value['uuid'],
                     term_id
                     )
                 raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
+                detail = 'Antibody characterization {} has a mismatched term {} - {} expected {}'.format(
+                    value['uuid'],
+                    term_id,
+                    term_name,
+                    ontology_term_name)
                 raise AuditFailure('mismatched term_name', detail, level='ERROR')
 
 
-@audit_checker('antibody_characterization')
+@audit_checker('antibody_characterization', frame=[
+    'characterization_reviews',
+    'characterization_reviews.lanes'
+    ])
 def audit_antibody_characterization_unique_reviews(value, system):
     '''
     Make sure primary characterizations have unique lane, biosample_term_id and
@@ -73,7 +80,11 @@ def audit_antibody_characterization_unique_reviews(value, system):
             raise AuditFailure('duplicate lane review', detail, level='ERROR')
 
 
-@audit_checker('antibody_characterization')
+@audit_checker('antibody_characterization', frame=[
+    'target',
+    'characterizes',
+    'characterizes.targets'
+    ])
 def audit_antibody_characterization_target(value, system):
     '''
     Make sure that target in characterization
@@ -99,7 +110,7 @@ def audit_antibody_characterization_target(value, system):
                     prefix,
                     antibody['accession']
                     )
-                raise AuditFailure('tag target mismatch', detail, level='ERROR')
+                raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
         target_matches = False
         for antibody_target in antibody['targets']:
@@ -110,10 +121,13 @@ def audit_antibody_characterization_target(value, system):
                 target['name'],
                 antibody['accession']
                 )
-            raise AuditFailure('target mismatch', detail, level='ERROR')
+            raise AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('antibody_characterization')
+@audit_checker('antibody_characterization', frame=[
+    'characterization_reviews',
+    'characterization_reviews.lanes'
+    ])
 def audit_antibody_characterization_status(value, system):
     '''
     Make sure the lane_status matches
@@ -149,9 +163,12 @@ def audit_antibody_characterization_status(value, system):
         raise AuditFailure('mismatched lane status', detail, level='DCC_ACTION')
 
 
-@audit_checker('antibody_characterization')
+@audit_checker('antibody_characterization', frame=['target'], condition=rfa('ENCODE3'))
 def audit_antibody_characterization_method_allowed(value, system):
-    '''Warn if a lab submits an ENCODE3 characterization if the method is not yet approved by the standards document.'''
+    '''
+    Warn if a lab submits an ENCODE3 characterization if
+    the method is not yet approved by the standards document.
+    '''
     if 'primary_characterization_method' in value:
         return
 
@@ -159,9 +176,6 @@ def audit_antibody_characterization_method_allowed(value, system):
     is_histone = False
     if 'histone modification' in target['investigated_as']:
         is_histone = True
-
-    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3'):
-        return
 
     secondary = value['secondary_characterization_method']
     if (secondary == 'motif enrichment') or (is_histone and secondary == 'ChIP-seq comparison'):
