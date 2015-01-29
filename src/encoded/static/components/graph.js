@@ -232,23 +232,39 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.step_run) {
+                    var stepId;
+
                     // Remember this step for later hit testing
                     this.stepList.push(file.step_run);
-
-                    // Make the ID of the node using the first step in the array, and it connects to
-                    var stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
 
                     // Make a label for the step node
                     var label = file.step_run.analysis_step.analysis_step_types;
 
-                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                    // points to it; there may be more than one copy of this step on the graph if more than one
-                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                    // analysis step.
-                    jsonGraph.addNode(stepId, label,
-                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
-                    jsonGraph.addEdge(stepId, fileId);
+                    if (file.step_run.status === 'virtual') {
+                        // Make the ID of the node using the analysis step ID, and the ID of the file it connects to.
+                        // Need to combine these so that duplicated steps have unique IDs.
+                        stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
+
+                        // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                        // points to it; there may be more than one copy of this step on the graph if more than one
+                        // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                        // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                        // analysis step.
+                        jsonGraph.addNode(stepId, label,
+                            'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
+                        jsonGraph.addEdge(stepId, fileId);
+                    } else {
+                        stepId = file.step_run.analysis_step['@id'];
+
+                        // Add the step only if we haven't added it yet.
+                        if (!jsonGraph.getNode(stepId)) {
+                            jsonGraph.addNode(stepId, label,
+                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
+                        }
+
+                        // Now hook the file to the step
+                        jsonGraph.addEdge(stepId, fileId);
+                    }
 
                     // Draw an edge from the analysis step to each of the derived_from files
                     file.derived_from.forEach(function(derived) {
@@ -370,7 +386,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                     case 'as':
                         // The node is for an analysis step
-                        var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
+                        var analysisStepId;
+                        var separatorIndex = node.id.indexOf('&');
+                        if (separatorIndex !== -1) {
+                            analysisStepId = node.id.slice(0, separatorIndex);
+                        } else {
+                            analysisStepId = node.id;
+                        }
                         var selectedStep = _(this.stepList).find(function(step) {
                             return step.analysis_step['@id'] === analysisStepId;
                         });
