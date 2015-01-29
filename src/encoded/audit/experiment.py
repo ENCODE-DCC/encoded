@@ -78,7 +78,7 @@ def audit_experiment_description(value, system):
     if 'description' not in value:
         return
 
-    notallowed = ['=', ':', '!',';']
+    notallowed = ['=', ':', '!', ';']
     if any(c in notallowed for c in value['description']):
         detail = 'Experiment {} has odd character(s) in the description'.format(value['accession'])
         raise AuditFailure('malformed description', detail, level='WARNING')
@@ -377,7 +377,12 @@ def audit_experiment_biosample_term(value, system):
     else:
         ontology_name = ontology[term_id]['name']
         if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-            detail = '{} has {} - {} - {}'.format(value['accession'], term_id, term_name, ontology_name)
+            detail = '{} has {} - {} - {}'.format(
+                value['accession'],
+                term_id,
+                term_name,
+                ontology_name
+                )
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
     for rep in value['replicates']:
@@ -395,7 +400,11 @@ def audit_experiment_biosample_term(value, system):
         bs_name = biosample.get('biosample_term_name')
 
         if bs_type != term_type:
-            detail = '{} has mismatched biosample_type, {} - {}'.format(lib['accession'], term_type, bs_type)
+            detail = '{} has mismatched biosample_type, {} - {}'.format(
+                lib['accession'],
+                term_type,
+                bs_type
+                )
             yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
 
         if bs_name != term_name:
