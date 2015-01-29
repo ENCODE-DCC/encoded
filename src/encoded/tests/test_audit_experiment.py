@@ -219,7 +219,7 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'tag target mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched tag target' for error in errors_list)
 
 
 def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):

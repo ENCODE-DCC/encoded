@@ -24,12 +24,19 @@ def audit_antibody_characterization_review(value, system):
             term_name = review['biosample_term_name']
 
             if term_id.startswith('NTR:'):
-                detail = 'Characterization_review contains a New Term Request {} - {}'.format(term_id, term_name)
+                detail = 'Characterization_review {} contains a New Term Request {} - {}'.format(
+                    review['uuid'],
+                    term_id,
+                    term_name
+                    )
                 raise AuditFailure('NTR', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                detail = 'Characterization_review contains a biosample_term_id {} that is not in the ontology'.format(term_id)
-                raise AuditFailure('term id not in ontology', term_id, level='DCC_ACTION')
+                detail = 'Characterization_review {} contains a biosample_term_id {} that is not in the ontology'.format(
+                    review['uuid'],
+                    term_id
+                    )
+                raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
