@@ -14,7 +14,11 @@ For the development.ini you must supply the paster app name:
 """
 import logging
 import transaction
-from ..storage import DBSession
+from ..storage import (
+    DBSession,
+    update_keys,
+    update_rels,
+)
 from future.utils import itervalues
 from pyramid.paster import get_app
 from pyramid.traversal import resource_path
@@ -42,11 +46,14 @@ def run(app, collections=None):
             update = False
             sp = session.begin_nested()
             try:
-                keys_add, keys_remove = item.update_keys()
+                properties = item.upgrade_properties(finalize=False)
+                unique_keys = item.unique_keys(properties)
+                links = item.links(properties)
+                keys_add, keys_remove = update_keys(item.model, unique_keys)
                 if keys_add or keys_remove:
                     logger.debug('Updated keys: %s' % path)
                     update = True
-                rels_add, rels_remove = item.update_rels()
+                rels_add, rels_remove = update_rels(item.model, links)
                 if rels_add or rels_remove:
                     logger.debug('Updated links: %s' % path)
                     update = True

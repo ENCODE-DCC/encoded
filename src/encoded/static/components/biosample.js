@@ -755,8 +755,8 @@ var RNAi = module.exports.RNAi = React.createClass({
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
 
-                {context.source.title ? <dt>Source</dt> : null}
-                {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.source && context.source.title ? <dt>Source</dt> : null}
+                {context.source && context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
                 {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
