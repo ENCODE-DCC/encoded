@@ -84,6 +84,33 @@ def audit_experiment_description(value, system):
         raise AuditFailure('malformed description', detail, level='WARNING')
 
 
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
+def audit_experiment_documents(value, system):
+    '''
+    Experiments should have documents.  Protocol documents or some sort of document.
+    '''
+    if value['status'] in ['deleted', 'replaced', 'proposed', 'preliminary']:
+        return
+
+    # If the experiment has documents, we are good
+    if len(value.get('documents')) > 0:
+        return
+
+    # If there are no replicates to check yet, why bother
+    if 'replicates' not in value:
+        return
+
+    lib_docs = 0
+    for rep in value['replicates']:
+        if 'library' in rep:
+            lib_docs += len(rep['library']['documents'])
+
+    # If there are no library documents anywhere, then we say something
+    if lib_docs == 0:
+        detail = 'Experiment {} has no attached documents'.format(value['accession'])
+        raise AuditFailure('missing documents', detail, level='WARNING')
+
+
 @audit_checker('experiment', frame='object')
 def audit_experiment_assay(value, system):
     '''
