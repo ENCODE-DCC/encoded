@@ -30,6 +30,7 @@ import datetime
 import functools
 import json
 import logging
+import pytz
 import transaction
 
 log = logging.getLogger(__name__)
@@ -185,7 +186,7 @@ def index(request):
         es.indices.refresh(index=INDEX)
 
     if first_txn is not None:
-        result['lag'] = str(datetime.datetime.now() - first_txn)
+        result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
 
     return result
 

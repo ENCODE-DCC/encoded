@@ -430,7 +430,7 @@ class TransactionRecord(Base):
     tid = Column(UUID, default=uuid.uuid4, nullable=False, unique=True)
     data = Column(JSON)
     timestamp = Column(
-        types.DateTime, nullable=False, server_default=func.now())
+        types.DateTime(timezone=True), nullable=False, server_default=func.now())
     # A server_default is necessary for the notify_ddl overwrite to work
     xid = Column(types.BigInteger, nullable=True, server_default=null())
     __mapper_args__ = {
