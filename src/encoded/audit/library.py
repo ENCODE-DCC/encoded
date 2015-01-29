@@ -14,7 +14,7 @@ moleculeDict = {
     }
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_nucleic_acid(value, system):
     '''
     The library needs the nucleic_acid_term_name to match the nucleic_acid_term_id.
@@ -36,7 +36,7 @@ def audit_library_nucleic_acid(value, system):
         raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_documents(value, system):
     '''
     If any of the library methods say <see document> then
@@ -60,7 +60,7 @@ def audit_library_documents(value, system):
             raise AuditFailure('missing document', detail, level='ERROR')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_RNA_size_range(value, system):
     '''
     An RNA library should have a size_range specified.
@@ -77,7 +77,7 @@ def audit_library_RNA_size_range(value, system):
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_depleted_in(value, system):
     '''
     If there is a depleted_term_name or term_id,
