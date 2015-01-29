@@ -79,7 +79,7 @@ def main():
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     parser.add_argument('--candidate', action='store_const', default='', const='CANDIDATE', help="Deploy candidate instance")
     args = parser.parse_args()
 
