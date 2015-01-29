@@ -4,7 +4,7 @@ from ..auditor import (
 )
 
 
-@audit_checker('dataset')
+@audit_checker('dataset', frame='object')
 def audit_references_for_publication(value, system):
     '''
     For datasets of type publication, there should be references. Those that
