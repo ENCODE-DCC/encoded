@@ -233,29 +233,7 @@ def audit_experiment_control(value, system):
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
 
-<<<<<<< HEAD
-@audit_checker('experiment')
-=======
-# @audit_checker('experiment')
-# def audit_experiment_ownership(value, system):
-#     '''
-#     Do the award and lab make sense together. We may want to extend this to submitter
-#     ENCODE2 and ENCODE2-Mouse data should have a dbxref for wgEncode
-#     '''
-#     if 'lab' not in value or 'award' not in value:
-#         return
-#         # should I make this an error case?
-#     if value['award']['@id'] not in value['lab']['awards']:
-#         detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
-#         yield AuditFailure('award mismatch', detail, level='ERROR')
-#     if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
-#         if 'wgEncode' not in value['dbxrefs']:
-#             detail = '{} has no dbxref'.format(value['accession'])
-#             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
-
-
 @audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
->>>>>>> origin/master
 def audit_experiment_readlength(value, system):
     '''
     All ENCODE 3 experiments of sequencing type should specify their read_length
