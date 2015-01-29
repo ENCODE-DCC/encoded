@@ -96,7 +96,7 @@ var Graph = module.exports.Graph = React.createClass({
             parent.nodes.forEach(function(node) {
                 graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
                     rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
-                    paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
+                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
@@ -340,21 +340,23 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    <div>
-                                        <dt>Software</dt>
-                                        <dd>
-                                            {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
-                                                return (
-                                                    <a href={version.software['@id']} className="software-version">
-                                                        <span className="software">{version.software.name}</span>
-                                                        {version.version ?
-                                                            <span className="version">{version.version}</span>
-                                                        : null}
-                                                    </a>
-                                                );
-                                            })}
-                                        </dd>
-                                    </div>
+                                    {selectedFile.step_run ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                                                    return (
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{version.version}</span>
+                                                            : null}
+                                                        </a>
+                                                    );
+                                                })}
+                                            </dd>
+                                        </div>
+                                    : null}
 
                                     {selectedFile.pipeline ?
                                         <div data-test="pipeline">
