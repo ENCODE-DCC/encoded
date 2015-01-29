@@ -273,7 +273,7 @@ def audit_experiment_readlength(value, system):
         yield AuditFailure('mismatched read_length', detail, level='WARNING')
 
 
-@audit_checker('experiment', frame='object')
+@audit_checker('experiment', frame=['files','files.platform'])
 def audit_experiment_platform(value, system):
     '''
     Platform has moved to file.  It is checked for presence there.
