@@ -11,7 +11,7 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "celegans",
-	"num_times_outcrossed": "x10",
+        "num_times_outcrossed": "x10",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
     },
@@ -24,6 +24,7 @@
         "outcrossed_strain": "ENCDO244AAA",
         "genotype": "unc-119(tm4063) III; wgIs493.",
         "mutagen": "bombardment",
+        "mutated_gene": "mes-4-celegans",
         "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
         "documents": [
             "ENCODE:sample_strain_generation_protocol"

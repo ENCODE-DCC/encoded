@@ -294,6 +294,13 @@
                 "type":  "string",
                 "linkTo": "construct"
             }
+        },
+        "mutated_gene": {
+            "title": "Mutated gene",
+            "description": "The gene that was altered/disrupted resulting in a loss of function.",
+            "comment": "See target.json for available identifiers.",
+            "type": "string",
+            "linkTo": "target"
         }
     },
     "assay": {

@@ -44,7 +44,10 @@ def run(fp, url, username, password):
             continue
         r = requests.patch(
             item_url,
-            data=json.dumps({'status': 'in progress'}),
+            data=json.dumps({
+                'status': 'in progress',
+                'file_size': result['file_size'],
+            }),
             auth=(username, password),
             headers=HEADERS,
         )

@@ -16,6 +16,30 @@ raw_data_formats = [
     ]
 
 
+@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
+def audit_file_replicate_match(value, system):
+    '''
+    A file's replicate should belong to the same experiment that the file
+    does.  These tend to get confused when replacing objects.
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    rep_exp = value['replicate']['experiment']['uuid']
+    file_exp = value['dataset']['uuid']
+
+    if rep_exp != file_exp:
+        detail = 'File {} has a replicate {} in experiment {}'.format(
+            value['accession'],
+            value['replicate']['uuid'],
+            value['replicate']['experiment']['accession'])
+        raise AuditFailure('mismatched replicate', detail, level='ERROR')
+
+
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
 def audit_file_platform(value, system):
     '''
@@ -32,6 +56,66 @@ def audit_file_platform(value, system):
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['accession'])
         raise AuditFailure('missing platform', detail, level='ERROR')
+
+
+@audit_checker('file',
+               frame=['dataset', 'dataset.target', 'controlled_by',
+                      'controlled_by.dataset'],
+               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'FlyWormChIP'))
+def audit_file_controlled_by(value, system):
+    '''
+    A fastq in a ChIP-seq experiment should have a controlled_by
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
+        return
+
+    if 'target' in value['dataset'] and value['dataset']['target'].get('investigated_as') == 'Control':
+        return
+
+    if 'controlled_by' not in value:
+        value['controlled_by'] = []
+
+    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
+        detail = 'Fastq file {} from {} requires controlled_by'.format(
+            value['accession'],
+            value['dataset']['assay_term_name']
+            )
+        raise AuditFailure('missing controlled_by', detail, level='ERROR')
+
+    possible_controls = value['dataset'].get('possible_controls')
+    biosample = value['dataset']['biosample_term_id']
+
+    for ff in value['controlled_by']:
+        control_bs = ff['dataset']['biosample_term_id']
+
+        if control_bs != biosample:
+            detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
+                value['accession'],
+                ff['accession'],
+                control_bs)
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+            return
+
+        if ff['file_format'] != value['file_format']:
+            detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
+                value['accession'],
+                value['file_format'],
+                ff['accession'],
+                ff['file_format']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+
+        if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
+            detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
+                value['accession'],
+                ff['accession'],
+                ff['dataset']['accession']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
 
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
@@ -108,7 +192,6 @@ def audit_file_output_type(value, system):
         return
 
     undesirable_output_type = [
-        'Alignability',
         'Base_Overlap_Signal',
         'enhancers_forebrain',
         'enhancers_heart',
@@ -125,17 +208,14 @@ def audit_file_output_type(value, system):
         'GeneGencV10',
         'GeneGencV3c',
         'GeneGencV7',
-        'HMM',
         'Junctions',
         'library_fraction',
         'Matrix',
-        'minus signal',
         'mPepMapGcFt',
         'mPepMapGcUnFt'
         'PctSignal'
         'pepMapGcFt',
         'pepMapGcUnFt',
-        'Primer',
         'PrimerPeaks',
         'RbpAssocRna',
         'SumSignal',
@@ -149,7 +229,6 @@ def audit_file_output_type(value, system):
         'TssGencV7',
         'TssHmm',
         'UniformlyProcessedPeakCalls',
-        'Uniqueness',
         'Validation',
         'Valleys',
         'WaveSignal',
@@ -160,4 +239,4 @@ def audit_file_output_type(value, system):
             detail = 'File {} has output_type "{}" which is not a standard value'.format(
                 value['accession'],
                 value['output_type'])
-            raise AuditFailure('undesirable output type', detail, level='DCC_ACTION')
+            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
