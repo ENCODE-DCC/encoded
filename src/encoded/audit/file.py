@@ -16,15 +16,15 @@ raw_data_formats = [
     ]
 
 
-@audit_checker('file', frame=['replicate', 'dataset'])
+@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
     A file's replicate should belong to the same experiment that the file
     does.  These tend to get confused when replacing objects.
     '''
 
-    # if value['status'] in ['deleted', 'replaced']:
-    #    return
+    if value['status'] in ['deleted', 'replaced']:
+        return
 
     if 'replicate' not in value:
         return
