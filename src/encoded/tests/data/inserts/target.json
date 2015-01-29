@@ -302,5 +302,12 @@
         "organism": "human",
         "status": "current",
         "uuid": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
+    },
+    {
+        "uuid": "753b99f8-d764-4dea-96de-cf9c6f6ecede",
+        "label": "cad",
+        "organism": "dmelanogaster",
+        "investigated_as": ["transcription factor"],
+        "status": "current"
     }
 ]
