@@ -154,7 +154,7 @@ class Dataset(Item):
                     properties['status'] in ['released']:
                 if 'assembly' in properties:
                     assembly.append(properties['assembly'])
-            return list(set(assembly))
+        return list(set(assembly))
 
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
