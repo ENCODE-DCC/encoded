@@ -38,66 +38,96 @@ def test_audit_biosample_term_ntr(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'NTR biosample' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'NTR biosample' for error in errors_list)
 
 
 def test_audit_biosample_culture_dates(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'culture_start_date': '2014-06-30', 'culture_harvest_date': '2014-06-25'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'invalid dates' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'invalid dates' for error in errors_list)
 
 
 def test_audit_biosample_donor(testapp, base_biosample):
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing donor' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing donor' for error in errors_list)
 
 
 def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_donor, base_chipmunk):
     testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'], 'organism': base_chipmunk['@id']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched organism' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched organism' for error in errors_list)
 
 
 def test_audit_subcellular(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'subcellular_fraction_term_name': 'nucleus', 'subcellular_fraction_term_id': 'GO:0005739'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched subcellular_fraction_term' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched subcellular_fraction_term' for error in errors_list)
 
 
 def test_audit_depleted_in(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched depleted_in_term' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched depleted_in_term' for error in errors_list)
 
 
 def test_audit_depleted_in_length(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched depleted_in_term length' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched depleted_in_term length' for error in errors_list)
 
 
 def test_audit_rnai_transfection(testapp, base_biosample, rnai):
     testapp.patch_json(base_biosample['@id'], {'rnais': [rnai['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing transfection_type' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing transfection_type' for error in errors_list)
 
 
 def test_audit_construct_transfection(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing transfection_type' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing transfection_type' for error in errors_list)
 
 
 def test_audit_biosample_status(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'status': 'released', 'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'status mismatch' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'status mismatch' for error in errors_list)

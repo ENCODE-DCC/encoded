@@ -61,8 +61,25 @@ users:
 write_files:
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+- path: /etc/postgresql/9.3/main/wale_s3_prefix
+  content: "%(WALE_S3_PREFIX)s"
 - path: /etc/postgresql/9.3/main/recovery.conf
-  content: restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
+  content: |
+    # recovery.conf must be linked into data dir to do anything
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-fetch "%%f" "%%p"'
+    standby_mode = on
+- path: /etc/postgresql/9.3/main/custom.conf
+  content: |
+    hot_standby = on
+    max_standby_archive_delay = -1
+    wal_level = hot_standby
+    archive_mode = on
+    archive_timeout = 60
+    # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
+    checkpoint_timeout = 1h
+- path: /etc/postgresql/9.3/main/master.conf
+  content: |
+    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-push "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -70,7 +87,8 @@ runcmd:
 - set -e
 - sudo update-rc.d elasticsearch defaults
 - sudo service elasticsearch start
-- chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
+- chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+- sudo -u postgres echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
@@ -83,16 +101,14 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - sudo /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
-- sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - sudo /etc/init.d/postgresql start
 - sudo -u encoded python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
 - sudo -u encoded bin/buildout
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/update-keys-links production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - sudo ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
@@ -109,10 +125,21 @@ runcmd:
 - sudo a2disconf other-vhosts-access-log
 - sudo a2disconf serve-cgi-bin
 - sudo service apache2 reload
-- sleep 10
-- sudo -u encoded bin/upgrade production.ini
-#- sleep 60
-#- PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd"
+- if test -z "%(CANDIDATE)s"
+- then
+-   sudo pg_ctlcluster 9.3 main promote
+-   sudo -u encoded bin/update-keys-links production.ini
+-   sudo -u encoded bin/upgrade production.ini
+- fi
+# - sleep 10
+# - sudo pg_ctlcluster 9.3 main promote
+# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+# - sudo pg_ctlcluster 9.3 main reload
+# - sudo -u encoded bin/update-keys-links production.ini
+# - sudo -u encoded bin/upgrade production.ini
+# - sudo -i -u postgres /opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-push /var/lib/postgresql/9.3/main
+# - sleep 60
+# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 
 ## Or specify public keys:
 ssh_authorized_keys:

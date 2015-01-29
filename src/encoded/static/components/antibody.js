@@ -74,9 +74,9 @@ var Lot = module.exports.Lot = React.createClass({
                                 <span>Antibody</span>
                             }
                         </h3>
-                    </div>
-                     <div className="status-line">
-                        <AuditIndicators audits={context.audit} key="antibody-audit" />
+                        <div className="status-line">
+                            <AuditIndicators audits={context.audit} key="antibody-audit" />
+                        </div>
                     </div>
                 </header>
                 <AuditDetail audits={context.audit} key="antibody-audit" />
