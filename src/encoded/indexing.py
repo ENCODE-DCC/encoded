@@ -185,7 +185,7 @@ def index(request):
         es.indices.refresh(index=INDEX)
 
     if first_txn is not None:
-        result['lag'] = str(datetime.datetime.now() - first_txn)
+        result['lag'] = str(datetime.datetime.utcnow() - first_txn)
 
     return result
 
