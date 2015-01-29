@@ -467,7 +467,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "status": "in progress",
-        "steps": ["e2c67389-1e84-4506-8ddc-03b566ce4995"],
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bam",
         "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66"
@@ -489,7 +489,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
         "status": "in progress",
-        "steps": ["e2c67389-1e84-4506-8ddc-03b566ce4995"],
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
         "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
@@ -510,7 +510,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
         "status": "in progress",
-        "steps": ["a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024"],
+        "step_run": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate1.bigWig",
         "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66"
@@ -531,7 +531,7 @@
         "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
         "status": "in progress",
-        "steps": ["a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024"],
+        "step_run": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bigWig",
         "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66"
@@ -767,7 +767,7 @@
         "lab":"j-michael-cherry",
         "output_type": "genome index",
         "pipeline": "ENCPL000MEG",
-        "steps": ["4bb6cea7-7a6a-470b-8c19-8582300c54fd"],
+        "step_run": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
         "derived_from": ["ENCFF019HGN"]
     },
     {
@@ -872,7 +872,7 @@
         "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG"],
         "pipeline": "ENCPL002BIS",
         "aliases": [],
-        "steps": ["7c81414f-a9c0-44ed-87fb-2e2207733d3b", "1b896efe-4cb6-403d-b1cf-bcf331e6efe4"]
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
     {
         "status": "uploaded",
@@ -892,7 +892,7 @@
         "derived_from": ["ENCFF434GXF"],
         "pipeline": "ENCPL002BIS",
         "aliases": [],
-        "steps": ["2d664a68-ea7e-4e9a-b718-95e52e4c62df"]
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
 
     },
     {
@@ -913,7 +913,7 @@
         "derived_from": ["ENCFF434GXF"],
         "pipeline": "ENCPL002BIS",
         "aliases": [],
-         "steps": ["2d664a68-ea7e-4e9a-b718-95e52e4c62df"]
+         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
         "status": "uploaded",
@@ -932,7 +932,7 @@
         "aliases": [],
         "pipeline": "ENCPL002BIS",
         "derived_from": ["ENCFF434GXF"],
-         "steps": ["2d664a68-ea7e-4e9a-b718-95e52e4c62df"]
+         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
         "accession": "ENCFF000VWO",
@@ -996,7 +996,7 @@
         "md5sum": "9e39f46aa18273f269360535fce32ed2",
         "output_type": "UniformlyProcessedPeakCalls",
         "status": "released",
-        "steps": ["63b1b347-f008-4103-8d20-0e12f54d1882"],
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
         "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
