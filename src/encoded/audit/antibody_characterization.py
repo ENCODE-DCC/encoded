@@ -80,7 +80,7 @@ def audit_antibody_characterization_target(value, system):
             for investigated_as in antibody_target['investigated_as']:
                 unique_investigated_as.add(investigated_as)
         if 'tag' not in unique_investigated_as:
-            detail = 'Antibody {} is not to tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
+            detail = 'Antibody {} is not for a tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:

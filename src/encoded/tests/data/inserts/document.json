@@ -353,5 +353,65 @@
         "lab": "robert-waterston",
         "submitted_by": "uskuf.shyec@doton.danona",
         "uuid": "30705939-d234-4aca-8379-cd355686fd48"
+    },
+    {
+        "aliases": [
+            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+        ],
+        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "brenton-graveley",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
+    },
+    {
+        "aliases": [
+            "roderic-guigo:GeneQuantificationPipeline"
+        ],
+        "attachment": "GeneQuantificationPipeline.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "roderic-guigo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "aliases": [
+            "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram"
+        ],
+        "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
+        "award": "ENCODE2",
+        "document_type": "pipeline protocol",
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "c256d912-be84-4463-8e95-cef789e8d6ba"
+    },
+    {
+        "aliases": [
+            "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
+        ],
+        "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
+        "award": "ENCODE2",
+        "document_type": "pipeline protocol",
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "0f2f78fc-4675-4534-af7a-1c77e03c0cd3"
+    },
+    {
+        "aliases": [
+            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+        ],
+        "attachment": "iCLIP_pipeline_ENCODE.pdf",
+        "award": "U54HG007005",
+        "document_type": "pipeline protocol",
+        "lab": "gene-yeo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
     }
 ]

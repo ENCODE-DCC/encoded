@@ -1,4 +1,5 @@
 import os.path
+import sys
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -33,12 +34,12 @@ def server_process(datadir, host='127.0.0.1', port=9200, prefix='', echo=False):
         stderr=subprocess.STDOUT,
     )
 
-    SUCCESS_LINE = 'started\n'
+    SUCCESS_LINE = b'started\n'
 
     lines = []
     for line in iter(process.stdout.readline, ''):
         if echo:
-            print line,
+            sys.stdout.write(line)
         lines.append(line)
         if line.endswith(SUCCESS_LINE):
             break
@@ -59,7 +60,7 @@ def main():
     import tempfile
     datadir = tempfile.mkdtemp()
 
-    print 'Starting in dir: %s' % datadir
+    print('Starting in dir: %s' % datadir)
     try:
         process = server_process(datadir, echo=True)
     except:
@@ -72,16 +73,16 @@ def main():
             if process.poll() is None:
                 process.terminate()
                 for line in process.stdout:
-                    print line,
+                    sys.stdout.write(line)
                 process.wait()
         finally:
             shutil.rmtree(datadir)
 
-    print 'Started. ^C to exit.'
+    print('Started. ^C to exit.')
 
     try:
         for line in iter(process.stdout.readline, ''):
-            print line,
+            sys.stdout.write(line)
     except KeyboardInterrupt:
         raise SystemExit(0)
 

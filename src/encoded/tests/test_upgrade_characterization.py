@@ -246,7 +246,7 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
 
 
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
-    schema = root.by_item_type['antibody_characterization'].schema
+    schema = root.by_item_type['antibody_characterization'].Item.schema
 
     res = testapp.post_json('/antibody-characterizations?validate=false&render=uuid', antibody_characterization_1)
     location = res.location

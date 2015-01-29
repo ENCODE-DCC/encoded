@@ -8,8 +8,8 @@ from .server_defaults import (
 )
 from uuid import UUID
 
-accession_re = re.compile(r'^ENC(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
-test_accession_re = re.compile(r'^TST(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9]([0-9][0-9][0-9]|[A-Z][A-Z][A-Z])$')
+accession_re = re.compile(r'^ENC(FF|SR|AB|BS|DO|LB|PL)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
+test_accession_re = re.compile(r'^TST(FF|SR|AB|BS|DO|LB|PL)[0-9][0-9][0-9]([0-9][0-9][0-9]|[A-Z][A-Z][A-Z])$')
 uuid_re = re.compile(r'(?i)\{?(?:[0-9a-f]{4}-?){8}\}?')
 
 @FormatChecker.cls_checks("uuid")

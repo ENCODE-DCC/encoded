@@ -2,7 +2,7 @@ import re
 from pyramid.view import view_config
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
-from urllib import urlencode
+from urllib.parse import urlencode
 from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
@@ -14,6 +14,13 @@ hgConnect = ''.join([
     '&hgHub_do_firstDb=1',
     '&hubUrl=',
 ])
+
+audit_facets = [
+    ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
+    ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
+    ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
+    ('audit.DCC_ACTION.category', {'title': 'Audit category: DCC ACTION'})
+]
 
 
 def get_filtered_query(term, fields, principals):
@@ -117,7 +124,7 @@ def search(context, request, search_type=None):
         for item_type in doc_types:
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != 'type' and v != item_type
+                for k, v in request.params.items() if k != 'type' and v != item_type
             ])
             result['filters'].append({
                 'field': 'type',
@@ -139,10 +146,10 @@ def search(context, request, search_type=None):
             fields.add('audit.*')
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
-            if 'columns' not in (collection.schema or ()):
+            if 'columns' not in (collection.Item.schema or ()):
                 fields.add('object.*')
             else:
-                columns = collection.schema['columns']
+                columns = collection.Item.schema['columns']
                 fields.update(
                     ('embedded.@id', 'embedded.@type'),
                     ('embedded.' + column for column in columns),
@@ -175,7 +182,7 @@ def search(context, request, search_type=None):
     # Setting filters
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field, term in request.params.iteritems():
+    for field, term in request.params.items():
         if field in ['type', 'limit', 'mode', 'searchTerm',
                      'format', 'frame', 'datastore', 'field']:
             continue
@@ -183,7 +190,7 @@ def search(context, request, search_type=None):
         # Add filter to result
         qs = urlencode([
             (k.encode('utf-8'), v.encode('utf-8'))
-            for k, v in request.params.iteritems() if v != term
+            for k, v in request.params.items() if v != term
         ])
         result['filters'].append({
             'field': field,
@@ -192,7 +199,7 @@ def search(context, request, search_type=None):
         })
 
         # Add filter to query
-        if field == 'audit.category':
+        if field.startswith('audit'):
             query_field = field
         else:
             query_field = 'embedded.' + field
@@ -211,16 +218,17 @@ def search(context, request, search_type=None):
     facets = [
         ('type', {'title': 'Data Type'}),
     ]
-    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets.extend(root[doc_types[0]].schema['facets'].items())
+    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].Item.schema:
+        facets.extend(root[doc_types[0]].Item.schema['facets'].items())
 
     if search_audit:
-        facets.append(('audit.category', {'title': 'Audit category'}))
+        for audit_facet in audit_facets:
+            facets.append(audit_facet)
 
     for field, _ in facets:
         if field == 'type':
             query_field = '_type'
-        elif field == 'audit.category':
+        elif field.startswith('audit'):
             query_field = field
         else:
             query_field = 'embedded.' + field
@@ -228,7 +236,7 @@ def search(context, request, search_type=None):
 
         terms = [
             {'terms': {q_field: q_terms}}
-            for q_field, q_terms in used_filters.iteritems()
+            for q_field, q_terms in used_filters.items()
             if q_field != query_field
         ]
         terms.append(
@@ -288,7 +296,7 @@ def search(context, request, search_type=None):
     else:  # columns
         for hit in hits:
             item_type = hit['_type']
-            if 'columns' in root[item_type].schema:
+            if 'columns' in root[item_type].Item.schema:
                 item = hit['_source']['embedded']
             else:
                 item = hit['_source']['object']

@@ -1,13 +1,14 @@
-from ..contentbase import location
+from ..contentbase import (
+    calculated_property,
+    collection,
+)
 from ..embedding import embed
 from ..schema_utils import (
     load_schema,
     schema_validator,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
-    Collection,
+    Item,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -16,15 +17,15 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
-from pyramid.traversal import find_root
 from pyramid.view import view_config
-from urlparse import (
+from urllib.parse import (
     parse_qs,
     urlparse,
 )
 import boto
 import datetime
 import json
+import pytz
 import time
 
 
@@ -63,63 +64,91 @@ def external_creds(bucket, key, name):
     }
 
 
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
+@collection(
+    name='files',
+    unique_key='accession',
+    properties={
         'title': 'Files',
         'description': 'Listing of Files',
+    })
+class File(Item):
+    item_type = 'file'
+    schema = load_schema('file.json')
+    name_key = 'accession'
+
+    rev = {
+        'paired_with': ('file', 'paired_with'),
     }
 
-    class Item(Collection.Item):
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {
-                'name': 'alias',
-                'value': 'md5:{md5sum}',
-                '$templated': True,
-                '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
-            },
-        ]
-        template = {
-            'href': {
-                '$value': '{item_uri}@@download/{accession}{file_extension}',
-                '$templated': True,
-            },
-            'upload_credentials': {
-                '$templated': True,
-                '$condition': show_upload_credentials,
-                '$value': lambda context: context.propsheets['external']['upload_credentials'],
-            }
-        }
+    embedded = [
+        'replicate',
+        'replicate.experiment',
+        'replicate.experiment.lab',
+        'replicate.experiment.target',
+        'derived_from',
+        'steps',
+        'steps.analysis_step',
+        'steps.analysis_step.software_versions',
+        'steps.analysis_step.software_versions.software',
+        'pipeline',
+        'submitted_by',
+    ]
 
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            mapping = self.schema['file_format_file_extension']
-            ns['file_extension'] = mapping[properties['file_format']]
-            return ns
+    def unique_keys(self, properties):
+        keys = super(File, self).unique_keys(properties)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
+        return keys
 
-        @classmethod
-        def create(cls, parent, uuid, properties, sheets=None):
-            if properties.get('status') == 'uploading':
-                sheets = {} if sheets is None else sheets.copy()
+    # Don't specify schema as this just overwrites the existing value
+    @calculated_property(
+        condition=lambda paired_end=None: paired_end == '1')
+    def paired_with(self, root, request):
+        paired_with = self.get_rev_links('paired_with')
+        if not paired_with:
+            return None
+        item = root.get_by_uuid(paired_with[0])
+        return request.resource_path(item)
 
-                registry = find_root(parent).registry
-                bucket = registry.settings['file_upload_bucket']
-                mapping = parent.schema['file_format_file_extension']
-                file_extension = mapping[properties['file_format']]
-                date = properties['date_created'].split('T')[0].replace('-', '/')
-                key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                    date=date, file_extension=file_extension, **properties)
-                name = 'upload-{time}-{accession}'.format(
-                    time=time.time(), **properties)  # max 32 chars
+    @calculated_property(schema={
+        "title": "Download URL",
+        "type": "string",
+    })
+    def href(self, request, accession, file_format):
+        file_extension = self.schema['file_format_file_extension'][file_format]
+        filename = '{}{}'.format(accession, file_extension)
+        return request.resource_path(self, '@@download', filename)
 
-                sheets['external'] = external_creds(bucket, key, name)
-            return super(File.Item, cls).create(parent, uuid, properties, sheets)
+    @calculated_property(condition=show_upload_credentials, schema={
+        "type": "object",
+    })
+    def upload_credentials(self):
+        return self.propsheets['external']['upload_credentials']
+
+    @classmethod
+    def create(cls, registry, properties, sheets=None):
+        if properties.get('status') == 'uploading':
+            sheets = {} if sheets is None else sheets.copy()
+
+            bucket = registry.settings['file_upload_bucket']
+            mapping = cls.schema['file_format_file_extension']
+            file_extension = mapping[properties['file_format']]
+            date = properties['date_created'].split('T')[0].replace('-', '/')
+            key = '{date}/{uuid}/{accession}{file_extension}'.format(
+                date=date, file_extension=file_extension, **properties)
+            name = 'upload-{time}-{accession}'.format(
+                time=time.time(), **properties)  # max 32 chars
+
+            sheets['external'] = external_creds(bucket, key, name)
+        return super(File, cls).create(registry, properties, sheets)
 
 
-@view_config(name='upload', context=File.Item, request_method='GET',
+@view_config(name='upload', context=File, request_method='GET',
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
@@ -133,7 +162,7 @@ def get_upload(context, request):
     }
 
 
-@view_config(name='upload', context=File.Item, request_method='POST',
+@view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties(finalize=False)
@@ -166,17 +195,17 @@ class InternalResponse(Response):
         return list(self.headerlist)
 
 
-@view_config(name='download', context=File.Item, request_method='GET',
+@view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties(finalize=False)
-    ns = context.template_namespace(properties, request)
+    mapping = context.schema['file_format_file_extension']
+    file_extension = mapping[properties['file_format']]
+    filename = properties['accession'] + file_extension
     if request.subpath:
-        filename, = request.subpath
-        if filename != '{accession}{file_extension}'.format(**ns):
-            raise HTTPNotFound(filename)
-    else:
-        filename = '{accession}{file_extension}'.format(**ns)
+        _filename, = request.subpath
+        if filename != _filename:
+            raise HTTPNotFound(_filename)
 
     proxy = asbool(request.params.get('proxy'))
 
@@ -200,7 +229,7 @@ def download(context, request):
         return {
             '@type': ['SoftRedirect'],
             'location': location,
-            'expires': datetime.datetime.fromtimestamp(expires).isoformat(),
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
 
     # 307 redirect specifies to keep original method

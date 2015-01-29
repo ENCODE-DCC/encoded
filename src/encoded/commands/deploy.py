@@ -25,12 +25,15 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
 
     conn = boto.ec2.connect_to_region("us-west-2")
     bdm = BlockDeviceMapping()
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True)
     if persistent:
-        bdm['/dev/xvdf'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
-        bdm['/dev/xvdg'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdf'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/sdg'] = BlockDeviceType(
+            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
     else:
-        bdm['/dev/xvdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
-        bdm['/dev/xvdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
+        bdm['/dev/sdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
+        bdm['/dev/sdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
 
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
@@ -48,12 +51,13 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         instance_profile_name='demo-instance',
     )
 
+    time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
     instance.add_tag('Name', name)
     instance.add_tag('commit', commit)
     instance.add_tag('started_by', username)
-    print instance
-    print instance.state,
+    print(instance)
+    sys.stdout.write(instance.state)
 
     while instance.state == 'pending':
         sys.stdout.write('.')
@@ -61,10 +65,9 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
         time.sleep(1)
         instance.update()
 
-    print
-    print instance.state
-
-    print instance.public_dns_name  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
+    print()
+    print(instance.state)
+    print(instance.public_dns_name)  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
 
 
 def main():

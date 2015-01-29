@@ -2,18 +2,24 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
+var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
+var UnreleasedFiles = dataset.UnreleasedFiles;
+var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
+var Graph = graph.Graph;
+var ExperimentGraph = graph.ExperimentGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -28,6 +34,7 @@ var Panel = function (props) {
 
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -327,12 +334,19 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
+                <ExperimentGraph context={context} />
+
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
                         <FileTable items={context.files} encodevers={encodevers} />
                     </div>
                 : null }
+
+                {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
+                    <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                ): null}
+
             </div>
         );
     }
@@ -465,6 +479,22 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                         </dd>
                     </div>
                 : null}
+
+                {lib.spikeins_used && lib.spikeins_used.length ?
+                    <div data-test="spikeins">
+                        <dt>Spike-ins datasets</dt>
+                        <dd>
+                            {lib.spikeins_used.map(function(dataset, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={dataset['@id']}>{dataset.accession}</a>
+                                    </span>
+                                );
+                            })}
+                        </dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );
@@ -537,6 +567,7 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
+
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');

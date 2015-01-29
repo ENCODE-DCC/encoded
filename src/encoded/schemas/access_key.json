@@ -30,7 +30,8 @@
             "title": "Access key ID",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
-            "permission": "import_items"
+            "permission": "import_items",
+            "uniqueKey": true
         },
         "secret_access_key_hash": {
             "title": "Secret access key Hash",

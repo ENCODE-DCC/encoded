@@ -93,7 +93,11 @@ def test_link_target_audit_fail(testapp):
     target = {'uuid': '775795d3-4410-4114-836b-8eeecf1d0c2f', 'status': 'CHECK'}
     testapp.post_json('/testing_link_target', target, status=201)
     res = testapp.get('/%s/@@index-data' % target['uuid']).maybe_follow()
-    errors = [e for e in res.json['audit'] if e['name'] == 'testing_link_target_status']
+    errors_dict = res.json['audit']
+    errors_list = []
+    for error_type in errors_dict:
+        errors_list.extend(errors_dict[error_type])
+    errors = [e for e in errors_list if e['name'] == 'testing_link_target_status']
     error, = errors
     assert error['detail'] == 'Missing reverse items'
     assert error['category'] == 'status'
@@ -107,5 +111,9 @@ def test_link_target_audit_pass(testapp):
     source = {'uuid': '16157204-8c8f-4672-a1a4-14f4b8021fcd', 'target': target['uuid']}
     testapp.post_json('/testing_link_source', source, status=201)
     res = testapp.get('/%s/@@index-data' % target['uuid']).maybe_follow()
-    errors = [e for e in res.json['audit'] if e['name'] == 'testing_link_target_status']
+    errors_dict = res.json['audit']
+    errors_list = []
+    for error_type in errors_dict:
+        errors_list.extend(errors_dict[error_type])
+    errors = [e for e in errors_list if e['name'] == 'testing_link_target_status']
     assert errors == []

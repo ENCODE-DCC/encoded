@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from ..auditor import (
     AuditFailure,
     audit_checker,
@@ -94,6 +95,8 @@ def audit_item_status(value, system):
     request = system['request']
     linked = set()
     for key in context.schema_links:
+        if key in ['supercedes']:
+            continue
         linked.update(aslist(value.get(key, ())))
 
     for path in linked:

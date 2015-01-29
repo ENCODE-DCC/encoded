@@ -1,8 +1,19 @@
 from copy import deepcopy
-from urllib import unquote
 from .cache import ManagerLRUCache
-from pyramid.httpexceptions import HTTPNotFound
+from past.builtins import basestring
 from posixpath import join
+from pyramid.compat import (
+    native_,
+    unquote_bytes_to_wsgi,
+)
+from pyramid.httpexceptions import HTTPNotFound
+
+
+def includeme(config):
+    config.scan(__name__)
+    config.add_request_method(embed, 'embed')
+    config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
+    config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
 
 
 def make_subrequest(request, path):
@@ -16,9 +27,9 @@ def make_subrequest(request, path):
     env = request.environ.copy()
     if path and '?' in path:
         path_info, query_string = path.split('?', 1)
-        path_info = unquote(path_info)
+        path_info = path_info
     else:
-        path_info = unquote(path)
+        path_info = path
         query_string = ''
     env['PATH_INFO'] = path_info
     env['QUERY_STRING'] = query_string
@@ -33,20 +44,26 @@ def make_subrequest(request, path):
 embed_cache = ManagerLRUCache('embed_cache')
 
 
-def embed(request, path, as_user=None):
+def embed(request, *elements, **kw):
     """ as_user=True for current user
     """
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
-    if isinstance(path, unicode):
-        path = path.encode('utf-8')
+    as_user = kw.get('as_user')
+    path = join(*elements)
+    path = unquote_bytes_to_wsgi(native_(path))
     if as_user is not None:
-        return _embed(request, path, as_user)
-    result = embed_cache.get(path, None)
-    if result is None:
-        result = _embed(request, path)
-        embed_cache[path] = result
-    return deepcopy(result)
+        result, embedded, linked = _embed(request, path, as_user)
+    else:
+        cached = embed_cache.get(path, None)
+        if cached is None:
+            cached = _embed(request, path)
+            embed_cache[path] = cached
+        result, embedded, linked = cached
+        result = deepcopy(result)
+    request._embedded_uuids.update(embedded)
+    request._linked_uuids.update(linked)
+    return result
 
 
 def _embed(request, path, as_user='EMBED'):
@@ -57,9 +74,10 @@ def _embed(request, path, as_user='EMBED'):
             del subreq.environ['HTTP_COOKIE']
         subreq.remote_user = as_user
     try:
-        return request.invoke_subrequest(subreq)
+        result = request.invoke_subrequest(subreq)
     except HTTPNotFound:
         raise KeyError(path)
+    return result, subreq._embedded_uuids, subreq._linked_uuids
 
 
 def expand_path(request, obj, path):
@@ -75,9 +93,9 @@ def expand_path(request, obj, path):
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
-                member = value[index] = embed(request, join(member, '@@object'))
+                member = value[index] = request.embed(member, '@@object')
             expand_path(request, member, remaining)
     else:
         if not isinstance(value, dict):
-            value = obj[name] = embed(request, join(value, '@@object'))
+            value = obj[name] = request.embed(value, '@@object')
         expand_path(request, value, remaining)
