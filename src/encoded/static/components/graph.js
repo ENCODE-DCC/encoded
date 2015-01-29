@@ -205,7 +205,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Save list of files and analysis steps so we can click-test them later
         this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
-        this.stepLists = [];
+        this.stepList = [];
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
@@ -227,15 +227,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                 // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
                 // to show that this is a file node.
-                if (!jsonGraph.getNode(fileId)) {
-                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
-                }
+                jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
                 if (file.derived_from && file.derived_from.length && file.step_run) {
                     // Remember this step for later hit testing
-                    this.stepLists.push(file.step_run);
+                    this.stepList.push(file.step_run);
 
                     // Make the ID of the node using the first step in the array, and it connects to
                     var stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
@@ -373,12 +371,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        var selectedStep = _(this.stepLists).find(function(step) {
+                        var selectedStep = _(this.stepList).find(function(step) {
                             return step.analysis_step['@id'] === analysisStepId;
                         });
 
                         var step = selectedStep.analysis_step;
-                        return (
+                        meta = (
                             <div>
                                 <dl className="key-value">
                                     <div data-test="steptype">
