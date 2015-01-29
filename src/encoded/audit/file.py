@@ -84,7 +84,7 @@ def audit_file_controlled_by(value, system):
             value['accession'],
             value['dataset']['assay_term_name']
             )
-        raise AuditFailure('missing controlled_by', detail, level='ERROR')
+        raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset']['biosample_term_id']
