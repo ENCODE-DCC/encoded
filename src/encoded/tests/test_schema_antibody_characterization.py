@@ -11,7 +11,7 @@ def antibody_characterization(submitter, award, lab, antibody_lot, target):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'target': target['uuid'],
-        'characterizes': antibody_lot['uuid'],
+        'characterizes': antibody_lot['uuid']
     }
 
 
