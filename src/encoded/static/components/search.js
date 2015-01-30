@@ -474,7 +474,7 @@ var AuditMixin = audit.AuditMixin;
     var Target = module.exports.Target = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
-            var result = this.props.context;
+            var result = this.props.context;4
             var columns = this.props.columns;
             return (
                 <li>
@@ -816,7 +816,14 @@ var AuditMixin = audit.AuditMixin;
                                                 : null}
                                             </span>
                                         }
-                                        
+
+                                        {context['batch_download'] ?
+                                            <span className="pull-right">
+                                                <a data-bypass="true" target="_self" private-browsing="true" className="btn btn-info btn-sm"
+                                                    href={context['batch_download']}>{'Download'}</a>&nbsp;
+                                            </span>
+                                        : null}
+
                                         {context['batch_hub'] ?
                                             <span className="pull-right">
                                                 <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
