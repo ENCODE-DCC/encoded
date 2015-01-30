@@ -1,5 +1,9 @@
 import pytest
 
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
+
 
 @pytest.fixture
 def antibody_characterization(submitter, award, lab, antibody_lot, target):
@@ -55,6 +59,16 @@ def antibody_characterization_2(antibody_characterization):
     item.update({
         'schema_version': '3',
         'status': 'COMPLIANT'
+    })
+    return item
+
+
+@pytest.fixture
+def antibody_characterization_5(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'schema_version': '5',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
     })
     return item
 
@@ -151,6 +165,12 @@ def test_antibody_characterization_upgrade(app, antibody_characterization_1):
     assert value['schema_version'] == '3'
     assert value['status'] == 'PENDING DCC REVIEW'
     assert value['characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
+
+
+def test_antibody_characterization_upgrade_attachment(app, antibody_characterization_5):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('antibody_characterization', antibody_characterization_5, target_version='6')
+    assert value['schema_version'] == '6'
 
 
 def test_biosample_characterization_upgrade(app, biosample_characterization_1):
