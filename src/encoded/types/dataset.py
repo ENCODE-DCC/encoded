@@ -141,15 +141,20 @@ class Dataset(Item):
 
     @calculated_property(define=True, schema={
         "title": "Assembly",
-        "type": "string",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
     })
     def assembly(self, request, original_files, related_files):
+        assembly = []
         for path in chain(original_files, related_files):
             properties = request.embed(path, '@@object')
             if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
                     properties['status'] in ['released']:
                 if 'assembly' in properties:
-                    return properties['assembly']
+                    assembly.append(properties['assembly'])
+        return list(set(assembly))
 
     @calculated_property(condition='assembly', schema={
         "title": "Hub",
@@ -164,9 +169,13 @@ class Dataset(Item):
         if 'hub' in properties:
             hub_url = urljoin(request.resource_url(request.root), properties['hub'])
             properties = properties.copy()
-            hgTracks = 'http://genome.ucsc.edu/cgi-bin/hgTracks?'
-            properties['visualize_ucsc'] = hgTracks + '&'.join([
-                'db=' + quote_plus(properties['assembly']),
+            hg_connect = ''.join([
+                'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
+                '?hgHub_do_redirect=on',
+                '&hgHubConnect.remakeTrackHub=on',
+                '&hgHub_do_firstDb=1&',
+            ])
+            properties['visualize_ucsc'] = hg_connect + '&'.join([
                 'hubUrl=' + quote_plus(hub_url, ':/@'),
             ])
         return properties

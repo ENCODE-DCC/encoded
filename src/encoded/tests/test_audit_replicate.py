@@ -18,4 +18,4 @@ def test_audit_status_replicate(testapp, rep1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'rep status mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched status' for error in errors_list)
