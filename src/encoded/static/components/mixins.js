@@ -494,6 +494,20 @@ module.exports.HistoryAndTriggers = {
 
         options = options || {};
         href = url.resolve(this.props.href, href);
+
+        if (!this.historyEnabled) {
+            if (options.replace) {
+                window.location.replace(href);
+            } else {
+                var old_path = window.location.pathname + window.location.search;
+                window.location.assign(href);
+                if (old_path == href) {
+                    window.location.reload();
+                }
+            }
+            return;
+        }
+
         var xhr = this.props.contextRequest;
 
         if (xhr && xhr.state() == 'pending') {
