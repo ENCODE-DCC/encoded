@@ -150,7 +150,7 @@ class Dataset(Item):
         assembly = []
         for path in chain(original_files, related_files):
             properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
                     properties['status'] in ['released']:
                 if 'assembly' in properties:
                     assembly.append(properties['assembly'])
