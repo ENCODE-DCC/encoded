@@ -410,13 +410,6 @@
                 "pattern": "^\\S+:\\S+"
             }
         },
-        "pipeline": {
-            "title": "Pipeline",
-            "description": "The pipeline the file was generated from.",
-            "comment": "For pipelines, see pipeline.json for available identifiers.",
-            "type": "string",
-            "linkTo": "pipeline"
-        },
         "step_run": {
             "title": "Analysis step",
             "description": "The run instance of the step the file was generated from.",

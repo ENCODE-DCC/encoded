@@ -90,7 +90,6 @@ class File(Item):
         'step_run.analysis_step',
         'step_run.analysis_step.software_versions',
         'step_run.analysis_step.software_versions.software',
-        'pipeline',
         'submitted_by',
     ]
 
