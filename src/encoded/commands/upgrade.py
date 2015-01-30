@@ -21,8 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'human_donor',
-    'biosample',
 ]
 
 

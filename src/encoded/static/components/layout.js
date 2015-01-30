@@ -213,11 +213,11 @@ var LayoutToolbar = React.createClass({
     componentDidMount: function() {
         var $ = require('jquery');
         this.origTop = $(this.getDOMNode()).offset().top;
-        window.addEventListener('scroll', this.scrollspy);
+        globals.bindEvent(window, 'scroll', this.scrollspy);
     },
 
     componentWillUnmount: function() {
-        window.removeEventListener('scroll', this.scrollspy);
+        globals.unbindEvent(window, 'scroll', this.scrollspy);
     },
 
     scrollspy: function() {

@@ -8,6 +8,7 @@ from ..contentbase import (
     Root,
     root,
 )
+from ..schema_formats import is_accession
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -72,10 +73,28 @@ class EncodedRoot(Root):
             (Allow, Everyone, ['list', 'search']),
             (Allow, 'group.submitter', ['search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
+            (Allow, 'group.forms', ('forms',)),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
         ] + Root.__acl__
         return acl
+
+    def get(self, name, default=None):
+        resource = super(EncodedRoot, self).get(name, None)
+        if resource is not None:
+            return resource
+        resource = self.connection.get_by_unique_key('page:location', name)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.connection.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = self.connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource
+        return default
 
 
 @view_config(context=Root, request_method='GET')

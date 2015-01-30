@@ -13,7 +13,6 @@ from posixpath import join
 from pyramid.decorator import reify
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
-    HTTPConflict,
     HTTPInternalServerError,
     HTTPNotFound,
     HTTPPreconditionFailed,
@@ -28,21 +27,13 @@ from pyramid.security import (
 )
 from pyramid.settings import asbool
 from pyramid.traversal import (
+    find_resource,
     find_root,
     resource_path,
 )
 from pyramid.view import (
     render_view_to_response,
     view_config,
-)
-from sqlalchemy import (
-    bindparam,
-    orm,
-)
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import (
-    FlushError,
-    NoResultFound,
 )
 from urllib.parse import urlencode
 from uuid import (
@@ -55,21 +46,13 @@ from .calculated import (
     calculated_property,
 )
 from .decorator import classreify
-from .precompiled_query import precompiled_query_builder
 from .embedding import (
     embed,
     expand_path,
+    make_subrequest,
 )
-from .schema_formats import is_accession
-from .schema_utils import lookup_resource
 from .schema_utils import validate_request
-from .storage import (
-    DBSession,
-    CurrentPropertySheet,
-    Resource,
-    Key,
-    Link,
-)
+from .storage import RDBStorage
 from collections import (
     defaultdict,
 )
@@ -78,19 +61,29 @@ from .validation import ValidationFailure
 PHASE1_5_CONFIG = -15
 
 
-LOCATION_ROOT = __name__ + ':location_root'
+ROOT = LOCATION_ROOT = 'root'
+TYPES = 'types'
+CONNECTION = 'connection'
+COLLECTIONS = 'collections'
+STORAGE = 'storage'
+
 _marker = object()
 
 logger = logging.getLogger(__name__)
 
 
 def includeme(config):
+    registry = config.registry
     config.scan(__name__)
+    registry[COLLECTIONS] = CollectionsTool()
+    types = registry[TYPES] = TypesTool()
+    storage = registry[STORAGE] = RDBStorage()
+    registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
 
 
 def root_factory(request):
-    return request.registry[LOCATION_ROOT]
+    return request.registry[ROOT]
 
 
 def aslist(value):
@@ -195,7 +188,7 @@ def root(factory):
 
     def set_root(config, factory):
         root = factory(config.registry)
-        config.registry[LOCATION_ROOT] = root
+        config.registry[ROOT] = root
 
     def callback(scanner, factory_name, factory):
         scanner.config.action(('root',), set_root,
@@ -213,9 +206,10 @@ def collection(name, **kw):
     """
 
     def set_collection(config, Collection, name, Item, **kw):
-        root = config.registry[LOCATION_ROOT]
-        collection = Collection(root, name, Item, **kw)
-        root[name] = collection
+        registry = config.registry
+        registry[TYPES].register(Item.item_type, Item)
+        collection = Collection(registry, name, Item.item_type, **kw)
+        registry[COLLECTIONS].register(name, collection)
 
     def decorate(Item):
 
@@ -230,33 +224,100 @@ def collection(name, **kw):
     return decorate
 
 
-def _get_by_uuid_instance_map(uuid):
-    # Internals from sqlalchemy/orm/query.py:Query.get
-    session = DBSession()
-    mapper = orm.class_mapper(Resource)
-    ident = [uuid]
-    key = mapper.identity_key_from_primary_key(ident)
-    return orm.loading.get_from_identity(
-        session, key, orm.attributes.PASSIVE_OFF)
+class CollectionsTool(dict):
+    def __init__(self):
+        self.by_item_type = {}
+
+    def register(self, name, value):
+        self[name] = value
+        self[value.item_type] = value
+        self.by_item_type[value.item_type] = value
 
 
-@precompiled_query_builder(DBSession)
-def _get_by_uuid_query():
-    session = DBSession()
-    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
+class TypesTool(object):
+    def __init__(self):
+        self.types = {}
+        self.type_back_rev = {}
+
+    def register(self, item_type, factory):
+        self.types[item_type] = factory
+
+        # Calculate the reverse rev map
+        for prop_name, spec in factory.rev.items():
+            rev_item_type, rel = spec
+            back = self.type_back_rev.setdefault(rev_item_type, {}).setdefault(rel, set())
+            back.add((item_type, prop_name))
+
+    def __getitem__(self, name):
+        return self.types[name]
 
 
-@precompiled_query_builder(DBSession)
-def _get_by_unique_key_query():
-    session = DBSession()
-    return session.query(Key).options(
-        orm.joinedload_all(
-            Key.resource,
-            Resource.data,
-            CurrentPropertySheet.propsheet,
-            innerjoin=True,
-        ),
-    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+class Connection(object):
+    ''' Intermediates between the storage and the rest of the system
+    '''
+    def __init__(self, registry, types, storage):
+        self.registry = registry
+        self.types = types
+        self.storage = storage
+        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
+        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+
+    def get_by_uuid(self, uuid, default=None):
+        if isinstance(uuid, basestring):
+            try:
+                uuid = UUID(uuid)
+            except ValueError:
+                return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
+
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
+        model = self.storage.get_by_uuid(uuid)
+        if model is None:
+            return default
+
+        Item = self.types[model.item_type]
+        item = Item(self.registry, model)
+        self.item_cache[uuid] = item
+        return item
+
+    def get_by_unique_key(self, unique_key, name, default=None):
+        pkey = (unique_key, name)
+
+        cached = self.unique_key_cache.get(pkey)
+        if cached is not None:
+            return self.get_by_uuid(cached)
+
+        model = self.storage.get_by_unique_key(unique_key, name)
+        if model is None:
+            return default
+
+        uuid = model.rid
+        self.unique_key_cache[pkey] = uuid
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
+        Item = self.types[model.item_type]
+        item = Item(self.registry, model)
+        self.item_cache[uuid] = item
+        return item
+
+    def __iter__(self, item_type=None, batchsize=1000):
+        for uuid in self.storage.__iter__(item_type, batchsize):
+            yield uuid
+
+    def __len__(self, item_type=None):
+        return self.storage.__len__(item_type)
+
+    def create(self, item_type, uuid):
+        return self.storage.create(item_type, uuid)
+
+    def update(self, model, properties, sheets=None, unique_keys=None, links=None):
+        self.storage.update(model, properties, sheets, unique_keys, links)
 
 
 class Root(object):
@@ -265,16 +326,16 @@ class Root(object):
     __acl__ = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
-        (Allow, 'group.forms', ('forms',)),
     ]
 
     def __init__(self, registry):
         self.registry = registry
-        self.collections = {}
-        self.by_item_type = {}
-        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
-        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
-        self.type_back_rev = {}
+        self.collections = registry[COLLECTIONS]
+        self.connection = registry[CONNECTION]
+
+        # BBB
+        self.get_by_uuid = self.connection.get_by_uuid
+        self.by_item_type = self.collections.by_item_type
 
     def __getitem__(self, name):
         try:
@@ -294,85 +355,10 @@ class Root(object):
         resource = self.collections.get(name, None)
         if resource is not None:
             return resource
-        resource = self.by_item_type.get(name, None)
+        resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
             return resource
-        resource = self.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        resource = self.get_by_unique_key('page:location', name)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.get_by_unique_key('accession', name)
-            if resource is not None:
-                return resource
-        if ':' in name:
-            resource = self.get_by_unique_key('alias', name)
-            if resource is not None:
-                return resource
         return default
-
-    def __setitem__(self, name, value):
-        self.collections[name] = value
-        self.by_item_type[value.item_type] = value
-
-        # Calculate the reverse rev map
-        for prop_name, spec in value.Item.rev.items():
-            item_type, rel = spec
-            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
-            back.add((value.item_type, prop_name))
-
-    def get_by_uuid(self, uuid, default=None):
-        if isinstance(uuid, basestring):
-            try:
-                uuid = UUID(uuid)
-            except ValueError:
-                return default
-        elif not isinstance(uuid, UUID):
-            raise TypeError(uuid)
-
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        model = _get_by_uuid_instance_map(uuid)
-
-        if model is None:
-            try:
-                model = _get_by_uuid_query().params(rid=uuid).one()
-            except NoResultFound:
-                return default
-
-        collection = self.by_item_type[model.item_type]
-        item = collection.Item(self.registry, model)
-        self.item_cache[uuid] = item
-        return item
-
-    def get_by_unique_key(self, unique_key, name, default=None):
-        pkey = (unique_key, name)
-
-        cached = self.unique_key_cache.get(pkey)
-        if cached is not None:
-            return self.get_by_uuid(cached)
-
-        try:
-            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
-        except NoResultFound:
-            return default
-
-        model = key.resource
-
-        uuid = model.rid
-        self.unique_key_cache[pkey] = uuid
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        collection = self.by_item_type[model.item_type]
-        item = collection.Item(self.registry, model)
-        self.item_cache[uuid] = item
-        return item
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -382,17 +368,26 @@ class Collection(Mapping):
     properties = {}
     unique_key = None
 
-    def __init__(self, parent, name, Item, properties=None, acl=None, unique_key=None):
+    def __init__(self, registry, name, item_type, properties=None, acl=None, unique_key=None):
+        self.registry = registry
         self.__name__ = name
-        self.__parent__ = parent
-        self.Item = Item
-        self.item_type = Item.item_type
+        self.item_type = item_type
+        self.connection = registry[CONNECTION]
         if properties is not None:
             self.properties = properties
         if acl is not None:
             self.__acl__ = acl
         if unique_key is not None:
             self.unique_key = unique_key
+
+    @reify
+    def __parent__(self):
+        return self.registry[ROOT]
+
+    @reify
+    def Item(self):
+        types = self.registry[TYPES]
+        return types[self.item_type]
 
     def __getitem__(self, name):
         try:
@@ -406,42 +401,20 @@ class Collection(Mapping):
         return item
 
     def __iter__(self, batchsize=1000):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        ).order_by(Resource.rid)
-
-        for rid, in query.yield_per(batchsize):
-            yield rid
+        for uuid in self.connection.__iter__(self.item_type, batchsize):
+            yield uuid
 
     def __len__(self):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        )
-        return query.count()
+        return self.connection.__len__(self.item_type)
 
     def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
+        resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
             if resource.collection is not self and resource.__parent__ is not self:
                 return default
             return resource
-        if is_accession(name):
-            resource = root.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = root.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
         if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
+            resource = self.connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
                 if resource.collection is not self and resource.__parent__ is not self:
                     return default
@@ -471,8 +444,8 @@ class Item(object):
 
     @reify
     def collection(self):
-        root = self.registry[LOCATION_ROOT]
-        return root.by_item_type[self.item_type]
+        collections = self.registry[COLLECTIONS]
+        return collections.by_item_type[self.item_type]
 
     @property
     def __parent__(self):
@@ -481,8 +454,8 @@ class Item(object):
     @property
     def __name__(self):
         if self.name_key is None:
-            return self.uuid
-        return self.properties.get(self.name_key, None) or self.uuid
+            return str(self.uuid)
+        return self.properties.get(self.name_key, None) or str(self.uuid)
 
     @classreify
     def schema_version(cls):
@@ -493,15 +466,19 @@ class Item(object):
 
     @property
     def properties(self):
-        return self.model['']
+        return self.model.properties
 
     @property
     def propsheets(self):
-        return self.model
+        return self.model.propsheets
 
     @property
     def uuid(self):
-        return self.model.rid
+        return self.model.uuid
+
+    @property
+    def tid(self):
+        return self.model.tid
 
     @classreify
     def schema_links(cls):
@@ -514,16 +491,15 @@ class Item(object):
 
     @property
     def merged_back_rev(self):
-        root = find_root(self)
         merged = {}
         types = [self.item_type] + self.base_types
         for item_type in reversed(types):
-            merged.update(root.type_back_rev.get(item_type, ()))
+            merged.update(self.registry[TYPES].type_back_rev.get(item_type, ()))
         return merged
 
-    def links(self):
+    def links(self, properties):
         return {
-            name: aslist(self.properties.get(name, ()))
+            name: aslist(properties.get(name, ()))
             for name in self.schema_links
         }
 
@@ -557,8 +533,7 @@ class Item(object):
                 keys[uniqueKey].append(key)
         return keys
 
-    def keys(self):
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
         return {
             name: [v for prop in props for v in aslist(properties.get(prop, ()))]
             for name, props in self.schema_keys.items()
@@ -569,12 +544,11 @@ class Item(object):
         current_version = properties.get('schema_version', '')
         target_version = self.schema_version
         if target_version is not None and current_version != target_version:
-            root = find_root(self)
-            migrator = root.registry['migrator']
+            migrator = self.registry['migrator']
             try:
                 properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    finalize=finalize, context=self, registry=root.registry)
+                    finalize=finalize, context=self, registry=self.registry)
             except RuntimeError:
                 raise
             except Exception:
@@ -604,8 +578,8 @@ class Item(object):
             uuid = UUID(properties['uuid'])
         else:
             uuid = uuid4()
-        resource = Resource(cls.item_type, rid=uuid)
-        self = cls(registry, resource)
+        model = registry[CONNECTION].create(cls.item_type, uuid)
+        self = cls(registry, model)
         self._update(properties, sheets)
         return self
 
@@ -613,108 +587,27 @@ class Item(object):
         self._update(properties, sheets)
 
     def _update(self, properties, sheets=None):
-        session = DBSession()
-        sp = session.begin_nested()
-        try:
-            session.add(self.model)
-            self.update_properties(properties, sheets)
-            self.update_rels()
-            keys_add, keys_remove = self.update_keys()
-            sp.commit()
-        except (IntegrityError, FlushError):
-            sp.rollback()
-        else:
-            return
-
-        # Try again more carefully
-        try:
-            session.add(self.model)
-            self.update_properties(properties, sheets)
-            self.update_rels()
-            session.flush()
-        except (IntegrityError, FlushError):
-            msg = 'UUID conflict'
-            raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(keys_add)
-        assert conflicts
-        msg = 'Keys conflict: %r' % conflicts
-        raise HTTPConflict(msg)
-
-    def update_properties(self, properties, sheets=None):
+        unique_keys = None
+        links = None
         if properties is not None:
             if 'uuid' in properties:
                 properties = properties.copy()
                 del properties['uuid']
-            self.model[''] = properties
-        if sheets is not None:
-            for key, value in sheets.items():
-                self.model[key] = value
 
-    def update_keys(self):
-        _keys = [
-            (k, v)
-            for k, values in self.keys().items()
-            for v in ([values] if isinstance(values, basestring) else values)
-        ]
-        keys = set(_keys)
+            unique_keys = self.unique_keys(properties)
+            for k, values in unique_keys.items():
+                if len(set(values)) != len(values):
+                    msg = "Duplicate keys for %r: %r" % (k, values)
+                    raise ValidationFailure('body', [], msg)
 
-        if len(keys) != len(_keys):
-            msg = "Duplicate keys: %r" % _keys
-            raise ValidationFailure('body', [], msg)
+            links = self.links(properties)
+            for k, values in links.items():
+                if len(set(values)) != len(values):
+                    msg = "Duplicate links for %r: %r" % (k, values)
+                    raise ValidationFailure('body', [], msg)
 
-        existing = {
-            (key.name, key.value)
-            for key in self.model.unique_keys
-        }
-
-        to_remove = existing - keys
-        to_add = keys - existing
-
-        session = DBSession()
-        for pk in to_remove:
-            key = session.query(Key).get(pk)
-            session.delete(key)
-
-        for name, value in to_add:
-            key = Key(rid=self.uuid, name=name, value=value)
-            session.add(key)
-
-        return to_add, to_remove
-
-    def check_duplicate_keys(self, keys):
-        session = DBSession()
-        return [pk for pk in keys if session.query(Key).get(pk) is not None]
-
-    def update_rels(self):
-        if self.schema is None:
-            return
-        session = DBSession()
-        source = self.uuid
-        links = self.links()
-
-        _rels = [(k, UUID(target)) for k, targets in links.items() for target in targets]
-        rels = set(_rels)
-        if len(rels) != len(_rels):
-            msg = "Duplicate links: %r" % _rels
-            raise ValidationFailure('body', [], msg)
-
-        existing = {
-            (link.rel, link.target_rid)
-            for link in self.model.rels
-        }
-
-        to_remove = existing - rels
-        to_add = rels - existing
-
-        for rel, target in to_remove:
-            link = session.query(Link).get((source, rel, target))
-            session.delete(link)
-
-        for rel, target in to_add:
-            link = Link(source_rid=source, rel=rel, target_rid=target)
-            session.add(link)
-
-        return to_add, to_remove
+        connection = self.registry[CONNECTION]
+        connection.update(self.model, properties, sheets, unique_keys, links)
 
     @calculated_property(name='@id', schema={
         "type": "string",
@@ -741,7 +634,7 @@ def etag_tid(view_callable):
         result = view_callable(context, request)
         root = request.root
         embedded = (root.get_by_uuid(uuid) for uuid in sorted(request._embedded_uuids))
-        uuid_tid = ((item.uuid, item.model.data[''].propsheet.tid) for item in embedded)
+        uuid_tid = ((item.uuid, item.tid) for item in embedded)
         request.response.etag = '&'.join('%s=%s' % (u, t) for u, t in uuid_tid)
         cache_control = request.response.cache_control
         cache_control.private = True
@@ -764,7 +657,7 @@ def if_match_tid(view_callable):
         uuid_tid = (v.split('=', 1) for v in if_match.strip('"').split('&'))
         root = request.root
         mismatching = (
-            root.get_by_uuid(uuid).model.data[''].propsheet.tid != UUID(tid)
+            root.get_by_uuid(uuid).tid != UUID(tid)
             for uuid, tid in uuid_tid)
         if any(mismatching):
             raise HTTPPreconditionFailed("The resource has changed.")
@@ -891,7 +784,7 @@ def update_children(context, request, propname_children):
         # Add or update children included in properties
         for i, child_props in enumerate(children):
             if isinstance(child_props, basestring):  # IRI of (existing) child
-                child = lookup_resource(root, child_collection, child_props)
+                child = find_resource(child_collection, child_props)
             else:
                 child_props = child_props.copy()
                 child_props[link_attr] = str(context.uuid)
@@ -988,8 +881,6 @@ def collection_add(context, request, render=None):
 
 
 @view_config(context=Item, permission='view', request_method='GET')
-@view_config(context=Item, permission='view', request_method='GET',
-             name='details')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
@@ -1029,6 +920,8 @@ def item_links(context, request):
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
+@view_config(context=Item, permission='view', request_method='GET',
+             name='details')
 def item_view_object(context, request):
     """ Render json structure
 
@@ -1274,18 +1167,23 @@ def inherit_audits(request, embedded, embedded_paths):
     for embedded_path in embedded_paths:
         audit_paths.update(path_ids(request, embedded, embedded_path))
 
-    audit = []
+    audits = {}
     for audit_path in audit_paths:
         result = embed(request, join(audit_path, '@@audit-self'))
-        audit.extend(result['audit'])
-    return audit
+        for audit in result['audit']:
+            if audit['level_name'] in audits:
+                audits[audit['level_name']].append(audit)
+            else:
+                audits[audit['level_name']] = [audit]
+    return audits
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     uuid = str(context.uuid)
-    links = context.links()
-    keys = context.keys()
+    properties = context.upgrade_properties(finalize=False)
+    links = context.links(properties)
+    unique_keys = context.unique_keys(properties)
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
@@ -1298,23 +1196,23 @@ def item_index_data(context, request):
     paths = {path}
     collection = context.collection
 
-    if collection.unique_key in keys:
+    if collection.unique_key in unique_keys:
         paths.update(
             resource_path(collection, key)
-            for key in keys[collection.unique_key])
+            for key in unique_keys[collection.unique_key])
 
     for base in (collection, request.root):
         for key_name in ('accession', 'alias'):
-            if key_name not in keys:
+            if key_name not in unique_keys:
                 continue
             paths.add(resource_path(base, uuid))
             paths.update(
                 resource_path(base, key)
-                for key in keys[key_name])
+                for key in unique_keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, join(path, '@@embedded'))
-    audit = inherit_audits(request, embedded, context.audit_inherit or context.embedded)
+    embedded = request.embed(path, '@@embedded')
+    audit = request.embed(path, '@@audit')['audit']
 
     document = {
         'uuid': uuid,
@@ -1322,7 +1220,7 @@ def item_index_data(context, request):
         'embedded': embedded,
         'object': embed(request, join(path, '@@object')),
         'links': links,
-        'keys': keys,
+        'unique_keys': unique_keys,
         'principals_allowed': principals_allowed,
         'paths': sorted(paths),
         'audit': audit,

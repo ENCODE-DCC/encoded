@@ -10,6 +10,9 @@ from .base import (
     paths_filtered_by_status,
 )
 from .download import ItemWithAttachment
+from pyramid.traversal import (
+    find_root,
+)
 
 
 def includeme(config):
@@ -220,9 +223,8 @@ class Publication(Item):
 
     # XXX the references mixin is only a key for this type
     # Should probably become 'identifiers' for publication
-    def keys(self):
-        keys = super(Publication, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(Publication, self).unique_keys(properties)
         if properties.get('references'):
             keys.setdefault('publication:identifier', []).extend(properties['references'])
         return keys
@@ -246,4 +248,33 @@ class Software(Item):
     item_type = 'software'
     schema = load_schema('software.json')
     name_key = 'name'
-    embedded = ['references']
+    embedded = [
+        'references', 
+        'versions'
+    ]
+    rev = {
+        'versions': ('software_version', 'software')
+    }
+
+    @calculated_property(schema={
+        "title": "Versions",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "software_version",
+        },
+    })
+    def versions(self, request, versions):
+        return paths_filtered_by_status(request, versions)
+
+
+@collection(
+    name='software-versions',
+    properties={
+        'title': 'Software version',
+        'description': 'Software version pages',
+    })
+class SoftwareVersion(Item):
+    item_type = 'software_version'
+    schema = load_schema('software_version.json')
+    embedded = ['software', 'software.references']
