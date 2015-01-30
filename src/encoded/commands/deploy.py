@@ -16,7 +16,7 @@ def nameify(s):
 
 
 def run(wale_s3_prefix, image_id, instance_type,
-        branch=None, name=None, persistent=False, candidate=''):
+        branch=None, name=None, candidate=''):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -36,19 +36,11 @@ def run(wale_s3_prefix, image_id, instance_type,
            for reservation in conn.get_all_instances()
            for i in reservation.instances
            if i.state != 'terminated'):
-        raise ValueError('An instance already exists with name: %s' % name)
+        print('An instance already exists with name: %s' % name)
+        sys.exit(1)
 
     bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True)
-    if persistent:
-        bdm['/dev/sdf'] = BlockDeviceType(
-            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
-        bdm['/dev/sdg'] = BlockDeviceType(
-            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
-    else:
-        bdm['/dev/sdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
-        bdm['/dev/sdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
-
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=40)
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
@@ -101,7 +93,6 @@ def main():
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
-    parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     parser.add_argument(
         '--candidate', action='store_const', default='', const='CANDIDATE',
