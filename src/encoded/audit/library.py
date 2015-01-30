@@ -57,7 +57,7 @@ def audit_library_documents(value, system):
             detail = 'Library {} method specifies "see document" yet has no document'.format(
                 value['accession']
                 )
-            raise AuditFailure('missing document', detail, level='WARNING')
+            raise AuditFailure('missing documents', detail, level='WARNING')
 
 
 @audit_checker('library', frame='object')
