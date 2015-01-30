@@ -147,9 +147,9 @@ class Dataset(Item):
         },
     })
     def assembly(self, request, original_files, related_files):
+        assembly = []
         for path in chain(original_files, related_files):
             properties = request.embed(path, '@@object')
-            assembly = []
             if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
                     properties['status'] in ['released']:
                 if 'assembly' in properties:
