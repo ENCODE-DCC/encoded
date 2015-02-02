@@ -8,7 +8,7 @@
 # Associate elastic-ip address for demo.encodedcc.org NS record.
 
 bootcmd:
-- cloud-init-per once echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 
 runcmd:
 - set -e

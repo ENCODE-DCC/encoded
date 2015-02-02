@@ -38,10 +38,10 @@ packages:
 - zlib1g-dev
 
 bootcmd:
-- cloud-init-per once echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
-- cloud-init-per once fallocate -l 4G /swapfile
-- cloud-init-per once chmod 600 /swapfile
-- cloud-init-per once mkswap /swapfile
+- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
+- cloud-init-per once chmod-swapfile chmod 600 /swapfile
+- cloud-init-per once mkswap-swapfile mkswap /swapfile
 - sysctl "vm.swappiness=0"
 - swapon /swapfile
 
