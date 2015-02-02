@@ -41,6 +41,9 @@ def run(wale_s3_prefix, image_id, instance_type,
 
     bdm = BlockDeviceMapping()
     bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=40)
+    # Don't attach instance storage so we can support auto recovery
+    bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
+    bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
