@@ -18,6 +18,7 @@ var BrowserFeat = require('./mixins').BrowserFeat;
 // Constructor for a graph architecture
 function JsonGraph(id) {
     this.id = id;
+    this.root = true;
     this.type = '';
     this.label = [];
     this.shape = '';
@@ -98,7 +99,7 @@ var Graph = module.exports.Graph = React.createClass({
                 graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
                     rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
-                if (parent.id) {
+                if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
                 if (node.nodes.length) {
@@ -121,7 +122,7 @@ var Graph = module.exports.Graph = React.createClass({
     drawGraph: function(el) {
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
-        var svg = d3.select(el).select('svg');
+        var svg = this.savedSvg = d3.select(el).select('svg');
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
@@ -157,7 +158,8 @@ var Graph = module.exports.Graph = React.createClass({
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 var svg = d3.select(el).insert('svg', '#graph-node-info')
                     .attr('id', 'graphsvg')
-                    .attr('preserveAspectRatio', 'xMidYMid');
+                    .attr('preserveAspectRatio', 'xMidYMid')
+                    .attr('version', '1.1');
                 var svgGroup = svg.append("g");
 
                 // Draw the graph into the panel
@@ -189,10 +191,80 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
+    handleClick: function() {
+
+        // Collect CSS styles that apply to the graph and insert them into the given SVG element
+        function attachStyles(el) {
+            var stylesText = '';
+            var sheets = document.styleSheets;
+
+            // Search every style in the style sheet(s) for those applying to graphs.
+            // Note: Not using ES5 looping constructs because these aren’t real arrays
+            for (var i = 0; i < sheets.length; i++) {
+                var rules = sheets[i].cssRules;
+                for (var j = 0; j < rules.length; j++) {
+                    var rule = rules[j];
+
+                    // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
+                    // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
+                    // FF(31)'s substring is much faster than indexOf.
+                    if (typeof(rule.style) != 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
+                        // If any elements use this style, add the style's CSS text to our style text accumulator.
+                        var elems = el.querySelectorAll(rule.selectorText);
+                        if (elems.length) {
+                            stylesText += rule.selectorText + " { " + rule.style.cssText + " }\n";
+                        }
+                    }
+                }
+            }
+
+            // Insert the collected SVG styles into a new style element
+            var styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            styleEl.innerHTML = "/* <![CDATA[ */\n" + stylesText + "\n/* ]]> */";
+
+            // Insert the new style element into the beginning of the given SVG element
+            el.insertBefore(styleEl, el.firstChild);
+        }
+
+        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
+        var svgNode = this.savedSvg.node().cloneNode(true);
+
+        // Attach graph CSS to SVG node clone
+        attachStyles(svgNode);
+
+        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
+        var serializer = new XMLSerializer();
+        var svgXml = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+            serializer.serializeToString(svgNode);
+        var img = new Image();
+        img.src = 'data:image/svg+xml;base64,' + window.btoa(svgXml);
+
+        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
+        img.onload = function() {
+            // Make a new memory-based canvas and draw the image into it.
+            var canvas = document.createElement('canvas');
+            canvas.width = img.width * 2;
+            canvas.height = img.height * 2;
+            var context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0, img.width * 2, img.height * 2);
+
+            // Make the image download by making a fake <a> and pretending to click it.
+            var a = document.createElement('a');
+            a.download = this.props.graph.id ? this.props.graph.id + '.png' : 'graph.png';
+            a.href = canvas.toDataURL('image/png');
+            a.setAttribute('data-bypass', 'true');
+            document.body.appendChild(a);
+            a.click();
+        }.bind(this);
+    },
+
     render: function() {
         return (
             <div className="panel-full">
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
+                <div className="graph-dl clearfix">
+                    <button className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
@@ -221,11 +293,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             return file.derived_from && file.derived_from.length && file.step_run;
         })) {
             // Create an empty graph architecture
-            jsonGraph = new JsonGraph('');
+            jsonGraph = new JsonGraph(context.accession);
 
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number, 'stroke: #000; fill: #e8fff0', 'rp', 'rect', 0);
             });
 
             // Add files and their steps as nodes to the graph
