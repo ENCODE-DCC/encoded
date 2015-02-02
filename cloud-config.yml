@@ -38,15 +38,12 @@ packages:
 - zlib1g-dev
 
 bootcmd:
-- mkfs -t ext4 /dev/xvdf
-- mkfs -t ext4 /dev/xvdg
-- mkdir -p /var/lib/postgresql/9.3
-- mkdir -p /var/lib/elasticsearch/elasticsearch
-- echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
-
-mounts:
-- [ xvdf, /var/lib/postgresql/9.3, "auto", "defaults,nobootwait,nodelalloc", "0", "2" ]
-- [ xvdg, /var/lib/elasticsearch/elasticsearch, "auto", "defaults,nobootwait,nodelalloc", "0", "2" ]
+- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
+- cloud-init-per once chmod-swapfile chmod 600 /swapfile
+- cloud-init-per once mkswap-swapfile mkswap /swapfile
+- sysctl "vm.swappiness=0"
+- swapon /swapfile
 
 users:
 - default
