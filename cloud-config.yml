@@ -38,9 +38,12 @@ packages:
 - zlib1g-dev
 
 bootcmd:
-- echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once fallocate -l 4G /swapfile
+- cloud-init-per once chmod 600 /swapfile
+- cloud-init-per once mkswap /swapfile
 - sysctl "vm.swappiness=0"
-- echo "vm.swappiness=0" >> /etc/sysctl.conf
+- swapon /swapfile
 
 users:
 - default
@@ -138,10 +141,6 @@ runcmd:
 ## Or specify public keys:
 ssh_authorized_keys:
 - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
-
-swap:
-   filename: /swap.img
-   size: "auto"
 
 apt_sources:
 - source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
