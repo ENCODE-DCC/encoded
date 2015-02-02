@@ -41,4 +41,4 @@ def audit_status_replicate(value, system):
             value['uuid'],
             exp_status
             )
-        raise AuditFailure('rep status mismatch', detail, level='DCC_ACTION')
+        raise AuditFailure('mismatched status', detail, level='DCC_ACTION')

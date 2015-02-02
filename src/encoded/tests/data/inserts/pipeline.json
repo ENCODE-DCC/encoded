@@ -24,12 +24,11 @@
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
         "end_points": [
-            "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
+            "36a667fe-e98c-402d-babf-88a9d39df5ff",
             "aa598eaa-eda4-4fb3-b313-072f95de58a4"
         ],
         "analysis_steps": [
             "36a667fe-e98c-402d-babf-88a9d39df5ff",
-            "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
             "aa598eaa-eda4-4fb3-b313-072f95de58a4"
         ],
         "status": "released"

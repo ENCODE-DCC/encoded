@@ -15,7 +15,7 @@ HUB_TXT = 'hub.txt'
 GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
-BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed']
+BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed', 'bedRnaElements', 'bedMethyl', 'bedLogR']
 FILE_QUERY = {
     'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
     'limit': ['all'],
@@ -144,9 +144,19 @@ def get_hub(label):
     return render(hub)
 
 
-def generate_trackDb(embedded, visibility):
+def generate_trackDb(embedded, visibility, assembly=None):
 
     files = embedded.get('files', None)
+
+    # checks if there is assembly specified for each experiment
+    new_files = []
+    if assembly is not None:
+        for f in files:
+            if 'assembly' in f and f['assembly'] == assembly:
+                new_files.append(f)
+    if len(new_files):
+        files = new_files
+
     long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
         assay_term_name=embedded['assay_term_name'],
         biosample_term_name=embedded['biosample_term_name'],
@@ -191,7 +201,7 @@ def generate_trackDb(embedded, visibility):
             signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(
                 f, track_label,
                 embedded['accession'] + 'SIGView'
-                )
+            )
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
@@ -260,11 +270,11 @@ def generate_batch_hubs(context, request):
         for i, experiment in enumerate(results['@graph']):
             if i < 5:
                 if i == 0:
-                    trackdb = generate_trackDb(experiment, 'full')
+                    trackdb = generate_trackDb(experiment, 'full', None)
                 else:
-                    trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full')
+                    trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full', None)
             else:
-                trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'hide')
+                trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'hide', None)
         return trackdb
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
@@ -297,9 +307,9 @@ def hub(context, request):
     url_ret = (request.url).split('@@hub')
     embedded = embed(request, request.resource_path(context))
 
-    assembly = ''
+    assemblies = ''
     if 'assembly' in embedded:
-        assembly = embedded['assembly']
+        assemblies = embedded['assembly']
 
     if url_ret[1][1:] == HUB_TXT:
         return Response(
@@ -307,12 +317,15 @@ def hub(context, request):
             content_type='text/plain'
         )
     elif url_ret[1][1:] == GENOMES_TXT:
-        return Response(
-            NEWLINE.join(get_genomes_txt(embedded['assembly'])),
-            content_type='text/plain'
-        )
-    elif url_ret[1][1:] == assembly + '/' + TRACKDB_TXT:
-        parent_track = generate_trackDb(embedded, 'full')
+        g_text = ''
+        for assembly in assemblies:
+            if g_text == '':
+                g_text = NEWLINE.join(get_genomes_txt(assembly))
+            else:
+                g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(assembly))
+        return Response(g_text, content_type='text/plain')
+    elif url_ret[1][1:].endswith(TRACKDB_TXT):
+        parent_track = generate_trackDb(embedded, 'full', url_ret[1][1:].split('/')[0])
         return Response(parent_track, content_type='text/plain')
     else:
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
