@@ -45,7 +45,13 @@ JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, s
         // Otherwise, assume label is an array; clone it
         newNode.label = label.slice(0);
     }
-    newNode.metadata = {cssClass: options.cssClass, shape: options.shape, cornerRadius: options.cornerRadius, error: options.error};
+    newNode.metadata = {
+        cssClass: options.cssClass,
+        shape: options.shape,
+        cornerRadius: options.cornerRadius,
+        error: options.error,
+        accession: options.accession
+    };
     newNode.nodes = [];
     var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
     target.push(newNode);
@@ -294,7 +300,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             if (!jsonGraph.getNode(stepId)) {
                                 jsonGraph.addNode(stepId, label,
                                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
-                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, error: stepRun.error});
+                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error});
                             }
 
                             // Now hook the file to the step
@@ -417,66 +423,71 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId;
-                        var separatorIndex = node.id.indexOf('&'); // See if ID combines step and file @ids
-                        if (separatorIndex !== -1) {
-                            analysisStepId = node.id.slice(0, separatorIndex); // Combined; extract analysis step ID
+                        if (node.metadata.error) {
+                            meta = (<p className="browser-error">Missing step_run derivation information for {node.metadata.accession}</p>);
                         } else {
-                            analysisStepId = node.id; // ID is analysis step only; just copy it
+                            var separatorIndex = node.id.indexOf('&'); // See if ID combines step and file @ids
+                            if (separatorIndex !== -1) {
+                                analysisStepId = node.id.slice(0, separatorIndex); // Combined; extract analysis step ID
+                            } else {
+                                analysisStepId = node.id; // ID is analysis step only; just copy it
+                            }
+                            var selectedStep = _(this.stepList).find(function(step) {
+                                return step.analysis_step['@id'] === analysisStepId;
+                            });
+
+                            var step = selectedStep.analysis_step;
+                            meta = (
+                                <div>
+                                    <dl className="key-value">
+                                        <div data-test="steptype">
+                                            <dt>Step type</dt>
+                                            <dd>{step.analysis_step_types.join(', ')}</dd>
+                                        </div>
+
+                                        {step.input_file_types && step.input_file_types.length ?
+                                            <div data-test="inputtypes">
+                                                <dt>Input file types</dt>
+                                                <dd>{step.input_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.output_file_types && step.output_file_types.length ?
+                                            <div data-test="outputtypes">
+                                                <dt>Output file types</dt>
+                                                <dd>{step.output_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.qa_stats_generated && step.qa_stats_generated.length ?
+                                            <div data-test="steptypes">
+                                                <dt>QA statistics</dt>
+                                                <dd>{step.qa_stats_generated.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.software_versions && step.software_versions.length ?
+                                            <div>
+                                                <dt>Software</dt>
+                                                <dd>
+                                                    {step.software_versions.map(function(version) {
+                                                        return (
+                                                            <a href={version.software['@id']} className="software-version">
+                                                                <span className="software">{version.software.name}</span>
+                                                                {version.version ?
+                                                                    <span className="version">{version.version}</span>
+                                                                : null}
+                                                            </a>
+                                                        );
+                                                    })}
+                                                </dd>
+                                            </div>
+                                        : null}
+                                    </dl>
+                                </div>
+                            );
                         }
-                        var selectedStep = _(this.stepList).find(function(step) {
-                            return step.analysis_step['@id'] === analysisStepId;
-                        });
 
-                        var step = selectedStep.analysis_step;
-                        meta = (
-                            <div>
-                                <dl className="key-value">
-                                    <div data-test="steptype">
-                                        <dt>Step type</dt>
-                                        <dd>{step.analysis_step_types.join(', ')}</dd>
-                                    </div>
-
-                                    {step.input_file_types && step.input_file_types.length ?
-                                        <div data-test="inputtypes">
-                                            <dt>Input file types</dt>
-                                            <dd>{step.input_file_types.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.output_file_types && step.output_file_types.length ?
-                                        <div data-test="outputtypes">
-                                            <dt>Output file types</dt>
-                                            <dd>{step.output_file_types.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.qa_stats_generated && step.qa_stats_generated.length ?
-                                        <div data-test="steptypes">
-                                            <dt>QA statistics</dt>
-                                            <dd>{step.qa_stats_generated.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.software_versions && step.software_versions.length ?
-                                        <div>
-                                            <dt>Software</dt>
-                                            <dd>
-                                                {step.software_versions.map(function(version) {
-                                                    return (
-                                                        <a href={version.software['@id']} className="software-version">
-                                                            <span className="software">{version.software.name}</span>
-                                                            {version.version ?
-                                                                <span className="version">{version.version}</span>
-                                                            : null}
-                                                        </a>
-                                                    );
-                                                })}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            </div>
-                        );
 
                         break;
 
