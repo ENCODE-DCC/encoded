@@ -4,12 +4,19 @@ from boto.ec2.blockdevicemapping import (
 )
 import boto.ec2
 import getpass
-import time
+import re
 import subprocess
 import sys
+import time
 
 
-def run(wale_s3_prefix, image_id, instance_type, branch=None, name=None, persistent=False, candidate=''):
+def nameify(s):
+    name = ''.join(c if c.isalnum() else '-' for c in s.lower()).strip('-')
+    return re.subn(r'\-+', '-', name)[0]
+
+
+def run(wale_s3_prefix, image_id, instance_type,
+        branch=None, name=None, candidate=''):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -21,20 +28,22 @@ def run(wale_s3_prefix, image_id, instance_type, branch=None, name=None, persist
     username = getpass.getuser()
 
     if name is None:
-        name = 'encoded/%s@%s by %s' % (branch, commit, username)
+        name = nameify('%s-%s-%s' % (branch, commit, username))
 
     conn = boto.ec2.connect_to_region("us-west-2")
-    bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True)
-    if persistent:
-        bdm['/dev/sdf'] = BlockDeviceType(
-            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
-        bdm['/dev/sdg'] = BlockDeviceType(
-            volume_type='gp2', snapshot_id='snap-8f90c779', delete_on_termination=True)
-    else:
-        bdm['/dev/sdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
-        bdm['/dev/sdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
 
+    if any(name == i.tags.get('Name')
+           for reservation in conn.get_all_instances()
+           for i in reservation.instances
+           if i.state != 'terminated'):
+        print('An instance already exists with name: %s' % name)
+        sys.exit(1)
+
+    bdm = BlockDeviceMapping()
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=40)
+    # Don't attach instance storage so we can support auto recovery
+    bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
+    bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
@@ -54,31 +63,39 @@ def run(wale_s3_prefix, image_id, instance_type, branch=None, name=None, persist
 
     time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
-    instance.add_tag('Name', name)
-    instance.add_tag('commit', commit)
-    instance.add_tag('started_by', username)
-    print(instance)
-    sys.stdout.write(instance.state)
+    print('%s.demo.encodedcc.org' % instance.id)
+    instance.add_tags({
+        'Name': name,
+        'branch': branch,
+        'commit': commit,
+        'started_by': username,
+    })
+    print('%s.demo.encodedcc.org' % name)
 
+    sys.stdout.write(instance.state)
     while instance.state == 'pending':
         sys.stdout.write('.')
         sys.stdout.flush()
         time.sleep(1)
         instance.update()
-
     print('')
     print(instance.state)
-    print(instance.public_dns_name)  # u'ec2-54-219-26-167.us-west-1.compute.amazonaws.com'
 
 
 def main():
     import argparse
+
+    def hostname(value):
+        if value != nameify(value):
+            raise argparse.ArgumentTypeError(
+                "%r is an invalid hostname, only [a-z0-9] and hyphen allowed." % value)
+        return value
+
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
-    parser.add_argument('-n', '--name', help="Instance name")
-    parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
+    parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     parser.add_argument(
         '--candidate', action='store_const', default='', const='CANDIDATE',
@@ -86,7 +103,9 @@ def main():
     parser.add_argument(
         '--image-id', default='ami-3d50120d',
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
-    parser.add_argument('--instance-type', default='m3.xlarge')
+    parser.add_argument(
+        '--instance-type', default='t2.medium',
+        help="specify 'm3.large' for faster indexing.")
     args = parser.parse_args()
 
     return run(**vars(args))

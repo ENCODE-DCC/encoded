@@ -49,7 +49,6 @@ from .decorator import classreify
 from .embedding import (
     embed,
     expand_path,
-    make_subrequest,
 )
 from .schema_utils import validate_request
 from .storage import RDBStorage
@@ -324,8 +323,9 @@ class Root(object):
     __name__ = ''
     __parent__ = None
     __acl__ = [
-        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'expand', 'audit')),
+        (Allow, 'remoteuser.INDEXER', ['view', 'list', 'index']),
+        (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+        (Allow, Everyone, ['visible_for_edit']),
     ]
 
     def __init__(self, registry):
@@ -772,13 +772,14 @@ def split_child_props(registry, cls, properties):
 
 def update_children(context, request, propname_children):
     registry = request.registry
-    root = request.root
+    conn = registry[CONNECTION]
+    collections = registry[COLLECTIONS]
     calculated_properties = registry['calculated_properties']
     schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
 
     for propname, children in propname_children.items():
-        link_type, link_attr = spec = schema_rev_links[propname]
-        child_collection = root.by_item_type[link_type]
+        link_type, link_attr = schema_rev_links[propname]
+        child_collection = collections.by_item_type[link_type]
         found = set()
 
         # Add or update children included in properties
@@ -790,7 +791,7 @@ def update_children(context, request, propname_children):
                 child_props[link_attr] = str(context.uuid)
                 if 'uuid' in child_props:  # update existing child
                     child_id = child_props.pop('uuid')
-                    child = root.get_by_uuid(child_id)
+                    child = conn.get_by_uuid(child_id)
                     if not request.has_permission('edit', child):
                         msg = u'edit forbidden to %s' % request.resource_path(child)
                         raise ValidationFailure('body', [propname, i], msg)
@@ -807,19 +808,17 @@ def update_children(context, request, propname_children):
             found.add(child.uuid)
 
         # Remove existing children that are not in properties
-        for link in context.model.revs:
-            if (link.source.item_type, link.rel) != spec:
+        for link_uuid in context.get_rev_links(propname):
+            if link_uuid in found:
                 continue
-            if link.source_rid in found:
+            child = conn.get_by_uuid(link_uuid)
+            if not request.has_permission('visible_for_edit', child):
                 continue
-            child = root.get_by_uuid(link.source_rid)
             if not request.has_permission('edit', child):
                 msg = u'edit forbidden to %s' % request.resource_path(child)
                 raise ValidationFailure('body', [propname, i], msg)
-            child_props = child.properties.copy()
-            child_props['status'] = 'deleted'
             try:
-                update_item(child, request, child_props)
+                delete_item(child, request)
             except ValidationFailure as e:
                 e.location = [propname, i] + e.location
                 raise
@@ -849,6 +848,12 @@ def update_item(context, request, properties, sheets=None):
 
     if propname_children:
         update_children(context, request, propname_children)
+
+
+def delete_item(context, request):
+    properties = context.properties.copy()
+    properties['status'] = 'deleted'
+    update_item(context, request, properties)
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1071,13 +1076,19 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
+    conn = request.registry[CONNECTION]
     properties = item_links(context, request)
-    calculated = calculate_properties(context, request, properties)
     calculated_properties = request.registry['calculated_properties']
     schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
-    for key, value in calculated.items():
-        if key in schema_rev_links:
-            properties[key] = value
+
+    for propname in schema_rev_links:
+        properties[propname] = sorted(
+            request.resource_path(child)
+            for child in (
+                conn.get_by_uuid(uuid) for uuid in context.get_rev_links(propname)
+            ) if request.has_permission('visible_for_edit', child)
+        )
+
     return properties
 
 

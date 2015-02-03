@@ -23,6 +23,10 @@ $pipeline-node-types:
             }
         }
 
+        &.error {
+            fill: #ffc0c0;
+        }
+
         &:hover {
             cursor: pointer;
         }
@@ -87,5 +91,7 @@ g.edgePath {
 }
 
 .graph-dl {
-    margin: 5px 0;
+    margin: 0;
+    padding: 5px;
+    border-bottom: 1px solid #e8e8e8;
 }
