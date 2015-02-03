@@ -11,7 +11,6 @@ from jsonschema import (
     RefResolver,
 )
 from jsonschema.exceptions import ValidationError
-from urllib.parse import unquote
 from uuid import UUID
 
 import codecs
@@ -79,7 +78,7 @@ def linkTo(validator, linkTo, instance, schema):
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = find_resource(base, unquote(instance))
+        item = find_resource(base, instance)
         if item is None:
             raise KeyError()
     except KeyError:
@@ -136,7 +135,7 @@ def linkFrom(validator, linkFrom, instance, schema):
         request = get_current_request()
         base = request.root.by_item_type[linkType]
         try:
-            item = find_resource(base, unquote(instance))
+            item = find_resource(base, instance)
             if item is None:
                 raise KeyError()
         except KeyError:
@@ -175,7 +174,7 @@ def linkFrom(validator, linkFrom, instance, schema):
             validated_instance = validator._validated[lv]
             del validator._validated[lv:]
             if path is not None:
-                item = find_resource(request.root, unquote(path))
+                item = find_resource(request.root, path)
                 validated_instance['uuid'] = str(item.uuid)
             elif 'uuid' in validated_instance:  # where does this come from?
                 del validated_instance['uuid']
