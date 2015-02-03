@@ -206,7 +206,7 @@ def download(context, request):
         if filename != _filename:
             raise HTTPNotFound(_filename)
 
-    proxy = asbool(request.params.get('proxy'))
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
@@ -220,9 +220,6 @@ def download(context, request):
     else:
         raise ValueError(external.get('service'))
 
-    if proxy:
-        return InternalResponse(location='/_proxy/' + location)
-
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
         return {
@@ -230,6 +227,9 @@ def download(context, request):
             'location': location,
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
+
+    if proxy:
+        return InternalResponse(location='/_proxy/' + location)
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
