@@ -1,8 +1,4 @@
 from pkg_resources import resource_stream
-from pyramid.compat import (
-    native_,
-    unquote_bytes_to_wsgi,
-)
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -15,12 +11,12 @@ from jsonschema import (
     RefResolver,
 )
 from jsonschema.exceptions import ValidationError
+from urllib.parse import unquote
 from uuid import UUID
 
 import codecs
 import posixpath
 
-from .schema_formats import is_accession
 from .server_defaults import SERVER_DEFAULTS
 
 utf8 = codecs.getreader("utf-8")
@@ -67,32 +63,6 @@ def mixinProperties(schema, resolver):
     return schema
 
 
-def lookup_resource(registry, base, path):
-    from .contentbase import CONNECTION
-    path = unquote_bytes_to_wsgi(native_(path))
-    connection = registry[CONNECTION]
-    try:
-        UUID(path)
-    except ValueError:
-        pass
-    else:
-        item = connection.get_by_uuid(path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    if is_accession(path):
-        item = connection.get_by_unique_key('accession', path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    if ':' in path:
-        item = connection.get_by_unique_key('alias', path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    return find_resource(base, path)
-
-
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
     from .contentbase import Item
@@ -109,7 +79,7 @@ def linkTo(validator, linkTo, instance, schema):
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = lookup_resource(request.registry, base, instance)
+        item = find_resource(base, unquote(instance))
         if item is None:
             raise KeyError()
     except KeyError:
@@ -166,7 +136,7 @@ def linkFrom(validator, linkFrom, instance, schema):
         request = get_current_request()
         base = request.root.by_item_type[linkType]
         try:
-            item = lookup_resource(request.registry, base, instance.encode('utf-8'))
+            item = find_resource(base, unquote(instance))
             if item is None:
                 raise KeyError()
         except KeyError:
@@ -205,7 +175,7 @@ def linkFrom(validator, linkFrom, instance, schema):
             validated_instance = validator._validated[lv]
             del validator._validated[lv:]
             if path is not None:
-                item = lookup_resource(request.registry, request.root, path)
+                item = find_resource(request.root, unquote(path))
                 validated_instance['uuid'] = str(item.uuid)
             elif 'uuid' in validated_instance:  # where does this come from?
                 del validated_instance['uuid']

@@ -3,6 +3,7 @@ import pytest
 targets = [
     {'name': 'one', 'uuid': '775795d3-4410-4114-836b-8eeecf1d0c2f'},
     {'name': 'two', 'uuid': 'd6784f5e-48a1-4b40-9b11-c8aefb6e1377'},
+    {'name': 'quote:name', 'uuid': '0e627b3b-f5d2-41db-ac34-8e97bb8a028c'},
 ]
 
 sources = [
@@ -72,3 +73,10 @@ def test_links_reverse(content, testapp, session):
     target = targets[1]
     res = testapp.get('/testing-link-targets/%s/' % target['name'])
     assert res.json['reverse'] == []
+
+
+def test_links_quoted_ids(content, testapp, session):
+    res = testapp.get('/testing-link-targets/quote:name/?frame=object')
+    target = res.json
+    source = {'name': 'C', 'target': target['@id']}
+    testapp.post_json('/testing-link-sources/', source, status=201)
