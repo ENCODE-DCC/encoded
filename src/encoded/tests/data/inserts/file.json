@@ -860,8 +860,7 @@
         "output_type": "raw data",
         "assembly": "hg19",
         "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG"],
-        "aliases": [],
-        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
+        "aliases": []
     },
     {
         "status": "uploaded",
