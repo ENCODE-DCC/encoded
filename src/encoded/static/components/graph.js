@@ -186,6 +186,10 @@ var Graph = module.exports.Graph = React.createClass({
             para.className = 'browser-error';
             para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
             el.appendChild(para);
+
+            // Disable the download button
+            var el = this.refs.dlButton.getDOMNode();
+            el.setAttribute('disabled', 'disabled');
         }
     },
 
@@ -270,7 +274,7 @@ var Graph = module.exports.Graph = React.createClass({
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
-                    <button className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
+                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
