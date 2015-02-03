@@ -474,11 +474,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                             <dt>Software</dt>
                                             <dd>
                                                 {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                                     return (
                                                         <a href={version.software['@id']} className="software-version">
                                                             <span className="software">{version.software.name}</span>
                                                             {version.version ?
-                                                                <span className="version">{version.version}</span>
+                                                                <span className="version">{versionNum}</span>
                                                             : null}
                                                         </a>
                                                     );
@@ -543,11 +544,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                                 <dt>Software</dt>
                                                 <dd>
                                                     {step.software_versions.map(function(version) {
+                                                        var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                                         return (
                                                             <a href={version.software['@id']} className="software-version">
                                                                 <span className="software">{version.software.name}</span>
                                                                 {version.version ?
-                                                                    <span className="version">{version.version}</span>
+                                                                    <span className="version">{versionNum}</span>
                                                                 : null}
                                                             </a>
                                                         );

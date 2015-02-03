@@ -47,7 +47,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         // Only produce a graph if there's at least one analysis step
         if (this.props.context.analysis_steps) {
             // Create an empty graph architecture
-            jsonGraph = new JsonGraph('');
+            jsonGraph = new JsonGraph(this.props.context.accession);
 
             // Add files and their steps as nodes to the graph
             this.props.context.analysis_steps.forEach(function(step) {
@@ -60,7 +60,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
+                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4});
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -84,7 +84,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                             // Assemble a single analysis step node.
                             jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
+                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4});
                         }
                     }, this);
                 }
@@ -140,11 +140,12 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <dt>Software</dt>
                                 <dd>
                                     {selectedStep.software_versions.map(function(sw, i) {
+                                        var versionNum = sw.version === 'unknown' ? 'version unknown' : sw.version;
                                         return (
                                             <a href={sw.software['@id']} className="software-version">
                                                 <span className="software">{sw.software.title}</span>
                                                 {sw.version ?
-                                                    <span className="version">{sw.version}</span>
+                                                    <span className="version">{versionNum}</span>
                                                 : null}
                                             </a>
                                         );
