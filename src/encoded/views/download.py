@@ -1,3 +1,5 @@
+import collections
+
 from pyramid.view import view_config
 from pyramid.response import Response
 from ..embedding import embed
@@ -8,21 +10,18 @@ from urllib.parse import (
 
 _exp_columns = [
     'accession',
-    'description',
-    'assay_term_id',
     'assay_term_name',
     'biosample_term_id',
     'biosample_term_name',
-    'biosample_type',
-    'target',
-    'run_type',
-    'assembly',
-    'month_released',
-    'lab.title',
-    'files.accession'
+    'files.accession',
+    'files.href',
+    'files.file_format',
+    'files.file_size',
+    'files.output_type',
+    'files.lab',
+    'files.md5sum'
 ]
 
-import collections
 
 def flatten(d, parent_key='', sep='.'):
     items = []
@@ -46,39 +45,48 @@ def metadata_csv(context, request):
     path = '/search/?%s' % urlencode(param_list, True)
     results = embed(request, path, as_user=True)
 
-    data = []
+    data = ['accession\texperiment\tassay\tbiosample_term_id \
+    \tbiosample_term_name\tfile_format\tsize\toutput_type\tlab\tmd5sum\thref']
     for row in results['@graph']:
-        row = flatten(row)
-        data_row = ''
+        data_row = []
         for column in _exp_columns:
-            row_column = []
-            if column in row:
-                if isinstance(row[column], list):
-                    row_column = row[column]
-                else:
-                    row_column = [row[column]]
-            elif column.split('.')[0] in row:
-                for c in row[column.split('.')[0]]:
-                    row_column.append(flatten(c).values()[0])
-
-            row_column = '"{column}"'.format(
-                column=','.join(row_column)
-            )
-            if data_row == '':
-                data_row = '{value}'.format(
-                    data_row=data_row,
-                    value=row_column
-                )
+            if column.startswith('files'):
+                row = flatten(row)
+                for f in row['files']:
+                    new_row = '\t'.join(data_row)
+                    if 'file_format' in param_list:
+                        if f['file_format'] in param_list['files.file_format']:
+                            new_row = '{accession}\t{row}\t{format}\t{size}\t{type}\t{lab}\t{md5}\t{href}'.format(
+                                accession=f['accession'],
+                                row=new_row,
+                                format=f['file_format'],
+                                size=f['file_size'],
+                                type=f['output_type'],
+                                lab=f['lab'],
+                                md5=f['md5sum'],
+                                href=f['href']
+                            )
+                    else:
+                        new_row = '{accession}\t{row}\t{format}\t{size}\t{type}\t{lab}\t{md5}\t{href}'.format(
+                            accession=f['accession'],
+                            row=new_row,
+                            format=f['file_format'],
+                            size=f['file_size'],
+                            type=f['output_type'],
+                            lab=f['lab'],
+                            md5=f['md5sum'],
+                            href=f['href']
+                        )
+                    data.append(new_row)
+                break
+            elif column in row:
+                data_row.append(row[column])
             else:
-                data_row = '{data_row},{value}'.format(
-                    data_row=data_row,
-                    value=row_column
-                )
-        data.append(data_row)
+                data_row.append('')
     return Response(
-        content_type='text/csv',
+        content_type='text/tsv',
         body='\n'.join(data),
-        content_disposition='attachment; filename="%s"' % 'metadata.csv'
+        content_disposition='attachment; filename="%s"' % 'metadata.tsv'
     )
 
 
@@ -88,12 +96,11 @@ def batch_download(context, request):
     # adding extra params to get requied columsn
     param_list = parse_qs(request.matchdict['search_params'].encode('utf-8'))
     param_list['field'] = ['files.href', 'files.file_format']
-    param_list['files.status'] = ['released']
     param_list['limit'] = ['all']
 
     path = '/search/?%s' % urlencode(param_list, True)
     results = embed(request, path, as_user=True)
-    metadata_link = '{host_url}/metadata/{search_params}'.format(
+    metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
         host_url=request.host_url,
         search_params=request.matchdict['search_params']
     )
@@ -101,7 +108,7 @@ def batch_download(context, request):
     if 'files.file_format' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
-                if f['file_format'] in param_list['file_format']:
+                if f['file_format'] in param_list['files.file_format']:
                     files.append('{host_url}{href}'.format(
                         host_url=request.host_url,
                         href=f['href']
@@ -109,7 +116,7 @@ def batch_download(context, request):
     else:
         for exp in results['@graph']:
             for f in exp['files']:
-                files.append('{host_url}{href}#md5={md5};size={size}'.format(
+                files.append('{host_url}{href}'.format(
                     host_url=request.host_url,
                     href=f['href']
                 ))
