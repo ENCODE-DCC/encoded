@@ -4,6 +4,7 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
+var BrowserFeat = require('./mixins').BrowserFeat;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -144,33 +145,40 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     componentDidMount: function () {
-        globals.bindEvent(window, 'resize', this.handleResize);
+        if (BrowserFeat.getBrowserCaps('svg')) {
+            // Delay loading dagre for Jest testing compatibility;
+            // Both D3 and Jest have their own conflicting JSDOM instances
+            $script('dagre', function() {
+                var d3 = require('d3');
+                var dagreD3 = require('dagre-d3');
+                var el = this.refs.graphdisplay.getDOMNode();
+                this.dagreLoaded = true;
 
-        // Delay loading dagre for Jest testing compatibility;
-        // Both D3 and Jest have their own conflicting JSDOM instances
-        $script('dagre', function() {
-            var d3 = require('d3');
-            var dagreD3 = require('dagre-d3');
-            var el = this.refs.graphdisplay.getDOMNode();
-            this.dagreLoaded = true;
+                // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                    .attr('id', 'graphsvg')
+                    .attr('preserveAspectRatio', 'xMidYMid');
+                var svgGroup = svg.append("g");
 
-            // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '#graph-node-info')
-                .attr('id', 'graphsvg')
-                .attr('preserveAspectRatio', 'xMidYMid');
-            var svgGroup = svg.append("g");
+                // Draw the graph into the panel
+                this.drawGraph(el);
 
-            // Draw the graph into the panel
-            this.drawGraph(el);
-
-            // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-            var reactThis = this;
-            svg.selectAll("g.node").each(function(nodeId) {
-                globals.bindEvent(this, 'click', function(e) {
-                    reactThis.props.nodeClickHandler(e, nodeId);
+                // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+                var reactThis = this;
+                svg.selectAll("g.node").each(function(nodeId) {
+                    globals.bindEvent(this, 'click', function(e) {
+                        reactThis.props.nodeClickHandler(e, nodeId);
+                    });
                 });
-            });
-        }.bind(this));
+            }.bind(this));
+        } else {
+            // Output text indicating that graphs aren't supported.
+            var el = this.refs.graphdisplay.getDOMNode();
+            var para = document.createElement('p');
+            para.className = 'browser-error';
+            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+            el.appendChild(para);
+        }
     },
 
     // State change; redraw the graph

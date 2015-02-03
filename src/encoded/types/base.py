@@ -2,6 +2,7 @@ from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
     Authenticated,
+    Deny,
     DENY_ALL,
     Everyone,
 )
@@ -40,6 +41,10 @@ ONLY_ADMIN_VIEW = [
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
+
+DELETED = [
+    (Deny, Everyone, 'visible_for_edit')
+] + ONLY_ADMIN_VIEW
 
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
@@ -87,8 +92,8 @@ class Item(contentbase.Item):
     STATUS_ACL = {
         # standard_status
         'released': ALLOW_CURRENT,
-        'deleted': ONLY_ADMIN_VIEW,
-        'replaced': ONLY_ADMIN_VIEW,
+        'deleted': DELETED,
+        'replaced': DELETED,
 
         # shared_status
         'current': ALLOW_CURRENT,
