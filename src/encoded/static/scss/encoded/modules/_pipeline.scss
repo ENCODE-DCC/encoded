@@ -20,6 +20,10 @@ $pipeline-node-types:
             }
         }
 
+        &.error {
+            fill: #ffc0c0;
+        }
+
         &:hover {
             cursor: pointer;
         }
