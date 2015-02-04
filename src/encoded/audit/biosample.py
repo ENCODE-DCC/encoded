@@ -23,7 +23,8 @@ term_mapping = {
     "nuclear matrix": "GO:0016363",
     "nucleolus": "GO:0005730",
     "nucleoplasm": "GO:0005654",
-    "polysome": "GO:0005844"
+    "polysome": "GO:0005844",
+    "insoluble cytoplasmic fraction": "NTR:0002594"
 }
 
 
