@@ -225,7 +225,7 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'tag target mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched tag target' for error in errors_list)
 
 
 def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):
@@ -264,7 +264,7 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not eligible histone antibody' for error in errors_list)
+    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
@@ -275,3 +275,12 @@ def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing biosample_type' for error in errors_list)
+
+def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing documents' for error in errors_list)

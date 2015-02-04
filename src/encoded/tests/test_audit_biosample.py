@@ -130,4 +130,4 @@ def test_audit_biosample_status(testapp, base_biosample, construct):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'status mismatch' for error in errors_list)
+    assert any(error['category'] == 'mismatched status' for error in errors_list)

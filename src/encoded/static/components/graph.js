@@ -4,6 +4,7 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
+var BrowserFeat = require('./mixins').BrowserFeat;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -85,13 +86,6 @@ module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
-    getInitialState: function() {
-        return {
-            leftScrollDisabled: true,
-            rightScrollDisabled: true
-        };
-    },
-
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
@@ -101,8 +95,9 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label, rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
-                    paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
+                graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
+                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
                 if (parent.id) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
@@ -145,41 +140,45 @@ var Graph = module.exports.Graph = React.createClass({
         // Round the graph dimensions up to avoid problems detecting the end of scrolling.
         var width = Math.ceil(g.graph().width);
         var height = Math.ceil(g.graph().height);
-        svg.attr("width", width + 40).attr("height", height + 40)
-            .attr("viewBox", "-20 -20 " + (width + 40) + " " + (height + 40));
+        svg.attr("width", width + 40).attr("height", height + 60)
+            .attr("viewBox", "-20 -40 " + (width + 40) + " " + (height + 60));
     },
 
     componentDidMount: function () {
-        globals.bindEvent(window, 'resize', this.handleResize);
+        if (BrowserFeat.getBrowserCaps('svg')) {
+            // Delay loading dagre for Jest testing compatibility;
+            // Both D3 and Jest have their own conflicting JSDOM instances
+            $script('dagre', function() {
+                var d3 = require('d3');
+                var dagreD3 = require('dagre-d3');
+                var el = this.refs.graphdisplay.getDOMNode();
+                this.dagreLoaded = true;
 
-        // Delay loading dagre for Jest testing compatibility;
-        // Both D3 and Jest have their own conflicting JSDOM instances
-        $script('dagre', function() {
-            var d3 = require('d3');
-            var dagreD3 = require('dagre-d3');
-            var el = this.refs.graphdisplay.getDOMNode();
-            this.dagreLoaded = true;
+                // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                    .attr('id', 'graphsvg')
+                    .attr('preserveAspectRatio', 'xMidYMid');
+                var svgGroup = svg.append("g");
 
-            // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '#scroll-buttons')
-                .attr('id', 'graphsvg')
-                .attr('preserveAspectRatio', 'xMidYMid');
-            var svgGroup = svg.append("g");
+                // Draw the graph into the panel
+                this.drawGraph(el);
 
-            // Draw the graph into the panel
-            this.drawGraph(el);
-
-            // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-            var reactThis = this;
-            svg.selectAll("g.node").each(function(nodeId) {
-                globals.bindEvent(this, 'click', function(e) {
-                    reactThis.props.nodeClickHandler(e, nodeId);
+                // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+                var reactThis = this;
+                svg.selectAll("g.node").each(function(nodeId) {
+                    globals.bindEvent(this, 'click', function(e) {
+                        reactThis.props.nodeClickHandler(e, nodeId);
+                    });
                 });
-            });
-
-            // Make sure the left and right scroll buttons are enabled/disabled appropriately
-            this.scrollHandler();
-        }.bind(this));
+            }.bind(this));
+        } else {
+            // Output text indicating that graphs aren't supported.
+            var el = this.refs.graphdisplay.getDOMNode();
+            var para = document.createElement('p');
+            para.className = 'browser-error';
+            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+            el.appendChild(para);
+        }
     },
 
     // State change; redraw the graph
@@ -190,98 +189,10 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
-    // Handle window resizing for doing the right thing with scrolling the graph
-    handleResize: function() {
-        this.scrollHandler();
-    },
-
-    componentWillUnmount: function() {
-        globals.unbindEvent(window, 'resize', this.handleResize);
-    },
-
-    // Handle a click in the left scroll button
-    scrollLeftStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft - 30;
-        if (newScrollLeft > 0) {
-            // The graph isn't scrolled all the way left yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
-        } else {
-            // The graph is scrolled all the way to the left; that's it for scrolling
-            displayNode.scrollLeft = 0;
-        }
-    },
-
-    // Handle a click in the right scroll button
-    scrollRightStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft + 30;
-        var svg = document.getElementById('graphsvg');
-        var widthDiff = svg.scrollWidth - displayNode.clientWidth;
-        if (newScrollLeft < widthDiff) {
-            // The graph isn't scrolled all the way right yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollRightStart, 100);
-        } else {
-            // The graph is scrolled all the way to the right; that's it for scrolling
-            displayNode.scrollLeft = widthDiff;
-        }
-    },
-
-    // Called when the visitor releases the mouse button from either scroll button
-    // Cancel the timer if any, and update the scroll button enable/disable state
-    scrollStop: function() {
-        if (this.scrollTimer) {
-            clearTimeout(this.scrollTimer);
-            this.scrollTimer = null;
-            this.scrollHandler();
-        }
-    },
-
-    // Handle scrolling either through the scroll buttons or the mouse
-    // Only handle if the scroll timer isn't running so that we don't update the
-    // display a bunch of times while the visitor's holding down a scroll button
-    scrollHandler: function() {
-        if (!this.scrollTimer) {
-            var leftScrollDisabled = true;
-            var rightScrollDisabled = true;
-            var container = this.refs.graphdisplay.getDOMNode();
-            var svg = document.getElementById('graphsvg');
-            var containerWidth = container.clientWidth;
-            var svgWidth = svg.scrollWidth;
-            if (containerWidth < svgWidth) {
-                // The graph is wide enough within the panel to scroll
-                // Enable or disable the left or right scroll buttons depending on
-                // whether we've scrolled all the way in that direction or not
-                leftScrollDisabled = container.scrollLeft === 0;
-                rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
-            }
-            if (this.state.rightScrollDisabled !== rightScrollDisabled) {
-                this.setState({rightScrollDisabled: rightScrollDisabled});
-            }
-            if (this.state.leftScrollDisabled !== leftScrollDisabled) {
-                this.setState({leftScrollDisabled: leftScrollDisabled});
-            }
-        }
-    },
-
     render: function() {
         return (
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
-                </div>
-                <div id="scroll-buttons">
-                    <button className="scroll-graph icon icon-arrow-left"
-                            onMouseDown={this.scrollLeftStart} onTouchStart={this.scrollLeftStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                            disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
-                    <button className="scroll-graph icon icon-arrow-right"
-                        onMouseDown={this.scrollRightStart} onTouchStart={this.scrollRightStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                        disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
                 </div>
                 {this.props.children}
             </div>
@@ -307,14 +218,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
         if (files && files.some(function(file) {
-            return file.derived_from && file.derived_from.length && file.steps && file.steps.length;
+            return file.derived_from && file.derived_from.length && file.step_run;
         })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph('');
 
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
             });
 
             // Add files and their steps as nodes to the graph
@@ -330,17 +241,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 }
 
                 // If the node has parents, build the edges to the analysis step between this node and its parents
-                if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
+                if (file.derived_from && file.derived_from.length && file.step_run) {
                     // Remember this step for later hit testing
-                    this.stepLists.push(file.steps);
+                    this.stepLists.push(file.step_run);
 
                     // Make the ID of the node using the first step in the array, and it connects to
-                    var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
+                    var stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
 
                     // Make a label for the step node
-                    var label = file.steps.map(function(step, i) {
-                        return step.analysis_step.analysis_step_types.join(', ');
-                    });
+                    var label = file.step_run.analysis_step.analysis_step_types;
 
                     // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
                     // points to it; there may be more than one copy of this step on the graph if more than one
@@ -351,11 +260,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
                     jsonGraph.addEdge(stepId, fileId);
 
-                    file.steps.forEach(function(step) {
-                        // Draw an edge from the analysis step to each of the derived_from files
-                        file.derived_from.forEach(function(derived) {
-                            jsonGraph.addEdge(derived['@id'], stepId);
-                        });
+                    // Draw an edge from the analysis step to each of the derived_from files
+                    file.derived_from.forEach(function(derived) {
+                        jsonGraph.addEdge(derived['@id'], stepId);
                     });
                 }
             }, this);
@@ -397,7 +304,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         });
 
                         if (selectedFile) {
-                            var analysisSteps = selectedFile.steps && selectedFile.steps.length ? selectedFile.steps : null;
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -442,34 +348,21 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {analysisSteps ?
+                                    {selectedFile.step_run ?
                                         <div>
                                             <dt>Software</dt>
                                             <dd>
-                                                {analysisSteps.map(function(step) {
+                                                {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
                                                     return (
-                                                        <span>
-                                                            {step.analysis_step.software_versions.map(function(version, i) {
-                                                                return (
-                                                                    <a href={version.software['@id']} className="software-version">
-                                                                        <span className="software">{version.software.name}</span>
-                                                                        {version.version ?
-                                                                            <span className="version">{version.version}</span>
-                                                                        : null}
-                                                                    </a>
-                                                                );
-                                                            })}
-                                                        </span>
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{version.version}</span>
+                                                            : null}
+                                                        </a>
                                                     );
                                                 })}
                                             </dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.pipeline ?
-                                        <div data-test="pipeline">
-                                            <dt>Pipeline</dt>
-                                            <dd>{selectedFile.pipeline.title}</dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -481,68 +374,60 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     case 'as':
                         // The node is for an analysis step
                         var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        console.log('ASI: ', analysisStepId);
-                        var selectedSteps = _(this.stepLists).find(function(stepList) {
-                            var selectedStep = _(stepList).find(function(step) {
-                                return step.analysis_step['@id'] === analysisStepId;
-                            });
-                            return !!selectedStep;
+                        var selectedStep = _(this.stepLists).find(function(step) {
+                            return step.analysis_step['@id'] === analysisStepId;
                         });
-                        console.log(selectedSteps);
 
-                        meta = selectedSteps.map(function(stepRun, i) {
-                            var step = stepRun.analysis_step;
-                            return (
-                                <div>
-                                    {i > 0 ? <hr /> : null}
-                                    <dl className="key-value">
-                                        <div data-test="steptype">
-                                            <dt>Step type</dt>
-                                            <dd>{step.analysis_step_types.join(', ')}</dd>
+                        var step = selectedStep.analysis_step;
+                        meta = (
+                            <div>
+                                <dl className="key-value">
+                                    <div data-test="steptype">
+                                        <dt>Step type</dt>
+                                        <dd>{step.analysis_step_types.join(', ')}</dd>
+                                    </div>
+
+                                    {step.input_file_types && step.input_file_types.length ?
+                                        <div data-test="inputtypes">
+                                            <dt>Input file types</dt>
+                                            <dd>{step.input_file_types.join(', ')}</dd>
                                         </div>
+                                    : null}
 
-                                        {step.input_file_types && step.input_file_types.length ?
-                                            <div data-test="inputtypes">
-                                                <dt>Input file types</dt>
-                                                <dd>{step.input_file_types.join(', ')}</dd>
-                                            </div>
-                                        : null}
+                                    {step.output_file_types && step.output_file_types.length ?
+                                        <div data-test="outputtypes">
+                                            <dt>Output file types</dt>
+                                            <dd>{step.output_file_types.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                                        {step.output_file_types && step.output_file_types.length ?
-                                            <div data-test="outputtypes">
-                                                <dt>Output file types</dt>
-                                                <dd>{step.output_file_types.join(', ')}</dd>
-                                            </div>
-                                        : null}
+                                    {step.qa_stats_generated && step.qa_stats_generated.length ?
+                                        <div data-test="steptypes">
+                                            <dt>QA statistics</dt>
+                                            <dd>{step.qa_stats_generated.join(', ')}</dd>
+                                        </div>
+                                    : null}
 
-                                        {step.qa_stats_generated && step.qa_stats_generated.length ?
-                                            <div data-test="steptypes">
-                                                <dt>QA statistics</dt>
-                                                <dd>{step.qa_stats_generated.join(', ')}</dd>
-                                            </div>
-                                        : null}
-
-                                        {step.software_versions && step.software_versions.length ?
-                                            <div>
-                                                <dt>Software</dt>
-                                                <dd>
-                                                    {step.software_versions.map(function(version) {
-                                                        return (
-                                                            <a href={version.software['@id']} className="software-version">
-                                                                <span className="software">{version.software.name}</span>
-                                                                {version.version ?
-                                                                    <span className="version">{version.version}</span>
-                                                                : null}
-                                                            </a>
-                                                        );
-                                                    })}
-                                                </dd>
-                                            </div>
-                                        : null}
-                                    </dl>
-                                </div>
-                            );
-                        });
+                                    {step.software_versions && step.software_versions.length ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {step.software_versions.map(function(version) {
+                                                    return (
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{version.version}</span>
+                                                            : null}
+                                                        </a>
+                                                    );
+                                                })}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+                        );
 
                         break;
 
@@ -571,7 +456,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 <div>
                     <h3>Files generated by pipeline</h3>
                     <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                        <div className="graph-node-info">
+                        <div id="graph-node-info">
                             {meta ? <div className="panel-insert">{meta}</div> : null}
                         </div>
                     </Graph>
