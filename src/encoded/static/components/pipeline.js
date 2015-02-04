@@ -60,7 +60,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4});
+                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4, ref: step});
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -84,7 +84,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                             // Assemble a single analysis step node.
                             jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4});
+                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4, ref: parent});
                         }
                     }, this);
                 }
@@ -211,8 +211,8 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         }
 
         // Build node graph of the files and analysis steps with this experiment
-        var jsonGraph = this.assembleGraph();
-        var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
+        this.jsonGraph = this.assembleGraph();
+        var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
 
         return (
             <div className={itemClass}>
@@ -262,10 +262,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 : null}
-                {jsonGraph ?
+                {this.jsonGraph ?
                     <div>
                         <h3>Pipeline</h3>
-                        <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                             <div className="graph-node-info">
                                 {meta ? <div className="panel-insert">{meta}</div> : null}
                             </div>
