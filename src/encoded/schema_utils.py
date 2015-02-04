@@ -71,10 +71,10 @@ def linkTo(validator, linkTo, instance, schema):
 
     request = get_current_request()
     if validator.is_type(linkTo, "string"):
-        base = request.root.by_item_type.get(linkTo, request.context)
+        base = request.root.by_item_type.get(linkTo, request.root)
         linkTo = [linkTo] if linkTo else []
     elif validator.is_type(linkTo, "array"):
-        base = request.context  # XXX
+        base = request.root
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
