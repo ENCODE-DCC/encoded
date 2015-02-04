@@ -133,7 +133,7 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
-            .setGraph({rankdir: "TB"})
+            .setGraph({rankdir: 'TB'})
             .setDefaultEdgeLabel(function() { return {}; });
 
         // Convert from given node architecture to the dagre nodes and edges
@@ -141,7 +141,7 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
-        render(d3.select("svg g"), g);
+        render(svg.select('g'), g);
 
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra.
@@ -164,7 +164,6 @@ var Graph = module.exports.Graph = React.createClass({
 
                 // Add SVG element to the graph component, and assign it classes, sizes, and a group
                 var svg = d3.select(el).insert('svg', '#graph-node-info')
-                    .attr('id', 'graphsvg')
                     .attr('preserveAspectRatio', 'xMidYMid')
                     .attr('version', '1.1');
                 var svgGroup = svg.append("g");
@@ -289,9 +288,8 @@ var Graph = module.exports.Graph = React.createClass({
 
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     // Create nodes based on all files in this experiment
-    assembleGraph: function(context, jsonGraph, infoNodeId, releasedFiles, unreleasedFiles) {
-        var graph;
-        var files = unreleasedFiles || releasedFiles;
+    assembleGraph: function(context, infoNodeId, files) {
+        var jsonGraph;
 
         // Track orphans -- files with no derived_from and no one derives_from them.
         var usedFiles = {}; // Object with file ID keys of all files that belong in graph
@@ -311,25 +309,23 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             return usedFiles[fileKey];
         })) {
             // Create an empty graph architecture
-            graph = (unreleasedFiles && jsonGraph) ? jsonGraph : new JsonGraph(context.accession);
+            jsonGraph = new JsonGraph(context.accession);
 
             // Create nodes for the replicates
-            if (!unreleasedFiles) {
-                context.replicates.forEach(function(replicate) {
-                    graph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
-                        {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0, ref: replicate});
-                });
-            }
+            context.replicates.forEach(function(replicate) {
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
+                    {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0, ref: replicate});
+            });
 
             // Add files and their steps as nodes to the graph
             files.forEach(function(file) {
                 var fileId = file['@id'];
                 if (usedFiles[fileId]) {
-                    var replicateNode = file.replicate ? graph.getNode(file.replicate.biological_replicate_number) : null;
+                    var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
 
                     // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
                     // to show that this is a file node.
-                    graph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
                         {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
                          type: 'fi', shape: 'rect', cornerRadius: 16, parentNode: replicateNode, ref: file});
 
@@ -360,48 +356,46 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
                             // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
                             // analysis step.
-                            graph.addNode(stepId, label,
+                            jsonGraph.addNode(stepId, label,
                                 {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
                                  type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, ref: stepRun});
-                            graph.addEdge(stepId, fileId);
+                            jsonGraph.addEdge(stepId, fileId);
                         } else {
                             stepId = stepRun.analysis_step['@id'];
 
                             // Add the step only if we haven't added it yet.
-                            if (!graph.getNode(stepId)) {
-                                graph.addNode(stepId, label,
+                            if (!jsonGraph.getNode(stepId)) {
+                                jsonGraph.addNode(stepId, label,
                                     {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
                                      type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error, ref: stepRun});
                             }
 
                             // Now hook the file to the step
-                            graph.addEdge(stepId, fileId);
+                            jsonGraph.addEdge(stepId, fileId);
                         }
 
                         // Draw an edge from the analysis step to each of the derived_from files
                         file.derived_from.forEach(function(derived) {
-                            graph.addEdge(derived['@id'], stepId);
+                            jsonGraph.addEdge(derived['@id'], stepId);
                         });
                     }
                 }
             }, this);
 
             // Add contributing files to the graph
-            if (!unreleasedFiles) {
-                context.contributing_files.forEach(function(file) {
-                    var fileId = file['@id'];
+            context.contributing_files.forEach(function(file) {
+                var fileId = file['@id'];
 
-                    // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
-                    // to show that this is a file node.
-                    if (!graph.getNode(fileId)) {
-                        graph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                            {cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
-                             type: 'fi', shape: 'rect', cornerRadius: 16, ref: file});
-                    }
-                }, this);
-            }
+                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                // to show that this is a file node.
+                if (!jsonGraph.getNode(fileId)) {
+                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                        {cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file});
+                }
+            }, this);
         }
-        return graph;
+        return jsonGraph;
     },
 
     getInitialState: function() {
@@ -571,12 +565,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var context = this.props.context;
 
         // Build node graph of the files and analysis steps with this experiment
-        this.jsonGraph = this.assembleGraph(context, this.jsonGraph, this.state.infoNodeId, context.files, this.props.files);
+        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, this.props.files || context.files);
         if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
             var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
             return (
                 <div>
-                    <h3>Files generated by pipeline</h3>
+                    <h3>{this.props.files ? 'Unreleased files' : 'Files'} generated by pipeline</h3>
                     <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                         <div id="graph-node-info">
                             {meta ? <div className="panel-insert">{meta}</div> : null}
