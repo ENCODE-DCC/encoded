@@ -47,11 +47,12 @@ JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, s
         newNode.label = label.slice(0);
     }
     newNode.metadata = {
-        cssClass: options.cssClass,
-        shape: options.shape,
-        cornerRadius: options.cornerRadius,
-        error: options.error,
-        accession: options.accession
+        cssClass: options.cssClass, // CSS class
+        shape: options.shape, // Shape to use for node; see dagre-d3 for options
+        cornerRadius: options.cornerRadius, // # pixels to round corners of nodes
+        ref: options.ref, // Reference to object this node represents
+        error: options.error, // True if this is an error node
+        accession: options.accession // Accession number for misc reference if needed (errors mostly)
     };
     newNode.nodes = [];
     var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
@@ -188,7 +189,7 @@ var Graph = module.exports.Graph = React.createClass({
             el.appendChild(para);
 
             // Disable the download button
-            var el = this.refs.dlButton.getDOMNode();
+            el = this.refs.dlButton.getDOMNode();
             el.setAttribute('disabled', 'disabled');
         }
     },
@@ -294,7 +295,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var jsonGraph;
 
         // Track orphans -- files with no derived_from and no one derives_from them.
-        var usedFiles = {};
+        var usedFiles = {}; // Object with file ID keys of all files that belong in graph
         files.forEach(function(file) {
             usedFiles[file['@id']] = usedFiles[file['@id']] ||
                 (!!(file.derived_from && file.derived_from.length)); // File included if it's derived from others
@@ -304,10 +305,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 });
             }
         });
-
-        // Save list of files and analysis steps so we can click-test them later
-        this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
-        this.stepList = [];
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
@@ -320,7 +317,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
                 jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
-                    {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0});
+                    {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0, ref: replicate});
             });
 
             // Add files and their steps as nodes to the graph
@@ -333,7 +330,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     // to show that this is a file node.
                     jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
                         {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
-                         type: 'fi', shape: 'rect', cornerRadius: 16, parentNode: replicateNode});
+                         type: 'fi', shape: 'rect', cornerRadius: 16, parentNode: replicateNode, ref: file});
 
                     // If the node has parents, build the edges to the analysis step between this node and its parents
                     if (file.derived_from && file.derived_from.length) {
@@ -347,9 +344,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 analysis_step: {'@id': 'ERROR:' + file.accession, analysis_step_types: 'Error in ' + file.accession}
                             };
                         }
-
-                        // Remember this step for later hit testing
-                        this.stepList.push(stepRun);
 
                         // Make a label for the step node
                         var label = stepRun.analysis_step.analysis_step_types;
@@ -367,7 +361,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             // analysis step.
                             jsonGraph.addNode(stepId, label,
                                 {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''),
-                                 type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode});
+                                 type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, ref: stepRun});
                             jsonGraph.addEdge(stepId, fileId);
                         } else {
                             stepId = stepRun.analysis_step['@id'];
@@ -376,7 +370,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             if (!jsonGraph.getNode(stepId)) {
                                 jsonGraph.addNode(stepId, label,
                                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
-                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error});
+                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error, ref: stepRun});
                             }
 
                             // Now hook the file to the step
@@ -400,7 +394,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 if (!jsonGraph.getNode(fileId)) {
                     jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
                         {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
-                         type: 'fi', shape: 'rect', cornerRadius: 16});
+                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file});
                 }
             }, this);
         }
@@ -424,9 +418,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 switch(node.type) {
                     case 'fi':
                         // The node is for a file
-                        selectedFile = _(this.fileList).find(function(file) {
-                            return file['@id'] === infoNodeId;
-                        });
+                        selectedFile = node.metadata.ref;
 
                         if (selectedFile) {
                             meta = (
@@ -499,21 +491,10 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                     case 'as':
                         // The node is for an analysis step
-                        var analysisStepId;
                         if (node.metadata.error) {
                             meta = (<p className="browser-error">Missing step_run derivation information for {node.metadata.accession}</p>);
                         } else {
-                            var separatorIndex = node.id.indexOf('&'); // See if ID combines step and file @ids
-                            if (separatorIndex !== -1) {
-                                analysisStepId = node.id.slice(0, separatorIndex); // Combined; extract analysis step ID
-                            } else {
-                                analysisStepId = node.id; // ID is analysis step only; just copy it
-                            }
-                            var selectedStep = _(this.stepList).find(function(step) {
-                                return step.analysis_step['@id'] === analysisStepId;
-                            });
-
-                            var step = selectedStep.analysis_step;
+                            var step = node.metadata.ref.analysis_step;
                             meta = (
                                 <div>
                                     <dl className="key-value">
@@ -587,9 +568,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var context = this.props.context;
 
         // Build node graph of the files and analysis steps with this experiment
-        var jsonGraph = this.assembleGraph();
-        if (jsonGraph) {
-            var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
+        this.jsonGraph = this.assembleGraph();
+        if (this.jsonGraph) {
+            var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
             return (
                 <div>
                     {this.props.released ?
@@ -597,7 +578,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     :
                         <h3>Unreleased files generated by pipeline</h3>
                     }
-                    <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                         <div id="graph-node-info">
                             {meta ? <div className="panel-insert">{meta}</div> : null}
                         </div>
