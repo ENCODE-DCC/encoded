@@ -5,7 +5,7 @@
     "type": "object",
     "required": ["analysis_step", "status"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "dx_job_id", "name"],
+    "identifyingProperties": ["uuid"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
