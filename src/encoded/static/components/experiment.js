@@ -334,7 +334,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
-                <ExperimentGraph context={context} />
+                <ExperimentGraph context={context} released={true} />
 
                 {context.files.length ?
                     <div>
