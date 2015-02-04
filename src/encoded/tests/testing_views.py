@@ -112,14 +112,16 @@ class TestingLinkSource(Item):
     }
 
 
-@collection('testing-link-targets')
+@collection('testing-link-targets', unique_key='testing_link_target:name')
 class TestingLinkTarget(Item):
     item_type = 'testing_link_target'
+    name_key = 'name'
     schema = {
         'type': 'object',
         'properties': {
             'name': {
                 'type': 'string',
+                'uniqueKey': True,
             },
             'uuid': {
                 'type': 'string',
