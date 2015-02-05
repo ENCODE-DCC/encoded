@@ -12,7 +12,6 @@ var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
-var ExperimentGraph = graph.ExperimentGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
