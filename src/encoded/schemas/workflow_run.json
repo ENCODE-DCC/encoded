@@ -75,7 +75,8 @@
                 "waiting",
                 "running",
                 "finished",
-                "error"
+                "error",
+                "virtual"
             ]
         }
     }

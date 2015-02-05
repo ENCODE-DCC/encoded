@@ -364,7 +364,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                                 })}
                                             </dd>
                                         </div>
-                                    : null}
+                                   : null}
+                                   
+                                   {selectedFile.step_run.pipeline && selectedFile.step_run.pipeline.title ?
+                                        <div data-test="pipeline">
+                                            <dt>Pipeline</dt>
+                                            <dd>{selectedFile.step_run.pipeline.title}</dd>
+                                        </div>
+                                   : null}
                                 </dl>
                             );
                         }

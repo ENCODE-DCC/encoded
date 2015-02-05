@@ -3,6 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     collection,
+    calculated_property,
 )
 from .base import (
     Item,
@@ -59,8 +60,18 @@ class AnalysisStepRun(Item):
     schema = load_schema('analysis_step_run.json')
     embedded = [
         'analysis_step',
-        'workflow_run'
+        'workflow_run',
+        'pipeline'
     ]
+
+    @calculated_property(schema={
+            "title": "Pipeline",
+            "type": "string",
+            "linkTo": "pipeline"
+        })
+    def pipeline(self, request, workflow_run=None):
+        if workflow_run is not None:
+            return request.embed(workflow_run, '@@object').get('pipeline')
 
 
 @collection(
