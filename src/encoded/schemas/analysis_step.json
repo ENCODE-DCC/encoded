@@ -144,6 +144,18 @@
                 "type": "string",
                 "linkTo": "analysis_step"
             }
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
+            }
         }
     }
 }
