@@ -334,7 +334,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
-                <ExperimentGraph context={context} released={true} />
+               <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                    <fetched.Param name="data" url={dataset.unreleased_files_url(context)} />
+                    <ExperimentGraph context={context}/>)
+                </fetched.FetchedData>
+
 
                 {context.files.length ?
                     <div>

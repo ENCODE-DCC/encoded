@@ -595,8 +595,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     render: function() {
         var context = this.props.context;
 
+        var data = this.props.data;
+        var items = data ? data['@graph'] : [];
+        var files = context.files.concat(items);
+
         // Build node graph of the files and analysis steps with this experiment
-        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, this.props.files || context.files);
+        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, files);
         if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
             var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
             return (
