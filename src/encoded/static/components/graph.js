@@ -51,6 +51,7 @@ JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, s
         shape: options.shape, // Shape to use for node; see dagre-d3 for options
         cornerRadius: options.cornerRadius, // # pixels to round corners of nodes
         ref: options.ref, // Reference to object this node represents
+        contributing: options.contributing, // True if this is a contributing file
         error: options.error, // True if this is an error node
         accession: options.accession // Accession number for misc reference if needed (errors mostly)
     };
@@ -390,8 +391,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 // to show that this is a file node.
                 if (!jsonGraph.getNode(fileId)) {
                     jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        {cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
-                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file});
+                        {cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file, contributing: true});
                 }
             }, this);
         }
@@ -418,6 +419,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         selectedFile = node.metadata.ref;
 
                         if (selectedFile) {
+                            var contributingAccession;
+
+                            if (node.metadata.contributing) {
+                                var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+                                var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+                                contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
+                            }
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -445,6 +453,20 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         <div data-test="replicate">
                                             <dt>Associated replicates</dt>
                                             <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.assembly ?
+                                        <div data-test="assembly">
+                                            <dt>Mapping assembly</dt>
+                                            <dd>{selectedFile.assembly}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.genome_annotation ?
+                                        <div data-test="annotation">
+                                            <dt>Genome annotation</dt>
+                                            <dd>{selectedFile.genome_annotation}</dd>
                                         </div>
                                     : null}
 
@@ -477,6 +499,15 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                                         </a>
                                                     );
                                                 })}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {node.metadata.contributing && selectedFile.dataset ?
+                                        <div>
+                                            <dt>Contributed from</dt>
+                                            <dd>
+                                                <a href={selectedFile.dataset}>{contributingAccession}</a>
                                             </dd>
                                         </div>
                                     : null}

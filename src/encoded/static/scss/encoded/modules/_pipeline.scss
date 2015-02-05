@@ -50,6 +50,10 @@ g.node {
         stroke-width: 1.5px;
     }
 
+    &.contributing {
+        stroke-dasharray: 4,2; 
+    }
+
     line {
         stroke: #a0a0a0;
         stroke-width: .5px;
