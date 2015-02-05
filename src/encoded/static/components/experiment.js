@@ -596,8 +596,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
-        if (usedFiles && Object.keys(usedFiles).some(function(fileKey) {
-            return usedFiles[fileKey];
+        if (files && files.some(function(file) {
+            return usedFiles[file['@id']] && file.step_run;
         })) {
             // Create an empty graph architecture
             jsonGraph = new JsonGraph(context.accession);
