@@ -81,7 +81,7 @@
             "type": "string"
         },
         "assembly": {
-            "title": "Genome assembly",
+            "title": "Genome assembly (visualization)",
             "type": "string"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {

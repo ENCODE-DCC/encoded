@@ -263,11 +263,24 @@ def generate_batch_hubs(context, request):
 
         assembly = str(request.matchdict['assembly'])
         params = dict(param_list, **FILE_QUERY)
+        results = []
         params['assembly'] = [assembly]
-        path = '/search/?%s' % urlencode(params, True)
-        results = embed(request, path, as_user=True)
+
+        # if files.file_format is a input param
+        if 'files.file_format' in param_list:
+            params['files.file_format'] = param_list['files.file_format']
+            path = '/search/?%s' % urlencode(params, True)
+            for result in embed(request, path, as_user=True)['@graph']:
+                if 'files' in result:
+                    for f in result['files']:
+                        if f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES:
+                            results.append(result)
+                        break
+        else:
+            path = '/search/?%s' % urlencode(params, True)
+            results = embed(request, path, as_user=True)['@graph']
         trackdb = ''
-        for i, experiment in enumerate(results['@graph']):
+        for i, experiment in enumerate(results):
             if i < 5:
                 if i == 0:
                     trackdb = generate_trackDb(experiment, 'full', None)

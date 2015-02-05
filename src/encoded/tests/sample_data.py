@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from collections import OrderedDict
 
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
+
 ORGANISMS = [
     {
         'uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
@@ -92,6 +96,9 @@ ANTIBODY_CHARACTERIZATIONS = [
         'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
         'lab': 'myers',
         'award': 'Myers',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
+        'secondary_characterization_method': 'dot blot assay',
+        'status': 'pending dcc review'
     },
 ]
 

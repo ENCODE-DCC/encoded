@@ -1,5 +1,9 @@
 import pytest
 
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
+
 
 @pytest.fixture
 def base_experiment(testapp, lab, award):
@@ -98,6 +102,7 @@ def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, o
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'primary_characterization_method': 'immunoblot',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
         'characterization_reviews': [
             {
                 'lane': 2,
@@ -119,7 +124,8 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
         'target': target['uuid'],
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay'
+        'secondary_characterization_method': 'dot blot assay',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 
