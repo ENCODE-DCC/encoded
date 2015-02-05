@@ -60,8 +60,7 @@ class AnalysisStepRun(Item):
     schema = load_schema('analysis_step_run.json')
     embedded = [
         'analysis_step',
-        'workflow_run',
-        'pipeline'
+        'workflow_run'
     ]
 
     @calculated_property(schema={
