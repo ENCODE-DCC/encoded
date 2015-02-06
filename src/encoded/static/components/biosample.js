@@ -490,6 +490,13 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     </div>
                 : null}
 
+                {context.mutated_gene ?
+                    <div data-test="mutatedgene">
+                        <dt>Mutated gene</dt>
+                        <dd><a href={context.mutated_gene}>External link</a></dd>
+                    </div>
+                : null}
+
                 {biosample && biosample.sex ?
                     <div data-test="sex">
                         <dt>Sex</dt>
@@ -572,6 +579,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         <div data-test="genotype">
                             <dt>Genotype</dt>
                             <dd>{context.genotype}</dd>
+                        </div>
+                    : null}
+
+                    {context.mutated_gene ?
+                        <div data-test="mutatedgene">
+                            <dt>Mutated gene</dt>
+                            <dd><a href={context.mutated_gene}>External link</a></dd>
                         </div>
                     : null}
 

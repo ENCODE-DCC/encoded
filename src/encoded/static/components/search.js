@@ -303,16 +303,22 @@ var AuditMixin = audit.AuditMixin;
                                     {treatment}
                                 </div>
                             : null}
-                            {result['culture_harvest_date'] ?
+                            {result.donor && result.donor.mutated_gene ?
                                 <div>
-                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
-                                    {result['culture_harvest_date']}
+                                    <strong>{columns['donor.mutated_gene']['title'] + ': '}</strong>
+                                    {result.donor.mutated_gene}
                                 </div>
                             : null}
-                            {result['date_obtained'] ?
+                            {result.culture_harvest_date ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result.culture_harvest_date}
+                                </div>
+                            : null}
+                            {result.date_obtained ?
                                 <div>
                                     <strong>{columns['date_obtained']['title'] + ': '}</strong>
-                                    {result['date_obtained']}
+                                    {result.date_obtained}
                                 </div>
                             : null}
                             {synchText ?
