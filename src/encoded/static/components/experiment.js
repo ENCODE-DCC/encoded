@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+   /** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -803,6 +803,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                             </dd>
                                         </div>
                                     : null}
+
+                                   {selectedFile.pipeline ?
+                                        <div data-test="pipeline">
+                                            <dt>Pipeline</dt>
+                                            <dd>{selectedFile.pipeline.title}</dd>
+                                        </div>
+                                   : null}
                                 </dl>
                             );
                         }
