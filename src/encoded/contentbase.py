@@ -45,7 +45,6 @@ from .calculated import (
     calculate_properties,
     calculated_property,
 )
-from .decorator import classreify
 from .embedding import (
     embed,
     expand_path,
@@ -233,13 +232,59 @@ class CollectionsTool(dict):
         self.by_item_type[value.item_type] = value
 
 
+class TypeInfo(object):
+    def __init__(self, types, item_type, factory):
+        self.types = types
+        self.item_type = item_type
+        self.factory = factory
+        self.base_types = factory.base_types
+
+    @reify
+    def schema_version(self):
+        try:
+            return self.factory.schema['properties']['schema_version']['default']
+        except (KeyError, TypeError):
+            return None
+
+    @reify
+    def schema_links(self):
+        if not self.factory.schema:
+            return ()
+        return [
+            key for key, prop in self.factory.schema['properties'].items()
+            if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
+        ]
+
+    @reify
+    def schema_keys(self):
+        if not self.factory.schema:
+            return ()
+        keys = defaultdict(list)
+        for key, prop in self.factory.schema['properties'].items():
+            uniqueKey = prop.get('items', prop).get('uniqueKey')
+            if uniqueKey is True:
+                uniqueKey = '%s:%s' % (self.factory.item_type, key)
+            if uniqueKey is not None:
+                keys[uniqueKey].append(key)
+        return keys
+
+    @reify
+    def merged_back_rev(self):
+        merged = {}
+        types = [self.item_type] + self.base_types
+        for item_type in reversed(types):
+            back_rev = self.types.type_back_rev.get(item_type, ())
+            merged.update(back_rev)
+        return merged
+
+
 class TypesTool(object):
     def __init__(self):
         self.types = {}
         self.type_back_rev = {}
 
     def register(self, item_type, factory):
-        self.types[item_type] = factory
+        self.types[item_type] = TypeInfo(self, item_type, factory)
 
         # Calculate the reverse rev map
         for prop_name, spec in factory.rev.items():
@@ -278,7 +323,7 @@ class Connection(object):
         if model is None:
             return default
 
-        Item = self.types[model.item_type]
+        Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
@@ -300,7 +345,7 @@ class Connection(object):
         if cached is not None:
             return cached
 
-        Item = self.types[model.item_type]
+        Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
         self.item_cache[uuid] = item
         return item
@@ -385,9 +430,12 @@ class Collection(Mapping):
         return self.registry[ROOT]
 
     @reify
+    def type_info(self):
+        return self.registry[TYPES][self.item_type]
+
+    @reify
     def Item(self):
-        types = self.registry[TYPES]
-        return types[self.item_type]
+        return self.type_info.factory
 
     def __getitem__(self, name):
         try:
@@ -443,6 +491,10 @@ class Item(object):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
 
     @reify
+    def type_info(self):
+        return self.registry[TYPES][self.item_type]
+
+    @reify
     def collection(self):
         collections = self.registry[COLLECTIONS]
         return collections.by_item_type[self.item_type]
@@ -456,13 +508,6 @@ class Item(object):
         if self.name_key is None:
             return str(self.uuid)
         return self.properties.get(self.name_key, None) or str(self.uuid)
-
-    @classreify
-    def schema_version(cls):
-        try:
-            return cls.schema['properties']['schema_version']['default']
-        except (KeyError, TypeError):
-            return None
 
     @property
     def properties(self):
@@ -480,27 +525,10 @@ class Item(object):
     def tid(self):
         return self.model.tid
 
-    @classreify
-    def schema_links(cls):
-        if not cls.schema:
-            return ()
-        return [
-            key for key, prop in cls.schema['properties'].items()
-            if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
-        ]
-
-    @property
-    def merged_back_rev(self):
-        merged = {}
-        types = [self.item_type] + self.base_types
-        for item_type in reversed(types):
-            merged.update(self.registry[TYPES].type_back_rev.get(item_type, ()))
-        return merged
-
     def links(self, properties):
         return {
             name: aslist(properties.get(name, ()))
-            for name in self.schema_links
+            for name in self.type_info.schema_links
         }
 
     def rev_links(self):
@@ -520,29 +548,16 @@ class Item(object):
             if (link.source.item_type, link.rel) == spec
         ]
 
-    @classreify
-    def schema_keys(cls):
-        if not cls.schema:
-            return ()
-        keys = defaultdict(list)
-        for key, prop in cls.schema['properties'].items():
-            uniqueKey = prop.get('items', prop).get('uniqueKey')
-            if uniqueKey is True:
-                uniqueKey = '%s:%s' % (cls.item_type, key)
-            if uniqueKey is not None:
-                keys[uniqueKey].append(key)
-        return keys
-
     def unique_keys(self, properties):
         return {
             name: [v for prop in props for v in aslist(properties.get(prop, ()))]
-            for name, props in self.schema_keys.items()
+            for name, props in self.type_info.schema_keys.items()
         }
 
     def upgrade_properties(self, finalize=True):
         properties = self.properties.copy()
         current_version = properties.get('schema_version', '')
-        target_version = self.schema_version
+        target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
             migrator = self.registry['migrator']
             try:
@@ -909,7 +924,7 @@ def item_links(context, request):
     # so that upgrade on GET can work.
     properties = context.__json__(request)
     root = request.root
-    for name in context.schema_links:
+    for name in context.type_info.schema_links:
         value = properties.get(name, None)
         if value is None:
             continue

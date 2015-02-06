@@ -274,7 +274,7 @@ def record_initial_back_revs(event):
     properties = context.upgrade_properties(finalize=False)
     initial[context.uuid] = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
 
 
@@ -291,7 +291,7 @@ def invalidate_new_back_revs(event):
     properties = context.upgrade_properties(finalize=False)
     current = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
     for rel, uuids in current.items():
         for uuid in uuids.difference(initial.get(rel, ())):
