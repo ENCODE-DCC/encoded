@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -716,6 +717,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
                                 contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
                             }
+                            var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -767,10 +769,10 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {selectedFile.date_created ?
+                                    {dateString ?
                                         <div data-test="datecreated">
                                             <dt>Date added</dt>
-                                            <dd>{selectedFile.date_created}</dd>
+                                            <dd>{dateString}</dd>
                                         </div>
                                     : null}
 
