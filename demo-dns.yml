@@ -25,6 +25,7 @@ package_upgrade: true
 packages:
 - golang
 - git
+- ntp
 - unattended-upgrades
 - update-notifier-common
 

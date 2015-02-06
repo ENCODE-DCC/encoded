@@ -69,6 +69,7 @@ packages:
 - nodejs-dev
 - nodejs-legacy
 - npm
+- ntp
 - openjdk-7-jre-headless
 - postgresql-9.3
 - pv
