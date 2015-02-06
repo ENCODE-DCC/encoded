@@ -58,7 +58,7 @@ def configure_engine(settings, test_setup=False):
             set_postgresql_statement_timeout(engine, timeout)
     if test_setup:
         return engine
-    if asbool(settings.get('create_tables', True)):
+    if asbool(settings.get('create_tables', False)):
         Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
