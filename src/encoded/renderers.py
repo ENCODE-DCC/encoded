@@ -334,7 +334,7 @@ def es_tween_factory(handler, registry):
     if es is None:
         return handler
 
-    default_datastore = registry.settings.get('item_datastore', 'database')
+    default_datastore = registry.settings.get('item_datastore', 'elasticsearch')
 
     ignore = {
         '/',

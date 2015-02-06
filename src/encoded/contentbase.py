@@ -747,7 +747,7 @@ def collection_list(context, request):
 
     datastore = request.params.get('datastore', None)
     if datastore is None:
-        datastore = request.registry.settings.get('collection_datastore', 'database')
+        datastore = request.registry.settings.get('collection_datastore', 'elasticsearch')
     # Switch to change summary page loading options: load_db, load_es
     if datastore == 'elasticsearch':
         result = load_es(context, request)
