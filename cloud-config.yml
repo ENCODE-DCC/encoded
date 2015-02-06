@@ -111,7 +111,7 @@ runcmd:
 - /etc/init.d/postgresql start
 - sudo -u encoded python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
 - sudo -u encoded bin/buildout -c %(ROLE)s.cfg
-- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
+- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/create-mapping production.ini
