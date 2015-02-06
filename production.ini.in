@@ -1,0 +1,24 @@
+[app:app]
+use = config:base.ini#app
+session.secret = %(here)s/session-secret.b64
+file_upload_bucket = ${file_upload_bucket}
+accession_factory = ${accession_factory}
+
+[composite:indexer]
+use = config:base.ini#indexer
+
+[composite:memlimit]
+use = config:base.ini#memlimit
+
+[pipeline:debug]
+pipeline =
+    egg:repoze.debug#pdbpm
+    app
+set pyramid.includes =
+    pyramid_translogger
+
+[server:main]
+use = egg:waitress#main
+host = 0.0.0.0
+port = 6543
+threads = 1
