@@ -94,8 +94,6 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     })
                 else:
                     timestamp = datetime.datetime.now().isoformat()
-                    if res.json.get('txn_count', True):
-                        log.debug(res.json)
                     result = res.json
                     result['stats'] = {
                         k: int(v) for k, v in parse_qsl(
@@ -105,6 +103,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     update_status(last_result=result)
                     if result.get('indexed', 0):
                         update_status(result=result)
+                        log.info(result)
 
                 update_status(
                     status='waiting',
@@ -206,7 +205,6 @@ def composite(loader, global_conf, **settings):
         if result is not None:
             status['results'] = [result] + status['results'][:9]
         status_holder['status'] = status
-
 
     kwargs = {
         'testapp': testapp,
