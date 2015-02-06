@@ -256,6 +256,7 @@ var AuditMixin = audit.AuditMixin;
                 constructs = result.constructs[0] ? result.constructs[0].target.label : '';
             }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+            var mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
  
             // Build the text of the synchronization string
             var synchText;
@@ -303,10 +304,10 @@ var AuditMixin = audit.AuditMixin;
                                     {treatment}
                                 </div>
                             : null}
-                            {result.donor && result.donor.mutated_gene ?
+                            {mutatedGenes ?
                                 <div>
-                                    <strong>{columns['donor.mutated_gene']['title'] + ': '}</strong>
-                                    {result.donor.mutated_gene}
+                                    <strong>{columns['donor.mutated_gene.label']['title'] + ': '}</strong>
+                                    {mutatedGenes}
                                 </div>
                             : null}
                             {result.culture_harvest_date ?

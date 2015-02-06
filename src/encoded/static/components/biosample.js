@@ -493,7 +493,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.mutated_gene ?
                     <div data-test="mutatedgene">
                         <dt>Mutated gene</dt>
-                        <dd><a href={context.mutated_gene}>External link</a></dd>
+                        <dd><a href={context.mutated_gene}>Strain detail</a></dd>
                     </div>
                 : null}
 
