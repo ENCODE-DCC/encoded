@@ -1,3 +1,4 @@
+
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
@@ -503,10 +504,10 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                    : null}
                                    
-                                   {selectedFile.step_run.pipeline && selectedFile.step_run.pipeline.title ?
+                                   {selectedFile.pipeline ?
                                         <div data-test="pipeline">
                                             <dt>Pipeline</dt>
-                                            <dd>{selectedFile.step_run.pipeline.title}</dd>
+                                            <dd>{selectedFile.pipeline.title}</dd>
                                         </div>
                                    : null}
 
