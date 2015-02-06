@@ -4,6 +4,7 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
+var BrowserFeat = require('./mixins').BrowserFeat;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -17,6 +18,7 @@ var $script = require('scriptjs');
 // Constructor for a graph architecture
 function JsonGraph(id) {
     this.id = id;
+    this.root = true;
     this.type = '';
     this.label = [];
     this.shape = '';
@@ -32,10 +34,10 @@ function JsonGraph(id) {
 // cssClass: optional CSS class to assign to the SVG object for this node
 // type: Optional text type to track the type of node this is
 // parentNode: Optional reference to parent node; defaults to graph root
-JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerRadius, parentNode) {
+JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
     var newNode = {};
     newNode.id = id;
-    newNode.type = type;
+    newNode.type = options.type;
     newNode.label = [];
     if (typeof label === 'string' || typeof label === 'number') {
         // label is a string; assign to first array element
@@ -44,9 +46,17 @@ JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerR
         // Otherwise, assume label is an array; clone it
         newNode.label = label.slice(0);
     }
-    newNode.metadata = {cssClass: cssClass, shape: shape, cornerRadius: cornerRadius};
+    newNode.metadata = {
+        cssClass: options.cssClass, // CSS class
+        shape: options.shape, // Shape to use for node; see dagre-d3 for options
+        cornerRadius: options.cornerRadius, // # pixels to round corners of nodes
+        ref: options.ref, // Reference to object this node represents
+        contributing: options.contributing, // True if this is a contributing file
+        error: options.error, // True if this is an error node
+        accession: options.accession // Accession number for misc reference if needed (errors mostly)
+    };
     newNode.nodes = [];
-    var target = (parentNode && parentNode.nodes) || this.nodes;
+    var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
     target.push(newNode);
 };
 
@@ -85,13 +95,6 @@ module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
-    getInitialState: function() {
-        return {
-            leftScrollDisabled: true,
-            rightScrollDisabled: true
-        };
-    },
-
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
@@ -101,9 +104,10 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label, rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
-                    paddingLeft: "20", paddingRight: "20", paddingTop: "15", paddingBottom: "15"});
-                if (parent.id) {
+                graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
+                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
+                if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
                 if (node.nodes.length) {
@@ -126,11 +130,11 @@ var Graph = module.exports.Graph = React.createClass({
     drawGraph: function(el) {
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
-        var svg = d3.select(el).select('svg');
+        var svg = this.savedSvg = d3.select(el).select('svg');
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
-            .setGraph({rankdir: "TB"})
+            .setGraph({rankdir: 'TB'})
             .setDefaultEdgeLabel(function() { return {}; });
 
         // Convert from given node architecture to the dagre nodes and edges
@@ -138,48 +142,56 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
-        render(d3.select("svg g"), g);
+        render(svg.select('g'), g);
 
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra.
         // Round the graph dimensions up to avoid problems detecting the end of scrolling.
         var width = Math.ceil(g.graph().width);
         var height = Math.ceil(g.graph().height);
-        svg.attr("width", width + 40).attr("height", height + 40)
-            .attr("viewBox", "-20 -20 " + (width + 40) + " " + (height + 40));
+        svg.attr("width", width + 40).attr("height", height + 60)
+            .attr("viewBox", "-20 -40 " + (width + 40) + " " + (height + 60));
     },
 
     componentDidMount: function () {
-        globals.bindEvent(window, 'resize', this.handleResize);
+        if (BrowserFeat.getBrowserCaps('svg')) {
+            // Delay loading dagre for Jest testing compatibility;
+            // Both D3 and Jest have their own conflicting JSDOM instances
+            $script('dagre', function() {
+                var d3 = require('d3');
+                var dagreD3 = require('dagre-d3');
+                var el = this.refs.graphdisplay.getDOMNode();
+                this.dagreLoaded = true;
 
-        // Delay loading dagre for Jest testing compatibility;
-        // Both D3 and Jest have their own conflicting JSDOM instances
-        $script('dagre', function() {
-            var d3 = require('d3');
-            var dagreD3 = require('dagre-d3');
-            var el = this.refs.graphdisplay.getDOMNode();
-            this.dagreLoaded = true;
+                // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                    .attr('preserveAspectRatio', 'xMidYMid')
+                    .attr('version', '1.1');
+                var svgGroup = svg.append("g");
 
-            // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '#scroll-buttons')
-                .attr('id', 'graphsvg')
-                .attr('preserveAspectRatio', 'xMidYMid');
-            var svgGroup = svg.append("g");
+                // Draw the graph into the panel
+                this.drawGraph(el);
 
-            // Draw the graph into the panel
-            this.drawGraph(el);
-
-            // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-            var reactThis = this;
-            svg.selectAll("g.node").each(function(nodeId) {
-                globals.bindEvent(this, 'click', function(e) {
-                    reactThis.props.nodeClickHandler(e, nodeId);
+                // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+                var reactThis = this;
+                svg.selectAll("g.node").each(function(nodeId) {
+                    globals.bindEvent(this, 'click', function(e) {
+                        reactThis.props.nodeClickHandler(e, nodeId);
+                    });
                 });
-            });
+            }.bind(this));
+        } else {
+            // Output text indicating that graphs aren't supported.
+            var el = this.refs.graphdisplay.getDOMNode();
+            var para = document.createElement('p');
+            para.className = 'browser-error';
+            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+            el.appendChild(para);
 
-            // Make sure the left and right scroll buttons are enabled/disabled appropriately
-            this.scrollHandler();
-        }.bind(this));
+            // Disable the download button
+            el = this.refs.dlButton.getDOMNode();
+            el.setAttribute('disabled', 'disabled');
+        }
     },
 
     // State change; redraw the graph
@@ -190,98 +202,80 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
-    // Handle window resizing for doing the right thing with scrolling the graph
-    handleResize: function() {
-        this.scrollHandler();
-    },
+    handleClick: function() {
 
-    componentWillUnmount: function() {
-        globals.unbindEvent(window, 'resize', this.handleResize);
-    },
+        // Collect CSS styles that apply to the graph and insert them into the given SVG element
+        function attachStyles(el) {
+            var stylesText = '';
+            var sheets = document.styleSheets;
 
-    // Handle a click in the left scroll button
-    scrollLeftStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft - 30;
-        if (newScrollLeft > 0) {
-            // The graph isn't scrolled all the way left yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollLeftStart, 100);
-        } else {
-            // The graph is scrolled all the way to the left; that's it for scrolling
-            displayNode.scrollLeft = 0;
-        }
-    },
+            // Search every style in the style sheet(s) for those applying to graphs.
+            // Note: Not using ES5 looping constructs because these aren’t real arrays
+            for (var i = 0; i < sheets.length; i++) {
+                var rules = sheets[i].cssRules;
+                for (var j = 0; j < rules.length; j++) {
+                    var rule = rules[j];
 
-    // Handle a click in the right scroll button
-    scrollRightStart: function() {
-        this.scrollTimer = null;
-        var displayNode = this.refs.graphdisplay.getDOMNode();
-        var newScrollLeft = displayNode.scrollLeft + 30;
-        var svg = document.getElementById('graphsvg');
-        var widthDiff = svg.scrollWidth - displayNode.clientWidth;
-        if (newScrollLeft < widthDiff) {
-            // The graph isn't scrolled all the way right yet; allow more scrolling
-            // after a delay
-            displayNode.scrollLeft = newScrollLeft;
-            this.scrollTimer = setTimeout(this.scrollRightStart, 100);
-        } else {
-            // The graph is scrolled all the way to the right; that's it for scrolling
-            displayNode.scrollLeft = widthDiff;
-        }
-    },
-
-    // Called when the visitor releases the mouse button from either scroll button
-    // Cancel the timer if any, and update the scroll button enable/disable state
-    scrollStop: function() {
-        if (this.scrollTimer) {
-            clearTimeout(this.scrollTimer);
-            this.scrollTimer = null;
-            this.scrollHandler();
-        }
-    },
-
-    // Handle scrolling either through the scroll buttons or the mouse
-    // Only handle if the scroll timer isn't running so that we don't update the
-    // display a bunch of times while the visitor's holding down a scroll button
-    scrollHandler: function() {
-        if (!this.scrollTimer) {
-            var leftScrollDisabled = true;
-            var rightScrollDisabled = true;
-            var container = this.refs.graphdisplay.getDOMNode();
-            var svg = document.getElementById('graphsvg');
-            var containerWidth = container.clientWidth;
-            var svgWidth = svg.scrollWidth;
-            if (containerWidth < svgWidth) {
-                // The graph is wide enough within the panel to scroll
-                // Enable or disable the left or right scroll buttons depending on
-                // whether we've scrolled all the way in that direction or not
-                leftScrollDisabled = container.scrollLeft === 0;
-                rightScrollDisabled = container.scrollLeft >= svgWidth - containerWidth;
+                    // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
+                    // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
+                    // FF(31)'s substring is much faster than indexOf.
+                    if (typeof(rule.style) != 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
+                        // If any elements use this style, add the style's CSS text to our style text accumulator.
+                        var elems = el.querySelectorAll(rule.selectorText);
+                        if (elems.length) {
+                            stylesText += rule.selectorText + " { " + rule.style.cssText + " }\n";
+                        }
+                    }
+                }
             }
-            if (this.state.rightScrollDisabled !== rightScrollDisabled) {
-                this.setState({rightScrollDisabled: rightScrollDisabled});
-            }
-            if (this.state.leftScrollDisabled !== leftScrollDisabled) {
-                this.setState({leftScrollDisabled: leftScrollDisabled});
-            }
+
+            // Insert the collected SVG styles into a new style element
+            var styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            styleEl.innerHTML = "/* <![CDATA[ */\n" + stylesText + "\n/* ]]> */";
+
+            // Insert the new style element into the beginning of the given SVG element
+            el.insertBefore(styleEl, el.firstChild);
         }
+
+        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
+        var svgNode = this.savedSvg.node().cloneNode(true);
+
+        // Attach graph CSS to SVG node clone
+        attachStyles(svgNode);
+
+        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
+        var serializer = new XMLSerializer();
+        var svgXml = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+            serializer.serializeToString(svgNode);
+        var img = new Image();
+        img.src = 'data:image/svg+xml;base64,' + window.btoa(svgXml);
+
+        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
+        img.onload = function() {
+            // Make a new memory-based canvas and draw the image into it.
+            var canvas = document.createElement('canvas');
+            canvas.width = img.width * 2;
+            canvas.height = img.height * 2;
+            var context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0, img.width * 2, img.height * 2);
+
+            // Make the image download by making a fake <a> and pretending to click it.
+            var a = document.createElement('a');
+            a.download = this.props.graph.id ? this.props.graph.id + '.png' : 'graph.png';
+            a.href = canvas.toDataURL('image/png');
+            a.setAttribute('data-bypass', 'true');
+            document.body.appendChild(a);
+            a.click();
+        }.bind(this);
     },
 
     render: function() {
         return (
             <div className="panel-full">
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
-                </div>
-                <div id="scroll-buttons">
-                    <button className="scroll-graph icon icon-arrow-left"
-                            onMouseDown={this.scrollLeftStart} onTouchStart={this.scrollLeftStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                            disabled={this.state.leftScrollDisabled}><span className="sr-only">Left</span></button>
-                    <button className="scroll-graph icon icon-arrow-right"
-                        onMouseDown={this.scrollRightStart} onTouchStart={this.scrollRightStart} onMouseUp={this.scrollStop} onTouchEnd={this.scrollStop}
-                        disabled={this.state.rightScrollDisabled}><span className="sr-only">Right</span></button>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
+                <div className="graph-dl clearfix">
+                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
@@ -295,68 +289,97 @@ var Graph = module.exports.Graph = React.createClass({
 
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     // Create nodes based on all files in this experiment
-    assembleGraph: function() {
-        var context = this.props.context;
-        var files = this.props.files || context.files;
+    assembleGraph: function(context, infoNodeId, files) {
         var jsonGraph;
 
-        // Save list of files and analysis steps so we can click-test them later
-        this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
-        this.stepLists = [];
+        // Track orphans -- files with no derived_from and no one derives_from them.
+        var usedFiles = {}; // Object with file ID keys of all files that belong in graph
+        files.forEach(function(file) {
+            usedFiles[file['@id']] = usedFiles[file['@id']] ||
+                (!!(file.derived_from && file.derived_from.length)); // File included if it's derived from others
+            if (file.derived_from && file.derived_from.length) {
+                file.derived_from.forEach(function(derived) {
+                    usedFiles[derived['@id']] = true; // File included if others derive from it.
+                });
+            }
+        });
 
         // Only produce a graph if there's at least one file with an analysis step
         // and the file has derived from other files.
-        if (files && files.some(function(file) {
-            return file.derived_from && file.derived_from.length && file.steps && file.steps.length;
+        if (usedFiles && Object.keys(usedFiles).some(function(fileKey) {
+            return usedFiles[fileKey];
         })) {
             // Create an empty graph architecture
-            jsonGraph = new JsonGraph('');
+            jsonGraph = new JsonGraph(context.accession);
 
             // Create nodes for the replicates
             context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
+                    {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0, ref: replicate});
             });
 
             // Add files and their steps as nodes to the graph
             files.forEach(function(file) {
                 var fileId = file['@id'];
-                var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
+                if (usedFiles[fileId]) {
+                    var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
 
-                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
-                // to show that this is a file node.
-                if (!jsonGraph.getNode(fileId)) {
+                    // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                    // to show that this is a file node.
                     jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
-                }
+                        {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, parentNode: replicateNode, ref: file});
 
-                // If the node has parents, build the edges to the analysis step between this node and its parents
-                if (file.derived_from && file.derived_from.length && file.steps && file.steps.length) {
-                    // Remember this step for later hit testing
-                    this.stepLists.push(file.steps);
+                    // If the node has parents, build the edges to the analysis step between this node and its parents
+                    if (file.derived_from && file.derived_from.length) {
+                        var stepRun = file.step_run;
+                        var stepId;
 
-                    // Make the ID of the node using the first step in the array, and it connects to
-                    var stepId = file.steps[0].analysis_step['@id'] + '&' + file['@id'];
+                        // If has derived_from but no step_run, make a dummy step to show error.
+                        if (!stepRun) {
+                            stepRun = {
+                                error: true,
+                                analysis_step: {'@id': 'ERROR:' + file.accession, analysis_step_types: 'Error in ' + file.accession}
+                            };
+                        }
 
-                    // Make a label for the step node
-                    var label = file.steps.map(function(step, i) {
-                        return step.analysis_step.analysis_step_types.join(', ');
-                    });
+                        // Make a label for the step node
+                        var label = stepRun.analysis_step.analysis_step_types;
 
-                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                    // points to it; there may be more than one copy of this step on the graph if more than one
-                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                    // analysis step.
-                    jsonGraph.addNode(stepId, label,
-                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
-                    jsonGraph.addEdge(stepId, fileId);
+                        // Virtual step runs need to be duplicated on the graph
+                        if (stepRun.status === 'virtual') {
+                            // Make the ID of the node using the analysis step ID, and the ID of the file it connects to.
+                            // Need to combine these so that duplicated steps have unique IDs.
+                            stepId = stepRun.analysis_step['@id'] + '&' + file['@id'];
 
-                    file.steps.forEach(function(step) {
+                            // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                            // points to it; there may be more than one copy of this step on the graph if more than one
+                            // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                            // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                            // analysis step.
+                            jsonGraph.addNode(stepId, label,
+                                {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
+                                 type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, ref: stepRun});
+                            jsonGraph.addEdge(stepId, fileId);
+                        } else {
+                            stepId = stepRun.analysis_step['@id'];
+
+                            // Add the step only if we haven't added it yet.
+                            if (!jsonGraph.getNode(stepId)) {
+                                jsonGraph.addNode(stepId, label,
+                                    {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
+                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error, ref: stepRun});
+                            }
+
+                            // Now hook the file to the step
+                            jsonGraph.addEdge(stepId, fileId);
+                        }
+
                         // Draw an edge from the analysis step to each of the derived_from files
                         file.derived_from.forEach(function(derived) {
                             jsonGraph.addEdge(derived['@id'], stepId);
                         });
-                    });
+                    }
                 }
             }, this);
 
@@ -368,7 +391,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 // to show that this is a file node.
                 if (!jsonGraph.getNode(fileId)) {
                     jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16);
+                        {cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file, contributing: true});
                 }
             }, this);
         }
@@ -392,12 +416,16 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 switch(node.type) {
                     case 'fi':
                         // The node is for a file
-                        selectedFile = _(this.fileList).find(function(file) {
-                            return file['@id'] === infoNodeId;
-                        });
+                        selectedFile = node.metadata.ref;
 
                         if (selectedFile) {
-                            var analysisSteps = selectedFile.steps && selectedFile.steps.length ? selectedFile.steps : null;
+                            var contributingAccession;
+
+                            if (node.metadata.contributing) {
+                                var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+                                var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+                                contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
+                            }
                             meta = (
                                 <dl className="key-value">
                                     {selectedFile.file_format ?
@@ -428,6 +456,20 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
+                                    {selectedFile.assembly ?
+                                        <div data-test="assembly">
+                                            <dt>Mapping assembly</dt>
+                                            <dd>{selectedFile.assembly}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.genome_annotation ?
+                                        <div data-test="annotation">
+                                            <dt>Genome annotation</dt>
+                                            <dd>{selectedFile.genome_annotation}</dd>
+                                        </div>
+                                    : null}
+
                                     {selectedFile.submitted_by && selectedFile.submitted_by.title ?
                                         <div data-test="submitted">
                                             <dt>Added by</dt>
@@ -442,34 +484,31 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                         </div>
                                     : null}
 
-                                    {analysisSteps ?
+                                    {selectedFile.step_run ?
                                         <div>
                                             <dt>Software</dt>
                                             <dd>
-                                                {analysisSteps.map(function(step) {
+                                                {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                                     return (
-                                                        <span>
-                                                            {step.analysis_step.software_versions.map(function(version, i) {
-                                                                return (
-                                                                    <a href={version.software['@id']} className="software-version">
-                                                                        <span className="software">{version.software.name}</span>
-                                                                        {version.version ?
-                                                                            <span className="version">{version.version}</span>
-                                                                        : null}
-                                                                    </a>
-                                                                );
-                                                            })}
-                                                        </span>
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{versionNum}</span>
+                                                            : null}
+                                                        </a>
                                                     );
                                                 })}
                                             </dd>
                                         </div>
                                     : null}
 
-                                    {selectedFile.pipeline ?
-                                        <div data-test="pipeline">
-                                            <dt>Pipeline</dt>
-                                            <dd>{selectedFile.pipeline.title}</dd>
+                                    {node.metadata.contributing && selectedFile.dataset ?
+                                        <div>
+                                            <dt>Contributed from</dt>
+                                            <dd>
+                                                <a href={selectedFile.dataset}>{contributingAccession}</a>
+                                            </dd>
                                         </div>
                                     : null}
                                 </dl>
@@ -480,21 +519,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                     case 'as':
                         // The node is for an analysis step
-                        var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        console.log('ASI: ', analysisStepId);
-                        var selectedSteps = _(this.stepLists).find(function(stepList) {
-                            var selectedStep = _(stepList).find(function(step) {
-                                return step.analysis_step['@id'] === analysisStepId;
-                            });
-                            return !!selectedStep;
-                        });
-                        console.log(selectedSteps);
-
-                        meta = selectedSteps.map(function(stepRun, i) {
-                            var step = stepRun.analysis_step;
-                            return (
+                        if (node.metadata.error) {
+                            meta = (<p className="browser-error">Missing step_run derivation information for {node.metadata.accession}</p>);
+                        } else {
+                            var step = node.metadata.ref.analysis_step;
+                            meta = (
                                 <div>
-                                    {i > 0 ? <hr /> : null}
                                     <dl className="key-value">
                                         <div data-test="steptype">
                                             <dt>Step type</dt>
@@ -527,11 +557,12 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                                 <dt>Software</dt>
                                                 <dd>
                                                     {step.software_versions.map(function(version) {
+                                                        var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                                         return (
                                                             <a href={version.software['@id']} className="software-version">
                                                                 <span className="software">{version.software.name}</span>
                                                                 {version.version ?
-                                                                    <span className="version">{version.version}</span>
+                                                                    <span className="version">{versionNum}</span>
                                                                 : null}
                                                             </a>
                                                         );
@@ -542,7 +573,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                     </dl>
                                 </div>
                             );
-                        });
+                        }
+
 
                         break;
 
@@ -564,14 +596,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var context = this.props.context;
 
         // Build node graph of the files and analysis steps with this experiment
-        var jsonGraph = this.assembleGraph();
-        if (jsonGraph) {
-            var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
+        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, this.props.files || context.files);
+        if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+            var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
             return (
                 <div>
-                    <h3>Files generated by pipeline</h3>
-                    <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                        <div className="graph-node-info">
+                    <h3>{this.props.files ? 'Unreleased files' : 'Files'} generated by pipeline</h3>
+                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                        <div id="graph-node-info">
                             {meta ? <div className="panel-insert">{meta}</div> : null}
                         </div>
                     </Graph>

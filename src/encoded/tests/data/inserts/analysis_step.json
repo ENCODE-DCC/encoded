@@ -107,20 +107,13 @@
         "software_versions": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d"]
     },
     {
-        "name": "mott-trim",
+        "name": "mott-trim-align-bismark",
         "uuid": "36a667fe-e98c-402d-babf-88a9d39df5ff",
         "input_file_types": ["fastq"],
-        "analysis_step_types": ["filtering"],
-        "software_versions": ["a86c9d15-deaf-4abd-8bce-bfa6595d70bb"]
-    },
-    {
-        "name": "align-bismark",
-        "uuid": "d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e",
-        "input_file_types": ["fastq"],
-        "output_file_types": ["sam"],
-        "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
-        "analysis_step_types": ["alignment"],
+        "output_file_types": ["bam"],
+        "analysis_step_types": ["filtering", "alignment"],
         "software_versions": [
+            "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
             "1b071b08-ef76-4a69-8f96-22408e2b380a"
         ]
@@ -130,7 +123,7 @@
         "uuid": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
         "input_file_types": ["sam"],
         "output_file_types": ["tsv", "bam"],
-        "parents": ["d1f97708-c98c-4af6-a2d1-ce4c9c42cc8e"],
+        "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
         "analysis_step_types": ["signal calling"],
         "software_versions": [
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
@@ -150,7 +143,6 @@
         "name": "prep-tophat",
         "uuid": "3d3c36c4-17dd-4112-b77d-a7f64833d5db",
         "input_file_types": ["fasta"],
-        "children": [],
         "analysis_step_types": ["genome indexing"],
         "software_versions": [
             "8369c9b0-50ad-11e4-916c-0800200c9a66",
@@ -162,7 +154,6 @@
         "name": "prep-rsem",
         "input_file_types": ["fasta"],
         "uuid": "c0f339bb-e681-40af-b98b-5b4c12aa61ba",
-        "children": [],
         "analysis_step_types": ["genome indexing"],
         "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"]
     },
