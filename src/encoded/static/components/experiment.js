@@ -1,7 +1,8 @@
-/** @jsx React.DOM */
+   /** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -15,11 +16,13 @@ var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
 var FetchedItems = fetched.FetchedItems;
+var FetchedData = fetched.FetchedData;
+var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
-var ExperimentGraph = graph.ExperimentGraph;
+var JsonGraph = graph.JsonGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -334,7 +337,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
-                <ExperimentGraph context={context} released={true} />
+                <FetchedData loadingComplete={this.props.loadingComplete}>
+                    <Param name="data" url={dataset.unreleased_files_url(context)} />
+                    <ExperimentGraph context={context} />
+                </FetchedData>
 
                 {context.files.length ?
                     <div>
@@ -567,7 +573,346 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
-
-
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
+
+
+
+var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
+    // Create nodes based on all files in this experiment
+    assembleGraph: function(context, infoNodeId, files) {
+        var jsonGraph;
+
+        // Track orphans -- files with no derived_from and no one derives_from them.
+        var usedFiles = {}; // Object with file ID keys of all files that belong in graph
+        files.forEach(function(file) {
+            usedFiles[file['@id']] = usedFiles[file['@id']] ||
+                (!!(file.derived_from && file.derived_from.length)); // File included if it's derived from others
+            if (file.derived_from && file.derived_from.length) {
+                file.derived_from.forEach(function(derived) {
+                    usedFiles[derived['@id']] = true; // File included if others derive from it.
+                });
+            }
+        });
+
+        // Only produce a graph if there's at least one file with an analysis step
+        // and the file has derived from other files.
+        if (files && files.some(function(file) {
+            return usedFiles[file['@id']] && file.step_run;
+        })) {
+            // Create an empty graph architecture
+            jsonGraph = new JsonGraph(context.accession);
+
+            // Create nodes for the replicates
+            context.replicates.forEach(function(replicate) {
+                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
+                    {cssClass: 'pipeline-replicate', type: 'rp', shape: 'rect', cornerRadius: 0, ref: replicate});
+            });
+
+            // Add files and their steps as nodes to the graph
+            files.forEach(function(file) {
+                var fileId = file['@id'];
+                if (usedFiles[fileId]) {
+                    var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
+
+                    // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                    // to show that this is a file node.
+                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                        {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, parentNode: replicateNode, ref: file});
+
+                    // If the node has parents, build the edges to the analysis step between this node and its parents
+                    if (file.derived_from && file.derived_from.length) {
+                        var stepRun = file.step_run;
+                        var stepId;
+
+                        // If has derived_from but no step_run, make a dummy step to show error.
+                        if (!stepRun) {
+                            stepRun = {
+                                error: true,
+                                analysis_step: {'@id': 'ERROR:' + file.accession, analysis_step_types: 'Error in ' + file.accession}
+                            };
+                        }
+
+                        // Make a label for the step node
+                        var label = stepRun.analysis_step.analysis_step_types;
+
+                        // Virtual step runs need to be duplicated on the graph
+                        if (stepRun.status === 'virtual') {
+                            // Make the ID of the node using the analysis step ID, and the ID of the file it connects to.
+                            // Need to combine these so that duplicated steps have unique IDs.
+                            stepId = stepRun.analysis_step['@id'] + '&' + file['@id'];
+
+                            // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
+                            // points to it; there may be more than one copy of this step on the graph if more than one
+                            // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
+                            // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
+                            // analysis step.
+                            jsonGraph.addNode(stepId, label,
+                                {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
+                                 type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, ref: stepRun});
+                            jsonGraph.addEdge(stepId, fileId);
+                        } else {
+                            stepId = stepRun.analysis_step['@id'];
+
+                            // Add the step only if we haven't added it yet.
+                            if (!jsonGraph.getNode(stepId)) {
+                                jsonGraph.addNode(stepId, label,
+                                    {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
+                                     type: 'as', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error, ref: stepRun});
+                            }
+
+                            // Now hook the file to the step
+                            jsonGraph.addEdge(stepId, fileId);
+                        }
+
+                        // Draw an edge from the analysis step to each of the derived_from files
+                        file.derived_from.forEach(function(derived) {
+                            jsonGraph.addEdge(derived['@id'], stepId);
+                        });
+                    }
+                }
+            }, this);
+
+            // Add contributing files to the graph
+            context.contributing_files.forEach(function(file) {
+                var fileId = file['@id'];
+
+                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
+                // to show that this is a file node.
+                if (!jsonGraph.getNode(fileId)) {
+                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                        {cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                         type: 'fi', shape: 'rect', cornerRadius: 16, ref: file, contributing: true});
+                }
+            }, this);
+        }
+        return jsonGraph;
+    },
+
+    getInitialState: function() {
+        return {
+            infoNodeId: '' // @id of node whose info panel is open
+        };
+    },
+
+    detailNodes: function(jsonGraph, infoNodeId) {
+        var meta;
+        var selectedFile;
+
+        // Find data matching selected node, if any
+        if (infoNodeId) {
+            var node = jsonGraph.getNode(infoNodeId);
+            if (node) {
+                switch(node.type) {
+                    case 'fi':
+                        // The node is for a file
+                        selectedFile = node.metadata.ref;
+
+                        if (selectedFile) {
+                            var contributingAccession;
+
+                            if (node.metadata.contributing) {
+                                var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+                                var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+                                contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
+                            }
+                            var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
+                            meta = (
+                                <dl className="key-value">
+                                    {selectedFile.file_format ?
+                                        <div data-test="format">
+                                            <dt>Format</dt>
+                                            <dd>{selectedFile.file_format}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.output_type ?
+                                        <div data-test="output">
+                                            <dt>Output</dt>
+                                            <dd>{selectedFile.output_type}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.paired_end ?
+                                        <div data-test="pairedend">
+                                            <dt>Paired end</dt>
+                                            <dd>{selectedFile.paired_end}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.replicate ?
+                                        <div data-test="replicate">
+                                            <dt>Associated replicates</dt>
+                                            <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.assembly ?
+                                        <div data-test="assembly">
+                                            <dt>Mapping assembly</dt>
+                                            <dd>{selectedFile.assembly}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.genome_annotation ?
+                                        <div data-test="annotation">
+                                            <dt>Genome annotation</dt>
+                                            <dd>{selectedFile.genome_annotation}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.submitted_by && selectedFile.submitted_by.title ?
+                                        <div data-test="submitted">
+                                            <dt>Added by</dt>
+                                            <dd>{selectedFile.submitted_by.title}</dd>
+                                        </div>
+                                    : null}
+
+                                    {dateString ?
+                                        <div data-test="datecreated">
+                                            <dt>Date added</dt>
+                                            <dd>{dateString}</dd>
+                                        </div>
+                                    : null}
+
+                                    {selectedFile.step_run ?
+                                        <div>
+                                            <dt>Software</dt>
+                                            <dd>
+                                                {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                                    return (
+                                                        <a href={version.software['@id']} className="software-version">
+                                                            <span className="software">{version.software.name}</span>
+                                                            {version.version ?
+                                                                <span className="version">{versionNum}</span>
+                                                            : null}
+                                                        </a>
+                                                    );
+                                                })}
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                    {node.metadata.contributing && selectedFile.dataset ?
+                                        <div>
+                                            <dt>Contributed from</dt>
+                                            <dd>
+                                                <a href={selectedFile.dataset}>{contributingAccession}</a>
+                                            </dd>
+                                        </div>
+                                    : null}
+
+                                   {selectedFile.pipeline ?
+                                        <div data-test="pipeline">
+                                            <dt>Pipeline</dt>
+                                            <dd>{selectedFile.pipeline.title}</dd>
+                                        </div>
+                                   : null}
+                                </dl>
+                            );
+                        }
+
+                        break;
+
+                    case 'as':
+                        // The node is for an analysis step
+                        if (node.metadata.error) {
+                            meta = (<p className="browser-error">Missing step_run derivation information for {node.metadata.accession}</p>);
+                        } else {
+                            var step = node.metadata.ref.analysis_step;
+                            meta = (
+                                <div>
+                                    <dl className="key-value">
+                                        <div data-test="steptype">
+                                            <dt>Step type</dt>
+                                            <dd>{step.analysis_step_types.join(', ')}</dd>
+                                        </div>
+
+                                        {step.input_file_types && step.input_file_types.length ?
+                                            <div data-test="inputtypes">
+                                                <dt>Input file types</dt>
+                                                <dd>{step.input_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.output_file_types && step.output_file_types.length ?
+                                            <div data-test="outputtypes">
+                                                <dt>Output file types</dt>
+                                                <dd>{step.output_file_types.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.qa_stats_generated && step.qa_stats_generated.length ?
+                                            <div data-test="steptypes">
+                                                <dt>QA statistics</dt>
+                                                <dd>{step.qa_stats_generated.join(', ')}</dd>
+                                            </div>
+                                        : null}
+
+                                        {step.software_versions && step.software_versions.length ?
+                                            <div>
+                                                <dt>Software</dt>
+                                                <dd>
+                                                    {step.software_versions.map(function(version) {
+                                                        var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                                        return (
+                                                            <a href={version.software['@id']} className="software-version">
+                                                                <span className="software">{version.software.name}</span>
+                                                                {version.version ?
+                                                                    <span className="version">{versionNum}</span>
+                                                                : null}
+                                                            </a>
+                                                        );
+                                                    })}
+                                                </dd>
+                                            </div>
+                                        : null}
+                                    </dl>
+                                </div>
+                            );
+                        }
+
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return meta;
+    },
+
+    handleNodeClick: function(e, nodeId) {
+        e.stopPropagation(); e.preventDefault();
+        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+    },
+
+    render: function() {
+        var context = this.props.context;
+        var data = this.props.data;
+        var items = data ? data['@graph'] : [];
+        var files = context.files.concat(items);
+
+        // Build node graph of the files and analysis steps with this experiment
+        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, files);
+        if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+            var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+            return (
+                <div>
+                    <h3>{this.props.files ? 'Unreleased files' : 'Files'} generated by pipeline</h3>
+                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                        <div id="graph-node-info">
+                            {meta ? <div className="panel-insert">{meta}</div> : null}
+                        </div>
+                    </Graph>
+                </div>
+            );
+        } else {
+            return null;
+        }
+    }
+});

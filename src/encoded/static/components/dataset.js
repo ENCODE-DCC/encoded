@@ -12,7 +12,6 @@ var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
-var ExperimentGraph = graph.ExperimentGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -137,7 +136,6 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
         var context = this.props.context;
         return (
             <div>
-                <ExperimentGraph context={context} files={this.props.items} released={false} />
                 <h3>Unreleased files linked to {context.accession}</h3>
                 {this.transferPropsTo(
                     <FileTable />
