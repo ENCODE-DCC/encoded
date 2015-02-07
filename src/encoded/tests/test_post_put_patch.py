@@ -132,7 +132,7 @@ def test_patch(content, testapp):
 
 def test_patch_new_schema_version(content, root, testapp, monkeypatch):
     collection = root['testing_post_put_patch']
-    properties = collection.Item.schema['properties']
+    properties = collection.type_info.schema['properties']
 
     url = content['@id']
     res = testapp.get(url)

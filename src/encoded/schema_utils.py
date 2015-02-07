@@ -128,7 +128,7 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from .contentbase import Item
+    from .contentbase import Item, TYPES
 
     linkType, linkProp = linkFrom.split('.')
     if validator.is_type(instance, "string"):
@@ -161,8 +161,7 @@ def linkFrom(validator, linkFrom, instance, schema):
 
         # treat the link property as not required
         # because it will be filled in when the child is created/updated
-        subtype = request.root.by_item_type.get(linkType)
-        subschema = request.registry['calculated_properties'].schema_for(subtype.Item)
+        subschema = request.registry[TYPES][linkType].schema
         subschema = copy.deepcopy(subschema)
         if linkProp in subschema['required']:
             subschema['required'].remove(linkProp)

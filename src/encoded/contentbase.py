@@ -74,7 +74,7 @@ def includeme(config):
     registry = config.registry
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
-    types = registry[TYPES] = TypesTool()
+    types = registry[TYPES] = TypesTool(registry)
     storage = registry[STORAGE] = RDBStorage()
     registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
@@ -120,24 +120,15 @@ def no_validate_item_content_patch(context, request):
 
 def validate_item_content_post(context, request):
     data = request.json
-    schema = request.registry['calculated_properties'].schema_for(context.Item)
-    if schema is None:
-        request.validated.update(data)
-        return
-    validate_request(schema, request, data)
+    validate_request(context.type_info.schema, request, data)
 
 
 def validate_item_content_put(context, request):
     data = request.json
-    schema = request.registry['calculated_properties'].schema_for(context.__class__)
-    if schema is None:
-        if 'uuid' in data:
-            if UUID(data['uuid']) != context.uuid:
-                msg = 'uuid may not be changed'
-                raise ValidationFailure('body', ['uuid'], msg)
-        request.validated.update(data)
-        return
-
+    schema = context.type_info.schema
+    if 'uuid' in data and UUID(data['uuid']) != context.uuid:
+        msg = 'uuid may not be changed'
+        raise ValidationFailure('body', ['uuid'], msg)
     current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
@@ -148,14 +139,10 @@ def validate_item_content_patch(context, request):
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
-    schema = request.registry['calculated_properties'].schema_for(context.__class__)
-    if schema is None:
-        if 'uuid' in data:
-            if UUID(data['uuid']) != context.uuid:
-                msg = 'uuid may not be changed'
-                raise ValidationFailure('body', ['uuid'], msg)
-        request.validated.update(data)
-        return
+    schema = context.type_info.schema
+    if 'uuid' in data and UUID(data['uuid']) != context.uuid:
+        msg = 'uuid may not be changed'
+        raise ValidationFailure('body', ['uuid'], msg)
     current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
@@ -233,11 +220,13 @@ class CollectionsTool(dict):
 
 
 class TypeInfo(object):
-    def __init__(self, types, item_type, factory):
-        self.types = types
+    def __init__(self, registry, item_type, factory):
+        self.types = registry[TYPES]
+        self.calculated_properties = registry['calculated_properties']
         self.item_type = item_type
         self.factory = factory
         self.base_types = factory.base_types
+        self.embedded = factory.embedded
 
     @reify
     def schema_version(self):
@@ -277,14 +266,54 @@ class TypeInfo(object):
             merged.update(back_rev)
         return merged
 
+    @reify
+    def schema(self):
+        props = self.calculated_properties.props_for(self.factory)
+        schema = self.factory.schema or {'type': 'object', 'properties': {}}
+        schema = schema.copy()
+        schema['properties'] = schema['properties'].copy()
+        for name, prop in props.items():
+            if prop.schema is not None:
+                schema['properties'][name] = prop.schema
+        return schema
+
+    @reify
+    def schema_rev_links(self):
+        revs = {}
+        for key, prop in self.schema['properties'].items():
+            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
+            if linkFrom is None:
+                continue
+            linkType, linkProp = linkFrom.split('.')
+            revs[key] = linkType, linkProp
+        return revs
+
+
+class AbstractTypeInfo(object):
+    def __init__(self, registry, item_type):
+        self.types = registry[TYPES]
+        self.item_type = item_type
+
+    @reify
+    def subtypes(self):
+        return [
+            k for k, v in self.types.types.items()
+            if self.item_type in ([v.item_type] + v.base_types)
+        ]
+
 
 class TypesTool(object):
-    def __init__(self):
+    def __init__(self, registry):
+        self.registry = registry
         self.types = {}
+        self.abstract = {}
         self.type_back_rev = {}
 
     def register(self, item_type, factory):
-        self.types[item_type] = TypeInfo(self, item_type, factory)
+        self.types[item_type] = ti = TypeInfo(self.registry, item_type, factory)
+        for base in ti.base_types:
+            if base not in self.abstract:
+                self.abstract[base] = AbstractTypeInfo(self.registry, base)
 
         # Calculate the reverse rev map
         for prop_name, spec in factory.rev.items():
@@ -773,13 +802,11 @@ def collection_list(context, request):
     return result
 
 
-def split_child_props(registry, cls, properties):
-    calculated_properties = registry['calculated_properties']
-    schema_rev_links = calculated_properties.schema_rev_links_for(cls)
+def split_child_props(type_info, properties):
     propname_children = {}
-    if schema_rev_links:
+    if type_info.schema_rev_links:
         properties = properties.copy()
-        for key, spec in schema_rev_links.items():
+        for key, spec in type_info.schema_rev_links.items():
             if key in properties:
                 propname_children[key] = properties.pop(key)
     return properties, propname_children
@@ -789,8 +816,7 @@ def update_children(context, request, propname_children):
     registry = request.registry
     conn = registry[CONNECTION]
     collections = registry[COLLECTIONS]
-    calculated_properties = registry['calculated_properties']
-    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
+    schema_rev_links = context.type_info.schema_rev_links
 
     for propname, children in propname_children.items():
         link_type, link_attr = schema_rev_links[propname]
@@ -841,8 +867,8 @@ def update_children(context, request, propname_children):
 
 def create_item(cls, request, properties, sheets=None):
     registry = request.registry
-    item_properties, propname_children = split_child_props(
-        registry, cls, properties)
+    type_info = registry[TYPES][cls.item_type]
+    item_properties, propname_children = split_child_props(type_info, properties)
 
     item = cls.create(registry, item_properties, sheets)
     registry.notify(Created(item, request))
@@ -854,8 +880,7 @@ def create_item(cls, request, properties, sheets=None):
 
 def update_item(context, request, properties, sheets=None):
     registry = request.registry
-    item_properties, propname_children = split_child_props(
-        registry, type(context), properties)
+    item_properties, propname_children = split_child_props(context.type_info, properties)
 
     registry.notify(BeforeModified(context, request))
     context.update(item_properties, sheets)
@@ -1093,8 +1118,7 @@ def item_view_raw(context, request):
 def item_view_edit(context, request):
     conn = request.registry[CONNECTION]
     properties = item_links(context, request)
-    calculated_properties = request.registry['calculated_properties']
-    schema_rev_links = calculated_properties.schema_rev_links_for(type(context))
+    schema_rev_links = context.type_info.schema_rev_links
 
     for propname in schema_rev_links:
         properties[propname] = sorted(
