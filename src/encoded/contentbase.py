@@ -462,10 +462,6 @@ class Collection(Mapping):
     def type_info(self):
         return self.registry[TYPES][self.item_type]
 
-    @reify
-    def Item(self):
-        return self.type_info.factory
-
     def __getitem__(self, name):
         try:
             item = self.get(name)
@@ -845,7 +841,7 @@ def update_children(context, request, propname_children):
                     if not request.has_permission('add', child_collection):
                         msg = u'edit forbidden to %s' % request.resource_path(child)
                         raise ValidationFailure('body', [propname, i], msg)
-                    child = create_item(child_collection.Item, request, child_props)
+                    child = create_item(child_collection.type_info, request, child_props)
             found.add(child.uuid)
 
         # Remove existing children that are not in properties
@@ -865,12 +861,11 @@ def update_children(context, request, propname_children):
                 raise
 
 
-def create_item(cls, request, properties, sheets=None):
+def create_item(type_info, request, properties, sheets=None):
     registry = request.registry
-    type_info = registry[TYPES][cls.item_type]
     item_properties, propname_children = split_child_props(type_info, properties)
 
-    item = cls.create(registry, item_properties, sheets)
+    item = type_info.factory.create(registry, item_properties, sheets)
     registry.notify(Created(item, request))
 
     if propname_children:
@@ -905,7 +900,7 @@ def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
 
-    item = create_item(context.Item, request, request.validated)
+    item = create_item(context.type_info, request, request.validated)
 
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid

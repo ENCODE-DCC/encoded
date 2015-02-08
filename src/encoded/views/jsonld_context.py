@@ -70,7 +70,7 @@ def make_jsonld_context(event):
             continue
         schema = collection.type_info.schema
         context.update(context_from_schema(
-            schema, prefix, collection.item_type, collection.Item.base_types))
+            schema, prefix, collection.item_type, collection.type_info.base_types))
 
     namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
     context.update(namespaces)
@@ -116,7 +116,7 @@ def make_jsonld_context(event):
             continue
         schema = collection.type_info.schema
         iter_defs = ontology_from_schema(
-            schema, prefix, collection.item_type, collection.Item.base_types)
+            schema, prefix, collection.item_type, collection.type_info.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):

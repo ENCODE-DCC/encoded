@@ -391,7 +391,7 @@ def es_tween_factory(handler, registry):
             properties = source['embedded']
             request.root = registry.getUtility(IRootFactory)(request)
             collection = request.root.get(properties['@type'][0])
-            rendering_val = collection.Item.expand_page(request, properties)
+            rendering_val = collection.type_info.factory.expand_page(request, properties)
 
             # Add actions
             ns = {
@@ -399,7 +399,8 @@ def es_tween_factory(handler, registry):
                 'item_uri': source['object']['@id'],
                 'item_type': collection.item_type,
             }
-            actions = calculate_properties(collection.Item, request, ns, category='action')
+            actions = calculate_properties(
+                collection.type_info.factory, request, ns, category='action')
             if actions:
                 rendering_val['actions'] = list(actions.values())
 

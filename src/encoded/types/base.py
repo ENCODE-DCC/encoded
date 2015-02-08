@@ -65,7 +65,9 @@ class Collection(contentbase.Collection):
         super(Item.Collection, self).__init__(*args, **kw)
         if hasattr(self, '__acl__'):
             return
-        if 'lab' in self.Item.schema['properties']:
+        # XXX collections should be setup after all types are registered.
+        # Don't access type_info.schema here as that precaches calculated schema too early.
+        if 'lab' in self.type_info.factory.schema['properties']:
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
     def get(self, name, default=None):
