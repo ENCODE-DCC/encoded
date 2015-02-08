@@ -271,7 +271,7 @@ def record_updated_uuid_paths(event):
 def record_initial_back_revs(event):
     context = event.object
     initial = event.request._initial_back_rev_links
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     initial[context.uuid] = {
         rel: set(aslist(properties.get(rel, ())))
         for rel in context.type_info.merged_back_rev
@@ -288,7 +288,7 @@ def invalidate_new_back_revs(event):
     context = event.object
     updated = event.request._updated_uuid_paths
     initial = event.request._initial_back_rev_links.get(context.uuid, {})
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     current = {
         rel: set(aslist(properties.get(rel, ())))
         for rel in context.type_info.merged_back_rev

@@ -129,13 +129,13 @@ def validate_item_content_put(context, request):
     if 'uuid' in data and UUID(data['uuid']) != context.uuid:
         msg = 'uuid may not be changed'
         raise ValidationFailure('body', ['uuid'], msg)
-    current = context.upgrade_properties(finalize=False).copy()
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
 
 def validate_item_content_patch(context, request):
-    data = context.upgrade_properties(finalize=False).copy()
+    data = context.upgrade_properties().copy()
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -143,7 +143,7 @@ def validate_item_content_patch(context, request):
     if 'uuid' in data and UUID(data['uuid']) != context.uuid:
         msg = 'uuid may not be changed'
         raise ValidationFailure('body', ['uuid'], msg)
-    current = context.upgrade_properties(finalize=False).copy()
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
@@ -579,7 +579,7 @@ class Item(object):
             for name, props in self.type_info.schema_keys.items()
         }
 
-    def upgrade_properties(self, finalize=True):
+    def upgrade_properties(self):
         properties = self.properties.copy()
         current_version = properties.get('schema_version', '')
         target_version = self.type_info.schema_version
@@ -588,7 +588,7 @@ class Item(object):
             try:
                 properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    finalize=finalize, context=self, registry=self.registry)
+                    context=self, registry=self.registry)
             except RuntimeError:
                 raise
             except Exception:
@@ -1226,7 +1226,7 @@ def inherit_audits(request, embedded, embedded_paths):
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     uuid = str(context.uuid)
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     links = context.links(properties)
     unique_keys = context.unique_keys(properties)
 

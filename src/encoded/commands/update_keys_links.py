@@ -46,7 +46,7 @@ def run(app, collections=None):
             update = False
             sp = session.begin_nested()
             try:
-                properties = item.upgrade_properties(finalize=False)
+                properties = item.upgrade_properties()
                 unique_keys = item.unique_keys(properties)
                 links = item.links(properties)
                 keys_add, keys_remove = update_keys(item.model, unique_keys)
