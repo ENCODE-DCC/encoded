@@ -92,6 +92,13 @@ class RDBStorage(object):
         else:
             return key.resource
 
+    def get_rev_links(self, model, item_type, rel):
+        return [
+            link.source_rid
+            for link in model.revs
+            if (link.source.item_type, link.rel) == (item_type, rel)
+        ]
+
     def __iter__(self, item_type=None, batchsize=1000):
         session = DBSession()
         query = session.query(Resource.rid)

@@ -379,6 +379,9 @@ class Connection(object):
         self.item_cache[uuid] = item
         return item
 
+    def get_rev_links(self, model, item_type, rel):
+        return self.storage.get_rev_links(model, item_type, rel)
+
     def __iter__(self, item_type=None, batchsize=1000):
         for uuid in self.storage.__iter__(item_type, batchsize):
             yield uuid
@@ -556,22 +559,9 @@ class Item(object):
             for name in self.type_info.schema_links
         }
 
-    def rev_links(self):
-        links = {}
-        for name, spec in self.rev.items():
-            links[name] = value = []
-            for link in self.model.revs:
-                if (link.source.item_type, link.rel) == spec:
-                    value.append(link.source_rid)
-        return links
-
     def get_rev_links(self, name):
-        spec = self.rev[name]
-        return [
-            link.source_rid
-            for link in self.model.revs
-            if (link.source.item_type, link.rel) == spec
-        ]
+        item_type, rel = self.rev[name]
+        return self.registry[CONNECTION].get_rev_links(self.model, item_type, rel)
 
     def unique_keys(self, properties):
         return {
