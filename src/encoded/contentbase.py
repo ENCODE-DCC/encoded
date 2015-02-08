@@ -368,7 +368,7 @@ class Connection(object):
         if model is None:
             return default
 
-        uuid = model.rid
+        uuid = model.uuid
         self.unique_key_cache[pkey] = uuid
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -1257,20 +1257,24 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = request.embed(path, '@@embedded')
+    object = request.embed(path, '@@object')
     audit = request.embed(path, '@@audit')['audit']
 
     document = {
-        'uuid': uuid,
-        'item_type': context.item_type,
-        'embedded': embedded,
-        'object': embed(request, join(path, '@@object')),
-        'links': links,
-        'unique_keys': unique_keys,
-        'principals_allowed': principals_allowed,
-        'paths': sorted(paths),
         'audit': audit,
+        'embedded': embedded,
         'embedded_uuids': sorted(request._embedded_uuids),
+        'item_type': context.item_type,
         'linked_uuids': sorted(request._linked_uuids),
+        'links': links,
+        'object': object,
+        'paths': sorted(paths),
+        'principals_allowed': principals_allowed,
+        'properties': properties,
+        'propsheets': dict(context.propsheets.items()),
+        'tid': context.tid,
+        'unique_keys': unique_keys,
+        'uuid': uuid,
     }
 
     return document

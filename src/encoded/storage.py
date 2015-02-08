@@ -393,6 +393,10 @@ class Resource(Base):
     def keys(self):
         return self.data.keys()
 
+    def items(self):
+        for k in self.keys():
+            yield k, self[k]
+
     def get(self, key, default=None):
         try:
             return self.propsheets[key]

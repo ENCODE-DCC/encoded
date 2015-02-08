@@ -188,6 +188,11 @@ def es_mapping(mapping):
                 'include_in_all': False,
                 'index': 'not_analyzed'
             },
+            'tid': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
             'item_type': {
                 'type': 'string',
                 'include_in_all': False,
@@ -213,6 +218,16 @@ def es_mapping(mapping):
                 'boost': 3
             },
             'object': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
+            'properties': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
+            'propsheets': {
                 'type': 'object',
                 'enabled': False,
                 'include_in_all': False,
