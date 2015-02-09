@@ -7,8 +7,17 @@ accession_factory = ${accession_factory}
 [composite:indexer]
 use = config:base.ini#indexer
 
-[composite:memlimit]
+[filter:paste_prefix]
+use = egg:PasteDeploy#prefix
+
+[filter:memlimit]
 use = config:base.ini#memlimit
+
+[pipeline:main]
+pipeline =
+    memlimit
+    paste_prefix
+    app
 
 [pipeline:debug]
 pipeline =
