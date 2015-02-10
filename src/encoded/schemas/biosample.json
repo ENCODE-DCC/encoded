@@ -717,7 +717,7 @@
             "title": "Constructs",
             "type": "string"
         },
-        "donor.mutated_gene": {
+        "donor.mutated_gene.label": {
             "title": "Mutated gene",
             "type": "string"
         },

@@ -48,7 +48,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc, i) {
                 construct_documents[doc['@id']] = Panel({context: doc, key: i + 1});
-           });
+            });
         });
 
         // set up RNAi documents panels
@@ -585,7 +585,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     {context.mutated_gene ?
                         <div data-test="mutatedgene">
                             <dt>Mutated gene</dt>
-                            <dd><a href={context.mutated_gene}>External link</a></dd>
+                            <dd><a href={context.mutated_gene['@id']}>Strain reference</a></dd>
                         </div>
                     : null}
 
