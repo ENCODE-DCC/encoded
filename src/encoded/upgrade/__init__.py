@@ -15,7 +15,7 @@ def includeme(config):
         migrator = config.registry['migrator']
         root = config.registry[LOCATION_ROOT]
         for item_type, collection in root.by_item_type.items():
-            version = collection.Item.schema_version
+            version = collection.type_info.schema_version
             if version is not None:
                 migrator.add_upgrade(item_type, version)
 
@@ -39,7 +39,7 @@ def includeme(config):
 def finalizer(value, system, version):
     # Update the default properties
     context = system.get('context')
-    if context is None or context.schema_version != version:
+    if context is None or context.type_info.schema_version != version:
         value['schema_version'] = version
         return
 

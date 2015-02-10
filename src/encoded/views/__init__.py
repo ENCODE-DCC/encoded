@@ -115,7 +115,7 @@ def home(context, request):
 
 
 def _filtered_schema(collection, request):
-    schema = request.registry['calculated_properties'].schema_for(collection.Item)
+    schema = collection.type_info.schema
 
     properties = OrderedDict()
     for k, v in schema['properties'].items():

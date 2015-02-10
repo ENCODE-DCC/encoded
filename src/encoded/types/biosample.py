@@ -27,6 +27,7 @@ class Biosample(Item):
     }
     embedded = [
         'donor',
+        'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
         'donor.characterizations.award',
