@@ -3,6 +3,7 @@
 # Instance
 
 apt_sources:
+- source: "ppa:webupd8team/java"
 - source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -70,7 +71,8 @@ packages:
 - nodejs-legacy
 - npm
 - ntp
-- openjdk-7-jre-headless
+- oracle-java8-installer
+- oracle-java8-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev
