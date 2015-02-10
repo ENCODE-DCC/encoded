@@ -65,11 +65,10 @@ def make_jsonld_context(event):
         'collection': prefix + 'collection',
     }
 
-    calculated_properties = app.registry['calculated_properties']
     for name, collection in root.by_item_type.items():
         if name.startswith('testing_'):
             continue
-        schema = calculated_properties.schema_for(collection.Item)
+        schema = collection.type_info.schema
         context.update(context_from_schema(
             schema, prefix, collection.item_type, collection.Item.base_types))
 
@@ -115,7 +114,7 @@ def make_jsonld_context(event):
     for name, collection in root.by_item_type.items():
         if name.startswith('testing_'):
             continue
-        schema = calculated_properties.schema_for(collection.Item)
+        schema = collection.type_info.schema
         iter_defs = ontology_from_schema(
             schema, prefix, collection.item_type, collection.Item.base_types)
 
