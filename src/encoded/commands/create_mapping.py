@@ -331,7 +331,7 @@ def combine_schemas(a, b):
                 combined[name][k] = combine_schemas(a[name][k], b[name][k])
             for k in set(a[name].keys()).difference(b[name].keys()):
                 combined[name][k] = a[name][k]
-            for k in set(b[name].keys()).difference(b[name].keys()):
+            for k in set(b[name].keys()).difference(a[name].keys()):
                 combined[name][k] = b[name][k]
         elif name == 'items':
             combined[name] = combine_schemas(a[name], b[name])
