@@ -190,6 +190,7 @@ write_files:
 - path: /etc/postgresql/9.3/main/recovery.conf
   content: |
     # recovery.conf must be linked into data dir to do anything
+    recovery_target_timeline = 'latest'
     restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-fetch "%%f" "%%p"'
     standby_mode = on
 
