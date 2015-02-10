@@ -40,7 +40,7 @@ class ItemNamespace(object):
             return value
         if name in self._properties:
             value = self._properties[name]
-            if name in context.schema_links:
+            if name in context.type_info.schema_links:
                 if isinstance(value, list):
                     value = [
                         request.resource_path(self.root.get_by_uuid(v))
@@ -104,28 +104,6 @@ class CalculatedProperties(object):
         for base in reversed(cls.mro()):
             props.update(cls_props.get(base, {}))
         return props
-
-    def schema_for(self, context):
-        props = self.props_for(context)
-        schema = context.schema or {'type': 'object', 'properties': {}}
-        schema = schema.copy()
-        schema['properties'] = schema['properties'].copy()
-        for name, prop in props.items():
-            if prop.schema is not None:
-                schema['properties'][name] = prop.schema
-        return schema
-
-    def schema_rev_links_for(self, cls):
-        schema = self.schema_for(cls)
-
-        revs = {}
-        for key, prop in schema['properties'].items():
-            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
-            if linkFrom is None:
-                continue
-            linkType, linkProp = linkFrom.split('.')
-            revs[key] = linkType, linkProp
-        return revs
 
 
 class CalculatedProperty(object):

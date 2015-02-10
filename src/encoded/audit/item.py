@@ -16,7 +16,7 @@ def audit_item_schema(value, system):
 
     properties = context.properties.copy()
     current_version = properties.get('schema_version', '')
-    target_version = context.schema_version
+    target_version = context.type_info.schema_version
     if target_version is not None and current_version != target_version:
         migrator = registry['migrator']
         try:
@@ -94,7 +94,7 @@ def audit_item_status(value, system):
     context = system['context']
     request = system['request']
     linked = set()
-    for key in context.schema_links:
+    for key in context.type_info.schema_links:
         if key in ['supercedes']:
             continue
         linked.update(aslist(value.get(key, ())))

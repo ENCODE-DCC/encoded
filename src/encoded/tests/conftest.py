@@ -7,6 +7,8 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
+    'collection_datastore': 'database',
+    'item_datastore': 'database',
     'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',

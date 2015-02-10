@@ -243,16 +243,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
                     </dl>
-                      {context.analysis_steps && context.analysis_steps.length ?
-                          <div>
-                              <h3>Steps</h3>
-                              <div className="panel view-detail" data-test="supplementarydata">
-                                  {context.analysis_steps.map(function(props, i) {
-                                      return AnalysisStep (props, i) ;
-                                  })}
-                              </div>
-                          </div>
-                      : null}
                 </div>
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -278,39 +268,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     }
 });
 globals.content_views.register(Pipeline, 'pipeline');
-
-
-var AnalysisStep = module.exports.AnalysisStep = function (props) {
-    var typesList = props.analysis_step_types.join(", ");
-
-    return (
-        <div key={props.key} className="panel-replicate">
-            <dl className="panel key-value">
-                {props.analysis_step_types.length ?
-                    <dl data-test="analysis_step_types">
-                        <dt>Category</dt>
-                        <dd>{typesList}</dd>
-                    </dl>
-                : null}
-                {props.software_versions.length ?
-                    <dl>
-                        <dt> Software</dt>
-                        <dd>
-                            {props.software_versions.map(function(software_version, i) {
-                                return ( <span> {
-                                    i > 0 ? ", ": ""
-                                }
-                                <a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                                </span>);
-                            })}
-                        </dd>
-                    </dl>
-                : null}
-            </dl>
-        </div>
-    );
-};
-
 
 
 var Listing = React.createClass({

@@ -91,6 +91,7 @@ class File(Item):
         'step_run.analysis_step.software_versions',
         'step_run.analysis_step.software_versions.software',
         'submitted_by',
+        'pipeline'
     ]
 
     def unique_keys(self, properties):
@@ -128,6 +129,18 @@ class File(Item):
     })
     def upload_credentials(self):
         return self.propsheets['external']['upload_credentials']
+
+    @calculated_property(schema={
+            "title": "Pipeline",
+            "type": "string",
+            "linkTo": "pipeline"
+        })
+    def pipeline(self, request, step_run=None):
+        if step_run is not None:
+            workflow = request.embed(step_run, '@@object').get('workflow_run')
+            if workflow:
+                return request.embed(workflow, '@@object').get('pipeline')
+
 
     @classmethod
     def create(cls, registry, properties, sheets=None):
