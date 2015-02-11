@@ -176,6 +176,10 @@ write_files:
     };
     Unattended-Upgrade::Automatic-Reboot "true";
 
+- path: /etc/default/elasticsearch
+  content: |
+    ES_HEAP_SIZE=2g
+
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
