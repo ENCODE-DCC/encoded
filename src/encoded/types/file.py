@@ -86,12 +86,9 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'derived_from',
-        'step_run',
-        'step_run.analysis_step',
-        'step_run.analysis_step.software_versions',
-        'step_run.analysis_step.software_versions.software',
         'submitted_by',
-        'pipeline'
+        'pipeline',
+        'analysis_step'
     ]
 
     def unique_keys(self, properties):
@@ -140,6 +137,15 @@ class File(Item):
             workflow = request.embed(step_run, '@@object').get('workflow_run')
             if workflow:
                 return request.embed(workflow, '@@object').get('pipeline')
+
+    @calculated_property(schema={
+            "title": "Analysis Step",
+            "type": "string",
+            "linkTo": "analysis_step"        
+        })
+    def analysis_step(self, request, step_run=None):
+        if step_run is not None:
+            return request.embed(step_run, '@@object').get('analysis_step')
 
 
     @classmethod

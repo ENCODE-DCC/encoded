@@ -28,12 +28,9 @@ class Experiment(Dataset):
     base_types = [Dataset.item_type] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.platform',
-        'files.step_run',
         'files.derived_from',
         'files.pipeline',
-        'files.step_run.analysis_step',
-        'files.step_run.analysis_step.software_versions',
-        'files.step_run.analysis_step.software_versions.software',
+        'files.analysis_step',
         'contributing_files.platform',
         'contributing_files.step_run',
         'contributing_files.derived_from',
