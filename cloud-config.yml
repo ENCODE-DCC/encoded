@@ -55,7 +55,7 @@ packages:
 - elasticsearch
 - git
 - graphviz
-- libapache2-mod-wsgi
+- libapache2-mod-wsgi-py3
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
@@ -77,6 +77,7 @@ packages:
 - postgresql-9.3
 - pv
 - python2.7-dev
+- python3.4-dev
 - python-software-properties
 - python-virtualenv
 - ruby-dev
@@ -113,7 +114,7 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
-- sudo -u encoded python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
+- sudo -u encoded python3.4 bootstrap.py -v 2.2.5 --setuptools-version 7.0
 - sudo -u encoded bin/buildout -c %(ROLE)s.cfg
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
