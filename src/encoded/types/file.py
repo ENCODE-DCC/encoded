@@ -224,9 +224,8 @@ def download(context, request):
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
-        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
         location = conn.generate_url(
-            36*60*60, method, external['bucket'], external['key'],
+            36*60*60, request.method, external['bucket'], external['key'],
             response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
