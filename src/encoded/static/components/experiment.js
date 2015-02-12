@@ -24,7 +24,6 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
-var StepDetailView = pipeline.StepDetailView;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -610,7 +609,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         // Create nodes for the replicates
         context.replicates.forEach(function(replicate) {
             jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
-                {cssClass: 'pipeline-replicate', type: 'rep', shape: 'rect', cornerRadius: 0, ref: replicate});
+                {
+                    cssClass: 'pipeline-replicate',
+                    type: 'rep',
+                    shape: 'rect',
+                    cornerRadius: 0,
+                    ref: replicate
+                });
         });
 
         // Go through each file (released or unreleased) to add it and associated steps to the graph
