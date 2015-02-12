@@ -14,7 +14,7 @@ def pathproxy(global_conf, method='GET', **settings):
             /script_name/http:/example.org/path?query
         """
         environ = environ.copy()
-        environ['REQUEST_METHOD'] = 'method'
+        environ['REQUEST_METHOD'] = method
         environ.pop('SERVER_PORT', None)
         match = pattern.match(environ['PATH_INFO'])
         if match is None:
