@@ -242,7 +242,10 @@ def download(context, request):
         }
 
     if proxy:
-        return InternalResponse(location='/_proxy/' + location)
+        if request.method == 'HEAD':
+            return InternalResponse(location='/_headproxy/' + location)
+        else:
+            return InternalResponse(location='/_proxy/' + location)
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

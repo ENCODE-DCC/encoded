@@ -7,6 +7,9 @@ accession_factory = ${accession_factory}
 [composite:indexer]
 use = config:base.ini#indexer
 
+[app:headproxy]
+use = config:base.ini#headproxy
+
 [pipeline:main]
 pipeline =
     config:base.ini#memlimit
