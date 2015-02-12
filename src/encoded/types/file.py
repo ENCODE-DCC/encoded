@@ -234,7 +234,7 @@ def download(context, request):
         }
 
     if proxy:
-        return Response(headers={'X-Accel-Redirect': '/_proxy/' + location})
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
