@@ -88,7 +88,9 @@ class File(Item):
         'derived_from',
         'submitted_by',
         'pipeline',
-        'analysis_step'
+        'analysis_step',
+        'analysis_step.software_versions',
+        'analysis_step.software_versions.software'
     ]
 
     def unique_keys(self, properties):

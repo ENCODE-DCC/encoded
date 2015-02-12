@@ -373,6 +373,30 @@
     },
     {
         "_project": "encode3",
+        "accession": "ENCFF011RDB",
+        "award":"U41HG006992",
+        "dataset": "ENCSR010AEN",
+        "date_created": "2013-05-19",
+        "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
+        "lab":"j-michael-cherry",
+        "md5sum": "a9879e9e78f17c37fdcfe1a8b572ac1f",
+        "output_type": "reads",
+        "paired_end": "1",
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",
+        "uuid": "1f6daa73-843a-4f56-9ceb-97926115d6fb"
+    },
+    {
+        "_project": "encode3",
         "accession": "ENCFF001RDC",
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
@@ -394,6 +418,30 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
         "uuid": "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f"
+    },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF011RDC",
+        "award":"U41HG006992",
+        "dataset": "ENCSR010AEN",
+        "date_created": "2013-05-19",
+        "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
+        "lab":"j-michael-cherry",
+        "md5sum": "98b452ae74c7d279706c88141155a00c",
+        "output_type": "reads",
+        "paired_end": "1",
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
+        "uuid": "5c85b47f-32c4-4181-979d-a6e34680af9f"
     },
     {
         "_project": "encode3",
@@ -471,6 +519,27 @@
         "submitted_file_name": "replicate1.bam",
         "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66"
    },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF011RCV",
+        "award":"U41HG006992",
+        "dataset": "ENCSR010AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "1f6daa73-843a-4f56-9ceb-97926115d6fb",
+            "5c85b47f-32c4-4181-979d-a6e34680af9f"
+        ],
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "cef6c42afc135f1f95971e415b8d5fdd",
+        "output_type": "alignments",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "status": "in progress",
+        "step_run": "aa2a73b4-c5fe-4db0-ad11-eb27575c89b6",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate1.bam",
+        "uuid": "2937974a-fb1f-4ca3-8b8a-61f6d5c94e48"
+   },
    {
         "_project": "encode3",
         "accession": "ENCFF001RCW",
@@ -491,6 +560,27 @@
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
         "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
+   },
+   {
+        "_project": "encode3",
+        "accession": "ENCFF011RCW",
+        "award":"U41HG006992",
+        "dataset": "ENCSR010AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "1f6daa73-843a-4f56-9ceb-97926115d6fb",
+            "5c85b47f-32c4-4181-979d-a6e34680af9f"
+        ],
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "edff397bffc54f01319eb41c6194379b",
+        "output_type": "alignments",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate2.bam",
+        "uuid": "138f761d-1475-4206-88ef-753c7c44baab"
    },
    {
         "_project": "encode3",

@@ -585,110 +585,87 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     // Create nodes based on all files in this experiment
     assembleGraph: function(context, infoNodeId, files) {
         var jsonGraph;
+        var derivedFromFiles = {}; // List of all files that other files derived from
 
-        // Track orphans -- files with no derived_from and no one derives_from them.
-        var usedFiles = {}; // Object with file ID keys of all files that belong in graph
+        // Build sets of derived_from files as CSV string of file accessions.
+        // These will also be used as step node IDs.
         files.forEach(function(file) {
-            usedFiles[file['@id']] = usedFiles[file['@id']] ||
-                (!!(file.derived_from && file.derived_from.length)); // File included if it's derived from others
-            if (file.derived_from && file.derived_from.length) {
-                file.derived_from.forEach(function(derived) {
-                    usedFiles[derived['@id']] = true; // File included if others derive from it.
-                });
+            var set = file.derived_from && file.derived_from.map(function(derived_from) {
+                // Remember this derived_from file should be included in the graph
+                derivedFromFiles[derived_from.accession] = true;
+
+                // Add to the array of file accessions
+                return derived_from.accession;
+            }).sort();
+
+            // Attach the set of files as a CSV of file accessions to this file
+            if (set) {
+                file.derivedFromSet = set.join();
             }
         });
 
-        // Only produce a graph if there's at least one file with an analysis step
-        // and the file has derived from other files.
-        if (files && files.some(function(file) {
-            return usedFiles[file['@id']] && file.step_run;
-        })) {
-            // Create an empty graph architecture
-            jsonGraph = new JsonGraph(context.accession);
+        // Create an empty graph architecture that we fill in next.
+        jsonGraph = new JsonGraph(context.accession);
 
-            // Create nodes for the replicates
-            context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
-                    {cssClass: 'pipeline-replicate', type: 'rep', shape: 'rect', cornerRadius: 0, ref: replicate});
-            });
+        // Go through each file (released or unreleased) to add it and associated steps to the graph
+        files.forEach(function(file) {
+            // Only add files derived from others, or that others derive from
+            if (file.derivedFromSet || derivedFromFiles[file.accession]) {
+                var fileId = 'file:' + file.accession;
 
-            // Add files and their steps as nodes to the graph
-            files.forEach(function(file) {
-                var fileId = file['@id'];
-                if (usedFiles[fileId]) {
-                    var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
+                // Add file to the graph as a node
+                jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    {
+                        cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
+                        type: 'file',
+                        shape: 'rect',
+                        cornerRadius: 16,
+                        ref: file
+                    });
 
-                    // Assemble a single file node; can have file and step nodes in this graph, so use 'file' type
-                    // to show that this is a file node.
-                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        {cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
-                         type: 'file', shape: 'rect', cornerRadius: 16, parentNode: replicateNode, ref: file});
+                // If the file has an analysis step, add this step to the graph
+                if (file.analysis_step) {
+                    // Make an ID and label for the step
+                    var stepId = 'step:' + file.derivedFromSet;
+                    var label = file.analysis_step.analysis_step_types;
 
-                    // If the node has parents, build the edges to the analysis step between this node and its parents
-                    if (file.derived_from && file.derived_from.length) {
-                        var stepRun = file.step_run;
-                        var stepId;
-
-                        // If has derived_from but no step_run, make a dummy step to show error.
-                        if (!stepRun) {
-                            stepRun = {
-                                error: true,
-                                analysis_step: {'@id': 'ERROR:' + file.accession, analysis_step_types: 'Error in ' + file.accession}
-                            };
-                        }
-
-                        // Make a label for the step node
-                        var label = stepRun.analysis_step.analysis_step_types;
-
-                        // Virtual step runs need to be duplicated on the graph
-                        if (stepRun.status === 'virtual') {
-                            // Make the ID of the node using the analysis step ID, and the ID of the file it connects to.
-                            // Need to combine these so that duplicated steps have unique IDs.
-                            stepId = stepRun['@id'] + '&' + file['@id'];
-
-                            // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                            // points to it; there may be more than one copy of this step on the graph if more than one
-                            // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                            // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                            // analysis step.
-                            jsonGraph.addNode(stepId, label,
-                                {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
-                                 type: 'step', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, ref: stepRun});
-                            jsonGraph.addEdge(stepId, fileId);
-                        } else {
-                            stepId = stepRun['@id'];
-
-                            // Add the step only if we haven't added it yet.
-                            if (!jsonGraph.getNode(stepId)) {
-                                jsonGraph.addNode(stepId, label,
-                                    {cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (stepRun.error ? ' error' : ''),
-                                     type: 'step', shape: 'rect', cornerRadius: 4, parentNode: replicateNode, accession: file.accession, error: stepRun.error, ref: stepRun});
-                            }
-
-                            // Now hook the file to the step
-                            jsonGraph.addEdge(stepId, fileId);
-                        }
-
-                        // Draw an edge from the analysis step to each of the derived_from files
-                        file.derived_from.forEach(function(derived) {
-                            jsonGraph.addEdge(derived['@id'], stepId);
-                        });
+                    // Add the step to the graph only if we haven't already
+                    if (!jsonGraph.getNode(stepId)) {
+                        jsonGraph.addNode(stepId, label,
+                            {
+                                cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
+                                type: 'step',
+                                shape: 'rect',
+                                cornerRadius: 4,
+                                ref: file.analysis_step
+                            });
                     }
-                }
-            }, this);
 
-            // Add contributing files to the graph
-            context.contributing_files.forEach(function(file) {
-                var fileId = file['@id'];
-
-                // Assemble a single file node; can have file and step nodes in this graph
-                if (!jsonGraph.getNode(fileId)) {
-                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        {cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                         type: 'file', shape: 'rect', cornerRadius: 16, ref: file, contributing: true});
+                    // Connect the file to the step, and the step to the derived_from files
+                    jsonGraph.addEdge(stepId, fileId);
+                    file.derived_from.forEach(function(derived) {
+                        jsonGraph.addEdge('file:' + derived.accession, stepId);
+                    });
                 }
-            }, this);
-        }
+            }
+        }, this);
+
+        // Add contributing files to the graph
+        context.contributing_files.forEach(function(file) {
+            var fileId = 'file:' + file.accession;
+
+            // Assemble a single file node; can have file and step nodes in this graph
+            jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                {
+                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                    type: 'file',
+                    shape: 'rect',
+                    cornerRadius: 16,
+                    ref: file,
+                    contributing: true
+                });
+        }, this);
+
         return jsonGraph;
     },
 
@@ -728,22 +705,23 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var files = context.files.concat(items);
 
         // Build node graph of the files and analysis steps with this experiment
-        this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, files);
-        if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
-            var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
-            return (
-                <div>
-                    <h3>{this.props.files ? 'Unreleased files' : 'Files'} generated by pipeline</h3>
-                    <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                        <div id="graph-node-info">
-                            {meta ? <div className="panel-insert">{meta}</div> : null}
-                        </div>
-                    </Graph>
-                </div>
-            );
-        } else {
-            return null;
+        if (files && files.length) {
+            this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, files);
+            if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+                var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                return (
+                    <div>
+                        <h3>Files generated by pipeline</h3>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                            <div id="graph-node-info">
+                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                            </div>
+                        </Graph>
+                    </div>
+                );
+            }
         }
+        return null;
     }
 });
 
@@ -825,7 +803,7 @@ var FileDetailView = function(node) {
                     <div>
                         <dt>Software</dt>
                         <dd>
-                            {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
+                            {selectedFile.analysis_step.software_versions.map(function(version, i) {
                                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                 return (
                                     <a href={version.software['@id']} key={i} className="software-version">
