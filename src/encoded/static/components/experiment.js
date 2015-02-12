@@ -607,11 +607,18 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         // Create an empty graph architecture that we fill in next.
         jsonGraph = new JsonGraph(context.accession);
 
+        // Create nodes for the replicates
+        context.replicates.forEach(function(replicate) {
+            jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number,
+                {cssClass: 'pipeline-replicate', type: 'rep', shape: 'rect', cornerRadius: 0, ref: replicate});
+        });
+
         // Go through each file (released or unreleased) to add it and associated steps to the graph
         files.forEach(function(file) {
             // Only add files derived from others, or that others derive from
             if (file.derivedFromSet || derivedFromFiles[file.accession]) {
                 var fileId = 'file:' + file.accession;
+                var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
 
                 // Add file to the graph as a node
                 jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
@@ -620,6 +627,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         type: 'file',
                         shape: 'rect',
                         cornerRadius: 16,
+                        parentNode: replicateNode,
                         ref: file
                     });
 
@@ -637,6 +645,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 type: 'step',
                                 shape: 'rect',
                                 cornerRadius: 4,
+                                parentNode: replicateNode,
                                 ref: file.analysis_step
                             });
                     }

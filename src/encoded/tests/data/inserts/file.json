@@ -397,6 +397,30 @@
     },
     {
         "_project": "encode3",
+        "accession": "ENCFF021RDB",
+        "award":"U41HG006992",
+        "dataset": "ENCSR010AEN",
+        "date_created": "2013-05-19",
+        "file_format": "fastq",
+        "flowcell_details": 
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
+        "lab":"j-michael-cherry",
+        "md5sum": "aa879e9e78f17c37fdcfe1a8b572ac1f",
+        "output_type": "reads",
+        "paired_end": "1",
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",
+        "uuid": "9dc8162f-6f47-4388-b1aa-b924bb727684"
+    },
+    {
+        "_project": "encode3",
         "accession": "ENCFF001RDC",
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
@@ -568,7 +592,7 @@
         "dataset": "ENCSR010AEN",
         "date_created": "2013-05-19",
         "derived_from": [
-            "1f6daa73-843a-4f56-9ceb-97926115d6fb",
+            "9dc8162f-6f47-4388-b1aa-b924bb727684",
             "5c85b47f-32c4-4181-979d-a6e34680af9f"
         ],
         "file_format": "bam",
