@@ -207,6 +207,26 @@
         "uuid": "8bd05c59-5011-4611-814b-62f9d1e4159c"
     },
     {
+        "_test": "Ben's repeated step",
+        "accession": "ENCSR020AEN",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007005",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Long Total from Graveley",
+        "lab": "brenton-graveley",
+        "status": "released",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "7bab4564-0ec4-4bef-a532-2503289f9ab6"
+    },
+    {
         "_test": "no replicates",
         "accession": "ENCSR000AAL",
         "assay_term_id": "OBI:0001271",
