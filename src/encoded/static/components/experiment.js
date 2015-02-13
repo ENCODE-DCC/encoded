@@ -585,6 +585,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     assembleGraph: function(context, infoNodeId, files) {
         var jsonGraph;
         var derivedFromFiles = {}; // List of all files that other files derived from
+        var pipelines = {}; // List of all pipelines indexed by step @id
 
         // Build sets of derived_from files as CSV string of file accessions.
         // These will also be used as step node IDs.
@@ -600,6 +601,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Attach the set of files as a CSV of file accessions to this file
             if (set) {
                 file.derivedFromSet = set.join();
+            }
+
+            // Track all the pipelines used for each step that's part of a pipeline
+            if (file.pipeline && file.pipeline.analysis_steps && file.pipeline.analysis_steps.length) {
+                file.pipeline.analysis_steps.forEach(function(step) {
+                    pipelines[step] = file.pipeline;
+                });
             }
         });
 
@@ -620,6 +628,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Go through each file (released or unreleased) to add it and associated steps to the graph
         files.forEach(function(file) {
+            if (file.pipeline) {console.log(file.pipeline.accession);}
             // Only add files derived from others, or that others derive from
             if (file.derivedFromSet || derivedFromFiles[file.accession]) {
                 var fileId = 'file:' + file.accession;
@@ -642,7 +651,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     var stepId = 'step:' + file.derivedFromSet;
                     var label = file.analysis_step.analysis_step_types;
 
-                    // Add the step to the graph only if we haven't already
+                    // Add the step to the graph only if we haven't for this derived-from set already
                     if (!jsonGraph.getNode(stepId)) {
                         jsonGraph.addNode(stepId, label,
                             {
@@ -651,7 +660,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 shape: 'rect',
                                 cornerRadius: 4,
                                 parentNode: replicateNode,
-                                ref: file.analysis_step
+                                ref: file.analysis_step,
+                                pipeline: pipelines[file.analysis_step['@id']]
                             });
                     }
 
@@ -799,10 +809,10 @@ var FileDetailView = function(node) {
                     </div>
                 : null}
 
-                {selectedFile.submitted_by && selectedFile.submitted_by.title ?
+                {selectedFile.lab ?
                     <div data-test="submitted">
-                        <dt>Added by</dt>
-                        <dd>{selectedFile.submitted_by.title}</dd>
+                        <dt>Lab</dt>
+                        <dd>{selectedFile.lab.title}</dd>
                     </div>
                 : null}
 
@@ -836,6 +846,17 @@ var FileDetailView = function(node) {
                     <div>
                         <dt>Contributed from</dt>
                         <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
+                    </div>
+                : null}
+
+                {selectedFile.href ?
+                    <div data-test="download">
+                        <dt>File download</dt>
+                        <dd>
+                            <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
+                                &nbsp;Download
+                            </a>
+                        </dd>
                     </div>
                 : null}
             </dl>

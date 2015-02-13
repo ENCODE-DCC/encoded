@@ -233,7 +233,7 @@ var AnalysisStep = module.exports.AnalysisStep = function (props, i) {
 var StepDetailView = module.exports.StepDetailView = function(node) {
     // The node is for a step. It can be called with analysis_step_run (for file graphs) or analysis_step (for pipeline graphs) nodes.
     // This code detects which is the case, and adjusts accordingly.
-    var selectedStep = node.metadata.ref['@type'][0] === 'analysis_step_run' ? node.metadata.ref.analysis_step: node.metadata.ref;
+    var selectedStep = node.metadata.ref;
     var meta;
 
     if (selectedStep) {
@@ -260,6 +260,13 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                             <div data-test="outputtypes">
                                 <dt>Output file types</dt>
                                 <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        {node.metadata.pipeline ?
+                            <div data-test="pipeline">
+                                <dt>Pipeline</dt>
+                                <dd>{node.metadata.pipeline.name}</dd>
                             </div>
                         : null}
 
