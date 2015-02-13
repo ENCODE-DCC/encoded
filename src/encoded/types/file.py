@@ -131,16 +131,15 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @calculated_property(schema={
-            "title": "Pipeline",
-            "type": "string",
-            "linkTo": "pipeline"
-        })
+        "title": "Pipeline",
+        "type": "string",
+        "linkTo": "pipeline"
+    })
     def pipeline(self, request, step_run=None):
         if step_run is not None:
             workflow = request.embed(step_run, '@@object').get('workflow_run')
             if workflow:
                 return request.embed(workflow, '@@object').get('pipeline')
-
 
     @classmethod
     def create(cls, registry, properties, sheets=None):
@@ -219,7 +218,7 @@ def download(context, request):
         conn = boto.connect_s3()
         location = conn.generate_url(
             36*60*60, request.method, external['bucket'], external['key'],
-            response_headers={
+            force_http=proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
