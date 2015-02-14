@@ -628,7 +628,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Go through each file (released or unreleased) to add it and associated steps to the graph
         files.forEach(function(file) {
-            if (file.pipeline) {console.log(file.pipeline.accession);}
             // Only add files derived from others, or that others derive from
             if (file.derivedFromSet || derivedFromFiles[file.accession]) {
                 var fileId = 'file:' + file.accession;

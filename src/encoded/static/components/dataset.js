@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
@@ -207,23 +208,78 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
 
 var FileTable = module.exports.FileTable = React.createClass({
+    getInitialState: function() {
+        return {col: '', dir: false};
+    },
+
+    sortDir: function(col) {
+        var reversed = col === this.state.col ? !this.state.reversed : false;
+        
+        this.setState({col: col, reversed: reversed});
+    },
+
+    sortCol: function(a, b) {
+        var diff;
+
+        switch (this.state.col) {
+            case 'accession':
+                diff = a.accession > b.accession ? 1 : -1;
+                break;
+            case 'file_format':
+                diff = a.file_format > b.file_format ? 1 : -1;
+                break;
+            case 'output_type':
+                diff = a.output_type > b.output_type ? 1 : -1;
+                break;
+            case 'paired_end':
+                if (a.paired_end && b.paired_end) {
+                    diff = a.paired_end - b.paired_end;
+                } else {
+                    diff = a.paired_end ? -1 : (b.paired_end ? 1 : 0);
+                }
+                break;
+            case 'bio_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.biological_replicate_number - b.replicate.biological_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
+                break;
+            case 'tech_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.technical_replicate_number - b.replicate.technical_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
+                break;
+            case 'title':
+                diff = a.submitted_by.title > b.submitted_by.title ? 1 : (a.submitted_by.title === b.submitted_by.title ? 0 : -1);
+                break;
+            case 'date_created':
+                diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                break;
+            default:
+                diff = 0;
+                break;
+        }
+        return this.state.reversed ? -diff : diff;
+    },
+
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
         var encodevers = this.props.encodevers;
-        this.props.items.forEach(function (file) {
+        this.props.items.sort(this.sortCol).forEach(function (file) {
             rows[file['@id']] = (
                 <tr>
                     <td>{file.accession}</td>
                     <td>{file.file_format}</td>
                     <td>{file.output_type}</td>
                     <td>{file.paired_end}</td>
-                    <td>{file.replicate ?
-                        '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
-                        : null}
-                    </td>
+                    <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                    <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                     <td>{file.submitted_by.title}</td>
-                    <td>{file.date_created}</td>
+                    <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
                     <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
@@ -231,16 +287,17 @@ var FileTable = module.exports.FileTable = React.createClass({
         });
         return (
             <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover">
+                <table className="table table-panel table-striped table-hover table-file">
                     <thead>
                         <tr>
-                            <th>Accession</th>
-                            <th>File type</th>
-                            <th>Output type</th>
-                            <th>Paired end</th>
-                            <th>Associated replicates</th>
-                            <th>Added by</th>
-                            <th>Date added</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'output_type')}>Output type</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Added by</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'date_created')}>Date added</th>
                             <th>File download</th>
                             {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
