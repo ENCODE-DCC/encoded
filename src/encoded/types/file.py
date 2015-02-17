@@ -130,10 +130,10 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @calculated_property(schema={
-            "title": "Pipeline",
-            "type": "string",
-            "linkTo": "pipeline"
-        })
+        "title": "Pipeline",
+        "type": "string",
+        "linkTo": "pipeline"
+    })
     def pipeline(self, request, step_run=None):
         if step_run is not None:
             workflow = request.embed(step_run, '@@object').get('workflow_run')
@@ -208,13 +208,6 @@ def post_upload(context, request):
     return result
 
 
-class InternalResponse(Response):
-    def _abs_headerlist(self, environ):
-        """Avoid making the Location header absolute.
-        """
-        return list(self.headerlist)
-
-
 @view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
@@ -232,10 +225,9 @@ def download(context, request):
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
-        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
         location = conn.generate_url(
-            36*60*60, method, external['bucket'], external['key'],
-            response_headers={
+            36*60*60, request.method, external['bucket'], external['key'],
+            force_http=proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
@@ -250,7 +242,7 @@ def download(context, request):
         }
 
     if proxy:
-        return InternalResponse(location='/_proxy/' + location)
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

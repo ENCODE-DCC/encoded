@@ -3,7 +3,8 @@
 # Instance
 
 apt_sources:
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
+- source: "ppa:webupd8team/java"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -39,6 +40,7 @@ apt_sources:
 
 bootcmd:
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
@@ -48,7 +50,7 @@ bootcmd:
 package_upgrade: true
 
 packages:
-- apache2-mpm-event
+- apache2-mpm-worker
 - build-essential
 - elasticsearch
 - git
@@ -70,7 +72,8 @@ packages:
 - nodejs-legacy
 - npm
 - ntp
-- openjdk-7-jre-headless
+- oracle-java8-installer
+- oracle-java8-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev
@@ -172,6 +175,10 @@ write_files:
         "${distro_id} ${distro_codename}-security";
     };
     Unattended-Upgrade::Automatic-Reboot "true";
+
+- path: /etc/default/elasticsearch
+  content: |
+    ES_HEAP_SIZE=2g
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
