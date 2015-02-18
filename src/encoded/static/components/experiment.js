@@ -586,6 +586,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var jsonGraph;
         var derivedFromFiles = {}; // List of all files that other files derived from
         var pipelines = {}; // List of all pipelines indexed by step @id
+        var steps = [];
 
         // Build sets of derived_from files as CSV string of file accessions.
         // These will also be used as step node IDs.
@@ -603,6 +604,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 file.derivedFromSet = set.join();
             }
 
+            // Track if any files have steps
+            if (file.analysis_step) {
+                steps.push(file.analysis_step)
+            }
+
             // Track all the pipelines used for each step that's part of a pipeline
             if (file.pipeline && file.pipeline.analysis_steps && file.pipeline.analysis_steps.length) {
                 file.pipeline.analysis_steps.forEach(function(step) {
@@ -612,7 +618,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         });
 
         // Create a graph only if we saw that some files derive from others
-        if (Object.keys(derivedFromFiles).length) {
+        if (Object.keys(derivedFromFiles).length && steps.length) {
             // Create an empty graph architecture that we fill in next.
             jsonGraph = new JsonGraph(context.accession);
 
