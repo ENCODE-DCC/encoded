@@ -16,7 +16,7 @@ def nameify(s):
 
 
 def run(wale_s3_prefix, image_id, instance_type,
-        branch=None, name=None, candidate=''):
+        branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
 
@@ -30,7 +30,9 @@ def run(wale_s3_prefix, image_id, instance_type,
     if name is None:
         name = nameify('%s-%s-%s' % (branch, commit, username))
 
-    conn = boto.ec2.connect_to_region("us-west-2")
+    conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
+
+    domain = 'production' if profile_name == 'production' else 'demo'
 
     if any(name == i.tags.get('Name')
            for reservation in conn.get_all_instances()
@@ -48,7 +50,7 @@ def run(wale_s3_prefix, image_id, instance_type,
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
-        'CANDIDATE': candidate,
+        'ROLE': role,
     }
 
     reservation = conn.run_instances(
@@ -58,19 +60,19 @@ def run(wale_s3_prefix, image_id, instance_type,
         user_data=user_data,
         block_device_map=bdm,
         instance_initiated_shutdown_behavior='terminate',
-        instance_profile_name='demo-instance',
+        instance_profile_name='encoded-instance',
     )
 
     time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
-    print('%s.demo.encodedcc.org' % instance.id)
+    print('%s.%s.encodedcc.org' % (instance.id, domain))
     instance.add_tags({
         'Name': name,
         'branch': branch,
         'commit': commit,
         'started_by': username,
     })
-    print('%s.demo.encodedcc.org' % name)
+    print('%s.%s.encodedcc.org' % (name, domain))
 
     sys.stdout.write(instance.state)
     while instance.state == 'pending':
@@ -98,14 +100,18 @@ def main():
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     parser.add_argument(
-        '--candidate', action='store_const', default='', const='CANDIDATE',
+        '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
+    parser.add_argument(
+        '--test', action='store_const', default='demo', const='test', dest='role',
+        help="Deploy to production AWS")
     parser.add_argument(
         '--image-id', default='ami-3d50120d',
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
     parser.add_argument(
         '--instance-type', default='t2.medium',
         help="specify 'm3.large' for faster indexing.")
+    parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     args = parser.parse_args()
 
     return run(**vars(args))

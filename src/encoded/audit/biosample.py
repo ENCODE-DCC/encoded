@@ -15,6 +15,8 @@ term_mapping = {
     "arthropod fat body": "UBERON:0003917",
     "antenna": "UBERON:0000972",
     "adult maxillary segment": "FBbt:00003016",
+    "female reproductive system": "UBERON:0000474",
+    "male reproductive system": "UBERON:0000079",
     "nucleus": "GO:0005634",
     "cytosol": "GO:0005829",
     "chromatin": "GO:0000785",
@@ -23,7 +25,8 @@ term_mapping = {
     "nuclear matrix": "GO:0016363",
     "nucleolus": "GO:0005730",
     "nucleoplasm": "GO:0005654",
-    "polysome": "GO:0005844"
+    "polysome": "GO:0005844",
+    "insoluble cytoplasmic fraction": "NTR:0002594"
 }
 
 
