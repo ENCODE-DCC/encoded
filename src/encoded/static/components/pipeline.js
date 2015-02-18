@@ -238,69 +238,65 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
 
     if (selectedStep) {
         // The node is for an analysis step
-        if (node.metadata.error) {
-            return (<p className="browser-error">Missing step_run derivation information for {node.metadata.accession}</p>);
-        } else {
-            return (
-                <div>
-                    <dl className="key-value">
-                        <div data-test="steptype">
-                            <dt>Step type</dt>
-                            <dd>{selectedStep.analysis_step_types.join(', ')}</dd>
+        return (
+            <div>
+                <dl className="key-value">
+                    <div data-test="steptype">
+                        <dt>Step type</dt>
+                        <dd>{selectedStep.analysis_step_types.join(', ')}</dd>
+                    </div>
+
+                    {selectedStep.input_file_types && selectedStep.input_file_types.length ?
+                        <div data-test="inputtypes">
+                            <dt>Input file types</dt>
+                            <dd>{selectedStep.input_file_types.join(', ')}</dd>
                         </div>
+                    : null}
 
-                        {selectedStep.input_file_types && selectedStep.input_file_types.length ?
-                            <div data-test="inputtypes">
-                                <dt>Input file types</dt>
-                                <dd>{selectedStep.input_file_types.join(', ')}</dd>
-                            </div>
-                        : null}
+                    {selectedStep.output_file_types && selectedStep.output_file_types.length ?
+                        <div data-test="outputtypes">
+                            <dt>Output file types</dt>
+                            <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                        </div>
+                    : null}
 
-                        {selectedStep.output_file_types && selectedStep.output_file_types.length ?
-                            <div data-test="outputtypes">
-                                <dt>Output file types</dt>
-                                <dd>{selectedStep.output_file_types.join(', ')}</dd>
-                            </div>
-                        : null}
+                    {node.metadata.pipeline ?
+                        <div data-test="pipeline">
+                            <dt>Pipeline</dt>
+                            <dd>{node.metadata.pipeline.name}</dd>
+                        </div>
+                    : null}
 
-                        {node.metadata.pipeline ?
-                            <div data-test="pipeline">
-                                <dt>Pipeline</dt>
-                                <dd>{node.metadata.pipeline.name}</dd>
-                            </div>
-                        : null}
+                    {selectedStep.qa_stats_generated && selectedStep.qa_stats_generated.length ?
+                        <div data-test="qastats">
+                            <dt>QA statistics</dt>
+                            <dd>{selectedStep.qa_stats_generated.join(', ')}</dd>
+                        </div>
+                    : null}
 
-                        {selectedStep.qa_stats_generated && selectedStep.qa_stats_generated.length ?
-                            <div data-test="qastats">
-                                <dt>QA statistics</dt>
-                                <dd>{selectedStep.qa_stats_generated.join(', ')}</dd>
-                            </div>
-                        : null}
-
-                        {selectedStep.software_versions && selectedStep.software_versions.length ?
-                            <div data-test="swversions">
-                                <dt>Software</dt>
-                                <dd>
-                                    {selectedStep.software_versions.map(function(version, i) {
-                                        var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                        return (
-                                            <a href={version.software['@id']} key={i} className="software-version">
-                                                <span className="software">{version.software.name}</span>
-                                                {version.version ?
-                                                    <span className="version">{versionNum}</span>
-                                                : null}
-                                            </a>
-                                        );
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </div>
-            );
-        }
+                    {selectedStep.software_versions && selectedStep.software_versions.length ?
+                        <div data-test="swversions">
+                            <dt>Software</dt>
+                            <dd>
+                                {selectedStep.software_versions.map(function(version, i) {
+                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                    return (
+                                        <a href={version.software['@id']} key={i} className="software-version">
+                                            <span className="software">{version.software.name}</span>
+                                            {version.version ?
+                                                <span className="version">{versionNum}</span>
+                                            : null}
+                                        </a>
+                                    );
+                                })}
+                            </dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
     } else {
-        return null;
+        return (<p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>);
     }
 };
 

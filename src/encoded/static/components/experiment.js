@@ -630,6 +630,10 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         files.forEach(function(file) {
             // Only add files derived from others, or that others derive from
             if (file.derivedFromSet || derivedFromFiles[file.accession]) {
+                var stepId;
+                var label;
+                var pipelineInfo;
+                var error;
                 var fileId = 'file:' + file.accession;
                 var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
 
@@ -647,20 +651,34 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 // If the file has an analysis step, add this step to the graph
                 if (file.analysis_step) {
                     // Make an ID and label for the step
-                    var stepId = 'step:' + file.derivedFromSet;
-                    var label = file.analysis_step.analysis_step_types;
+                    stepId = 'step:' + file.derivedFromSet;
+                    label = file.analysis_step.analysis_step_types;
+                    pipelineInfo = pipelines[file.analysis_step['@id']];
+                    error = false;
+                } else if (file.derivedFromSet) {
+                    // File derives from others, but no analysis step; make dummy step
+                    stepId = 'error: ' + file.derivedFromSet;
+                    label = 'placeholder';
+                    pipelineInfo = null;
+                    error = true;
+                } else {
+                    // No analysis step and no derived_from; don't add a step
+                    stepId = '';
+                }
 
+                if (stepId) {
                     // Add the step to the graph only if we haven't for this derived-from set already
                     if (!jsonGraph.getNode(stepId)) {
                         jsonGraph.addNode(stepId, label,
                             {
-                                cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : ''),
+                                cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
                                 type: 'step',
                                 shape: 'rect',
                                 cornerRadius: 4,
                                 parentNode: replicateNode,
                                 ref: file.analysis_step,
-                                pipeline: pipelines[file.analysis_step['@id']]
+                                pipeline: pipelineInfo,
+                                fileAccession: file.accession
                             });
                     }
 
