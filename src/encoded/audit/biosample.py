@@ -95,7 +95,7 @@ def audit_biosample_culture_date(value, system):
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
 
-@audit_checker('biosample', frame=['organism', 'donor', 'donor.organism'])
+@audit_checker('biosample', frame=['organism', 'donor', 'donor.organism', 'donor.mutated_gene', 'donor.mutated_gene.organism'])
 def audit_biosample_donor(value, system):
     '''
     A biosample should have a donor.
@@ -122,6 +122,23 @@ def audit_biosample_donor(value, system):
             donor['organism']['name'])
         raise AuditFailure('mismatched organism', detail, level='ERROR')
 
+    if 'mutated_gene' not in donor:
+        return
+
+    if value['organism']['name'] != donor['mutated_gene']['organism']['name']:
+        detail = 'Biosample {} is organism {}, but its donor {} mutated_gene is in {}. Donor mutated_gene should be of the same species as the donor and biosample'.format(
+            value['accession'],
+            value['organism']['name'],
+            donor['accession'],
+            donor['mutated_gene']['organism']['name'])
+        raise AuditFailure('mismatched mutated_gene organism', detail, level='ERROR')
+
+    for i in donor['mutated_gene']['investigated_as']:
+        if i in ['histone modification', 'tag', 'control']:
+            detail = 'Donor {} has an invalid mutated_gene {}. Donor mutated_genes should not be tags, controls or histone modifications'.format(
+                donor['accession'],
+                donor['mutated_gene']['name'])
+            raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_subcellular_term_match(value, system):
