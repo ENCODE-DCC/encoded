@@ -586,7 +586,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var jsonGraph;
         var derivedFromFiles = {}; // List of all files that other files derived from
         var pipelines = {}; // List of all pipelines indexed by step @id
-        var steps = [];
+        var stepExists = false; // True if at least one file has an analysis_step
 
         // Build sets of derived_from files as CSV string of file accessions.
         // These will also be used as step node IDs.
@@ -605,20 +605,18 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             }
 
             // Track if any files have steps
-            if (file.analysis_step) {
-                steps.push(file.analysis_step)
-            }
+            stepExists = stepExists || file.analysis_step;
 
             // Track all the pipelines used for each step that's part of a pipeline
-            if (file.pipeline && file.pipeline.analysis_steps && file.pipeline.analysis_steps.length) {
+            if (file.pipeline && file.pipeline.analysis_steps) {
                 file.pipeline.analysis_steps.forEach(function(step) {
                     pipelines[step] = file.pipeline;
                 });
             }
         });
 
-        // Create a graph only if we saw that some files derive from others
-        if (Object.keys(derivedFromFiles).length && steps.length) {
+        // Create a graph only if we saw that some files derive from others and at least one file has an analysis_step
+        if (Object.keys(derivedFromFiles).length && stepExists) {
             // Create an empty graph architecture that we fill in next.
             jsonGraph = new JsonGraph(context.accession);
 
@@ -656,7 +654,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             ref: file
                         });
 
-                    // If the file has an analysis step, add this step to the graph
+                    // If the file has an analysis step, prepare it for graph insertion
                     if (file.analysis_step) {
                         // Make an ID and label for the step
                         stepId = 'step:' + file.derivedFromSet;
@@ -665,7 +663,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         error = false;
                     } else if (file.derivedFromSet) {
                         // File derives from others, but no analysis step; make dummy step
-                        stepId = 'error: ' + file.derivedFromSet;
+                        stepId = 'error:' + file.derivedFromSet;
                         label = 'placeholder';
                         pipelineInfo = null;
                         error = true;
@@ -835,7 +833,7 @@ var FileDetailView = function(node) {
                     </div>
                 : null}
 
-                {selectedFile.lab ?
+                {selectedFile.lab && selectedFile.lab.title ?
                     <div data-test="submitted">
                         <dt>Lab</dt>
                         <dd>{selectedFile.lab.title}</dd>
