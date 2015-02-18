@@ -307,7 +307,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={encodevers == "3" ? 9 : 8}></td>
+                            <td colSpan={encodevers == "3" ? 10 : 9}></td>
                         </tr>
                     </tfoot>
                 </table>
