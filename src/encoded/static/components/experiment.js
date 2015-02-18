@@ -657,7 +657,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     // If the file has an analysis step, prepare it for graph insertion
                     if (file.analysis_step) {
                         // Make an ID and label for the step
-                        stepId = 'step:' + file.derivedFromSet;
+                        stepId = 'step:' + file.derivedFromSet + file.analysis_step['@id'];
                         label = file.analysis_step.analysis_step_types;
                         pipelineInfo = pipelines[file.analysis_step['@id']];
                         error = false;

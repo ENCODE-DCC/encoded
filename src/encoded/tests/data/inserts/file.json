@@ -1083,6 +1083,24 @@
     },
     {
         "status": "uploaded",
+        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ.fq_bismark.bam",
+        "uuid": "97ab85c0-d40d-41a9-8c63-ae38c896322f",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "1555c19cce3d261f487fdd29f8c6274c",
+        "accession": "ENCFF435GXF",
+        "file_format": "bam",
+        "award": "/awards/U54HG006998/",
+        "dataset": "/experiments/ENCSR766JPC/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 64358869186,
+        "lab": "/labs/richard-myers/",
+        "output_type": "raw data",
+        "assembly": "hg19",
+        "aliases": []
+    },
+    {
+        "status": "uploaded",
         "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CG_bismark.bed.gz",
         "uuid": "e21e3f76-eeb2-4d9e-a459-a5a4a77f32aa",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1099,7 +1117,25 @@
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
-
+    },
+    {
+        "status": "uploaded",
+        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CG_bismark.bed.gz",
+        "uuid": "1b0acdc4-4a88-47d2-8de6-934d58aff83d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "b4da22dcf867c134cc0e81740242372d",
+        "accession": "ENCFF691MGJ",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "/experiments/ENCSR766JPC/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 370148294,
+        "output_type": "methyl CG",
+        "lab": "/labs/richard-myers/",
+        "derived_from": ["ENCFF435GXF"],
+        "aliases": [],
+        "step_run": "54d1b17a-1790-4cc7-b553-64e5e0847da0"
     },
     {
         "status": "uploaded",
@@ -1118,7 +1154,26 @@
         "output_type": "methyl CHH",
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
-         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
+    },
+    {
+        "status": "uploaded",
+        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CHG_bismark.bed.gz",
+        "uuid": "1ae183a4-78ce-4f26-a033-bcf19cb27f68",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "55ec62c0838c936cc6a228aaf392708f",
+        "accession": "ENCFF146DKR",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "/experiments/ENCSR766JPC/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 1544154147,
+        "lab": "/labs/richard-myers/",
+        "output_type": "methyl CHH",
+        "derived_from": ["ENCFF435GXF"],
+        "aliases": [],
+        "step_run": "a6031d10-3ab6-45ed-86a8-655b2d2b0bdc"
     },
     {
         "status": "uploaded",
