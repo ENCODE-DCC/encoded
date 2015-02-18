@@ -18,6 +18,7 @@ import select
 import signal
 import socket
 import sqlalchemy.exc
+import sys
 import threading
 import time
 from urllib.parse import parse_qsl
@@ -26,6 +27,7 @@ log = logging.getLogger(__name__)
 
 EPILOG = __doc__
 DEFAULT_TIMEOUT = 60
+PY2 = sys.version_info[0] == 2
 
 # We need this because of MVCC visibility.
 # See slide 9 at http://momjian.us/main/writings/pgsql/mvcc.pdf
@@ -137,13 +139,26 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
 
 
 class ErrorHandlingThread(threading.Thread):
+    if PY2:
+        @property
+        def _kwargs(self):
+            return self._Thread__kwargs
+
+        @property
+        def _args(self):
+            return self._Thread__args
+
+        @property
+        def _target(self):
+            return self._Thread__target
+
     def run(self):
-        timeout = self._Thread__kwargs.get('timeout', DEFAULT_TIMEOUT)
-        update_status = self._Thread__kwargs['update_status']
-        control = self._Thread__kwargs['control']
+        timeout = self._kwargs.get('timeout', DEFAULT_TIMEOUT)
+        update_status = self._kwargs['update_status']
+        control = self._kwargs['control']
         while True:
             try:
-                self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
+                self._target(*self._args, **self._kwargs)
             except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError) as e:
                 # Handle database restart
                 log.exception('Database went away')
