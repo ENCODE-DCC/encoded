@@ -144,3 +144,32 @@ form.table-filter {
 .tcell-sortable {
     cursor: pointer;
 }
+
+.table-file {
+    thead {
+        tr {
+            border-bottom: 1px solid #e0e0e0;
+
+            th {
+                vertical-align: middle;
+                border-left: 1px solid #e0e0e0 !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+
+                &:first-child {
+                    border-left: none !important;
+                }
+            }
+
+            .tcell-sortable {
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+
+                &.tcell-asc {
+                    @extend .icon;
+                    @extend .icon-sort-asc;
+                }
+            }
+        }
+    }
+}

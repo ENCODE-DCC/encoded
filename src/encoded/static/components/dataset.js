@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var cx = require('react/lib/cx');
 var moment = require('moment');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -269,6 +270,17 @@ var FileTable = module.exports.FileTable = React.createClass({
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
         var encodevers = this.props.encodevers;
+        var cellClass = {
+            accession: '',
+            file_format: '',
+            output_type: '',
+            paired_end: '',
+            bio_replicate: '',
+            tech_replicate: '',
+            title: '',
+            date_created: ''
+        };
+        cellClass[this.state.col] = this.state.reversed ? ' tcell-desc' : ' tcell-asc';
         this.props.items.sort(this.sortCol).forEach(function (file) {
             rows[file['@id']] = (
                 <tr>
@@ -290,20 +302,20 @@ var FileTable = module.exports.FileTable = React.createClass({
                 <table className="table table-panel table-striped table-hover table-file">
                     <thead>
                         <tr>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'output_type')}>Output type</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate</th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Added by</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'output_type')}>Output type<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Added by<i className={cellClass.accession}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'date_created')}>Date added</th>
                             <th>File download</th>
                             {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
                     </thead>
                     <tbody>
-                    {rows}
+                        {rows}
                     </tbody>
                     <tfoot>
                         <tr>
