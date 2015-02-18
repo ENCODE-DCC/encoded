@@ -226,10 +226,12 @@ var FileTable = module.exports.FileTable = React.createClass({
                 diff = a.accession > b.accession ? 1 : -1;
                 break;
             case 'file_format':
-                diff = a.file_format > b.file_format ? 1 : -1;
+                diff = a.file_format > b.file_format ? 1 : (a.file_format === b.file_format ? 0 : -1);
                 break;
             case 'output_type':
-                diff = a.output_type.toLowerCase() > b.output_type.toLowerCase() ? 1 : -1;
+                var aLower = a.output_type.toLowerCase();
+                var bLower = b.output_type.toLowerCase();
+                diff = aLower > bLower ? 1 : (aLower === bLower ? 0 : -1);
                 break;
             case 'paired_end':
                 if (a.paired_end && b.paired_end) {
@@ -254,14 +256,14 @@ var FileTable = module.exports.FileTable = React.createClass({
                 break;
             case 'assembly':
                 if (a.assembly && b.assembly) {
-                    diff = a.assembly - b.assembly;
+                    diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
                 } else {
                     diff = a.assembly ? -1 : (b.assembly ? 1 : 0);
                 }
                 break;
             case 'annotation':
                 if (a.genome_annotation && b.genome_annotation) {
-                    diff = a.genome_annotation - b.genome_annotation;
+                    diff = a.genome_annotation > b.genome_annotation ? 1 : (a.genome_annotation === b.genome_annotation ? 0 : -1);
                 } else {
                     diff = a.genome_annotation ? -1 : (b.genome_annotation ? 1 : 0);
                 }
@@ -270,7 +272,11 @@ var FileTable = module.exports.FileTable = React.createClass({
                 diff = a.lab.title > b.lab.title ? 1 : (a.lab.title === b.lab.title ? 0 : -1);
                 break;
             case 'date_created':
-                diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                if (a.date_created && b.date_created) {
+                    diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                } else {
+                    diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
+                }
                 break;
             default:
                 diff = 0;
