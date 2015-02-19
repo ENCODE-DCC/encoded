@@ -355,6 +355,7 @@ class Connection(object):
         elif not isinstance(uuid, UUID):
             raise TypeError(uuid)
 
+        uuid = str(uuid)
         cached = self.item_cache.get(uuid)
         if cached is not None:
             return cached

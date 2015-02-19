@@ -139,16 +139,8 @@ class ElasticSearchStorage(object):
         return model
 
     def get_by_uuid(self, uuid):
-        if isinstance(uuid, basestring):
-            try:
-                uuid = UUID(uuid)
-            except ValueError:
-                return None
-        elif not isinstance(uuid, UUID):
-            raise TypeError(uuid)
-
         query = {
-            'filter': {'term': {'uuid': str(uuid)}},
+            'filter': {'term': {'uuid': uuid}},
             'version': True,
         }
         return self._one(query)

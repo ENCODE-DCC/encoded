@@ -68,15 +68,7 @@ class RDBStorage(object):
     batchsize = 1000
 
     def get_by_uuid(self, rid, default=None):
-        if isinstance(rid, basestring):
-            try:
-                rid = uuid.UUID(rid)
-            except ValueError:
-                return default
-        elif not isinstance(rid, uuid.UUID):
-            raise TypeError(rid)
-
-        model = _get_by_uuid_instance_map(rid)
+        model = _get_by_uuid_instance_map(uuid.UUID(rid))
 
         if model is None:
             try:
