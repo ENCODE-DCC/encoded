@@ -61,7 +61,7 @@ def main():
         for process in processes:
             try:
                 for line in process.stdout:
-                    sys.stdout.write(line)
+                    sys.stdout.write(line.decode('utf-8'))
             except IOError:
                 pass
             process.wait()
@@ -92,12 +92,12 @@ def main():
     while True:
         readable, writable, err = select.select(stdouts, [], stdouts, 5)
         for stdout in readable:
-            for line in iter(stdout.readline, ''):
-                sys.stdout.write(line)
+            for line in iter(stdout.readline, b''):
+                sys.stdout.write(line.decode('utf-8'))
         if err:
             for stdout in err:
-                for line in iter(stdout.readline, ''):
-                    sys.stdout.write(line)
+                for line in iter(stdout.readline, b''):
+                    sys.stdout.write(line.decode('utf-8'))
             break
 
 if __name__ == '__main__':
