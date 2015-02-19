@@ -207,6 +207,11 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     }
 });
 
+function humanFileSize(size) {
+    if (size === undefined) return undefined;
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+};
 
 var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
@@ -278,6 +283,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
                 }
                 break;
+            case 'file_size':
+                diff = (a.file_size || 0) - (b.file_size || 0);
+                break;
             default:
                 diff = 0;
                 break;
@@ -299,7 +307,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             assembly: 'tcell-sort',
             annotation: 'tcell-sort',
             title: 'tcell-sort',
-            date_created: 'tcell-sort'
+            date_created: 'tcell-sort',
+            file_size: 'tcell-sort'
         };
         cellClass[this.state.col] = this.state.reversed ? 'tcell-desc' : 'tcell-asc';
         var files = this.props.items.slice(0);
@@ -316,6 +325,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.genome_annotation}</td>
                     <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                     <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                    <td>{humanFileSize(file.file_size)}</td>
                     <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
@@ -336,6 +346,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'annotation')}>Genome annotation<i className={cellClass.annotation}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Lab<i className={cellClass.title}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'date_created')}>Date added<i className={cellClass.date_created}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_size')}>File size<i className={cellClass.file_size}></i></th>
                             <th>File download</th>
                             {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
