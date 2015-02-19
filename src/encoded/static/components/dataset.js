@@ -302,7 +302,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             date_created: 'tcell-sort'
         };
         cellClass[this.state.col] = this.state.reversed ? 'tcell-desc' : 'tcell-asc';
-        this.props.items.sort(this.sortCol).forEach(function (file) {
+        var files = this.props.items.slice(0);
+        files.sort(this.sortCol).forEach(function (file) {
             rows[file['@id']] = (
                 <tr>
                     <td>{file.accession}</td>
