@@ -263,7 +263,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                     {node.metadata.pipeline ?
                         <div data-test="pipeline">
                             <dt>Pipeline</dt>
-                            <dd>{node.metadata.pipeline.name}</dd>
+                            <dd>{node.metadata.pipeline.title}</dd>
                         </div>
                     : null}
 
