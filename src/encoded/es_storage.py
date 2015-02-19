@@ -209,6 +209,6 @@ def cached_view_audit(context, request):
     if allowed.isdisjoint(request.effective_principals):
         raise HTTPForbidden()
     return {
-        '@id': source['@id'],
+        '@id': source['object']['@id'],
         'audit': source['audit'],
     }
