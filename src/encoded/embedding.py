@@ -14,6 +14,7 @@ def includeme(config):
     config.add_request_method(embed, 'embed')
     config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
     config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
+    config.add_request_method(lambda request: None, '__parent__', reify=True)
 
 
 def make_subrequest(request, path):

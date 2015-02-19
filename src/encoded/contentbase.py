@@ -69,13 +69,24 @@ _marker = object()
 
 logger = logging.getLogger(__name__)
 
+from .es_storage import (
+    ElasticSearchStorage,
+    PickStorage,
+)
+
 
 def includeme(config):
     registry = config.registry
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
     types = registry[TYPES] = TypesTool(registry)
-    storage = registry[STORAGE] = RDBStorage()
+    from .indexing import ELASTIC_SEARCH
+    es = registry.get(ELASTIC_SEARCH)
+    if es is None:
+        storage = RDBStorage()
+    else:
+        storage = PickStorage(ElasticSearchStorage(es), RDBStorage())
+    registry[STORAGE] = storage
     registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
 
@@ -354,6 +365,7 @@ class Connection(object):
 
         Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
+        model.used_for(item)
         self.item_cache[uuid] = item
         return item
 
@@ -376,14 +388,15 @@ class Connection(object):
 
         Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
+        model.used_for(item)
         self.item_cache[uuid] = item
         return item
 
     def get_rev_links(self, model, item_type, rel):
         return self.storage.get_rev_links(model, item_type, rel)
 
-    def __iter__(self, item_type=None, batchsize=1000):
-        for uuid in self.storage.__iter__(item_type, batchsize):
+    def __iter__(self, item_type=None):
+        for uuid in self.storage.__iter__(item_type):
             yield uuid
 
     def __len__(self, item_type=None):
@@ -476,8 +489,8 @@ class Collection(Mapping):
             raise KeyError(name)
         return item
 
-    def __iter__(self, batchsize=1000):
-        for uuid in self.connection.__iter__(self.item_type, batchsize):
+    def __iter__(self):
+        for uuid in self.connection.__iter__(self.item_type):
             yield uuid
 
     def __len__(self):

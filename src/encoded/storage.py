@@ -65,6 +65,8 @@ def _get_by_unique_key_query():
 
 
 class RDBStorage(object):
+    batchsize = 1000
+
     def get_by_uuid(self, rid, default=None):
         if isinstance(rid, basestring):
             try:
@@ -99,7 +101,7 @@ class RDBStorage(object):
             if (link.source.item_type, link.rel) == (item_type, rel)
         ]
 
-    def __iter__(self, item_type=None, batchsize=1000):
+    def __iter__(self, item_type=None):
         session = DBSession()
         query = session.query(Resource.rid)
 
@@ -108,7 +110,7 @@ class RDBStorage(object):
                 Resource.item_type == item_type
             )
 
-        for rid, in query.yield_per(batchsize):
+        for rid, in query.yield_per(self.batchsize):
             yield rid
 
     def __len__(self, item_type=None):
@@ -425,6 +427,12 @@ class Resource(Base):
     @property
     def tid(self):
         return self.data[''].propsheet.tid
+
+    def invalidated(self):
+        return False
+
+    def used_for(self, item):
+        pass
 
 
 class Blob(Base):

@@ -164,7 +164,7 @@ class ItemWithAttachment(Item):
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath
-    downloads = context.model['downloads']
+    downloads = context.propsheets['downloads']
     try:
         download_meta = downloads[prop_name]
     except KeyError:
