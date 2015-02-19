@@ -995,7 +995,7 @@
         "lab": "richard-myers",
         "output_type": "reads",
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
-        "status": "uploaded",
+        "status": "released",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
@@ -1010,7 +1010,7 @@
         "file_format": "fastq",
         "flowcell_details": [],
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
-        "status": "uploaded",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "award": "/awards/U54HG006998/",
         "lab": "/labs/richard-myers/",
@@ -1031,7 +1031,7 @@
         "uuid": "78a74a6e-8e89-4d51-aac1-73d7e6cf234d",
         "file_format": "fastq",
         "flowcell_details": [],
-        "status": "uploaded",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
         "award": "/awards/U54HG006998/",
@@ -1052,7 +1052,7 @@
         "file_format": "fastq",
         "flowcell_details": [],
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
-        "status": "uploaded",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "lab": "/labs/richard-myers/",
         "award": "/awards/U54HG006998/",
@@ -1062,7 +1062,7 @@
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
     {
-        "status": "uploaded",
+        "status": "in progress",
         "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ.fq_bismark.bam",
         "uuid": "8f5646aa-cfd5-4f8e-8aa5-198bbc3a6359",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1077,7 +1077,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "raw data",
         "assembly": "hg19",
-        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG"],
+        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI"],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
@@ -1100,7 +1100,7 @@
         "aliases": []
     },
     {
-        "status": "uploaded",
+        "status": "released",
         "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CG_bismark.bed.gz",
         "uuid": "e21e3f76-eeb2-4d9e-a459-a5a4a77f32aa",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1138,7 +1138,7 @@
         "step_run": "54d1b17a-1790-4cc7-b553-64e5e0847da0"
     },
     {
-        "status": "uploaded",
+        "status": "released",
         "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CHG_bismark.bed.gz",
         "uuid": "286d858b-b49c-44cb-b7aa-684f4ceb7f73",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -1176,7 +1176,7 @@
         "step_run": "a6031d10-3ab6-45ed-86a8-655b2d2b0bdc"
     },
     {
-        "status": "uploaded",
+        "status": "released",
         "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CHH_bismark.bed.gz",
         "uuid": "7943787f-c404-495a-b09d-c825f4c43037",
         "submitted_by": "facilisi.tristique@potenti.vivamus",

@@ -593,7 +593,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         files.forEach(function(file) {
             var set = file.derived_from && file.derived_from.map(function(derived_from) {
                 // Remember this derived_from file should be included in the graph
-                derivedFromFiles[derived_from.accession] = true;
+                derivedFromFiles[derived_from.accession] = false;
 
                 // Add to the array of file accessions
                 return derived_from.accession;
@@ -612,6 +612,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 file.pipeline.analysis_steps.forEach(function(step) {
                     pipelines[step] = file.pipeline;
                 });
+            }
+        });
+
+        // Check whether any derived_from files are missing (because unreleased and we're logged out)
+        // derivedFromFile[file.accession] stays false if files derive from non-existent file
+        files.forEach(function(file) {
+            if (file.accession in derivedFromFiles) {
+                derivedFromFiles[file.accession] = true; // True for derived-from files that actually exist
             }
         });
 
@@ -664,7 +672,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     } else if (file.derivedFromSet) {
                         // File derives from others, but no analysis step; make dummy step
                         stepId = 'error:' + file.derivedFromSet;
-                        label = 'placeholder';
+                        label = 'Software unknown';
                         pipelineInfo = null;
                         error = true;
                     } else {
