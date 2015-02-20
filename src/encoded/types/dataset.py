@@ -79,7 +79,7 @@ class Dataset(Item):
     })
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
-    
+
     @calculated_property(schema={
         "title": "Contributing files",
         "type": "array",
@@ -93,8 +93,10 @@ class Dataset(Item):
         derived_from = set()
         for path in files:
             properties = request.embed(path, '@@object')
-            derived_from.update(paths_filtered_by_status(request, properties.get('derived_from', [])))
-        outside_files  = list(derived_from.difference(files))
+            derived_from.update(
+                paths_filtered_by_status(request, properties.get('derived_from', []))
+            )
+        outside_files = list(derived_from.difference(files))
         if status in ('release ready', 'released'):
             return paths_filtered_by_status(
                 request, outside_files,
@@ -105,8 +107,7 @@ class Dataset(Item):
                 request, outside_files,
                 exclude=('revoked', 'deleted', 'replaced'),
             )
-        
-    
+
     @calculated_property(schema={
         "title": "Files",
         "type": "array",
@@ -166,8 +167,7 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
 
-@view_config(context=Item, permission='view', request_method='GET',
-             name='page')
+@view_config(context=Dataset, permission='view', request_method='GET', name='page')
 def dataset_view_page(context, request):
     properties = item_view_page(context, request)
     if 'hub'in properties:
