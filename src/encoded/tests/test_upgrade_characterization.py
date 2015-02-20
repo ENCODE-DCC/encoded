@@ -250,8 +250,9 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
 
 
-def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
-    schema = root.by_item_type['antibody_characterization'].Item.schema
+def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_characterization_1):
+    from ..contentbase import TYPES
+    schema = registry[TYPES]['antibody_characterization'].schema
 
     res = testapp.post_json('/antibody-characterizations?validate=false&render=uuid', antibody_characterization_1)
     location = res.location

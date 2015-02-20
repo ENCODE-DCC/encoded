@@ -81,6 +81,9 @@ module.exports = function(grunt) {
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
+                require: [
+                    'react',  // Needed for the React Chrome dev panel plugin to work
+                ],
                 external: [
                     'brace',
                     'brace/mode/json',
@@ -89,13 +92,6 @@ module.exports = function(grunt) {
                     'd3',
                     'scriptjs',
                     'google-analytics',
-                ],
-                require: [
-                    'domready',
-                    'jquery',
-                    'react',
-                    'underscore',
-                    'url',
                 ],
                 transform: [
                     [{harmony: true, sourceMap: true}, reactify],

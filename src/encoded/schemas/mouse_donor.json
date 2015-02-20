@@ -14,8 +14,8 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
@@ -41,6 +41,17 @@
         "organism": {
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked",
+                "preliminary",
+                "proposed"
+            ]
         }
     }
 }

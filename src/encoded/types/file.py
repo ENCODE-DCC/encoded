@@ -185,7 +185,7 @@ def get_upload(context, request):
 @view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
@@ -211,7 +211,7 @@ def post_upload(context, request):
 @view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     mapping = context.schema['file_format_file_extension']
     file_extension = mapping[properties['file_format']]
     filename = properties['accession'] + file_extension

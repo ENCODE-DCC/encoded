@@ -65,16 +65,10 @@ def _get_by_unique_key_query():
 
 
 class RDBStorage(object):
-    def get_by_uuid(self, rid, default=None):
-        if isinstance(rid, basestring):
-            try:
-                rid = uuid.UUID(rid)
-            except ValueError:
-                return default
-        elif not isinstance(rid, uuid.UUID):
-            raise TypeError(rid)
+    batchsize = 1000
 
-        model = _get_by_uuid_instance_map(rid)
+    def get_by_uuid(self, rid, default=None):
+        model = _get_by_uuid_instance_map(uuid.UUID(rid))
 
         if model is None:
             try:
@@ -92,7 +86,14 @@ class RDBStorage(object):
         else:
             return key.resource
 
-    def __iter__(self, item_type=None, batchsize=1000):
+    def get_rev_links(self, model, item_type, rel):
+        return [
+            link.source_rid
+            for link in model.revs
+            if (link.source.item_type, link.rel) == (item_type, rel)
+        ]
+
+    def __iter__(self, item_type=None):
         session = DBSession()
         query = session.query(Resource.rid)
 
@@ -101,7 +102,7 @@ class RDBStorage(object):
                 Resource.item_type == item_type
             )
 
-        for rid, in query.yield_per(batchsize):
+        for rid, in query.yield_per(self.batchsize):
             yield rid
 
     def __len__(self, item_type=None):
@@ -393,6 +394,10 @@ class Resource(Base):
     def keys(self):
         return self.data.keys()
 
+    def items(self):
+        for k in self.keys():
+            yield k, self[k]
+
     def get(self, key, default=None):
         try:
             return self.propsheets[key]
@@ -414,6 +419,12 @@ class Resource(Base):
     @property
     def tid(self):
         return self.data[''].propsheet.tid
+
+    def invalidated(self):
+        return False
+
+    def used_for(self, item):
+        pass
 
 
 class Blob(Base):

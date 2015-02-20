@@ -1,3 +1,4 @@
+from ..contentbase import CONNECTION
 from ..migrator import upgrade_step
 from .shared import ENCODE2_AWARDS
 from pyramid.traversal import find_root
@@ -42,11 +43,13 @@ def antibody_lot_3_4(value, system):
     }
 
     context = system['context']
+    registry = system['registry']
+    connection = registry[CONNECTION]
     root = find_root(context)
     approvals = []
-    for link in context.model.revs:
-        if (link.source.item_type, link.rel) == ('antibody_approval', 'antibody'):
-            approvals.append(root.get_by_uuid(link.source_rid))
+
+    for link_uuid in connection.get_rev_links(context.model, 'antibody_approval', 'antibody'):
+        approvals.append(root.get_by_uuid(link_uuid))
 
     targets = set()
     for approval in approvals:

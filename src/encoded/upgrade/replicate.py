@@ -8,7 +8,7 @@ def replicate_0_3(value, system):
     context = system['context']
     root = find_root(context)
     if 'library' in value:
-        library = root.get_by_uuid(value['library']).upgrade_properties(finalize=False)
+        library = root.get_by_uuid(value['library']).upgrade_properties()
         value['status'] = library['status']
     else:
         value['status'] = 'in progress'

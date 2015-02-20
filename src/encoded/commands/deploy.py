@@ -18,9 +18,9 @@ def nameify(s):
 def run(wale_s3_prefix, image_id, instance_type,
         branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
-        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
-    commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).strip()
+    commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).decode('utf-8').strip()
     if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
         print("Commit %r not in origin. Did you git push?" % commit)
         sys.exit(1)
@@ -46,7 +46,7 @@ def run(wale_s3_prefix, image_id, instance_type,
     # Don't attach instance storage so we can support auto recovery
     bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
-    user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
+    user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
