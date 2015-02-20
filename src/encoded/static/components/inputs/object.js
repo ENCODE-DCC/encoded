@@ -50,7 +50,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     render: function() {
         var url = this.props.value;
-        var previewUrl = '/search/?mode=picker&@id=' + url;
+        var previewUrl = '/search/?mode=picker&@id=' + encodeURIComponent(url);
         var searchUrl = '/search/' + this.state.search;
         var actions = [
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
