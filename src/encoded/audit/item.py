@@ -1,8 +1,8 @@
-from past.builtins import basestring
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from ..contentbase import simple_path_ids
 from ..embedding import embed
 from ..schema_utils import validate
 
@@ -76,12 +76,6 @@ STATUS_LEVEL = {
 }
 
 
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
-
-
 @audit_checker('item', frame='object')
 def audit_item_status(value, system):
     if 'status' not in value:
@@ -94,10 +88,10 @@ def audit_item_status(value, system):
     context = system['context']
     request = system['request']
     linked = set()
-    for key in context.type_info.schema_links:
-        if key in ['supercedes']:
+    for schema_path in context.type_info.schema_links:
+        if schema_path in [('supercedes',)]:
             continue
-        linked.update(aslist(value.get(key, ())))
+        linked.update(simple_path_ids(value, schema_path))
 
     for path in linked:
         linked_value = embed(request, path + '@@object')
