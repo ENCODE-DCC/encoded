@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
 import logging
