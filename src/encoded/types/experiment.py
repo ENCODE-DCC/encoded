@@ -30,6 +30,7 @@ class Experiment(Dataset):
         'files.platform',
         'files.lab',
         'files.derived_from',
+        'files.derived_from.replicate',
         'files.pipeline',
         'files.analysis_step',
         'files.analysis_step.software_versions',
