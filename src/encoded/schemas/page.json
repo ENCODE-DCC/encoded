@@ -64,6 +64,10 @@
                             "image": {
                                 "type": "string",
                                 "linkTo": "image"
+                            },
+                            "item": {
+                                "type": "string",
+                                "linkTo": "item"
                             }
                         }
                     },
