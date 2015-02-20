@@ -18,16 +18,24 @@ var RichTextBlockView = richtext.RichTextBlockView;
 
 var TeaserCore = React.createClass({
     render: function() {
-        var url = this.props.value.image;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
+        var image = this.props.value.image;
+        var url;
+        if (typeof image === 'string') {
+            url = image;
+            if (url.indexOf('/') !== 0) {
+                url = '/' + url;
+            }
         }
         return (
             <div className="teaser thumbnail clearfix">
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={url} />
-                    <ItemBlockView />
-                </fetched.FetchedData>
+                {typeof image === 'object' ?
+                    <ItemBlockView context={image}/>
+                :
+                    <fetched.FetchedData>
+                        <fetched.Param name="context" url={url} />
+                        <ItemBlockView />
+                    </fetched.FetchedData>
+                }
                 <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
             </div>
         );

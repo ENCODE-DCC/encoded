@@ -38,6 +38,10 @@ class Page(Item):
         'deleted': ONLY_ADMIN_VIEW,
     }
 
+    embedded = [
+        'layout.blocks.image',
+    ]
+
     def unique_keys(self, properties):
         keys = super(Page, self).unique_keys(properties)
         parent = properties.get('parent')
