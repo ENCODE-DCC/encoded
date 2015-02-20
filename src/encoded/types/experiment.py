@@ -210,7 +210,7 @@ class Replicate(Item):
         return keys
 
     def __ac_local_roles__(self):
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()
