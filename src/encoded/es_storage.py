@@ -1,9 +1,12 @@
 from elasticsearch.helpers import scan
-from past.builtins import basestring
+from itertools import chain
 from pyramid.httpexceptions import (
     HTTPForbidden,
 )
-from pyramid.threadlocal import manager as threadlocal_manager
+from pyramid.threadlocal import (
+    get_current_request,
+    manager as threadlocal_manager,
+)
 from pyramid.view import (
     view_config,
 )
@@ -11,11 +14,24 @@ from zope.interface import (
     Interface,
     alsoProvides,
 )
-from uuid import UUID
 
 
 def includeme(config):
     config.scan(__name__)
+    config.add_request_method(datastore, 'datastore', reify=True)
+
+
+def datastore(request):
+    if request.__parent__ is not None:
+        return request.__parent__.datastore
+    datastore = 'database'
+    if request.params.get('frame') == 'edit':
+        return datastore
+    if request.method in ('HEAD', 'GET'):
+        datastore = request.params.get('datastore') or \
+            request.headers.get('X-Datastore') or \
+            request.registry.settings.get('collection_datastore', 'elasticsearch')
+    return datastore
 
 
 def get_root_request():
@@ -83,12 +99,9 @@ class PickStorage(object):
         self.write = write
 
     def storage(self):
-        request = get_root_request()
-        if request and request.method in ('HEAD', 'GET'):
-            datastore = request.headers.get('X-Datastore', 'elasticsearch')
-            datastore = request.params.get('datastore', datastore)
-            if datastore == 'elasticsearch':
-                return self.read
+        request = get_current_request()
+        if request and request.datastore == 'elasticsearch':
+            return self.read
         return self.write
 
     def get_by_uuid(self, uuid):
@@ -166,7 +179,7 @@ class ElasticSearchStorage(object):
         }
         data = self.es.search(index=self.index, body=query)
         return [
-            hit['uuid'] for hit in data['hits']['hits']
+            hit['fields']['uuid'][0] for hit in data['hits']['hits']
         ]
 
     def __iter__(self, item_type=None):
@@ -175,7 +188,7 @@ class ElasticSearchStorage(object):
             'filter': {'term': {'item_type': item_type}} if item_type else {'match_all': {}},
         }
         for hit in scan(self.es, query=query):
-            yield hit['uuid']
+            yield hit['fields']['uuid'][0]
 
     def __len__(self, item_type=None):
         query = {
@@ -211,4 +224,17 @@ def cached_view_audit(context, request):
     return {
         '@id': source['object']['@id'],
         'audit': source['audit'],
+    }
+
+
+@view_config(context=ICachedItem, request_method='GET', name='audit-self')
+def cached_view_audit_self(context, request):
+    source = context.model.source
+    allowed = set(source['principals_allowed']['audit'])
+    if allowed.isdisjoint(request.effective_principals):
+        raise HTTPForbidden()
+    path = source['object']['@id']
+    return {
+        '@id': path,
+        'audit': [a for a in chain(*source['audit'].values()) if a['path'] == path],
     }

@@ -81,7 +81,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                 )
 
                 try:
-                    res = testapp.post_json('/index?datastore=database', {
+                    res = testapp.post_json('/index', {
                         'record': True,
                         'dry_run': dry_run,
                         'recovery': recovery,

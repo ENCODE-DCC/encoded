@@ -789,11 +789,8 @@ def collection_list(context, request):
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    datastore = request.params.get('datastore', None)
-    if datastore is None:
-        datastore = request.registry.settings.get('collection_datastore', 'elasticsearch')
     # Switch to change summary page loading options: load_db, load_es
-    if datastore == 'elasticsearch':
+    if request.datastore == 'elasticsearch':
         result = load_es(context, request)
     else:
         result = load_db(context, request)
@@ -1115,6 +1112,7 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
+    assert request.datastore == 'database'
     conn = request.registry[CONNECTION]
     properties = item_links(context, request)
     schema_rev_links = context.type_info.schema_rev_links

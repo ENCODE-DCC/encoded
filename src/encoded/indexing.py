@@ -83,6 +83,8 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
+    # Setting request.datastore here only works because routed views are not traversed.
+    request.datastore = 'database'
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
