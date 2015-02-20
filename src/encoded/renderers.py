@@ -4,7 +4,6 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPMovedPermanently,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
@@ -17,8 +16,6 @@ from pyramid.threadlocal import (
     manager,
 )
 from pyramid.traversal import (
-    decode_path_info,
-    find_root,
     split_path_info,
     _join_path_tuple,
 )
@@ -47,7 +44,6 @@ def includeme(config):
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
-    #config.add_traverser(ESTraverser)
     config.scan(__name__)
 
 
@@ -319,206 +315,3 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
-
-
-from zope.interface import implementer
-from pyramid.interfaces import (
-    ITraverser,
-    VH_ROOT_KEY,
-)
-from pyramid.compat import is_nonstr_iter
-from pyramid.exceptions import URLDecodeError
-empty = u''
-slash = u'/'
-
-
-@implementer(ITraverser)
-class ESTraverser(object):
-    """ A resource tree traverser that should be used (for speed) when
-    every resource in the tree supplies a ``__name__`` and
-    ``__parent__`` attribute (ie. every resource in the tree is
-    :term:`location` aware) ."""
-
-    VIEW_SELECTOR = '@@'
-
-    def __init__(self, root):
-        self.root = root
-
-    def __call__(self, request):
-        environ = request.environ
-        matchdict = request.matchdict
-
-        if matchdict is not None:
-
-            path = matchdict.get('traverse', slash) or slash
-            if is_nonstr_iter(path):
-                # this is a *traverse stararg (not a {traverse})
-                # routing has already decoded these elements, so we just
-                # need to join them
-                path = '/' + slash.join(path) or slash
-
-            subpath = matchdict.get('subpath', ())
-            if not is_nonstr_iter(subpath):
-                # this is not a *subpath stararg (just a {subpath})
-                # routing has already decoded this string, so we just need
-                # to split it
-                subpath = split_path_info(subpath)
-
-        else:
-            # this request did not match a route
-            subpath = ()
-            try:
-                # empty if mounted under a path in mod_wsgi, for example
-                path = request.path_info or slash
-            except KeyError:
-                # if environ['PATH_INFO'] is just not there
-                path = slash
-            except UnicodeDecodeError as e:
-                raise URLDecodeError(e.encoding, e.object, e.start, e.end,
-                                     e.reason)
-
-        if VH_ROOT_KEY in environ:
-            # HTTP_X_VHM_ROOT
-            vroot_path = decode_path_info(environ[VH_ROOT_KEY]) 
-            vroot_tuple = split_path_info(vroot_path)
-            vpath = vroot_path + path # both will (must) be unicode or asciistr
-            vroot_idx = len(vroot_tuple) -1
-        else:
-            vroot_tuple = ()
-            vpath = path
-            vroot_idx = -1
-
-        root = self.root
-        ob = vroot = root
-
-        if vpath == slash: # invariant: vpath must not be empty
-            # prevent a call to traversal_path if we know it's going
-            # to return the empty tuple
-            vpath_tuple = ()
-        else:
-            # we do dead reckoning here via tuple slicing instead of
-            # pushing and popping temporary lists for speed purposes
-            # and this hurts readability; apologies
-            i = 0
-            view_selector = self.VIEW_SELECTOR
-            vpath_tuple = split_path_info(vpath)
-
-            ######################
-            # BEGIN CUSTOM SECTION
-            if self.use_es(request):
-                view_name = empty
-                for segment in vpath_tuple:
-                    if segment[:2] == view_selector:
-                        view_name = segment[2:]
-                        break
-                    i += 1
-
-                traversed = vpath_tuple[:vroot_idx+i+1]
-                context = self.query_es(request, _join_path_tuple(('',) + traversed))
-                if context is not None:
-                    return {'context':context,
-                            'view_name':view_name,
-                            'subpath':vpath_tuple[i+1:],
-                            'traversed':traversed,
-                            'virtual_root':vroot,
-                            'virtual_root_path':vroot_tuple,
-                            'root':root}
-            i = 0
-            # END CUSTOM SECTION
-            ####################
-
-            for segment in vpath_tuple:
-                if segment[:2] == view_selector:
-                    return {'context':ob,
-                            'view_name':segment[2:],
-                            'subpath':vpath_tuple[i+1:],
-                            'traversed':vpath_tuple[:vroot_idx+i+1],
-                            'virtual_root':vroot,
-                            'virtual_root_path':vroot_tuple,
-                            'root':root}
-                try:
-                    getitem = ob.__getitem__
-                except AttributeError:
-                    return {'context':ob,
-                            'view_name':segment,
-                            'subpath':vpath_tuple[i+1:],
-                            'traversed':vpath_tuple[:vroot_idx+i+1],
-                            'virtual_root':vroot,
-                            'virtual_root_path':vroot_tuple,
-                            'root':root}
-
-                try:
-                    next = getitem(segment)
-                except KeyError:
-                    return {'context':ob,
-                            'view_name':segment,
-                            'subpath':vpath_tuple[i+1:],
-                            'traversed':vpath_tuple[:vroot_idx+i+1],
-                            'virtual_root':vroot,
-                            'virtual_root_path':vroot_tuple,
-                            'root':root}
-                if i == vroot_idx:
-                    vroot = next
-                ob = next
-                i += 1
-
-        return {'context':ob, 'view_name':empty, 'subpath':subpath,
-                'traversed':vpath_tuple, 'virtual_root':vroot,
-                'virtual_root_path':vroot_tuple, 'root':root}
-
-
-from .cache import ManagerLRUCache
-
-
-class ESConnection(object):
-    def __init__(self, registry):
-        self.registry = registry
-        from .indexing import ELASTIC_SEARCH
-        self.es = registry.get(ELASTIC_SEARCH)
-        self.default_datastore = registry.settings.get('item_datastore', 'elasticsearch')
-        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
-        self.path_cache = ManagerLRUCache('encoded_key_cache', 1000)
-
-    def use_es(self, request):
-        if self.es is None:
-            return False
-
-        root_request = find_root(request)
-        if root_request.method not in ('GET', 'HEAD'):
-            return False
-
-        if root_request.params.get('datastore', self.default_datastore) != 'elasticsearch':
-            return False
-
-        return True
-
-    def get_by_path(self, request, path):
-        registry = self.registry
-        uuid = self.path_cache.get(path)
-        if uuid is not None:
-            cached = self.item_cache.get(uuid)
-            if cached is not None:
-                return cached
-
-        query = {'filter': {'term': {'paths': path}}, 'version': True}
-        data = self.es.search(index='encoded', body=query)
-        hits = data['hits']['hits']
-        if len(hits) != 1:
-            return None
-
-        source = hits[0]['_source']
-        uuid = source['uuid']
-
-
-        edits = dict.get(request.session, 'edits', None)
-        if edits is not None:
-            version = hits[0]['_version']
-            linked_uuids = set(source['linked_uuids'])
-            embedded_uuids = set(source['embedded_uuids'])
-            for xid, updated, linked in edits:
-                if xid < version:
-                    continue
-                if not embedded_uuids.isdisjoint(updated):
-                    return None
-                if not linked_uuids.isdisjoint(linked):
-                    return None
