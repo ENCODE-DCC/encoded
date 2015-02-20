@@ -40,7 +40,7 @@ class ItemNamespace(object):
             return value
         if name in self._properties:
             value = self._properties[name]
-            if (name,) in context.type_info.schema_links:
+            if name in context.type_info.schema_links:
                 if isinstance(value, list):
                     value = [
                         request.resource_path(self.root.get_by_uuid(v))
