@@ -613,10 +613,6 @@ class Item(object):
         return None
 
     @classmethod
-    def expand_page(cls, request, properties):
-        return properties
-
-    @classmethod
     def create(cls, registry, properties, sheets=None):
         if 'uuid' in properties:
             uuid = UUID(properties['uuid'])
@@ -1012,8 +1008,6 @@ def item_view_page(context, request):
         properties['actions'] = actions
     if request.has_permission('audit', context):
         properties['audit'] = request.embed(item_path, '@@audit')['audit']
-    # XXX Move to view when views on ES results implemented.
-    properties = context.expand_page(request, properties)
     return properties
 
 
