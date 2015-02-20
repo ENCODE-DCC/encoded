@@ -1267,7 +1267,10 @@ def item_index_data(context, request):
         'paths': sorted(paths),
         'principals_allowed': principals_allowed,
         'properties': properties,
-        'propsheets': dict(context.propsheets.items()),
+        'propsheets': {
+            name: context.propsheets[name]
+            for name in context.propsheets.keys() if name != ''
+        },
         'tid': context.tid,
         'unique_keys': unique_keys,
         'uuid': uuid,
