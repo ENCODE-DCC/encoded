@@ -19,20 +19,14 @@ var RichTextBlockView = richtext.RichTextBlockView;
 var TeaserCore = React.createClass({
     render: function() {
         var image = this.props.value.image;
-        var url;
-        if (typeof image === 'string') {
-            url = image;
-            if (url.indexOf('/') !== 0) {
-                url = '/' + url;
-            }
-        }
+        // Must work with both paths (edit form) and embedded objects (display)
         return (
             <div className="teaser thumbnail clearfix">
                 {typeof image === 'object' ?
                     <ItemBlockView context={image}/>
                 :
                     <fetched.FetchedData>
-                        <fetched.Param name="context" url={url} />
+                        <fetched.Param name="context" url={image} />
                         <ItemBlockView />
                     </fetched.FetchedData>
                 }
