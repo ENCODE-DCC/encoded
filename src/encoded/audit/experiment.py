@@ -227,7 +227,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls'])
+@audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'replicates.antibody.host_organism', 'possible_controls.replicates.antibody', 'possible_controls.replicates.antibody.host_organism'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -258,6 +258,20 @@ def audit_experiment_control(value, system):
                 control['biosample_term_name'],
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
+
+        '''
+        Select the first replicate to compare with the control antibody.
+        We don't need to compare them all since that is done elsewhere.
+        '''
+        rep_antibody = value['replicates'][0]['antibody']
+        for rep in control['replicates']:
+            if 'antibody' in rep:
+                if rep['antibody']['host_organism']['name'] != rep_antibody['host_organism']['name']:
+                    detail = 'Control {} has antibody with host organism {} but experiment has antibody with host organism {}'.format(
+                        control['accession'],
+                        rep['antibody']['host_organism']['name'],
+                        rep_antibody['host_organism']['name'])
+                    raise AuditFailure('mismatched host organism', detail, level='WARNING')
 
 
 @audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
