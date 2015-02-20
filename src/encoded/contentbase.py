@@ -648,6 +648,8 @@ class Item(object):
                     msg = "Duplicate keys for %r: %r" % (k, values)
                     raise ValidationFailure('body', [], msg)
 
+            links = self.links(properties)
+
         connection = self.registry[CONNECTION]
         connection.update(self.model, properties, sheets, unique_keys, links)
 
