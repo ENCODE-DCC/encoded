@@ -20,40 +20,40 @@ import queue
 import transaction
 import time
 from contextlib import contextmanager
-from .embedding import embed
 import logging
 
 log = logging.getLogger(__name__)
 
-ELASTIC_SEARCH = 'encoded:elasticsearch'
-INDEXING_POOL = 'encoded:indexing_pool'
-INDEX = 'encoded'
-
-
-current_snapshot_id = None
-app = None
+from .indexing import (
+    INDEXER,
+    Indexer,
+)
 
 
 def includeme(config):
-    config.registry[INDEXING_POOL] = make_pool(config.registry.settings)
+    if config.registry.settings.get('indexer_worker'):
+        return
+    config.registry[INDEXER] = MPIndexer(config.registry)
+
+
+# Running in subprocess
+
+current_snapshot_id = None
+app = None
 
 
 def initializer(settings):
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-    # Close any pre-fork connections
+    # There should not be any existing connections.
     from .storage import DBSession
-    # print 'has session: %s' % DBSession.registry.has()
-    DBSession.remove()
-    # if 'bind' in DBSession.session_factory.kw:
-    #     DBSession.session_factory.kw['bind'].dispose()
-
+    assert not DBSession.registry.has()
     from . import main
     global app
     global snapshot_lock
     atexit.register(clear_snapshot)
-    app = main(settings, indexer=False, create_tables=False)
+    app = main(settings, indexer_worker=True, create_tables=False)
     signal.signal(signal.SIGALRM, clear_snapshot)
 
 
@@ -66,15 +66,15 @@ def set_snapshot(snapshot_id):
     txn = transaction.begin()
     txn.doom()
     txn.setExtendedInfo('snapshot_id', snapshot_id)
-    root = app.root_factory(app)
     registry = app.registry
     request = app.request_factory.blank('/_indexing_pool')
+    request.datastore = 'database'
     extensions = app.request_extensions
     if extensions is not None:
         request._set_extensions(extensions)
     request.invoke_subrequest = app.invoke_subrequest
-    request.root = root
     request.registry = registry
+    request.root = app.root_factory(request)
     request._stats = {}
     manager.push({'request': request, 'registry': registry})
 
@@ -97,31 +97,17 @@ def snapshot(snapshot_id):
     signal.alarm(5)
 
 
-def es_update_object(args):
+def update_object_in_snapshot(args):
     snapshot_id, uuid, xmin = args
     with snapshot(snapshot_id):
         request = get_current_request()
-        result = embed(request, '/%s/@@index-data' % uuid, as_user='INDEXER')
-        doctype = result['object']['@type'][0]
-        es = request.registry[ELASTIC_SEARCH]
-        es.index(
-            index=INDEX, doc_type=doctype, body=result,
-            id=str(uuid), version=xmin, version_type='external',
-        )
-        return result['object']['@id']
+        indexer = request.registry[INDEXER]
+        return indexer.update_object(request, uuid, xmin)
 
 
-def make_pool(settings):
-    ctx = get_context('forkserver')
-    return IndexingPool(
-        initializer=initializer,
-        initargs=(settings, ),
-        context=ctx,
-    )
-
+# Running in main process
 
 def handle_results(request, value_holder):
-    es = request.registry[ELASTIC_SEARCH]
     value_holder[0] = i = 0
     while True:
         success, value, orig_args = yield
@@ -136,22 +122,33 @@ def handle_results(request, value_holder):
                 log.warning('Error indexing %s: %r', uuid, value)
         if (i + 1) % 50 == 0:
             log.info('Indexing %s %d', path, i + 1)
-            es.indices.flush(index=INDEX)
         i += 1
         value_holder[0] = i
 
 
-def pool_update_objects(request, uuids, xmin, snapshot_id, pool):
-    tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
-    value_holder = [0]
-    result_handler = handle_results(request, value_holder)
-    next(result_handler)
-    pool.run_tasks(es_update_object, tasks, callback=result_handler.send)
-    result_handler.close()
-    return value_holder[0]
+class MPIndexer(Indexer):
+    def __init__(self, registry):
+        self.pool = EventLoopPool(
+            initializer=initializer,
+            initargs=(registry.settings, ),
+            context=get_context('forkserver'),
+        )
+        super(MPIndexer, self).__init__(registry)
+
+    def update_objects(self, request, uuids, xmin, snapshot_id):
+        tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
+        value_holder = [0]
+        result_handler = handle_results(request, value_holder)
+        next(result_handler)
+        self.pool.run_tasks(update_object_in_snapshot, tasks, callback=result_handler.send)
+        result_handler.close()
+        return value_holder[0]
 
 
-class IndexingPool(object):
+class EventLoopPool(object):
+    """ multiprocessing.Pool without the threads.
+    """
+
     def Process(self, *args, **kwds):
         return self._ctx.Process(*args, **kwds)
 
@@ -180,7 +177,7 @@ class IndexingPool(object):
         self._processes = processes
         self._pool = []
         self._repopulate_pool()
-        atexit.register(IndexingPool._terminate_pool, self._inqueue, self._pool)
+        atexit.register(EventLoopPool._terminate_pool, self._inqueue, self._pool)
 
     def _join_exited_workers(self):
         """Cleanup after any worker processes which have exited due to reaching
@@ -268,7 +265,7 @@ class IndexingPool(object):
                     p.join()
 
     def enqueue_task(self, func, args=(), kw={}):
-        job = job_counter.next()
+        job = next(job_counter)
         self._cache[job] = args
         task = (job, None, func, args, kw)
         self._quick_put(task)

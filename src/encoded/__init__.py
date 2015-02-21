@@ -149,9 +149,6 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
     config = Configurator(settings=settings)
-    # Fork early
-    if asbool(settings.get('indexer')) and not PY2:
-        config.include('.mp_indexing')
 
     config.include(session)
     config.include('pyramid_tm')
@@ -172,6 +169,9 @@ def main(global_config, **local_config):
     config.include('.views')
     config.include('.migrator')
     config.include('.auditor')
+
+    if asbool(settings.get('indexer')) and not PY2:
+        config.include('.mp_indexing')
 
     settings = config.registry.settings
     hostname_command = settings.get('hostname_command', '').strip()
