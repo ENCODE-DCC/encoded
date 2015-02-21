@@ -127,7 +127,7 @@ VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
 def dataset_view_page(context, request):
     # Embedding of items has to happen here as we don't know what their
     properties = item_view_page(context, request)
-    blocks = properties['layout']['blocks']
+    blocks = properties.get('layout', {}).get('blocks', [])
     for block in blocks:
         if 'item' in block and block['item']:
             block['item'] = request.embed(block['item'], '@@page', as_user=True)
