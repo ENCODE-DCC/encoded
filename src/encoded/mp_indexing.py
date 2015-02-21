@@ -1,8 +1,10 @@
 import multiprocessing
+from multiprocessing import (
+    cpu_count,
+    util,
+)
 from multiprocessing.pool import (
     RUN,
-    cpu_count,
-    debug,
     job_counter,
     worker,
 )
@@ -14,9 +16,9 @@ from pyramid.threadlocal import (
     manager,
 )
 import atexit
+import queue
 import transaction
 import time
-import Queue
 from contextlib import contextmanager
 from .embedding import embed
 import logging
@@ -153,7 +155,7 @@ class IndexingPool(object):
     def __init__(self, processes=None, initializer=None, initargs=(),
                  maxtasksperchild=None):
         self._setup_queues()
-        self._taskqueue = Queue.Queue()
+        self._taskqueue = queue.Queue()
         self._cache = {}
         self._state = RUN
         self._maxtasksperchild = maxtasksperchild
@@ -185,7 +187,7 @@ class IndexingPool(object):
             worker = self._pool[i]
             if worker.exitcode is not None:
                 # worker exited
-                debug('cleaning up worker %d' % i)
+                util.debug('cleaning up worker %d' % i)
                 worker.join()
                 cleaned = True
                 del self._pool[i]
@@ -205,7 +207,7 @@ class IndexingPool(object):
             w.name = w.name.replace('Process', 'PoolWorker')
             w.daemon = True
             w.start()
-            debug('added worker')
+            util.debug('added worker')
 
     def _maintain_pool(self):
         """Clean up any exited workers and start replacements for them.
@@ -223,7 +225,7 @@ class IndexingPool(object):
     @staticmethod
     def _help_stuff_finish(inqueue):
         # task_handler may be blocked trying to put items on inqueue
-        debug('removing tasks from inqueue until task handler finished')
+        util.debug('removing tasks from inqueue until task handler finished')
         if not inqueue._reader.poll():
             return
         inqueue._rlock.acquire()
@@ -237,29 +239,29 @@ class IndexingPool(object):
     @classmethod
     def _terminate_pool(cls, inqueue, pool):
         # this is guaranteed to only be called once
-        debug('finalizing pool')
+        util.debug('finalizing pool')
 
-        debug('helping task handler/workers to finish')
+        util.debug('helping task handler/workers to finish')
         cls._help_stuff_finish(inqueue)
 
         # tell workers there is no more work
-        debug('task handler sending sentinel to workers')
+        util.debug('task handler sending sentinel to workers')
         for p in pool:
             inqueue._writer.send(None)
 
         # Terminate workers which haven't already finished.
         if pool and hasattr(pool[0], 'terminate'):
-            debug('terminating workers')
+            util.debug('terminating workers')
             for p in pool:
                 if p.exitcode is None:
                     p.terminate()
 
         if pool and hasattr(pool[0], 'terminate'):
-            debug('joining pool workers')
+            util.debug('joining pool workers')
             for p in pool:
                 if p.is_alive():
                     # worker has not yet exited
-                    debug('cleaning up worker %d' % p.pid)
+                    util.debug('cleaning up worker %d' % p.pid)
                     p.join()
 
     def enqueue_task(self, func, args=(), kw={}):
@@ -291,7 +293,7 @@ class IndexingPool(object):
             try:
                 task = get()
             except (IOError, EOFError):
-                debug('result handler got EOFError/IOError -- exiting')
+                util.debug('result handler got EOFError/IOError -- exiting')
                 return
 
             job, i, obj = task
