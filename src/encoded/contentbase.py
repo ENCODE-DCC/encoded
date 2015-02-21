@@ -3,6 +3,7 @@ import logging
 import sys
 import venusian
 from collections import Mapping
+from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
     itervalues,
@@ -230,6 +231,19 @@ class CollectionsTool(dict):
         self.by_item_type[value.item_type] = value
 
 
+def extract_schema_links(schema):
+    if not schema:
+        return
+    for key, prop in schema['properties'].items():
+        if 'items' in prop:
+            prop = prop['items']
+        if 'properties' in prop:
+            for path in extract_schema_links(prop):
+                yield (key,) + path
+        elif 'linkTo' in prop:
+            yield (key,)
+
+
 class TypeInfo(object):
     def __init__(self, registry, item_type, factory):
         self.types = registry[TYPES]
@@ -248,12 +262,7 @@ class TypeInfo(object):
 
     @reify
     def schema_links(self):
-        if not self.factory.schema:
-            return ()
-        return [
-            key for key, prop in self.factory.schema['properties'].items()
-            if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
-        ]
+        return sorted('.'.join(path) for path in extract_schema_links(self.factory.schema))
 
     @reify
     def schema_keys(self):
@@ -402,6 +411,12 @@ class Connection(object):
 
     def __len__(self, item_type=None):
         return self.storage.__len__(item_type)
+
+    def __getitem__(self, uuid):
+        item = self.get_by_uuid(uuid)
+        if item is None:
+            raise KeyError(uuid)
+        return item
 
     def create(self, item_type, uuid):
         return self.storage.create(item_type, uuid)
@@ -569,8 +584,8 @@ class Item(object):
 
     def links(self, properties):
         return {
-            name: aslist(properties.get(name, ()))
-            for name in self.type_info.schema_links
+            path: set(simple_path_ids(properties, path))
+            for path in self.type_info.schema_links
         }
 
     def get_rev_links(self, name):
@@ -584,7 +599,7 @@ class Item(object):
         }
 
     def upgrade_properties(self):
-        properties = self.properties.copy()
+        properties = deepcopy(self.properties)
         current_version = properties.get('schema_version', '')
         target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
@@ -641,10 +656,6 @@ class Item(object):
                     raise ValidationFailure('body', [], msg)
 
             links = self.links(properties)
-            for k, values in links.items():
-                if len(set(values)) != len(values):
-                    msg = "Duplicate links for %r: %r" % (k, values)
-                    raise ValidationFailure('body', [], msg)
 
         connection = self.registry[CONNECTION]
         connection.update(self.model, properties, sheets, unique_keys, links)
@@ -940,19 +951,36 @@ def item_links(context, request):
     # This works from the schema rather than the links table
     # so that upgrade on GET can work.
     properties = context.__json__(request)
-    root = request.root
-    for name in context.type_info.schema_links:
-        value = properties.get(name, None)
-        if value is None:
-            continue
-        if isinstance(value, list):
-            properties[name] = [
-                request.resource_path(root.get_by_uuid(v))
-                for v in value
-            ]
-        else:
-            properties[name] = request.resource_path(root.get_by_uuid(value))
+    for path in context.type_info.schema_links:
+        uuid_to_path(request, properties, path)
     return properties
+
+
+def uuid_to_path(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if remaining:
+        if isinstance(value, list):
+            for v in value:
+                uuid_to_path(request, v, remaining)
+        else:
+            uuid_to_path(request, value, remaining)
+        return
+    conn = request.registry[CONNECTION]
+    if isinstance(value, list):
+        obj[name] = [
+            request.resource_path(conn[v])
+            for v in value
+        ]
+    else:
+        obj[name] = request.resource_path(conn[value])
 
 
 @view_config(context=Item, permission='view', request_method='GET',
@@ -1177,6 +1205,26 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+def simple_path_ids(obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        yield obj
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for member in value:
+            for result in simple_path_ids(member, remaining):
+                yield result
+    else:
+        for result in simple_path_ids(value, remaining):
+            yield result
 
 
 def path_ids(request, obj, path):
