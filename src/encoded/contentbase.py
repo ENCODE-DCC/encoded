@@ -3,6 +3,7 @@ import logging
 import sys
 import venusian
 from collections import Mapping
+from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
     itervalues,
@@ -411,6 +412,12 @@ class Connection(object):
     def __len__(self, item_type=None):
         return self.storage.__len__(item_type)
 
+    def __getitem__(self, uuid):
+        item = self.get_by_uuid(uuid)
+        if item is None:
+            raise KeyError(uuid)
+        return item
+
     def create(self, item_type, uuid):
         return self.storage.create(item_type, uuid)
 
@@ -592,7 +599,7 @@ class Item(object):
         }
 
     def upgrade_properties(self):
-        properties = self.properties.copy()
+        properties = deepcopy(self.properties)
         current_version = properties.get('schema_version', '')
         target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
@@ -969,11 +976,11 @@ def uuid_to_path(request, obj, path):
     conn = request.registry[CONNECTION]
     if isinstance(value, list):
         obj[name] = [
-            request.resource_path(conn.get_by_uuid(v))
+            request.resource_path(conn[v])
             for v in value
         ]
     else:
-        obj[name] = request.resource_path(conn.get_by_uuid(value))
+        obj[name] = request.resource_path(conn[value])
 
 
 @view_config(context=Item, permission='view', request_method='GET',
