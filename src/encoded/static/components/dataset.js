@@ -211,7 +211,7 @@ function humanFileSize(size) {
     if (size === undefined) return undefined;
     var i = Math.floor( Math.log(size) / Math.log(1024) );
     return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-};
+}
 
 var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
@@ -356,7 +356,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={encodevers == "3" ? 12 : 11}></td>
+                            <td colSpan={encodevers == "3" ? 13 : 12}></td>
                         </tr>
                     </tfoot>
                 </table>
