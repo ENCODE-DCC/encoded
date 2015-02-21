@@ -83,6 +83,8 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
+    # Setting request.datastore here only works because routed views are not traversed.
+    request.datastore = 'database'
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
@@ -271,10 +273,10 @@ def record_updated_uuid_paths(event):
 def record_initial_back_revs(event):
     context = event.object
     initial = event.request._initial_back_rev_links
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     initial[context.uuid] = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
 
 
@@ -288,10 +290,10 @@ def invalidate_new_back_revs(event):
     context = event.object
     updated = event.request._updated_uuid_paths
     initial = event.request._initial_back_rev_links.get(context.uuid, {})
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     current = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
     for rel, uuids in current.items():
         for uuid in uuids.difference(initial.get(rel, ())):

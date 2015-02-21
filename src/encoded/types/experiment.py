@@ -30,12 +30,14 @@ class Experiment(Dataset):
         'files.platform',
         'files.step_run',
         'files.derived_from',
+        'files.pipeline',
         'files.step_run.analysis_step',
         'files.step_run.analysis_step.software_versions',
         'files.step_run.analysis_step.software_versions.software',
         'contributing_files.platform',
         'contributing_files.step_run',
         'contributing_files.derived_from',
+        'contributing_files.pipeline',
         'contributing_files.step_run.analysis_step',
         'contributing_files.step_run.analysis_step.software_versions',
         'contributing_files.step_run.analysis_step.software_versions.software',
@@ -208,7 +210,7 @@ class Replicate(Item):
         return keys
 
     def __ac_local_roles__(self):
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()

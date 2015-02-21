@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
 import logging
@@ -471,7 +472,12 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'strain_background', 'age',  # 'flowcell_details.machine',
+            'strain_background', 'age', 'version',
+            'model_organism_health_status',
+            'model_organism_age',
+            'model_organism_sex',
+            'mouse_life_stage',
+            # 'flowcell_details.machine',
         ),
         add_attachment(docsdir),
     ]

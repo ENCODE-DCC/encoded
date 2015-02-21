@@ -646,11 +646,11 @@ module.exports.BrowserFeat = {
     feat: {},
 
     // Return object with browser capabilities; return from cache if available
-    getBrowserCaps: function () {
+    getBrowserCaps: function (feat) {
         if (Object.keys(this.feat).length === 0) {
             this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
         }
-        return this.feat;
+        return feat ? this.feat[feat] : this.feat;
     },
 
     setHtmlFeatClass: function() {

@@ -7,8 +7,8 @@ To load the initial data:
 
 """
 from pyramid.paster import get_app
-from pyramid.traversal import find_root
 from elasticsearch import RequestError
+from ..contentbase import TYPES
 from ..indexing import ELASTIC_SEARCH
 import collections
 import json
@@ -43,7 +43,10 @@ def sorted_dict(d):
 
 
 def schema_mapping(name, schema):
-    type_ = schema['type']
+    if 'linkFrom' in schema:
+        type_ = 'string'
+    else:
+        type_ = schema['type']
 
     # Elasticsearch handles multiple values for a field
     if type_ == 'array' and schema['items']:
@@ -179,8 +182,45 @@ def es_mapping(mapping):
         '_all': {
             'analyzer': 'encoded_index_analyzer'
         },
+        'dynamic_templates': [
+            {
+                'template_principals_allowed': {
+                    'path_match': "principals_allowed.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+            {
+                'template_unique_keys': {
+                    'path_match': "unique_keys.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+            {
+                'template_links': {
+                    'path_match': "links.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+        ],
         'properties': {
             'uuid': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'tid': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
@@ -214,20 +254,19 @@ def es_mapping(mapping):
                 'enabled': False,
                 'include_in_all': False,
             },
+            'properties': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
+            'propsheets': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
             'principals_allowed': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
-                'properties': {
-                    # 'view' must be specified explicitly to be searched on
-                    'view': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
-                    },
-                },
             },
             'embedded_uuids': {
                 'type': 'string',
@@ -242,18 +281,10 @@ def es_mapping(mapping):
             'unique_keys': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
             },
             'links': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
             },
             'paths': {
                 'type': 'string',
@@ -286,53 +317,108 @@ def es_mapping(mapping):
     }
 
 
-def collection_mapping(calculated_properties, collection, embed=True):
-    schema = calculated_properties.schema_for(collection.Item)
-    mapping = schema_mapping(collection.item_type, schema)
-    rev = collection.Item.rev
+def combined_mapping(types, *item_types):
+    combined = {
+        'type': 'object',
+        'properties': {},
+    }
+    for item_type in item_types:
+        schema = types[item_type].schema
+        mapping = schema_mapping(item_type, schema)
+        for k, v in mapping['properties'].items():
+            if k in combined:
+                assert v == combined[k]
+            else:
+                combined[k] = v
 
-    for name in rev.keys():
-        mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
+    return combined
 
+
+def aslist(value):
+    if isinstance(value, basestring):
+        return [value]
+    return value
+
+
+def combine_schemas(a, b):
+    if a == b:
+        return a
+    if not a:
+        return b
+    if not b:
+        return a
+    combined = {}
+    for name in set(a.keys()).intersection(b.keys()):
+        if a[name] == b[name]:
+            combined[name] = a[name]
+        elif name == 'type':
+            combined[name] = sorted(set(aslist(a[name]) + aslist(b[name])))
+        elif name == 'properties':
+            combined[name] = {}
+            for k in set(a[name].keys()).intersection(b[name].keys()):
+                combined[name][k] = combine_schemas(a[name][k], b[name][k])
+            for k in set(a[name].keys()).difference(b[name].keys()):
+                combined[name][k] = a[name][k]
+            for k in set(b[name].keys()).difference(a[name].keys()):
+                combined[name][k] = b[name][k]
+        elif name == 'items':
+            combined[name] = combine_schemas(a[name], b[name])
+    for name in set(a.keys()).difference(b.keys()):
+        combined[name] = a[name]
+    for name in set(b.keys()).difference(a.keys()):
+        combined[name] = b[name]
+    return combined
+
+
+def type_mapping(types, item_type, embed=True):
+    type_info = types[item_type]
+    schema = type_info.schema
+    mapping = schema_mapping(item_type, schema)
     if not embed:
         return mapping
 
-    root = find_root(collection)
-    for prop in collection.Item.embedded:
-        new_mapping = mapping
-        new_schema = schema
-        new_rev = rev
+    for prop in type_info.embedded:
+        s = schema
+        m = mapping
 
-        for i, p in enumerate(prop.split('.')):
-            name = None
+        for p in prop.split('.'):
+            ref_types = None
 
-            subschema = new_schema.get('properties', {}).get(p)
-            if subschema is not None:
-                subschema = subschema.get('items', subschema)
-                name = subschema.get('linkTo')
+            subschema = s.get('properties', {}).get(p)
+            if subschema is None:
+                msg = 'Unable to find schema for %r embedding %r in %r' % (p, prop, item_type)
+                raise ValueError(msg)
 
-            if name is None and p in new_rev:
-                name, rev_path = new_rev[p]
+            subschema = subschema.get('items', subschema)
+            if 'linkFrom' in subschema:
+                _ref_type, _ = subschema['linkFrom'].split('.', 1)
+                ref_types = [_ref_type]
+            elif 'linkTo' in subschema:
+                ref_types = subschema['linkTo']
+                if not isinstance(ref_types, list):
+                    ref_types = [ref_types]
 
-            # XXX Need to union with mouse_donor here
-            if name == 'donor':
-                name = 'human_donor'
+            if ref_types is None:
+                m = m['properties'][p]
+                s = subschema
+                continue
 
-            # XXX file has "linkTo": ["experiment", "dataset"]
+            ref_types = set(ref_types)
+            abstract = [t for t in ref_types if t in types.abstract]
+            for t in abstract:
+                ref_types.update(types.abstract[t].subtypes)
+            concrete = [t for t in ref_types if t in types.types]
+
+            s = {}
+            for t in concrete:
+                s = combine_schemas(s, types[t].schema)
 
             # Check if mapping for property is already an object
             # multiple subobjects may be embedded, so be carful here
-            if name is not None and new_mapping['properties'][p]['type'] == 'string':
-                new_mapping['properties'][p] = collection_mapping(
-                    calculated_properties, root.by_item_type[name], embed=False)
+            if m['properties'][p]['type'] == 'string':
+                m['properties'][p] = schema_mapping(p, s)
 
-            new_mapping = new_mapping['properties'][p]
-
-            if name is not None:
-                new_schema = root[name].Item.schema
-                new_rev = root[name].Item.rev
-            elif subschema is not None:
-                new_schema = subschema
+            m = m['properties'][p]
 
     boost_values = schema.get('boost_values', ())
     for value in boost_values:
@@ -355,7 +441,7 @@ def collection_mapping(calculated_properties, collection, embed=True):
 
 def run(app, collections=None, dry_run=False):
     index = 'encoded'
-    root = app.root_factory(app)
+    registry = app.registry
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
         try:
@@ -366,9 +452,7 @@ def run(app, collections=None, dry_run=False):
                 es.indices.create(index=index, body=index_settings())
 
     if not collections:
-        collections = ['meta'] + list(root.by_item_type.keys())
-
-    calculated_properties = app.registry['calculated_properties']
+        collections = ['meta'] + list(registry['collections'].by_item_type.keys())
 
     for collection_name in collections:
         if collection_name == 'meta':
@@ -376,8 +460,8 @@ def run(app, collections=None, dry_run=False):
             mapping = META_MAPPING
         else:
             doc_type = collection_name
-            collection = root.by_item_type[collection_name]
-            mapping = collection_mapping(calculated_properties, collection)
+            collection = registry['collections'].by_item_type[collection_name]
+            mapping = type_mapping(registry[TYPES], collection.item_type)
 
         if mapping is None:
             continue  # Testing collections

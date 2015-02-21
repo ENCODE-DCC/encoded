@@ -1,8 +1,4 @@
 from pkg_resources import resource_stream
-from pyramid.compat import (
-    native_,
-    unquote_bytes_to_wsgi,
-)
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
@@ -20,7 +16,6 @@ from uuid import UUID
 import codecs
 import posixpath
 
-from .schema_formats import is_accession
 from .server_defaults import SERVER_DEFAULTS
 
 utf8 = codecs.getreader("utf-8")
@@ -67,32 +62,6 @@ def mixinProperties(schema, resolver):
     return schema
 
 
-def lookup_resource(registry, base, path):
-    from .contentbase import CONNECTION
-    path = unquote_bytes_to_wsgi(native_(path))
-    connection = registry[CONNECTION]
-    try:
-        UUID(path)
-    except ValueError:
-        pass
-    else:
-        item = connection.get_by_uuid(path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    if is_accession(path):
-        item = connection.get_by_unique_key('accession', path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    if ':' in path:
-        item = connection.get_by_unique_key('alias', path)
-        if item is None:
-            raise KeyError(path)
-        return item
-    return find_resource(base, path)
-
-
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
     from .contentbase import Item
@@ -102,14 +71,14 @@ def linkTo(validator, linkTo, instance, schema):
 
     request = get_current_request()
     if validator.is_type(linkTo, "string"):
-        base = request.root.by_item_type.get(linkTo, request.context)
+        base = request.root.by_item_type.get(linkTo, request.root)
         linkTo = [linkTo] if linkTo else []
     elif validator.is_type(linkTo, "array"):
-        base = request.context  # XXX
+        base = request.root
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = lookup_resource(request.registry, base, instance)
+        item = find_resource(base, instance.replace(':', '%3A'))
         if item is None:
             raise KeyError()
     except KeyError:
@@ -144,7 +113,7 @@ def linkTo(validator, linkTo, instance, schema):
                 break
         if userid is not None:
             user = request.root[userid]
-            submits_for = user.upgrade_properties(finalize=False).get('submits_for')
+            submits_for = user.upgrade_properties().get('submits_for')
             if (submits_for is not None and
                     not any(UUID(uuid) == item.uuid for uuid in submits_for) and
                     not request.has_permission('submit_for_any')):
@@ -159,14 +128,14 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from .contentbase import Item
+    from .contentbase import Item, TYPES
 
     linkType, linkProp = linkFrom.split('.')
     if validator.is_type(instance, "string"):
         request = get_current_request()
         base = request.root.by_item_type[linkType]
         try:
-            item = lookup_resource(request.registry, base, instance.encode('utf-8'))
+            item = find_resource(base, instance.replace(':', '%3A'))
             if item is None:
                 raise KeyError()
         except KeyError:
@@ -192,8 +161,7 @@ def linkFrom(validator, linkFrom, instance, schema):
 
         # treat the link property as not required
         # because it will be filled in when the child is created/updated
-        subtype = request.root.by_item_type.get(linkType)
-        subschema = request.registry['calculated_properties'].schema_for(subtype.Item)
+        subschema = request.registry[TYPES][linkType].schema
         subschema = copy.deepcopy(subschema)
         if linkProp in subschema['required']:
             subschema['required'].remove(linkProp)
@@ -205,7 +173,7 @@ def linkFrom(validator, linkFrom, instance, schema):
             validated_instance = validator._validated[lv]
             del validator._validated[lv:]
             if path is not None:
-                item = lookup_resource(request.registry, request.root, path)
+                item = find_resource(request.root, path.replace(':', '%3A'))
                 validated_instance['uuid'] = str(item.uuid)
             elif 'uuid' in validated_instance:  # where does this come from?
                 del validated_instance['uuid']

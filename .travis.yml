@@ -19,7 +19,7 @@ matrix:
   include:
     - python: "2.7"
       env: BROWSER=
-    - python: "2.7"
+    - python: "3.4"
       env: BROWSER=Chrome
     - python: "3.4"
       env: BROWSER=

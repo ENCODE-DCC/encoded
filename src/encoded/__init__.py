@@ -58,7 +58,7 @@ def configure_engine(settings, test_setup=False):
             set_postgresql_statement_timeout(engine, timeout)
     if test_setup:
         return engine
-    if asbool(settings.get('create_tables', True)):
+    if asbool(settings.get('create_tables', False)):
         Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
@@ -159,8 +159,9 @@ def main(global_config, **local_config):
     config.include('.authentication')
     config.include('.validation')
     config.include('.predicates')
-    config.include('.contentbase')
     config.include('.indexing')
+    config.include('.es_storage')
+    config.include('.contentbase')
     config.include('.server_defaults')
     config.include('.types')
     config.include('.views')

@@ -3,6 +3,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     collection,
+    calculated_property,
 )
 from .base import (
     Item,

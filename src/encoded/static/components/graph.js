@@ -1,9 +1,11 @@
+
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
+var BrowserFeat = require('./mixins').BrowserFeat;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -17,6 +19,7 @@ var $script = require('scriptjs');
 // Constructor for a graph architecture
 function JsonGraph(id) {
     this.id = id;
+    this.root = true;
     this.type = '';
     this.label = [];
     this.shape = '';
@@ -32,10 +35,10 @@ function JsonGraph(id) {
 // cssClass: optional CSS class to assign to the SVG object for this node
 // type: Optional text type to track the type of node this is
 // parentNode: Optional reference to parent node; defaults to graph root
-JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerRadius, parentNode) {
+JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
     var newNode = {};
     newNode.id = id;
-    newNode.type = type;
+    newNode.type = options.type;
     newNode.label = [];
     if (typeof label === 'string' || typeof label === 'number') {
         // label is a string; assign to first array element
@@ -44,9 +47,17 @@ JsonGraph.prototype.addNode = function(id, label, cssClass, type, shape, cornerR
         // Otherwise, assume label is an array; clone it
         newNode.label = label.slice(0);
     }
-    newNode.metadata = {cssClass: cssClass, shape: shape, cornerRadius: cornerRadius};
+    newNode.metadata = {
+        cssClass: options.cssClass, // CSS class
+        shape: options.shape, // Shape to use for node; see dagre-d3 for options
+        cornerRadius: options.cornerRadius, // # pixels to round corners of nodes
+        ref: options.ref, // Reference to object this node represents
+        contributing: options.contributing, // True if this is a contributing file
+        error: options.error, // True if this is an error node
+        accession: options.accession // Accession number for misc reference if needed (errors mostly)
+    };
     newNode.nodes = [];
-    var target = (parentNode && parentNode.nodes) || this.nodes;
+    var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
     target.push(newNode);
 };
 
@@ -97,7 +108,7 @@ var Graph = module.exports.Graph = React.createClass({
                 graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
                     rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
-                if (parent.id) {
+                if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
                 if (node.nodes.length) {
@@ -120,11 +131,11 @@ var Graph = module.exports.Graph = React.createClass({
     drawGraph: function(el) {
         var d3 = require('d3');
         var dagreD3 = require('dagre-d3');
-        var svg = d3.select(el).select('svg');
+        var svg = this.savedSvg = d3.select(el).select('svg');
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
-            .setGraph({rankdir: "TB"})
+            .setGraph({rankdir: 'TB'})
             .setDefaultEdgeLabel(function() { return {}; });
 
         // Convert from given node architecture to the dagre nodes and edges
@@ -132,7 +143,7 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Run the renderer. This is what draws the final graph.
         var render = new dagreD3.render();
-        render(d3.select("svg g"), g);
+        render(svg.select('g'), g);
 
         // Dagre-D3 has a width and height for the graph.
         // Set the viewbox's and viewport's width and height to that plus a little extra.
@@ -144,33 +155,44 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     componentDidMount: function () {
-        globals.bindEvent(window, 'resize', this.handleResize);
+        if (BrowserFeat.getBrowserCaps('svg')) {
+            // Delay loading dagre for Jest testing compatibility;
+            // Both D3 and Jest have their own conflicting JSDOM instances
+            $script('dagre', function() {
+                var d3 = require('d3');
+                var dagreD3 = require('dagre-d3');
+                var el = this.refs.graphdisplay.getDOMNode();
+                this.dagreLoaded = true;
 
-        // Delay loading dagre for Jest testing compatibility;
-        // Both D3 and Jest have their own conflicting JSDOM instances
-        $script('dagre', function() {
-            var d3 = require('d3');
-            var dagreD3 = require('dagre-d3');
-            var el = this.refs.graphdisplay.getDOMNode();
-            this.dagreLoaded = true;
+                // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                var svg = d3.select(el).insert('svg', '#graph-node-info')
+                    .attr('preserveAspectRatio', 'xMidYMid')
+                    .attr('version', '1.1');
+                var svgGroup = svg.append("g");
 
-            // Add SVG element to the graph component, and assign it classes, sizes, and a group
-            var svg = d3.select(el).insert('svg', '#graph-node-info')
-                .attr('id', 'graphsvg')
-                .attr('preserveAspectRatio', 'xMidYMid');
-            var svgGroup = svg.append("g");
+                // Draw the graph into the panel
+                this.drawGraph(el);
 
-            // Draw the graph into the panel
-            this.drawGraph(el);
-
-            // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-            var reactThis = this;
-            svg.selectAll("g.node").each(function(nodeId) {
-                globals.bindEvent(this, 'click', function(e) {
-                    reactThis.props.nodeClickHandler(e, nodeId);
+                // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+                var reactThis = this;
+                svg.selectAll("g.node").each(function(nodeId) {
+                    globals.bindEvent(this, 'click', function(e) {
+                        reactThis.props.nodeClickHandler(e, nodeId);
+                    });
                 });
-            });
-        }.bind(this));
+            }.bind(this));
+        } else {
+            // Output text indicating that graphs aren't supported.
+            var el = this.refs.graphdisplay.getDOMNode();
+            var para = document.createElement('p');
+            para.className = 'browser-error';
+            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+            el.appendChild(para);
+
+            // Disable the download button
+            el = this.refs.dlButton.getDOMNode();
+            el.setAttribute('disabled', 'disabled');
+        }
     },
 
     // State change; redraw the graph
@@ -181,281 +203,83 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
+    handleClick: function() {
+
+        // Collect CSS styles that apply to the graph and insert them into the given SVG element
+        function attachStyles(el) {
+            var stylesText = '';
+            var sheets = document.styleSheets;
+
+            // Search every style in the style sheet(s) for those applying to graphs.
+            // Note: Not using ES5 looping constructs because these aren’t real arrays
+            for (var i = 0; i < sheets.length; i++) {
+                var rules = sheets[i].cssRules;
+                for (var j = 0; j < rules.length; j++) {
+                    var rule = rules[j];
+
+                    // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
+                    // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
+                    // FF(31)'s substring is much faster than indexOf.
+                    if (typeof(rule.style) != 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
+                        // If any elements use this style, add the style's CSS text to our style text accumulator.
+                        var elems = el.querySelectorAll(rule.selectorText);
+                        if (elems.length) {
+                            stylesText += rule.selectorText + " { " + rule.style.cssText + " }\n";
+                        }
+                    }
+                }
+            }
+
+            // Insert the collected SVG styles into a new style element
+            var styleEl = document.createElement('style');
+            styleEl.setAttribute('type', 'text/css');
+            styleEl.innerHTML = "/* <![CDATA[ */\n" + stylesText + "\n/* ]]> */";
+
+            // Insert the new style element into the beginning of the given SVG element
+            el.insertBefore(styleEl, el.firstChild);
+        }
+
+        // Going to be manipulating the SVG node, so make a clone to make GC’s job harder
+        var svgNode = this.savedSvg.node().cloneNode(true);
+
+        // Attach graph CSS to SVG node clone
+        attachStyles(svgNode);
+
+        // Turn SVG node clone into a data url and attach to a new Image object. This begins "loading" the image.
+        var serializer = new XMLSerializer();
+        var svgXml = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+            serializer.serializeToString(svgNode);
+        var img = new Image();
+        img.src = 'data:image/svg+xml;base64,' + window.btoa(svgXml);
+
+        // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
+        img.onload = function() {
+            // Make a new memory-based canvas and draw the image into it.
+            var canvas = document.createElement('canvas');
+            canvas.width = img.width * 2;
+            canvas.height = img.height * 2;
+            var context = canvas.getContext('2d');
+            context.drawImage(img, 0, 0, img.width * 2, img.height * 2);
+
+            // Make the image download by making a fake <a> and pretending to click it.
+            var a = document.createElement('a');
+            a.download = this.props.graph.id ? this.props.graph.id + '.png' : 'graph.png';
+            a.href = canvas.toDataURL('image/png');
+            a.setAttribute('data-bypass', 'true');
+            document.body.appendChild(a);
+            a.click();
+        }.bind(this);
+    },
+
     render: function() {
         return (
             <div className="panel-full">
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}>
+                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
+                <div className="graph-dl clearfix">
+                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
         );
-    }
-});
-
-
-// This component should really be in experiments.js, but it's here temporarily
-// so that both experiment.js and dataset.js can use it without a cyclical dependency.
-
-var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
-    // Create nodes based on all files in this experiment
-    assembleGraph: function() {
-        var context = this.props.context;
-        var files = this.props.files || context.files;
-        var jsonGraph;
-
-        // Save list of files and analysis steps so we can click-test them later
-        this.fileList = files ? files.concat(context.contributing_files) : null; // Copy so we can modify
-        this.stepLists = [];
-
-        // Only produce a graph if there's at least one file with an analysis step
-        // and the file has derived from other files.
-        if (files && files.some(function(file) {
-            return file.derived_from && file.derived_from.length && file.step_run;
-        })) {
-            // Create an empty graph architecture
-            jsonGraph = new JsonGraph('');
-
-            // Create nodes for the replicates
-            context.replicates.forEach(function(replicate) {
-                jsonGraph.addNode(replicate.biological_replicate_number, 'Replicate ' + replicate.biological_replicate_number, 'pipeline-replicate', 'rp', 'rect', 0);
-            });
-
-            // Add files and their steps as nodes to the graph
-            files.forEach(function(file) {
-                var fileId = file['@id'];
-                var replicateNode = file.replicate ? jsonGraph.getNode(file.replicate.biological_replicate_number) : null;
-
-                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
-                // to show that this is a file node.
-                if (!jsonGraph.getNode(fileId)) {
-                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16, replicateNode);
-                }
-
-                // If the node has parents, build the edges to the analysis step between this node and its parents
-                if (file.derived_from && file.derived_from.length && file.step_run) {
-                    // Remember this step for later hit testing
-                    this.stepLists.push(file.step_run);
-
-                    // Make the ID of the node using the first step in the array, and it connects to
-                    var stepId = file.step_run.analysis_step['@id'] + '&' + file['@id'];
-
-                    // Make a label for the step node
-                    var label = file.step_run.analysis_step.analysis_step_types;
-
-                    // Insert a node for the analysis step, with an ID combining the IDs of this step and the file that
-                    // points to it; there may be more than one copy of this step on the graph if more than one
-                    // file points to it, so we have to uniquely ID each analysis step copy with the file's ID.
-                    // 'as' type identifies these as analysis step nodes. Also add an edge from the file to the
-                    // analysis step.
-                    jsonGraph.addNode(stepId, label,
-                        'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), 'as', 'rect', 4, replicateNode);
-                    jsonGraph.addEdge(stepId, fileId);
-
-                    // Draw an edge from the analysis step to each of the derived_from files
-                    file.derived_from.forEach(function(derived) {
-                        jsonGraph.addEdge(derived['@id'], stepId);
-                    });
-                }
-            }, this);
-
-            // Add contributing files to the graph
-            context.contributing_files.forEach(function(file) {
-                var fileId = file['@id'];
-
-                // Assemble a single file node; can have file and step nodes in this graph, so use 'fi' type
-                // to show that this is a file node.
-                if (!jsonGraph.getNode(fileId)) {
-                    jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                        'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''), 'fi', 'rect', 16);
-                }
-            }, this);
-        }
-        return jsonGraph;
-    },
-
-    getInitialState: function() {
-        return {
-            infoNodeId: '' // @id of node whose info panel is open
-        };
-    },
-
-    detailNodes: function(jsonGraph, infoNodeId) {
-        var meta;
-        var selectedFile;
-
-        // Find data matching selected node, if any
-        if (infoNodeId) {
-            var node = jsonGraph.getNode(infoNodeId);
-            if (node) {
-                switch(node.type) {
-                    case 'fi':
-                        // The node is for a file
-                        selectedFile = _(this.fileList).find(function(file) {
-                            return file['@id'] === infoNodeId;
-                        });
-
-                        if (selectedFile) {
-                            meta = (
-                                <dl className="key-value">
-                                    {selectedFile.file_format ?
-                                        <div data-test="format">
-                                            <dt>Format</dt>
-                                            <dd>{selectedFile.file_format}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.output_type ?
-                                        <div data-test="output">
-                                            <dt>Output</dt>
-                                            <dd>{selectedFile.output_type}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.paired_end ?
-                                        <div data-test="pairedend">
-                                            <dt>Paired end</dt>
-                                            <dd>{selectedFile.paired_end}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.replicate ?
-                                        <div data-test="replicate">
-                                            <dt>Associated replicates</dt>
-                                            <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.submitted_by && selectedFile.submitted_by.title ?
-                                        <div data-test="submitted">
-                                            <dt>Added by</dt>
-                                            <dd>{selectedFile.submitted_by.title}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.date_created ?
-                                        <div data-test="datecreated">
-                                            <dt>Date added</dt>
-                                            <dd>{selectedFile.date_created}</dd>
-                                        </div>
-                                    : null}
-
-                                    {selectedFile.step_run ?
-                                        <div>
-                                            <dt>Software</dt>
-                                            <dd>
-                                                {selectedFile.step_run.analysis_step.software_versions.map(function(version, i) {
-                                                    return (
-                                                        <a href={version.software['@id']} className="software-version">
-                                                            <span className="software">{version.software.name}</span>
-                                                            {version.version ?
-                                                                <span className="version">{version.version}</span>
-                                                            : null}
-                                                        </a>
-                                                    );
-                                                })}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            );
-                        }
-
-                        break;
-
-                    case 'as':
-                        // The node is for an analysis step
-                        var analysisStepId = node.id.slice(0, node.id.indexOf('&'));
-                        var selectedStep = _(this.stepLists).find(function(step) {
-                            return step.analysis_step['@id'] === analysisStepId;
-                        });
-
-                        var step = selectedStep.analysis_step;
-                        return (
-                            <div>
-                                <dl className="key-value">
-                                    <div data-test="steptype">
-                                        <dt>Step type</dt>
-                                        <dd>{step.analysis_step_types.join(', ')}</dd>
-                                    </div>
-
-                                    {step.input_file_types && step.input_file_types.length ?
-                                        <div data-test="inputtypes">
-                                            <dt>Input file types</dt>
-                                            <dd>{step.input_file_types.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.output_file_types && step.output_file_types.length ?
-                                        <div data-test="outputtypes">
-                                            <dt>Output file types</dt>
-                                            <dd>{step.output_file_types.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.qa_stats_generated && step.qa_stats_generated.length ?
-                                        <div data-test="steptypes">
-                                            <dt>QA statistics</dt>
-                                            <dd>{step.qa_stats_generated.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {step.software_versions && step.software_versions.length ?
-                                        <div>
-                                            <dt>Software</dt>
-                                            <dd>
-                                                {step.software_versions.map(function(version) {
-                                                    return (
-                                                        <a href={version.software['@id']} className="software-version">
-                                                            <span className="software">{version.software.name}</span>
-                                                            {version.version ?
-                                                                <span className="version">{version.version}</span>
-                                                            : null}
-                                                        </a>
-                                                    );
-                                                })}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            </div>
-                        );
-
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
-
-        return meta;
-    },
-
-    handleNodeClick: function(e, nodeId) {
-        e.stopPropagation(); e.preventDefault();
-        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
-    },
-
-    render: function() {
-        var context = this.props.context;
-
-        // Build node graph of the files and analysis steps with this experiment
-        var jsonGraph = this.assembleGraph();
-        if (jsonGraph) {
-            var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
-            return (
-                <div>
-                    <h3>Files generated by pipeline</h3>
-                    <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                        <div id="graph-node-info">
-                            {meta ? <div className="panel-insert">{meta}</div> : null}
-                        </div>
-                    </Graph>
-                </div>
-            );
-        } else {
-            return null;
-        }
     }
 });

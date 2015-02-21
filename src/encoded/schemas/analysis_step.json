@@ -11,7 +11,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted"}
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/notes"}
     ],
     "properties": {
         "schema_version": {
@@ -32,6 +33,7 @@
                  "type": "string",
                  "enum": [
                      "genome indexing",
+                     "genome segmentation",
                      "filtering",
                      "file format conversion",
                      "QA calculation",
@@ -39,7 +41,10 @@
                      "IDR",
                      "alignment",
                      "signal calling",
-                     "quantification"
+                     "quantification",
+                    "transcript identification",
+                    "transcriptome assembly",
+                    "variant annotation"
                  ]
              }
         },
@@ -62,17 +67,27 @@
                 "description": "A file type used as input for the analysis.",
                 "type": "string",
                 "enum": [
-                    "bam",
                     "sam",
-                    "fastq",
-                    "tagAlign",
-                    "narrowPeak",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
+                    "bigWig",
                     "broadPeak",
-                    "tsv",
-                    "csv",
-                    "gtf",
+                    "bed_broadPeak",
                     "fasta",
-                    "bed"
+                    "fastq",
+                    "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
+                    "tsv",
+                    "csv"
                 ]
             }
         },
@@ -85,14 +100,25 @@
                 "description": "A file type generated as output for the analysis.",
                 "type": "string",
                 "enum": [
-                    "bam",
                     "sam",
-                    "tagAlign",
-                    "narrowPeak",
-                    "broadPeak",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
                     "bigWig",
-                    "postScript",
+                    "broadPeak",
+                    "bed_broadPeak",
+                    "fasta",
+                    "fastq",
                     "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
                     "tsv",
                     "csv"
                 ]
@@ -117,6 +143,18 @@
                 "comment": "See analysis_step.json for available identifiers.",
                 "type": "string",
                 "linkTo": "analysis_step"
+            }
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
             }
         }
     }
