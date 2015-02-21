@@ -27,6 +27,7 @@ var Param = module.exports.Param = React.createClass({
     },
 
     componentWillReceiveProps: function (nextProps) {
+        if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
             nextProps.session === this.props.session) return;

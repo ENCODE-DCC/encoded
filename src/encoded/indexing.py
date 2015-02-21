@@ -18,6 +18,7 @@ from .contentbase import (
     BeforeModified,
     Created,
 )
+from sqlalchemy.exc import StatementError
 from .embedding import embed
 from .renderers import json_renderer
 from .stats import ElasticsearchConnectionMixin
@@ -29,6 +30,7 @@ import datetime
 import functools
 import json
 import logging
+import pytz
 import transaction
 
 from .mp_indexing import (
@@ -39,6 +41,7 @@ from .mp_indexing import (
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = 'encoded:elasticsearch'
 INDEX = 'encoded'
+SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 
 def includeme(config):
@@ -85,17 +88,22 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
+    # Setting request.datastore here only works because routed views are not traversed.
+    request.datastore = 'database'
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
+    recovery = request.json.get('recovery', False)
     es = request.registry[ELASTIC_SEARCH]
 
     session = DBSession()
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     query = connection.execute("""
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
+        SET TRANSACTION ISOLATION LEVEL {}, READ ONLY, DEFERRABLE;
         SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();
-    """)
+    """.format('REPEATABLE READ' if recovery else 'SERIALIZABLE'))
+    # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
+    # which is not available in recovery.
     result, = query.fetchall()
     xmin, snapshot_id = result  # lowest xid that is still in progress
 
@@ -145,7 +153,7 @@ def index(request):
             return result
 
         es.indices.refresh(index=INDEX)
-        res = es.search(index=INDEX, body={
+        res = es.search(index=INDEX, size=SEARCH_MAX, body={
             'filter': {
                 'or': [
                     {
@@ -164,21 +172,25 @@ def index(request):
             },
             '_source': False,
         })
-        referencing = {hit['_id'] for hit in res['hits']['hits']}
-        invalidated = referencing | updated
-        result.update(
-            max_xid=max_xid,
-            renamed=renamed,
-            updated=updated,
-            referencing=len(referencing),
-            invalidated=len(invalidated),
-            txn_count=txn_count,
-            first_txn_timestamp=first_txn.isoformat(),
-        )
+        if res['hits']['total'] > SEARCH_MAX:
+            invalidated = all_uuids(request.root)
+        else:
+            referencing = {hit['_id'] for hit in res['hits']['hits']}
+            invalidated = referencing | updated
+            result.update(
+                max_xid=max_xid,
+                renamed=renamed,
+                updated=updated,
+                referencing=len(referencing),
+                invalidated=len(invalidated),
+                txn_count=txn_count,
+                first_txn_timestamp=first_txn.isoformat(),
+            )
 
     if not dry_run:
         if pool_info:
-            result['indexed'] = pool_update_objects(request, invalidated, xmin, snapshot_id, pool_info)
+            result['indexed'] = pool_update_objects(
+                request, invalidated, xmin, snapshot_id, pool_info)
         else:
             result['indexed'] = es_update_objects(request, invalidated, xmin)
         if record:
@@ -187,7 +199,7 @@ def index(request):
         es.indices.refresh(index=INDEX)
 
     if first_txn is not None:
-        result['lag'] = str(datetime.datetime.now() - first_txn)
+        result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
 
     return result
 
@@ -213,14 +225,12 @@ def all_uuids(root, types=None):
 
 def es_update_objects(request, uuids, xmin):
     print 'es_update_objects'
-    es = request.registry[ELASTIC_SEARCH]
     i = -1
     for i, uuid in enumerate(uuids):
         path = es_update_object(request, uuid, xmin)
 
         if (i + 1) % 50 == 0:
             log.info('Indexing %s %d', path, i + 1)
-            es.indices.flush(index=INDEX)
 
     return i + 1
 
@@ -237,8 +247,11 @@ def es_update_object(request, uuid, xmin):
     try:
         es.index(
             index=INDEX, doc_type=doctype, body=result,
-            id=str(uuid), version=xmin, version_type='external',
+            id=str(uuid), version=xmin, version_type='external_gte',
         )
+    except StatementError:
+        # Can't reconnect until invalid transaction is rolled back
+        raise
     except ConflictError:
         log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
     except Exception:
@@ -278,10 +291,10 @@ def record_updated_uuid_paths(event):
 def record_initial_back_revs(event):
     context = event.object
     initial = event.request._initial_back_rev_links
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     initial[context.uuid] = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
 
 
@@ -319,7 +332,7 @@ def es_update_data(event):
         uuid for uuid, names in updated_uuid_paths.items()
         if len(names) > 1
     ]
-    updated = data['updated'] = updated_uuid_paths.keys()
+    updated = data['updated'] = list(updated_uuid_paths.keys())
 
     response = request.response
     response.headers['X-Updated'] = ','.join(updated)
@@ -342,9 +355,9 @@ def es_update_data(event):
     if login is not None:
         namespace, userid = login.split('.', 1)
 
-    if namespace != 'mailto':
+    if namespace == 'mailto':
         edits = request.session.setdefault('edits', [])
-        edits.append([xid, updated, renamed])
+        edits.append([xid, list(updated), list(renamed)])
         edits[:] = edits[-10:]
 
     # XXX How can we ensure consistency here but update written records

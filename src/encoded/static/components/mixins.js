@@ -494,6 +494,20 @@ module.exports.HistoryAndTriggers = {
 
         options = options || {};
         href = url.resolve(this.props.href, href);
+
+        if (!this.historyEnabled) {
+            if (options.replace) {
+                window.location.replace(href);
+            } else {
+                var old_path = window.location.pathname + window.location.search;
+                window.location.assign(href);
+                if (old_path == href) {
+                    window.location.reload();
+                }
+            }
+            return;
+        }
+
         var xhr = this.props.contextRequest;
 
         if (xhr && xhr.state() == 'pending') {
@@ -632,11 +646,11 @@ module.exports.BrowserFeat = {
     feat: {},
 
     // Return object with browser capabilities; return from cache if available
-    getBrowserCaps: function () {
+    getBrowserCaps: function (feat) {
         if (Object.keys(this.feat).length === 0) {
             this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
         }
-        return this.feat;
+        return feat ? this.feat[feat] : this.feat;
     },
 
     setHtmlFeatClass: function() {

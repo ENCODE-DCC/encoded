@@ -51,12 +51,27 @@
             "type": "array",
             "default": [],
             "items": {
+                "uniqueKey": "alias",
                 "title": "Lab alias",
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
                 "pattern": "^\\S+:\\S+"
             }
+        }
+    },
+    "accessioned_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum": [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked"
+            ]
         }
     },
     "standard_status": {
@@ -277,6 +292,7 @@
                 "UV radiation",
                 "PTT",
                 "transposon",
+                "TMP/UV",
                 "unknown",
                 "none" 
             ]
@@ -293,6 +309,29 @@
                 "type":  "string",
                 "linkTo": "construct"
             }
+        },
+        "mutated_gene": {
+            "title": "Mutated gene",
+            "description": "The gene that was altered/disrupted resulting in a loss of function.",
+            "comment": "See target.json for available identifiers.",
+            "type": "string",
+            "linkTo": "target"
+        }
+    },
+    "assay": {
+        "assay_term_name": {
+            "@id": null,
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "default": "",
+            "type": "string"
+        },
+        "assay_term_id": {
+            "@type": "@id",
+            "title": "Assay ID",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
+            "type": "string",
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
         }
     }
 }

@@ -12,6 +12,7 @@ For the development.ini you must supply the paster app name:
     %(prog)s development.ini --app-name app
 
 """
+from future.utils import iteritems
 from pyramid.traversal import resource_path
 import logging
 import pytz
@@ -21,7 +22,6 @@ pacific = pytz.timezone('US/Pacific')
 EPILOG = __doc__
 
 logger = logging.getLogger(__name__)
-
 
 
 def internal_app(configfile, app_name=None, username=None):
@@ -47,13 +47,14 @@ def run(testapp, collections=None, exclude=None, dry_run=False):
         if collection_name in exclude:
             continue
         collection = root[collection_name]
-        if collection.schema is None or 'date_created' not in collection.schema.get('properties', ()):
+        if collection.type_info.schema is None or \
+                'date_created' not in collection.type_info.schema.get('properties', ()):
             logger.info('Skipped %s', collection_name)
             continue
         count = 0
         errors = 0
         logger.info('Upgrading %s', collection_name)
-        for uuid, item in collection.iteritems():
+        for uuid, item in iteritems(collection):
             history = item.model.data[''].history
             first_propsheet = history[0]
             if 'date_created' in first_propsheet.properties:

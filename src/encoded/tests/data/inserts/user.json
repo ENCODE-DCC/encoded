@@ -1057,5 +1057,22 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "627eedbc-7cb3-4de3-9743-a86266e435a6"
+    },
+    {
+        "email": "vmalladi@stanford.edu",
+        "first_name": "Venkat",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Malladi",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "9e889180-9db1-11e4-bd06-0800200c9a66"
     }
 ]

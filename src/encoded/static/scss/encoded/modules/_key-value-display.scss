@@ -129,3 +129,38 @@ dd ul, .multi-value {
 .para-text {
     line-height: 1.6 !important;
 }
+
+.software-version {
+    display: inline-block;
+    padding: 0;
+    margin-right: 5px;
+    margin-bottom: 2px;
+    @include border-radius(2px);
+    border: 1px solid #c0c0c0;
+    color: #333;
+    font-size: 13px;
+    text-decoration: none;
+
+    &:hover {
+        color: #eee;
+        background-color: #333;
+
+        .version {
+            color: #fff;
+            background-color: #808080;
+        }
+    }
+
+    .software {
+        float: left;
+        padding: 0 5px;
+    }
+
+    .version {
+        float: left;
+        padding: 0 5px;
+        font-weight: bold;
+        background-color: #e0e0e0;
+    }
+}
+

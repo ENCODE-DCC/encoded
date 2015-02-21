@@ -12,6 +12,7 @@ import logging
 import os.path
 import select
 import shutil
+import sys
 
 EPILOG = __doc__
 
@@ -60,7 +61,7 @@ def main():
         for process in processes:
             try:
                 for line in process.stdout:
-                    print line,
+                    sys.stdout.write(line.decode('utf-8'))
             except IOError:
                 pass
             process.wait()
@@ -83,7 +84,7 @@ def main():
         docsdir = [resource_filename('encoded', 'tests/data/documents/')]
         load_all(testapp, inserts, docsdir)
 
-    print 'Started. ^C to exit.'
+    print('Started. ^C to exit.')
 
     stdouts = [p.stdout for p in processes]
 
@@ -91,12 +92,12 @@ def main():
     while True:
         readable, writable, err = select.select(stdouts, [], stdouts, 5)
         for stdout in readable:
-            for line in iter(stdout.readline, ''):
-                print line,
+            for line in iter(stdout.readline, b''):
+                sys.stdout.write(line.decode('utf-8'))
         if err:
             for stdout in err:
-                for line in iter(stdout.readline, ''):
-                    print line,
+                for line in iter(stdout.readline, b''):
+                    sys.stdout.write(line.decode('utf-8'))
             break
 
 if __name__ == '__main__':

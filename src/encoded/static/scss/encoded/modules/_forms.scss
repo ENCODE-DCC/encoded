@@ -141,3 +141,14 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 		margin-left: 1em;
 	}
 }
+
+.collapsible {
+	padding-left: 20px;
+	position: relative;
+	.collapsible-trigger {
+		position: absolute;
+		top: 12px;
+		left: 0;
+		cursor: pointer;
+	}
+}

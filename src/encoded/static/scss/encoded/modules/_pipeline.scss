@@ -1,0 +1,101 @@
+$pipeline-node-types:
+    (file, #FFF5BA),
+    (analysis-step, #D3E9FF);
+
+@each $node-type, $color in $pipeline-node-types {
+    // Audit icons
+    g.pipeline-node-#{$node-type} {
+        font-size: 14px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        fill: $color;
+
+        &.active {
+            fill: desaturate(darken($color, 20%), 30%);
+
+            rect, ellipse {
+                stroke: #606060;
+                stroke-width: 3px;
+            }
+            line {
+                stroke: #606060;
+                stroke-width: 1px;
+            }
+        }
+
+        &.error {
+            fill: #ffc0c0;
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        text {
+            fill: #000;
+        }
+    }
+}
+
+g.label {
+    font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    fill: #000;
+}
+
+g.node {
+    rect, ellipse {
+        stroke: #a0a0a0;
+        stroke-width: 1.5px;
+    }
+
+    &.contributing {
+        stroke-dasharray: 4,2; 
+    }
+
+    line {
+        stroke: #a0a0a0;
+        stroke-width: .5px;
+    }
+}
+
+g.cluster {
+    rect {
+        fill: #f0f8f0;
+        stroke: #c0c0c0;
+    }
+
+    tspan {
+        font-size: 14px;
+    }
+}
+
+g.edgePath {
+    path {
+        stroke: #c0c0c0;
+        stroke-width: 1.5px;
+    }
+}
+
+.graph-display {
+    position: relative;
+    overflow: scroll;
+    background-color: #f8f8f8;
+
+    svg {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+.select-note {
+    font-style: italic;
+    color: #c0c0c0;
+}
+
+.graph-dl {
+    margin: 0;
+    padding: 5px;
+    border-bottom: 1px solid #e8e8e8;
+}

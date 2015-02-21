@@ -1,6 +1,10 @@
-from typedsheets import cast_row_values
+from past.builtins import basestring
+from .typedsheets import cast_row_values
+from functools import reduce
 import logging
 import os.path
+
+text = type(u'')
 
 logger = logging.getLogger('encoded')
 logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
@@ -34,11 +38,17 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
-    'file',
-    'image',
-    'page',
     'publication',
     'software',
+    'software_version',
+    'analysis_step',
+    'pipeline',
+    'workflow_run',
+    'analysis_step_run',
+    'file',
+    'quality_metric',
+    'image',
+    'page',
 ]
 
 ##############################################################################
@@ -62,7 +72,7 @@ def noop(dictrows):
 def remove_keys_with_empty_value(dictrows):
     for row in dictrows:
         yield {
-            k: v for k, v in row.iteritems()
+            k: v for k, v in row.items()
             if k and v not in ('', None, [])
         }
 
@@ -74,8 +84,8 @@ def remove_keys_with_empty_value(dictrows):
 def warn_keys_with_unknown_value_except_for(*keys):
     def component(dictrows):
         for row in dictrows:
-            for k, v in row.iteritems():
-                if k not in keys and unicode(v).lower() == 'unknown':
+            for k, v in row.items():
+                if k not in keys and text(v).lower() == 'unknown':
                     logger.warn('unknown %r for %s' % (k, row.get('uuid', '<empty uuid>')))
             yield row
 
@@ -95,7 +105,7 @@ def skip_rows_missing_all_keys(*keys):
 def skip_rows_with_all_key_value(**kw):
     def component(dictrows):
         for row in dictrows:
-            if all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+            if all(row[k] == v if k in row else False for k, v in kw.items()):
                 row['_skip'] = True
             yield row
 
@@ -105,7 +115,7 @@ def skip_rows_with_all_key_value(**kw):
 def skip_rows_without_all_key_value(**kw):
     def component(dictrows):
         for row in dictrows:
-            if not all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+            if not all(row[k] == v if k in row else False for k, v in kw.items()):
                 row['_skip'] = True
             yield row
 
@@ -142,7 +152,7 @@ def add_attachment(docsdir):
             try:
                 path = find_doc(docsdir, filename)
                 row['attachment'] = attachment(path)
-            except ValueError, e:
+            except ValueError as e:
                 row['_errors'] = repr(e)
             yield row
 
@@ -160,7 +170,7 @@ def read_single_sheet(path, name=None):
     """ Read an xlsx, csv or tsv from a zipfile or directory
     """
     from zipfile import ZipFile
-    import xlreader
+    from . import xlreader
 
     if name is None:
         root, ext = os.path.splitext(path)
@@ -226,7 +236,7 @@ def read_single_sheet(path, name=None):
 
 
 def read_xl(stream):
-    import xlreader
+    from . import xlreader
     return cast_row_values(xlreader.DictReader(stream))
 
 
@@ -236,8 +246,10 @@ def read_csv(stream, **kw):
 
 
 def read_json(stream):
+    import codecs
     import json
-    obj = json.load(stream)
+    utf8 = codecs.getreader('utf-8')
+    obj = json.load(utf8(stream))
     if isinstance(obj, dict):
         return [obj]
     return obj
@@ -287,7 +299,7 @@ def make_request(testapp, item_type, method):
             # Keys with leading underscores are for communicating between
             # sections
             value = row['_value'] = {
-                k: v for k, v in row.iteritems() if not k.startswith('_') and not k.startswith('@')
+                k: v for k, v in row.items() if not k.startswith('_') and not k.startswith('@')
             }
 
             url = row['_url']
@@ -306,7 +318,7 @@ def trim(value):
     """ Shorten excessively long fields in error log
     """
     if isinstance(value, dict):
-        return {k: trim(v) for k, v in value.iteritems()}
+        return {k: trim(v) for k, v in value.items()}
     if isinstance(value, list):
         return [trim(v) for v in value]
     if isinstance(value, basestring) and len(value) > 160:
@@ -399,7 +411,7 @@ def attachment(path):
     filename = os.path.basename(path)
     mime_type, encoding = mimetypes.guess_type(path)
     major, minor = mime_type.split('/')
-    detected_type = magic.from_file(path, mime=True)
+    detected_type = magic.from_file(path, mime=True).decode('ascii')
 
     # XXX This validation logic should move server-side.
     if not (detected_type == mime_type or
@@ -410,7 +422,7 @@ def attachment(path):
         attach = {
             'download': filename,
             'type': mime_type,
-            'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()))
+            'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()).decode('ascii'))
         }
 
         if mime_type in ('application/pdf', 'text/plain', 'text/tab-separated-values'):
@@ -460,7 +472,12 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'strain_background', 'age',  # 'flowcell_details.machine',
+            'strain_background', 'age', 'version',
+            'model_organism_health_status',
+            'model_organism_age',
+            'model_organism_sex',
+            'mouse_life_stage',
+            # 'flowcell_details.machine',
         ),
         add_attachment(docsdir),
     ]
@@ -498,6 +515,9 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('related_files', 'possible_controls'),
     ],
+    'workflow_run': [
+        remove_keys('input_files'),
+    ],
 }
 
 
@@ -523,6 +543,9 @@ PHASE2_PIPELINES = {
     ],
     'dataset': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'workflow_run': [
+        skip_rows_missing_all_keys('input_files'),
     ],
 }
 

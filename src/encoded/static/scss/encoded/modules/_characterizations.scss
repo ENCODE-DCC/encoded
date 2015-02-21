@@ -247,6 +247,7 @@ $characterization-figure-height: 200px;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
+        margin-right: 5px;
 
         .status-list li {
             height: 28px;

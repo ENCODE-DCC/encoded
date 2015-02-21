@@ -1,4 +1,5 @@
 import os
+import sys
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -13,6 +14,7 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'future',
     'humanfriendly',
     'jsonschema',
     'loremipsum',
@@ -34,6 +36,11 @@ requires = [
     'xlrd',
     'zope.sqlalchemy',
 ]
+
+if sys.version_info.major == 2:
+    requires.extend([
+        'subprocess32',
+    ])
 
 tests_require = [
     'behave',
@@ -61,7 +68,6 @@ setup(
     },
     entry_points='''
         [console_scripts]
-
         add-date-created = encoded.commands.add_date_created:main
         check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
@@ -81,13 +87,13 @@ setup(
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
 
-
-
         [paste.app_factory]
         main = encoded:main
 
         [paste.composite_factory]
         indexer = encoded.commands.es_index_listener:composite
-        memlimit = encoded.memlimit:composite
+
+        [paste.filter_app_factory]
+        memlimit = encoded.memlimit:filter_app
         ''',
 )

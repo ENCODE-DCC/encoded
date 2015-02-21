@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "characterizes", "target"],
+    "required": [ "award", "lab", "characterizes", "target", "attachment"],
     "identifyingProperties": ["uuid", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -235,12 +235,6 @@
         },
         "lab.title": {
             "title": "Lab",
-            "type": "string"
-        }
-    },
-    "calculated_props": {
-        "characterization_method":{
-            "title": "Characterization method",
             "type": "string"
         }
     }

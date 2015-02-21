@@ -3,15 +3,12 @@ from pyramid.events import (
     BeforeRender,
     subscriber,
 )
-from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPMovedPermanently,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
     HTTPUnsupportedMediaType,
 )
-from pyramid.renderers import render_to_response
 from pyramid.security import forget
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -22,7 +19,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
-from .objtemplate import ObjectTemplate
+
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import json
@@ -47,7 +44,6 @@ def includeme(config):
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
-    config.add_tween('.renderers.es_tween_factory', under='.renderers.security_tween_factory')
     config.scan(__name__)
 
 
@@ -60,6 +56,18 @@ class JSON(pyramid.renderers.JSON):
         return json.dumps(value, default=default, **self.kw)
 
 
+class BinaryFromJSON:
+    def __init__(self, app_iter):
+        self.app_iter = app_iter
+
+    def __len__(self):
+        return len(self.app_iter)
+
+    def __iter__(self):
+        for s in self.app_iter:
+            yield s.encode('utf-8')
+
+
 class JSONResult(object):
     def __init__(self):
         self.app_iter = []
@@ -69,7 +77,10 @@ class JSONResult(object):
     def serializer(cls, value, **kw):
         fp = cls()
         json.dump(value, fp, **kw)
-        return fp.app_iter
+        if str is bytes:
+            return fp.app_iter
+        else:
+            return BinaryFromJSON(fp.app_iter)
 
 
 json_renderer = JSON(serializer=JSONResult.serializer)
@@ -79,13 +90,13 @@ def uuid_adapter(obj, request):
     return str(obj)
 
 
-def set_adapter(obj, request):
+def listy_adapter(obj, request):
     return list(obj)
 
 
 json_renderer.add_adapter(uuid.UUID, uuid_adapter)
-json_renderer.add_adapter(set, set_adapter)
-json_renderer.add_adapter(frozenset, set_adapter)
+json_renderer.add_adapter(set, listy_adapter)
+json_renderer.add_adapter(frozenset, listy_adapter)
 
 
 class NullRenderer:
@@ -157,7 +168,7 @@ def security_tween_factory(handler, registry):
             login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
-            if namespace != 'mailto':
+            if namespace not in ('mailto', 'persona'):
                 return handler(request)
         raise CSRFTokenError('Missing CSRF token')
 
@@ -304,95 +315,3 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
-
-
-def es_permission_checker(source, request):
-    def checker(permission):
-        allowed = set(source['principals_allowed'][permission])
-        return allowed.intersection(request.effective_principals)
-    return checker
-
-
-def es_tween_factory(handler, registry):
-    from .indexing import ELASTIC_SEARCH
-    es = registry.get(ELASTIC_SEARCH)
-    if es is None:
-        return handler
-
-    default_datastore = registry.settings.get('item_datastore', 'database')
-
-    ignore = {
-        '/',
-        '/favicon.ico',
-        '/search',
-        '/session',
-        '/login',
-        '/logout',
-    }
-
-    def es_tween(request):
-        if request.method not in ('GET', 'HEAD'):
-            return handler(request)
-
-        if request.params.get('datastore', default_datastore) != 'elasticsearch':
-            return handler(request)
-
-        frame = request.params.get('frame', 'page')
-        if frame not in ('object', 'embedded', 'page',):
-            return handler(request)
-
-        # Normalize path
-        path_tuple = split_path_info(request.path_info)
-        path = _join_path_tuple(('',) + path_tuple)
-
-        if path in ignore or path.startswith('/static/'):
-            return handler(request)
-
-        query = {'filter': {'term': {'paths': path}}, 'version': True}
-        data = es.search(index='encoded', body=query)
-        hits = data['hits']['hits']
-        if len(hits) != 1:
-            return handler(request)
-
-        source = hits[0]['_source']
-        edits = dict.get(request.session, 'edits', None)
-        if edits is not None:
-            version = hits[0]['_version']
-            linked_uuids = set(source['linked_uuids'])
-            embedded_uuids = set(source['embedded_uuids'])
-            for xid, updated, linked in edits:
-                if xid < version:
-                    continue
-                if not embedded_uuids.isdisjoint(updated):
-                    return handler(request)
-                if not linked_uuids.isdisjoint(linked):
-                    return handler(request)
-
-        allowed = set(source['principals_allowed']['view'])
-        if allowed.isdisjoint(request.effective_principals):
-            raise HTTPForbidden()
-
-        if frame == 'page':
-            properties = source['embedded']
-            request.root = registry.getUtility(IRootFactory)(request)
-            collection = request.root.get(properties['@type'][0])
-            rendering_val = collection.Item.expand_page(request, properties)
-
-            # Add actions
-            ns = {}
-            ns['permission'] = es_permission_checker(source, request)
-            ns['item_type'] = collection.item_type
-            ns['item_uri'] = source['object']['@id']
-            compiled = ObjectTemplate(collection.Item.actions)
-            actions = compiled(ns)
-            if actions:
-                rendering_val['actions'] = actions
-
-            if ns['permission']('audit'):
-                rendering_val['audit'] = source['audit']
-
-        else:
-            rendering_val = source[frame]
-        return render_to_response(None, rendering_val, request)
-
-    return es_tween

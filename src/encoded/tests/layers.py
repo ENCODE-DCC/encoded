@@ -121,14 +121,14 @@ class LayerManager(object):
                     continue
                 next.add(fd)
             for fd in current - next:
-                print "TEARDOWN: %s (%s)" % (fd[-1].argname, fd[-1].scope)
+                print("TEARDOWN: %s (%s)" % (fd[-1].argname, fd[-1].scope))
             for fd in next - current:
-                print "SETUP: %s (%s)" % (fd[-1].argname, fd[-1].scope)
-            print item
+                print("SETUP: %s (%s)" % (fd[-1].argname, fd[-1].scope))
+            print(item)
             current = next
         layers = self.sorted_layers()
         for i, layer in enumerate(layers):
-            print layer.weight, layer
+            print(layer.weight, layer)
 
     @pytest.mark.tryfirst
     def pytest_runtest_setup(self, item):
@@ -203,7 +203,7 @@ class Layer(object):
         self = layers.get(key, None)
         if self is not None:
             return self
-        self = super(Layer, cls).__new__(cls, layers, fi, argnames)
+        self = super(Layer, cls).__new__(cls)
         layers[key] = self
         if len(key) == 1:
             layer_manager.named_layers['%s:%s' % (key[0][-1].baseid, key[0][-1].argname)] = self
@@ -220,8 +220,9 @@ class Layer(object):
             self.argname = fd[-1].argname
             self.baseid = fd[-1].baseid
             base_fixturedefs = sorted(
-                (fi.name2fixturedefs[name], name)
-                    for name in fd[-1].argnames if name in fi.name2fixturedefs)
+                ((fi.name2fixturedefs[name], name)
+                    for name in fd[-1].argnames if name in fi.name2fixturedefs),
+                key=lambda x: (len(x[0]), x[1]))
             fixture_cost = getattr(fd[-1].func, 'fixture_cost', None)
             if fixture_cost is not None:
                 self.weight += fixture_cost.args[0]
@@ -231,8 +232,9 @@ class Layer(object):
             self.argname = ','.join(sorted(argnames))
             self.baseid = '<virtual>'
             base_fixturedefs = sorted(
-                (fi.name2fixturedefs[name], name)
-                    for name in argnames if name in fi.name2fixturedefs)
+                ((fi.name2fixturedefs[name], name)
+                    for name in argnames if name in fi.name2fixturedefs),
+                key=lambda x: (len(x[0]), x[1]))
         self.bases = tuple(
             cls(layer_manager, item, name)
             for fd, name in base_fixturedefs

@@ -14,14 +14,32 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "age_units":  {
+            "required": ["age"],
+            "not": {
+                "properties": {
+                    "required": ["age"],
+                    "age": {
+                        "enum": ["unknown"]
+                    }
+                }
+            }
+        },
         "age":  {
             "oneOf": [
+                {
+                    "properties": {
+                        "age": {
+                            "enum": ["unknown"]
+                        }
+                    }
+                },
                 {
                     "required": ["age_units"],
                     "properties": {
@@ -29,7 +47,7 @@
                             "enum": ["year"]
                         },
                         "age": {
-                            "pattern": "^([1-8]?\\d)|(90 or above)|(unknown)$"
+                            "pattern": "^(([1-8]?\\d)|(90 or above))$"
                         }
                     }
                 },
@@ -40,7 +58,7 @@
                             "enum": ["day", "week","month"]
                         },
                         "age": {
-                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)$"
                         }
                     }
                 }
@@ -60,7 +78,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above)$"
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
         },
         "age_units": {
             "title": "Donor age units",
@@ -156,6 +174,17 @@
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked",
+                "preliminary",
+                "proposed"
+            ]
         }
     }
 }

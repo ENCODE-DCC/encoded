@@ -1,8 +1,14 @@
 from copy import deepcopy
-from urllib import unquote
 from .cache import ManagerLRUCache
+from past.builtins import basestring
 from posixpath import join
+from pyramid.compat import (
+    native_,
+    unquote_bytes_to_wsgi,
+)
 from pyramid.httpexceptions import HTTPNotFound
+import logging
+log = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -10,6 +16,7 @@ def includeme(config):
     config.add_request_method(embed, 'embed')
     config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
     config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
+    config.add_request_method(lambda request: None, '__parent__', reify=True)
 
 
 def make_subrequest(request, path):
@@ -23,9 +30,9 @@ def make_subrequest(request, path):
     env = request.environ.copy()
     if path and '?' in path:
         path_info, query_string = path.split('?', 1)
-        path_info = unquote(path_info)
+        path_info = path_info
     else:
-        path_info = unquote(path)
+        path_info = path
         query_string = ''
     env['PATH_INFO'] = path_info
     env['QUERY_STRING'] = query_string
@@ -47,8 +54,8 @@ def embed(request, *elements, **kw):
     # Cache cut response time from ~800ms to ~420ms.
     as_user = kw.get('as_user')
     path = join(*elements)
-    if isinstance(path, unicode):
-        path = path.encode('utf-8')
+    path = unquote_bytes_to_wsgi(native_(path))
+    log.debug('embed: %s', path)
     if as_user is not None:
         result, embedded, linked = _embed(request, path, as_user)
     else:

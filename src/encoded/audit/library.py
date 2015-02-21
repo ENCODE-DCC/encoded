@@ -14,7 +14,7 @@ moleculeDict = {
     }
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_nucleic_acid(value, system):
     '''
     The library needs the nucleic_acid_term_name to match the nucleic_acid_term_id.
@@ -36,7 +36,7 @@ def audit_library_nucleic_acid(value, system):
         raise AuditFailure('mismatched nucleic_acid_term', detail, level='ERROR')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_documents(value, system):
     '''
     If any of the library methods say <see document> then
@@ -54,11 +54,13 @@ def audit_library_documents(value, system):
 
     for method in list_of_methods:
         if value.get(method) == "see document" and value['documents'] == []:
-            detail = 'Library {} has a method that specifies "see document" yet has no document'.format(value['accession'])
-            raise AuditFailure('missing document', detail, level='ERROR')
+            detail = 'Library {} method specifies "see document" yet has no document'.format(
+                value['accession']
+                )
+            raise AuditFailure('missing documents', detail, level='WARNING')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_RNA_size_range(value, system):
     '''
     An RNA library should have a size_range specified.
@@ -75,7 +77,7 @@ def audit_library_RNA_size_range(value, system):
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
 
-@audit_checker('library')
+@audit_checker('library', frame='object')
 def audit_library_depleted_in(value, system):
     '''
     If there is a depleted_term_name or term_id,

@@ -2,19 +2,18 @@
 import logging
 import sys
 import venusian
-from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
-from itertools import islice
-from posixpath import join
-from pyramid.events import (
-    ContextFound,
-    subscriber,
+from future.utils import (
+    raise_with_traceback,
+    itervalues,
 )
+from itertools import islice
+from past.builtins import basestring
+from posixpath import join
+from pyramid.decorator import reify
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
-    HTTPConflict,
-    HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
     HTTPPreconditionFailed,
@@ -22,18 +21,14 @@ from pyramid.httpexceptions import (
 from pyramid.interfaces import (
     PHASE2_CONFIG,
 )
-from pyramid.location import lineage
 from pyramid.security import (
-    ALL_PERMISSIONS,
     Allow,
-    Authenticated,
-    Deny,
     Everyone,
-    has_permission,
     principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
 from pyramid.traversal import (
+    find_resource,
     find_root,
     resource_path,
 )
@@ -41,38 +36,23 @@ from pyramid.view import (
     render_view_to_response,
     view_config,
 )
-from sqlalchemy import (
-    bindparam,
-    orm,
-)
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import (
-    FlushError,
-    NoResultFound,
-)
-from urllib import urlencode
+from urllib.parse import urlencode
 from uuid import (
     UUID,
     uuid4,
 )
 from .cache import ManagerLRUCache
-from .objtemplate import ObjectTemplate
-from .precompiled_query import precompiled_query_builder
+from .calculated import (
+    calculate_properties,
+    calculated_property,
+)
 from .embedding import (
     embed,
     expand_path,
 )
-from .schema_formats import is_accession
 from .schema_utils import validate_request
-from .storage import (
-    DBSession,
-    CurrentPropertySheet,
-    Resource,
-    Key,
-    Link,
-)
+from .storage import RDBStorage
 from collections import (
-    OrderedDict,
     defaultdict,
 )
 from .validation import ValidationFailure
@@ -80,19 +60,46 @@ from .validation import ValidationFailure
 PHASE1_5_CONFIG = -15
 
 
-LOCATION_ROOT = __name__ + ':location_root'
+ROOT = LOCATION_ROOT = 'root'
+TYPES = 'types'
+CONNECTION = 'connection'
+COLLECTIONS = 'collections'
+STORAGE = 'storage'
+
 _marker = object()
 
 logger = logging.getLogger(__name__)
 
+from .es_storage import (
+    ElasticSearchStorage,
+    PickStorage,
+)
+
 
 def includeme(config):
+    registry = config.registry
     config.scan(__name__)
+    registry[COLLECTIONS] = CollectionsTool()
+    types = registry[TYPES] = TypesTool(registry)
+    from .indexing import ELASTIC_SEARCH
+    es = registry.get(ELASTIC_SEARCH)
+    if es is None:
+        storage = RDBStorage()
+    else:
+        storage = PickStorage(ElasticSearchStorage(es), RDBStorage())
+    registry[STORAGE] = storage
+    registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
 
 
 def root_factory(request):
-    return request.registry[LOCATION_ROOT]
+    return request.registry[ROOT]
+
+
+def aslist(value):
+    if isinstance(value, basestring):
+        return [value]
+    return value
 
 
 # No-validation validators
@@ -125,42 +132,30 @@ def no_validate_item_content_patch(context, request):
 
 def validate_item_content_post(context, request):
     data = request.json
-    schema = context.schema
-    if schema is None:
-        request.validated.update(data)
-        return
-    validate_request(schema, request, data)
+    validate_request(context.type_info.schema, request, data)
 
 
 def validate_item_content_put(context, request):
     data = request.json
-    schema = context.schema
-    if schema is None:
-        if 'uuid' in data:
-            if UUID(data['uuid']) != context.uuid:
-                msg = 'uuid may not be changed'
-                raise ValidationFailure('body', ['uuid'], msg)
-        request.validated.update(data)
-        return
-    current = context.upgrade_properties(finalize=False).copy()
+    schema = context.type_info.schema
+    if 'uuid' in data and UUID(data['uuid']) != context.uuid:
+        msg = 'uuid may not be changed'
+        raise ValidationFailure('body', ['uuid'], msg)
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
 
 def validate_item_content_patch(context, request):
-    data = context.upgrade_properties(finalize=False).copy()
+    data = context.upgrade_properties().copy()
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
-    schema = context.schema
-    if schema is None:
-        if 'uuid' in data:
-            if UUID(data['uuid']) != context.uuid:
-                msg = 'uuid may not be changed'
-                raise ValidationFailure('body', ['uuid'], msg)
-        request.validated.update(data)
-        return
-    current = context.upgrade_properties(finalize=False).copy()
+    schema = context.type_info.schema
+    if 'uuid' in data and UUID(data['uuid']) != context.uuid:
+        msg = 'uuid may not be changed'
+        raise ValidationFailure('body', ['uuid'], msg)
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
@@ -169,30 +164,6 @@ def permission_checker(context, request):
     def checker(permission):
         return request.has_permission(permission, context)
     return checker
-
-
-def acl_from_settings(settings):
-    acl = []
-    for k, v in settings.iteritems():
-        if k.startswith('allow.'):
-            action = Allow
-            permission = k[len('allow.'):]
-            principals = v.split()
-        elif k.startswith('deny.'):
-            action = Deny
-            permission = k[len('deny.'):]
-            principals = v.split()
-        else:
-            continue
-        if permission == 'ALL_PERMISSIONS':
-            permission = ALL_PERMISSIONS
-        for principal in principals:
-            if principal == 'Authenticated':
-                principal = Authenticated
-            elif principal == 'Everyone':
-                principal = Everyone
-            acl.append((action, principal, permission))
-    return acl
 
 
 def uncamel(string):
@@ -208,17 +179,16 @@ def uncamel(string):
     return out
 
 
-def location_root(factory):
-    """ Set the location root
+def root(factory):
+    """ Set the root
     """
 
     def set_root(config, factory):
-        acl = acl_from_settings(config.registry.settings)
-        root = factory(config.registry, acl)
-        config.registry[LOCATION_ROOT] = root
+        root = factory(config.registry)
+        config.registry[ROOT] = root
 
     def callback(scanner, factory_name, factory):
-        scanner.config.action(('location_root',), set_root,
+        scanner.config.action(('root',), set_root,
                               args=(scanner.config, factory),
                               order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
@@ -226,75 +196,252 @@ def location_root(factory):
     return factory
 
 
-def location(name, factory=None):
+def collection(name, **kw):
     """ Attach a collection at the location ``name``.
 
     Use as a decorator on Collection subclasses.
     """
 
-    def set_location(config, name, factory):
-        root = config.registry[LOCATION_ROOT]
-        root.attach(name, factory)
+    def set_collection(config, Collection, name, Item, **kw):
+        registry = config.registry
+        registry[TYPES].register(Item.item_type, Item)
+        collection = Collection(registry, name, Item.item_type, **kw)
+        registry[COLLECTIONS].register(name, collection)
 
-    def decorate(factory):
+    def decorate(Item):
+
         def callback(scanner, factory_name, factory):
-            scanner.config.action(('location', name), set_location,
-                                  args=(scanner.config, name, factory),
+            scanner.config.action(('collection', name), set_collection,
+                                  args=(scanner.config, Item.Collection, name, Item),
+                                  kw=kw,
                                   order=PHASE2_CONFIG)
-        venusian.attach(factory, callback, category='pyramid')
-        return factory
+        venusian.attach(Item, callback, category='pyramid')
+        return Item
 
     return decorate
 
 
-def _get_by_uuid_instance_map(uuid):
-    # Internals from sqlalchemy/orm/query.py:Query.get
-    session = DBSession()
-    mapper = orm.class_mapper(Resource)
-    ident = [uuid]
-    key = mapper.identity_key_from_primary_key(ident)
-    return orm.loading.get_from_identity(
-        session, key, orm.attributes.PASSIVE_OFF)
+class CollectionsTool(dict):
+    def __init__(self):
+        self.by_item_type = {}
+
+    def register(self, name, value):
+        self[name] = value
+        self[value.item_type] = value
+        self.by_item_type[value.item_type] = value
 
 
-@precompiled_query_builder(DBSession)
-def _get_by_uuid_query():
-    session = DBSession()
-    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
+def extract_schema_links(schema):
+    if not schema:
+        return
+    for key, prop in schema['properties'].items():
+        if 'items' in prop:
+            prop = prop['items']
+        if 'properties' in prop:
+            for path in extract_schema_links(prop):
+                yield (key,) + path
+        elif 'linkTo' in prop:
+            yield (key,)
 
 
-@precompiled_query_builder(DBSession)
-def _get_by_unique_key_query():
-    session = DBSession()
-    return session.query(Key).options(
-        orm.joinedload_all(
-            Key.resource,
-            Resource.data,
-            CurrentPropertySheet.propsheet,
-            innerjoin=True,
-        ),
-    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+class TypeInfo(object):
+    def __init__(self, registry, item_type, factory):
+        self.types = registry[TYPES]
+        self.calculated_properties = registry['calculated_properties']
+        self.item_type = item_type
+        self.factory = factory
+        self.base_types = factory.base_types
+        self.embedded = factory.embedded
+
+    @reify
+    def schema_version(self):
+        try:
+            return self.factory.schema['properties']['schema_version']['default']
+        except (KeyError, TypeError):
+            return None
+
+    @reify
+    def schema_links(self):
+        return sorted('.'.join(path) for path in extract_schema_links(self.factory.schema))
+
+    @reify
+    def schema_keys(self):
+        if not self.factory.schema:
+            return ()
+        keys = defaultdict(list)
+        for key, prop in self.factory.schema['properties'].items():
+            uniqueKey = prop.get('items', prop).get('uniqueKey')
+            if uniqueKey is True:
+                uniqueKey = '%s:%s' % (self.factory.item_type, key)
+            if uniqueKey is not None:
+                keys[uniqueKey].append(key)
+        return keys
+
+    @reify
+    def merged_back_rev(self):
+        merged = {}
+        types = [self.item_type] + self.base_types
+        for item_type in reversed(types):
+            back_rev = self.types.type_back_rev.get(item_type, ())
+            merged.update(back_rev)
+        return merged
+
+    @reify
+    def schema(self):
+        props = self.calculated_properties.props_for(self.factory)
+        schema = self.factory.schema or {'type': 'object', 'properties': {}}
+        schema = schema.copy()
+        schema['properties'] = schema['properties'].copy()
+        for name, prop in props.items():
+            if prop.schema is not None:
+                schema['properties'][name] = prop.schema
+        return schema
+
+    @reify
+    def schema_rev_links(self):
+        revs = {}
+        for key, prop in self.schema['properties'].items():
+            linkFrom = prop.get('linkFrom', prop.get('items', {}).get('linkFrom'))
+            if linkFrom is None:
+                continue
+            linkType, linkProp = linkFrom.split('.')
+            revs[key] = linkType, linkProp
+        return revs
+
+
+class AbstractTypeInfo(object):
+    def __init__(self, registry, item_type):
+        self.types = registry[TYPES]
+        self.item_type = item_type
+
+    @reify
+    def subtypes(self):
+        return [
+            k for k, v in self.types.types.items()
+            if self.item_type in ([v.item_type] + v.base_types)
+        ]
+
+
+class TypesTool(object):
+    def __init__(self, registry):
+        self.registry = registry
+        self.types = {}
+        self.abstract = {}
+        self.type_back_rev = {}
+
+    def register(self, item_type, factory):
+        self.types[item_type] = ti = TypeInfo(self.registry, item_type, factory)
+        for base in ti.base_types:
+            if base not in self.abstract:
+                self.abstract[base] = AbstractTypeInfo(self.registry, base)
+
+        # Calculate the reverse rev map
+        for prop_name, spec in factory.rev.items():
+            rev_item_type, rel = spec
+            back = self.type_back_rev.setdefault(rev_item_type, {}).setdefault(rel, set())
+            back.add((item_type, prop_name))
+
+    def __getitem__(self, name):
+        return self.types[name]
+
+
+class Connection(object):
+    ''' Intermediates between the storage and the rest of the system
+    '''
+    def __init__(self, registry, types, storage):
+        self.registry = registry
+        self.types = types
+        self.storage = storage
+        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
+        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+
+    def get_by_uuid(self, uuid, default=None):
+        if isinstance(uuid, basestring):
+            try:
+                uuid = UUID(uuid)
+            except ValueError:
+                return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
+
+        uuid = str(uuid)
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
+        model = self.storage.get_by_uuid(uuid)
+        if model is None:
+            return default
+
+        Item = self.types[model.item_type].factory
+        item = Item(self.registry, model)
+        model.used_for(item)
+        self.item_cache[uuid] = item
+        return item
+
+    def get_by_unique_key(self, unique_key, name, default=None):
+        pkey = (unique_key, name)
+
+        cached = self.unique_key_cache.get(pkey)
+        if cached is not None:
+            return self.get_by_uuid(cached)
+
+        model = self.storage.get_by_unique_key(unique_key, name)
+        if model is None:
+            return default
+
+        uuid = model.uuid
+        self.unique_key_cache[pkey] = uuid
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
+        Item = self.types[model.item_type].factory
+        item = Item(self.registry, model)
+        model.used_for(item)
+        self.item_cache[uuid] = item
+        return item
+
+    def get_rev_links(self, model, item_type, rel):
+        return self.storage.get_rev_links(model, item_type, rel)
+
+    def __iter__(self, item_type=None):
+        for uuid in self.storage.__iter__(item_type):
+            yield uuid
+
+    def __len__(self, item_type=None):
+        return self.storage.__len__(item_type)
+
+    def __getitem__(self, uuid):
+        item = self.get_by_uuid(uuid)
+        if item is None:
+            raise KeyError(uuid)
+        return item
+
+    def create(self, item_type, uuid):
+        return self.storage.create(item_type, uuid)
+
+    def update(self, model, properties, sheets=None, unique_keys=None, links=None):
+        self.storage.update(model, properties, sheets, unique_keys, links)
 
 
 class Root(object):
     __name__ = ''
     __parent__ = None
-    schema = None
-    builtin_acl = [
-        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
-        (Allow, 'remoteuser.EMBED', ('view', 'traverse', 'expand', 'audit')),
+    __acl__ = [
+        (Allow, 'remoteuser.INDEXER', ['view', 'list', 'index']),
+        (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+        (Allow, Everyone, ['visible_for_edit']),
     ]
 
-    def __init__(self, registry, acl=None):
+    def __init__(self, registry):
         self.registry = registry
-        if acl is None:
-            acl = []
-        self.__acl__ = acl + self.builtin_acl
-        self.collections = {}
-        self.by_item_type = {}
-        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
-        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
-        self.type_back_rev = {}
+        self.collections = registry[COLLECTIONS]
+        self.connection = registry[CONNECTION]
+
+        # BBB
+        self.get_by_uuid = self.connection.get_by_uuid
+        self.by_item_type = self.collections.by_item_type
 
     def __getitem__(self, name):
         try:
@@ -314,162 +461,100 @@ class Root(object):
         resource = self.collections.get(name, None)
         if resource is not None:
             return resource
-        resource = self.by_item_type.get(name, None)
+        resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
             return resource
-        resource = self.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        resource = self.get_by_unique_key('page:location', name)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.get_by_unique_key('accession', name)
-            if resource is not None:
-                return resource
-        if ':' in name:
-            resource = self.get_by_unique_key('alias', name)
-            if resource is not None:
-                return resource
         return default
-
-    def __setitem__(self, name, value):
-        self.collections[name] = value
-        self.by_item_type[value.item_type] = value
-
-    def get_by_uuid(self, uuid, default=None):
-        if isinstance(uuid, basestring):
-            try:
-                uuid = UUID(uuid)
-            except ValueError:
-                return default
-        elif not isinstance(uuid, UUID):
-            raise TypeError(uuid)
-
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        model = _get_by_uuid_instance_map(uuid)
-
-        if model is None:
-            try:
-                model = _get_by_uuid_query().params(rid=uuid).one()
-            except NoResultFound:
-                return default
-
-        collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
-        self.item_cache[uuid] = item
-        return item
-
-    def get_by_unique_key(self, unique_key, name, default=None):
-        pkey = (unique_key, name)
-
-        cached = self.unique_key_cache.get(pkey)
-        if cached is not None:
-            return self.get_by_uuid(cached)
-
-        try:
-            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
-        except NoResultFound:
-            return default
-
-        model = key.resource
-
-        uuid = model.rid
-        self.unique_key_cache[pkey] = uuid
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        collection = self.by_item_type[model.item_type]
-        item = collection.Item(collection, model)
-        self.item_cache[uuid] = item
-        return item
-
-    def attach(self, name, factory):
-        value = factory(self, name)
-        self[name] = value
-
-        # Calculate the reverse rev map
-        for prop_name, spec in value.Item.merged_rev.items():
-            item_type, rel = spec
-            back = self.type_back_rev.setdefault(item_type, {}).setdefault(rel, set())
-            back.add((value.item_type, prop_name))
 
     def __json__(self, request=None):
         return self.properties.copy()
 
 
-class MergedDictsMeta(type):
-    """ Merge dicts on the subclass with its bases
-    """
-    def __init__(self, name, bases, attrs):
-        super(MergedDictsMeta, self).__init__(name, bases, attrs)
-        for attr in self.__merged_dicts__:
-            merged = {}
-            setattr(self, 'merged_%s' % attr, merged)
+class Collection(Mapping):
+    properties = {}
+    unique_key = None
 
-            for cls in reversed(self.mro()):
-                value = vars(cls).get(attr, None)
-                if value is not None:
-                    merged.update(value)
+    def __init__(self, registry, name, item_type, properties=None, acl=None, unique_key=None):
+        self.registry = registry
+        self.__name__ = name
+        self.item_type = item_type
+        self.connection = registry[CONNECTION]
+        if properties is not None:
+            self.properties = properties
+        if acl is not None:
+            self.__acl__ = acl
+        if unique_key is not None:
+            self.unique_key = unique_key
 
+    @reify
+    def __parent__(self):
+        return self.registry[ROOT]
 
-class MergedKeysMeta(MergedDictsMeta):
-    """ Merge the keys from the subclass with its bases
-    """
-    def __init__(self, name, bases, attrs):
-        super(MergedKeysMeta, self).__init__(name, bases, attrs)
+    @reify
+    def type_info(self):
+        return self.registry[TYPES][self.item_type]
 
-        self.merged_keys = []
-        for cls in reversed(self.mro()):
-            for key in vars(cls).get('keys', []):
-                if isinstance(key, basestring):
-                    key = {'name': '{item_type}:' + key,
-                           'value': '{%s}' % key, '$templated': True}
-                self.merged_keys.append(key)
+    def __getitem__(self, name):
+        try:
+            item = self.get(name)
+        except KeyError:
+            # Just in case we get an unexpected KeyError
+            # FIXME: exception logging.
+            raise HTTPInternalServerError('Traversal raised KeyError')
+        if item is None:
+            raise KeyError(name)
+        return item
 
-        self.embedded_paths = sorted({tuple(path.split('.')) for path in self.embedded})
-        if self.audit_inherit is None:
-            self.audit_inherit_paths = self.embedded_paths
-        else:
-            self.audit_inherit_paths = sorted(
-                {tuple(path.split('.')) for path in self.audit_inherit})
+    def __iter__(self):
+        for uuid in self.connection.__iter__(self.item_type):
+            yield uuid
+
+    def __len__(self):
+        return self.connection.__len__(self.item_type)
+
+    def get(self, name, default=None):
+        resource = self.connection.get_by_uuid(name, None)
+        if resource is not None:
+            if resource.collection is not self and resource.__parent__ is not self:
+                return default
+            return resource
+        if self.unique_key is not None:
+            resource = self.connection.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        return default
+
+    def __json__(self, request):
+        return self.properties.copy()
 
 
 class Item(object):
-    __metaclass__ = MergedKeysMeta
-    __merged_dicts__ = [
-        'template',
-        'rev',
-        'namespace_from_path',
-    ]
+    item_type = 'item'
     base_types = ['item']
-    keys = []
     name_key = None
-    rev = None
+    rev = {}
     embedded = ()
     audit_inherit = None
-    namespace_from_path = {}
-    template = {
-        '@id': {'$value': '{item_uri}', '$templated': True},
-        # 'collection': '{collection_uri}',
-        '@type': [
-            {'$value': '{item_type}', '$templated': True},
-            {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
-        ],
-        'uuid': {'$value': '{uuid}', '$templated': True},
-    }
-    actions = []
+    schema = None
+    Collection = Collection
 
-    def __init__(self, collection, model):
-        self.collection = collection
+    def __init__(self, registry, model):
+        self.registry = registry
         self.model = model
 
     def __repr__(self):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
+
+    @reify
+    def type_info(self):
+        return self.registry[TYPES][self.item_type]
+
+    @reify
+    def collection(self):
+        collections = self.registry[COLLECTIONS]
+        return collections.by_item_type[self.item_type]
 
     @property
     def __parent__(self):
@@ -478,68 +563,51 @@ class Item(object):
     @property
     def __name__(self):
         if self.name_key is None:
-            return self.uuid
-        return self.properties.get(self.name_key, None) or self.uuid
-
-    @property
-    def item_type(self):
-        return self.model.item_type
-
-    @property
-    def schema(self):
-        return self.collection.schema
-
-    @property
-    def schema_version(self):
-        return self.collection.schema_version
+            return str(self.uuid)
+        return self.properties.get(self.name_key, None) or str(self.uuid)
 
     @property
     def properties(self):
-        return self.model['']
+        return self.model.properties
 
     @property
     def propsheets(self):
-        return self.model
+        return self.model.propsheets
 
     @property
     def uuid(self):
-        return self.model.rid
+        return self.model.uuid
 
     @property
-    def schema_links(self):
-        return self.collection.schema_links
+    def tid(self):
+        return self.model.tid
 
-    @property
-    def merged_back_rev(self):
-        root = find_root(self)
-        merged = {}
-        types = [self.item_type] + self.base_types
-        for item_type in reversed(types):
-            merged.update(root.type_back_rev.get(item_type, ()))
-        return merged
+    def links(self, properties):
+        return {
+            path: set(simple_path_ids(properties, path))
+            for path in self.type_info.schema_links
+        }
 
-    def rev_links(self):
-        root = find_root(self)
-        links = {}
-        for name, spec in self.merged_rev.iteritems():
-            links[name] = value = []
-            for link in self.model.revs:
-                if (link.source.item_type, link.rel) == spec:
-                    item = root.get_by_uuid(link.source_rid)
-                    value.append(item)
-        return links
+    def get_rev_links(self, name):
+        item_type, rel = self.rev[name]
+        return self.registry[CONNECTION].get_rev_links(self.model, item_type, rel)
 
-    def upgrade_properties(self, finalize=True):
-        properties = self.properties.copy()
+    def unique_keys(self, properties):
+        return {
+            name: [v for prop in props for v in aslist(properties.get(prop, ()))]
+            for name, props in self.type_info.schema_keys.items()
+        }
+
+    def upgrade_properties(self):
+        properties = deepcopy(self.properties)
         current_version = properties.get('schema_version', '')
-        target_version = self.schema_version
+        target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
-            root = find_root(self)
-            migrator = root.registry['migrator']
+            migrator = self.registry['migrator']
             try:
                 properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    finalize=finalize, context=self, registry=root.registry)
+                    context=self, registry=self.registry)
             except RuntimeError:
                 raise
             except Exception:
@@ -559,394 +627,62 @@ class Item(object):
         request._linked_uuids.add(str(self.uuid))
         return None
 
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['item_type'] = self.item_type
-        ns['base_types'] = self.base_types
-        ns['uuid'] = self.uuid
-        ns['root'] = root = find_root(self)
-        ns['context'] = self
-        ns['registry'] = root.registry
-        ns['collection_uri'] = resource_path(self.__parent__, '')
-        ns['item_uri'] = resource_path(self, '')
-
-        # When called by update_keys() there is no request.
-        if request is not None:
-            ns['request'] = request
-            ns['permission'] = permission_checker(self, request)
-            # Use request.resource_path so that linked uuid is recorded
-            ns['item_uri'] = request.resource_path(self)
-            for name, value in self.rev_links().iteritems():
-                ns[name] = [request.resource_path(item) for item in value]
-        else:
-            ns['item_uri'] = resource_path(self, '')
-            for name, value in self.rev_links().iteritems():
-                ns[name] = [resource_path(item, '') for item in value]
-
-        if self.merged_namespace_from_path:
-            root = find_root(self)
-            for name, paths in self.merged_namespace_from_path.items():
-                # Treat a list of paths as a search path for the value
-                if isinstance(paths, basestring):
-                    paths = [paths]
-                for path in paths:
-                    path = path.split('.')
-                    last = path[-1]
-                    obj = self
-                    obj_props = obj.upgrade_properties(finalize=False)
-                    for n in path[:-1]:
-                        if n not in obj_props:
-                            break
-                        obj = root.get_by_uuid(obj_props[n])
-                        obj_props = obj.upgrade_properties(finalize=False)
-                    else:
-                        if last in obj_props:
-                            ns[name] = deepcopy(obj_props[last])
-                            break
-
-        return ns
-
     @classmethod
-    def expand_page(cls, request, properties):
-        return properties
+    def create(cls, registry, uuid, properties, sheets=None):
+        model = registry[CONNECTION].create(cls.item_type, uuid)
+        self = cls(registry, model)
+        self._update(properties, sheets)
+        return self
 
-    @classmethod
-    def create(cls, parent, uuid, properties, sheets=None):
-        item_type = parent.item_type
-        session = DBSession()
-        sp = session.begin_nested()
-        resource = Resource(item_type, rid=uuid)
-        cls.update_properties(resource, properties, sheets)
-        session.add(resource)
-        self = cls(parent, resource)
-        keys_add, keys_remove = self.update_keys()
-        self.update_rels()
-        try:
-            sp.commit()
-        except (IntegrityError, FlushError):
-            sp.rollback()
-        else:
-            return self
+    def update(self, properties, sheets=None):
+        self._update(properties, sheets)
 
-        # Try again more carefully
-        cls.update_properties(resource, properties, sheets)
-        session.add(resource)
-        self = cls(parent, resource)
-        try:
-            session.flush()
-        except (IntegrityError, FlushError):
-            msg = 'UUID conflict'
-            raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(keys_add)
-        self.update_properties(properties, sheets)
-        assert conflicts
-        msg = 'Keys conflict: %r' % conflicts
-        raise HTTPConflict(msg)
-
-    @classmethod
-    def update_properties(cls, model, properties, sheets=None):
+    def _update(self, properties, sheets=None):
+        unique_keys = None
+        links = None
         if properties is not None:
             if 'uuid' in properties:
                 properties = properties.copy()
                 del properties['uuid']
-            model[''] = properties
-        if sheets is not None:
-            for key, value in sheets.items():
-                model[key] = value
 
-    def update(self, properties, sheets=None):
-        session = DBSession()
-        sp = session.begin_nested()
-        self.update_properties(self.model, properties, sheets)
-        keys_add, keys_remove = self.update_keys()
-        self.update_rels()
-        try:
-            sp.commit()
-        except (IntegrityError, FlushError):
-            sp.rollback()
-        else:
-            return
+            unique_keys = self.unique_keys(properties)
+            for k, values in unique_keys.items():
+                if len(set(values)) != len(values):
+                    msg = "Duplicate keys for %r: %r" % (k, values)
+                    raise ValidationFailure('body', [], msg)
 
-        # Try again more carefully
-        self.update_properties(self.model, properties, sheets)
-        try:
-            session.flush()
-        except (IntegrityError, FlushError):
-            msg = 'Properties conflict'
-            raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(keys_add)
-        self.update_properties(self.model, properties, sheets)
-        assert conflicts
-        msg = 'Keys conflict: %r' % conflicts
-        raise HTTPConflict(msg)
+            links = self.links(properties)
 
-    def update_keys(self):
-        session = DBSession()
-        ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate(self.merged_keys)
-        _keys = [(key['name'], key['value']) for key in compiled(ns)]
-        keys = set(_keys)
+        connection = self.registry[CONNECTION]
+        connection.update(self.model, properties, sheets, unique_keys, links)
 
-        if len(keys) != len(_keys):
-            msg = "Duplicate keys: %r" % _keys
-            raise ValidationFailure('body', [], msg)
+    @calculated_property(name='@id', schema={
+        "type": "string",
+    })
+    def jsonld_id(self, request):
+        return request.resource_path(self)
 
-        existing = {
-            (key.name, key.value)
-            for key in self.model.unique_keys
-        }
+    @calculated_property(name='@type', schema={
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def jsonld_type(self):
+        return [self.item_type] + self.base_types
 
-        to_remove = existing - keys
-        to_add = keys - existing
-
-        for pk in to_remove:
-            key = session.query(Key).get(pk)
-            session.delete(key)
-
-        for name, value in to_add:
-            key = Key(rid=self.uuid, name=name, value=value)
-            session.add(key)
-
-        return to_add, to_remove
-
-    def check_duplicate_keys(self, keys):
-        session = DBSession()
-        return [pk for pk in keys if session.query(Key).get(pk) is not None]
-
-    def update_rels(self):
-        if self.schema is None:
-            return
-        session = DBSession()
-        properties = self.properties
-        source = self.uuid
-        _rels = []
-
-        for name in self.schema_links:
-            targets = properties.get(name, [])
-            if not isinstance(targets, list):
-                targets = [targets] if targets else []
-            for target in targets:
-                _rels.append((name, UUID(target)))
-
-        rels = set(_rels)
-        if len(rels) != len(_rels):
-            msg = "Duplicate links: %r" % _rels
-            raise ValidationFailure('body', [], msg)
-
-        existing = {
-            (link.rel, link.target_rid)
-            for link in self.model.rels
-        }
-
-        to_remove = existing - rels
-        to_add = rels - existing
-
-        for rel, target in to_remove:
-            link = session.query(Link).get((source, rel, target))
-            session.delete(link)
-
-        for rel, target in to_add:
-            link = Link(source_rid=source, rel=rel, target_rid=target)
-            session.add(link)
-
-        return to_add, to_remove
-
-
-class CustomItemMeta(MergedDictsMeta, ABCMeta):
-    """ Give each collection its own Item class to enable
-        specific view registration.
-    """
-    def __init__(self, name, bases, attrs):
-        super(CustomItemMeta, self).__init__(name, bases, attrs)
-
-        # XXX Remove this, too magical.
-        if self.item_type is None and 'item_type' not in attrs:
-            self.item_type = uncamel(self.__name__)
-
-        NAMES_TO_TRANSFER = [
-            'template',
-            'embedded',
-            'keys',
-            'rev',
-            'name_key',
-            'namespace_from_path',
-            'actions',
-        ]
-
-        if 'Item' in attrs:
-            for name in NAMES_TO_TRANSFER:
-                assert 'item_' + name not in attrs
-            return
-        item_bases = tuple(base.Item for base in bases
-                           if issubclass(base, Collection))
-        item_attrs = {'__module__': self.__module__}
-        for name in NAMES_TO_TRANSFER:
-            if 'item_' + name in attrs:
-                item_attrs[name] = attrs['item_' + name]
-        self.Item = type('Item', item_bases, item_attrs)
-
-
-class Collection(Mapping):
-    __metaclass__ = CustomItemMeta
-    __merged_dicts__ = [
-        'template',
-    ]
-    Item = Item
-    schema = None
-    schema_links = ()
-    schema_version = None
-    properties = OrderedDict()
-    item_type = None
-    unique_key = None
-    columns = {}
-    template = {
-        '@id': {'$value': '{collection_uri}', '$templated': True},
-        '@type': [
-            {'$value': '{item_type}_collection', '$templated': True},
-            'collection',
-        ],
-    }
-
-    def __init__(self, parent, name):
-        self.__name__ = name
-        self.__parent__ = parent
-
-        self.column_paths = set()
-        if self.schema is not None and 'columns' in self.schema:
-            for column in self.schema['columns']:
-                path = tuple(
-                    name for name in column.split('.')[:-1]
-                    if name not in ('length', '0')
-                )
-                if path:
-                    self.column_paths.add(path)
-
-        if self.schema is not None:
-            properties = self.schema['properties']
-            self.schema_links = [
-                key for key, prop in properties.iteritems()
-                if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
-            ]
-            self.schema_version = properties.get('schema_version', {}).get('default')
-
-    def __getitem__(self, name):
-        try:
-            item = self.get(name)
-        except KeyError:
-            # Just in case we get an unexpected KeyError
-            # FIXME: exception logging.
-            raise HTTPInternalServerError('Traversal raised KeyError')
-        if item is None:
-            raise KeyError(name)
-        return item
-
-    def __iter__(self, batchsize=1000):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        ).order_by(Resource.rid)
-
-        for rid, in query.yield_per(batchsize):
-            yield rid
-
-    def __len__(self):
-        session = DBSession()
-        query = session.query(Resource.rid).filter(
-            Resource.item_type == self.item_type
-        )
-        return query.count()
-
-    def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
-        if resource is not None:
-            if resource.collection is not self and resource.__parent__ is not self:
-                return default
-            return resource
-        if is_accession(name):
-            resource = root.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = root.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        return default
-
-    def add(self, properties):
-        uuid = properties.get('uuid', _marker)
-        if uuid is _marker:
-            uuid = uuid4()
-        else:
-            uuid = UUID(uuid)
-        item = self.Item.create(self, uuid, properties)
-        self.after_add(item)
-        return item
-
-    def after_add(self, item):
-        '''Hook for subclasses'''
-
-    def template_namespace(self, properties, request=None):
-        ns = properties.copy()
-        ns['properties'] = properties
-        ns['collection_uri'] = resource_path(self, '')
-        ns['item_type'] = self.item_type
-        ns['context'] = self
-        ns['root'] = root = find_root(self)
-        ns['registry'] = root.registry
-        if request is not None:
-            ns['permission'] = permission_checker(self, request)
-            ns['request'] = request
-        return ns
-
-    def __json__(self, request):
-        return self.properties.copy()
-
-
-def expand_column(request, obj, subset, path):
-    if isinstance(path, basestring):
-        path = path.split('.')
-    if not path:
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if not remaining:
-        subset[name] = value
-        return
-    if isinstance(value, list):
-        if name not in subset:
-            subset[name] = [{} for i in range(len(value))]
-        for index, member in enumerate(value):
-            if not isinstance(member, dict):
-                member = request.embed(member, '@@object')
-            expand_column(request, member, subset[index], remaining)
-    else:
-        if name not in subset:
-            subset[name] = {}
-        if not isinstance(value, dict):
-            value = request.embed(value, '@@object')
-        expand_column(request, value, subset[name], remaining)
+    @calculated_property(name='uuid')
+    def prop_uuid(self):
+        return str(self.uuid)
 
 
 def etag_tid(view_callable):
     def wrapped(context, request):
         result = view_callable(context, request)
-        etag = 'tid:%s' % context.model.data[''].propsheet.tid
-        request.response.etag = etag
+        root = request.root
+        embedded = (root.get_by_uuid(uuid) for uuid in sorted(request._embedded_uuids))
+        uuid_tid = ((item.uuid, item.tid) for item in embedded)
+        request.response.etag = '&'.join('%s=%s' % (u, t) for u, t in uuid_tid)
         cache_control = request.response.cache_control
         cache_control.private = True
         cache_control.max_age = 0
@@ -962,8 +698,15 @@ def if_match_tid(view_callable):
     Returns 412 Precondition Failed when etag does not match.
     """
     def wrapped(context, request):
-        etag = 'tid:%s' % context.model.data[''].propsheet.tid
-        if etag not in request.if_match:
+        if_match = str(request.if_match)
+        if if_match == '*':
+            return view_callable(context, request)
+        uuid_tid = (v.split('=', 1) for v in if_match.strip('"').split('&'))
+        root = request.root
+        mismatching = (
+            root.get_by_uuid(uuid).tid != UUID(tid)
+            for uuid, tid in uuid_tid)
+        if any(mismatching):
             raise HTTPPreconditionFailed("The resource has changed.")
         return view_callable(context, request)
 
@@ -985,7 +728,7 @@ def load_db(context, request):
             limit = 25
 
     items = (
-        item for item in context.itervalues()
+        item for item in itervalues(context)
         if request.has_permission('view', item)
     )
 
@@ -1017,35 +760,144 @@ def load_es(context, request):
     return result
 
 
+@view_config(context=Collection, permission='list', request_method='GET',
+             name='object')
+def collection_view_object(context, request):
+    uri = request.resource_path(context)
+    properties = context.__json__(request)
+    properties.update({
+        '@id': uri,
+        '@type': [
+            '{item_type}_collection'.format(item_type=context.item_type),
+            'collection',
+        ],
+    })
+    return properties
+
+
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    properties = context.__json__(request)
-    ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.merged_template)
-    templated = compiled(ns)
-    properties.update(templated)
+    path = request.resource_path(context)
+    properties = request.embed(path, '@@object')
 
-    uri = ns['collection_uri']
+    actions = request.embed(path, '@@actions', as_user=True)['actions']
+    if actions:
+        properties['actions'] = actions
+
     if request.query_string:
-        uri += '?' + request.query_string
-    properties['@id'] = uri
+        properties['@id'] += '?' + request.query_string
 
     root = find_root(context)
     if context.__name__ in root['pages']:
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    datastore = request.params.get('datastore', None)
-    if datastore is None:
-        datastore = request.registry.settings.get('collection_datastore', 'database')
     # Switch to change summary page loading options: load_db, load_es
-    if datastore == 'elasticsearch':
+    if request.datastore == 'elasticsearch':
         result = load_es(context, request)
     else:
         result = load_db(context, request)
 
     result.update(properties)
     return result
+
+
+def split_child_props(type_info, properties):
+    propname_children = {}
+    item_properties = properties.copy()
+    if type_info.schema_rev_links:
+        for key, spec in type_info.schema_rev_links.items():
+            if key in item_properties:
+                propname_children[key] = item_properties.pop(key)
+    return item_properties, propname_children
+
+
+def update_children(context, request, propname_children):
+    registry = request.registry
+    conn = registry[CONNECTION]
+    collections = registry[COLLECTIONS]
+    schema_rev_links = context.type_info.schema_rev_links
+
+    for propname, children in propname_children.items():
+        link_type, link_attr = schema_rev_links[propname]
+        child_collection = collections.by_item_type[link_type]
+        found = set()
+
+        # Add or update children included in properties
+        for i, child_props in enumerate(children):
+            if isinstance(child_props, basestring):  # IRI of (existing) child
+                child = find_resource(child_collection, child_props)
+            else:
+                child_props = child_props.copy()
+                child_props[link_attr] = str(context.uuid)
+                if 'uuid' in child_props:  # update existing child
+                    child_id = child_props.pop('uuid')
+                    child = conn.get_by_uuid(child_id)
+                    if not request.has_permission('edit', child):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
+                    try:
+                        update_item(child, request, child_props)
+                    except ValidationFailure as e:
+                        e.location = [propname, i] + e.location
+                        raise
+                else:  # add new child
+                    if not request.has_permission('add', child_collection):
+                        msg = u'edit forbidden to %s' % request.resource_path(child)
+                        raise ValidationFailure('body', [propname, i], msg)
+                    child = create_item(child_collection.type_info, request, child_props)
+            found.add(child.uuid)
+
+        # Remove existing children that are not in properties
+        for link_uuid in context.get_rev_links(propname):
+            if link_uuid in found:
+                continue
+            child = conn.get_by_uuid(link_uuid)
+            if not request.has_permission('visible_for_edit', child):
+                continue
+            if not request.has_permission('edit', child):
+                msg = u'edit forbidden to %s' % request.resource_path(child)
+                raise ValidationFailure('body', [propname, i], msg)
+            try:
+                delete_item(child, request)
+            except ValidationFailure as e:
+                e.location = [propname, i] + e.location
+                raise
+
+
+def create_item(type_info, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(type_info, properties)
+
+    if 'uuid' in item_properties:
+        uuid = UUID(item_properties.pop('uuid'))
+    else:
+        uuid = uuid4()
+
+    item = type_info.factory.create(registry, uuid, item_properties, sheets)
+    registry.notify(Created(item, request))
+
+    if propname_children:
+        update_children(item, request, propname_children)
+    return item
+
+
+def update_item(context, request, properties, sheets=None):
+    registry = request.registry
+    item_properties, propname_children = split_child_props(context.type_info, properties)
+
+    registry.notify(BeforeModified(context, request))
+    context.update(item_properties, sheets)
+    registry.notify(AfterModified(context, request))
+
+    if propname_children:
+        update_children(context, request, propname_children)
+
+
+def delete_item(context, request):
+    properties = context.properties.copy()
+    properties['status'] = 'deleted'
+    update_item(context, request, properties)
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1056,9 +908,9 @@ def collection_list(context, request):
 def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
-    item = context.add(properties)
-    request.registry.notify(Created(item, request))
+
+    item = create_item(context.type_info, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid
     else:
@@ -1077,25 +929,7 @@ def collection_add(context, request, render=None):
     return result
 
 
-@subscriber(ContextFound)
-def traversal_security(event):
-    """ Check traversal was permitted at each step
-    """
-    request = event.request
-    traversed = reversed(list(lineage(request.context)))
-    # Required to view the root page as anonymous user
-    # XXX Needs test once login based browser tests work.
-    next(traversed)  # Skip root object
-    for resource in traversed:
-        result = has_permission('traverse', resource, request)
-        if not result:
-            msg = 'Unauthorized: traversal failed permission check'
-            raise HTTPForbidden(msg, result=result)
-
-
 @view_config(context=Item, permission='view', request_method='GET')
-@view_config(context=Item, permission='view', request_method='GET',
-             name='details')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
@@ -1106,7 +940,7 @@ def item_view(context, request):
             # Avoid this view emitting PredicateMismatch
             exc_class, exc, tb = sys.exc_info()
             exc.__class__ = HTTPNotFound
-            raise HTTPNotFound, exc, tb
+            raise_with_traceback(exc, tb)
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
 
@@ -1114,40 +948,56 @@ def item_view(context, request):
     return embed(request, path, as_user=True)
 
 
-
 def item_links(context, request):
     # This works from the schema rather than the links table
     # so that upgrade on GET can work.
     properties = context.__json__(request)
-    root = request.root
-    for name in context.schema_links:
-        value = properties.get(name, None)
-        if value is None:
-            continue
-        if isinstance(value, list):
-            properties[name] = [
-                request.resource_path(root.get_by_uuid(v))
-                for v in value
-            ]
-        else:
-            properties[name] = request.resource_path(root.get_by_uuid(value))
+    for path in context.type_info.schema_links:
+        uuid_to_path(request, properties, path)
     return properties
+
+
+def uuid_to_path(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if remaining:
+        if isinstance(value, list):
+            for v in value:
+                uuid_to_path(request, v, remaining)
+        else:
+            uuid_to_path(request, value, remaining)
+        return
+    conn = request.registry[CONNECTION]
+    if isinstance(value, list):
+        obj[name] = [
+            request.resource_path(conn[v])
+            for v in value
+        ]
+    else:
+        obj[name] = request.resource_path(conn[value])
 
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
+@view_config(context=Item, permission='view', request_method='GET',
+             name='details')
 def item_view_object(context, request):
     """ Render json structure
 
     1. Fetch stored properties, possibly upgrading.
     2. Link canonicalization (overwriting uuids.)
-    3. Templated properties (including reverse links.)
+    3. Calculated properties (including reverse links.)
     """
     properties = item_links(context, request)
-    ns = context.template_namespace(properties, request)
-    compiled = ObjectTemplate(context.merged_template)
-    templated = compiled(ns)
-    properties.update(templated)
+    calculated = calculate_properties(context, request, properties)
+    properties.update(calculated)
     return properties
 
 
@@ -1156,24 +1006,24 @@ def item_view_object(context, request):
 def item_view_embedded(context, request):
     item_path = request.resource_path(context)
     properties = request.embed(item_path, '@@object')
-    for path in context.embedded_paths:
+    for path in context.embedded:
         expand_path(request, properties, path)
     return properties
 
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='actions')
+@view_config(context=Collection, permission='list', request_method='GET',
+             name='actions')
 def item_actions(context, request):
-    path = request.resource_path(context)
-    ns = {}
-    ns['permission'] = permission_checker(context, request)
-    ns['item_type'] = context.item_type
-    ns['item_uri'] = path
-    compiled = ObjectTemplate(context.actions)
-    actions = compiled(ns)
+    ns = {
+        'has_permission': request.has_permission,
+        'item_uri': request.resource_path(context),
+        'item_type': context.item_type,
+    }
+    actions = calculate_properties(context, request, ns, category='action')
     return {
-        '@id': path,
-        'actions': actions,
+        'actions': list(actions.values()),
     }
 
 
@@ -1187,8 +1037,6 @@ def item_view_page(context, request):
         properties['actions'] = actions
     if request.has_permission('audit', context):
         properties['audit'] = request.embed(item_path, '@@audit')['audit']
-    # XXX Move to view when views on ES results implemented.
-    properties = context.expand_page(request, properties)
     return properties
 
 
@@ -1202,20 +1050,53 @@ def item_view_expand(context, request):
     return properties
 
 
+def expand_column(request, obj, subset, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if not remaining:
+        subset[name] = value
+        return
+    if isinstance(value, list):
+        if name not in subset:
+            subset[name] = [{} for i in range(len(value))]
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = request.embed(member, '@@object')
+            expand_column(request, member, subset[name][index], remaining)
+    else:
+        if name not in subset:
+            subset[name] = {}
+        if not isinstance(value, dict):
+            value = request.embed(value, '@@object')
+        expand_column(request, value, subset[name], remaining)
+
+
 @view_config(context=Item, permission='view', request_method='GET',
              name='columns')
 def item_view_columns(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
-    if context.schema is not None and 'columns' in context.schema:
+    if context.schema is None or 'columns' not in context.schema:
         return properties
 
     subset = {
         '@id': properties['@id'],
         '@type': properties['@type'],
     }
-    for path in context.collection.column_paths:
-        expand_column(request, properties, subset, path)
+
+    for column in context.schema['columns']:
+        path = column.split('.')
+        if path[-1] == 'length':
+            path.pop()
+        if path:
+            expand_column(request, properties, subset, path)
 
     return subset
 
@@ -1236,7 +1117,7 @@ def item_view_audit_self(context, request):
 def item_view_audit(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
-    audit = inherit_audits(request, properties, context.audit_inherit_paths)
+    audit = inherit_audits(request, properties, context.audit_inherit or context.embedded)
     return {
         '@id': path,
         'audit': audit,
@@ -1254,7 +1135,20 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
-    return item_links(context, request)
+    assert request.datastore == 'database'
+    conn = request.registry[CONNECTION]
+    properties = item_links(context, request)
+    schema_rev_links = context.type_info.schema_rev_links
+
+    for propname in schema_rev_links:
+        properties[propname] = sorted(
+            request.resource_path(child)
+            for child in (
+                conn.get_by_uuid(uuid) for uuid in context.get_rev_links(propname)
+            ) if request.has_permission('visible_for_edit', child)
+        )
+
+    return properties
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',
@@ -1275,11 +1169,10 @@ def item_edit(context, request, render=None):
     """
     if render is None:
         render = request.params.get('render', True)
-    properties = request.validated
+
     # This *sets* the property sheet
-    request.registry.notify(BeforeModified(context, request))
-    context.update(properties)
-    request.registry.notify(AfterModified(context, request))
+    update_item(context, request, request.validated)
+
     if render == 'uuid':
         item_uri = '/%s' % context.uuid
     else:
@@ -1315,6 +1208,26 @@ class AfterModified(object):
         self.request = request
 
 
+def simple_path_ids(obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        yield obj
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for member in value:
+            for result in simple_path_ids(member, remaining):
+                yield result
+    else:
+        for result in simple_path_ids(value, remaining):
+            yield result
+
+
 def path_ids(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
@@ -1344,22 +1257,23 @@ def inherit_audits(request, embedded, embedded_paths):
     for embedded_path in embedded_paths:
         audit_paths.update(path_ids(request, embedded, embedded_path))
 
-    audit = []
+    audits = {}
     for audit_path in audit_paths:
         result = embed(request, join(audit_path, '@@audit-self'))
-        audit.extend(result['audit'])
-    return audit
+        for audit in result['audit']:
+            if audit['level_name'] in audits:
+                audits[audit['level_name']].append(audit)
+            else:
+                audits[audit['level_name']] = [audit]
+    return audits
 
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    links = defaultdict(list)
-    for link in context.model.rels:
-        links[link.rel].append(link.target_rid)
-
-    keys = defaultdict(list)
-    for key in context.model.unique_keys:
-        keys[key.name].append(key.value)
+    uuid = str(context.uuid)
+    properties = context.upgrade_properties()
+    links = context.links(properties)
+    unique_keys = context.unique_keys(properties)
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
@@ -1372,34 +1286,43 @@ def item_index_data(context, request):
     paths = {path}
     collection = context.collection
 
-    if collection.unique_key in keys:
+    if collection.unique_key in unique_keys:
         paths.update(
             resource_path(collection, key)
-            for key in keys[collection.unique_key])
+            for key in unique_keys[collection.unique_key])
 
     for base in (collection, request.root):
         for key_name in ('accession', 'alias'):
-            if key_name not in keys:
+            if key_name not in unique_keys:
                 continue
-            paths.add(resource_path(base, str(context.uuid)))
+            paths.add(resource_path(base, uuid))
             paths.update(
                 resource_path(base, key)
-                for key in keys[key_name])
+                for key in unique_keys[key_name])
 
     path = path + '/'
-    embedded = embed(request, join(path, '@@embedded'))
-    audit = inherit_audits(request, embedded, context.audit_inherit_paths)
+    embedded = request.embed(path, '@@embedded')
+    object = request.embed(path, '@@object')
+    audit = request.embed(path, '@@audit')['audit']
 
     document = {
-        'embedded': embedded,
-        'object': embed(request, join(path, '@@object')),
-        'links': links,
-        'keys': keys,
-        'principals_allowed': principals_allowed,
-        'paths': sorted(paths),
         'audit': audit,
+        'embedded': embedded,
         'embedded_uuids': sorted(request._embedded_uuids),
+        'item_type': context.item_type,
         'linked_uuids': sorted(request._linked_uuids),
+        'links': links,
+        'object': object,
+        'paths': sorted(paths),
+        'principals_allowed': principals_allowed,
+        'properties': properties,
+        'propsheets': {
+            name: context.propsheets[name]
+            for name in context.propsheets.keys() if name != ''
+        },
+        'tid': context.tid,
+        'unique_keys': unique_keys,
+        'uuid': uuid,
     }
 
     return document

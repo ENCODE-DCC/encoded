@@ -1,5 +1,8 @@
+from future.standard_library import install_aliases
+install_aliases()
 import base64
 import json
+import os
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -39,11 +42,14 @@ def static_resources(config):
 
 
 def configure_engine(settings, test_setup=False):
+    from .renderers import json_renderer
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
         # Already setup by test fixture
         return None
     engine_opts = {}
+    if engine_url.startswith('postgresql'):
+        engine_opts['json_serializer'] = json_renderer.dumps
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
@@ -52,7 +58,7 @@ def configure_engine(settings, test_setup=False):
             set_postgresql_statement_timeout(engine, timeout)
     if test_setup:
         return engine
-    if asbool(settings.get('create_tables', True)):
+    if asbool(settings.get('create_tables', False)):
         Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
@@ -119,7 +125,7 @@ def session(config):
             secret = open(secret).read()
             secret = base64.b64decode(secret)
     else:
-        secret = open('/dev/urandom').read(256)
+        secret = os.urandom(256)
     # auth_tkt has no timeout set
     # cookie will still expire at browser close
     if 'session.timeout' in settings:
@@ -150,13 +156,15 @@ def main(global_config, **local_config):
     configure_engine(settings)
 
     # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.calculated')
     config.include('.embedding')
     config.include('.renderers')
     config.include('.authentication')
     config.include('.validation')
     config.include('.predicates')
-    config.include('.contentbase')
     config.include('.indexing')
+    config.include('.es_storage')
+    config.include('.contentbase')
     config.include('.server_defaults')
     config.include('.types')
     config.include('.views')

@@ -1,5 +1,9 @@
 import pytest
 
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
+
 
 @pytest.fixture
 def base_experiment(testapp, lab, award):
@@ -98,6 +102,7 @@ def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, o
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
         'primary_characterization_method': 'immunoblot',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
         'characterization_reviews': [
             {
                 'lane': 2,
@@ -119,7 +124,8 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
         'target': target['uuid'],
         'lab': lab['uuid'],
         'characterizes': antibody_lot['uuid'],
-        'secondary_characterization_method': 'dot blot assay'
+        'secondary_characterization_method': 'dot blot assay',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 
@@ -128,27 +134,39 @@ def test_audit_experiment_target(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing target' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing target' for error in errors_list)
 
 
 def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_replicate):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing read_length' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing read_length' for error in errors_list)
 
 
 def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_replicate):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing replicate.paired_ended' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing replicate.paired_ended' for error in errors_list)
 
 
 def test_audit_experiment_library_paired_end(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing library.paired_ended' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing library.paired_ended' for error in errors_list)
 
 
 def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_replicate, base_library):
@@ -156,7 +174,10 @@ def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_rep
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched paired_ended' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched paired_ended' for error in errors_list)
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
@@ -164,7 +185,10 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing spikeins_used' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing spikeins_used' for error in errors_list)
 
 def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})
@@ -172,7 +196,10 @@ def test_audit_experiment_paired_end_required(testapp, base_experiment, base_rep
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'paired end required for assay' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'paired end required for assay' for error in errors_list)
 
 
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
@@ -181,7 +208,10 @@ def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replic
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'not tagged antibody' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'not tagged antibody' for error in errors_list)
 
 
 def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
@@ -192,7 +222,10 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'tag target mismatch' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched tag target' for error in errors_list)
 
 
 def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):
@@ -200,7 +233,10 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'mismatched target' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched target' for error in errors_list)
 
 
 def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
@@ -209,7 +245,10 @@ def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_repli
     target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'not eligible antibody' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
 
 
 def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2):
@@ -222,11 +261,26 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
     histone_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'not eligible histone antibody' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'not eligible antibody' for error in errors_list)
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'missing biosample_type' for error in errors)
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing biosample_type' for error in errors_list)
+
+def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing documents' for error in errors_list)
