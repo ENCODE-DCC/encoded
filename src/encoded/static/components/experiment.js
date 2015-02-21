@@ -626,6 +626,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             }
         });
 
+        // Add contributing files to the allFiles object
+        context.contributing_files.forEach(function(file) {
+            allFiles[file.accession] = true;
+        });
+
         // Check whether any derived_from files are missing (usually because they're unreleased and we're logged out)
         Object.keys(derivedFromFiles).forEach(function(derivedFromFile) {
             if (!(derivedFromFile in allFiles)) {

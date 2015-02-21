@@ -187,46 +187,6 @@
         "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
     },
     {
-        "_test": "Tests graph Case 5",
-        "accession": "ENCSR010AEN",
-        "assay_term_id": "OBI:0001271",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007005",
-        "biosample_term_id": "EFO:0002067",
-        "biosample_term_name": "K562",
-        "biosample_type": "immortalized cell line",
-        "dataset_type": "experiment",
-        "description": "RNA Evaluation K562 Long Total from Graveley",
-        "lab": "brenton-graveley",
-        "status": "released",
-        "references": [
-            "PMID:23000965",
-            "PMID:16395128"
-        ],
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "8bd05c59-5011-4611-814b-62f9d1e4159c"
-    },
-    {
-        "_test": "Ben's repeated step",
-        "accession": "ENCSR020AEN",
-        "assay_term_id": "OBI:0001271",
-        "assay_term_name": "RNA-seq",
-        "award": "U54HG007005",
-        "biosample_term_id": "EFO:0002067",
-        "biosample_term_name": "K562",
-        "biosample_type": "immortalized cell line",
-        "dataset_type": "experiment",
-        "description": "RNA Evaluation K562 Long Total from Graveley",
-        "lab": "brenton-graveley",
-        "status": "released",
-        "references": [
-            "PMID:23000965",
-            "PMID:16395128"
-        ],
-        "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "7bab4564-0ec4-4bef-a532-2503289f9ab6"
-    },
-    {
         "_test": "no replicates",
         "accession": "ENCSR000AAL",
         "assay_term_id": "OBI:0001271",
@@ -296,24 +256,6 @@
         "accession": "ENCSR765JPC",
         "dbxrefs": [],
         "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
-        "biosample_type": "immortalized cell line",
-        "award": "U54HG006998",
-        "biosample_term_id": "EFO:0002067",
-        "organ_slims": [],
-        "biosample_term_name": "K562",
-        "dataset_type": "experiment",
-        "assay_term_id": "OBI:0001863",
-        "status": "released",
-        "description": "HAIB Whole Genome Bisulfite Sequencing K562",
-        "assay_term_name": "whole genome bisulfite sequencing",
-        "lab": "richard-myers",
-        "submitted_by": "facilisi.tristique@potenti.vivamus"
-    },
-    {
-        "_test": "DNA-me pipeline test",
-        "accession": "ENCSR766JPC",
-        "dbxrefs": [],
-        "uuid": "482c5fe5-a33f-4cef-b8bc-135551859a0c",
         "biosample_type": "immortalized cell line",
         "award": "U54HG006998",
         "biosample_term_id": "EFO:0002067",

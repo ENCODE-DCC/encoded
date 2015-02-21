@@ -17,15 +17,6 @@
         "uuid": "c4a33ee0-50ab-11e4-916c-0800200c9a66"
     },
     {
-        "analysis_step_types": ["signal calling"],
-        "software_versions": ["8eacefa0-50ad-11e4-916c-0800200c9a66"],
-        "input_file_types": ["bam"],
-        "output_file_types": ["bigWig"],
-        "status": "released",
-        "parents": ["ab7ec880-50ab-11e4-916c-0800200c9a66"],
-        "uuid": "fe12721c-8a58-4a55-aecd-cb1c824a8621"
-    },
-    {
         "analysis_step_types": ["alignment"],
         "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
         "input_file_types": ["fastq"],
