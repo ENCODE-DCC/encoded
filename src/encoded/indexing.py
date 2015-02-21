@@ -224,7 +224,6 @@ def all_uuids(root, types=None):
 
 
 def es_update_objects(request, uuids, xmin):
-    print 'es_update_objects'
     i = -1
     for i, uuid in enumerate(uuids):
         path = es_update_object(request, uuid, xmin)
@@ -311,7 +310,7 @@ def invalidate_new_back_revs(event):
     properties = context.upgrade_properties()
     current = {
         rel: set(aslist(properties.get(rel, ())))
-        for rel in context.merged_back_rev
+        for rel in context.type_info.merged_back_rev
     }
     for rel, uuids in current.items():
         for uuid in uuids.difference(initial.get(rel, ())):
