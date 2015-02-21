@@ -628,11 +628,7 @@ class Item(object):
         return None
 
     @classmethod
-    def create(cls, registry, properties, sheets=None):
-        if 'uuid' in properties:
-            uuid = UUID(properties['uuid'])
-        else:
-            uuid = uuid4()
+    def create(cls, registry, uuid, properties, sheets=None):
         model = registry[CONNECTION].create(cls.item_type, uuid)
         self = cls(registry, model)
         self._update(properties, sheets)
@@ -808,12 +804,12 @@ def collection_list(context, request):
 
 def split_child_props(type_info, properties):
     propname_children = {}
+    item_properties = properties.copy()
     if type_info.schema_rev_links:
-        properties = properties.copy()
         for key, spec in type_info.schema_rev_links.items():
-            if key in properties:
-                propname_children[key] = properties.pop(key)
-    return properties, propname_children
+            if key in item_properties:
+                propname_children[key] = item_properties.pop(key)
+    return item_properties, propname_children
 
 
 def update_children(context, request, propname_children):
@@ -873,7 +869,12 @@ def create_item(type_info, request, properties, sheets=None):
     registry = request.registry
     item_properties, propname_children = split_child_props(type_info, properties)
 
-    item = type_info.factory.create(registry, item_properties, sheets)
+    if 'uuid' in item_properties:
+        uuid = UUID(item_properties.pop('uuid'))
+    else:
+        uuid = uuid4()
+
+    item = type_info.factory.create(registry, uuid, item_properties, sheets)
     registry.notify(Created(item, request))
 
     if propname_children:

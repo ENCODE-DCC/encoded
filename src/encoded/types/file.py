@@ -142,7 +142,7 @@ class File(Item):
                 return request.embed(workflow, '@@object').get('pipeline')
 
     @classmethod
-    def create(cls, registry, properties, sheets=None):
+    def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
@@ -151,12 +151,12 @@ class File(Item):
             file_extension = mapping[properties['file_format']]
             date = properties['date_created'].split('T')[0].replace('-', '/')
             key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                date=date, file_extension=file_extension, **properties)
+                date=date, file_extension=file_extension, uuid=uuid, **properties)
             name = 'upload-{time}-{accession}'.format(
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(registry, properties, sheets)
+        return super(File, cls).create(registry, uuid, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',
