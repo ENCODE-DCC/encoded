@@ -124,7 +124,7 @@ VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
 
 
 @view_config(context=Page, permission='view', request_method='GET', name='page')
-def dataset_view_page(context, request):
+def page_view_page(context, request):
     # Embedding of items has to happen here as we don't know which of their subobjects
     # need embedding as we don't know the type and may need their full page view.
     properties = item_view_page(context, request)
