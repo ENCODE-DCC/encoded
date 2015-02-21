@@ -6,11 +6,26 @@ var fetched = require('../fetched');
 var ResultTable = require('../search').ResultTable;
 
 
+var openLinksInNewWindow = function(e) {
+    if (e.isDefaultPrevented()) return;
+
+    // intercept links and open in new tab
+    var target = event.target;
+    while (target && (target.tagName.toLowerCase() != 'a')) {
+        target = target.parentElement;
+    }
+    if (!target) return;
+
+    e.preventDefault();
+    window.open(target.getAttribute('href'), '_blank');
+};
+
+
 var SearchBlockEdit = React.createClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
-            <div className="well" style={styles}>
+            <div className="well" style={styles} onClick={openLinksInNewWindow}>
                 {this.transferPropsTo(<ResultTable mode="picker" />)}
             </div>
         );
@@ -24,7 +39,7 @@ var ItemPreview = module.exports.ItemPreview = React.createClass({
         if (context === undefined) return null;
         var Listing = globals.listing_views.lookup(context);
         return (
-            <ul className="nav result-table">
+            <ul className="nav result-table" onClick={openLinksInNewWindow}>
                 <Listing context={context} columns={this.props.data.columns} key={context['@id']} />
             </ul>
         );
