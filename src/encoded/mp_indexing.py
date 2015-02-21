@@ -1,6 +1,6 @@
-import multiprocessing
 from multiprocessing import (
     cpu_count,
+    get_context,
     util,
 )
 from multiprocessing.pool import (
@@ -112,9 +112,11 @@ def es_update_object(args):
 
 
 def make_pool(settings):
+    ctx = get_context('forkserver')
     return IndexingPool(
         initializer=initializer,
-        initargs=(settings, )
+        initargs=(settings, ),
+        context=ctx,
     )
 
 
@@ -150,10 +152,12 @@ def pool_update_objects(request, uuids, xmin, snapshot_id, pool):
 
 
 class IndexingPool(object):
-    Process = multiprocessing.Process
+    def Process(self, *args, **kwds):
+        return self._ctx.Process(*args, **kwds)
 
     def __init__(self, processes=None, initializer=None, initargs=(),
-                 maxtasksperchild=None):
+                 maxtasksperchild=None, context=None):
+        self._ctx = context or get_context()
         self._setup_queues()
         self._taskqueue = queue.Queue()
         self._cache = {}
@@ -216,9 +220,8 @@ class IndexingPool(object):
             self._repopulate_pool()
 
     def _setup_queues(self):
-        from multiprocessing.queues import SimpleQueue
-        self._inqueue = SimpleQueue()
-        self._outqueue = SimpleQueue()
+        self._inqueue = self._ctx.SimpleQueue()
+        self._outqueue = self._ctx.SimpleQueue()
         self._quick_put = self._inqueue._writer.send
         self._quick_get = self._outqueue._reader.recv
 
