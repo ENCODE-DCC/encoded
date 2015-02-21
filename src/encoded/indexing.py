@@ -308,7 +308,7 @@ def invalidate_new_back_revs(event):
     context = event.object
     updated = event.request._updated_uuid_paths
     initial = event.request._initial_back_rev_links.get(context.uuid, {})
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     current = {
         rel: set(aslist(properties.get(rel, ())))
         for rel in context.merged_back_rev
