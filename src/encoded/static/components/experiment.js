@@ -585,7 +585,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     assembleGraph: function(context, infoNodeId, files) {
 
         // Calculate a step ID from a file's derived_from array
-        function derivedAccessions(file) {
+        function _derivedAccessions(file) {
             if (file.derived_from) {
                 return file.derived_from.map(function(derived) {
                     return derived.accession;
@@ -603,6 +603,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var stepExists = false; // True if at least one file has an analysis_step
         var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
         var abortGraph = false; // True if graph shouldn't be drawn
+        var derivedAccessions = _.memoize(_derivedAccessions, function(file) {
+            return file.accession;
+        });
 
         // Collect derived_from files, used replicates, and used pipelines
         files.forEach(function(file) {
