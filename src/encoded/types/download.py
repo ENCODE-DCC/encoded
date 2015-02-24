@@ -136,9 +136,9 @@ class ItemWithAttachment(Item):
         return properties, sheets
 
     @classmethod
-    def create(cls, registry, properties, sheets=None):
+    def create(cls, registry, uuid, properties, sheets=None):
         properties, sheets = cls._process_downloads(properties, sheets)
-        item = super(ItemWithAttachment, cls).create(registry, properties, sheets)
+        item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
         return item
 
     def update(self, properties, sheets=None):

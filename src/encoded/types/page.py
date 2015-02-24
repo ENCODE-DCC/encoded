@@ -8,6 +8,7 @@ from ..contentbase import (
     ROOT,
     calculated_property,
     collection,
+    item_view_page,
 )
 from .base import (
     ALLOW_EVERYONE_VIEW,
@@ -19,6 +20,7 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_resource,
 )
+from pyramid.view import view_config
 
 
 @collection(
@@ -37,6 +39,10 @@ class Page(Item):
         'released': ALLOW_EVERYONE_VIEW,
         'deleted': ONLY_ADMIN_VIEW,
     }
+
+    embedded = [
+        'layout.blocks.image',
+    ]
 
     def unique_keys(self, properties):
         keys = super(Page, self).unique_keys(properties)
@@ -115,3 +121,15 @@ def isNotCollectionDefaultPage(value, schema):
             return 'You may not place pages inside an object collection.'
 
 VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
+
+
+@view_config(context=Page, permission='view', request_method='GET', name='page')
+def page_view_page(context, request):
+    # Embedding of items has to happen here as we don't know which of their subobjects
+    # need embedding as we don't know the type and may need their full page view.
+    properties = item_view_page(context, request)
+    blocks = properties.get('layout', {}).get('blocks', [])
+    for block in blocks:
+        if 'item' in block and block['item']:
+            block['item'] = request.embed(block['item'], '@@page', as_user=True)
+    return properties

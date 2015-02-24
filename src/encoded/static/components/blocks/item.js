@@ -22,16 +22,19 @@ var FetchedItemBlockView = React.createClass({
     },
 
     render: function() {
-        var url = this.props.value.item;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
+        var context = this.props.value.item;
+        if (typeof context === 'object') {
+            return <ItemBlockView context={context} />;
         }
-        return (
-            <fetched.FetchedData>
-                <fetched.Param name="context" url={url} />
-                <ItemBlockView />
-            </fetched.FetchedData>
-        );
+        if (typeof context === 'string') {
+            return (
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={context} />
+                    <ItemBlockView />
+                </fetched.FetchedData>
+            );
+        }
+        return null;
     }
 });
 
