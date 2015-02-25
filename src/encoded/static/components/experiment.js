@@ -595,11 +595,11 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             }
         }
 
-        var jsonGraph;
+        var jsonGraph; // JSON graph object of entire graph; see graph.js
         var derivedFromFiles = {}; // List of all files that other files derived from
         var allFiles = {}; // All files' accessions as keys
-        var allReplicates = {}; // All file's replicates as keys
-        var pipelines = {}; // List of all pipelines indexed by step @id
+        var allReplicates = {}; // All file's replicates as keys; each key references an array of files
+        var allPipelines = {}; // List of all pipelines indexed by step @id
         var stepExists = false; // True if at least one file has an analysis_step
         var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
         var abortGraph = false; // True if graph shouldn't be drawn
@@ -616,23 +616,25 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 });
             }
 
-            // Keep track of all used replicates by keeping track of all file objects for each replicate
+            // Keep track of all used replicates by keeping track of all file objects for each replicate.
+            // Each key is a replicate number, and each references an array of file objects using that replicate.
             if (file.replicate) {
                 if (!allReplicates[file.replicate.biological_replicate_number]) {
+                    // Place a new array in allReplicates if needed
                     allReplicates[file.replicate.biological_replicate_number] = [];   
                 }
                 allReplicates[file.replicate.biological_replicate_number].push(file);
             }
 
-            // Note whether any files have analysis steps.
-            stepExists = stepExists || !!file.analysis_step;
-
-            // Track all the pipelines used for each step that's part of a pipeline
+            // Track all the pipelines used for each step that's part of a pipeline.
             if (file.pipeline && file.pipeline.analysis_steps) {
                 file.pipeline.analysis_steps.forEach(function(step) {
-                    pipelines[step] = file.pipeline;
+                    allPipelines[step] = file.pipeline;
                 });
             }
+
+            // Note whether any files have analysis steps.
+            stepExists = stepExists || !!file.analysis_step;
 
             // Build a list of all files in the graph, including contributed files, for convenience
             allFiles[file.accession] = file;
@@ -640,7 +642,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Keep track of whether files exist outside replicates
             fileOutsideReplicate = fileOutsideReplicate || !!file.replicate;
         });
-        // At this stage, allFiles and allReplicates points to file objects;
+        // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
         // derivedFromFiles points to derived_from file objects
 
         // Don't draw anything if no files have an analysis_step
@@ -648,8 +650,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             return;
         }
 
-        // Now that we know all files that other files derive from,
-        // remove files that don't derive from other files, and that no files derive from them.
+        // Now that we know at least some files derive from each other through analysis steps, mark file objects that
+        // don't derive from other files — and that no files derive from them — as removed from the graph.
         files.forEach(function(file) {
             file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file.accession];
 
@@ -660,40 +662,43 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         });
 
         // Add contributing files to the allFiles object that other files derive from.
-        // Don't worry about it not being derived from other files.
+        // Don't worry about files they derive from; they're not included in the graph.
         context.contributing_files.forEach(function(file) {
             if (derivedFromFiles[file.accession]) {
                 allFiles[file.accession] = file;
             }
         });
 
-        // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out)
+        // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
         Object.keys(derivedFromFiles).forEach(function(derivedFromAccession) {
             if (!(derivedFromAccession in allFiles)) {
                 // A file others derive from doesn't exist; check if it's in a replicate or not
-                // Note that derived_from object exists even if it doesn't exist in given files array
+                // Note the derived_from file object exists even if it doesn't exist in given files array.
                 var derivedFromFile = derivedFromFiles[derivedFromAccession];
                 if (derivedFromFile.replicate) {
-                    // Unreleased file is in a replicate; remove its files and remove itself
-                    // If the replicate has only unreleased files, just remove this file.
+                    // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
                     if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
                         allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
                             file.removed = true;
 
-                            // Remember it's removed from the derived_From file objects too
+                            // Remember it's removed from the derived_from file objects too
                             if (derivedFromFiles[file.accession]) {
                                 derivedFromFiles[file.accession].removed = true;
                             }
                         });
                     } else {
+                        // Derived-from file is in a replicate, but not seen in files array;
+                        // just remove it from derivedFromFiles.
                         derivedFromFile.removed = true;
                     }
+
+                    // Indicate that this replicate is not to be rendered
                     allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
                 } else {
-                    // Derived-from file has no replicate; don't draw any graph
-                    abortGraph = true;
+                    // Missing derived-from file not in a replicate; don't draw any graph
+                    abortGraph = abortGraph || true;
                 }
-            }
+            } // else the derived_from file is in files array; normal case
         });
 
         // Don't draw anything if a file others derive from outside a replicate doesn't exist
@@ -705,7 +710,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         Object.keys(allFiles).forEach(function(fileAccession) {
             var file = allFiles[fileAccession];
 
-            // A file outside a replicate derives from a file that's been removed
+            // A file outside a replicate derives from a file that's been removed from the graph
             if (!file.replicate && file.derived_from) {
                 abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
                     return derivedFromFile.removed;
@@ -766,7 +771,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                     // Make an ID and label for the step
                     stepId = 'step:' + derivedAccessions(file) + file.analysis_step['@id'];
                     label = file.analysis_step.analysis_step_types;
-                    pipelineInfo = pipelines[file.analysis_step['@id']];
+                    pipelineInfo = allPipelines[file.analysis_step['@id']];
                     error = false;
                 } else if (derivedAccessions(file)) {
                     // File derives from others, but no analysis step; make dummy step
