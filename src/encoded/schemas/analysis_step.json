@@ -24,6 +24,11 @@
             "type": "string",
             "pattern": "^[a-z0-9\\-\\_]+$"
         },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the analysis step, likely the same as the name.",
+            "type": "string"
+        },
         "analysis_step_types": {
             "title": "Types",
              "description": "The classification of the software",
