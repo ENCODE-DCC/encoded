@@ -5,7 +5,7 @@
         "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
         "journal": "Nature",
         "date_published": "2012 Sep 6",
-        "references": ["PMID:22955616", "PMCID:PMC3439153"],
+        "identifiers": ["PMID:22955616", "PMCID:PMC3439153"],
         "volume": "489",
         "issue": "7414",
         "page": "57-74",
@@ -24,7 +24,7 @@
         "page":"pdb.prot5384",
         "volume":"2010",
         "date_published":"2010 Feb",
-        "references":["PMID:20150147"],
+        "identifiers":["PMID:20150147"],
         "authors":"Crawford GE",
         "published_by": ["ENCODE"],
         "categories": ["data standard"]
@@ -38,7 +38,7 @@
         "page":"e1000625; discussion e1001102",
         "volume":"9",
         "date_published":"2011 Jul",
-        "references":["PMID:21765801"],
+        "identifiers":["PMID:21765801"],
         "published_by": ["ENCODE"],
         "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
     },
@@ -51,7 +51,7 @@
         "page":"690-1",
         "volume":"6",
         "date_published":"2009 Oct",
-        "references":["PMID:19789528"], 
+        "identifiers":["PMID:19789528"], 
         "published_by": ["ENCODE"],
         "authors":"Lajoie BR, van Berkum NL, Sanyal A, Dekker J"
     },
@@ -64,7 +64,7 @@
         "page":"346-7",
         "volume":"27",
         "date_published":"2009 Apr",
-        "references":["PMID:19352372"],
+        "identifiers":["PMID:19352372"],
         "published_by": ["ENCODE"],
         "authors":"Gingeras T"
     },
@@ -79,7 +79,7 @@
         "date_published":"2012 Feb 15",
         "categories": ["basic biology"],
         "published_by": ["ENCODE"],
-        "references": ["PMID:22337043"],
+        "identifiers": ["PMID:22337043"],
         "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
     },
     {
@@ -92,7 +92,7 @@
         "volume":"22",
         "date_published":"2012 May",
         "authors":"Iyer VR",
-        "references": ["PMID:22421062"],
+        "identifiers": ["PMID:22421062"],
         "published_by": ["ENCODE"],
         "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
     },
@@ -105,7 +105,7 @@
         "page":"34287-94",
         "volume":"288",
         "date_published":"2013 Nov 29",
-        "references":["PMID:24151070"],
+        "identifiers":["PMID:24151070"],
         "published_by": ["ENCODE"],
         "authors":"Blattler A, Farnham PJ",
         "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
@@ -120,7 +120,7 @@
         "page":"30932-40",
         "volume":"287",
         "date_published":"2014 Jan",
-        "references":["PMID:22952232"],
+        "identifiers":["PMID:22952232"],
         "authors":"Hardison RC",
         "published_by": ["ENCODE"],
         "abstract":"Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci. Genome-wide association studies can identify these loci, but most phenotype-associated variants lie distal to protein-coding regions and are likely involved in regulating gene expression. Understanding how  these genetic variants affect complex traits depends on the ability to predict and test the function of the genomic elements harboring them. Community efforts such as the ENCODE Project provide a wealth of data about epigenetic features associated with gene regulation. These data enable the prediction of testable functions for many phenotype-associated variants. AU"
@@ -138,7 +138,7 @@
         "published_by": [
             "ENCODE"
         ],
-        "references": [
+        "identifiers": [
             "PMID:23104886",
             "PMCID:PMC3530905"
         ],
@@ -162,7 +162,7 @@
         "published_by": [
             "ENCODE"
         ],
-        "references": [
+        "identifiers": [
             "PMID:22064851",
             "PMCID:PMC3245002"
         ],
@@ -211,7 +211,7 @@
         "published_by": [
             "community"
         ],
-        "references": [
+        "identifiers": [
             "PMID:20110278",
             "PMCID:PMC2832824"
         ],
