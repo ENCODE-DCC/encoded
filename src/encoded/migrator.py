@@ -79,7 +79,7 @@ class SchemaMigrator(object):
             raise ConfigurationError('duplicate step for source', source)
         self.upgrade_steps[parse_version(source)] = UpgradeStep(step, source, dest)
 
-    def upgrade(self, value, current_version='', target_version=None, finalize=True, **kw):
+    def upgrade(self, value, current_version='', target_version=None, **kw):
         if target_version is None:
             target_version = self.version
 
@@ -123,7 +123,7 @@ class SchemaMigrator(object):
             if next_value is not None:
                 value = next_value
 
-        if finalize and self.finalizer is not None:
+        if self.finalizer is not None:
             next_value = self.finalizer(value, system, version)
             if next_value is not None:
                 value = next_value

@@ -47,7 +47,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         // Only produce a graph if there's at least one analysis step
         if (this.props.context.analysis_steps) {
             // Create an empty graph architecture
-            jsonGraph = new JsonGraph('');
+            jsonGraph = new JsonGraph(this.props.context.accession);
 
             // Add files and their steps as nodes to the graph
             this.props.context.analysis_steps.forEach(function(step) {
@@ -60,7 +60,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                    'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
+                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4, ref: step});
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -84,7 +84,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                             // Assemble a single analysis step node.
                             jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), '', 'rect', 4);
+                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), shape: 'rect', cornerRadius: 4, ref: parent});
                         }
                     }, this);
                 }
@@ -140,11 +140,12 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                 <dt>Software</dt>
                                 <dd>
                                     {selectedStep.software_versions.map(function(sw, i) {
+                                        var versionNum = sw.version === 'unknown' ? 'version unknown' : sw.version;
                                         return (
                                             <a href={sw.software['@id']} className="software-version">
                                                 <span className="software">{sw.software.title}</span>
                                                 {sw.version ?
-                                                    <span className="version">{sw.version}</span>
+                                                    <span className="version">{versionNum}</span>
                                                 : null}
                                             </a>
                                         );
@@ -210,8 +211,8 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         }
 
         // Build node graph of the files and analysis steps with this experiment
-        var jsonGraph = this.assembleGraph();
-        var meta = this.detailNodes(jsonGraph, this.state.infoNodeId);
+        this.jsonGraph = this.assembleGraph();
+        var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
 
         return (
             <div className={itemClass}>
@@ -242,16 +243,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
                     </dl>
-                      {context.analysis_steps && context.analysis_steps.length ?
-                          <div>
-                              <h3>Steps</h3>
-                              <div className="panel view-detail" data-test="supplementarydata">
-                                  {context.analysis_steps.map(function(props, i) {
-                                      return AnalysisStep (props, i) ;
-                                  })}
-                              </div>
-                          </div>
-                      : null}
                 </div>
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -261,10 +252,10 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 : null}
-                {jsonGraph ?
+                {this.jsonGraph ?
                     <div>
                         <h3>Pipeline</h3>
-                        <Graph graph={jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                             <div className="graph-node-info">
                                 {meta ? <div className="panel-insert">{meta}</div> : null}
                             </div>
@@ -277,39 +268,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
     }
 });
 globals.content_views.register(Pipeline, 'pipeline');
-
-
-var AnalysisStep = module.exports.AnalysisStep = function (props) {
-    var typesList = props.analysis_step_types.join(", ");
-
-    return (
-        <div key={props.key} className="panel-replicate">
-            <dl className="panel key-value">
-                {props.analysis_step_types.length ?
-                    <dl data-test="analysis_step_types">
-                        <dt>Category</dt>
-                        <dd>{typesList}</dd>
-                    </dl>
-                : null}
-                {props.software_versions.length ?
-                    <dl>
-                        <dt> Software</dt>
-                        <dd>
-                            {props.software_versions.map(function(software_version, i) {
-                                return ( <span> {
-                                    i > 0 ? ", ": ""
-                                }
-                                <a href ={software_version.software['@id']}>{software_version.software.title}</a>
-                                </span>);
-                            })}
-                        </dd>
-                    </dl>
-                : null}
-            </dl>
-        </div>
-    );
-};
-
 
 
 var Listing = React.createClass({

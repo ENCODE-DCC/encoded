@@ -90,13 +90,6 @@ module.exports = function(grunt) {
                     'scriptjs',
                     'google-analytics',
                 ],
-                require: [
-                    'domready',
-                    'jquery',
-                    'react',
-                    'underscore',
-                    'url',
-                ],
                 transform: [
                     [{harmony: true, sourceMap: true}, reactify],
                     'brfs',

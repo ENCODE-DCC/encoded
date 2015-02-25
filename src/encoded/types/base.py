@@ -2,6 +2,7 @@ from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
     Authenticated,
+    Deny,
     DENY_ALL,
     Everyone,
 )
@@ -41,6 +42,10 @@ ONLY_ADMIN_VIEW = [
     DENY_ALL,
 ]
 
+DELETED = [
+    (Deny, Everyone, 'visible_for_edit')
+] + ONLY_ADMIN_VIEW
+
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
     if include is not None:
@@ -60,7 +65,9 @@ class Collection(contentbase.Collection):
         super(Item.Collection, self).__init__(*args, **kw)
         if hasattr(self, '__acl__'):
             return
-        if 'lab' in self.Item.schema['properties']:
+        # XXX collections should be setup after all types are registered.
+        # Don't access type_info.schema here as that precaches calculated schema too early.
+        if 'lab' in self.type_info.factory.schema['properties']:
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
     def get(self, name, default=None):
@@ -87,8 +94,8 @@ class Item(contentbase.Item):
     STATUS_ACL = {
         # standard_status
         'released': ALLOW_CURRENT,
-        'deleted': ONLY_ADMIN_VIEW,
-        'replaced': ONLY_ADMIN_VIEW,
+        'deleted': DELETED,
+        'replaced': DELETED,
 
         # shared_status
         'current': ALLOW_CURRENT,
@@ -120,20 +127,20 @@ class Item(contentbase.Item):
     def __name__(self):
         if self.name_key is None:
             return self.uuid
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
         if properties.get('status') == 'replaced':
             return self.uuid
         return properties.get(self.name_key, None) or self.uuid
 
     def __acl__(self):
         # Don't finalize to avoid validation here.
-        properties = self.upgrade_properties(finalize=False).copy()
+        properties = self.upgrade_properties().copy()
         status = properties.get('status')
         return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
     def __ac_local_roles__(self):
         roles = {}
-        properties = self.upgrade_properties(finalize=False).copy()
+        properties = self.upgrade_properties().copy()
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'

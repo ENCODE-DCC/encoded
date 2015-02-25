@@ -69,7 +69,7 @@ def file_2_3(value, system):
 
     context = system['context']
     root = find_root(context)
-    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties()
 
     dataset_status = dataset.get('status')
     status = value.get('status')
@@ -168,7 +168,7 @@ def file_3_4(value, system):
 
     context = system['context']
     root = find_root(context)
-    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties()
 
     value.pop('download_path')
 

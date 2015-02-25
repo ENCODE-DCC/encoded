@@ -20,7 +20,7 @@ Step 2: Install or update dependencies::
 
 Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::
 
-    $ brew install python
+    $ brew install python3
 
 If you need to update dependencies::
 
@@ -31,7 +31,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
+    $ python3.4 bootstrap.py -v 2.2.5 --setuptools-version 7.0
     $ bin/buildout
 
 If you see a clang error like this::

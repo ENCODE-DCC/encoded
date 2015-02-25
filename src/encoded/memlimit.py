@@ -52,12 +52,7 @@ def rss_checker(rss_limit=None):
     return callback
 
 
-def composite(loader, global_conf, **settings):
-    # Composite app is used so we can load the main app
-    app_name = settings.get('app', None)
-    app = loader.get_app(app_name, global_conf=global_conf)
-
-    rss_limit = settings.get('rss_limit', None)
+def filter_app(app, global_conf, rss_limit=None):
     if rss_limit is not None:
         rss_limit = humanfriendly.parse_size(rss_limit)
 
