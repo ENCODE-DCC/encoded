@@ -12,8 +12,7 @@ from .base import (
 
 
 class Donor(Item):
-    item_type = 'donor'
-    base_types = ['donor'] + Item.base_types
+    base_types = ['Donor'] + Item.base_types
     embedded = ['organism']
     name_key = 'accession'
     rev = {

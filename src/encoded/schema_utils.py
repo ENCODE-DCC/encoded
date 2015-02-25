@@ -64,14 +64,17 @@ def mixinProperties(schema, resolver):
 
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
-    from .contentbase import Item
+    from .contentbase import (
+        COLLECTIONS,
+        Item,
+    )
 
     if not validator.is_type(instance, "string"):
         return
 
     request = get_current_request()
     if validator.is_type(linkTo, "string"):
-        base = request.root.by_item_type.get(linkTo, request.root)
+        base = request.registry[COLLECTIONS].get(linkTo, request.root)
         linkTo = [linkTo] if linkTo else []
     elif validator.is_type(linkTo, "array"):
         base = request.root
@@ -89,7 +92,7 @@ def linkTo(validator, linkTo, instance, schema):
         error = "%r is not a linkable resource" % instance
         yield ValidationError(error)
         return
-    if linkTo and not set([item.item_type] + item.base_types).intersection(set(linkTo)):
+    if linkTo and not set([item.item_type] + item.base_types).intersection(linkTo):
         reprs = (repr(it) for it in linkTo)
         error = "%r is not of type %s" % (instance, ", ".join(reprs))
         yield ValidationError(error)
@@ -128,12 +131,16 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from .contentbase import Item, TYPES
+    from .contentbase import (
+        COLLECTIONS,
+        Item,
+        TYPES,
+    )
 
     linkType, linkProp = linkFrom.split('.')
     if validator.is_type(instance, "string"):
         request = get_current_request()
-        base = request.root.by_item_type[linkType]
+        base = request.registry[COLLECTIONS][linkType]
         try:
             item = find_resource(base, instance.replace(':', '%3A'))
             if item is None:

@@ -10,9 +10,6 @@ from .base import (
     paths_filtered_by_status,
 )
 from .download import ItemWithAttachment
-from pyramid.traversal import (
-    find_root,
-)
 
 
 def includeme(config):

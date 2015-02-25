@@ -204,8 +204,9 @@ def collection(name, **kw):
 
     def set_collection(config, Collection, name, Item, **kw):
         registry = config.registry
-        registry[TYPES].register(Item.item_type, Item)
-        collection = Collection(registry, name, Item.item_type, **kw)
+        item_type = Item.item_type or Item.__name__
+        registry[TYPES].register(item_type, Item)
+        collection = Collection(registry, name, item_type, **kw)
         registry[COLLECTIONS].register(name, collection)
 
     def decorate(Item):
@@ -228,6 +229,7 @@ class CollectionsTool(dict):
     def register(self, name, value):
         self[name] = value
         self[value.item_type] = value
+        self[value.factory.__name__] = value
         self.by_item_type[value.item_type] = value
 
 
@@ -272,7 +274,7 @@ class TypeInfo(object):
         for key, prop in self.factory.schema['properties'].items():
             uniqueKey = prop.get('items', prop).get('uniqueKey')
             if uniqueKey is True:
-                uniqueKey = '%s:%s' % (self.factory.item_type, key)
+                uniqueKey = '%s:%s' % (self.item_type, key)
             if uniqueKey is not None:
                 keys[uniqueKey].append(key)
         return keys
@@ -531,8 +533,8 @@ class Collection(Mapping):
 
 
 class Item(object):
-    item_type = 'item'
-    base_types = ['item']
+    item_type = None
+    base_types = ['Item']
     name_key = None
     rev = {}
     embedded = ()
@@ -543,6 +545,8 @@ class Item(object):
     def __init__(self, registry, model):
         self.registry = registry
         self.model = model
+        if self.item_type is None:
+            self.item_type = type(self).__name__
 
     def __repr__(self):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
@@ -629,7 +633,8 @@ class Item(object):
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
-        model = registry[CONNECTION].create(cls.item_type, uuid)
+        item_type = cls.item_type or cls.__name__
+        model = registry[CONNECTION].create(item_type, uuid)
         self = cls(registry, model)
         self._update(properties, sheets)
         return self
@@ -669,7 +674,7 @@ class Item(object):
         },
     })
     def jsonld_type(self):
-        return [self.item_type] + self.base_types
+        return [type(self).__name__] + self.base_types
 
     @calculated_property(name='uuid')
     def prop_uuid(self):

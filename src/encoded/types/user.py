@@ -12,12 +12,12 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
+    COLLECTIONS,
     Root,
     calculated_property,
     item_view_object,
     collection,
 )
-from ..embedding import embed
 
 
 @collection(
@@ -80,6 +80,5 @@ def current_user(request):
     else:
         return {}
     namespace, userid = principal.split('.', 1)
-    collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid, '@@details')
-    return embed(request, path, as_user=True)
+    collection = request.registry[COLLECTIONS][User.__name__]
+    return request.embed(request.resource_path(collection), userid, '@@details', as_user=True)

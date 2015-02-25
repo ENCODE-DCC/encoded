@@ -1,4 +1,4 @@
-from .contentbase import LOCATION_ROOT
+from .contentbase import COLLECTIONS
 
 
 def groupfinder(login, request):
@@ -6,8 +6,7 @@ def groupfinder(login, request):
         return None
     namespace, localname = login.split('.', 1)
     user = None
-    # We may get called before the context is found and the root set
-    root = request.registry[LOCATION_ROOT]
+    collections = request.registry[COLLECTIONS]
 
     if namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
@@ -18,20 +17,20 @@ def groupfinder(login, request):
             return []
 
     if namespace in ('mailto', 'remoteuser', 'persona'):
-        users = root.by_item_type['user']
+        users = collections['user']
         try:
             user = users[localname]
         except KeyError:
             return None
 
     elif namespace == 'accesskey':
-        access_keys = root.by_item_type['access_key']
+        access_keys = collections['access_key']
         try:
             access_key = access_keys[localname]
         except KeyError:
             return None
         userid = access_key.properties['user']
-        user = root.by_item_type['user'][userid]
+        user = collections['user'][userid]
 
     if user is None:
         return None

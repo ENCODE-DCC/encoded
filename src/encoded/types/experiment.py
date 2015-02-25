@@ -25,7 +25,7 @@ import datetime
 class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
-    base_types = [Dataset.item_type] + Dataset.base_types
+    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.platform',
         'files.step_run',
