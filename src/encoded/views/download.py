@@ -93,10 +93,7 @@ def metadata_tsv(context, request):
                             if isinstance(ld[-1], list):
                                 temp = temp + ld[-1]
                             else:
-                                if isinstance(ld[-1], bool):
-                                    temp.append(str(ld[-1]))
-                                else:
-                                    temp.append(str(ld[-1].encode('utf-8')))
+                                temp.append(str(ld[-1]))
                     exp_data_row.append(', '.join(list(set(temp))))
             for f in row['files']:
                 if 'files.file_format' in param_list:
