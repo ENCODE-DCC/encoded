@@ -115,7 +115,7 @@ def metadata_tsv(context, request):
                         if path == ld[:-1]:
                             value.append(str(ld[-1]))
                     data_row.append(', '.join(value))
-            rows.append(data_row)
+                rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
     writer.writerow(header)
