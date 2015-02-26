@@ -88,6 +88,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         var treatmentText = [];
         var synchText = [];
         var depletedIns = [];
+        var subcellularTerms = {};
+        var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -113,6 +115,16 @@ var Experiment = module.exports.Experiment = React.createClass({
             // Collect depleted_in
             if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
                 depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
+            }
+
+            // Collect subcellular fraction term names
+            if (biosample.subcellular_fraction_term_name) {
+                subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+            }
+
+            // Collect cell-cycle phases
+            if (biosample.phase) {
+                cellCycles[biosample.phase] = true;
             }
         });
         if (treatmentText) {
@@ -193,11 +205,23 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
                                 <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
+                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
                                     {depletedIns.length ?
-                                        <span>{'missing ' + depletedIns.join(', ') + ' '}</span>
+                                        <span>{' missing ' + depletedIns.join(', ')}</span>
                                     : null}
-                                    {organismName.length || lifeAge.length ? '(' : null}
+                                    {Object.keys(subcellularTerms).length ?
+                                        <span>
+                                            {', subcellular fraction: '}
+                                            {Object.keys(subcellularTerms).join('/')}
+                                        </span>
+                                    : null}
+                                    {Object.keys(cellCycles).length ?
+                                        <span>
+                                            {', cell-cycle phase: '}
+                                            {Object.keys(cellCycles).join('/')}
+                                        </span>
+                                    : null}
+                                    {organismName.length || lifeAge.length ? ' (' : null}
                                     {organismName.length ?
                                         <span>
                                             {organismName.map(function(name, i) {
