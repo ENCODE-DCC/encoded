@@ -2,6 +2,7 @@ from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
 from ..embedding import embed
+from ..contentbase import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
@@ -46,23 +47,6 @@ _tsv_mapping = OrderedDict([
 ])
 
 
-def dict_generator(indict, pre=None):
-    pre = pre[:] if pre else []
-    if isinstance(indict, dict):
-        for key, value in indict.items():
-            if isinstance(value, dict):
-                for d in dict_generator(value, [key] + pre):
-                    yield d
-            elif isinstance(value, list) or isinstance(value, tuple):
-                for v in value:
-                    for d in dict_generator(v, [key] + pre):
-                        yield d
-            else:
-                yield pre + [key, value]
-    else:
-        yield indict
-
-
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
 
@@ -82,19 +66,11 @@ def metadata_tsv(context, request):
     for row in results['@graph']:
         if row['files']:
             exp_data_row = []
-            new_data = []
-            for arr in dict_generator(row):
-                new_data.append(arr)
             for column in header:
                 if not _tsv_mapping[column].startswith('files'):
-                    path = _tsv_mapping[column].split('.')
                     temp = []
-                    for ld in new_data:
-                        if sorted(path) == sorted(ld[:-1]):
-                            if isinstance(ld[-1], list):
-                                temp = temp + ld[-1]
-                            else:
-                                temp.append(str(ld[-1]))
+                    for value in simple_path_ids(row, _tsv_mapping[column]):
+                        temp.append(str(value))
                     exp_data_row.append(', '.join(list(set(temp))))
             for f in row['files']:
                 if 'files.file_format' in param_list:
@@ -105,16 +81,11 @@ def metadata_tsv(context, request):
                 for prop in file_attributes:
                     if prop == 'files.accession':
                         continue
-                    file_data = []
-                    for d in dict_generator(f):
-                        file_data.append(d)
-                    path = prop.split('.')
-                    path.pop(0)
-                    value = []
-                    for ld in file_data:
-                        if path == ld[:-1]:
-                            value.append(str(ld[-1]))
-                    data_row.append(', '.join(value))
+                    path = prop[6:]
+                    temp = []
+                    for value in simple_path_ids(f, path):
+                        temp.append(str(value))
+                    data_row.append(', '.join(list(set(temp))))
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
