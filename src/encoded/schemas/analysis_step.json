@@ -39,17 +39,18 @@
                  "enum": [
                      "genome indexing",
                      "genome segmentation",
+                     "fastq concatenation",
                      "filtering",
                      "file format conversion",
                      "QA calculation",
                      "peak calling",
                      "IDR",
                      "alignment",
-                     "signal calling",
+                     "signal generation",
                      "quantification",
-                    "transcript identification",
-                    "transcriptome assembly",
-                    "variant annotation"
+                     "transcript identification",
+                     "transcriptome assembly",
+                     "variant annotation"
                  ]
              }
         },
