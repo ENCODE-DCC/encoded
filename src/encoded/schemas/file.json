@@ -230,7 +230,8 @@
                         "transcript quantifications",
                         "methyl CG",
                         "methyl CHG",
-                        "methyl CHH"
+                        "methyl CHH",
+                        "enhancer validation"
                     ]
                 },
                 {
