@@ -87,6 +87,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Build the text of the Treatment string array and the synchronization string array
         var treatmentText = [];
         var synchText = [];
+        var depletedIns = [];
         biosamples.map(function(biosample) {
             // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -108,12 +109,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
+
+            // Collect depleted_in
+            if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+                depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
         }
         if (synchText) {
             synchText = _.uniq(synchText);
+        }
+        if (depletedIns) {
+            depletedIns = _.uniq(depletedIns);
         }
 
         // Adding experiment specific documents
@@ -185,6 +194,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dt>Biosample summary</dt>
                                 <dd>
                                     {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
+                                    {depletedIns.length ?
+                                        <span>{'missing ' + depletedIns.join(', ') + ' '}</span>
+                                    : null}
                                     {organismName.length || lifeAge.length ? '(' : null}
                                     {organismName.length ?
                                         <span>
