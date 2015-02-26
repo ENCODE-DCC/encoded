@@ -3,6 +3,7 @@ import logging
 import sys
 import venusian
 from collections import Mapping
+from copy import deepcopy
 from future.utils import (
     raise_with_traceback,
     itervalues,
@@ -69,13 +70,24 @@ _marker = object()
 
 logger = logging.getLogger(__name__)
 
+from .es_storage import (
+    ElasticSearchStorage,
+    PickStorage,
+)
+
 
 def includeme(config):
     registry = config.registry
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
     types = registry[TYPES] = TypesTool(registry)
-    storage = registry[STORAGE] = RDBStorage()
+    from .indexing import ELASTIC_SEARCH
+    es = registry.get(ELASTIC_SEARCH)
+    if es is None:
+        storage = RDBStorage()
+    else:
+        storage = PickStorage(ElasticSearchStorage(es), RDBStorage())
+    registry[STORAGE] = storage
     registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
 
@@ -129,13 +141,13 @@ def validate_item_content_put(context, request):
     if 'uuid' in data and UUID(data['uuid']) != context.uuid:
         msg = 'uuid may not be changed'
         raise ValidationFailure('body', ['uuid'], msg)
-    current = context.upgrade_properties(finalize=False).copy()
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
 
 def validate_item_content_patch(context, request):
-    data = context.upgrade_properties(finalize=False).copy()
+    data = context.upgrade_properties().copy()
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -143,7 +155,7 @@ def validate_item_content_patch(context, request):
     if 'uuid' in data and UUID(data['uuid']) != context.uuid:
         msg = 'uuid may not be changed'
         raise ValidationFailure('body', ['uuid'], msg)
-    current = context.upgrade_properties(finalize=False).copy()
+    current = context.upgrade_properties().copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
@@ -219,6 +231,19 @@ class CollectionsTool(dict):
         self.by_item_type[value.item_type] = value
 
 
+def extract_schema_links(schema):
+    if not schema:
+        return
+    for key, prop in schema['properties'].items():
+        if 'items' in prop:
+            prop = prop['items']
+        if 'properties' in prop:
+            for path in extract_schema_links(prop):
+                yield (key,) + path
+        elif 'linkTo' in prop:
+            yield (key,)
+
+
 class TypeInfo(object):
     def __init__(self, registry, item_type, factory):
         self.types = registry[TYPES]
@@ -237,12 +262,7 @@ class TypeInfo(object):
 
     @reify
     def schema_links(self):
-        if not self.factory.schema:
-            return ()
-        return [
-            key for key, prop in self.factory.schema['properties'].items()
-            if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
-        ]
+        return sorted('.'.join(path) for path in extract_schema_links(self.factory.schema))
 
     @reify
     def schema_keys(self):
@@ -344,6 +364,7 @@ class Connection(object):
         elif not isinstance(uuid, UUID):
             raise TypeError(uuid)
 
+        uuid = str(uuid)
         cached = self.item_cache.get(uuid)
         if cached is not None:
             return cached
@@ -354,6 +375,7 @@ class Connection(object):
 
         Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
+        model.used_for(item)
         self.item_cache[uuid] = item
         return item
 
@@ -368,7 +390,7 @@ class Connection(object):
         if model is None:
             return default
 
-        uuid = model.rid
+        uuid = model.uuid
         self.unique_key_cache[pkey] = uuid
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -376,15 +398,25 @@ class Connection(object):
 
         Item = self.types[model.item_type].factory
         item = Item(self.registry, model)
+        model.used_for(item)
         self.item_cache[uuid] = item
         return item
 
-    def __iter__(self, item_type=None, batchsize=1000):
-        for uuid in self.storage.__iter__(item_type, batchsize):
+    def get_rev_links(self, model, item_type, rel):
+        return self.storage.get_rev_links(model, item_type, rel)
+
+    def __iter__(self, item_type=None):
+        for uuid in self.storage.__iter__(item_type):
             yield uuid
 
     def __len__(self, item_type=None):
         return self.storage.__len__(item_type)
+
+    def __getitem__(self, uuid):
+        item = self.get_by_uuid(uuid)
+        if item is None:
+            raise KeyError(uuid)
+        return item
 
     def create(self, item_type, uuid):
         return self.storage.create(item_type, uuid)
@@ -462,10 +494,6 @@ class Collection(Mapping):
     def type_info(self):
         return self.registry[TYPES][self.item_type]
 
-    @reify
-    def Item(self):
-        return self.type_info.factory
-
     def __getitem__(self, name):
         try:
             item = self.get(name)
@@ -477,8 +505,8 @@ class Collection(Mapping):
             raise KeyError(name)
         return item
 
-    def __iter__(self, batchsize=1000):
-        for uuid in self.connection.__iter__(self.item_type, batchsize):
+    def __iter__(self):
+        for uuid in self.connection.__iter__(self.item_type):
             yield uuid
 
     def __len__(self):
@@ -556,26 +584,13 @@ class Item(object):
 
     def links(self, properties):
         return {
-            name: aslist(properties.get(name, ()))
-            for name in self.type_info.schema_links
+            path: set(simple_path_ids(properties, path))
+            for path in self.type_info.schema_links
         }
 
-    def rev_links(self):
-        links = {}
-        for name, spec in self.rev.items():
-            links[name] = value = []
-            for link in self.model.revs:
-                if (link.source.item_type, link.rel) == spec:
-                    value.append(link.source_rid)
-        return links
-
     def get_rev_links(self, name):
-        spec = self.rev[name]
-        return [
-            link.source_rid
-            for link in self.model.revs
-            if (link.source.item_type, link.rel) == spec
-        ]
+        item_type, rel = self.rev[name]
+        return self.registry[CONNECTION].get_rev_links(self.model, item_type, rel)
 
     def unique_keys(self, properties):
         return {
@@ -583,8 +598,8 @@ class Item(object):
             for name, props in self.type_info.schema_keys.items()
         }
 
-    def upgrade_properties(self, finalize=True):
-        properties = self.properties.copy()
+    def upgrade_properties(self):
+        properties = deepcopy(self.properties)
         current_version = properties.get('schema_version', '')
         target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
@@ -592,7 +607,7 @@ class Item(object):
             try:
                 properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    finalize=finalize, context=self, registry=self.registry)
+                    context=self, registry=self.registry)
             except RuntimeError:
                 raise
             except Exception:
@@ -613,15 +628,7 @@ class Item(object):
         return None
 
     @classmethod
-    def expand_page(cls, request, properties):
-        return properties
-
-    @classmethod
-    def create(cls, registry, properties, sheets=None):
-        if 'uuid' in properties:
-            uuid = UUID(properties['uuid'])
-        else:
-            uuid = uuid4()
+    def create(cls, registry, uuid, properties, sheets=None):
         model = registry[CONNECTION].create(cls.item_type, uuid)
         self = cls(registry, model)
         self._update(properties, sheets)
@@ -645,10 +652,6 @@ class Item(object):
                     raise ValidationFailure('body', [], msg)
 
             links = self.links(properties)
-            for k, values in links.items():
-                if len(set(values)) != len(values):
-                    msg = "Duplicate links for %r: %r" % (k, values)
-                    raise ValidationFailure('body', [], msg)
 
         connection = self.registry[CONNECTION]
         connection.update(self.model, properties, sheets, unique_keys, links)
@@ -789,11 +792,8 @@ def collection_list(context, request):
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    datastore = request.params.get('datastore', None)
-    if datastore is None:
-        datastore = request.registry.settings.get('collection_datastore', 'elasticsearch')
     # Switch to change summary page loading options: load_db, load_es
-    if datastore == 'elasticsearch':
+    if request.datastore == 'elasticsearch':
         result = load_es(context, request)
     else:
         result = load_db(context, request)
@@ -804,12 +804,12 @@ def collection_list(context, request):
 
 def split_child_props(type_info, properties):
     propname_children = {}
+    item_properties = properties.copy()
     if type_info.schema_rev_links:
-        properties = properties.copy()
         for key, spec in type_info.schema_rev_links.items():
-            if key in properties:
-                propname_children[key] = properties.pop(key)
-    return properties, propname_children
+            if key in item_properties:
+                propname_children[key] = item_properties.pop(key)
+    return item_properties, propname_children
 
 
 def update_children(context, request, propname_children):
@@ -845,7 +845,7 @@ def update_children(context, request, propname_children):
                     if not request.has_permission('add', child_collection):
                         msg = u'edit forbidden to %s' % request.resource_path(child)
                         raise ValidationFailure('body', [propname, i], msg)
-                    child = create_item(child_collection.Item, request, child_props)
+                    child = create_item(child_collection.type_info, request, child_props)
             found.add(child.uuid)
 
         # Remove existing children that are not in properties
@@ -865,12 +865,16 @@ def update_children(context, request, propname_children):
                 raise
 
 
-def create_item(cls, request, properties, sheets=None):
+def create_item(type_info, request, properties, sheets=None):
     registry = request.registry
-    type_info = registry[TYPES][cls.item_type]
     item_properties, propname_children = split_child_props(type_info, properties)
 
-    item = cls.create(registry, item_properties, sheets)
+    if 'uuid' in item_properties:
+        uuid = UUID(item_properties.pop('uuid'))
+    else:
+        uuid = uuid4()
+
+    item = type_info.factory.create(registry, uuid, item_properties, sheets)
     registry.notify(Created(item, request))
 
     if propname_children:
@@ -905,7 +909,7 @@ def collection_add(context, request, render=None):
     if render is None:
         render = request.params.get('render', True)
 
-    item = create_item(context.Item, request, request.validated)
+    item = create_item(context.type_info, request, request.validated)
 
     if render == 'uuid':
         item_uri = '/%s/' % item.uuid
@@ -948,19 +952,36 @@ def item_links(context, request):
     # This works from the schema rather than the links table
     # so that upgrade on GET can work.
     properties = context.__json__(request)
-    root = request.root
-    for name in context.type_info.schema_links:
-        value = properties.get(name, None)
-        if value is None:
-            continue
-        if isinstance(value, list):
-            properties[name] = [
-                request.resource_path(root.get_by_uuid(v))
-                for v in value
-            ]
-        else:
-            properties[name] = request.resource_path(root.get_by_uuid(value))
+    for path in context.type_info.schema_links:
+        uuid_to_path(request, properties, path)
     return properties
+
+
+def uuid_to_path(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if remaining:
+        if isinstance(value, list):
+            for v in value:
+                uuid_to_path(request, v, remaining)
+        else:
+            uuid_to_path(request, value, remaining)
+        return
+    conn = request.registry[CONNECTION]
+    if isinstance(value, list):
+        obj[name] = [
+            request.resource_path(conn[v])
+            for v in value
+        ]
+    else:
+        obj[name] = request.resource_path(conn[value])
 
 
 @view_config(context=Item, permission='view', request_method='GET',
@@ -1016,8 +1037,6 @@ def item_view_page(context, request):
         properties['actions'] = actions
     if request.has_permission('audit', context):
         properties['audit'] = request.embed(item_path, '@@audit')['audit']
-    # XXX Move to view when views on ES results implemented.
-    properties = context.expand_page(request, properties)
     return properties
 
 
@@ -1116,6 +1135,7 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
+    assert request.datastore == 'database'
     conn = request.registry[CONNECTION]
     properties = item_links(context, request)
     schema_rev_links = context.type_info.schema_rev_links
@@ -1188,6 +1208,26 @@ class AfterModified(object):
         self.request = request
 
 
+def simple_path_ids(obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        yield obj
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for member in value:
+            for result in simple_path_ids(member, remaining):
+                yield result
+    else:
+        for result in simple_path_ids(value, remaining):
+            yield result
+
+
 def path_ids(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
@@ -1231,7 +1271,7 @@ def inherit_audits(request, embedded, embedded_paths):
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     uuid = str(context.uuid)
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     links = context.links(properties)
     unique_keys = context.unique_keys(properties)
 
@@ -1262,20 +1302,27 @@ def item_index_data(context, request):
 
     path = path + '/'
     embedded = request.embed(path, '@@embedded')
+    object = request.embed(path, '@@object')
     audit = request.embed(path, '@@audit')['audit']
 
     document = {
-        'uuid': uuid,
-        'item_type': context.item_type,
-        'embedded': embedded,
-        'object': embed(request, join(path, '@@object')),
-        'links': links,
-        'unique_keys': unique_keys,
-        'principals_allowed': principals_allowed,
-        'paths': sorted(paths),
         'audit': audit,
+        'embedded': embedded,
         'embedded_uuids': sorted(request._embedded_uuids),
+        'item_type': context.item_type,
         'linked_uuids': sorted(request._linked_uuids),
+        'links': links,
+        'object': object,
+        'paths': sorted(paths),
+        'principals_allowed': principals_allowed,
+        'properties': properties,
+        'propsheets': {
+            name: context.propsheets[name]
+            for name in context.propsheets.keys() if name != ''
+        },
+        'tid': context.tid,
+        'unique_keys': unique_keys,
+        'uuid': uuid,
     }
 
     return document

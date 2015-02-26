@@ -136,9 +136,9 @@ class ItemWithAttachment(Item):
         return properties, sheets
 
     @classmethod
-    def create(cls, registry, properties, sheets=None):
+    def create(cls, registry, uuid, properties, sheets=None):
         properties, sheets = cls._process_downloads(properties, sheets)
-        item = super(ItemWithAttachment, cls).create(registry, properties, sheets)
+        item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
         return item
 
     def update(self, properties, sheets=None):
@@ -164,7 +164,7 @@ class ItemWithAttachment(Item):
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath
-    downloads = context.model['downloads']
+    downloads = context.propsheets['downloads']
     try:
         download_meta = downloads[prop_name]
     except KeyError:

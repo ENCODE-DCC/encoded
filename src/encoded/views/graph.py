@@ -48,18 +48,18 @@ def digraph(root, exclude=None):
 
     subclasses = defaultdict(list)
     for source, collection in root.by_item_type.items():
-        for base in collection.Item.base_types[:-1]:
+        for base in collection.type_info.base_types[:-1]:
             subclasses[base].append(source)
 
     for source, collection in root.by_item_type.items():
-        if collection.Item.schema is None:
+        if collection.type_info.schema is None:
             continue
         if source.startswith('testing_'):
             continue
         if source == 'antibody_approval':
             continue
-        out.extend(node(source, collection.Item.schema['properties']))
-        for name, prop in collection.Item.schema['properties'].items():
+        out.extend(node(source, collection.type_info.schema['properties']))
+        for name, prop in collection.type_info.schema['properties'].items():
             if name in exclude:
                 continue
             prop = prop.get('items', prop)

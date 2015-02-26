@@ -113,7 +113,7 @@ def linkTo(validator, linkTo, instance, schema):
                 break
         if userid is not None:
             user = request.root[userid]
-            submits_for = user.upgrade_properties(finalize=False).get('submits_for')
+            submits_for = user.upgrade_properties().get('submits_for')
             if (submits_for is not None and
                     not any(UUID(uuid) == item.uuid for uuid in submits_for) and
                     not request.has_permission('submit_for_any')):

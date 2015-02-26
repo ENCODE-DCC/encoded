@@ -23,7 +23,8 @@ var AuditMixin = module.exports.AuditMixin = {
     },
 
     // React to click in audit indicator. Set state to clicked indicator's error level
-    auditStateToggle: function() {
+    auditStateToggle: function(e) {
+        e.preventDefault();
         this.setState({auditDetailOpen: !this.state.auditDetailOpen});
     }
 };

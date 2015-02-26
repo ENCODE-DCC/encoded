@@ -22,7 +22,7 @@ def run(app, files):
     for i, uuid in enumerate(collection):
         item = root.get_by_uuid(uuid)
         dummy_request.context = item
-        properties = item.upgrade_properties(finalize=True)
+        properties = item.upgrade_properties()
         sheets = None
         value = files.get(str(uuid))
         if value is not None:

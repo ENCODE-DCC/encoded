@@ -131,19 +131,18 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @calculated_property(schema={
-            "title": "Pipeline",
-            "type": "string",
-            "linkTo": "pipeline"
-        })
+        "title": "Pipeline",
+        "type": "string",
+        "linkTo": "pipeline"
+    })
     def pipeline(self, request, step_run=None):
         if step_run is not None:
             workflow = request.embed(step_run, '@@object').get('workflow_run')
             if workflow:
                 return request.embed(workflow, '@@object').get('pipeline')
 
-
     @classmethod
-    def create(cls, registry, properties, sheets=None):
+    def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
@@ -152,12 +151,12 @@ class File(Item):
             file_extension = mapping[properties['file_format']]
             date = properties['date_created'].split('T')[0].replace('-', '/')
             key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                date=date, file_extension=file_extension, **properties)
+                date=date, file_extension=file_extension, uuid=uuid, **properties)
             name = 'upload-{time}-{accession}'.format(
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(registry, properties, sheets)
+        return super(File, cls).create(registry, uuid, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',
@@ -177,7 +176,7 @@ def get_upload(context, request):
 @view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
@@ -200,17 +199,10 @@ def post_upload(context, request):
     return result
 
 
-class InternalResponse(Response):
-    def _abs_headerlist(self, environ):
-        """Avoid making the Location header absolute.
-        """
-        return list(self.headerlist)
-
-
 @view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     mapping = context.schema['file_format_file_extension']
     file_extension = mapping[properties['file_format']]
     filename = properties['accession'] + file_extension
@@ -224,10 +216,9 @@ def download(context, request):
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
-        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
         location = conn.generate_url(
-            36*60*60, method, external['bucket'], external['key'],
-            response_headers={
+            36*60*60, request.method, external['bucket'], external['key'],
+            force_http=proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
@@ -242,7 +233,7 @@ def download(context, request):
         }
 
     if proxy:
-        return InternalResponse(location='/_proxy/' + location)
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

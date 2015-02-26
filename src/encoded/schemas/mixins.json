@@ -60,6 +60,20 @@
             }
         }
     },
+    "accessioned_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum": [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked"
+            ]
+        }
+    },
     "standard_status": {
         "status": {
             "title": "Status",

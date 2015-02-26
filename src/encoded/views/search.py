@@ -1,5 +1,6 @@
 import re
 from pyramid.view import view_config
+from ..contentbase import TYPES
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
@@ -65,6 +66,7 @@ def sanitize_search_string(text):
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
     root = request.root
+    types = request.registry[TYPES]
     result = {
         '@id': '/search/' + ('?' + request.query_string if request.query_string else ''),
         '@type': ['search'],
@@ -146,10 +148,10 @@ def search(context, request, search_type=None):
             fields.add('audit.*')
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
-            if 'columns' not in (collection.Item.schema or ()):
+            if 'columns' not in (collection.type_info.schema or ()):
                 fields.add('object.*')
             else:
-                columns = collection.Item.schema['columns']
+                columns = collection.type_info.schema['columns']
                 fields.update(
                     ('embedded.@id', 'embedded.@type'),
                     ('embedded.' + column for column in columns),
@@ -218,8 +220,8 @@ def search(context, request, search_type=None):
     facets = [
         ('type', {'title': 'Data Type'}),
     ]
-    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].Item.schema:
-        facets.extend(root[doc_types[0]].Item.schema['facets'].items())
+    if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
+        facets.extend(types[doc_types[0]].schema['facets'].items())
 
     if search_audit:
         for audit_facet in audit_facets:
@@ -296,7 +298,7 @@ def search(context, request, search_type=None):
     else:  # columns
         for hit in hits:
             item_type = hit['_type']
-            if 'columns' in root[item_type].Item.schema:
+            if 'columns' in types[item_type].schema:
                 item = hit['_source']['embedded']
             else:
                 item = hit['_source']['object']

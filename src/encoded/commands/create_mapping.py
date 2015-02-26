@@ -182,8 +182,45 @@ def es_mapping(mapping):
         '_all': {
             'analyzer': 'encoded_index_analyzer'
         },
+        'dynamic_templates': [
+            {
+                'template_principals_allowed': {
+                    'path_match': "principals_allowed.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+            {
+                'template_unique_keys': {
+                    'path_match': "unique_keys.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+            {
+                'template_links': {
+                    'path_match': "links.*",
+                    'mapping': {
+                        'type': 'string',
+                        'include_in_all': False,
+                        'index': 'not_analyzed',
+                    },
+                },
+            },
+        ],
         'properties': {
             'uuid': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'tid': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
@@ -217,20 +254,19 @@ def es_mapping(mapping):
                 'enabled': False,
                 'include_in_all': False,
             },
+            'properties': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
+            'propsheets': {
+                'type': 'object',
+                'enabled': False,
+                'include_in_all': False,
+            },
             'principals_allowed': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
-                'properties': {
-                    # 'view' must be specified explicitly to be searched on
-                    'view': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
-                    },
-                },
             },
             'embedded_uuids': {
                 'type': 'string',
@@ -245,18 +281,10 @@ def es_mapping(mapping):
             'unique_keys': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
             },
             'links': {
                 'type': 'object',
                 'include_in_all': False,
-                '_default_': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                },
             },
             'paths': {
                 'type': 'string',
