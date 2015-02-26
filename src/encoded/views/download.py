@@ -38,10 +38,11 @@ _tsv_mapping = OrderedDict([
     ('File format', ('files.file_format')),
     ('Size', ('files.file_size')),
     ('Output type', ('files.output_type')),
-    ('Lab', ('files.lab')),
+    ('Lab', ('files.lab.title')),
     ('md5sum', ('files.md5sum')),
     ('href', ('files.href')),
-    ('Assembly', ('files.assembly'))
+    ('Assembly', ('files.assembly')),
+    ('Platform', ('files.platform.title'))
 ])
 
 
@@ -100,14 +101,20 @@ def metadata_tsv(context, request):
                     if f['file_format'] not in param_list['files.file_format']:
                         continue
                 f['href'] = request.host_url + f['href']
+                data_row = [f['accession']] + exp_data_row
                 for prop in file_attributes:
-                    value = ''
-                    if prop.split('.')[1] in f:
-                        value = f[prop.split('.')[1]]
-                    if prop.split('.')[1:][0] == 'accession':
-                        data_row = [value] + exp_data_row
-                    else:
-                        data_row.append(value)
+                    if prop == 'files.accession':
+                        continue
+                    file_data = []
+                    for d in dict_generator(f):
+                        file_data.append(d)
+                    path = prop.split('.')
+                    path.pop(0)
+                    value = []
+                    for ld in file_data:
+                        if path == ld[:-1]:
+                            value.append(str(ld[-1]))
+                    data_row.append(', '.join(value))
             rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
