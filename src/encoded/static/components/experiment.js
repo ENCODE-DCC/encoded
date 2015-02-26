@@ -694,6 +694,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                     // Indicate that this replicate is not to be rendered
                     allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
+
+                    // Mark this file as removed
+                    derivedFromFile.removed = true;
                 } else {
                     // Missing derived-from file not in a replicate; don't draw any graph
                     abortGraph = abortGraph || true;
@@ -711,7 +714,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             var file = allFiles[fileAccession];
 
             // A file outside a replicate derives from a file that's been removed from the graph
-            if (!file.replicate && file.derived_from) {
+            if (file.derived_from) {
                 abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
                     return derivedFromFile.removed;
                 });
