@@ -1,6 +1,6 @@
-{
+{ 
     "title": "Analysis step",
-    "description": "Schema for submitting a computational analysis steps as a subobject of pipeline, that transforms input files to output files.",
+    "description": "Schema for submitting a computational analysis steps as a subobject of pipeline that transforms input files to output files.",
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -24,7 +24,7 @@
             "description": "Unique name of the analysis step",
             "type": "string",
             "pattern": "^[a-z0-9\\-\\_]+$",
-            "uniqueKey": true,
+            "uniqueKey": true
         },
         "title": {
             "title": "Title",
