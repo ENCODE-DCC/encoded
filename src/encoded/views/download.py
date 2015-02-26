@@ -1,5 +1,7 @@
+
 import collections
 
+from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
 from ..embedding import embed
@@ -8,19 +10,21 @@ from urllib.parse import (
     urlencode,
 )
 
-_exp_columns = [
-    'accession',
-    'assay_term_name',
-    'biosample_term_id',
-    'biosample_term_name',
-    'files.accession',
-    'files.href',
-    'files.file_format',
-    'files.file_size',
-    'files.output_type',
-    'files.lab',
-    'files.md5sum'
-]
+# includes concatenated properties
+_tsv_mapping = OrderedDict([
+    ('Accession', ('files.accession')),
+    ('Experiment', ('accession')),
+    ('Assay', ('assay_term_name')),
+    ('Biosample term id', ('biosample_term_id')),
+    ('Biosample term name', ('biosample_term_name')),
+    ('Treatments', ('replicates.library.biosample.treatments.treatment_term_name')),
+    ('File format', ('files.file_format')),
+    ('Size', ('files.file_size')),
+    ('Output type', ('files.output_type')),
+    ('Lab', ('files.lab')),
+    ('md5sum', ('files.md5sum')),
+    ('href', ('files.href'))
+])
 
 
 def flatten(d, parent_key='', sep='.'):
@@ -34,60 +38,76 @@ def flatten(d, parent_key='', sep='.'):
     return dict(items)
 
 
-@view_config(route_name='metadata', request_method='GET')
-def metadata_csv(context, request):
+def dict_generator(indict, pre=None):
+    """
+        converts the dictionary into linear list
+    """
+
+    pre = pre[:] if pre else []
+    if isinstance(indict, dict):
+        for key, value in indict.items():
+            if isinstance(value, dict):
+                for d in dict_generator(value, [key] + pre):
+                    yield d
+            elif isinstance(value, list) or isinstance(value, tuple):
+                for v in value:
+                    for d in dict_generator(v, [key] + pre):
+                        yield d
+            else:
+                yield pre + [key, value]
+    else:
+        yield indict
+
+
+@view_config(route_name='metadata', request_method='GET', renderer='tsv')
+def metadata_tsv(context, request):
 
     param_list = parse_qs(request.matchdict['search_params'].encode('utf-8'))
-    param_list['frame'] = ['object']
-    param_list['field'] = _exp_columns
+    param_list['field'] = []
+    header = []
+    file_attributes = []
+    for prop in _tsv_mapping:
+        header.append(prop)
+        param_list['field'] = param_list['field'] + [_tsv_mapping[prop]]
+        if _tsv_mapping[prop].startswith('files'):
+            file_attributes.append(_tsv_mapping[prop])
     param_list['limit'] = ['all']
-
     path = '/search/?%s' % urlencode(param_list, True)
     results = embed(request, path, as_user=True)
-
-    data = ['accession\texperiment\tassay\tbiosample_term_id \
-    \tbiosample_term_name\tfile_format\tsize\toutput_type\tlab\tmd5sum\thref']
+    rows = []
     for row in results['@graph']:
-        data_row = []
-        for column in _exp_columns:
-            if column.startswith('files'):
-                row = flatten(row)
-                for f in row['files']:
-                    new_row = '\t'.join(data_row)
-                    if 'file_format' in param_list:
-                        if f['file_format'] in param_list['files.file_format']:
-                            new_row = '{accession}\t{row}\t{format}\t{size}\t{type}\t{lab}\t{md5}\t{href}'.format(
-                                accession=f['accession'],
-                                row=new_row,
-                                format=f['file_format'],
-                                size=f['file_size'],
-                                type=f['output_type'],
-                                lab=f['lab'],
-                                md5=f['md5sum'],
-                                href=f['href']
-                            )
+        if row['files']:
+            row = flatten(row)
+            exp_data_row = []
+            new_data = []
+            for arr in dict_generator(row):
+                new_data.append(arr)
+            for column in header:
+                if not _tsv_mapping[column].startswith('files'):
+                    path = _tsv_mapping[column].split('.')
+                    temp = []
+                    for ld in new_data:
+                        if sorted(path) == sorted(ld[:-1]):
+                            temp.append(ld[-1])
+                    exp_data_row.append(', '.join(list(set(temp))))
+            for f in row['files']:
+                f['href'] = request.host_url + f['href']
+                for prop in file_attributes:
+                    value = f[prop.split('.')[1]]
+                    if prop.split('.')[1:][0] == 'accession':
+                        data_row = [value] + exp_data_row
                     else:
-                        new_row = '{accession}\t{row}\t{format}\t{size}\t{type}\t{lab}\t{md5}\t{href}'.format(
-                            accession=f['accession'],
-                            row=new_row,
-                            format=f['file_format'],
-                            size=f['file_size'],
-                            type=f['output_type'],
-                            lab=f['lab'],
-                            md5=f['md5sum'],
-                            href=f['href']
-                        )
-                    data.append(new_row)
-                break
-            elif column in row:
-                data_row.append(row[column])
-            else:
-                data_row.append('')
-    return Response(
-        content_type='text/tsv',
-        body='\n'.join(data),
-        content_disposition='attachment; filename="%s"' % 'metadata.tsv'
-    )
+                        if value is not None:
+                            data_row.append(value)
+                        else:
+                            data_row.append('')
+            rows.append(data_row)
+    request.response.content_disposition = 'attachment; filename="%s"' \
+        % 'metadata.tsv'
+    return {
+        'header': header,
+        'rows': rows,
+    }
 
 
 @view_config(route_name='batch_download', request_method='GET')
