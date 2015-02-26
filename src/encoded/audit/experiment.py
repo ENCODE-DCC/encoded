@@ -227,7 +227,7 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'replicates.antibody.host_organism', 'possible_controls.replicates.antibody', 'possible_controls.replicates.antibody.host_organism'])
+@audit_checker('experiment', frame=['target', 'possible_controls'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -259,19 +259,46 @@ def audit_experiment_control(value, system):
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
-        '''
-        Select the first replicate to compare with the control antibody.
-        We don't need to compare them all since that is done elsewhere.
-        '''
-        rep_antibody = value['replicates'][0]['antibody']
-        for rep in control['replicates']:
-            if 'antibody' in rep:
-                if rep['antibody']['host_organism']['name'] != rep_antibody['host_organism']['name']:
-                    detail = 'Control {} has antibody with host organism {} but experiment has antibody with host organism {}'.format(
-                        control['accession'],
-                        rep['antibody']['host_organism']['name'],
-                        rep_antibody['host_organism']['name'])
-                    raise AuditFailure('mismatched host organism', detail, level='WARNING')
+
+@audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'possible_controls.replicates', 'possible_controls.replicates.antibody', 'possible_controls.target'], condition=rfa('ENCODE3'))
+def audit_experiment_ChIP_control(value, system):
+
+    if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
+        return
+
+    # Currently controls are only be required for ChIP-seq
+    if value.get('assay_term_name') != 'ChIP-seq':
+        return
+
+    # We do not want controls
+    if 'target' in value and 'control' in value['target']['investigated_as']:
+        return
+
+    if not value['possible_controls']:
+        return
+
+    num_IgG_controls = 0
+    for control in value['possible_controls']:
+        if ('target' not in control) or ('control' not in control['target']['investigated_as']):
+            detail = 'Experiment {} is ChIP-seq but its control {} is not linked to a target with investigated.as = control'.format(
+                value['accession'],
+                control['accession'])
+            raise AuditFailure('invalid possible_control', detail, level='ERROR')
+
+        if not control['replicates']:
+            continue
+
+        if 'antibody' in control['replicates'][0]:
+            num_IgG_controls += 1
+
+    # If all of the possible_control experiments are mock IP control experiments
+    if num_IgG_controls == len(value['possible_controls']):
+        if value.get('assay_term_name') == 'ChIP-seq':
+            # The binding group agreed that ChIP-seqs all should have an input control.
+            detail = 'Experiment {} is ChIP-seq and requires at least one input control, as agreed upon by the binding group. {} is not an input control'.format(
+                value['accession'],
+                control['accession'])
+            raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
