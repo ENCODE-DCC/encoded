@@ -1,6 +1,3 @@
-
-import collections
-
 from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
@@ -17,32 +14,35 @@ _tsv_mapping = OrderedDict([
     ('Assay', ('assay_term_name')),
     ('Biosample term id', ('biosample_term_id')),
     ('Biosample term name', ('biosample_term_name')),
-    ('Treatments', ('replicates.library.biosample.treatments.treatment_term_name')),
+    ('Biosample type', ('biosample_type')),
+    ('Biosample life stage', ('replicates.library.biosample.life_stage')),
+    ('Biosample sex', ('replicates.library.biosample.sex')),
+    ('Biosample organism', ('replicates.library.biosample.organism.name')),
+    ('Biosample treatments', ('replicates.library.biosample.treatments.treatment_term_name')),
+    ('Biosample subcellular fraction term name', ('replicates.library.biosample.subcellular_fraction_term_name')),
+    ('Biosample phase', ('replicates.library.biosample.phase')),
+    ('Experiment target', 'target.name'),
+    ('Antibody accession', ('replicates.antibody.accession')),
+    ('Nucleic acid term name', ('replicates.library.nucleic_acid_term_name')),
+    ('Depleted in term name', ('replicates.library.depleted_in_term_name')),
+    ('Library extraction method', ('replicates.library.extraction_method')),
+    ('Library fragmentation method', ('replicates.library.fragmentation_method')),
+    ('Libary lysis method', ('replicates.library.lysis_method')),
+    ('Read length', ('replicates.library.read_length')),
+    ('Paired endedness', ('replicates.library.paired_ended')),
+    ('Experiment date released', ('date_released')),
+    ('Project', ('award.project')),
     ('File format', ('files.file_format')),
     ('Size', ('files.file_size')),
     ('Output type', ('files.output_type')),
     ('Lab', ('files.lab')),
     ('md5sum', ('files.md5sum')),
-    ('href', ('files.href'))
+    ('href', ('files.href')),
+    ('Assembly', ('files.assembly'))
 ])
 
 
-def flatten(d, parent_key='', sep='.'):
-    items = []
-    for k, v in d.items():
-        new_key = parent_key + sep + k if parent_key else k
-        if isinstance(v, collections.MutableMapping):
-            items.extend(flatten(v, new_key, sep=sep).items())
-        else:
-            items.append((new_key, v))
-    return dict(items)
-
-
 def dict_generator(indict, pre=None):
-    """
-        converts the dictionary into linear list
-    """
-
     pre = pre[:] if pre else []
     if isinstance(indict, dict):
         for key, value in indict.items():
@@ -77,7 +77,6 @@ def metadata_tsv(context, request):
     rows = []
     for row in results['@graph']:
         if row['files']:
-            row = flatten(row)
             exp_data_row = []
             new_data = []
             for arr in dict_generator(row):
@@ -88,19 +87,27 @@ def metadata_tsv(context, request):
                     temp = []
                     for ld in new_data:
                         if sorted(path) == sorted(ld[:-1]):
-                            temp.append(ld[-1])
+                            if isinstance(ld[-1], list):
+                                temp = temp + ld[-1]
+                            else:
+                                if isinstance(ld[-1], bool):
+                                    temp.append(str(ld[-1]))
+                                else:
+                                    temp.append(str(ld[-1].encode('utf-8')))
                     exp_data_row.append(', '.join(list(set(temp))))
             for f in row['files']:
+                if 'files.file_format' in param_list:
+                    if f['file_format'] not in param_list['files.file_format']:
+                        continue
                 f['href'] = request.host_url + f['href']
                 for prop in file_attributes:
-                    value = f[prop.split('.')[1]]
+                    value = ''
+                    if prop.split('.')[1] in f:
+                        value = f[prop.split('.')[1]]
                     if prop.split('.')[1:][0] == 'accession':
                         data_row = [value] + exp_data_row
                     else:
-                        if value is not None:
-                            data_row.append(value)
-                        else:
-                            data_row.append('')
+                        data_row.append(value)
             rows.append(data_row)
     request.response.content_disposition = 'attachment; filename="%s"' \
         % 'metadata.tsv'
