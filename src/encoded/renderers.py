@@ -30,9 +30,6 @@ import pyramid.renderers
 import time
 import uuid
 
-import csv
-import io
-
 
 log = logging.getLogger(__name__)
 
@@ -40,7 +37,6 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
-    config.add_renderer('tsv', TSVRenderer)
     config.add_tween('.renderers.fix_request_method_tween_factory', under=pyramid.tweens.INGRESS)
     config.add_tween(
         '.stats.stats_tween_factory', under='.renderers.fix_request_method_tween_factory')
@@ -319,28 +315,3 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
-
-
-class TSVRenderer(object):
-    def __init__(self, info):
-        pass
-
-    def __call__(self, value, system):
-        """ Returns a plain TSV-encoded string with content-type
-        ``text/tsv``. The content-type may be overridden by
-        setting ``request.response.content_type``."""
-
-        request = system.get('request')
-        if request is not None:
-            response = request.response
-            ct = response.content_type
-            if ct == response.default_content_type:
-                response.content_type = 'text/tsv'
-
-        fout = io.BytesIO()
-        writer = csv.writer(fout, delimiter='\t')
-
-        writer.writerow(value.get('header', []))
-        writer.writerows(value.get('rows', []))
-
-        return fout.getvalue()

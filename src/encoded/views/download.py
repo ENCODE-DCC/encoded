@@ -7,6 +7,9 @@ from urllib.parse import (
     urlencode,
 )
 
+import csv
+import io
+
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
     ('Accession', ('files.accession')),
@@ -59,7 +62,7 @@ def dict_generator(indict, pre=None):
         yield indict
 
 
-@view_config(route_name='metadata', request_method='GET', renderer='tsv')
+@view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
 
     param_list = parse_qs(request.matchdict['search_params'].encode('utf-8'))
@@ -109,12 +112,15 @@ def metadata_tsv(context, request):
                     else:
                         data_row.append(value)
             rows.append(data_row)
-    request.response.content_disposition = 'attachment; filename="%s"' \
-        % 'metadata.tsv'
-    return {
-        'header': header,
-        'rows': rows,
-    }
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    writer.writerows(rows)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="%s"' % 'metadata.tsv'
+    )
 
 
 @view_config(route_name='batch_download', request_method='GET')
