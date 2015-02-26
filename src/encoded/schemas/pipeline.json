@@ -40,6 +40,7 @@
             "title": "Description",
             "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
             "type": "string",
+            "permission": "import_items",
             "default": ""
         },
         "version": {
