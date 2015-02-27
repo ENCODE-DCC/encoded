@@ -35,6 +35,7 @@ class Pipeline(Item):
 
 @collection(
     name='analysis-steps',
+        unique_key='analysis_step:name',
     properties={
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps',
@@ -42,6 +43,7 @@ class Pipeline(Item):
 class AnalysisStep(Item):
     item_type = 'analysis_step'
     schema = load_schema('analysis_step.json')
+    name_key = 'name'
     embedded = [
         'software_versions',
         'software_versions.software',
