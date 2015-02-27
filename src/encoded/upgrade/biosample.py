@@ -140,3 +140,10 @@ def biosample_8_9(value, system):
         if re.match('\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['model_organism_age'] = new_age
+
+
+
+@upgrade_step('biosample', '9', '10')
+def biosample_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    pass

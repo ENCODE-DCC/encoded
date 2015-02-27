@@ -16,6 +16,7 @@ ORDER = [
     'organism',
     'source',
     'target',
+    'publication',
     'document',
     'antibody_lot',
     'antibody_characterization',
@@ -38,7 +39,6 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
-    'publication',
     'software',
     'software_version',
     'analysis_step',
@@ -518,6 +518,9 @@ PHASE1_PIPELINES = {
     'workflow_run': [
         remove_keys('input_files'),
     ],
+    'publication': [
+        remove_keys('datasets'),
+    ]
 }
 
 
@@ -547,6 +550,9 @@ PHASE2_PIPELINES = {
     'workflow_run': [
         skip_rows_missing_all_keys('input_files'),
     ],
+    'publication': [
+        skip_rows_missing_all_keys('datasets'),
+    ]
 }
 
 

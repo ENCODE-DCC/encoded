@@ -13,7 +13,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" }
     ],
     "properties": {
         "schema_version": {
@@ -88,15 +89,6 @@
                     "variant analysis",
                     "community resource"
                 ]
-            }
-        },
-        "references": {
-            "title": "References",
-            "type": "array",
-            "items": {
-                "title": "Reference",
-                "type": "string",
-                "linkTo": "publication"
             }
         },
         "used_by": {
