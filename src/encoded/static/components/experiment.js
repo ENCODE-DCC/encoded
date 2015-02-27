@@ -85,9 +85,10 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string array and the synchronization string array
+        // Build the text of the Treatment, synchronization, and mutatedGene string arrays
         var treatmentText = [];
         var synchText = [];
+        var mutatedGenes = [];
         biosamples.map(function(biosample) {
             // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -109,12 +110,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
+
+            // Collect mutated genes
+            if (biosample.donor && biosample.donor.mutated_gene) {
+                mutatedGenes.push(biosample.donor.mutated_gene.label);
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
         }
         if (synchText) {
             synchText = _.uniq(synchText);
+        }
+        if (mutatedGenes) {
+            mutatedGenes = _.uniq(mutatedGenes);
         }
 
         // Adding experiment specific documents
@@ -185,8 +194,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
                                 <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
-                                    {organismName.length || lifeAge.length ? '(' : null}
+                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
+                                    {mutatedGenes.length ? <span>{', mutated gene: ' + mutatedGenes.join('/')}</span> : null}
+                                    {organismName.length || lifeAge.length ? ' (' : null}
                                     {organismName.length ?
                                         <span>
                                             {organismName.map(function(name, i) {

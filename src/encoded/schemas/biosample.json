@@ -718,6 +718,10 @@
             "title": "Constructs",
             "type": "string"
         },
+        "donor.mutated_gene.label": {
+            "title": "Mutated gene",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"

@@ -256,6 +256,7 @@ var AuditMixin = audit.AuditMixin;
                 constructs = result.constructs[0] ? result.constructs[0].target.label : '';
             }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+            var mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
  
             // Build the text of the synchronization string
             var synchText;
@@ -303,16 +304,22 @@ var AuditMixin = audit.AuditMixin;
                                     {treatment}
                                 </div>
                             : null}
-                            {result['culture_harvest_date'] ?
+                            {mutatedGenes ?
                                 <div>
-                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
-                                    {result['culture_harvest_date']}
+                                    <strong>{columns['donor.mutated_gene.label']['title'] + ': '}</strong>
+                                    {mutatedGenes}
                                 </div>
                             : null}
-                            {result['date_obtained'] ?
+                            {result.culture_harvest_date ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result.culture_harvest_date}
+                                </div>
+                            : null}
+                            {result.date_obtained ?
                                 <div>
                                     <strong>{columns['date_obtained']['title'] + ': '}</strong>
-                                    {result['date_obtained']}
+                                    {result.date_obtained}
                                 </div>
                             : null}
                             {synchText ?
