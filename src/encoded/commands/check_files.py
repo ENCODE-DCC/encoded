@@ -78,7 +78,12 @@ def check_format(item, path):
         if is_gzipped:
             errors['gzip'] = 'Expected un-gzipped file'
 
-    chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+    if item['file_format'] == 'bam' and item.get('output_type','') == 'transcriptome alignments':
+        chromInfo = ['-chromInfo=%s/%s/%s/chrom.sizes' % (encValData, assembly, item['genome_annotation'])]
+    else:
+        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+
+
     validate_map = {
         'bam': ['-type=bam', chromInfo],
         'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
