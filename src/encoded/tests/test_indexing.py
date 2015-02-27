@@ -20,6 +20,7 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
+    settings['indexer'] = True
     return settings
 
 
