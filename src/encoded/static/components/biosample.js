@@ -28,7 +28,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context, key: context['@id']};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 
@@ -384,9 +385,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                {this.transferPropsTo(
-                    <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
-                )}
+                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingBiosample} />
             </div>
         );
     }
@@ -401,9 +400,7 @@ var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React
         return (
             <div>
                 <h3>Experiments using biosample {context.accession}</h3>
-                {this.transferPropsTo(
-                    <ExperimentTable />
-                )}
+                <ExperimentTable {...this.props} />
             </div>
         );
     }

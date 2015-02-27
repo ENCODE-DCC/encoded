@@ -48,7 +48,7 @@ var user_actions = [
 // See https://github.com/facebook/react/issues/2323
 var Title = React.createClass({
     render: function() {
-        return this.transferPropsTo(<title>{this.props.children}</title>);
+        return <title {...this.props}>{this.props.children}</title>;
     },
     componentDidMount: function() {
         var node = document.querySelector('title');

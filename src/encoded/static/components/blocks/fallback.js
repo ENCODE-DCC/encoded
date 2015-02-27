@@ -40,7 +40,7 @@ var FallbackBlockSchema = JSONNode.create({
 var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
     render: function() {
         var schema = this.props.schema || FallbackBlockSchema;
-        return this.transferPropsTo(<Form schema={schema} defaultValue={this.props.value} />);
+        return <Form {...this.props} schema={schema} defaultValue={this.props.value} />;
     }
 });
 

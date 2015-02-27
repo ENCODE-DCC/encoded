@@ -39,7 +39,7 @@ var SearchBlockEdit = module.exports.SearchBlockEdit = React.createClass({
         var styles = {maxHeight: 300, overflow: 'scroll' };
         return (
             <div className="well" style={styles}>
-                {this.transferPropsTo(<ResultTable context={this.props.data} mode="picker" />)}
+                <ResultTable {...this.props} context={this.props.data} mode="picker" />)
             </div>
         );
     }

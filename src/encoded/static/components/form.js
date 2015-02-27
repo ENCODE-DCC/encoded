@@ -7,9 +7,6 @@ var ga = require('google-analytics');
 var _ = require('underscore');
 
 
-var FormFor = ReactForms.FormFor;
-
-
 var filterValue = function(value) {
     if (Array.isArray(value)) {
         value.map(filterValue);
@@ -26,8 +23,6 @@ var filterValue = function(value) {
 
 
 var Form = module.exports.Form = React.createClass({
-    mixins: [ReactForms.FormMixin],
-
     contextTypes: {
         adviseUnsavedChanges: React.PropTypes.func
     },
@@ -38,6 +33,13 @@ var Form = module.exports.Form = React.createClass({
     getChildContext: function() {
         return {
             onTriggerSave: this.save
+        };
+    },
+
+    getInitialState: function() {
+        return {
+            value: this.props.defaultValue,
+            externalValidation: {},
         };
     },
 
@@ -56,22 +58,27 @@ var Form = module.exports.Form = React.createClass({
 
     render: function() {
         return (
-          <form>
-            <FormFor externalValidation={this.state.externalValidation} />
-            <div className="pull-right">
-                <a href="" className="btn btn-default">Cancel</a>
-                {' '}
-                <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+            <div>
+                <ReactForms.Form
+                    schema={this.props.schema}
+                    defaultValue={this.props.defaultValue}
+                    onChange={this.handleChange} />
+                <div className="pull-right">
+                    <a href="" className="btn btn-default">Cancel</a>
+                    {' '}
+                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+                </div>
+                {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             </div>
-            {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
-          </form>
         );
     },
 
-    valueUpdated: function(value) {
+    handleChange: function(value) {
+        var nextState = {value: value};
         if (!this.state.unsavedToken) {
-            this.setState({unsavedToken: this.context.adviseUnsavedChanges()});
+            nextState.unsavedToken = this.context.adviseUnsavedChanges();
         }
+        this.setState(nextState);
     },
 
     save: function(e) {
@@ -96,7 +103,6 @@ var Form = module.exports.Form = React.createClass({
             putRequest: xhr
         });
         xhr.done(this.finish);
-        return false;
     },
 
     finish: function (data) {

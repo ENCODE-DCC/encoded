@@ -123,7 +123,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         var children = [];
         if (this.props.children) {
             React.Children.forEach(this.props.children, function(child) {
-                if (child instanceof Param) {
+                if (child.type === Param.type) {
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
@@ -148,7 +148,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             if (!ErrorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
             return (
                 <div className="error done">
-                    {this.transferPropsTo(<ErrorView context={this.state.error} />)}
+                    <ErrorView {...this.props} context={this.state.error} />
                 </div>
             );
         }
@@ -164,7 +164,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
         return (
             <div className="done">
-                {children.map(child => cloneWithProps(child, merge(this.props, this.state.data)))}
+                {children.map(child => cloneWithProps(child, _.extend({}, this.props, this.state.data)))}
                 {params}
             </div>
         );
@@ -179,7 +179,7 @@ var Items = React.createClass({
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
         if (!items.length) return null;
-        return this.transferPropsTo(<Component items={items} total={data.total} />);
+        return <Component {...this.props} items={items} total={data.total} />;
     }
 
 });
@@ -191,7 +191,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
         return (
             <FetchedData loadingComplete={this.props.loadingComplete}>
                 <Param name="data" url={this.props.url} />
-                {this.transferPropsTo(<Items />)}
+                <Items {...this.props} />
             </FetchedData>
         );
     }

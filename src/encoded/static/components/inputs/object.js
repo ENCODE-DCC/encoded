@@ -25,7 +25,7 @@ var SearchBlockEdit = React.createClass({
         var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
             <div className="well" style={styles} onClick={openLinksInNewWindow}>
-                {this.transferPropsTo(<ResultTable mode="picker" />)}
+                <ResultTable {...this.props} mode="picker" />
             </div>
         );
     }
@@ -77,7 +77,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
                     {url ?
                         <fetched.FetchedData>
                             <fetched.Param name="data" url={previewUrl} />
-                            {this.transferPropsTo(<ItemPreview />)}
+                            <ItemPreview {...this.props} />
                         </fetched.FetchedData> : ''}
                 </div>
                 {this.state.browsing ? 
@@ -108,6 +108,6 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     handleClear: function(e) {
         this.props.onChange("");
-        return false;
+        e.preventDefault();
     }
 });

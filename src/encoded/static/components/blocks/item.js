@@ -9,7 +9,7 @@ var ObjectPicker = require('../inputs').ObjectPicker;
 var ItemBlockView = module.exports.ItemBlockView = React.createClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.context);
-        return this.transferPropsTo(<ViewComponent context={this.props.context} />);
+        return <ViewComponent {...this.props} />;
     }
 });
 

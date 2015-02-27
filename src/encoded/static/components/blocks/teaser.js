@@ -64,11 +64,11 @@ var TeaserBlockView = React.createClass({
             <div>
                 {this.props.value.href ?
                     <a className="img-link" href={this.props.value.href}>
-                        {this.transferPropsTo(<TeaserCore />)}
+                        <TeaserCore {...this.props} />
                     </a>
                 :
                     <div>
-                        {this.transferPropsTo(<TeaserCore />)}
+                        <TeaserCore {...this.props} />
                     </div>
                 }
             </div>
@@ -94,7 +94,7 @@ var RichEditor = React.createClass({
     render: function() {
         return (
             <div className="form-control" style={{height: 'auto'}}>
-                {this.transferPropsTo(<RichTextBlockView value={this.state.value} onChange={this.onChange} />)}
+                <RichTextBlockView {...this.props} value={this.state.value} onChange={this.onChange} />
             </div>
         );
     },

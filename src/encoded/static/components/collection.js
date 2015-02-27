@@ -23,7 +23,7 @@ var lookup_column = function (result, column) {
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
-                    {this.transferPropsTo(<Table />)}
+                    <Table {...this.props} />
                 </div>
             );
         }

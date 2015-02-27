@@ -4,7 +4,7 @@ var ReactForms = require('react-forms');
 var fetched = require('./fetched');
 var Form = require('./form').Form;
 var globals = require('./globals');
-var LayoutType = require('./page').LayoutType;
+var LayoutNode = require('./page').LayoutNode;
 var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -42,12 +42,11 @@ var Item = module.exports.Item = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var panel = globals.panel_views.lookup(context)();
+        var Panel = globals.panel_views.lookup(context);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
-        this.transferPropsTo(panel);
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -58,7 +57,7 @@ var Item = module.exports.Item = React.createClass({
                 </header>
                 <div className="row">
                     {context.description ? <p className="description">{context.description}</p> : null}
-                    {panel}
+                    <Panel {...this.props} />
                 </div>
             </div>
         );
@@ -114,8 +113,8 @@ globals.listing_titles.fallback = function () {
 var RepeatingItem = React.createClass({
 
   render: function() {
-    return this.transferPropsTo(
-      <div className="rf-RepeatingFieldset__item">
+    return (
+      <div {...this.props} className="rf-RepeatingFieldset__item">
         {this.props.children}
         <button
           onClick={this.onRemove}
@@ -125,7 +124,7 @@ var RepeatingItem = React.createClass({
     );
   },
 
-  onRemove: function() {
+  onRemove: function(e) {
     if (this.props.children.constructor.displayName.indexOf('Fieldset') !== -1) {
         var label;
         try {
@@ -134,7 +133,7 @@ var RepeatingItem = React.createClass({
             label = 'item';
         }
         if (!confirm('Are you sure you want to remove this ' + label + '?')) {
-            return false;
+            e.preventDefault();
         }
     }
     if (this.props.onRemove) {
@@ -233,32 +232,31 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (required) props.component = <ReactForms.Fieldset className="required" />;
         if (p.formInput == 'file') {
             props.input = <FileInput />;
-            return ReactForms.schema.Property(props);
+            return ReactForms.schema.Scalar(props);
         } else if (p.formInput == 'layout') {
-            props.type = LayoutType;
             props.input = <Layout editable={true} />;
-            return ReactForms.schema.Property(props);
+            return LayoutNode.create(props);
         }
-        var properties = [], name;
+        var properties = {}, name;
         for (name in p.properties) {
             if (name == 'uuid') continue;
             if (p.properties[name].calculatedProperty) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
-            properties.push(jsonSchemaToFormSchema({
+            properties[name] = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
-                props: {name: name, required: required}
-            }));
+                props: {required: required},
+            });
         }
-        return ReactForms.schema.Schema(props, properties);
+        return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
         props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
-            props.validate = function(v) { return v.match(p.pattern); };
+            props.validate = function(schema, value) { return value.match(p.pattern); };
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
@@ -290,7 +288,7 @@ var jsonSchemaToFormSchema = function(attrs) {
             // Default value for new children needs to refer to the parent.
             var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
             defaultValue[linkProp] = id;
-            return <ReactForms.schema.Property component={component} defaultValue={defaultValue} />;
+            return ReactForms.schema.Scalar({component: component, defaultValue: defaultValue});
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
@@ -298,7 +296,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (props.name == 'schema_version') {
             props.input = <input type="text" disabled />;
         }
-        return ReactForms.schema.Property(props);
+        return ReactForms.schema.Scalar(props);
     }
 };
 
@@ -325,7 +323,7 @@ var FetchedForm = React.createClass({
             id: this.props.id
         });
         var value = this.props.context || jsonSchemaToDefaultValue(schemas[type]);
-        return this.transferPropsTo(<Form defaultValue={value} schema={schema} />);
+        return <Form {...this.props} defaultValue={value} schema={schema} />;
     }
 
 });
@@ -344,7 +342,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             form = (
                 <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    {this.transferPropsTo(<FetchedForm context={null} type={type} action={action} method="POST" />)}
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -356,7 +354,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    {this.transferPropsTo(<FetchedForm id={id} type={type} action={id} method="PUT" />)}
+                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
                 </fetched.FetchedData>
             );
         }

@@ -35,13 +35,13 @@ var FileInput = module.exports.FileInput = React.createClass({
 
     onDragOver: function(e) {
         e.dataTransfer.dropEffect = 'copy';
-        return false;  // indicate we are going to handle the drop
+        e.preventDefault();  // indicate we are going to handle the drop
     },
 
     onDrop: function(e) {
         var file = e.dataTransfer.files[0];
         this.onChange(null, file);
-        return false;
+        e.preventDefault();
     },
 
     onChange: function(e, file) {

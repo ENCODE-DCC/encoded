@@ -45,8 +45,8 @@ var BlockEditModal = React.createClass({
             }
         }
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
-        return this.transferPropsTo(
-            <Modal title={'Edit ' + blocktype.label}>
+        return (
+            <Modal {...this.props} title={'Edit ' + blocktype.label}>
                 <div className="modal-body">
                     <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
                 </div>
@@ -181,7 +181,7 @@ var BlockAddButton = React.createClass({
         );
     },
 
-    click: function() { return false; },
+    click: function(e) { e.preventDefault(); },
 
     dragStart: function(e) {
         var block = {
@@ -405,7 +405,7 @@ var Layout = module.exports.Layout = React.createClass({
         } else if (types.contains && types.contains('application/x-encoded-block')) {
             return true;
         }   
-        return false;     
+        e.preventDefault();
     },
 
     drop: function(e) {

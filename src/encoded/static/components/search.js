@@ -38,7 +38,8 @@ var AuditMixin = audit.AuditMixin;
             context = props;
             props = {context: context,  key: context['@id']};
         }
-        return globals.listing_views.lookup(props.context)(props);
+        var ListingView = globals.listing_views.lookup(props.context);
+        return <ListingView {...props} />;
     };
 
     var PickerActionsMixin = module.exports.PickerActionsMixin = {
@@ -218,7 +219,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
                                 return (
-                                    <div>
+                                    <div key={target}>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
                                             {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
@@ -610,7 +611,7 @@ var AuditMixin = audit.AuditMixin;
                 title = term;
             }
             var total = this.props.total;
-            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
+            return <Term {...this.props} title={title} filters={filters} total={total} />;
         }
     });
 
@@ -658,13 +659,13 @@ var AuditMixin = audit.AuditMixin;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
                         : null}
@@ -707,7 +708,7 @@ var AuditMixin = audit.AuditMixin;
 
         onChange: function(e) {
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         },
 
         onBlur: function(e) {
@@ -724,7 +725,7 @@ var AuditMixin = audit.AuditMixin;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;
+                e.preventDefault();
             }
         }
     });
@@ -745,12 +746,12 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
+                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return this.transferPropsTo(<Facet key={facet.field} facet={facet} filters={filters} />);
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
                         }
                     }.bind(this))}
                 </div>
@@ -809,7 +810,6 @@ var AuditMixin = audit.AuditMixin;
 
         getDefaultProps: function() {
             return {
-
                 restrictions: {},
                 searchBase: ''
             };
@@ -845,10 +845,8 @@ var AuditMixin = audit.AuditMixin;
                     <div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
-                                {this.transferPropsTo(
-                                    <FacetList facets={facets} filters={filters}
-                                               searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                                )}
+                                <FacetList {...this.props} facets={facets} filters={filters}
+                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
@@ -906,7 +904,7 @@ var AuditMixin = audit.AuditMixin;
             var search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         }
     });
 
@@ -923,7 +921,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var ReactForms = require('react-forms');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var _ = require('underscore');
@@ -25,8 +26,8 @@ var defaultLayout = {
 };
 
 
-var LayoutType = module.exports.LayoutType = {
-    serialize: function(value) {
+class LayoutNode extends ReactForms.schema.ScalarNode {
+    serialize(value) {
         if (!value) {
             value = defaultLayout;
         }
@@ -35,20 +36,20 @@ var LayoutType = module.exports.LayoutType = {
             blockMap[block['@id']] = block;
         });
         return _.extend({}, value, {blocks: blockMap});
-    },
-    deserialize: function(value) {
+    }
+    deserialize(value) {
         var blockList = Object.keys(value.blocks).map(function(blockId) {
             return value.blocks[blockId];
         });
         return _.extend({}, value, {blocks: blockList});
-    },
-};
+    }
+}
 
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
         var context = this.props.context;
-        var value = LayoutType.serialize(context.layout);
+        var value = LayoutNode.serialize(context.layout);
         return (
             <div>
                 <header className="row">

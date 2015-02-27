@@ -60,9 +60,9 @@ var NavBarLayout = React.createClass({
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
                         <GlobalSections global_sections={portal.global_sections} section={section} />
-                        {this.transferPropsTo(<UserActions />)}
-                        {context_actions ? this.transferPropsTo(<ContextActions />) : null}
-                        {this.transferPropsTo(<Search />)}
+                        <UserActions {...this.props} />
+                        {context_actions ? <ContextActions {...this.props} /> : null}
+                        <Search {...this.props} />
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
