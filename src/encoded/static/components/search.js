@@ -476,7 +476,7 @@ var AuditMixin = audit.AuditMixin;
     var Target = module.exports.Target = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
-            var result = this.props.context;4
+            var result = this.props.context;
             var columns = this.props.columns;
             return (
                 <li>
