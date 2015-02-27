@@ -138,7 +138,6 @@ class MPIndexer(Indexer):
     def __init__(self, registry):
         self.manager = LRUManager()
         self.manager.start()
-        atexit.register(self.manager.shutdown)
         capacity = int(registry.settings.get('embed_cache.capacity', 100))
         self.embed_cache = self.manager.LRUCache(capacity)
         self.pool = EventLoopPool(
@@ -159,6 +158,10 @@ class MPIndexer(Indexer):
             return value_holder[0]
         finally:
             self.embed_cache.clear()
+
+    def shutdown(self):
+        self.pool._terminate()
+        self.manager.shutdown()
 
 
 class LRUManager(BaseManager):
@@ -199,7 +202,11 @@ class EventLoopPool(object):
         self._processes = processes
         self._pool = []
         self._repopulate_pool()
-        atexit.register(EventLoopPool._terminate_pool, self._inqueue, self._pool)
+        self._terminate = util.Finalize(
+            self, self._terminate_pool,
+            args=(self._inqueue, self._pool),
+            exitpriority=15,
+        )
 
     def _join_exited_workers(self):
         """Cleanup after any worker processes which have exited due to reaching
