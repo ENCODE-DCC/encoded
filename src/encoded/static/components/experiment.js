@@ -1,4 +1,3 @@
-   /** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -188,11 +187,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} key="experiment-audit" />
+                            <AuditIndicators audits={context.audit} id="experiment-audit" />
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} key="experiment-audit" />
+                <AuditDetail audits={context.audit} id="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -49,7 +48,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
             var indicatorClass = "audit-indicators btn btn-default" + (this.context.auditDetailOpen ? ' active' : '') + (this.props.search ? ' audit-search' : '');
 
             return (
-                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.key.replace(/\W/g, '')} onClick={this.context.auditStateToggle}>
+                <button className={indicatorClass} aria-label="Audit indicators" aria-expanded={this.context.auditDetailOpen} aria-controls={this.props.id} onClick={this.context.auditStateToggle}>
                     {sortedAuditLevels.map(function(level, i) {
                         // Calculate the CSS class for the icon
                         var levelName = level.toLowerCase();
@@ -87,7 +86,7 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             });
 
             return (
-                <div className="audit-details" id={this.props.key.replace(/\W/g, '')} key={this.props.key} aria-hidden={!this.context.auditDetailOpen}>
+                <div className="audit-details" id={this.props.id} aria-hidden={!this.context.auditDetailOpen}>
                     {sortedAuditLevels.map(function(level, i) {
                         var levelText = level.toLowerCase();
                         var iconClass = 'icon audit-icon-' + levelText;

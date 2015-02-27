@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
@@ -70,7 +69,7 @@ var AuditMixin = audit.AuditMixin;
                         {result.accession ?
                             <div className="pull-right type sentence-case search-meta">
                                 <p>{item_type}: {' ' + result['accession']}</p>
-                                <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                                <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                             </div>
                         : null}
                         <div className="accession">
@@ -80,7 +79,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -214,7 +213,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
@@ -234,7 +233,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -277,7 +276,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Biosample</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -333,7 +332,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -401,7 +400,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Experiment</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -438,7 +437,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -457,7 +456,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Dataset</p>
                             <p className="type">{' ' + result['accession']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result['description']}</a>
@@ -473,7 +472,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -491,7 +490,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Target</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -506,7 +505,7 @@ var AuditMixin = audit.AuditMixin;
                                 : <em> None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -525,7 +524,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Image</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result.caption}</a>
@@ -534,7 +533,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }

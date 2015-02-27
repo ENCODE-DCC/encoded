@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
@@ -75,11 +74,11 @@ var Lot = module.exports.Lot = React.createClass({
                             }
                         </h3>
                         <div className="status-line">
-                            <AuditIndicators audits={context.audit} key="antibody-audit" />
+                            <AuditIndicators audits={context.audit} id="antibody-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} key="antibody-audit" />
+                <AuditDetail audits={context.audit} id="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
