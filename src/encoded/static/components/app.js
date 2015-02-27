@@ -148,13 +148,9 @@ var App = React.createClass({
             }
 
             var ContentView = globals.content_views.lookup(context, name);
-            content = this.transferPropsTo(ContentView({
-                context: context,
-                loadingComplete: this.state.loadingComplete,
-                session: this.state.session,
-                portal: this.state.portal,
-                navigate: this.navigate
-            }));
+            content = <ContentView {...this.props} context={context}
+                loadingComplete={this.state.loadingComplete} session={this.state.session}
+                portal={this.state.portal} navigate={this.navigate} />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;

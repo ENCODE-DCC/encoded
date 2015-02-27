@@ -13,15 +13,15 @@ var NavItem = require('../react-bootstrap/NavItem');
 var NavBar = React.createClass({
     render: function() {
         var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
-        return NavBarLayout({
-            loadingComplete: this.props.loadingComplete,
-            portal: this.props.portal,
-            section: section,
-            session: this.props.session,
-            context_actions: this.props.context_actions,
-            user_actions: this.props.user_actions,
-            href: this.props.href,
-        });
+        return <NavBarLayout
+            loadingComplete={this.props.loadingComplete}
+            portal={this.props.portal}
+            section={section}
+            session={this.props.session}
+            context_actions={this.props.context_actions}
+            user_actions={this.props.user_actions}
+            href={this.props.href}
+            />;
     }
 });
 

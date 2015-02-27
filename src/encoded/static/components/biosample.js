@@ -187,7 +187,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         {context.product_id ?
                             <div data-test="productid">
                                 <dt>Product ID</dt>
-                                <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                                <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
                             </div>
                         : null}
 
@@ -411,15 +411,18 @@ var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React
 });
 
 
-var maybe_link = function (props, children) {
-    if (props.href == 'N/A') {
-        return children;
-    } else {
-        return (
-            <a href={props.href}>{children}</a>
-        );
+var MaybeLink = React.createClass({
+    render() {
+        if (this.props.href == 'N/A') {
+            return this.props.children;
+        } else {
+            return (
+                <a {...this.props}>{this.props.children}</a>
+            );
+        }
     }
-};
+});
+
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
@@ -797,7 +800,7 @@ var Construct = module.exports.Construct = React.createClass({
                     {context.product_id ?
                         <div data-test="product-id">
                             <dt>Product ID</dt>
-                            <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                            <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
                         </div>
                     : null}
                 </dl>

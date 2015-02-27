@@ -8,9 +8,8 @@ var globals = require('./globals');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
-var merge = require('react/lib/merge');
-var ModalTrigger = require('react-bootstrap/ModalTrigger');
-var Modal = require('react-bootstrap/Modal');
+var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
+var Modal = require('react-bootstrap/lib/Modal');
 
 var LAYOUT_CONTEXT = {
     dragStart: React.PropTypes.func,
@@ -192,7 +191,7 @@ var BlockAddButton = React.createClass({
         };
         if (this.props.blockprops.initial !== undefined) {
             delete block.is_new;
-            block = merge(block, this.props.blockprops.initial);
+            block = _.extend({}, block, this.props.blockprops.initial);
         }
         this.context.dragStart(e, block);
     }

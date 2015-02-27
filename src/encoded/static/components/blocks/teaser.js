@@ -8,8 +8,8 @@ var richtext = require('./richtext');
 var _ = require('underscore');
 
 var ReactForms = require('react-forms');
-var Schema = ReactForms.schema.Schema;
-var Property = ReactForms.schema.Property;
+var Mapping = ReactForms.schema.Mapping;
+var Scalar = ReactForms.schema.Scalar;
 
 var ItemBlockView = item.ItemBlockView;
 var ObjectPicker = require('../inputs').ObjectPicker;
@@ -117,13 +117,11 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 globals.blocks.register({
     label: 'teaser block',
     icon: 'icon icon-image',
-    schema: (
-        <Schema>
-            <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
-            <Property name="image" label="Image" input={imagePicker} />
-            <Property name="body" label="Caption" input={<RichEditor />} />
-            <Property name="href" label="Link URL" />
-        </Schema>
-    ),
+    schema: Mapping({}, {
+        display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
+        image: Scalar({label: "Image", input: imagePicker}),
+        body: Scalar({label: "Caption", input: <RichEditor />}),
+        href: Scalar({label: "Link URL"}),
+    }),
     view: TeaserBlockView
 }, 'teaserblock');

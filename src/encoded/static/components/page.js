@@ -3,7 +3,7 @@
 var React = require('react');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
-var merge = require('react/lib/merge');
+var _ = require('underscore');
 
 
 var defaultLayout = {
@@ -35,13 +35,13 @@ var LayoutType = module.exports.LayoutType = {
         value.blocks.map(function(block) {
             blockMap[block['@id']] = block;
         });
-        return merge(value, {blocks: blockMap});
+        return _.extend({}, value, {blocks: blockMap});
     },
     deserialize: function(value) {
         var blockList = Object.keys(value.blocks).map(function(blockId) {
             return value.blocks[blockId];
         });
-        return merge(value, {blocks: blockList});
+        return _.extend({}, value, {blocks: blockList});
     },
 };
 

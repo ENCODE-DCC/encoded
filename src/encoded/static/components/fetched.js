@@ -5,7 +5,7 @@ var cloneWithProps = require('react/lib/cloneWithProps');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
 var ga = require('google-analytics');
-var merge = require('react/lib/merge');
+var _ = require('underscore');
 
 
 var Param = module.exports.Param = React.createClass({
@@ -113,7 +113,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             error: error
         };
         if (data) {
-            nextState['data'] = merge(this.state.data, data);
+            nextState['data'] = _.extend({}, this.state.data, data);
         }
         this.setState(nextState);
     },
@@ -145,11 +145,11 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         }
 
         if (this.state.error) {
-            var errorView = globals.content_views.lookup(this.state.error);
-            if (!errorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
+            var ErrorView = globals.content_views.lookup(this.state.error);
+            if (!ErrorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
             return (
                 <div className="error done">
-                    {this.transferPropsTo(<errorView context={this.state.error} />)}
+                    {this.transferPropsTo(<ErrorView context={this.state.error} />)}
                 </div>
             );
         }

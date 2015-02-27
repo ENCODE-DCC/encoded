@@ -42,10 +42,8 @@ var FetchedItemBlockView = React.createClass({
 globals.blocks.register({
     label: 'item block',
     icon: 'icon icon-paperclip',
-    schema: (
-        <ReactForms.schema.Schema>
-          <ReactForms.schema.Property name="item" label="Item" input={<ObjectPicker />} />
-        </ReactForms.schema.Schema>
-    ),
+    schema: ReactForms.schema.Mapping({}, {
+        item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />})
+    }),
     view: FetchedItemBlockView
 }, 'itemblock');
