@@ -200,7 +200,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
+                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]))$"
             }
         },
         "protocol_documents": {
@@ -716,6 +716,10 @@
         },
         "model_organism_donor_constructs.target.label": {
             "title": "Constructs",
+            "type": "string"
+        },
+        "donor.mutated_gene.label": {
+            "title": "Mutated gene",
             "type": "string"
         },
         "treatments.length": {

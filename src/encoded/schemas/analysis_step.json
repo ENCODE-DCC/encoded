@@ -1,11 +1,12 @@
-{
-    "description": "Schema for submitting a computational analysis that transforms input files to output files.",
+{ 
+    "title": "Analysis step",
+    "description": "Schema for submitting a computational analysis steps as a subobject of pipeline that transforms input files to output files.",
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysis_step_types", "software_versions", "input_file_types"],
+    "required": ["name", "title", "analysis_step_types", "software_versions", "input_file_types"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "aliases"],
+    "identifyingProperties": ["uuid", "aliases", "name"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
@@ -22,7 +23,13 @@
             "title": "Name",
             "description": "Unique name of the analysis step",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+$"
+            "pattern": "^[a-z0-9\\-\\_]+$",
+            "uniqueKey": true
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the analysis step, likely the same as the name.",
+            "type": "string"
         },
         "analysis_step_types": {
             "title": "Types",
@@ -34,17 +41,18 @@
                  "enum": [
                      "genome indexing",
                      "genome segmentation",
+                     "fastq concatenation",
                      "filtering",
                      "file format conversion",
                      "QA calculation",
                      "peak calling",
                      "IDR",
                      "alignment",
-                     "signal calling",
+                     "signal generation",
                      "quantification",
-                    "transcript identification",
-                    "transcriptome assembly",
-                    "variant annotation"
+                     "transcript identification",
+                     "transcriptome assembly",
+                     "variant annotation"
                  ]
              }
         },

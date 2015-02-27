@@ -36,6 +36,13 @@
             "description": "The preferred viewable name of the pipeline.",
             "type": "string"
         },
+        "description": {
+            "title": "Description",
+            "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
+            "type": "string",
+            "permission": "import_items",
+            "default": ""
+        },
         "version": {
             "title": "Version",
             "description": "The version of a particular pipeline.",
