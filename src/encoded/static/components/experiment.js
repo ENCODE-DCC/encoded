@@ -112,7 +112,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
             // Collect mutated genes
             if (biosample.donor && biosample.donor.mutated_gene) {
-                mutatedGenes.push(biosample.donor.mutated_gene);
+                mutatedGenes.push(biosample.donor.mutated_gene.label);
             }
         });
         if (treatmentText) {
@@ -120,6 +120,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
         if (synchText) {
             synchText = _.uniq(synchText);
+        }
+        if (mutatedGenes) {
+            mutatedGenes = _.uniq(mutatedGenes);
         }
 
         // Adding experiment specific documents
@@ -190,8 +193,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
                                 <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
-                                    {organismName.length || lifeAge.length ? '(' : null}
+                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
+                                    {mutatedGenes.length ? <span>{', mutated gene: ' + mutatedGenes.join('/')}</span> : null}
+                                    {organismName.length || lifeAge.length ? ' (' : null}
                                     {organismName.length ?
                                         <span>
                                             {organismName.map(function(name, i) {
@@ -242,22 +246,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="target">
                                 <dt>Target</dt>
                                 <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
-
-                        {mutatedGenes.length ?
-                            <div data-test="mutatedgene">
-                                <dt>Mutated genes</dt>
-                                <dd>
-                                    {mutatedGenes.map(function(gene, i) {
-                                        return (
-                                            <span>
-                                                {i > 0 ? ', ' : ''}
-                                                <a href={gene}>{gene}</a>
-                                            </span>
-                                        );
-                                    })}
-                                </dd>
                             </div>
                         : null}
 

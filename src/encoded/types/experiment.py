@@ -52,6 +52,7 @@ class Experiment(Dataset):
         'replicates.library.biosample.organism',
         'replicates.library.biosample.treatments',
         'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',

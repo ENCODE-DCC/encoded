@@ -462,9 +462,10 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donorUrlDomain;
 
         // Get the domain name of the donor URL
-        if (biosample.donor && biosample.donor.url) {
+        if (biosample && biosample.donor && biosample.donor.url) {
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
         }
@@ -569,7 +570,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         }
 
         // Get the domain name of the donor URL
-        if (biosample.donor && biosample.donor.url) {
+        if (biosample && biosample.donor && biosample.donor.url) {
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
         }
