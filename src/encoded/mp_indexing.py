@@ -3,12 +3,9 @@ from multiprocessing import (
     get_context,
     util,
 )
-from multiprocessing.managers import (
-    BaseManager,
-    DictProxy,
-)
 from multiprocessing.pool import (
     RUN,
+    TERMINATE,
     job_counter,
     worker,
 )
@@ -19,7 +16,6 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
-from sqlalchemy.util import LRUCache
 import atexit
 import queue
 import transaction
@@ -45,10 +41,9 @@ def includeme(config):
 
 current_snapshot_id = None
 app = None
-embed_cache = None
 
 
-def initializer(settings, embed_cache_proxy):
+def initializer(settings):
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
@@ -57,8 +52,6 @@ def initializer(settings, embed_cache_proxy):
     assert not DBSession.registry.has()
     from . import main
     global app
-    global embed_cache
-    embed_cache = embed_cache_proxy
     atexit.register(clear_snapshot)
     app = main(settings, indexer_worker=True, create_tables=False)
     signal.signal(signal.SIGALRM, clear_snapshot)
@@ -66,7 +59,6 @@ def initializer(settings, embed_cache_proxy):
 
 def set_snapshot(snapshot_id):
     global current_snapshot_id
-    global embed_cache
     if current_snapshot_id == snapshot_id:
         return
     clear_snapshot()
@@ -84,7 +76,7 @@ def set_snapshot(snapshot_id):
     request.registry = registry
     request.root = app.root_factory(request)
     request._stats = {}
-    manager.push({'request': request, 'registry': registry, 'embed_cache': embed_cache})
+    manager.push({'request': request, 'registry': registry})
 
 
 def clear_snapshot(signum=None, frame=None):
@@ -136,38 +128,24 @@ def handle_results(request, value_holder):
 
 class MPIndexer(Indexer):
     def __init__(self, registry):
-        self.manager = LRUManager()
-        self.manager.start()
-        capacity = int(registry.settings.get('embed_cache.capacity', 100))
-        self.embed_cache = self.manager.LRUCache(capacity)
         self.pool = EventLoopPool(
             initializer=initializer,
-            initargs=(registry.settings, self.embed_cache),
+            initargs=(registry.settings,),
             context=get_context('forkserver'),
         )
         super(MPIndexer, self).__init__(registry)
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
-        try:
-            tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
-            value_holder = [0]
-            result_handler = handle_results(request, value_holder)
-            next(result_handler)
-            self.pool.run_tasks(update_object_in_snapshot, tasks, callback=result_handler.send)
-            result_handler.close()
-            return value_holder[0]
-        finally:
-            self.embed_cache.clear()
+        tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
+        value_holder = [0]
+        result_handler = handle_results(request, value_holder)
+        next(result_handler)
+        self.pool.run_tasks(update_object_in_snapshot, tasks, callback=result_handler.send)
+        result_handler.close()
+        return value_holder[0]
 
     def shutdown(self):
         self.pool._terminate()
-        self.manager.shutdown()
-
-
-class LRUManager(BaseManager):
-    pass
-
-LRUManager.register('LRUCache', LRUCache, proxytype=DictProxy)
 
 
 class EventLoopPool(object):
@@ -183,7 +161,7 @@ class EventLoopPool(object):
         self._setup_queues()
         self._taskqueue = queue.Queue()
         self._cache = {}
-        self._state = RUN
+        self._state = [RUN]
         self._maxtasksperchild = maxtasksperchild
         self._initializer = initializer
         self._initargs = initargs
@@ -204,7 +182,7 @@ class EventLoopPool(object):
         self._repopulate_pool()
         self._terminate = util.Finalize(
             self, self._terminate_pool,
-            args=(self._inqueue, self._pool),
+            args=(self._inqueue, self._pool, self._state),
             exitpriority=15,
         )
 
@@ -266,7 +244,8 @@ class EventLoopPool(object):
             inqueue._rlock.release()
 
     @classmethod
-    def _terminate_pool(cls, inqueue, pool):
+    def _terminate_pool(cls, inqueue, pool, _state):
+        _state[0] = TERMINATE
         # this is guaranteed to only be called once
         util.debug('finalizing pool')
 
@@ -307,7 +286,7 @@ class EventLoopPool(object):
         if threshold is None:
             threshold = self._processes * 2
 
-        while (cache or iterable) and self._state == RUN:
+        while (cache or iterable) and self._state[0] == RUN:
             while iterable and len(cache) < threshold:
                 try:
                     args = next(iterable)

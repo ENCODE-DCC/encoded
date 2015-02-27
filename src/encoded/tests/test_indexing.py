@@ -36,13 +36,10 @@ def app(app_settings):
 
     yield app
 
-    # Make pytest shutdown multiprocessing
-    try:
-        app.registry['indexer'].shutdown()
-    except AttributeError:
-        pass
+    # Shutdown multiprocessing pool to close db conns.
+    app.registry['indexer'].shutdown()
 
-    # Dispose connections so postgres can tear down
+    # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
     DBSession.remove()
     DBSession.configure(bind=None)

@@ -252,6 +252,9 @@ class Indexer(object):
             log.warning('Error indexing %s', uuid, exc_info=True)
         return result['object']['@id']
 
+    def shutdown(self):
+        pass
+
 
 @subscriber(Created)
 @subscriber(BeforeModified)

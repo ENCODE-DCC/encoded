@@ -102,12 +102,9 @@ def threadlocals(request, dummy_request, registry):
 
 
 from pyramid.testing import DummyRequest
-
-
 class MyDummyRequest(DummyRequest):
     def remove_conditional_headers(self):
         pass
-
     def _get_registry(self):
         from pyramid.threadlocal import get_current_registry
         if self._registry is None:
@@ -121,7 +118,6 @@ class MyDummyRequest(DummyRequest):
         self._registry = None
 
     registry = property(_get_registry, _set_registry, _del_registry)
-
 
 @fixture
 def dummy_request(root, registry, app):
@@ -181,7 +177,6 @@ def workbook(connection, app, app_settings):
         yield
     finally:
         tx.rollback()
-
 
 @fixture
 def anonhtmltestapp(app, external_tx):
@@ -345,7 +340,7 @@ def external_tx(request, connection):
     print('BEGIN external_tx')
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
-    # # The database should be empty unless a data fixture was loaded
+    ## The database should be empty unless a data fixture was loaded
     # from encoded.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
@@ -526,10 +521,12 @@ def no_deps(request, connection):
 
     @event.listens_for(session, 'after_flush')
     def check_dependencies(session, flush_context):
+        #import pytest; pytest.set_trace()
         assert not flush_context.cycles
 
     @event.listens_for(connection, "before_execute", retval=True)
     def before_execute(conn, clauseelement, multiparams, params):
+        #import pytest; pytest.set_trace()
         return clauseelement, multiparams, params
 
     @request.addfinalizer
@@ -669,7 +666,7 @@ def antibody_lot(antibody_lots):
 
 
 @pytest.fixture
-def targets(testapp, organisms):
+def targets(testapp,organisms):
     from . import sample_data
     return sample_data.load(testapp, 'target')
 
@@ -698,14 +695,11 @@ def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_c
 
 @pytest.fixture
 def antibody_approval(antibody_approvals):
-    return [
-        aa for aa in antibody_approvals
-        if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'
-    ][0]
+    return [aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
 
 
 @pytest.fixture
-def rnais(testapp, labs, awards, targets):
+def rnais(testapp,labs, awards, targets):
     from . import sample_data
     return sample_data.load(testapp, 'rnai')
 
@@ -716,7 +710,7 @@ def rnai(rnais):
 
 
 @pytest.fixture
-def constructs(testapp, labs, awards, targets, sources):
+def constructs(testapp,labs, awards, targets, sources):
     from . import sample_data
     return sample_data.load(testapp, 'construct')
 
@@ -735,7 +729,6 @@ def datasets(testapp, labs, awards):
 @pytest.fixture
 def dataset(datasets):
     return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
-
 
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
@@ -769,7 +762,7 @@ def elasticsearch_server(request, elasticsearch_host_port):
     tmpdir = str(tmpdir)
     process = server_process(str(tmpdir), host=host, port=port)
 
-    yield '%s:%d' % (host, port)
+    yield 'http://%s:%d' % (host, port)
 
     if process.poll() is None:
         process.terminate()
