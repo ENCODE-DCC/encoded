@@ -13,8 +13,10 @@ import io
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
-    ('Accession', ['files.accession']),
-    ('Experiment', ['accession']),
+    ('File accession', ['files.accession']),
+    ('File format', ['files.file_format']),
+    ('Output type', ['files.output_type']),
+    ('Experiment accession', ['accession']),
     ('Assay', ['assay_term_name']),
     ('Biosample term id', ['biosample_term_id']),
     ('Biosample term name', ['biosample_term_name']),
@@ -34,16 +36,14 @@ _tsv_mapping = OrderedDict([
     ('Library fragmentation method', ['replicates.library.fragmentation_method']),
     ('Library lysis method', ['replicates.library.lysis_method']),
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
-    ('Paired endedness', ['replicates.library.paired_ended']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['replicates.rbns_protein_concentration', 'replicates.rbns_protein_concentration_units']),
+    ('Paired endedness', ['replicates.library.paired_ended']),
     ('Read length', ['files.replicate.read_length']),
     ('Biological replicate', ['files.replicate.biological_replicate_number']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
-    ('File format', ['files.file_format']),
     ('Size', ['files.file_size']),
-    ('Output type', ['files.output_type']),
     ('Lab', ['files.lab.title']),
     ('md5sum', ['files.md5sum']),
     ('href', ['files.href']),
@@ -55,7 +55,7 @@ _tsv_mapping = OrderedDict([
 @view_config(route_name='metadata', request_method='GET')
 def metadata_tsv(context, request):
 
-    param_list = parse_qs(request.matchdict['search_params'].encode('utf-8'))
+    param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = []
     header = []
     file_attributes = []
@@ -85,14 +85,18 @@ def metadata_tsv(context, request):
                         else:
                             temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
+            f_attributes = ['files.accession', 'files.file_format', 'files.output_type']
             for f in row['files']:
                 if 'files.file_format' in param_list:
                     if f['file_format'] not in param_list['files.file_format']:
                         continue
                 f['href'] = request.host_url + f['href']
-                data_row = [f['accession']] + exp_data_row
+                f_row = []
+                for attr in f_attributes:
+                    f_row.append(f[attr[6:]])
+                data_row = f_row + exp_data_row
                 for prop in file_attributes:
-                    if prop == 'files.accession':
+                    if prop in f_attributes:
                         continue
                     path = prop[6:]
                     temp = []
@@ -115,7 +119,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
 
     # adding extra params to get requied columsn
-    param_list = parse_qs(request.matchdict['search_params'].encode('utf-8'))
+    param_list = parse_qs(request.matchdict['search_params'])
     param_list['field'] = ['files.href', 'files.file_format']
     param_list['limit'] = ['all']
 
