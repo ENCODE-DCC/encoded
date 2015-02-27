@@ -13,37 +13,42 @@ import io
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
-    ('Accession', ('files.accession')),
-    ('Experiment', ('accession')),
-    ('Assay', ('assay_term_name')),
-    ('Biosample term id', ('biosample_term_id')),
-    ('Biosample term name', ('biosample_term_name')),
-    ('Biosample type', ('biosample_type')),
-    ('Biosample life stage', ('replicates.library.biosample.life_stage')),
-    ('Biosample sex', ('replicates.library.biosample.sex')),
-    ('Biosample organism', ('replicates.library.biosample.organism.name')),
-    ('Biosample treatments', ('replicates.library.biosample.treatments.treatment_term_name')),
-    ('Biosample subcellular fraction term name', ('replicates.library.biosample.subcellular_fraction_term_name')),
-    ('Biosample phase', ('replicates.library.biosample.phase')),
-    ('Experiment target', 'target.name'),
-    ('Antibody accession', ('replicates.antibody.accession')),
-    ('Nucleic acid term name', ('replicates.library.nucleic_acid_term_name')),
-    ('Depleted in term name', ('replicates.library.depleted_in_term_name')),
-    ('Library extraction method', ('replicates.library.extraction_method')),
-    ('Library fragmentation method', ('replicates.library.fragmentation_method')),
-    ('Libary lysis method', ('replicates.library.lysis_method')),
-    ('Read length', ('replicates.library.read_length')),
-    ('Paired endedness', ('replicates.library.paired_ended')),
-    ('Experiment date released', ('date_released')),
-    ('Project', ('award.project')),
-    ('File format', ('files.file_format')),
-    ('Size', ('files.file_size')),
-    ('Output type', ('files.output_type')),
-    ('Lab', ('files.lab.title')),
-    ('md5sum', ('files.md5sum')),
-    ('href', ('files.href')),
-    ('Assembly', ('files.assembly')),
-    ('Platform', ('files.platform.title'))
+    ('Accession', ['files.accession']),
+    ('Experiment', ['accession']),
+    ('Assay', ['assay_term_name']),
+    ('Biosample term id', ['biosample_term_id']),
+    ('Biosample term name', ['biosample_term_name']),
+    ('Biosample type', ['biosample_type']),
+    ('Biosample life stage', ['replicates.library.biosample.life_stage']),
+    ('Biosample sex', ['replicates.library.biosample.sex']),
+    ('Biosample organism', ['replicates.library.biosample.organism.name']),
+    ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
+    ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
+    ('Biosample phase', ['replicates.library.biosample.phase']),
+    ('Biosample Age(s)', ['replicates.library.biosample.age', 'replicates.library.biosample.age_units']),
+    ('Experiment target', ['target.name']),
+    ('Antibody accession', ['replicates.antibody.accession']),
+    ('Nucleic acid term name', ['replicates.library.nucleic_acid_term_name']),
+    ('Depleted in term name', ['replicates.library.depleted_in_term_name']),
+    ('Library extraction method', ['replicates.library.extraction_method']),
+    ('Library fragmentation method', ['replicates.library.fragmentation_method']),
+    ('Library lysis method', ['replicates.library.lysis_method']),
+    ('Library crosslinking method', ['replicates.library.crosslinking_method']),
+    ('Paired endedness', ['replicates.library.paired_ended']),
+    ('Experiment date released', ['date_released']),
+    ('Project', ['award.project']),
+    ('RBNS protein concentration', ['replicates.rbns_protein_concentration', 'replicates.rbns_protein_concentration_units']),
+    ('Read length', ['files.replicate.read_length']),
+    ('Biological replicate', ['files.replicate.biological_replicate_number']),
+    ('Technical replicate', ['files.replicate.technical_replicate_number']),
+    ('File format', ['files.file_format']),
+    ('Size', ['files.file_size']),
+    ('Output type', ['files.output_type']),
+    ('Lab', ['files.lab.title']),
+    ('md5sum', ['files.md5sum']),
+    ('href', ['files.href']),
+    ('Assembly', ['files.assembly']),
+    ('Platform', ['files.platform.title'])
 ])
 
 
@@ -56,9 +61,9 @@ def metadata_tsv(context, request):
     file_attributes = []
     for prop in _tsv_mapping:
         header.append(prop)
-        param_list['field'] = param_list['field'] + [_tsv_mapping[prop]]
-        if _tsv_mapping[prop].startswith('files'):
-            file_attributes.append(_tsv_mapping[prop])
+        param_list['field'] = param_list['field'] + _tsv_mapping[prop]
+        if _tsv_mapping[prop][0].startswith('files'):
+            file_attributes = file_attributes + _tsv_mapping[prop]
     param_list['limit'] = ['all']
     path = '/search/?%s' % urlencode(param_list, True)
     results = embed(request, path, as_user=True)
@@ -67,10 +72,18 @@ def metadata_tsv(context, request):
         if row['files']:
             exp_data_row = []
             for column in header:
-                if not _tsv_mapping[column].startswith('files'):
+                if not _tsv_mapping[column][0].startswith('files'):
                     temp = []
-                    for value in simple_path_ids(row, _tsv_mapping[column]):
-                        temp.append(str(value))
+                    for c in _tsv_mapping[column]:
+                        c_value = []
+                        for value in simple_path_ids(row, c):
+                            if str(value) not in c_value:
+                                c_value.append(str(value))
+                        if len(temp):
+                            if len(c_value):
+                                temp = [x + ' ' + c_value[0] for x in temp]
+                        else:
+                            temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
             for f in row['files']:
                 if 'files.file_format' in param_list:
