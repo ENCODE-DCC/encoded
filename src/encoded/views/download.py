@@ -27,7 +27,6 @@ _tsv_mapping = OrderedDict([
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
     ('Biosample phase', ['replicates.library.biosample.phase']),
-    ('Biosample Age(s)', ['replicates.library.biosample.age', 'replicates.library.biosample.age_units']),
     ('Experiment target', ['target.name']),
     ('Antibody accession', ['replicates.antibody.accession']),
     ('Nucleic acid term name', ['replicates.library.nucleic_acid_term_name']),
@@ -40,6 +39,7 @@ _tsv_mapping = OrderedDict([
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['replicates.rbns_protein_concentration', 'replicates.rbns_protein_concentration_units']),
     ('Paired endedness', ['replicates.library.paired_ended']),
+    ('Biosample Age', ['files.replicate.library']), # hack to include age from files
     ('Read length', ['files.replicate.read_length']),
     ('Biological replicate', ['files.replicate.biological_replicate_number']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
@@ -85,7 +85,8 @@ def metadata_tsv(context, request):
                         else:
                             temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
-            f_attributes = ['files.accession', 'files.file_format', 'files.output_type']
+            f_attributes = ['files.accession', 'files.file_format',
+                            'files.output_type']
             for f in row['files']:
                 if 'files.file_format' in param_list:
                     if f['file_format'] not in param_list['files.file_format']:
@@ -97,6 +98,19 @@ def metadata_tsv(context, request):
                 data_row = f_row + exp_data_row
                 for prop in file_attributes:
                     if prop in f_attributes:
+                        continue
+                    if prop == 'files.replicate.library':
+                        libraries = []
+                        for l in simple_path_ids(f, prop[6:]):
+                            libraries.append(l)
+                        if len(libraries):
+                            library = embed(request, libraries[0])
+                            try:
+                                data_row.append(library['biosample']['age_display'])
+                            except:
+                                data_row.append('')
+                        else:
+                            data_row.append('')
                         continue
                     path = prop[6:]
                     temp = []
