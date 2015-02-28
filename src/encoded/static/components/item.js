@@ -4,7 +4,6 @@ var ReactForms = require('react-forms');
 var fetched = require('./fetched');
 var Form = require('./form').Form;
 var globals = require('./globals');
-var LayoutNode = require('./page').LayoutNode;
 var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -125,16 +124,8 @@ var RepeatingItem = React.createClass({
   },
 
   onRemove: function(e) {
-    if (this.props.children.constructor.displayName.indexOf('Fieldset') !== -1) {
-        var label;
-        try {
-            label = this.props.children.props.schema.props.label;
-        } catch (e) {
-            label = 'item';
-        }
-        if (!confirm('Are you sure you want to remove this ' + label + '?')) {
-            e.preventDefault();
-        }
+    if (!confirm('Are you sure you want to remove this item?')) {
+        e.preventDefault();
     }
     if (this.props.onRemove) {
       this.props.onRemove(this.props.name);
@@ -145,24 +136,28 @@ var RepeatingItem = React.createClass({
 
 
 var FetchedFieldset = React.createClass({
-    mixins: [ReactForms.FieldsetMixin],
+
+    getDefaultProps: function() {
+        return {confirmDelete: true};
+    },
 
     getInitialState: function() {
-        var value = this.value().value;
-        var url = typeof value == 'string' ? value : null;
-        var externalValidation = this.externalValidation();
-        var failure = externalValidation.validation.failure;
+        var value = this.props.value;
+        var url = typeof value.value == 'string' ? value.value : null;
+        var externalValidation = value.externalValidation;
         return {
             url: url,
-            collapsed: url && !failure,
+            collapsed: url && !externalValidation.isFailure,
         };
     },
 
     render: function() {
         var schema = this.props.schema;
-        var value = this.value().value;
-        var externalValidation = this.externalValidation();
-        var failure = externalValidation.validation.failure;
+        var value = this.props.value;
+        var externalValidation = value.externalValidation;
+        var isFailure = externalValidation.isFailure;
+        externalValidation = isFailure ? externalValidation : null;
+        value = value.value;
         var url = typeof value == 'string' ? value : null;
         var preview, fieldset;
 
@@ -185,7 +180,7 @@ var FetchedFieldset = React.createClass({
             preview = (
                 <ul className="nav result-table">
                   <li>
-                    <div className="accession">{'New ' + schema.props.label}</div>
+                    <div className="accession">{'New ' + schema.props.get('label')}</div>
                   </li>
                 </ul>
             );
@@ -197,7 +192,7 @@ var FetchedFieldset = React.createClass({
         return (
             <div className="collapsible">
                 <span className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</span>
-                {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
+                {isFailure && <ReactForms.Message>{externalValidation.error}</ReactForms.Message>}
                 <div style={{display: this.state.collapsed ? 'block' : 'none'}}>{preview}</div>
                 <div style={{display: this.state.collapsed ? 'none' : 'block'}}>{fieldset}</div>
             </div>
@@ -210,8 +205,7 @@ var FetchedFieldset = React.createClass({
 
     onUpdate: function(value) {
         value['@id'] = this.state.url;
-        value = this.value().updateSerialized(value);
-        this.onValueUpdate(value);
+        this.props.value.setSerialized(value);
     }
 
 });
@@ -229,13 +223,14 @@ var jsonSchemaToFormSchema = function(attrs) {
     if (p.title) props.label = p.title;
     if (p.description) props.hint = p.description;
     if (p.type == 'object') {
-        if (required) props.component = <ReactForms.Fieldset className="required" />;
         if (p.formInput == 'file') {
             props.input = <FileInput />;
             return ReactForms.schema.Scalar(props);
         } else if (p.formInput == 'layout') {
             props.input = <Layout editable={true} />;
-            return LayoutNode.create(props);
+            return ReactForms.schema.Scalar(props);
+        } else {
+            props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} confirmDelete={true} />;
         }
         var properties = {}, name;
         for (name in p.properties) {

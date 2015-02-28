@@ -6,7 +6,7 @@ var FileInput = module.exports.FileInput = React.createClass({
 
     getInitialState: function() {
         return {
-            value: this.props.value
+            value: this.props.value || {},
         };
     },
 

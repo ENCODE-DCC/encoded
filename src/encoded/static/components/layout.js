@@ -39,9 +39,10 @@ var BlockEditModal = React.createClass({
             schema = this._extendedSchemaCache[blocktype.label];
             if (schema === undefined) {
                 // add CSS class property
-                var schema_props = _.values(blocktype.schema.children);
-                schema_props.push(ReactForms.schema.Property({name: 'className', label: 'CSS Class'}));
-                schema = this._extendedSchemaCache[blocktype.label] = ReactForms.schema.Schema(null, schema_props);                
+                var children = blocktype.schema.getChildren();
+                children = children.set('className', ReactForms.schema.Scalar({label: 'CSS Class'}));
+                schema = ReactForms.schema.Mapping(blocktype.schema.props, children);
+                this._extendedSchemaCache[blocktype.label] = schema;
             }
         }
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
@@ -70,7 +71,7 @@ var BlockEditModal = React.createClass({
     },
 
     save: function() {
-        this.props.onChange(this.state.value);
+        this.props.onChange(this.state.value.toJS());
         this.props.onRequestHide();
     }
 
@@ -324,14 +325,22 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     getInitialState: function() {
+        var value = this.props.value;
+        if (value.toJS !== undefined) value = value.toJS();
+
+        var blockMap = {};
         var nextBlockNum = 2;
-        Object.keys(this.props.value.blocks).map(function(block_id) {
+        value.blocks.map(function(block) {
+            var block_id = block['@id'];
+            blockMap[block_id] = block;
             var blockNum = parseInt(block_id.replace(/\D/g, ''));
             if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
         });
+        value = _.extend({}, value, {blocks: blockMap});
+
         return {
             'nextBlockNum': nextBlockNum,
-            'value': this.props.value,
+            'value': value,
             'src_pos': null,
             'dst_pos': null,
             'dst_quad': null,
@@ -350,12 +359,8 @@ var Layout = module.exports.Layout = React.createClass({
             src_pos: this.state.src_pos,
             dst_pos: this.state.dst_pos,
             dst_quad: this.state.dst_quad,
-            blocks: this.props.value.blocks
+            blocks: this.state.value.blocks
         };
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({value: nextProps.value});
     },
 
     componentDidMount: function() {
@@ -519,7 +524,7 @@ var Layout = module.exports.Layout = React.createClass({
 
         // make sure we re-render and notify form of new value
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
     },
 
     dragOver: function(e, target) {
@@ -571,7 +576,7 @@ var Layout = module.exports.Layout = React.createClass({
     change: function(value) {
         this.state.value.blocks[value['@id']] = value;
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
     },
 
     remove: function(block, pos) {
@@ -580,7 +585,16 @@ var Layout = module.exports.Layout = React.createClass({
         dest.container.obj.blocks.splice(dest.target_idx, 1);
         this.cleanup();
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
+    },
+
+    onChange: function() {
+        var value = this.state.value;
+        var blockList = Object.keys(value.blocks).map(function(blockId) {
+            return value.blocks[blockId];
+        });
+        value = _.extend({}, value, {blocks: blockList});
+        this.props.onChange(value);
     },
 
     _filter: function(objs) {

@@ -39,7 +39,7 @@ var Form = module.exports.Form = React.createClass({
     getInitialState: function() {
         return {
             value: this.props.defaultValue,
-            externalValidation: {},
+            externalValidation: null,
         };
     },
 
@@ -62,6 +62,7 @@ var Form = module.exports.Form = React.createClass({
                 <ReactForms.Form
                     schema={this.props.schema}
                     defaultValue={this.props.defaultValue}
+                    externalValidation={this.state.externalValidation}
                     onChange={this.handleChange} />
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
@@ -84,7 +85,7 @@ var Form = module.exports.Form = React.createClass({
     save: function(e) {
         e.preventDefault();
         var $ = require('jquery');
-        var value = this.value().value;
+        var value = this.state.value.toJS();
         filterValue(value);
         var method = this.props.method;
         var url = this.props.action;
