@@ -2,6 +2,8 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var Modal = require('react-bootstrap/Modal');
+var OverlayMixin = require('react-bootstrap/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -757,6 +759,52 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
+    var BatchDownload = search.BatchDownload = React.createClass({
+        mixins: [OverlayMixin],
+
+        getInitialState: function () {
+            return {
+              isModalOpen: false
+            };
+          },
+
+          handleToggle: function () {
+            this.setState({
+              isModalOpen: !this.state.isModalOpen
+            });
+          },
+
+          render: function () {
+            return (
+                <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
+            );
+          },
+
+          renderOverlay: function () {
+            var link = this.props.context['batch_download'];
+            if (!this.state.isModalOpen) {
+              return <span/>;
+            }
+            return (
+                <Modal title="Using batch download" onRequestHide={this.handleToggle}>
+                  <div className="modal-body">
+                    <p>Click on "Download" button below to download "files.txt" file with links including meta data links.<br />
+                    Use either of the commands to download all the files in the list.</p>
+                    using wget<br />  
+                    <code>wget -i files.txt</code><br /><br />
+                    using cURL<br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                  </div>
+                  <div className="modal-footer">
+                        <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
+                        <a data-bypass="true" target="_self" private-browsing="true" className="btn btn-info btn-sm"
+                            href={link}>{'Download'}</a>
+                  </div>
+                </Modal>
+              );
+          }
+    });
+
     var ResultTable = search.ResultTable = React.createClass({
 
         getDefaultProps: function() {
@@ -823,7 +871,13 @@ var AuditMixin = audit.AuditMixin;
                                                 : null}
                                             </span>
                                         }
-                                        
+
+                                        {context['batch_download'] ?
+                                            <span className="pull-right">
+                                                <BatchDownload context={context} />&nbsp;
+                                            </span>
+                                        : null}
+
                                         {context['batch_hub'] ?
                                             <span className="pull-right">
                                                 <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
