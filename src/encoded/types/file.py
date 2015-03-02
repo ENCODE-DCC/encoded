@@ -141,14 +141,13 @@ class File(Item):
                 return request.embed(workflow, '@@object').get('pipeline')
 
     @calculated_property(schema={
-            "title": "Analysis Step",
-            "type": "string",
-            "linkTo": "analysis_step"        
-        })
+        "title": "Analysis Step",
+        "type": "string",
+        "linkTo": "analysis_step"
+    })
     def analysis_step(self, request, step_run=None):
         if step_run is not None:
             return request.embed(step_run, '@@object').get('analysis_step')
-
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
