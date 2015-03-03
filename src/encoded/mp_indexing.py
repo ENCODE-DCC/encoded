@@ -299,14 +299,17 @@ class EventLoopPool(object):
         if threshold is None:
             threshold = self._processes * 2
 
-        while (cache or iterable) and self._state[0] == RUN:
-            while iterable and len(cache) < threshold:
+        while (cache or iterable):
+            while iterable and len(cache) < threshold and self._state[0] == RUN:
                 try:
                     args = next(iterable)
                 except StopIteration:
                     iterable = None
                     break
                 self.enqueue_task(func, [args])
+
+            if self._state[0] != RUN:
+                raise Exception('Shutdown')
 
             self._maintain_pool()
             if not poll(0.1):
