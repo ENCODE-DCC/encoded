@@ -51,7 +51,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
             replicate.library.documents.forEach(function (doc, i) {
-                documents[doc['@id']] = Panel({context: doc, key: i + 1});
+                documents[doc['@id']] = <Panel context={doc} key={i + 1} />;
             });
         });
 
@@ -143,7 +143,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
-            documents[document['@id']] = Panel({context: document, key: i + 1});
+            documents[document['@id']] = <Panel context={document} key={i + 1} />;
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -256,7 +256,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>
                                     <ul>
                                         {treatmentText.map(function (treatment) {
-                                            return (<li>{treatment}</li>);
+                                            return (<li key={treatment}>{treatment}</li>);
                                         })}
                                     </ul>
                                 </dd>
@@ -274,7 +274,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="antibody">
                                 <dt>Antibody</dt>
                                 <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                    return (<span>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                    return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
                                 })}</dd>
                             </div>
                         : null}
@@ -345,7 +345,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                <AssayDetails context={context} replicates={replicates} />
+                {AssayDetails({context: context, replicates: replicates})}
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -357,9 +357,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 {replicates.map(function (replicate, index) {
-                    return (
-                        <Replicate replicate={replicate} key={index} />
-                    );
+                    return Replicate({replicate: replicate, key: index});
                 })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
@@ -545,7 +543,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
     return (
-        <div className="panel-replicate">
+        <div className="panel-replicate" key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <div data-test="techreplicate">

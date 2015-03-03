@@ -344,7 +344,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     <div>
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
                         <div className="panel data-display">
-                            <Panel context={context.donor} biosample={context} />
+                            {Panel({context: context.donor, biosample: context})}
                         </div>
                     </div>
                 : null}

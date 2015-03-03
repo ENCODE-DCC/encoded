@@ -259,13 +259,14 @@ var LayoutToolbar = React.createClass({
 var Col = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
-    renderBlock: function(blockId, pos) {
+    renderBlock: function(blockId, k) {
+        var pos = this.props.pos.concat([k]);
         if (typeof blockId == 'string') {
             var block = this.context.blocks[blockId];
-            return <Block value={block} key={block['@id']} pos={pos} />;
+            return <Block value={block} key={k} pos={pos} />;
         } else {
             var row = blockId;
-            return <Row value={row} pos={pos} />;
+            return <Row value={row} key={k} pos={pos} />;
         }
     },
 
@@ -278,7 +279,7 @@ var Col = React.createClass({
         var blocks = this.props.value.blocks;
         return (
             <div className={cx(classes)} onDragOver={this.dragOver}>
-                {blocks.map((blockId, k) => this.renderBlock(blockId, this.props.pos.concat([k])))}
+                {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
     },
@@ -306,7 +307,7 @@ var Row = React.createClass({
         }
         return (
             <div className={cx(classes)} onDragOver={this.dragOver}>
-                {cols.map((col, j) => <Col value={col} className={col.className || col_class} pos={this.props.pos.concat([j])} />)}
+                {cols.map((col, j) => <Col value={col} className={col.className || col_class} key={j} pos={this.props.pos.concat([j])} />)}
             </div>
         );
     },
@@ -379,7 +380,7 @@ var Layout = module.exports.Layout = React.createClass({
         return (
             <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
-                {this.state.value.rows.map((row, i) => <Row value={row} pos={[i]} />)}
+                {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
             </div>
         );
     },

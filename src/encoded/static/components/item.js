@@ -137,10 +137,6 @@ var RepeatingItem = React.createClass({
 
 var FetchedFieldset = React.createClass({
 
-    getDefaultProps: function() {
-        return {confirmDelete: true};
-    },
-
     getInitialState: function() {
         var value = this.props.value;
         var url = typeof value.value == 'string' ? value.value : null;
@@ -230,7 +226,7 @@ var jsonSchemaToFormSchema = function(attrs) {
             props.input = <Layout editable={true} />;
             return ReactForms.schema.Scalar(props);
         } else {
-            props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} confirmDelete={true} />;
+            props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} />;
         }
         var properties = {}, name;
         for (name in p.properties) {
