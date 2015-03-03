@@ -134,7 +134,6 @@ runcmd:
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
-- service apache2 reload
 - if test "%(ROLE)s" = "demo"
 - then
 -   pg_ctlcluster 9.3 main promote
