@@ -11,12 +11,12 @@ from pyramid.events import (
 from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
-from pyramid.settings import aslist
 from pyramid.view import view_config
 from .contentbase import (
     AfterModified,
     BeforeModified,
     Created,
+    simple_path_ids,
 )
 from sqlalchemy.exc import StatementError
 from .renderers import json_renderer
@@ -281,8 +281,8 @@ def record_initial_back_revs(event):
     initial = event.request._initial_back_rev_links
     properties = context.upgrade_properties()
     initial[context.uuid] = {
-        rel: set(aslist(properties.get(rel, ())))
-        for rel in context.type_info.merged_back_rev
+        path: set(simple_path_ids(properties, path))
+        for path in context.type_info.merged_back_rev
     }
 
 
@@ -298,8 +298,8 @@ def invalidate_new_back_revs(event):
     initial = event.request._initial_back_rev_links.get(context.uuid, {})
     properties = context.upgrade_properties()
     current = {
-        rel: set(aslist(properties.get(rel, ())))
-        for rel in context.type_info.merged_back_rev
+        path: set(simple_path_ids(properties, path))
+        for path in context.type_info.merged_back_rev
     }
     for rel, uuids in current.items():
         for uuid in uuids.difference(initial.get(rel, ())):
