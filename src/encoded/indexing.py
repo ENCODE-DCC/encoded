@@ -96,10 +96,18 @@ def index(request):
     session = DBSession()
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
-    query = connection.execute("""
-        SET TRANSACTION ISOLATION LEVEL {}, READ ONLY, DEFERRABLE;
-        SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();
-    """.format('REPEATABLE READ' if recovery else 'SERIALIZABLE'))
+    if recovery:
+        # Not yet possible to export a snapshot on a standby server:
+        # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
+        query = connection.execute(
+            "SET TRANSACTION ISOLATION LEVEL REPEATABLE READ, READ ONLY, DEFERRABLE;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
+        )
+    else:
+        query = connection.execute(
+            "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();"
+        )
     # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
     # which is not available in recovery.
     result, = query.fetchall()

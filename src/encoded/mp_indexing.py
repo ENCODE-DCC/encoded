@@ -39,7 +39,7 @@ def includeme(config):
 
 # Running in subprocess
 
-current_snapshot_id = None
+current_xmin_snapshot_id = None
 app = None
 
 
@@ -57,15 +57,28 @@ def initializer(settings):
     signal.signal(signal.SIGALRM, clear_snapshot)
 
 
-def set_snapshot(snapshot_id):
-    global current_snapshot_id
-    if current_snapshot_id == snapshot_id:
+def set_snapshot(xmin, snapshot_id):
+    from .storage import DBSession
+    global current_xmin_snapshot_id
+    if current_xmin_snapshot_id == (xmin, snapshot_id):
         return
     clear_snapshot()
-    current_snapshot_id = snapshot_id
-    txn = transaction.begin()
-    txn.doom()
-    txn.setExtendedInfo('snapshot_id', snapshot_id)
+    current_xmin_snapshot_id = (xmin, snapshot_id)
+
+    while True:
+        txn = transaction.begin()
+        txn.doom()
+        txn.setExtendedInfo('snapshot_id', snapshot_id)
+        session = DBSession()
+        connection = session.connection()
+        db_xmin = connection.execute(
+            "SELECT txid_snapshot_xmin(txid_current_snapshot());").scalar()
+        if db_xmin >= xmin:
+            break
+        transaction.abort()
+        log.info('Waiting for xmin %r to reach %r', db_xmin, xmin)
+        time.sleep(0.1)
+
     registry = app.registry
     request = app.request_factory.blank('/_indexing_pool')
     request.datastore = 'database'
@@ -80,26 +93,26 @@ def set_snapshot(snapshot_id):
 
 
 def clear_snapshot(signum=None, frame=None):
-    global current_snapshot_id
-    if current_snapshot_id is None:
+    global current_xmin_snapshot_id
+    if current_xmin_snapshot_id is None:
         return
     transaction.abort()
     manager.pop()
-    current_snapshot_id = None
+    current_xmin_snapshot_id = None
 
 
 @contextmanager
-def snapshot(snapshot_id):
+def snapshot(xmin, snapshot_id):
     import signal
     signal.alarm(0)
-    set_snapshot(snapshot_id)
+    set_snapshot(xmin, snapshot_id)
     yield
     signal.alarm(5)
 
 
 def update_object_in_snapshot(args):
-    snapshot_id, uuid, xmin = args
-    with snapshot(snapshot_id):
+    uuid, xmin, snapshot_id = args
+    with snapshot(xmin, snapshot_id):
         request = get_current_request()
         indexer = request.registry[INDEXER]
         return indexer.update_object(request, uuid, xmin)
@@ -136,7 +149,7 @@ class MPIndexer(Indexer):
         super(MPIndexer, self).__init__(registry)
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
-        tasks = ((snapshot_id, uuid, xmin) for uuid in uuids)
+        tasks = ((uuid, xmin, snapshot_id) for uuid in uuids)
         value_holder = [0]
         result_handler = handle_results(request, value_holder)
         next(result_handler)

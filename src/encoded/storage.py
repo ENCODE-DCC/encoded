@@ -1,4 +1,3 @@
-from past.builtins import basestring
 from pyramid.httpexceptions import HTTPConflict
 from sqlalchemy import (
     Column,
@@ -521,10 +520,10 @@ def record_transaction_data(session):
     session.add(record)
 
 
-_set_transaction_snapshot = text("""\
-    SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY;
-    SET TRANSACTION SNAPSHOT :snapshot_id;
-""")
+_set_transaction_snapshot = text(
+    "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY;"
+    "SET TRANSACTION SNAPSHOT :snapshot_id;"
+)
 
 
 @event.listens_for(DBSession, 'after_begin')
