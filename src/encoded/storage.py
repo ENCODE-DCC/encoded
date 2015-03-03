@@ -540,7 +540,7 @@ def set_transaction_isolation_level(session, sqla_txn, connection):
 
     txn = transaction.get()
     if not txn.isDoomed():
-        connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
+        # connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
         return
 
     data = txn._extension
