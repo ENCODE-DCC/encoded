@@ -3,6 +3,7 @@ install_aliases()
 import base64
 import json
 import os
+import sys
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -16,6 +17,7 @@ from .storage import (
     Base,
     DBSession,
 )
+PY2 = sys.version_info.major == 2
 STATIC_MAX_AGE = 0
 
 
@@ -167,6 +169,9 @@ def main(global_config, **local_config):
     config.include('.views')
     config.include('.migrator')
     config.include('.auditor')
+
+    if asbool(settings.get('indexer')) and not PY2:
+        config.include('.mp_indexing')
 
     settings = config.registry.settings
     hostname_command = settings.get('hostname_command', '').strip()
