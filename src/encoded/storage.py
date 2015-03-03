@@ -527,16 +527,22 @@ _set_transaction_snapshot = text(
 
 
 @event.listens_for(DBSession, 'after_begin')
-def read_only_doomed_transaction(session, sqla_txn, connection):
-    ''' Doomed transactions can be read-only.
+def set_transaction_isolation_level(session, sqla_txn, connection):
+    ''' Set appropriate transaction isolation level.
 
+    Doomed transactions can be read-only.
     ``transaction.doom()`` must be called before the connection is used.
+
+    Othewise assume it is a write which must be REPEATABLE READ.
     '''
-    txn = transaction.get()
-    if not txn.isDoomed():
-        return
     if connection.engine.url.drivername != 'postgresql':
         return
+
+    txn = transaction.get()
+    if not txn.isDoomed():
+        connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
+        return
+
     data = txn._extension
     if 'snapshot_id' in data:
         connection.execute(

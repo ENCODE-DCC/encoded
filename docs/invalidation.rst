@@ -24,3 +24,17 @@ In a parent-child relationship, it is the child object that references the paren
 We want to ensure that parent responses are invalidated when a child object's state changes, so that it would now be included in its parent's list of child objects when it was not before. A parent response must therefore include all *potentially* included child objects in its ``embedded_uuids``, which is done by accessing the child status property through the ``Item.__json__`` method.
 
 We must also invalidate a parent response when a new child is added (either a new object of changing the parent referenced.) This is done adding the parent uuid to the list of updated_uuids recorded on the transaction adding/modifying the child. (See indexing.py ``invalidate_new_back_revs``.)
+
+
+Isolation level considerations
+------------------------------
+
+Postgres defaults to its lowest isolation level, READ COMMITTED: http://www.postgresql.org/docs/9.3/static/transaction-iso.html
+
+For invalidation of back references of new child objects only READ COMMITTED isolation is necessary as invalidated back references are calculated from the updated objects properties.
+
+However, writes must be at least REPEATABLE READ in order for overalapping PATCHes to apply safely.
+
+During recovery indexing uses READ COMMITTED isolation. Indexed objects may be internally inconsistent if there are concurrent updates to embedded objects. But indexing is still eventually consistent as any concurrent update will invalidate the object and it will be reindexed later.
+
+To avoid internal possible internal inconsistancies of indexed objects, SERIALIZABLE isolation is required. It is used once it becomes available when recovery is complete.
