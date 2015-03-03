@@ -32,6 +32,8 @@ def includeme(config):
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.add_route('graph_dot', '/profiles/graph.dot')
     config.add_route('graph_svg', '/profiles/graph.svg')
+    config.add_route('batch_download', '/batch_download/{search_params}')
+    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.scan()
 
 

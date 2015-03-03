@@ -156,6 +156,29 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
+                        {context.subcellular_fraction_term_id ?
+                            <div data-test="subcellularid">
+                                <dt>Subcellular fraction ID</dt>
+                                <dd>{context.subcellular_fraction_term_id}</dd>
+                            </div>
+                        : null}
+
+                        {context.depleted_in_term_name && context.depleted_in_term_name.length ?
+                            <div data-test="depletedin">
+                                <dt>Depleted in</dt>
+                                <dd>
+                                    {context.depleted_in_term_name.map(function(termName, i) {
+                                        return (
+                                            <span>
+                                                {i > 0 ? ', ' : ''}
+                                                {termName}
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+                        : null}
+
                         <div data-test="sourcetitle">
                             <dt>Source</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -248,6 +271,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="passagenumber">
                                 <dt>Passage number</dt>
                                 <dd>{context.passage_number}</dd>
+                            </div>
+                        : null}
+
+                        {context.phase ?
+                            <div data-test="phase">
+                                <dt>Cell cycle</dt>
+                                <dd>{context.phase}</dd>
                             </div>
                         : null}
                     </dl>

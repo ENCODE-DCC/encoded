@@ -289,6 +289,9 @@ def search(context, request, search_type=None):
         hub = request.route_url('batch_hub', search_params=search_params, txt='hub.txt')
         result['batch_hub'] = hgConnect + hub
 
+    if doc_types == ['experiment']:
+        result['batch_download'] = request.route_url('batch_download', search_params=request.query_string)
+
     # Loading result rows
     hits = results['hits']['hits']
     if frame in ['embedded', 'object'] and not len(fields_requested):

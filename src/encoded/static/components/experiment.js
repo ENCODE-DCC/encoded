@@ -88,7 +88,10 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
         var treatmentText = [];
         var synchText = [];
-        var mutatedGenes = [];
+        var depletedIns = [];
+        var mutatedGenes = {};
+        var subcellularTerms = {};
+        var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -111,20 +114,32 @@ var Experiment = module.exports.Experiment = React.createClass({
                     : ''));
             }
 
+            // Collect depleted_in
+            if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+                depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
+            }
+
             // Collect mutated genes
             if (biosample.donor && biosample.donor.mutated_gene) {
-                mutatedGenes.push(biosample.donor.mutated_gene.label);
+                mutatedGenes[biosample.donor.mutated_gene.label] = true;
+            }
+
+            // Collect subcellular fraction term names
+            if (biosample.subcellular_fraction_term_name) {
+                subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+            }
+
+            // Collect cell-cycle phases
+            if (biosample.phase) {
+                cellCycles[biosample.phase] = true;
             }
         });
-        if (treatmentText) {
-            treatmentText = _.uniq(treatmentText);
-        }
-        if (synchText) {
-            synchText = _.uniq(synchText);
-        }
-        if (mutatedGenes) {
-            mutatedGenes = _.uniq(mutatedGenes);
-        }
+        treatmentText = treatmentText && _.uniq(treatmentText);
+        synchText = synchText && _.uniq(synchText);
+        depletedIns = depletedIns && _.uniq(depletedIns);
+        var mutatedGeneNames = Object.keys(mutatedGenes);
+        var subcellularTermNames = Object.keys(subcellularTerms);
+        var cellCycleNames = Object.keys(cellCycles);
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
@@ -195,7 +210,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dt>Biosample summary</dt>
                                 <dd>
                                     {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
-                                    {mutatedGenes.length ? <span>{', mutated gene: ' + mutatedGenes.join('/')}</span> : null}
+                                    {depletedIns.length ?
+                                        <span>{' missing ' + depletedIns.join(', ')}</span>
+                                    : null}
+                                    {mutatedGeneNames.length ? <span>{', mutated gene: ' + mutatedGeneNames.join('/')}</span> : null}
+                                    {subcellularTermNames.length ? <span>{', subcellular fraction: ' + subcellularTermNames.join('/')}</span> : null}
+                                    {cellCycleNames.length ? <span>{', cell-cycle phase: ' + cellCycleNames.join('/')}</span> : null}
                                     {organismName.length || lifeAge.length ? ' (' : null}
                                     {organismName.length ?
                                         <span>
@@ -586,9 +606,9 @@ var Replicate = module.exports.Replicate = function (props) {
 };
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-
-
 // Controls the drawing of the file graph for the experiment. It displays both files and
+
+
 // analysis steps.
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     // Create nodes based on all files in this experiment

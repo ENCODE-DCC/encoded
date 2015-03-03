@@ -27,6 +27,7 @@ class Experiment(Dataset):
     schema = load_schema('experiment.json')
     base_types = [Dataset.item_type] + Dataset.base_types
     embedded = Dataset.embedded + [
+        'files.lab',
         'files.platform',
         'files.lab',
         'files.derived_from',
