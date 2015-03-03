@@ -68,7 +68,8 @@ def set_snapshot(xmin, snapshot_id):
     while True:
         txn = transaction.begin()
         txn.doom()
-        txn.setExtendedInfo('snapshot_id', snapshot_id)
+        if snapshot_id is not None:
+            txn.setExtendedInfo('snapshot_id', snapshot_id)
         session = DBSession()
         connection = session.connection()
         db_xmin = connection.execute(
@@ -124,7 +125,7 @@ def handle_results(request, value_holder):
     value_holder[0] = i = 0
     while True:
         success, value, orig_args = yield
-        snapshot_id, uuid, xmin = orig_args[0]
+        uuid, xmin, snapshot_id = orig_args[0]
         if success:
             path = value
         else:
