@@ -100,7 +100,7 @@ def index(request):
         # Not yet possible to export a snapshot on a standby server:
         # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
         query = connection.execute(
-            "SET TRANSACTION ISOLATION LEVEL READ ONLY;"
+            "SET TRANSACTION ISOLATION LEVEL READ COMMITTED, READ ONLY;"
             "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
         )
     else:

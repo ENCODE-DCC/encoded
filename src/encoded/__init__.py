@@ -51,7 +51,10 @@ def configure_engine(settings, test_setup=False):
         return None
     engine_opts = {}
     if engine_url.startswith('postgresql'):
-        engine_opts['json_serializer'] = json_renderer.dumps
+        engine_opts = dict(
+            isolation_level='REPEATABLE READ',
+            json_serializer=json_renderer.dumps,
+        )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
