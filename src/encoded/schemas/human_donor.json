@@ -24,7 +24,6 @@
             "required": ["age"],
             "not": {
                 "properties": {
-                    "required": ["age"],
                     "age": {
                         "enum": ["unknown"]
                     }
