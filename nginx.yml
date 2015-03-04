@@ -68,6 +68,7 @@ write_files:
         resolver 172.31.0.2;  # AWS VPC DNS Server
         resolver_timeout 5s;
         include  mime.types;
+        client_max_body_size 500m;
         default_type  application/octet-stream;
         keepalive_timeout  65;
         ssl_certificate         /etc/nginx/ssl/encodeproject.org/server.crt;
