@@ -134,8 +134,8 @@ def audit_biosample_donor(value, system):
         raise AuditFailure('mismatched mutated_gene organism', detail, level='ERROR')
 
     for i in donor['mutated_gene']['investigated_as']:
-        if i in ['histone modification', 'tag', 'control']:
-            detail = 'Donor {} has an invalid mutated_gene {}. Donor mutated_genes should not be tags, controls or histone modifications'.format(
+        if i in ['histone modification', 'tag', 'control', 'recombinant protein', 'nucleotide modification', 'other post-translational modification']:
+            detail = 'Donor {} has an invalid mutated_gene {}. Donor mutated_genes should not be tags, controls, reombinant proteins or modifications'.format(
                 donor['accession'],
                 donor['mutated_gene']['name'])
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
