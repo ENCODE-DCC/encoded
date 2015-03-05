@@ -73,7 +73,7 @@ def audit_file_controlled_by(value, system):
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
         return
 
-    if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as'):
+    if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):
         return
 
     if 'controlled_by' not in value:
