@@ -23,30 +23,30 @@ _tsv_mapping = OrderedDict([
     ('Biosample type', ['biosample_type']),
     ('Biosample life stage', ['replicates.library.biosample.life_stage']),
     ('Biosample sex', ['replicates.library.biosample.sex']),
-    ('Biosample organism', ['replicates.library.biosample.organism.name']),
+    ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
     ('Biosample phase', ['replicates.library.biosample.phase']),
-    ('Biosample Age(s)', ['replicates.library.biosample.age', 'replicates.library.biosample.age_units']),
     ('Experiment target', ['target.name']),
     ('Antibody accession', ['replicates.antibody.accession']),
-    ('Nucleic acid term name', ['replicates.library.nucleic_acid_term_name']),
-    ('Depleted in term name', ['replicates.library.depleted_in_term_name']),
+    ('Library made from', ['replicates.library.nucleic_acid_term_name']),
+    ('Library depleted in', ['replicates.library.depleted_in_term_name']),
     ('Library extraction method', ['replicates.library.extraction_method']),
-    ('Library fragmentation method', ['replicates.library.fragmentation_method']),
     ('Library lysis method', ['replicates.library.lysis_method']),
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('RBNS protein concentration', ['replicates.rbns_protein_concentration', 'replicates.rbns_protein_concentration_units']),
-    ('Paired endedness', ['replicates.library.paired_ended']),
+    ('Run type', ['replicates.library.paired_ended']),
     ('Read length', ['files.replicate.read_length']),
+    ('Library fragmentation method', ['files.replicate.library']),
+    ('Library size range', ['files.replicate.library']),
+    ('Biosample Age', ['files.replicate.library']),
     ('Biological replicate', ['files.replicate.biological_replicate_number']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Size', ['files.file_size']),
     ('Lab', ['files.lab.title']),
     ('md5sum', ['files.md5sum']),
-    ('href', ['files.href']),
+    ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
     ('Platform', ['files.platform.title'])
 ])
@@ -77,6 +77,11 @@ def metadata_tsv(context, request):
                     for c in _tsv_mapping[column]:
                         c_value = []
                         for value in simple_path_ids(row, c):
+                            if isinstance(value, bool) and c == 'replicates.library.paired_ended':
+                                if not value:
+                                    value = 'single-ended'
+                                else:
+                                    value = 'paired-ended'
                             if str(value) not in c_value:
                                 c_value.append(str(value))
                         if len(temp):
@@ -85,7 +90,8 @@ def metadata_tsv(context, request):
                         else:
                             temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
-            f_attributes = ['files.accession', 'files.file_format', 'files.output_type']
+            f_attributes = ['files.accession', 'files.file_format',
+                            'files.output_type']
             for f in row['files']:
                 if 'files.file_format' in param_list:
                     if f['file_format'] not in param_list['files.file_format']:
@@ -95,9 +101,29 @@ def metadata_tsv(context, request):
                 for attr in f_attributes:
                     f_row.append(f[attr[6:]])
                 data_row = f_row + exp_data_row
+                internal_prop = True
                 for prop in file_attributes:
                     if prop in f_attributes:
                         continue
+                    if prop == 'files.replicate.library':
+                        if not internal_prop:
+                            continue
+                        internal_prop = False
+                        libraries = []
+                        for l in simple_path_ids(f, prop[6:]):
+                            libraries.append(l)
+                        if len(libraries):
+                            library = embed(request, libraries[0])
+                            data_row.append(library.get('fragmentation_method', ''))
+                            data_row.append(library.get('size_range', ''))
+                            if 'biosample' in library:
+                                data_row.append(library['biosample'].get('age_display', ''))
+                            else:
+                                data_row.append('')
+                            continue
+                        else:
+                            data_row = data_row + [''] * 3
+                            continue
                     path = prop[6:]
                     temp = []
                     for value in simple_path_ids(f, path):

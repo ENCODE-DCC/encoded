@@ -259,7 +259,7 @@ var AuditMixin = audit.AuditMixin;
             }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
             var mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
- 
+
             // Build the text of the synchronization string
             var synchText;
             if (result.synchronization) {
@@ -788,11 +788,12 @@ var AuditMixin = audit.AuditMixin;
             return (
                 <Modal title="Using batch download" onRequestHide={this.handleToggle}>
                   <div className="modal-body">
-                    <p>Click on "Download" button below to download "files.txt" file with links including meta data links.<br />
-                    Use either of the commands to download all the files in the list.</p>
-                    using wget<br />  
-                    <code>wget -i files.txt</code><br /><br />
-                    using cURL<br />
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
                     <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
                   </div>
                   <div className="modal-footer">
