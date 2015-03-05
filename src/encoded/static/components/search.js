@@ -1,8 +1,8 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var Modal = require('react-bootstrap/Modal');
-var OverlayMixin = require('react-bootstrap/OverlayMixin');
+var Modal = require('react-bootstrap/lib/Modal');
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
