@@ -140,3 +140,55 @@ form.table-filter {
 .col-headers th:hover {
     cursor: pointer;
 }
+
+.tcell-sortable {
+    cursor: pointer;
+}
+
+.table-file {
+    thead {
+        tr {
+            border-bottom: 1px solid #e0e0e0;
+
+            th {
+                position: relative;
+                height: 4em;
+                vertical-align: middle;
+                border-left: 1px solid #e0e0e0 !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+
+                &:first-child {
+                    border-left: none !important;
+                }
+            }
+        }
+    }
+}
+
+.tcell-sortable {
+    &:hover {
+        background-color: #e0e0e0;
+    }
+}
+
+%tcell-template {
+    @extend .icon;
+    position: absolute;
+    right: 5px;
+    top: 1.6em;
+}
+
+.tcell-sort {
+    @extend %tcell-template;
+    @extend .icon-sort;
+}
+
+.tcell-asc {
+    @extend %tcell-template;
+    @extend .icon-sort-asc;
+}
+
+.tcell-desc {
+    @extend %tcell-template;
+    @extend .icon-sort-desc;
+}

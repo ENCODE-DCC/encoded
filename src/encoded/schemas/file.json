@@ -230,7 +230,8 @@
                         "transcript quantifications",
                         "methyl CG",
                         "methyl CHG",
-                        "methyl CHH"
+                        "methyl CHH",
+                        "enhancer validation"
                     ]
                 },
                 {
@@ -412,7 +413,7 @@
             }
         },
         "step_run": {
-            "title": "Analysis step",
+            "title": "Analysis step run",
             "description": "The run instance of the step the file was generated from.",
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
@@ -445,7 +446,7 @@
         "2bit": ".2bit",
         "CEL": ".cel.gz",
         "bam": ".bam",
-        "bedLogR": ".bedLogR.bigBed  ",
+        "bedLogR": ".bedLogR.bigBed",
         "bedMethyl": ".bedMethyl.bigBed",
         "bedRnaElements": ".bedRnaElements.bigBed",
         "bed": ".bed.gz",

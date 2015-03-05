@@ -86,12 +86,11 @@ class File(Item):
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'derived_from',
-        'step_run',
-        'step_run.analysis_step',
-        'step_run.analysis_step.software_versions',
-        'step_run.analysis_step.software_versions.software',
         'submitted_by',
-        'pipeline'
+        'pipeline',
+        'analysis_step',
+        'analysis_step.software_versions',
+        'analysis_step.software_versions.software'
     ]
 
     def unique_keys(self, properties):
@@ -141,6 +140,15 @@ class File(Item):
             if workflow:
                 return request.embed(workflow, '@@object').get('pipeline')
 
+    @calculated_property(schema={
+        "title": "Analysis Step",
+        "type": "string",
+        "linkTo": "analysis_step"
+    })
+    def analysis_step(self, request, step_run=None):
+        if step_run is not None:
+            return request.embed(step_run, '@@object').get('analysis_step')
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
@@ -152,7 +160,7 @@ class File(Item):
             date = properties['date_created'].split('T')[0].replace('-', '/')
             key = '{date}/{uuid}/{accession}{file_extension}'.format(
                 date=date, file_extension=file_extension, uuid=uuid, **properties)
-            name = 'upload-{time}-{accession}'.format(
+            name = 'up{time:.6f}-{accession}'.format(
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
@@ -186,7 +194,7 @@ def post_upload(context, request):
 
     bucket = external['bucket']
     key = external['key']
-    name = 'upload-{time}-{accession}'.format(
+    name = 'up{time:.6f}-{accession}'.format(
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
     context.update(None, {'external': creds})

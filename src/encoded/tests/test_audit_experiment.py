@@ -82,7 +82,17 @@ def histone_target(testapp, organism):
 
 
 @pytest.fixture
-def base_antibody(award, lab, source, organism, target):
+def control_target(testapp, organism):
+    item = {
+        'organism': organism['uuid'],
+        'label': 'Control',
+        'investigated_as': ['control']
+    }
+    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_antibody(testapp, award, lab, source, organism, target):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -92,6 +102,20 @@ def base_antibody(award, lab, source, organism, target):
         'product_id': 'KDKF123',
         'lot_id': '123'
     }
+
+
+@pytest.fixture
+def IgG_antibody(testapp, award, lab, source, organism, control_target):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'source': source['uuid'],
+        'host_organism': organism['uuid'],
+        'targets': [control_target['uuid']],
+        'product_id': 'ABCDEF',
+        'lot_id': '321'
+    }
+    return testapp.post_json('/antibodies', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
@@ -128,6 +152,51 @@ def base_antibody_characterization2(testapp, lab, award, target, antibody_lot, o
         'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def ctrl_experiment(testapp, lab, award, control_target):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'in progress',
+        'assay_term_name': 'ChIP-seq',
+        'assay_term_id': 'OBI:0000716'
+    }
+    return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
+    item = {
+        'experiment': ctrl_experiment['@id'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+        'antibody': IgG_antibody['@id'],
+        'status': 'released'
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
+    testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']], 'assay_term_name': 'ChIP-seq', 'assay_term_id': 'OBI:0000716'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'invalid possible_control' for error in errors_list)
+
+
+def test_audit_input_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep, control_target):
+    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']], 'assay_term_name': 'ChIP-seq', 'assay_term_id': 'OBI:0000716'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing input control' for error in errors_list)
 
 
 def test_audit_experiment_target(testapp, base_experiment):

@@ -83,7 +83,7 @@ def includeme(config):
     types = registry[TYPES] = TypesTool(registry)
     from .indexing import ELASTIC_SEARCH
     es = registry.get(ELASTIC_SEARCH)
-    if es is None:
+    if es is None or registry.settings.get('indexer'):
         storage = RDBStorage()
     else:
         storage = PickStorage(ElasticSearchStorage(es), RDBStorage())

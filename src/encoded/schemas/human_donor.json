@@ -24,7 +24,6 @@
             "required": ["age"],
             "not": {
                 "properties": {
-                    "required": ["age"],
                     "age": {
                         "enum": ["unknown"]
                     }
@@ -185,6 +184,20 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+))$"
+            }
         }
     }
 }

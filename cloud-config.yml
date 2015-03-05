@@ -134,10 +134,10 @@ runcmd:
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
-- service apache2 reload
 - if test "%(ROLE)s" = "demo"
 - then
 -   pg_ctlcluster 9.3 main promote
+-   until test "f" = $(sudo -u postgres psql postgres -c "select pg_is_in_recovery()" --tuples-only | tr -d "\\n "); do sleep 10; done
 -   sudo -u encoded bin/update-keys-links production.ini --app-name app
 -   sudo -u encoded bin/upgrade production.ini --app-name app
 - fi

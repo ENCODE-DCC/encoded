@@ -20,7 +20,7 @@ var BrowserFeat = require('./mixins').BrowserFeat;
 function JsonGraph(id) {
     this.id = id;
     this.root = true;
-    this.type = '';
+    this['@type'] = [];
     this.label = [];
     this.shape = '';
     this.metadata = {};
@@ -38,7 +38,8 @@ function JsonGraph(id) {
 JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
     var newNode = {};
     newNode.id = id;
-    newNode.type = options.type;
+    newNode['@type'] = [];
+    newNode['@type'][0] = options.type;
     newNode.label = [];
     if (typeof label === 'string' || typeof label === 'number') {
         // label is a string; assign to first array element
@@ -47,15 +48,7 @@ JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, s
         // Otherwise, assume label is an array; clone it
         newNode.label = label.slice(0);
     }
-    newNode.metadata = {
-        cssClass: options.cssClass, // CSS class
-        shape: options.shape, // Shape to use for node; see dagre-d3 for options
-        cornerRadius: options.cornerRadius, // # pixels to round corners of nodes
-        ref: options.ref, // Reference to object this node represents
-        contributing: options.contributing, // True if this is a contributing file
-        error: options.error, // True if this is an error node
-        accession: options.accession // Accession number for misc reference if needed (errors mostly)
-    };
+    newNode.metadata = _.clone(options);
     newNode.nodes = [];
     var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
     target.push(newNode);

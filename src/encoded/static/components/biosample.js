@@ -48,7 +48,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc, i) {
                 construct_documents[doc['@id']] = Panel({context: doc, key: i + 1});
-           });
+            });
         });
 
         // set up RNAi documents panels
@@ -156,6 +156,29 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
+                        {context.subcellular_fraction_term_id ?
+                            <div data-test="subcellularid">
+                                <dt>Subcellular fraction ID</dt>
+                                <dd>{context.subcellular_fraction_term_id}</dd>
+                            </div>
+                        : null}
+
+                        {context.depleted_in_term_name && context.depleted_in_term_name.length ?
+                            <div data-test="depletedin">
+                                <dt>Depleted in</dt>
+                                <dd>
+                                    {context.depleted_in_term_name.map(function(termName, i) {
+                                        return (
+                                            <span>
+                                                {i > 0 ? ', ' : ''}
+                                                {termName}
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+                        : null}
+
                         <div data-test="sourcetitle">
                             <dt>Source</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -248,6 +271,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="passagenumber">
                                 <dt>Passage number</dt>
                                 <dd>{context.passage_number}</dd>
+                            </div>
+                        : null}
+
+                        {context.phase ?
+                            <div data-test="phase">
+                                <dt>Cell cycle</dt>
+                                <dd>{context.phase}</dd>
                             </div>
                         : null}
                     </dl>
@@ -462,6 +492,14 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donorUrlDomain;
+
+        // Get the domain name of the donor URL
+        if (biosample && biosample.donor && biosample.donor.url) {
+            var donorUrl = url.parse(biosample.donor.url);
+            donorUrlDomain = donorUrl.hostname || '';
+        }
+
         return (
             <dl className="key-value">
                 <div data-test="accession">
@@ -490,6 +528,13 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     </div>
                 : null}
 
+                {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
+                    <div data-test="mutatedgene">
+                        <dt>Mutated gene</dt>
+                        <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
+                    </div>
+                : null}
+
                 {biosample && biosample.sex ?
                     <div data-test="sex">
                         <dt>Sex</dt>
@@ -503,8 +548,15 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         <dd className="sentence-case">{biosample.health_status}</dd>
                     </div>
                 : null}
-                {context.strain_background ?
 
+                {donorUrlDomain ?
+                    <div data-test="mutatedgene">
+                        <dt>Strain reference</dt>
+                        <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
+                    </div>
+                : null}
+
+                {context.strain_background ?
                     <div data-test="strain-background">
                         <dt>Strain background</dt>
                         <dd className="sentence-case">{context.strain_background}</dd>
@@ -539,11 +591,18 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donorUrlDomain;
         var donor_constructs = {};
         if (biosample && biosample.model_organism_donor_constructs) {
             biosample.model_organism_donor_constructs.forEach(function (construct) {
                 donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
             });
+        }
+
+        // Get the domain name of the donor URL
+        if (biosample && biosample.donor && biosample.donor.url) {
+            var donorUrl = url.parse(biosample.donor.url);
+            donorUrlDomain = donorUrl.hostname || '';
         }
 
         return (
@@ -575,6 +634,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     : null}
 
+                    {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
+                        <div data-test="mutatedgene">
+                            <dt>Mutated gene</dt>
+                            <dd><a href={context.mutated_gene['@id']}>{biosample.donor.mutated_gene.label}</a></dd>
+                        </div>
+                    : null}
+
                     {biosample && biosample.sex ?
                         <div data-test="sex">
                             <dt>Sex</dt>
@@ -586,6 +652,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         <div data-test="health-status">
                             <dt>Health status</dt>
                             <dd className="sentence-case">{biosample.health_status}</dd>
+                        </div>
+                    : null}
+
+                    {donorUrlDomain ?
+                        <div data-test="mutatedgene">
+                            <dt>Strain reference</dt>
+                            <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
                         </div>
                     : null}
 

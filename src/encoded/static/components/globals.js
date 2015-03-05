@@ -17,6 +17,9 @@ module.exports.listing_titles = new Registry();
 // Blocks
 module.exports.blocks = new Registry();
 
+// Graph detail view
+module.exports.graph_detail = new Registry();
+
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
