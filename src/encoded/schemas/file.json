@@ -446,7 +446,7 @@
         "2bit": ".2bit",
         "CEL": ".cel.gz",
         "bam": ".bam",
-        "bedLogR": ".bedLogR.bigBed  ",
+        "bedLogR": ".bedLogR.bigBed",
         "bedMethyl": ".bedMethyl.bigBed",
         "bedRnaElements": ".bedRnaElements.bigBed",
         "bed": ".bed.gz",
