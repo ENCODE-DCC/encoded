@@ -633,6 +633,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var stepExists = false; // True if at least one file has an analysis_step
         var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
         var abortGraph = false; // True if graph shouldn't be drawn
+        var abortAccession; // Accession of file that caused abort
         var derivedAccessions = _.memoize(_derivedAccessions, function(file) {
             return file.accession;
         });
@@ -677,6 +678,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Don't draw anything if no files have an analysis_step
         if (!stepExists) {
+            console.log('No graph: no files have step runs');
             return;
         }
 
@@ -691,13 +693,26 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             }
         });
 
-        // Add contributing files to the allFiles object that other files derive from.
-        // Don't worry about files they derive from; they're not included in the graph.
-        context.contributing_files.forEach(function(file) {
-            if (derivedFromFiles[file.accession]) {
-                allFiles[file.accession] = file;
+        // Remove any replicates containing only removed files from the last step.
+        Object.keys(allReplicates).forEach(function(repNum) {
+            var keepRep = false;
+            allReplicates[repNum].forEach(function(file) {
+                keepRep = keepRep || !file.removed;
+            });
+            if (!keepRep) {
+                allReplicates[repNum] = [];
             }
         });
+
+        // Add contributing files to the allFiles object that other files derive from.
+        // Don't worry about files they derive from; they're not included in the graph.
+        if (context.contributing_files && context.contributing_files.length) {
+            context.contributing_files.forEach(function(file) {
+                if (derivedFromFiles[file.accession]) {
+                    allFiles[file.accession] = file;
+                }
+            });
+        }
 
         // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
         Object.keys(derivedFromFiles).forEach(function(derivedFromAccession) {
@@ -724,15 +739,20 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
                     // Indicate that this replicate is not to be rendered
                     allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
+
+                    // Mark this file as removed
+                    derivedFromFile.removed = true;
                 } else {
                     // Missing derived-from file not in a replicate; don't draw any graph
                     abortGraph = abortGraph || true;
+                    abortAccession = derivedFromAccession;
                 }
             } // else the derived_from file is in files array; normal case
         });
 
         // Don't draw anything if a file others derive from outside a replicate doesn't exist
         if (abortGraph) {
+            console.log('No graph: derived_from file outside replicate missing [' + abortAccession + ']');
             return;
         }
 
@@ -740,8 +760,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         Object.keys(allFiles).forEach(function(fileAccession) {
             var file = allFiles[fileAccession];
 
-            // A file outside a replicate derives from a file that's been removed from the graph
-            if (!file.replicate && file.derived_from) {
+            // A file derives from a file that's been removed from the graph
+            if (file.derived_from) {
                 abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
                     return derivedFromFile.removed;
                 });
@@ -751,9 +771,14 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             abortGraph = abortGraph || (fileOutsideReplicate && _(Object.keys(allReplicates)).all(function(replicateNum) {
                 return !allReplicates[replicateNum].length;
             }));
+
+            if (abortGraph) {
+                abortAccession = fileAccession;
+            }
         });
 
         if (abortGraph) {
+            console.log('No graph: other condition [' + abortAccession + ']');
             return;
         }
 
@@ -840,20 +865,22 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         }, this);
 
         // Add contributing files to the graph
-        context.contributing_files.forEach(function(file) {
-            var fileId = 'file:' + file.accession;
+        if (context.contributing_files && context.contributing_files.length) {
+            context.contributing_files.forEach(function(file) {
+                var fileId = 'file:' + file.accession;
 
-            // Assemble a single file node; can have file and step nodes in this graph
-            jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                {
-                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                    type: 'file',
-                    shape: 'rect',
-                    cornerRadius: 16,
-                    ref: file,
-                    contributing: true
-                });
-        }, this);
+                // Assemble a single file node; can have file and step nodes in this graph
+                jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    {
+                        cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                        type: 'file',
+                        shape: 'rect',
+                        cornerRadius: 16,
+                        ref: file,
+                        contributing: true
+                    });
+            }, this);
+        }
 
         return jsonGraph;
     },
