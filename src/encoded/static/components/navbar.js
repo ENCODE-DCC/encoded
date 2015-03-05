@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var url = require('url');
@@ -13,15 +12,15 @@ var NavItem = require('../react-bootstrap/NavItem');
 var NavBar = React.createClass({
     render: function() {
         var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
-        return NavBarLayout({
-            loadingComplete: this.props.loadingComplete,
-            portal: this.props.portal,
-            section: section,
-            session: this.props.session,
-            context_actions: this.props.context_actions,
-            user_actions: this.props.user_actions,
-            href: this.props.href,
-        });
+        return <NavBarLayout
+            loadingComplete={this.props.loadingComplete}
+            portal={this.props.portal}
+            section={section}
+            session={this.props.session}
+            context_actions={this.props.context_actions}
+            user_actions={this.props.user_actions}
+            href={this.props.href}
+            />;
     }
 });
 
@@ -61,9 +60,9 @@ var NavBarLayout = React.createClass({
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
                         <GlobalSections global_sections={portal.global_sections} section={section} />
-                        {this.transferPropsTo(<UserActions />)}
-                        {context_actions ? this.transferPropsTo(<ContextActions />) : null}
-                        {this.transferPropsTo(<Search />)}
+                        <UserActions {...this.props} />
+                        {context_actions ? <ContextActions {...this.props} /> : null}
+                        <Search {...this.props} />
                     </Navbar>
                 </div>
                 {this.state.testWarning ?

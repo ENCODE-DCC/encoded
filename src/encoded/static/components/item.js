@@ -1,11 +1,9 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var ReactForms = require('react-forms');
 var fetched = require('./fetched');
 var Form = require('./form').Form;
 var globals = require('./globals');
-var LayoutType = require('./page').LayoutType;
 var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -43,12 +41,11 @@ var Item = module.exports.Item = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var panel = globals.panel_views.lookup(context)();
+        var Panel = globals.panel_views.lookup(context);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
-        this.transferPropsTo(panel);
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -59,7 +56,7 @@ var Item = module.exports.Item = React.createClass({
                 </header>
                 <div className="row">
                     {context.description ? <p className="description">{context.description}</p> : null}
-                    {panel}
+                    <Panel {...this.props} />
                 </div>
             </div>
         );
@@ -115,8 +112,8 @@ globals.listing_titles.fallback = function () {
 var RepeatingItem = React.createClass({
 
   render: function() {
-    return this.transferPropsTo(
-      <div className="rf-RepeatingFieldset__item">
+    return (
+      <div {...this.props} className="rf-RepeatingFieldset__item">
         {this.props.children}
         <button
           onClick={this.onRemove}
@@ -126,17 +123,9 @@ var RepeatingItem = React.createClass({
     );
   },
 
-  onRemove: function() {
-    if (this.props.children.constructor.displayName.indexOf('Fieldset') !== -1) {
-        var label;
-        try {
-            label = this.props.children.props.schema.props.label;
-        } catch (e) {
-            label = 'item';
-        }
-        if (!confirm('Are you sure you want to remove this ' + label + '?')) {
-            return false;
-        }
+  onRemove: function(e) {
+    if (!confirm('Are you sure you want to remove this item?')) {
+        e.preventDefault();
     }
     if (this.props.onRemove) {
       this.props.onRemove(this.props.name);
@@ -147,24 +136,24 @@ var RepeatingItem = React.createClass({
 
 
 var FetchedFieldset = React.createClass({
-    mixins: [ReactForms.FieldsetMixin],
 
     getInitialState: function() {
-        var value = this.value().value;
-        var url = typeof value == 'string' ? value : null;
-        var externalValidation = this.externalValidation();
-        var failure = externalValidation.validation.failure;
+        var value = this.props.value;
+        var url = typeof value.value == 'string' ? value.value : null;
+        var externalValidation = value.externalValidation;
         return {
             url: url,
-            collapsed: url && !failure,
+            collapsed: url && !externalValidation.isFailure,
         };
     },
 
     render: function() {
         var schema = this.props.schema;
-        var value = this.value().value;
-        var externalValidation = this.externalValidation();
-        var failure = externalValidation.validation.failure;
+        var value = this.props.value;
+        var externalValidation = value.externalValidation;
+        var isFailure = externalValidation.isFailure;
+        externalValidation = isFailure ? externalValidation : null;
+        value = value.value;
         var url = typeof value == 'string' ? value : null;
         var preview, fieldset;
 
@@ -187,7 +176,7 @@ var FetchedFieldset = React.createClass({
             preview = (
                 <ul className="nav result-table">
                   <li>
-                    <div className="accession">{'New ' + schema.props.label}</div>
+                    <div className="accession">{'New ' + schema.props.get('label')}</div>
                   </li>
                 </ul>
             );
@@ -199,7 +188,7 @@ var FetchedFieldset = React.createClass({
         return (
             <div className="collapsible">
                 <span className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</span>
-                {failure && <ReactForms.Message>{failure}</ReactForms.Message>}
+                {isFailure && <ReactForms.Message>{externalValidation.error}</ReactForms.Message>}
                 <div style={{display: this.state.collapsed ? 'block' : 'none'}}>{preview}</div>
                 <div style={{display: this.state.collapsed ? 'none' : 'block'}}>{fieldset}</div>
             </div>
@@ -212,8 +201,7 @@ var FetchedFieldset = React.createClass({
 
     onUpdate: function(value) {
         value['@id'] = this.state.url;
-        value = this.value().updateSerialized(value);
-        this.onValueUpdate(value);
+        this.props.value.setSerialized(value);
     }
 
 });
@@ -231,35 +219,35 @@ var jsonSchemaToFormSchema = function(attrs) {
     if (p.title) props.label = p.title;
     if (p.description) props.hint = p.description;
     if (p.type == 'object') {
-        if (required) props.component = <ReactForms.Fieldset className="required" />;
         if (p.formInput == 'file') {
             props.input = <FileInput />;
-            return ReactForms.schema.Property(props);
+            return ReactForms.schema.Scalar(props);
         } else if (p.formInput == 'layout') {
-            props.type = LayoutType;
             props.input = <Layout editable={true} />;
-            return ReactForms.schema.Property(props);
+            return ReactForms.schema.Scalar(props);
+        } else {
+            props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} />;
         }
-        var properties = [], name;
+        var properties = {}, name;
         for (name in p.properties) {
             if (name == 'uuid') continue;
             if (p.properties[name].calculatedProperty) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
-            properties.push(jsonSchemaToFormSchema({
+            properties[name] = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
-                props: {name: name, required: required}
-            }));
+                props: {required: required},
+            });
         }
-        return ReactForms.schema.Schema(props, properties);
+        return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
         props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
-            props.validate = function(v) { return v.match(p.pattern); };
+            props.validate = function(schema, value) { return value.match(p.pattern); };
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
@@ -291,7 +279,7 @@ var jsonSchemaToFormSchema = function(attrs) {
             // Default value for new children needs to refer to the parent.
             var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
             defaultValue[linkProp] = id;
-            return <ReactForms.schema.Property component={component} defaultValue={defaultValue} />;
+            return ReactForms.schema.Scalar({component: component, defaultValue: defaultValue});
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
@@ -299,7 +287,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (props.name == 'schema_version') {
             props.input = <input type="text" disabled />;
         }
-        return ReactForms.schema.Property(props);
+        return ReactForms.schema.Scalar(props);
     }
 };
 
@@ -326,7 +314,7 @@ var FetchedForm = React.createClass({
             id: this.props.id
         });
         var value = this.props.context || jsonSchemaToDefaultValue(schemas[type]);
-        return this.transferPropsTo(<Form defaultValue={value} schema={schema} />);
+        return <Form {...this.props} defaultValue={value} schema={schema} />;
     }
 
 });
@@ -345,7 +333,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             form = (
                 <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    {this.transferPropsTo(<FetchedForm context={null} type={type} action={action} method="POST" />)}
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -357,7 +345,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    {this.transferPropsTo(<FetchedForm id={id} type={type} action={id} method="PUT" />)}
+                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
                 </fetched.FetchedData>
             );
         }

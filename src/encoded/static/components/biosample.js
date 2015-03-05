@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
@@ -29,7 +28,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context, key: context['@id']};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 
@@ -100,11 +100,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} key="biosample-audit" />
+                            <AuditIndicators audits={context.audit} id="biosample-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} key="biosample-audit" />
+                <AuditDetail audits={context.audit} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">
@@ -187,7 +187,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         {context.product_id ?
                             <div data-test="productid">
                                 <dt>Product ID</dt>
-                                <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                                <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
                             </div>
                         : null}
 
@@ -344,7 +344,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     <div>
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
                         <div className="panel data-display">
-                            <Panel context={context.donor} biosample={context} />
+                            {Panel({context: context.donor, biosample: context})}
                         </div>
                     </div>
                 : null}
@@ -385,9 +385,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                {this.transferPropsTo(
-                    <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
-                )}
+                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingBiosample} />
             </div>
         );
     }
@@ -402,24 +400,25 @@ var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React
         return (
             <div>
                 <h3>Experiments using biosample {context.accession}</h3>
-                {this.transferPropsTo(
-                    <ExperimentTable />
-                )}
+                <ExperimentTable {...this.props} />
             </div>
         );
     }
 });
 
 
-var maybe_link = function (props, children) {
-    if (props.href == 'N/A') {
-        return children;
-    } else {
-        return (
-            <a href={props.href}>{children}</a>
-        );
+var MaybeLink = React.createClass({
+    render() {
+        if (this.props.href == 'N/A') {
+            return this.props.children;
+        } else {
+            return (
+                <a {...this.props}>{this.props.children}</a>
+            );
+        }
     }
-};
+});
+
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
@@ -797,7 +796,7 @@ var Construct = module.exports.Construct = React.createClass({
                     {context.product_id ?
                         <div data-test="product-id">
                             <dt>Product ID</dt>
-                            <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                            <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
                         </div>
                     : null}
                 </dl>
