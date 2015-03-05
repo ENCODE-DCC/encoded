@@ -33,7 +33,8 @@ Validation
 Link resolution
 ---------------
 
-Links are resolved relative to their configured base url, normally their collection. Absolute paths and UUIDs are also valid, as are aliases and other uniquely identifying properties::
+Links are resolved relative to their configured base url, normally their collection.
+Absolute paths and UUIDs are also valid, as are aliases and other uniquely identifying properties::
 
     {
         "award": "fae1bd8b-0d90-4ada-b51f-0ecc413e904d",
@@ -113,9 +114,9 @@ Rendering
 
     * raw properties
       -> link canonicalization
-        -> Reverse links
-          -> templating
-            -> embedding
+        -> calculated properties
+          -> embedding
+            -> page expansion
 
 
 Link canonicalization
@@ -132,31 +133,18 @@ Specified in the schema. UUID's are converted to resource paths.
     }
 
 
-Reverse links
--------------
+Calculated properties
+---------------------
 
-Specified in Item.rev with values from the links table.
+These include the JSON-LD boilerplate along with other dynamically calculated properties such as a consistently formatted title and reverse links pulled from the links table.
 ::
-    {
-        "characterizations": [],
-    }
-
-
-Templating
-----------
-
-* Calculated values
-* JSON-LD boilerplate
-
-
-*Templated* properties::
-
     {
         "@id": "/biosamples/ENCBS000TST/",
         "@type": ["biosample", "item"],
         "uuid": "7c245cea-7d59-45fb-9ebe-f0454c5fe950"
         "name": "ENCBS000TST",
         "title": "Biosample ENCBS000TST (human)",
+        "characterizations": [],
     }
 
 
@@ -179,13 +167,12 @@ Combining gives us::
         "organism": "/organisms/human/",
         "submitted_by": "/users/me/",
 
-        "characterizations": [],
-
         "@id": "/biosamples/ENCBS000TST/",
         "@type": ["biosample", "item"],
         "uuid": "7c245cea-7d59-45fb-9ebe-f0454c5fe950"
         "name": "ENCBS000TST",
         "title": "Biosample ENCBS000TST (human)",
+        "characterizations": [],
     }
 
 
@@ -277,14 +264,49 @@ The specified links are then replaced with objects::
             "lab": "/labs/my-lab"
         },
 
-        "characterizations": [],
-
         "@id": "/biosamples/ENCBS000TST/",
         "@type": ["biosample", "item"],
         "uuid": "7c245cea-7d59-45fb-9ebe-f0454c5fe950"
         "name": "ENCBS000TST",
         "title": "Biosample ENCBS000TST (human)",
+        "characterizations": [],
     }
 
 This embedded object is indexed in elasticsearch to allow searching and faceting across the embedded values.
+It is returned when when specifying ``frame=embedded`` within the query parameters.
 
+
+Page expansion
+--------------
+
+The final step in the rendering pipeline is applied only to single items, not to search results.
+It provides the opportunity to add properties that are restricted or tailored to certain users, such as the actions and audit results::
+
+    {
+        "actions": [
+            {
+                "profile": "/profiles/biosample.json",
+                "href": "/biosamples/ENCBS000TST/#!edit",
+                "name": "edit",
+                "title": "Edit"
+            },
+            {
+                "profile": "/profiles/biosample.json",
+                "href": "/biosamples/ENCBS000TST/#!edit-json",
+                "name": "edit-json",
+                "title": "Edit JSON"
+            }
+        ],
+        "audit": {
+            "ERROR": [
+                {
+                    "category": "missing donor",
+                    "name": "audit_biosample_donor",
+                    "level": 60,
+                    "detail": "Biosample ENCBS000TST requires a donor",
+                    "path": "/biosamples/ENCBS000TST/",
+                    "level_name": "ERROR"
+                }
+            ]
+        }
+    }
