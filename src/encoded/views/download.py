@@ -77,6 +77,11 @@ def metadata_tsv(context, request):
                     for c in _tsv_mapping[column]:
                         c_value = []
                         for value in simple_path_ids(row, c):
+                            if isinstance(value, bool) and c == 'replicates.library.paired_ended':
+                                if not value:
+                                    value = 'single-ended'
+                                else:
+                                    value = 'paired-ended'
                             if str(value) not in c_value:
                                 c_value.append(str(value))
                         if len(temp):
@@ -115,14 +120,15 @@ def metadata_tsv(context, request):
                                 data_row.append(library['biosample'].get('age_display', ''))
                             else:
                                 data_row.append('')
+                            continue
                         else:
                             data_row = data_row + [''] * 3
+                            continue
                     path = prop[6:]
                     temp = []
                     for value in simple_path_ids(f, path):
                         temp.append(str(value))
                     data_row.append(', '.join(list(set(temp))))
-                    import pdb; pdb.set_trace()
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
