@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var url = require('url');
@@ -27,7 +26,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 
@@ -137,11 +137,11 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} key="biosample-audit" />
+                            <AuditIndicators audits={context.audit} id="biosample-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} key="biosample-audit" />
+                <AuditDetail audits={context.audit} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="title">
@@ -314,7 +314,7 @@ var Listing = React.createClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
                         {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
-                        <AuditIndicators audits={result.audit} key={result['@id']} search />
+                        <AuditIndicators audits={result.audit} id={result['@id']} search />
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -322,7 +322,7 @@ var Listing = React.createClass({
                         </a>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                <AuditDetail audits={result.audit} id={this.props.context['@id']} />
             </li>
         );
     }

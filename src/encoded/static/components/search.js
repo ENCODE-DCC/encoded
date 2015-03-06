@@ -1,9 +1,8 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var Modal = require('react-bootstrap/Modal');
-var OverlayMixin = require('react-bootstrap/OverlayMixin');
+var Modal = require('react-bootstrap/lib/Modal');
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -39,7 +38,8 @@ var AuditMixin = audit.AuditMixin;
             context = props;
             props = {context: context,  key: context['@id']};
         }
-        return globals.listing_views.lookup(props.context)(props);
+        var ListingView = globals.listing_views.lookup(props.context);
+        return <ListingView {...props} />;
     };
 
     var PickerActionsMixin = module.exports.PickerActionsMixin = {
@@ -70,7 +70,7 @@ var AuditMixin = audit.AuditMixin;
                         {result.accession ?
                             <div className="pull-right type sentence-case search-meta">
                                 <p>{item_type}: {' ' + result['accession']}</p>
-                                <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                                <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                             </div>
                         : null}
                         <div className="accession">
@@ -80,7 +80,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -214,12 +214,12 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
                                 return (
-                                    <div>
+                                    <div key={target}>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
                                             {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
@@ -234,7 +234,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -277,7 +277,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Biosample</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -333,7 +333,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -401,7 +401,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Experiment</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -438,7 +438,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -457,7 +457,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Dataset</p>
                             <p className="type">{' ' + result['accession']}</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result['description']}</a>
@@ -473,7 +473,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -491,7 +491,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Target</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -506,7 +506,7 @@ var AuditMixin = audit.AuditMixin;
                                 : <em> None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -525,7 +525,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Image</p>
-                            <AuditIndicators audits={result.audit} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result.caption}</a>
@@ -534,7 +534,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} key={this.props.context['@id']} />
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -611,7 +611,7 @@ var AuditMixin = audit.AuditMixin;
                 title = term;
             }
             var total = this.props.total;
-            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
+            return <Term {...this.props} title={title} filters={filters} total={total} />;
         }
     });
 
@@ -659,13 +659,13 @@ var AuditMixin = audit.AuditMixin;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
                         : null}
@@ -708,7 +708,7 @@ var AuditMixin = audit.AuditMixin;
 
         onChange: function(e) {
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         },
 
         onBlur: function(e) {
@@ -725,7 +725,7 @@ var AuditMixin = audit.AuditMixin;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;
+                e.preventDefault();
             }
         }
     });
@@ -746,12 +746,12 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
+                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return this.transferPropsTo(<Facet key={facet.field} facet={facet} filters={filters} />);
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
                         }
                     }.bind(this))}
                 </div>
@@ -810,7 +810,6 @@ var AuditMixin = audit.AuditMixin;
 
         getDefaultProps: function() {
             return {
-
                 restrictions: {},
                 searchBase: ''
             };
@@ -846,10 +845,8 @@ var AuditMixin = audit.AuditMixin;
                     <div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
-                                {this.transferPropsTo(
-                                    <FacetList facets={facets} filters={filters}
-                                               searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                                )}
+                                <FacetList {...this.props} facets={facets} filters={filters}
+                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
@@ -907,7 +904,7 @@ var AuditMixin = audit.AuditMixin;
             var search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         }
     });
 
@@ -924,7 +921,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 // Require all components to ensure javascript load ordering

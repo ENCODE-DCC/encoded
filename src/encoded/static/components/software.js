@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
@@ -150,9 +149,7 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
         return (
             <div>
                 <h3>Pipelines using software {context.title}</h3>
-                {this.transferPropsTo(
-                    <PipelineTable />
-                )}
+                <PipelineTable {...this.props} />
             </div>
         );
     }

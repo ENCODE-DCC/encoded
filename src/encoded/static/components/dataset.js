@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -22,7 +21,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 var Dataset = module.exports.Dataset = React.createClass({
@@ -109,9 +109,9 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 : null }
 
-                {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
-                    <FetchedItems url={unreleased_files_url(context)} Component={UnreleasedFiles} />
-                ): null}
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
 
             </div>
         );
@@ -139,9 +139,7 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
         return (
             <div>
                 <h3>Unreleased files linked to {context.accession}</h3>
-                {this.transferPropsTo(
-                    <FileTable />
-                )}
+                <FileTable {...this.props} />
             </div>
         );
     }
