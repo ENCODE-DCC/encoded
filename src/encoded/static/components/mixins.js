@@ -133,6 +133,7 @@ module.exports.Persona = {
             request.xhr_end = 1 * new Date();
             var stats_header = response.headers.get('X-Stats') || '';
             request.server_stats = require('querystring').parse(stats_header);
+            request.etag = response.headers.get('ETag');
             this.extractSessionCookie();
         });
         return request;
@@ -481,13 +482,11 @@ module.exports.HistoryAndTriggers = {
             window.location.reload();
             return;
         }
-        var xhr = this.props.contextRequest;
+        var request = this.props.contextRequest;
         var href = window.location.href;
         if (event.state) {
             // Abort inflight xhr before setProps
-            if (xhr && xhr.state() == 'pending') {
-                xhr.abort();
-            }
+            if (request) request.abort();
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
@@ -556,7 +555,6 @@ module.exports.HistoryAndTriggers = {
         request = this.fetch(href, {
             headers: {'Accept': 'application/json'}
         });
-        request.xhr_begin = 1 * new Date();
 
         var timeout = new Timeout(this.SLOW_REQUEST_TIME);
 
