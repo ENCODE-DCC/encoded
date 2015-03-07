@@ -5,6 +5,7 @@ var React = require('react');
 var url = require('url');
 var origin = require('../libs/origin');
 var $script = require('scriptjs');
+var serialize = require('form-serialize');
 var ga = require('google-analytics');
 
 
@@ -453,7 +454,7 @@ module.exports.HistoryAndTriggers = {
         var options = {};
         var action_url = url.parse(url.resolve(this.props.href, target.action));
         options.replace = action_url.pathname == url.parse(this.props.href).pathname;
-        var search = $(target).serialize();
+        var search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(function (item) {
                 return item.slice(-1) != '=';
