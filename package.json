@@ -42,6 +42,7 @@
     "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#master",
     "domready": "^0.3.0",
     "es5-shim": "^4.0.3",
+    "es6-promise": "^2.0.1",
     "html5shiv": "^3.7.2",
     "jquery": "^1.11.1",
     "node-ckeditor": "^4.3.2",
@@ -52,6 +53,7 @@
     "shivie8": "^1.0.0",
     "source-map-support": "^0.2.7",
     "subprocess-middleware": "^0.1.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "whatwg-fetch": "git://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a"
   }
 }

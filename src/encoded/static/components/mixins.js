@@ -1,5 +1,6 @@
 /*jshint scripturl:true */
 'use strict';
+var _ = require('underscore');
 var React = require('react');
 var url = require('url');
 var origin = require('../libs/origin');
@@ -7,47 +8,36 @@ var $script = require('scriptjs');
 var ga = require('google-analytics');
 
 
-var parseError = module.exports.parseError = function (xhr, status) {
-    var data;
-    if (status == 'timeout') {
-        data = {
-            status: 'timeout',
-            title: 'Request timeout',
-            '@type': ['ajax_error', 'error']
-        };
-    } else if (status == 'error') {
-        var content_type = xhr.getResponseHeader('Content-Type') || '';
-        content_type = content_type.split(';')[0];
-        if (content_type == 'application/json') {
-            try {
-                data = JSON.parse(xhr.responseText);
-            } catch (exc) {
-                status = 'parsererror';
-            }
-        } else {
-            data = {
-                status: 'error',
-                title: xhr.statusText,
-                code: xhr.status,
-                '@type': ['ajax_error', 'error']
-            };
-        }
-    }
-    if (status == 'parsererror') {
-        data = {
-            status: 'timeout',
-            title: 'Parser error',
+var parseError = module.exports.parseError = function (response) {
+    if (response instanceof Error) {
+        return {
+            status: 'error',
+            title: response.message,
             '@type': ['ajax_error', 'error']
         };
     }
-    if (!data) {
-        data = {
-            status: '' + status,
-            title: 'Error',
-            '@type': ['ajax_error', 'error']
-        };
+    var content_type = response.headers.get('Content-Type') || '';
+    content_type = content_type.split(';')[0];
+    if (content_type == 'application/json') {
+        return response.json();
     }
-    return data;
+    return {
+        status: 'error',
+        title: response.statusText,
+        code: response.status,
+        '@type': ['ajax_error', 'error']
+    };
+};
+
+var parseAndLogError = module.exports.parseAndLogError = function (cause, response) {
+    var promise = parseError(response);
+    promise.then(data => {
+        ga('send', 'exception', {
+        'exDescription': '' + cause + ':' + data.code + ':' + data.title,
+        'location': window.location.href
+        });
+    });
+    return promise;
 };
 
 
@@ -74,8 +64,24 @@ module.exports.RenderLess = {
     },
 };
 
+class Timeout {
+    constructor(timeout) {
+        this.promise = new Promise(resolve => setTimeout(resolve.bind(undefined, this), timeout));
+    }
+}
+
 
 module.exports.Persona = {
+    childContextTypes: {
+        fetch: React.PropTypes.func
+    },
+
+    getChildContext: function() {
+        return {
+            fetch: this.fetch
+        };
+    },
+
     getInitialState: function () {
         return {
             loadingComplete: false,
@@ -93,7 +99,6 @@ module.exports.Persona = {
     },
 
     ajaxPrefilter: function (options, original, xhr) {
-        xhr.xhr_begin = 1 * new Date();
         var http_method = options.type;
         if (http_method === 'GET' || http_method === 'HEAD') return;
         var session = this.state.session;
@@ -105,6 +110,32 @@ module.exports.Persona = {
         if (session._csrft_) {
             xhr.setRequestHeader('X-CSRF-Token', session._csrft_);
         }
+    },
+
+    fetch: function (url, options) {
+        options = _.extend({}, options);
+        var http_method = options.method || 'GET';
+        if (!(http_method === 'GET' || http_method === 'HEAD')) {
+            var headers = options.headers = _.extend({}, options.headers);
+            var session = this.state.session;
+            //var userid = session['auth.userid'];
+            //if (userid) {
+            //    // Server uses this to check user is logged in
+            //    headers['X-If-Match-User'] = userid;
+            //}
+            if (session._csrft_) {
+                headers['X-CSRF-Token'] = session._csrft_;
+            }
+        }
+        var request = fetch(url, options);
+        request.xhr_begin = 1 * new Date();
+        request.then(response => {
+            request.xhr_end = 1 * new Date();
+            var stats_header = response.headers.get('X-Stats') || '';
+            request.server_stats = require('querystring').parse(stats_header);
+            this.extractSessionCookie();
+        });
+        return request;
     },
 
     extractSessionCookie: function () {
@@ -161,66 +192,68 @@ module.exports.Persona = {
 
     handlePersonaLogin: function (assertion, retrying) {
         this._persona_watched = true;
-        var $ = require('jquery');
         if (!assertion) return;
-        $.ajax({
-            url: '/login',
-            type: 'POST',
-            dataType: 'json',
-            data: JSON.stringify({assertion: assertion}),
-            contentType: 'application/json'
-        }).done(function (session) {
+        this.fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({assertion: assertion}),
+        })
+        .then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .then(session => {
             var next_url = window.location.href;
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
-            if (this.historyEnabled) {
-                this.navigate(next_url, {replace: true}).done(function () {
-                    this.setState({loadingComplete: true});
-                }.bind(this));
-            } else {
-                var old_path = window.location.pathname + window.location.search;
-                window.location.assign(next_url);
-                if (old_path == next_url) {
-                    window.location.reload();
+            this.navigate(next_url, {replace: true}).then(() => {
+                this.setState({loadingComplete: true});
+            });
+        }, err => {
+            parseError(err).then(data => {
+                if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
+                    if (!retrying) {
+                        window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
+                        return;
+                    }
                 }
-            }
-        }.bind(this)).fail(function (xhr, status, err) {
-            var data = parseError(xhr, status);
-            if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
-                if (!retrying) {
-                    return window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
-                }
-            }
-            // If there is an error, show the error messages
-            navigator.id.logout();
-            this.setProps({context: data});
-            this.setState({loadingComplete: true});
-        }.bind(this));
+                // If there is an error, show the error messages
+                navigator.id.logout();
+                this.setProps({context: data});
+                this.setState({loadingComplete: true});
+            });
+        });
     },
 
     handlePersonaLogout: function () {
         this._persona_watched = true;
-        var $ = require('jquery');
         console.log("Persona thinks we need to log out");
         var session = this.state.session;
         if (!(session && session['auth.userid'])) return;
-        $.ajax({
-            url: '/logout?redirect=false',
-            type: 'GET',
-            dataType: 'json'
-        }).done(function (data) {
+        this.fetch('/logout?redirect=false', {
+            headers: {'Accept': 'application/json'}
+        })
+        .then(response => {
+            if (!response.ok) throw response;
+            return response.json()
+        })
+        .then(data => {
             this.DISABLE_POPSTATE = true;
             var old_path = window.location.pathname + window.location.search;
             window.location.assign('/#logged-out');
             if (old_path == '/') {
                 window.location.reload();
             }
-        }.bind(this)).fail(function (xhr, status, err) {
-            var data = parseError(xhr, status);
-            data.title = 'Logout failure: ' + data.title;
-            this.setProps({context: data});
-        }.bind(this));
+        }, err => {
+            parseError(err).then(data => {
+                data.title = 'Logout failure: ' + data.title;
+                this.setProps({context: data});
+            });
+        });
     },
 
     handlePersonaMatch: function () {
@@ -405,7 +438,6 @@ module.exports.HistoryAndTriggers = {
 
     // Submitted forms are treated the same as links
     handleSubmit: function(event) {
-        var $ = require('jquery');
         var target = event.target;
 
         // Skip POST forms
@@ -485,8 +517,6 @@ module.exports.HistoryAndTriggers = {
     },
 
     navigate: function (href, options) {
-        var $ = require('jquery');
-
         if (!this.confirmNavigation()) {
             return;
         }
@@ -507,10 +537,10 @@ module.exports.HistoryAndTriggers = {
             return;
         }
 
-        var xhr = this.props.contextRequest;
+        var request = this.props.contextRequest;
 
-        if (xhr && xhr.state() == 'pending') {
-            xhr.abort();
+        if (request) {
+            request.abort();
         }
 
         if (options.replace) {
@@ -523,51 +553,36 @@ module.exports.HistoryAndTriggers = {
             return;
         }
 
-        xhr = $.ajax({
-            url: href,
-            type: 'GET',
-            dataType: 'json'
-        }).fail(this.receiveContextFailure)
-        .done(this.receiveContextResponse);
+        request = this.fetch(href, {
+            headers: {'Accept': 'application/json'}
+        });
+        request.xhr_begin = 1 * new Date();
+
+        var timeout = new Timeout(this.SLOW_REQUEST_TIME);
+
+        Promise.race([request, timeout.promise]).then(v => {
+            if (v instanceof Timeout) this.setProps({'slow': true});
+        });
+
+        var promise = request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'contextRequest'))
+        .then(this.receiveContextResponse);
 
         if (!options.replace) {
-            xhr.always(this.scrollTo);
+            promise = promise.then(this.scrollTo);
         }
-
-        xhr.slowTimer = setTimeout(
-            this.detectSlowRequest.bind(this, xhr),
-            this.SLOW_REQUEST_TIME);
-        xhr.href = href;
 
         this.setProps({
-            contextRequest: xhr,
+            contextRequest: request,
             href: href
         });
-        return xhr;
+        return request;
     },
 
-    detectSlowRequest: function (xhr) {
-        if (xhr.state() == 'pending') {
-            this.setProps({'slow': true});
-        }
-    },
-
-    receiveContextFailure: function (xhr, status, error) {
-        if (status == 'abort') {
-            clearTimeout(xhr.slowTimer);
-            return;
-        }
-        var data = parseError(xhr, status);
-        ga('send', 'exception', {
-            'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
-            'location': window.location.href
-        });
-        this.receiveContextResponse(data, status, xhr);
-    },
-
-    receiveContextResponse: function (data, status, xhr) {
-        xhr.xhr_end = 1 * new Date();
-        clearTimeout(xhr.slowTimer);
+    receiveContextResponse: function (data) {
         // title currently ignored by browsers
         try {
             window.history.replaceState(data, '', window.location.href);
@@ -589,9 +604,6 @@ module.exports.HistoryAndTriggers = {
 
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
-
-        var stats_header = xhr.getResponseHeader('X-Stats') || '';
-        xhr.server_stats = require('querystring').parse(stats_header);
         this.constructor.recordServerStats(xhr.server_stats, 'contextRequest');
 
         xhr.browser_stats = {};
