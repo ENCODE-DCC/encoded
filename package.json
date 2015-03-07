@@ -16,7 +16,8 @@
     "setupEnvScriptFile": "../../../jest/environment.js",
     "unmockedModulePathPatterns": [
       "node_modules/react",
-      "libs/react-patches"
+      "libs/react-patches",
+      "node_modules/es6-promise"
     ]
   },
   "devDependencies": {
