@@ -2,6 +2,8 @@
 var React = require('react');
 var url = require('url');
 var globals = require('./globals');
+var parseAndLogError = require('./mixins').parseAndLogError;
+
 
 var lookup_column = function (result, column) {
     var value = result;
@@ -92,6 +94,11 @@ var lookup_column = function (result, column) {
     };
 
     var Table = module.exports.Table = React.createClass({
+        contextTypes: {
+            fetch: React.PropTypes.func
+        },
+
+
         getDefaultProps: function () {
             return {
                 defaultSortOn: 0
@@ -200,21 +207,26 @@ var lookup_column = function (result, column) {
         fetchAll: function (props) {
             var context = props.context;
             var communicating;
-            if (this.allRequest && this.allRequest.state() == 'pending') {
-                this.allRequest.abort();
-            }
+            var request = this.state.allRequest;
+            if (request) request.abort();
             var self = this;
-            var $ = require('jquery');
             if (context.all) {
                 communicating = true;
-                this.setState({communicating: true});
-                this.allRequest = $.ajax({
-                    url: context.all,
-                    type: 'GET',
-                    dataType: 'json'
-                }).done(function (data) {
+                request = this.context.fetch(context.all, {
+                    headers: {'Accept': 'application/json'}
+                });
+                request.then(response => {
+                    if (!response.ok) throw response;
+                    return response.json();
+                })
+                .catch(parseAndLogError.bind(undefined, 'allRequest'))
+                .then(data => {
                     self.extractData({context: data});
                     self.setState({communicating: false});
+                });
+                this.setState({
+                    allRequest: request,
+                    communicating: true
                 });
             }
             return communicating;
@@ -391,9 +403,8 @@ var lookup_column = function (result, column) {
             if (typeof this.submitTimer != 'undefined') {
                 clearTimeout(this.submitTimer);
             }
-            if (this.allRequest && this.allRequest.state() == 'pending') {
-                this.allRequest.abort();
-            }
+            var request = this.state.allRequest;
+            if (request) request.abort();
         }
 
     });

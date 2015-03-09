@@ -91,10 +91,7 @@ module.exports.Persona = {
     },
 
     componentDidMount: function () {
-        var $ = require('jquery');
         // Login / logout actions must be deferred until persona is ready.
-        $.ajaxPrefilter(this.ajaxPrefilter);
-        $(document).ajaxComplete(this.extractSessionCookie);
         this.extractSessionCookie();
         $script.ready('persona', this.configurePersona);
     },
@@ -241,7 +238,7 @@ module.exports.Persona = {
         })
         .then(response => {
             if (!response.ok) throw response;
-            return response.json()
+            return response.json();
         })
         .then(data => {
             this.DISABLE_POPSTATE = true;

@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var ReactForms = require('react-forms');
-var parseError = require('./mixins').parseError;
+var parseAndLogError = require('./mixins').parseAndLogError;
 var globals = require('./globals');
 var ga = require('google-analytics');
 var _ = require('underscore');
@@ -24,7 +24,8 @@ var filterValue = function(value) {
 
 var Form = module.exports.Form = React.createClass({
     contextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func
+        adviseUnsavedChanges: React.PropTypes.func,
+        fetch: React.PropTypes.func
     },
 
     childContextTypes: {
@@ -84,26 +85,29 @@ var Form = module.exports.Form = React.createClass({
 
     save: function(e) {
         e.preventDefault();
-        var $ = require('jquery');
         var value = this.state.value.toJS();
         filterValue(value);
         var method = this.props.method;
         var url = this.props.action;
-        var xhr = $.ajax({
-            url: url,
-            type: method,
-            contentType: "application/json",
-            data: JSON.stringify(value),
-            dataType: 'json',
-            headers: {'If-Match': this.props.etag}
-        }).fail(this.fail)
-        .done(this.receive);
-        xhr.href = url;
+        var request = this.context.fetch(url, {
+            method: method,
+            headers: {
+                'If-Match': this.props.etag,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(value)
+        });
+        request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .then(this.receive);
         this.setState({
             communicating: true,
-            putRequest: xhr
+            putRequest: request
         });
-        xhr.done(this.finish);
     },
 
     finish: function (data) {
@@ -115,17 +119,16 @@ var Form = module.exports.Form = React.createClass({
         this.props.navigate(url);
     },
 
-    fail: function (xhr, status, error) {
-        if (status == 'abort') return;
-        var data = parseError(xhr, status);
-        ga('send', 'exception', {
-            'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
-            'location': window.location.href
-        });
-        this.receive(data, status, xhr);
+    receive: function (data) {
+        var erred = (data['@type'] || []).indexOf('error') > -1;
+        if (erred) {
+            return this.showErrors(data);
+        } else {
+            return this.finish(data);
+        }
     },
 
-    receive: function (data, status, xhr) {
+    showErrors: function (data) {
         var externalValidation = {children: {}, validation: {}};
         var schemaErrors = [];
         if (data.errors !== undefined) {
