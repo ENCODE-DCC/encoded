@@ -141,13 +141,15 @@ def antibody_characterization_3(antibody_characterization):
 
 
 @pytest.fixture
-def construct_characterization_3(construct_characterization):
-    item = construct_characterization.copy()
+def biosample_characterization_4(biosample_characterization):
+    item = biosample_characterization.copy()
     item.update({
         'schema_version': '4',
-        'documents': []
+        'references': ["PMID:17558387", "PMID:19752085"]
     })
     return item
+
+
 
 
 def test_antibody_characterization_upgrade(app, antibody_characterization_1):
@@ -248,6 +250,13 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
     assert 'characterization_method' not in value
     assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
+
+
+def test_biosample_characterization_upgrade_references(app, biosample_characterization_4):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample_characterization', biosample_characterization_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert value['references'] == ["b42b2990-fa96-48e2-a2b1-501a1a83a068", "719ee795-ba05-48ab-93ea-0c07100bc92e"]
 
 
 def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_characterization_1):
