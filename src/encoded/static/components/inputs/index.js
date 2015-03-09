@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 var FileInput = module.exports.FileInput = require('./file');

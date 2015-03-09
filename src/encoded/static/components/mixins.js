@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 /*jshint scripturl:true */
 'use strict';
 var React = require('react');

@@ -36,8 +36,9 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('Run type', ['replicates.library.paired_ended']),
+    ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration']),
     ('Read length', ['files.replicate.read_length']),
+    ('Run type', ['files.replicate.library']),
     ('Library fragmentation method', ['files.replicate.library']),
     ('Library size range', ['files.replicate.library']),
     ('Biosample Age', ['files.replicate.library']),
@@ -77,11 +78,6 @@ def metadata_tsv(context, request):
                     for c in _tsv_mapping[column]:
                         c_value = []
                         for value in simple_path_ids(row, c):
-                            if isinstance(value, bool) and c == 'replicates.library.paired_ended':
-                                if not value:
-                                    value = 'single-ended'
-                                else:
-                                    value = 'paired-ended'
                             if str(value) not in c_value:
                                 c_value.append(str(value))
                         if len(temp):
@@ -114,6 +110,13 @@ def metadata_tsv(context, request):
                             libraries.append(l)
                         if len(libraries):
                             library = embed(request, libraries[0])
+                            value = library.get('paired_ended', '')
+                            if isinstance(value, bool):
+                                if not value:
+                                    value = 'single-ended'
+                                else:
+                                    value = 'paired-ended'
+                            data_row.append(value)
                             data_row.append(library.get('fragmentation_method', ''))
                             data_row.append(library.get('size_range', ''))
                             if 'biosample' in library:
@@ -122,12 +125,15 @@ def metadata_tsv(context, request):
                                 data_row.append('')
                             continue
                         else:
-                            data_row = data_row + [''] * 3
+                            data_row = data_row + [''] * 4
                             continue
                     path = prop[6:]
                     temp = []
                     for value in simple_path_ids(f, path):
                         temp.append(str(value))
+                    if prop == 'files.replicate.rbns_protein_concentration':
+                        if len(temp):
+                            temp[0] = temp[0] + ' ' + f['replicate'].get('rbns_protein_concentration_units', '')
                     data_row.append(', '.join(list(set(temp))))
                 rows.append(data_row)
     fout = io.StringIO()
