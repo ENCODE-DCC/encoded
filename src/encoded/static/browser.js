@@ -14,7 +14,7 @@ var domready = require('domready');
 if (!window.TEST_RUNNER) domready(function ready() {
     console.log('ready');
     // Set <html> class depending on browser features
-    var BrowserFeat = require('./components/mixins').BrowserFeat;
+    var BrowserFeat = require('./components/browserfeat').BrowserFeat;
     BrowserFeat.setHtmlFeatClass();
     var props = App.getRenderedProps(document);
     var server_stats = require('querystring').parse(window.stats_cookie);

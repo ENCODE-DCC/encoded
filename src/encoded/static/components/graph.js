@@ -3,7 +3,7 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var $script = require('scriptjs');
-var BrowserFeat = require('./mixins').BrowserFeat;
+var BrowserFeat = require('./browserfeat').BrowserFeat;
 
 
 // The JsonGraph object helps build JSON graph objects. Create a new object
@@ -87,6 +87,12 @@ module.exports.JsonGraph = JsonGraph;
 
 
 var Graph = module.exports.Graph = React.createClass({
+    getInitialState: function() {
+        return {
+            dlDisabled: false // Download button disabled because of IE
+        };
+    },
+
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
     // graph: Initialized empty Dagre-D3 graph.
@@ -184,6 +190,10 @@ var Graph = module.exports.Graph = React.createClass({
             el = this.refs.dlButton.getDOMNode();
             el.setAttribute('disabled', 'disabled');
         }
+
+        if (BrowserFeat.getBrowserCaps('uaTrident')) {
+            this.setState({dlDisabled: true});
+        }
     },
 
     // State change; redraw the graph
@@ -241,6 +251,7 @@ var Graph = module.exports.Graph = React.createClass({
         var svgXml = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
             serializer.serializeToString(svgNode);
         var img = new Image();
+        img.crossOrigin = 'anonymous';
         img.src = 'data:image/svg+xml;base64,' + window.btoa(svgXml);
 
         // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
@@ -267,7 +278,7 @@ var Graph = module.exports.Graph = React.createClass({
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
-                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick}>Download Graph</button>
+                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
