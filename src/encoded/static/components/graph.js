@@ -89,7 +89,8 @@ module.exports.JsonGraph = JsonGraph;
 var Graph = module.exports.Graph = React.createClass({
     getInitialState: function() {
         return {
-            dlDisabled: false // Download button disabled because of IE
+            dlDisabled: false, // Download button disabled because of IE
+            verticalGraph: true // True for vertically oriented graph, false for horizontal
         };
     },
 
@@ -132,7 +133,7 @@ var Graph = module.exports.Graph = React.createClass({
 
         // Create a new empty graph
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
-            .setGraph({rankdir: 'TB'})
+            .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
 
         // Convert from given node architecture to the dagre nodes and edges
@@ -204,7 +205,11 @@ var Graph = module.exports.Graph = React.createClass({
         }
     },
 
-    handleClick: function() {
+    handleOrientationClick: function() {
+        this.setState({verticalGraph: !this.state.verticalGraph});
+    },
+
+    handleDlClick: function() {
 
         // Collect CSS styles that apply to the graph and insert them into the given SVG element
         function attachStyles(el) {
@@ -278,7 +283,8 @@ var Graph = module.exports.Graph = React.createClass({
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
-                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                    <button className="btn btn-info btn-sm" onClick={this.handleOrientationClick}>{this.state.verticalGraph ? 'Horizontal' : 'Vertical'}</button>
+                    <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
             </div>
