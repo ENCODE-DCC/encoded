@@ -10,6 +10,7 @@ var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var image = require('./image');
+var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
@@ -19,6 +20,7 @@ var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
+var PubReferences = reference.PubReferences;
 
 
 var Panel = function (props) {
@@ -965,7 +967,7 @@ var Document = module.exports.Document = React.createClass({
                             {context.references && context.references.length ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                                    <dd><References pubs={context.references} /></dd>
                                 </div>
                             : null}
                         </dl>

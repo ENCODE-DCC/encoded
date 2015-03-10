@@ -8,11 +8,13 @@ var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var statuslabel = require('./statuslabel');
 var graph = require('./graph');
+var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
+var PubReferences = reference.PubReferences;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -81,8 +83,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                             : <em>None submitted</em> }
                         </dd>
 
-                        {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><References pubs={context.references} /></dd>
+                            </div>
+                        : null}
                     </dl>
                 </div>
 
