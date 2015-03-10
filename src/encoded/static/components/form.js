@@ -3,6 +3,8 @@ var React = require('react');
 var ReactForms = require('react-forms');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var globals = require('./globals');
+var closest = require('../libs/closest');
+var offset = require('../libs/offset');
 var ga = require('google-analytics');
 var _ = require('underscore');
 
@@ -46,13 +48,12 @@ var Form = module.exports.Form = React.createClass({
 
     componentDidUpdate: function(prevProps, prevState) {
         if (!_.isEqual(prevState.errors, this.state.errors)) {
-            var $ = require('jquery');
-            var $error = $('alert-danger:first');
-            if (!$error.length) {
-                $error = $('.rf-Message:first').closest('.rf-Field,.rf-RepeatingFieldset');
+            var error = document.querySelector('alert-danger');
+            if (!error) {
+                error = closest(document.querySelector('.rf-Message'), '.rf-Field,.rf-RepeatingFieldset');
             }
-            if ($error.length) {
-                $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+            if (error) {
+                window.scrollTo(0, offset(error).top - document.getElementById('navbar').clientHeight);
             }
         }
     },

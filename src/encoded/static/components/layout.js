@@ -4,6 +4,8 @@ var ReactForms = require('react-forms');
 var form = require('./form');
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
+var closest = require('../libs/closest');
+var offset = require('../libs/offset');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
@@ -210,8 +212,7 @@ var LayoutToolbar = React.createClass({
     },
 
     componentDidMount: function() {
-        var $ = require('jquery');
-        this.origTop = $(this.getDOMNode()).offset().top;
+        this.origTop = offset(this.getDOMNode()).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
     },
 
@@ -364,11 +365,6 @@ var Layout = module.exports.Layout = React.createClass({
         };
     },
 
-    componentDidMount: function() {
-        this.$ = require('jquery');
-        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
-    },
-
     render: function() {
         var classes = {
             layout: true,
@@ -381,6 +377,7 @@ var Layout = module.exports.Layout = React.createClass({
             <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
+                <canvas id="drag-marker" height="1" width="1"></canvas>
             </div>
         );
     },
@@ -389,7 +386,7 @@ var Layout = module.exports.Layout = React.createClass({
         if (!this.props.editable) {
             return;
         }
-        if (this.$(e.target).closest('[contenteditable]').length) {
+        if (closest(e.target, '[contenteditable]')) {
             // cancel drag to avoid interfering with dragging text
             return;
         }
@@ -536,13 +533,14 @@ var Layout = module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
-        target = (typeof target == 'string' ? this : target);
-        var $target = this.$(target.getDOMNode());
-        if (!$target.length) return;
-        var x = e.pageX - $target.offset().left;
-        var y = e.pageY - $target.offset().top;
-        var h = $target.height();
-        var w = $target.width();
+        target = target || this;
+        target = target.getDOMNode();
+        if (!target.childNodes.length) return;
+        var target_offset = offset(target);
+        var x = e.pageX - target_offset.left;
+        var y = e.pageY - target_offset.top;
+        var h = target.clientHeight;
+        var w = target.clientWidth;
         var sw_ne = h * x / w;
         var nw_se = h * (1 - x / w);
         var quad;

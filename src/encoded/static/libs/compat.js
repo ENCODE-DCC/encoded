@@ -37,6 +37,23 @@ for (var i=0, l=console_methods.length; i < l; i++) {
 
 })();
 
+// https://gist.github.com/elijahmanor/6452535
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+if (!Element.prototype.matches) (function () {
+    var proto = Element.prototype;
+    proto.matches = proto.matchesSelector ||
+        proto.mozMatchesSelector || proto.msMatchesSelector ||
+        proto.oMatchesSelector || proto.webkitMatchesSelector || (function (selector) {
+            var element = this;
+            var matches = (element.document || element.ownerDocument).querySelectorAll(selector);
+            var i = 0;
+            while (matches[i] && matches[i] !== element) {
+                i++;
+            }
+            return matches[i] ? true : false;
+        });
+})();
+
 // IE8's JSON.stringify outputs ascii rather than utf-8, confusing React's DOM
 // reconciliation algorithm. This version extracted from json2.js.
 // https://github.com/douglascrockford/JSON-js/blob/2468916ef0/json2.js
