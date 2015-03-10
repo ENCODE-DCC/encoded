@@ -20,7 +20,7 @@ var Publication = module.exports.Panel = React.createClass({
                     <Citation {...this.props} />
                 </div>
 
-                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.references && context.references.length) ?
+                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.identifiers && context.identifiers.length) ?
                     <div className="view-detail panel">
                         <Abstract {...this.props} />
                     </div>
@@ -92,10 +92,10 @@ var Abstract = React.createClass({
                     </div>
                 : null}
 
-                {context.references && context.references.length ?
+                {context.identifiers && context.identifiers.length ?
                     <div data-test="references">
                         <dt>References</dt>
-                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                        <dd><DbxrefList values={context.identifiers} className="multi-value" /></dd>
                     </div>
                 : null}
            </dl>

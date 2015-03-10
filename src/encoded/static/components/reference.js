@@ -10,7 +10,7 @@ function refCount(pubs) {
     var total = 0;
     if (pubs) {
         pubs.forEach(function(pub) {
-            total += pub.references ? pub.references.length : 0;
+            total += pub.identifers ? pub.identifers.length : 0;
         });
     }
     return total;
@@ -24,7 +24,7 @@ var PubReferences = React.createClass({
         // and remove duplicates
         var allRefs = [];untitled
         this.props.pubs.forEach(function(pub) {
-            allRefs = allRefs.concat(pub.references);
+            allRefs = allRefs.concat(pub.identifers);
         });
         allRefs = _.uniq(allRefs);
 
