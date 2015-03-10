@@ -92,7 +92,7 @@ var Form = module.exports.Form = React.createClass({
         var request = this.context.fetch(url, {
             method: method,
             headers: {
-                'If-Match': this.props.etag,
+                'If-Match': this.props.etag || '*',
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
