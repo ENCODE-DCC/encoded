@@ -10,8 +10,9 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/standard_status"}
-    ],
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
     "properties": {
         "schema_version": {
             "default": "1"
@@ -32,74 +33,544 @@
                 "linkTo": "file"
             }
         },
-        "qc_details": {
-            "title": "QC details",
-            "description": "QC metric, values and level of qc",
-            "type": "array",
-            "items": {
-                "title": "QC detail",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "metric": {
-                        "title": "QC Metric",
-                        "description": "The lab specific name of the machine used.",
-                        "type": "string",
-                        "enum": [
-                            "SPOT",
-                            "Pearson correlation coefficient",
-                            "IDR",
-                            "PBC",
-                            "NSC",
-                            "RSC",
-                            "Minimum unique reads",
-                            "Minimum uniquely mapped reads",
-                            "sequencing coverage",
-                            "Per tile sequence quality",
-                            "Per base sequence quality",
-                            "Sequence Duplication Levels",
-                            "Per base sequence content",
-                            "Per sequence GC content",
-                            "Sequence Length Distribution",
-                            "Kmer Content",
-                            "Basic Statistics",
-                            "Adapter Content",
-                            "Overrepresented sequences",
-                            "Per base N content",
-                            "Per sequence quality scores",
-                            "C methylated in CpG context",
-                            "C methylated in CHG context",
-                            "C methylated in CHH context",
-                            "read1 mapped",
-                            "read2 mapped",
-                            "singletons",
-                            "properly paired",
-                            "in total",
-                            "mapped reads",
-                            "paired in sequencing",
-                            "mate mapped different chr",
-                            "mate mapped different chr (mapQ>=5)"
-                        ]
-                    },
-                    "value": {
-                        "title": "QC value",
-                        "type": [
-                            "string",
-                            "number"
-                        ]
-                    },
-                    "level": {
-                        "title": "QC level",
-                        "description": "The level at which comparisons should be visualized.",
-                        "type": "string",
-                        "enum": [
-                            "file",
-                            "replicate",
-                            "library",
-                            "experiment"
-                        ]
-                    }
-                }
+        "sequencing coverage": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "PBC": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Minimum uniquely mapped reads": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "IDR": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per base sequence content": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Spearman correlation": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Basic Statistics": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "singletons": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "C methylated in CHG context": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per base sequence quality": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "SD of log ratios": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Sequence Duplication Levels": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "NSC": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "MAD of log ratios": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Sequence Length Distribution": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "mapped reads": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "C methylated in CHH context": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Overrepresented sequences": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "mate mapped different chr (mapQ>=5)": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "SPOT": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "in total": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per sequence GC content": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Kmer Content": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Adapter Content": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per tile sequence quality": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "read1 mapped": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "C methylated in CpG context": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Minimum unique reads": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "read2 mapped": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "paired in sequencing": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "RSC": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Pearson correlation": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "properly paired": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per sequence quality scores": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "mate mapped different chr": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
+            }
+        },
+        "Per base N content": {
+            "type": "number",
+            "description": "",
+            "level": {
+                "enum": [
+                    "file",
+                    "replicate",
+                    "library",
+                    "experiment"
+                ],
+                "type": "string",
+                "description": "The level at which comparisons should be visualized.",
+                "title": "QC level"
             }
         }
     }
