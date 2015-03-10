@@ -31,17 +31,20 @@ var Form = module.exports.Form = React.createClass({
     },
 
     childContextTypes: {
+        canSave: React.PropTypes.func,
         onTriggerSave: React.PropTypes.func
     },
     getChildContext: function() {
         return {
+            canSave: this.canSave,
             onTriggerSave: this.save
         };
     },
 
     getInitialState: function() {
         return {
-            value: this.props.defaultValue,
+            isValid: true,
+            value: null,
             externalValidation: null,
         };
     },
@@ -65,23 +68,27 @@ var Form = module.exports.Form = React.createClass({
                     schema={this.props.schema}
                     defaultValue={this.props.defaultValue}
                     externalValidation={this.state.externalValidation}
-                    onChange={this.handleChange} />
+                    onUpdate={this.handleUpdate} />
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>Save</button>
                 </div>
                 {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             </div>
         );
     },
 
-    handleChange: function(value) {
-        var nextState = {value: value};
+    handleUpdate: function(value, validation) {
+        var nextState = {value: value, isValid: validation.isSuccess};
         if (!this.state.unsavedToken) {
             nextState.unsavedToken = this.context.adviseUnsavedChanges();
         }
         this.setState(nextState);
+    },
+
+    canSave: function() {
+        return this.state.value && this.state.isValid && !this.state.editor_error && !this.communicating;
     },
 
     save: function(e) {

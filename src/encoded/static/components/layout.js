@@ -204,6 +204,7 @@ var BlockAddButton = React.createClass({
 var LayoutToolbar = React.createClass({
 
     contextTypes: {
+        canSave: React.PropTypes.func,
         onTriggerSave: React.PropTypes.func
     },
 
@@ -235,7 +236,7 @@ var LayoutToolbar = React.createClass({
                 <div className="navbar-right">
                     <a href="" className="btn btn-default navbar-btn">Cancel</a>
                     {' '}
-                    <button onClick={this.context.onTriggerSave} className="btn btn-success navbar-btn">Save</button>
+                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
               </div>
             </div>
