@@ -165,6 +165,7 @@
         "files.alternate_accessions": 1.0,
         "files.file_format": 1.0,
         "files.output_type": 1.0,
-        "files.md5sum": 1.0
+        "files.md5sum": 1.0,
+        "references.title": 1.0
     }
 }
