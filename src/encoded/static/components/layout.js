@@ -205,7 +205,8 @@ var LayoutToolbar = React.createClass({
 
     contextTypes: {
         canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func
+        onTriggerSave: React.PropTypes.func,
+        formEvents: React.PropTypes.object
     },
 
     getInitialState: function() {
@@ -215,10 +216,12 @@ var LayoutToolbar = React.createClass({
     componentDidMount: function() {
         this.origTop = offset(this.getDOMNode()).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.addListener('update', this.scrollspy)
     },
 
     componentWillUnmount: function() {
         globals.unbindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.removeListener('update', this.scrollspy)
     },
 
     scrollspy: function() {

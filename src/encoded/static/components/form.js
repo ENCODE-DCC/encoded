@@ -1,4 +1,5 @@
 'use strict';
+var EventEmitter = require('events').EventEmitter;
 var React = require('react');
 var ReactForms = require('react-forms');
 var parseAndLogError = require('./mixins').parseAndLogError;
@@ -32,12 +33,14 @@ var Form = module.exports.Form = React.createClass({
 
     childContextTypes: {
         canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func
+        onTriggerSave: React.PropTypes.func,
+        formEvents: React.PropTypes.object
     },
     getChildContext: function() {
         return {
             canSave: this.canSave,
-            onTriggerSave: this.save
+            onTriggerSave: this.save,
+            formEvents: this.state.formEvents
         };
     },
 
@@ -46,6 +49,7 @@ var Form = module.exports.Form = React.createClass({
             isValid: true,
             value: null,
             externalValidation: null,
+            formEvents: new EventEmitter()
         };
     },
 
@@ -85,6 +89,7 @@ var Form = module.exports.Form = React.createClass({
             nextState.unsavedToken = this.context.adviseUnsavedChanges();
         }
         this.setState(nextState);
+        this.state.formEvents.emit('update');
     },
 
     canSave: function() {
