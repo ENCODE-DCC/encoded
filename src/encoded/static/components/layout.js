@@ -72,6 +72,7 @@ var BlockEditModal = React.createClass({
     },
 
     onChange: function(value) {
+        if (value.toJS !== undefined) value = value.toJS();
         this.setState({value: value});
     },
 
@@ -83,7 +84,7 @@ var BlockEditModal = React.createClass({
     },
 
     save: function() {
-        this.props.onChange(this.state.value.toJS());
+        this.props.onChange(this.state.value);
         this.props.onRequestHide();
     }
 
