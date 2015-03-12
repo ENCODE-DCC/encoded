@@ -25,8 +25,18 @@ var LAYOUT_CONTEXT = {
     blocks: React.PropTypes.object
 };
 
+var MODAL_CONTEXT = {
+    fetch: React.PropTypes.func
+};
+
 
 var BlockEditModal = React.createClass({
+
+    childContextTypes: MODAL_CONTEXT,
+
+    getChildContext: function() {
+        return this.props.modalcontext;
+    },
 
     getInitialState: function() {
         return {value: this.props.value};
@@ -82,14 +92,19 @@ var BlockEditModal = React.createClass({
 
 var Block = module.exports.Block = React.createClass({
 
-    contextTypes: LAYOUT_CONTEXT,
+    contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
 
     getInitialState: function() {
         return {hover: false, focused: false};
     },
 
     renderToolbar: function() {
-        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} onCancel={this.onCancelEdit} />;
+        var modal = <BlockEditModal
+            modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
+            value={this.props.value}
+            onChange={this.onChange}
+            onCancel={this.onCancelEdit} />;
+
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
