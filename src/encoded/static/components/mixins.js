@@ -11,23 +11,23 @@ var ga = require('google-analytics');
 
 var parseError = module.exports.parseError = function (response) {
     if (response instanceof Error) {
-        return {
+        return Promise.resolve({
             status: 'error',
             title: response.message,
             '@type': ['ajax_error', 'error']
-        };
+        });
     }
     var content_type = response.headers.get('Content-Type') || '';
     content_type = content_type.split(';')[0];
     if (content_type == 'application/json') {
         return response.json();
     }
-    return {
+    return Promise.resolve({
         status: 'error',
         title: response.statusText,
         code: response.status,
         '@type': ['ajax_error', 'error']
-    };
+    });
 };
 
 var parseAndLogError = module.exports.parseAndLogError = function (cause, response) {
