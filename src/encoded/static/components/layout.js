@@ -4,6 +4,8 @@ var ReactForms = require('react-forms');
 var form = require('./form');
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
+var closest = require('../libs/closest');
+var offset = require('../libs/offset');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
@@ -23,8 +25,18 @@ var LAYOUT_CONTEXT = {
     blocks: React.PropTypes.object
 };
 
+var MODAL_CONTEXT = {
+    fetch: React.PropTypes.func
+};
+
 
 var BlockEditModal = React.createClass({
+
+    childContextTypes: MODAL_CONTEXT,
+
+    getChildContext: function() {
+        return this.props.modalcontext;
+    },
 
     getInitialState: function() {
         return {value: this.props.value};
@@ -81,14 +93,19 @@ var BlockEditModal = React.createClass({
 
 var Block = module.exports.Block = React.createClass({
 
-    contextTypes: LAYOUT_CONTEXT,
+    contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
 
     getInitialState: function() {
         return {hover: false, focused: false};
     },
 
     renderToolbar: function() {
-        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} onCancel={this.onCancelEdit} />;
+        var modal = <BlockEditModal
+            modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
+            value={this.props.value}
+            onChange={this.onChange}
+            onCancel={this.onCancelEdit} />;
+
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
@@ -203,7 +220,9 @@ var BlockAddButton = React.createClass({
 var LayoutToolbar = React.createClass({
 
     contextTypes: {
-        onTriggerSave: React.PropTypes.func
+        canSave: React.PropTypes.func,
+        onTriggerSave: React.PropTypes.func,
+        formEvents: React.PropTypes.object
     },
 
     getInitialState: function() {
@@ -211,13 +230,14 @@ var LayoutToolbar = React.createClass({
     },
 
     componentDidMount: function() {
-        var $ = require('jquery');
-        this.origTop = $(this.getDOMNode()).offset().top;
+        this.origTop = offset(this.getDOMNode()).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.addListener('update', this.scrollspy)
     },
 
     componentWillUnmount: function() {
         globals.unbindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.removeListener('update', this.scrollspy)
     },
 
     scrollspy: function() {
@@ -235,7 +255,7 @@ var LayoutToolbar = React.createClass({
                 <div className="navbar-right">
                     <a href="" className="btn btn-default navbar-btn">Cancel</a>
                     {' '}
-                    <button onClick={this.context.onTriggerSave} className="btn btn-success navbar-btn">Save</button>
+                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
               </div>
             </div>
@@ -373,11 +393,6 @@ var Layout = module.exports.Layout = React.createClass({
         };
     },
 
-    componentDidMount: function() {
-        this.$ = require('jquery');
-        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
-    },
-
     render: function() {
         var classes = {
             layout: true,
@@ -390,6 +405,7 @@ var Layout = module.exports.Layout = React.createClass({
             <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
+                <canvas id="drag-marker" height="1" width="1"></canvas>
             </div>
         );
     },
@@ -398,7 +414,7 @@ var Layout = module.exports.Layout = React.createClass({
         if (!this.props.editable) {
             return;
         }
-        if (this.$(e.target).closest('[contenteditable]').length) {
+        if (closest(e.target, '[contenteditable]')) {
             // cancel drag to avoid interfering with dragging text
             return;
         }
@@ -545,13 +561,14 @@ var Layout = module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
-        target = (typeof target == 'string' ? this : target);
-        var $target = this.$(target.getDOMNode());
-        if (!$target.length) return;
-        var x = e.pageX - $target.offset().left;
-        var y = e.pageY - $target.offset().top;
-        var h = $target.height();
-        var w = $target.width();
+        target = target || this;
+        target = target.getDOMNode();
+        if (!target.childNodes.length) return;
+        var target_offset = offset(target);
+        var x = e.pageX - target_offset.left;
+        var y = e.pageY - target_offset.top;
+        var h = target.clientHeight;
+        var w = target.clientWidth;
         var sw_ne = h * x / w;
         var nw_se = h * (1 - x / w);
         var quad;

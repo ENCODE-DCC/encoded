@@ -34,10 +34,18 @@ describe('Antibody', function() {
         var antibody;
 
         beforeEach(function() {
+            var Context = {
+              fetch: function(url, options) {
+                return Promise.resolve({json: () => ({'@graph': []})});
+              }
+            };
+
             // Render antibody into jsnode
-            antibody = TestUtils.renderIntoDocument(
-                <Antibody context={context} />
-            );
+            antibody = React.withContext(Context, function() {
+                return TestUtils.renderIntoDocument(
+                    <Antibody context={context} />
+                );
+            });
         });
 
         it('has a good header', function() {
