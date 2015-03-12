@@ -60,6 +60,7 @@ var BlockEditModal = React.createClass({
     },
 
     onChange: function(value) {
+        if (value.toJS !== undefined) value = value.toJS();
         this.setState({value: value});
     },
 
@@ -71,7 +72,7 @@ var BlockEditModal = React.createClass({
     },
 
     save: function() {
-        this.props.onChange(this.state.value.toJS());
+        this.props.onChange(this.state.value);
         this.props.onRequestHide();
     }
 
@@ -326,7 +327,11 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     getInitialState: function() {
-        var value = this.props.value;
+        return this.stateFromProps(this.props);
+    },
+
+    stateFromProps: function(props) {
+        var value = props.value;
         if (value.toJS !== undefined) value = value.toJS();
 
         var blockMap = {};
@@ -346,6 +351,10 @@ var Layout = module.exports.Layout = React.createClass({
             'dst_pos': null,
             'dst_quad': null,
         };
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.setState(this.stateFromProps(nextProps));
     },
 
     childContextTypes: LAYOUT_CONTEXT,

@@ -25,4 +25,5 @@ if (!window.TEST_RUNNER) domready(function ready() {
     // Simplify debugging
     window.app = app;
     window.React = React;
+    window.jQuery = require('jquery');
 });
