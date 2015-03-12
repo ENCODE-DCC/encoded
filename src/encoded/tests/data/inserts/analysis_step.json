@@ -56,7 +56,7 @@
         "name": "encode-2-step",
         "title": "ENCODE 2 step",
         "analysis_step_types": [
-            "filtering", 
+            "filtering",
             "file format conversion",
             "QA calculation",
             "signal generation",
@@ -252,6 +252,21 @@
         "software_versions": [
             "225b2920-a594-11e4-bcd8-0800200c9a66"
         ],
-        "uuid": "d358e1a0-a5a2-11e4-bcd8-0800200c9a66"
+    },
+    {
+        "uuid": "78a19d0d-cfff-418a-9549-6aed3d492e6f",
+        "name": "MAD",
+        "title": "MAD and correlations for long-RNA-Seq",
+        "input_file_types": ["tsv"],
+        "qa_stats_generated":  [
+            "MAD of log ratios",
+            "Pearson correlation",
+            "Spearman correlation",
+            "SD of log ratios"
+        ],
+        "analysis_step_types": ["QA calculation"],
+        "software_versions": [
+            "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
+        ],
     }
 ]

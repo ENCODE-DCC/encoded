@@ -164,5 +164,11 @@
         "version": "v0.11.2",
         "status": "released",
         "uuid": "225b2920-a594-11e4-bcd8-0800200c9a66"
+    },
+    {
+        "software": "9337d94e-9f02-42a5-a0c0-43ea760cfccc",
+        "version": "v0.0.1",
+        "status": "released",
+        "uuid": "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
     }
 ]

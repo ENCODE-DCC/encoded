@@ -2,23 +2,59 @@
     {
         "files": [
             "ENCFF000VUQ"
-        ], 
-        "status": "released", 
-        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882", 
-        "NSC": 1.61437706164671, 
-        "SPOT": 0.11906231714263, 
-        "RSC": 1.71, 
+        ],
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "NSC": 1.61437706164671,
+        "SPOT": 0.11906231714263,
+        "RSC": 1.71,
+        "level": "file",
         "uuid": "4a61b110-9ab2-11e4-bd06-0800200c9a66"
-    }, 
+    },
     {
         "files": [
             "ENCFF000VUS"
-        ], 
-        "status": "released", 
-        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882", 
-        "NSC": 2.44662908860751, 
-        "SPOT": 0.28479310889427, 
-        "RSC": 1.55, 
+        ],
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "NSC": 2.44662908860751,
+        "SPOT": 0.28479310889427,
+        "RSC": 1.55,
+        "level": "file",
         "uuid": "9cdd9120-9ab2-11e4-bd06-0800200c9a66"
+    },
+    {
+        "files": ["ENCFF946MFS", "ENCFF056BVY"],
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "MAD of log ratios": 0.378,
+        "Pearson correlation": 0.9786789,
+        "Spearman correlation": 0.974901,
+        "SD of log ratios": 0.469,
+        "level": "experiment",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a"
+    },
+    {
+        "files": [],
+        "status": "released",
+        "step_run": "",
+        "MAD of log ratios": 0.378,
+        "Pearson correlation": 0.9786789,
+        "Spearman correlation": 0.974901,
+        "SD of log ratios": 0.469,
+        "level": "file",
+        "uuid": "3d6bff45-7dbd-455f-91ed-8f4159948c6"
+    },
+    {
+        "files": [],
+        "status": "released",
+        "step_run": "",
+        "MAD of log ratios": 0.378,
+        "Pearson correlation": 0.9786789,
+        "Spearman correlation": 0.974901,
+        "SD of log ratios": 0.469,
+        "level": "file",
+        "uuid": "f79cbb26-c717-479e-bb71-09f8be5ac41a"
     }
+
 ]
