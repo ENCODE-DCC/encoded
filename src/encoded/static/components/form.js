@@ -1,8 +1,11 @@
 'use strict';
+var EventEmitter = require('events').EventEmitter;
 var React = require('react');
 var ReactForms = require('react-forms');
-var parseError = require('./mixins').parseError;
+var parseAndLogError = require('./mixins').parseAndLogError;
 var globals = require('./globals');
+var closest = require('../libs/closest');
+var offset = require('../libs/offset');
 var ga = require('google-analytics');
 var _ = require('underscore');
 
@@ -24,34 +27,40 @@ var filterValue = function(value) {
 
 var Form = module.exports.Form = React.createClass({
     contextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func
+        adviseUnsavedChanges: React.PropTypes.func,
+        fetch: React.PropTypes.func
     },
 
     childContextTypes: {
-        onTriggerSave: React.PropTypes.func
+        canSave: React.PropTypes.func,
+        onTriggerSave: React.PropTypes.func,
+        formEvents: React.PropTypes.object
     },
     getChildContext: function() {
         return {
-            onTriggerSave: this.save
+            canSave: this.canSave,
+            onTriggerSave: this.save,
+            formEvents: this.state.formEvents
         };
     },
 
     getInitialState: function() {
         return {
-            value: this.props.defaultValue,
+            isValid: true,
+            value: null,
             externalValidation: null,
+            formEvents: new EventEmitter()
         };
     },
 
     componentDidUpdate: function(prevProps, prevState) {
         if (!_.isEqual(prevState.errors, this.state.errors)) {
-            var $ = require('jquery');
-            var $error = $('alert-danger:first');
-            if (!$error.length) {
-                $error = $('.rf-Message:first').closest('.rf-Field,.rf-RepeatingFieldset');
+            var error = document.querySelector('alert-danger');
+            if (!error) {
+                error = closest(document.querySelector('.rf-Message'), '.rf-Field,.rf-RepeatingFieldset');
             }
-            if ($error.length) {
-                $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+            if (error) {
+                window.scrollTo(0, offset(error).top - document.getElementById('navbar').clientHeight);
             }
         }
     },
@@ -63,47 +72,55 @@ var Form = module.exports.Form = React.createClass({
                     schema={this.props.schema}
                     defaultValue={this.props.defaultValue}
                     externalValidation={this.state.externalValidation}
-                    onChange={this.handleChange} />
+                    onUpdate={this.handleUpdate} />
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>Save</button>
                 </div>
                 {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             </div>
         );
     },
 
-    handleChange: function(value) {
-        var nextState = {value: value};
+    handleUpdate: function(value, validation) {
+        var nextState = {value: value, isValid: validation.isSuccess};
         if (!this.state.unsavedToken) {
             nextState.unsavedToken = this.context.adviseUnsavedChanges();
         }
         this.setState(nextState);
+        this.state.formEvents.emit('update');
+    },
+
+    canSave: function() {
+        return this.state.value && this.state.isValid && !this.state.editor_error && !this.communicating;
     },
 
     save: function(e) {
         e.preventDefault();
-        var $ = require('jquery');
         var value = this.state.value.toJS();
         filterValue(value);
         var method = this.props.method;
         var url = this.props.action;
-        var xhr = $.ajax({
-            url: url,
-            type: method,
-            contentType: "application/json",
-            data: JSON.stringify(value),
-            dataType: 'json',
-            headers: {'If-Match': this.props.etag}
-        }).fail(this.fail)
-        .done(this.receive);
-        xhr.href = url;
+        var request = this.context.fetch(url, {
+            method: method,
+            headers: {
+                'If-Match': this.props.etag || '*',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(value)
+        });
+        request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .then(this.receive);
         this.setState({
             communicating: true,
-            putRequest: xhr
+            putRequest: request
         });
-        xhr.done(this.finish);
     },
 
     finish: function (data) {
@@ -115,17 +132,16 @@ var Form = module.exports.Form = React.createClass({
         this.props.navigate(url);
     },
 
-    fail: function (xhr, status, error) {
-        if (status == 'abort') return;
-        var data = parseError(xhr, status);
-        ga('send', 'exception', {
-            'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
-            'location': window.location.href
-        });
-        this.receive(data, status, xhr);
+    receive: function (data) {
+        var erred = (data['@type'] || []).indexOf('error') > -1;
+        if (erred) {
+            return this.showErrors(data);
+        } else {
+            return this.finish(data);
+        }
     },
 
-    receive: function (data, status, xhr) {
+    showErrors: function (data) {
         var externalValidation = {children: {}, validation: {}};
         var schemaErrors = [];
         if (data.errors !== undefined) {

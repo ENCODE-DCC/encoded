@@ -8,7 +8,7 @@ jest.dontMock('underscore');
 
 
 describe('Experiment Page', function() {
-    var React, TestUtils, Experiment, context, _;
+    var React, TestUtils, Experiment, FetchContext, context, _;
 
     beforeEach(function() {
         React = require('react');
@@ -18,15 +18,22 @@ describe('Experiment Page', function() {
         Experiment = require('../experiment').Experiment;
         context = require('../testdata/experiment');
 
+        FetchContext = {
+            fetch: function(url, options) {
+                return Promise.resolve({json: () => ({'@graph': []})});
+            }
+        };
     });
 
     describe('Minimal Experiment', function() {
         var experiment, summary, defTerms, defDescs;
 
         beforeEach(function() {
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context} />
+                );
+            });
 
             summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
             defTerms = summary[0].getDOMNode().getElementsByTagName('dt');
@@ -74,9 +81,11 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_fs = _.clone(context);
             context_fs.files = [require('../testdata/file/text'), require('../testdata/file/fastq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_fs} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_fs} />
+                );
+            });
 
             fileList = TestUtils.findRenderedDOMComponentWithTag(experiment, 'tbody').getDOMNode();
             fileDl = fileList.getElementsByTagName('a');
@@ -101,9 +110,11 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/myerschipseq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_doc} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_doc} />
+                );
+            });
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -144,9 +155,11 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_doc} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_doc} />
+                );
+            });
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -181,9 +194,11 @@ describe('Experiment Page', function() {
             var context_rep = _.clone(context);
             context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
             context_rep.files = [require('../testdata/file/fastq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_rep} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_rep} />
+                );
+            });
             replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
         });
 
@@ -249,9 +264,11 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_alt = _.clone(context);
             context_alt.alternate_accessions = ["ENCSR000ACT", "ENCSR999NOF"];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_alt} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_alt} />
+                );
+            });
             alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
         });
 
