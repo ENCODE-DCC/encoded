@@ -1,7 +1,5 @@
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
-var form = require('./form');
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
 var closest = require('../libs/closest');
@@ -42,21 +40,9 @@ var BlockEditModal = React.createClass({
         return {value: this.props.value};
     },
 
-    _extendedSchemaCache: {},
-
     render: function() {
         var blocktype = globals.blocks.lookup(this.props.value);
-        var schema = blocktype.schema;
-        if (schema !== undefined) {
-            schema = this._extendedSchemaCache[blocktype.label];
-            if (schema === undefined) {
-                // add CSS class property
-                var children = blocktype.schema.getChildren();
-                children = children.set('className', ReactForms.schema.Scalar({label: 'CSS Class'}));
-                schema = ReactForms.schema.Mapping(blocktype.schema.props, children);
-                this._extendedSchemaCache[blocktype.label] = schema;
-            }
-        }
+        var schema = blocktype.schema();
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return (
             <Modal {...this.props} title={'Edit ' + blocktype.label}>

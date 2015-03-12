@@ -1,6 +1,5 @@
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var _ = require('underscore');
