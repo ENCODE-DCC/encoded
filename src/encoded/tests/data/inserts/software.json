@@ -222,17 +222,17 @@
         "name": "fastqc",
         "title": "FastQC",
         "description": "A quality control tool for high throughput sequence data.",
-         "software_type": ["quality metric"],
-         "url": "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/",
-         "uuid":  "40d96460-a590-11e4-bcd8-0800200c9a66"
+        "software_type": ["quality metric"],
+        "url": "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/",
+        "uuid":  "d358e1a0-a5a2-11e4-bcd8-0800200c9a66"
     },
     {
-        "name": "MAD",
-        "title": "MAD",
+        "name": "mad_cc_lrna",
+        "title": "MAD and CC",
         "description": "MAD and correlation calculation for RNA-seq quantifiications",
-         "software_type": ["quality metric"],
-         "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
-         "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
+        "software_type": ["quality metric"],
+        "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
+        "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
     }
 
 ]
