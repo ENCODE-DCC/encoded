@@ -279,13 +279,13 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     render: function() {
-        var orientBtnClass = 'btn btn-info btn-sm ' + (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
+        var orientBtnClass = (this.state.verticalGraph ? 'btn-orient-horizontal' : 'btn-orient-vertical');
         var orientBtnAlt = 'Orient graph ' + (this.state.verticalGraph ? 'horizontally' : 'vertically');
         return (
             <div className="panel-full">
                 <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler}></div>
                 <div className="graph-dl clearfix">
-                    <button className={orientBtnClass} title={orientBtnAlt} onClick={this.handleOrientationClick}><span className="sr-only">{orientBtnAlt}</span></button>
+                    <button className="btn btn-info btn-sm btn-orient-wrapper" title={orientBtnAlt} onClick={this.handleOrientationClick}><span className={orientBtnClass}><span className="sr-only">{orientBtnAlt}</span></span></button>
                     <button ref="dlButton" className="btn btn-info btn-sm pull-right" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                 </div>
                 {this.props.children}
