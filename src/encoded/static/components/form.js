@@ -3,7 +3,6 @@ var EventEmitter = require('events').EventEmitter;
 var React = require('react');
 var ReactForms = require('react-forms');
 var parseAndLogError = require('./mixins').parseAndLogError;
-var globals = require('./globals');
 var closest = require('../libs/closest');
 var offset = require('../libs/offset');
 var ga = require('google-analytics');
@@ -23,6 +22,17 @@ var filterValue = function(value) {
         });
     }
 };
+
+
+class JSONNode extends ReactForms.schema.ScalarNode {
+    serialize(value) {
+        return JSON.stringify(value, null, 4);
+    }
+    deserialize(value) {
+        return (typeof value === 'string') ? JSON.parse(value) : value;
+    }
+}
+module.exports.JSONNode = JSONNode;
 
 
 var Form = module.exports.Form = React.createClass({
