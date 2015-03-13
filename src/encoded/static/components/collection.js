@@ -281,14 +281,10 @@ var lookup_column = function (result, column) {
                 matching = data.rows;
             }
             var rows = matching.map(function (row) {
-                return (
-                    <RowView row={row} />
-                );
+                return RowView({row: row});
             });
             rows.push.apply(rows, not_matching.map(function (row) {
-                return (
-                    <RowView row={row} hidden={true} />
-                );
+                return RowView({row: row, hidden: true});
             }));
             var table_class = "sticky-area collection-table";
             var loading_or_total;
