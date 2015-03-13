@@ -548,13 +548,13 @@ var Layout = module.exports.Layout = React.createClass({
         e.stopPropagation();
 
         target = target || this;
-        target = target.getDOMNode();
-        if (!target.childNodes.length) return;
-        var target_offset = offset(target);
+        var target_node = target.getDOMNode();
+        if (!target_node.childNodes.length) return;
+        var target_offset = offset(target_node);
         var x = e.pageX - target_offset.left;
         var y = e.pageY - target_offset.top;
-        var h = target.clientHeight;
-        var w = target.clientWidth;
+        var h = target_node.clientHeight;
+        var w = target_node.clientWidth;
         var sw_ne = h * x / w;
         var nw_se = h * (1 - x / w);
         var quad;
