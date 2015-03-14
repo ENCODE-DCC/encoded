@@ -853,7 +853,9 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 // Connect the file to the step, and the step to the derived_from files
                 jsonGraph.addEdge(stepId, fileId);
                 file.derived_from.forEach(function(derived) {
-                    jsonGraph.addEdge('file:' + derived.accession, stepId);
+                    if (!jsonGraph.getEdge('file:' + derived.accession, stepId)) {
+                        jsonGraph.addEdge('file:' + derived.accession, stepId);                        
+                    }
                 });
             }
         }

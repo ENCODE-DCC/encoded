@@ -83,6 +83,17 @@ JsonGraph.prototype.getNode = function(id, parent) {
     return undefined;
 };
 
+// Return 
+JsonGraph.prototype.getEdge = function(source, target) {
+    if (this.edges && this.edges.length) {
+        var matching = _(this.edges).find(function(edge) {
+            return (source === edge.source) && (target === edge.target);
+        });
+        return matching;
+    }
+    return undefined;
+}
+
 module.exports.JsonGraph = JsonGraph;
 
 

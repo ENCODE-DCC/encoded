@@ -94,4 +94,31 @@ describe('Experiment Graph', function() {
             expect(hasParents(graph, "file:ENCFF004COS", ["step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
+
+    // Two files each deriving from one file they share; and they share a step.
+    // There should be one copy of the step.
+    describe('Basic graph step duplication display', function() {
+        var experimentGraph, graph, files;
+
+        beforeEach(function() {
+            var context_graph = _.clone(context);
+            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-5cos'), require('../testdata/file/bam-6cos')];
+            graph = assembleGraph(context_graph, '', files);
+        });
+
+        it('Has the correct number of nodes and edges', function() {
+            expect(graph.nodes.length).toEqual(4);
+            expect(graph.edges.length).toEqual(3);
+        });
+
+        it('has the right nodes', function() {
+            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF005COS", "file:ENCFF006COS", "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+
+        it('has the right relationships between edges and nodes', function() {
+            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF005COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF006COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+    });
 });
