@@ -41,12 +41,13 @@ describe('Experiment Graph', function() {
         context = require('../testdata/experiment');
     });
 
+    // One file derived from two files, through one step.
     describe('Basic graph display', function() {
         var experimentGraph, graph, files;
 
         beforeEach(function() {
             var context_graph = _.clone(context);
-            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-cos')];
+            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-2cos')];
             graph = assembleGraph(context_graph, '', files);
         });
 
@@ -62,6 +63,35 @@ describe('Experiment Graph', function() {
         it('has the right relationships between edges and nodes', function() {
             expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS", "file:ENCFF000VUQ"])).toBeTruthy();
             expect(hasParents(graph, "file:ENCFF002COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+    });
+
+    // Two files each deriving from one file each; share a step.
+    // There should be two copies of the step with different file
+    // accessions in their IDs.
+    describe('Basic graph step duplication display', function() {
+        var experimentGraph, graph, files;
+
+        beforeEach(function() {
+            var context_graph = _.clone(context);
+            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-3cos'), require('../testdata/file/bam-4cos')];
+            graph = assembleGraph(context_graph, '', files);
+        });
+
+        it('Has the correct number of nodes and edges', function() {
+            expect(graph.nodes.length).toEqual(6);
+            expect(graph.edges.length).toEqual(4);
+        });
+
+        it('has the right nodes', function() {
+            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF003COS", "file:ENCFF004COS", "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+
+        it('has the right relationships between edges and nodes', function() {
+            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
+            expect(hasParents(graph, "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF003COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF004COS", ["step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 });
