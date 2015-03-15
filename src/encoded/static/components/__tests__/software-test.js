@@ -59,7 +59,7 @@ describe('Software', function() {
         beforeEach(function() {
             var context_ref = _.clone(context);
             context_ref.references = [require('../testdata/publication')];
-            context_ref.references[0].references = ['PMID:19352372', 'PMCID:PMC3062402'];
+            context_ref.references[0].identifiers = ['PMID:19352372', 'PMCID:PMC3062402'];
 
             software = TestUtils.renderIntoDocument(
                 <Software context={context_ref} />
