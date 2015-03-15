@@ -6,10 +6,6 @@ var item = require('./item');
 var richtext = require('./richtext');
 var _ = require('underscore');
 
-var ReactForms = require('react-forms');
-var Mapping = ReactForms.schema.Mapping;
-var Scalar = ReactForms.schema.Scalar;
-
 var ItemBlockView = item.ItemBlockView;
 var ObjectPicker = require('../inputs').ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
@@ -116,11 +112,15 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 globals.blocks.register({
     label: 'teaser block',
     icon: 'icon icon-image',
-    schema: Mapping({}, {
-        display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
-        image: Scalar({label: "Image", input: imagePicker}),
-        body: Scalar({label: "Caption", input: <RichEditor />}),
-        href: Scalar({label: "Link URL"}),
-    }),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.Mapping({}, {
+            display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
+            image: Scalar({label: "Image", input: imagePicker}),
+            body: Scalar({label: "Caption", input: <RichEditor />}),
+            href: Scalar({label: "Link URL"}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: TeaserBlockView
 }, 'teaserblock');

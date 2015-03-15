@@ -3,10 +3,6 @@ var React = require('react');
 var globals = require('../globals');
 var $script = require('scriptjs');
 
-var ReactForms = require('react-forms');
-var Mapping = ReactForms.schema.Mapping;
-var Scalar = ReactForms.schema.Scalar;
-
 
 var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 
@@ -70,9 +66,13 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 globals.blocks.register({
     label: 'rich text block',
     icon: 'icon icon-file-text',
-    schema: Mapping({}, {
-        body: Scalar({label: 'HTML Source', input: <textarea rows="15" cols="80" />}),
-    }),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.Mapping({}, {
+            body: ReactForms.Scalar({label: 'HTML Source', input: <textarea rows="15" cols="80" />}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: RichTextBlockView,
     initial: {
         'body': '<p>This is a new block.</p>'
