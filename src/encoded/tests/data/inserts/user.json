@@ -285,7 +285,7 @@
         "uuid": "4c23ec32-c7c8-4ac0-affb-04befcc881d4"
     },
     {
-        "email": "euriehong@stanford.edu",
+        "email": "ipsum.imperdiet@ipsum.venenatis",
         "fax": "000-000-0000",
         "first_name": "Euismod",
         "google": "google",
@@ -1074,5 +1074,22 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "9e889180-9db1-11e4-bd06-0800200c9a66"
+    },
+    {
+        "email": "euriehong@stanford.edu",
+        "first_name": "Eurie",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "H.",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "5a5a5467-4a3c-4ce3-b238-b1649506112b"
     }
 ]
