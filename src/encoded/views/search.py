@@ -74,18 +74,6 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-<<<<<<< HEAD
-def flatten_dict(d):
-    def items():
-        for key, value in d.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in flatten_dict(value).items():
-                    yield key + "." + subkey, subvalue
-            else:
-                yield key, value
-    return dict(items())
-
-
 def assembly_mapper(location, species, old_assembly, new_assembly):
     # All others
     new_url = ENSEMBL_URL + 'map/' + species + '/' \
@@ -116,7 +104,6 @@ def search_peaks(request):
         species = 'mouse'
         old_assembly = 'NCBIM37'
         new_assembly = 'GRCm38'
-    
     chromosome = ''
     start = ''
     end = ''
@@ -213,8 +200,6 @@ def search_peaks(request):
         return (file_ids, 'success')
 
 
-=======
->>>>>>> origin/master
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
@@ -256,14 +241,10 @@ def search(context, request, search_type=None):
         return result
 
     if search_type is None:
-<<<<<<< HEAD
-        search_type = request.params.get('type')
-=======
         doc_types = request.params.getall('type')
         if '*' in doc_types:
             doc_types = []
 
->>>>>>> origin/master
         # handling invalid item types
         bad_types = [t for t in doc_types if t not in root.by_item_type]
         if bad_types:
@@ -341,8 +322,7 @@ def search(context, request, search_type=None):
 
     # Setting filters
     query_filters = query['filter']['and']['filters']
-<<<<<<< HEAD
-    used_filters = []
+
 
     peak_files_uuids = []
     if 'regionid' in request.params:
@@ -360,25 +340,11 @@ def search(context, request, search_type=None):
                 }
             })
 
-    for field, term in request.params.iteritems():
-        if field not in extra_params:
-            # Add filter to result
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if v != term
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
-=======
     used_filters = {}
     for field, term in request.params.items():
         if field in ['type', 'limit', 'mode', 'searchTerm',
                      'format', 'frame', 'datastore', 'field']:
             continue
->>>>>>> origin/master
 
         # Add filter to result
         qs = urlencode([
@@ -453,7 +419,6 @@ def search(context, request, search_type=None):
             },
         }
 
-<<<<<<< HEAD
         # Handling region search using filters
         if len(peak_files_uuids):
             o_terms = query['aggs'][agg_name]['filter']
@@ -497,10 +462,10 @@ def search(context, request, search_type=None):
                                 q_field: [used_facet['term']]
                             }
                         })
-=======
->>>>>>> origin/master
+
     # Execute the query
-    results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
+    results = es.search(body=query, index='encoded',
+                        doc_type=doc_types or None, size=size)
 
     # Loading facets in to the results
     if 'aggregations' in results:

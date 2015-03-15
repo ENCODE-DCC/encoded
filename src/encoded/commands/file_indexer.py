@@ -26,7 +26,8 @@ def main():
         description="Index data in Elastic Search", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--record', default=False, action='store_true', help="Record the xmin in ES meta")
+    parser.add_argument('--record', default=False, action='store_true',
+                        help="Record the xmin in ES meta")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()

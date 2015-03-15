@@ -34,7 +34,7 @@ import transaction
 import urllib3
 import csv
 import gzip
-import StringIO
+from io import StringIO
 
 
 log = logging.getLogger(__name__)
@@ -46,6 +46,7 @@ SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 def includeme(config):
     config.add_route('index', '/index')
+    config.add_route('file_index', '/file_index')
     config.scan(__name__)
     config.add_request_method(lambda request: defaultdict(set), '_updated_uuid_paths', reify=True)
     config.add_request_method(lambda request: {}, '_initial_back_rev_links', reify=True)
@@ -436,7 +437,7 @@ def file_index(request):
                 try:
                     file_data = list(csv.reader(f, delimiter='\t'))
                 except:
-                    print 'File has problem - ' + properties['href']
+                    print ('File has problem - ' + properties['href'])
                 else:
                     for row in file_data:
                         result = {
