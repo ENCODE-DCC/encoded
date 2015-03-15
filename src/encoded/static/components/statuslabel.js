@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
@@ -10,12 +9,12 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
         if (typeof status === 'string') {
             // Display simple string and optional title in badge
             return (
-                <div className="status-list">
-                    <span className={globals.statusClass(status, 'label')}>
+                <ul className="status-list">
+                    <li className={globals.statusClass(status, 'label')}>
                         {title ? <span className="status-list-title">{title + ': '}</span> : null}
                         {status}
-                    </span>
-                </div>
+                    </li>
+                </ul>
             );
         } else if (typeof status === 'object') {
             // Display a list of badges from array of objects with status and optional title

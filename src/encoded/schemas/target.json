@@ -61,10 +61,12 @@
                     "transcription factor",
                     "RNA binding protein",
                     "chromatin remodeller",
+                    "histone",
                     "control",
                     "tag",
                     "recombinant protein",
                     "nucleotide modification",
+                    "other post-translational modification",
                     "other context"
                 ]
             }
@@ -84,6 +86,10 @@
     "facets": {
         "organism.scientific_name": {
             "title": "Organism",
+            "type": "string"
+        },
+        "investigated_as": {
+            "title": "Target of assay",
             "type": "string"
         }
     },

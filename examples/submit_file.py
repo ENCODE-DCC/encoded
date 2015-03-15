@@ -26,7 +26,7 @@ assembly = 'hg19'
 print("Calculating md5sum.")
 md5sum = hashlib.md5()
 with open(path, 'rb') as f:
-    for chunk in iter(lambda: f.read(1024*1024), ''):
+    for chunk in iter(lambda: f.read(1024*1024), b''):
         md5sum.update(chunk)
 
 data = {
@@ -47,6 +47,7 @@ data = {
 gzip_types = [
     "CEL",
     "bam",
+    "bed",
     "bed_bed3",
     "bed_bed6",
     "bed_bedLogR",

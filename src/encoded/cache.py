@@ -3,9 +3,11 @@ from sqlalchemy.util import LRUCache
 
 
 class ManagerLRUCache(object):
-    def __init__(self, name, capacity=100, threshold=.5):
+    """ Override capacity in settings.
+    """
+    def __init__(self, name, default_capacity=100, threshold=.5):
         self.name = name
-        self.capacity = capacity
+        self.default_capacity = default_capacity
         self.threshold = threshold
 
     @property
@@ -14,17 +16,19 @@ class ManagerLRUCache(object):
             return None
         threadlocals = manager.stack[0]
         if self.name not in threadlocals:
-            threadlocals[self.name] = LRUCache(self.capacity, self.threshold)
+            registry = threadlocals['registry']
+            capacity = int(registry.settings.get(self.name + '.capacity', self.default_capacity))
+            threadlocals[self.name] = LRUCache(capacity, self.threshold)
         return threadlocals[self.name]
 
     def get(self, key, default=None):
         cache = self.cache
         if cache is None:
-            return
-        cached = cache.get(key)
-        if cached is not None:
-            return cached[1]
-        return default
+            return default
+        try:
+            return cache[key]
+        except KeyError:
+            return default
 
     def __contains__(self, key):
         cache = self.cache

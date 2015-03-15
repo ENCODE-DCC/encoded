@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/biosample_classification" }
+        { "$ref": "mixins.json#/biosample_classification" },
+        { "$ref": "mixins.json#/assay" }
     ],
     "properties": {
         "schema_version": {
@@ -31,20 +32,6 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
-        },
-        "assay_term_name": {
-            "@id": null,
-            "title": "Assay name",
-            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
-            "default": "",
-            "type":  "string"
-        },
-        "assay_term_id": {
-            "@type": "@id",
-            "title": "Assay ID",
-            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
-            "type": "string",
-            "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "dataset_type": {
             "title": "Type",
@@ -94,11 +81,15 @@
             "type": "string"
         },
         "assembly": {
-            "title": "Genome assembly",
+            "title": "Genome assembly (visualization)",
             "type": "string"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
+            "type": "string"
+        },
+        "target.investigated_as": {
+            "title": "Target of assay",
             "type": "string"
         },
         "replicates.library.biosample.biosample_type": {
@@ -133,6 +124,14 @@
             "title": "Library insert size (nt)",
             "type": "string"
         },
+        "replicates.library.nucleic_acid_term_name": {
+            "title": "Library made from",
+            "type": "string"
+        },
+        "replicates.library.depleted_in_term_name": {
+            "title": "Library depleted in",
+            "type": "string"
+        },
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment",
             "type": "array"
@@ -143,6 +142,10 @@
         },
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -203,6 +206,18 @@
             "title": "Treatment",
             "type": "string"
         },
+        "replicates.library.biosample.synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "replicates.library.biosample.post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "replicates.length": {
             "title": "Replicates",
             "type": "array"
@@ -214,66 +229,6 @@
         "encode2_dbxrefs": {
             "title": "Dbxrefs",
             "type": "array"
-        }
-    },
-    "calculated_props": {
-        "organ_slims": {
-            "title": "Organ slims",
-            "type": "string"
-        }, 
-        "system_slims": {
-            "title": "System slims",
-            "type": "string"
-        }, 
-        "developmental_slims": {
-            "title": "Developmental slims",
-            "type": "string"
-        }, 
-        "assay_synonyms": {
-            "title": "Assay synonyms",
-            "type": "string"
-        },
-        "biosample_synonyms": {
-            "title": "Biosample synonyms",
-            "type": "string"
-        },
-        "month_released": {
-            "title": "Month releases",
-            "type": "string"
-        },
-        "run_type": {
-            "title": "Run type",
-            "type": "string"
-        },
-        "hub": {
-            "title": "Track hub",
-            "type": "string"
-        },
-        "assembly": {
-            "title": "Assembly",
-            "type": "string"
-        },
-        "files": {
-            "title": "Files",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
-                "type": "string",
-                "linkTo": "file"
-            }
-        },
-        "revoked_files": {
-            "title": "Revoked Files",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
-                "type": "string",
-                "linkTo": "file"
-            }
         }
     },
     "boost_values": {

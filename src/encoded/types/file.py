@@ -1,13 +1,14 @@
-from ..contentbase import location
-from ..renderers import embed
+from ..contentbase import (
+    calculated_property,
+    collection,
+)
+from ..embedding import embed
 from ..schema_utils import (
     load_schema,
     schema_validator,
 )
 from .base import (
-    ACCESSION_KEYS,
-    ALIAS_KEYS,
-    Collection,
+    Item,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -16,10 +17,15 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
-from pyramid.traversal import find_root
 from pyramid.view import view_config
+from urllib.parse import (
+    parse_qs,
+    urlparse,
+)
 import boto
+import datetime
 import json
+import pytz
 import time
 
 
@@ -58,63 +64,110 @@ def external_creds(bucket, key, name):
     }
 
 
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
+@collection(
+    name='files',
+    unique_key='accession',
+    properties={
         'title': 'Files',
         'description': 'Listing of Files',
+    })
+class File(Item):
+    item_type = 'file'
+    schema = load_schema('file.json')
+    name_key = 'accession'
+
+    rev = {
+        'paired_with': ('file', 'paired_with'),
     }
 
-    class Item(Collection.Item):
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {
-                'name': 'alias',
-                'value': 'md5:{md5sum}',
-                '$templated': True,
-                '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
-            },
-        ]
-        template = {
-            'href': {
-                '$value': '{item_uri}@@download/{accession}{file_extension}',
-                '$templated': True,
-            },
-            'upload_credentials': {
-                '$templated': True,
-                '$condition': show_upload_credentials,
-                '$value': lambda context: context.propsheets['external']['upload_credentials'],
-            }
-        }
+    embedded = [
+        'replicate',
+        'replicate.experiment',
+        'replicate.experiment.lab',
+        'replicate.experiment.target',
+        'derived_from',
+        'submitted_by',
+        'pipeline',
+        'analysis_step',
+        'analysis_step.software_versions',
+        'analysis_step.software_versions.software'
+    ]
 
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            mapping = self.schema['file_format_file_extension']
-            ns['file_extension'] = mapping[properties['file_format']]
-            return ns
+    def unique_keys(self, properties):
+        keys = super(File, self).unique_keys(properties)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
+        return keys
 
-        @classmethod
-        def create(cls, parent, uuid, properties, sheets=None):
-            if properties.get('status') == 'uploading':
-                sheets = {} if sheets is None else sheets.copy()
+    # Don't specify schema as this just overwrites the existing value
+    @calculated_property(
+        condition=lambda paired_end=None: paired_end == '1')
+    def paired_with(self, root, request):
+        paired_with = self.get_rev_links('paired_with')
+        if not paired_with:
+            return None
+        item = root.get_by_uuid(paired_with[0])
+        return request.resource_path(item)
 
-                registry = find_root(parent).registry
-                bucket = registry.settings['file_upload_bucket']
-                mapping = parent.schema['file_format_file_extension']
-                file_extension = mapping[properties['file_format']]
-                date = properties['date_created'].split('T')[0].replace('-', '/')
-                key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                    date=date, file_extension=file_extension, **properties)
-                name = 'upload-{time}-{accession}'.format(
-                    time=time.time(), **properties)  # max 32 chars
+    @calculated_property(schema={
+        "title": "Download URL",
+        "type": "string",
+    })
+    def href(self, request, accession, file_format):
+        file_extension = self.schema['file_format_file_extension'][file_format]
+        filename = '{}{}'.format(accession, file_extension)
+        return request.resource_path(self, '@@download', filename)
 
-                sheets['external'] = external_creds(bucket, key, name)
-            return super(File.Item, cls).create(parent, uuid, properties, sheets)
+    @calculated_property(condition=show_upload_credentials, schema={
+        "type": "object",
+    })
+    def upload_credentials(self):
+        return self.propsheets['external']['upload_credentials']
+
+    @calculated_property(schema={
+        "title": "Pipeline",
+        "type": "string",
+        "linkTo": "pipeline"
+    })
+    def pipeline(self, request, step_run=None):
+        if step_run is not None:
+            workflow = request.embed(step_run, '@@object').get('workflow_run')
+            if workflow:
+                return request.embed(workflow, '@@object').get('pipeline')
+
+    @calculated_property(schema={
+        "title": "Analysis Step",
+        "type": "string",
+        "linkTo": "analysis_step"
+    })
+    def analysis_step(self, request, step_run=None):
+        if step_run is not None:
+            return request.embed(step_run, '@@object').get('analysis_step')
+
+    @classmethod
+    def create(cls, registry, uuid, properties, sheets=None):
+        if properties.get('status') == 'uploading':
+            sheets = {} if sheets is None else sheets.copy()
+
+            bucket = registry.settings['file_upload_bucket']
+            mapping = cls.schema['file_format_file_extension']
+            file_extension = mapping[properties['file_format']]
+            date = properties['date_created'].split('T')[0].replace('-', '/')
+            key = '{date}/{uuid}/{accession}{file_extension}'.format(
+                date=date, file_extension=file_extension, uuid=uuid, **properties)
+            name = 'up{time:.6f}-{accession}'.format(
+                time=time.time(), **properties)  # max 32 chars
+
+            sheets['external'] = external_creds(bucket, key, name)
+        return super(File, cls).create(registry, uuid, properties, sheets)
 
 
-@view_config(name='upload', context=File.Item, request_method='GET',
+@view_config(name='upload', context=File, request_method='GET',
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
@@ -128,10 +181,10 @@ def get_upload(context, request):
     }
 
 
-@view_config(name='upload', context=File.Item, request_method='POST',
+@view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
@@ -141,11 +194,11 @@ def post_upload(context, request):
 
     bucket = external['bucket']
     key = external['key']
-    name = 'upload-{time}-{accession}'.format(
+    name = 'up{time:.6f}-{accession}'.format(
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
     context.update(None, {'external': creds})
-    rendered = embed(request, '/%s/?frame=object' % context.uuid, as_user=True)
+    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],
@@ -154,41 +207,41 @@ def post_upload(context, request):
     return result
 
 
-class InternalResponse(Response):
-    def _abs_headerlist(self, environ):
-        """Avoid making the Location header absolute.
-        """
-        return list(self.headerlist)
-
-
-@view_config(name='download', context=File.Item, request_method='GET',
+@view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
-    properties = context.upgrade_properties(finalize=False)
-    ns = context.template_namespace(properties, request)
+    properties = context.upgrade_properties()
+    mapping = context.schema['file_format_file_extension']
+    file_extension = mapping[properties['file_format']]
+    filename = properties['accession'] + file_extension
     if request.subpath:
-        filename, = request.subpath
-        if filename != '{accession}{file_extension}'.format(**ns):
-            raise HTTPNotFound(filename)
-    else:
-        filename = '{accession}{file_extension}'.format(**ns)
+        _filename, = request.subpath
+        if filename != _filename:
+            raise HTTPNotFound(_filename)
 
-    proxy = asbool(request.params.get('proxy'))
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
-        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
         location = conn.generate_url(
-            36*60*60, method, external['bucket'], external['key'],
-            response_headers={
+            36*60*60, request.method, external['bucket'], external['key'],
+            force_http=proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
         raise ValueError(external.get('service'))
 
+    if asbool(request.params.get('soft')):
+        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
+        }
+
     if proxy:
-        return InternalResponse(location='/_proxy/' + location)
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

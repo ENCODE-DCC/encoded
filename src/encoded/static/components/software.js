@@ -1,15 +1,17 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var pipeline = require('./pipeline');
+var fetched = require('./fetched');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
-
+var PipelineTable = pipeline.PipelineTable;
+var FetchedItems = fetched.FetchedItems;
 
 // Count the total number of references in all the publications passed
 // in the pubs array parameter.
@@ -75,6 +77,9 @@ var Software = module.exports.Software = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+
+        var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -123,11 +128,70 @@ var Software = module.exports.Software = React.createClass({
                         : null}
                     </dl>
                 </div>
+
+                {context.versions && context.versions.length ?
+                    <div>
+                        <h3>Software Versions</h3>
+                        <SoftwareVersionTable items={context.versions} />
+                    </div>
+                : null }
             </div>
         );
     }
 });
 globals.content_views.register(Software, 'software');
+
+// Commenting out until pipelines are used.
+
+var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Pipelines using software {context.title}</h3>
+                <PipelineTable {...this.props} />
+            </div>
+        );
+    }
+});
+
+
+var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
+    render: function() {
+        var rows = {};
+        this.props.items.forEach(function (version) {
+            rows[version['@id']] = (
+                <tr>
+                    <td>
+                        {version.downloaded_url ?
+                            <a href={version.downloaded_url}>{version.version}</a>
+                        :
+                            <span>{version.version}</span>
+                        }
+                    </td>
+                    <td>{version.download_checksum}</td>
+                </tr>
+            );
+        });
+        return (
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Download checksum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        );
+    }
+});
 
 
 var Listing = React.createClass({

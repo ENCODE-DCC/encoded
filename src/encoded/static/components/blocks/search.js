@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var fetched = require('../fetched');
@@ -9,10 +8,6 @@ var search = require('../search');
 var Listing = search.Listing;
 var ResultTable = search.ResultTable;
 var Table = collection.Table;
-
-var ReactForms = require('react-forms');
-var Schema = ReactForms.schema.Schema;
-var Property = ReactForms.schema.Property;
 
 
 var SearchResultsLayout = React.createClass({
@@ -40,7 +35,7 @@ var SearchBlockEdit = module.exports.SearchBlockEdit = React.createClass({
         var styles = {maxHeight: 300, overflow: 'scroll' };
         return (
             <div className="well" style={styles}>
-                {this.transferPropsTo(<ResultTable context={this.props.data} mode="picker" />)}
+                <ResultTable {...this.props} context={this.props.data} mode="picker" />)
             </div>
         );
     }
@@ -88,11 +83,13 @@ var displayModeSelect = (
 globals.blocks.register({
     label: 'search block',
     icon: 'icon icon-search',
-    schema: (
-        <Schema>
-          <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
-          <Property name="search" label="Search Criteria" input={<SearchBlock mode="edit" />} />
-        </Schema>
-    ),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.Mapping({}, {
+            display: ReactForms.Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
+            search: ReactForms.Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: SearchBlock
 }, 'searchblock');

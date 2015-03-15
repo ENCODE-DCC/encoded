@@ -3,8 +3,9 @@ from pyramid.security import (
 )
 from pyramid.view import view_config
 from ..contentbase import (
-    Collection,
-    location,
+    Item,
+    calculated_property,
+    collection,
 )
 from ..types.base import paths_filtered_by_status
 from ..types.download import ItemWithAttachment
@@ -36,12 +37,15 @@ def allowed(context, request):
     }
 
 
-@location('testing-downloads')
-class TestingDownload(Collection):
-    properties = {
+@collection(
+    'testing-downloads',
+    properties={
         'title': 'Test download collection',
         'description': 'Testing. Testing. 1, 2, 3.',
-    }
+    },
+)
+class TestingDownload(ItemWithAttachment):
+    item_type = 'testing_download'
     schema = {
         'type': 'object',
         'properties': {
@@ -57,30 +61,44 @@ class TestingDownload(Collection):
         }
     }
 
-    class Item(ItemWithAttachment):
-        pass
 
-
-@location('testing-keys')
-class TestingKey(Collection):
-    properties = {
+@collection(
+    'testing-keys',
+    properties={
         'title': 'Test keys',
         'description': 'Testing. Testing. 1, 2, 3.',
+    },
+    unique_key='testing_accession',
+)
+class TestingKey(Item):
+    item_type = 'testing_key'
+    schema = {
+        'type': 'object',
+        'properties': {
+            'name': {
+                'type': 'string',
+                'uniqueKey': True,
+            },
+            'accession': {
+                'type': 'string',
+                'uniqueKey': 'testing_accession',
+            },
+        }
     }
-    unique_key = 'testing_accession'
-
-    item_keys = [
-        'name',
-        {'name': 'testing_accession', 'value': '{accession}', '$templated': True},
-    ]
 
 
-@location('testing-link-sources')
-class TestingLinkSource(Collection):
+@collection('testing-link-sources')
+class TestingLinkSource(Item):
     item_type = 'testing_link_source'
     schema = {
         'type': 'object',
         'properties': {
+            'name': {
+                'type': 'string',
+            },
+            'uuid': {
+                'type': 'string',
+            },
             'target': {
                 'type': 'string',
                 'linkTo': 'testing_link_target',
@@ -88,46 +106,59 @@ class TestingLinkSource(Collection):
             'status': {
                 'type': 'string',
             },
-        }
-    }
-    properties = {
-        'title': 'Test links',
-        'description': 'Testing. Testing. 1, 2, 3.',
+        },
+        'required': ['target'],
+        'additionalProperties': False,
     }
 
 
-@location('testing-link-targets')
-class TestingLinkTarget(Collection):
+@collection('testing-link-targets', unique_key='testing_link_target:name')
+class TestingLinkTarget(Item):
     item_type = 'testing_link_target'
+    name_key = 'name'
     schema = {
         'type': 'object',
         'properties': {
+            'name': {
+                'type': 'string',
+                'uniqueKey': True,
+            },
+            'uuid': {
+                'type': 'string',
+            },
             'status': {
                 'type': 'string',
             },
-        }
+        },
+        'additionalProperties': False,
     }
-    properties = {
-        'title': 'Test link targets',
-        'description': 'Testing. Testing. 1, 2, 3.',
-    }
-    item_rev = {
+    rev = {
         'reverse': ('testing_link_source', 'target'),
     }
-    item_embedded = [
+    embedded = [
         'reverse',
     ]
-    item_template = {
-        'reverse': lambda root, reverse: paths_filtered_by_status(root, reverse),
-    }
+
+    @calculated_property(schema={
+        "title": "Sources",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "testing_link_source.target",
+        },
+    })
+    def reverse(self, request, reverse):
+        return paths_filtered_by_status(request, reverse)
 
 
-@location('testing-post-put-patch')
-class TestingPostPutPatch(Collection):
-    item_type = 'testing_post_put_patch'
-    __acl__ = [
+@collection(
+    'testing-post-put-patch',
+    acl=[
         (Allow, 'group.submitter', ['add', 'edit', 'view']),
-    ]
+    ],
+)
+class TestingPostPutPatch(Item):
+    item_type = 'testing_post_put_patch'
     schema = {
         'required': ['required'],
         'type': 'object',
@@ -172,14 +203,10 @@ class TestingPostPutPatch(Collection):
             },
         }
     }
-    properties = {
-        'title': 'Test links',
-        'description': 'Testing. Testing. 1, 2, 3.',
-    }
 
 
-@location('testing-server-defaults')
-class TestingServerDefault(Collection):
+@collection('testing-server-defaults')
+class TestingServerDefault(Item):
     item_type = 'testing_server_default'
     schema = {
         'type': 'object',
@@ -206,14 +233,10 @@ class TestingServerDefault(Collection):
             },
         }
     }
-    properties = {
-        'title': 'Test server defaults',
-        'description': 'Testing. Testing. 1, 2, 3.',
-    }
 
 
-@location('testing-dependencies')
-class TestingDependencies(Collection):
+@collection('testing-dependencies')
+class TestingDependencies(Item):
     item_type = 'testing_dependencies'
     schema = {
         'type': 'object',
@@ -230,10 +253,6 @@ class TestingDependencies(Collection):
                 'enum': ['dep2'],
             },
         }
-    }
-    properties = {
-        'title': 'Test dependencies',
-        'description': 'Testing. Testing. 1, 2, 3.',
     }
 
 

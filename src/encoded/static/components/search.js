@@ -1,7 +1,8 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var Modal = require('react-bootstrap/lib/Modal');
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -9,9 +10,13 @@ var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
+var audit = require('./audit');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
@@ -33,7 +38,8 @@ var statusOrder = globals.statusOrder;
             context = props;
             props = {context: context,  key: context['@id']};
         }
-        return globals.listing_views.lookup(props.context)(props);
+        var ListingView = globals.listing_views.lookup(props.context);
+        return <ListingView {...props} />;
     };
 
     var PickerActionsMixin = module.exports.PickerActionsMixin = {
@@ -52,22 +58,29 @@ var statusOrder = globals.statusOrder;
     };
 
     var Item = module.exports.Item = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var title = globals.listing_titles.lookup(result)({context: result});
             var item_type = result['@type'][0];
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
-                            <div className="accession">
-                                <a href={result['@id']}>{title}</a>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        {result.accession ?
+                            <div className="pull-right type sentence-case search-meta">
+                                <p>{item_type}: {' ' + result['accession']}</p>
+                                <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                             </div>
+                        : null}
+                        <div className="accession">
+                            <a href={result['@id']}>{title}</a>
                         </div>
                         <div className="data-row">
                             {result.description}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -158,7 +171,7 @@ var statusOrder = globals.statusOrder;
     });
 
     var Antibody = module.exports.Antibody = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -196,16 +209,17 @@ var statusOrder = globals.statusOrder;
 
             return (
                 <li>
-                    <div>
+                    <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
                                 return (
-                                    <div>
+                                    <div key={target}>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
                                             {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
@@ -215,11 +229,12 @@ var statusOrder = globals.statusOrder;
                                 );
                             })}
                         </div>
+                        <div className="data-row">
+                            <strong>{columns['source.title']['title']}</strong>: {result.source.title}<br />
+                            <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                        </div>
                     </div>
-                    <div className="data-row">
-                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
-                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
-                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -227,7 +242,7 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Antibody, 'antibody_lot');
 
     var Biosample = module.exports.Biosample = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -236,23 +251,40 @@ var statusOrder = globals.statusOrder;
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
-            var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
+            var constructs;
+            if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
+                constructs = result.model_organism_donor_constructs[0].target.label;
+            } else {
+                constructs = result.constructs[0] ? result.constructs[0].target.label : '';
+            }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Biosample</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['biosample_term_name'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {separator + lifeStage + age + ageUnits + ')'}
-                                </a>
-                            </div>
+            var mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
+
+            // Build the text of the synchronization string
+            var synchText;
+            if (result.synchronization) {
+                synchText = result.synchronization +
+                    (result.post_synchronization_time ?
+                        ' + ' + result.post_synchronization_time + (result.post_synchronization_time_units ? ' ' + result.post_synchronization_time_units : '')
+                    : '');
+            }
+
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Biosample</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['biosample_term_name'] + ' ('}
+                                <em>{result.organism.scientific_name}</em>
+                                {separator + lifeStage + age + ageUnits + ')'}
+                            </a>
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
@@ -274,20 +306,34 @@ var statusOrder = globals.statusOrder;
                                     {treatment}
                                 </div>
                             : null}
-                            {result['culture_harvest_date'] ?
+                            {mutatedGenes ?
+                                <div>
+                                    <strong>{columns['donor.mutated_gene.label']['title'] + ': '}</strong>
+                                    {mutatedGenes}
+                                </div>
+                            : null}
+                            {result.culture_harvest_date ?
                                 <div>
                                     <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
-                                    {result['culture_harvest_date']}
+                                    {result.culture_harvest_date}
                                 </div>
                             : null}
-                            {result['date_obtained'] ?
+                            {result.date_obtained ?
                                 <div>
                                     <strong>{columns['date_obtained']['title'] + ': '}</strong>
-                                    {result['date_obtained']}
+                                    {result.date_obtained}
                                 </div>
                             : null}
-                            <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
+                            {synchText ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchText}
+                                </div>
+                            : null}
+                            <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -296,7 +342,7 @@ var statusOrder = globals.statusOrder;
 
 
     var Experiment = module.exports.Experiment = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -320,6 +366,17 @@ var statusOrder = globals.statusOrder;
             }));
             var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
 
+            // Collect synchronizations
+            var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
+            }).map(function(replicate) {
+                var biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }));
+
             // Make array of age units from replicates; remove all duplicates
             var ageUnit = '';
             if (age) {
@@ -336,32 +393,33 @@ var statusOrder = globals.statusOrder;
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Experiment</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    {name || lifeStage || age || ageUnit ?
-                                        <span>
-                                            {' ('}
-                                            {name ? <em>{name}</em> : ''}
-                                            {separator + lifeStage + age + ageUnit + ')'}
-                                        </span>
-                                    : ''}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Experiment</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
+                                {name || lifeStage || age || ageUnit ?
+                                    <span>
+                                        {' ('}
+                                        {name ? <em>{name}</em> : ''}
+                                        {separator + lifeStage + age + ageUnit + ')'}
+                                    </span>
+                                : ''}
+                            </a>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ?
+                            {result.target && result.target.label ?
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
-                                    {result['target.label']}
+                                    {result.target.label}
                                 </div>
                             : null}
                             {treatment ?
@@ -370,9 +428,17 @@ var statusOrder = globals.statusOrder;
                                     {treatment}
                                 </div>
                             : null}
-                            <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
-                            <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
+                            {synchronizations && synchronizations.length ?
+                                <div>
+                                    <strong>Synchronization timepoint: </strong>
+                                    {synchronizations.join(', ')}
+                                </div>
+                            : null}
+                            <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
+                            <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -380,20 +446,21 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Experiment, 'experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Dataset</p>
-                                <p className="type">{' ' + result['accession']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result['description']}</a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Dataset</p>
+                            <p className="type">{' ' + result['accession']}</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result['description']}</a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ?
@@ -402,9 +469,11 @@ var statusOrder = globals.statusOrder;
                                     {result['dataset_type']}
                                 </div>
                             : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result.lab.title}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -412,23 +481,23 @@ var statusOrder = globals.statusOrder;
     globals.listing_views.register(Dataset, 'dataset');
 
     var Target = module.exports.Target = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Target</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['label'] + ' ('}
-                                    <em>{result['organism.scientific_name']}</em>
-                                    {')'}
-                                </a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Target</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>
+                                {result['label']}
+                                {result.organism && result.organism.scientific_name ? <em>{' (' + result.organism.scientific_name + ')'}</em> : null}
+                            </a>
                         </div>
                         <div className="data-row">
                             <strong>{columns['dbxref']['title']}</strong>:
@@ -436,6 +505,8 @@ var statusOrder = globals.statusOrder;
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em> None submitted</em> }
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -444,23 +515,26 @@ var statusOrder = globals.statusOrder;
 
 
     var Image = module.exports.Image = React.createClass({
-        mixins: [PickerActionsMixin],
+        mixins: [PickerActionsMixin, ],
         render: function() {
             var result = this.props.context;
             var Attachment = image.Attachment;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Image</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>{result.caption}</a>
-                            </div>
+            return (
+                <li>
+                    <div className="clearfix">
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Image</p>
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        </div>
+                        <div className="accession">
+                            <a href={result['@id']}>{result.caption}</a>
                         </div>
                         <div className="data-row">
                             <Attachment context={result} />
                         </div>
+                    </div>
+                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
                 </li>
             );
         }
@@ -537,7 +611,7 @@ var statusOrder = globals.statusOrder;
                 title = term;
             }
             var total = this.props.total;
-            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
+            return <Term {...this.props} title={title} filters={filters} total={total} />;
         }
     });
 
@@ -585,13 +659,13 @@ var statusOrder = globals.statusOrder;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
                         : null}
@@ -634,7 +708,7 @@ var statusOrder = globals.statusOrder;
 
         onChange: function(e) {
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         },
 
         onBlur: function(e) {
@@ -651,7 +725,7 @@ var statusOrder = globals.statusOrder;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;
+                e.preventDefault();
             }
         }
     });
@@ -672,12 +746,12 @@ var statusOrder = globals.statusOrder;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
+                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return this.transferPropsTo(<Facet key={facet.field} facet={facet} filters={filters} />);
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
                         }
                     }.bind(this))}
                 </div>
@@ -740,11 +814,57 @@ var statusOrder = globals.statusOrder;
         }
     });
 
+    var BatchDownload = search.BatchDownload = React.createClass({
+        mixins: [OverlayMixin],
+
+        getInitialState: function () {
+            return {
+              isModalOpen: false
+            };
+          },
+
+          handleToggle: function () {
+            this.setState({
+              isModalOpen: !this.state.isModalOpen
+            });
+          },
+
+          render: function () {
+            return (
+                <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
+            );
+          },
+
+          renderOverlay: function () {
+            var link = this.props.context['batch_download'];
+            if (!this.state.isModalOpen) {
+              return <span/>;
+            }
+            return (
+                <Modal title="Using batch download" onRequestHide={this.handleToggle}>
+                  <div className="modal-body">
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                  </div>
+                  <div className="modal-footer">
+                        <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
+                        <a data-bypass="true" target="_self" private-browsing="true" className="btn btn-info btn-sm"
+                            href={link}>{'Download'}</a>
+                  </div>
+                </Modal>
+              );
+          }
+    });
+
     var ResultTable = search.ResultTable = React.createClass({
 
         getDefaultProps: function() {
             return {
-
                 restrictions: {},
                 searchBase: ''
             };
@@ -780,10 +900,8 @@ var statusOrder = globals.statusOrder;
                     <div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
-                                {this.transferPropsTo(
-                                    <FacetList facets={facets} filters={filters}
-                                               searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                                )}
+                                <FacetList {...this.props} facets={facets} filters={filters}
+                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 <AdvSearch />
@@ -807,7 +925,13 @@ var statusOrder = globals.statusOrder;
                                                 : null}
                                             </span>
                                         }
-                                        
+
+                                        {context['batch_download'] ?
+                                            <span className="pull-right">
+                                                <BatchDownload context={context} />&nbsp;
+                                            </span>
+                                        : null}
+
                                         {context['batch_hub'] ?
                                             <span className="pull-right">
                                                 <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
@@ -836,7 +960,7 @@ var statusOrder = globals.statusOrder;
             var search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         }
     });
 
@@ -853,7 +977,7 @@ var statusOrder = globals.statusOrder;
                 <div>
                     {context['total'] ?
                         <div className="panel data-display main-panel">
-                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

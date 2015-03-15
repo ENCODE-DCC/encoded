@@ -1,20 +1,29 @@
-import copy
 import os
 from collections import OrderedDict
+from pyramid.decorator import reify
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from pyramid.response import Response
 from ..contentbase import (
     Root,
-    item_view,
-    location_root,
+    root,
 )
+from ..schema_formats import is_accession
+from pyramid.security import (
+    ALL_PERMISSIONS,
+    Allow,
+    Authenticated,
+    Deny,
+    Everyone,
+)
+from ..embedding import embed
 from .visualization import generate_batch_hubs
 
 
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('schemas', '/profiles/')
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('jsonld_context', '/terms/')
     config.add_route('jsonld_context_no_slash', '/terms')
@@ -23,15 +32,71 @@ def includeme(config):
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.add_route('graph_dot', '/profiles/graph.dot')
     config.add_route('graph_svg', '/profiles/graph.svg')
+    config.add_route('batch_download', '/batch_download/{search_params}')
+    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.scan()
 
 
-@location_root
+def acl_from_settings(settings):
+    # XXX Unsure if any of the demo instance still need this
+    acl = []
+    for k, v in settings.items():
+        if k.startswith('allow.'):
+            action = Allow
+            permission = k[len('allow.'):]
+            principals = v.split()
+        elif k.startswith('deny.'):
+            action = Deny
+            permission = k[len('deny.'):]
+            principals = v.split()
+        else:
+            continue
+        if permission == 'ALL_PERMISSIONS':
+            permission = ALL_PERMISSIONS
+        for principal in principals:
+            if principal == 'Authenticated':
+                principal = Authenticated
+            elif principal == 'Everyone':
+                principal = Everyone
+            acl.append((action, principal, permission))
+    return acl
+
+
+@root
 class EncodedRoot(Root):
     properties = {
         'title': 'Home',
         'portal_title': 'ENCODE',
     }
+
+    @reify
+    def __acl__(self):
+        acl = acl_from_settings(self.registry.settings) + [
+            (Allow, Everyone, ['list', 'search']),
+            (Allow, 'group.submitter', ['search_audit', 'audit']),
+            (Allow, 'group.admin', ALL_PERMISSIONS),
+            (Allow, 'group.forms', ('forms',)),
+            # Avoid schema validation errors during audit
+            (Allow, 'remoteuser.EMBED', 'import_items'),
+        ] + Root.__acl__
+        return acl
+
+    def get(self, name, default=None):
+        resource = super(EncodedRoot, self).get(name, None)
+        if resource is not None:
+            return resource
+        resource = self.connection.get_by_unique_key('page:location', name)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.connection.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = self.connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource
+        return default
 
 
 @view_config(context=Root, request_method='GET')
@@ -43,22 +108,17 @@ def home(context, request):
         # 'login': {'href': request.resource_path(context, 'login')},
     })
 
-    homepage = context.get_by_unique_key('page:location', 'homepage')
-    if homepage is not None:
-        result['default_page'] = item_view(homepage, request)
+    try:
+        result['default_page'] = embed(request, '/pages/homepage/@@page', as_user=True)
+    except KeyError:
+        pass
 
     return result
 
 
-@view_config(route_name='schema', request_method='GET')
-def schema(context, request):
-    item_type = request.matchdict['item_type']
-    try:
-        collection = context.by_item_type[item_type]
-    except KeyError:
-        raise HTTPNotFound(item_type)
+def _filtered_schema(collection, request):
+    schema = collection.type_info.schema.copy()
 
-    schema = copy.deepcopy(collection.schema)
     properties = OrderedDict()
     for k, v in schema['properties'].items():
         if 'permission' in v:
@@ -69,8 +129,27 @@ def schema(context, request):
     return schema
 
 
+@view_config(route_name='schema', request_method='GET')
+def schema(context, request):
+    item_type = request.matchdict['item_type']
+    try:
+        collection = context.by_item_type[item_type]
+    except KeyError:
+        raise HTTPNotFound(item_type)
+
+    return _filtered_schema(collection, request)
+
+
+@view_config(route_name='schemas', request_method='GET')
+def schemas(context, request):
+    schemas = {}
+    for typename, collection in context.by_item_type.items():
+        schemas[typename] = _filtered_schema(collection, request)
+    return schemas
+
+
 @view_config(route_name='batch_hub')
 @view_config(route_name='batch_hub:trackdb')
 def batch_hub(context, request):
     ''' View for batch track hubs '''
-    return Response(generate_batch_hubs(request), content_type='text/plain')
+    return Response(generate_batch_hubs(context, request), content_type='text/plain')

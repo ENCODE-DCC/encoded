@@ -4,7 +4,6 @@
         "experiment": "ENCSR000ACY",
         "library": "9a230485-0062-4590-be42-6ea7c4258941",
         "paired_ended": false,
-        "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "6e85c807-684a-46e3-b4b9-1f7990e85720"
@@ -15,7 +14,6 @@
         "experiment": "ENCSR000ADH",
         "library": "835e166d-0253-41ce-add2-de67429a3612",
         "paired_ended": false,
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "amet.fusce@est.fermentum",
         "technical_replicate_number": 1,
         "uuid": "cc236116-825a-465f-ae0c-5ab21f01a6b3"
@@ -26,7 +24,6 @@
         "experiment": "ENCSR000ADH",
         "library": "835e166d-0253-41ce-add2-de67429a3612",
         "paired_ended": false,
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "amet.fusce@est.fermentum",
         "technical_replicate_number": 2,
         "uuid": "d990fa42-09e9-4b24-b5f9-44efbdbf4363"
@@ -37,7 +34,6 @@
         "experiment": "ENCSR000ADI",
         "library": "88760932-54b6-46fe-951d-fc80e89a0d77",
         "paired_ended": false,
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "amet.fusce@est.fermentum",
         "technical_replicate_number": 1,
         "uuid": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f"
@@ -48,7 +44,6 @@
         "experiment": "ENCSR000ADI",
         "library": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
         "paired_ended": false,
-        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "submitted_by": "amet.fusce@est.fermentum",
         "technical_replicate_number": 1,
         "uuid": "358104a1-e809-43ad-b043-7161c08633f5"
@@ -58,7 +53,6 @@
         "experiment": "ENCSR000AEM",
         "library": "7013e140-dc14-4893-b0b1-0d7bb293730c",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "30a3e114-139a-4297-9287-4f23d2754c25"
@@ -68,7 +62,6 @@
         "experiment": "ENCSR000AEM",
         "library": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb"
@@ -76,17 +69,9 @@
     {
         "biological_replicate_number": 1,
         "experiment": "ENCSR000AEN",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "6",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
         "notes": "Has read length",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "read_length": 100,
         "read_length_units": "nt",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -96,13 +81,6 @@
     {
         "biological_replicate_number": 2,
         "experiment": "ENCSR000AEN",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "6",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": false,
@@ -118,7 +96,6 @@
         "experiment": "ENCSR000AER",
         "library": "e4824882-0ad8-4009-a169-44d5955800af",
         "paired_ended": true,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "4d66b3a4-d09e-4e2c-8708-10b572bfeb6b"
@@ -128,7 +105,6 @@
         "experiment": "ENCSR000AER",
         "library": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
         "paired_ended": true,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "c8af0291-f21a-40d6-91fb-eaf62d22e4da"
@@ -138,7 +114,6 @@
         "experiment": "ENCSR000AES",
         "library": "ee512537-05f0-4ac4-a9e6-718aea48f565",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "technical_replicate_number": 1,
         "uuid": "66db2e64-f956-4f54-ad87-74f6311bfb85"
@@ -159,7 +134,6 @@
         "experiment": "ENCSR000AHF",
         "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "5f9376f9-2ee5-4455-caf2-194ca40441ae"
@@ -170,7 +144,6 @@
         "experiment": "ENCSR000AHF",
         "library": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "f0837446-2d57-4096-bb2a-de6645177396"
@@ -189,7 +162,6 @@
         "experiment": "ENCSR000AJK",
         "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
         "paired_ended": false,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "submitted_by": "netus.lorem@risus.lobortis",
         "technical_replicate_number": 1,
         "uuid": "f07d37ee-316e-4a5d-a282-91cd2304fe19"
@@ -207,17 +179,9 @@
         "_test": "test - no files",
         "biological_replicate_number": 1,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "1",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
         "notes": "Has read length",
         "paired_ended": true,
-        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
         "read_length": 100,
         "read_length_units": "nt",
         "submitted_by": "platea.a@volutpat.viverra",
@@ -228,13 +192,6 @@
         "_test": "test - no files",
         "biological_replicate_number": 2,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "2",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": true,
@@ -249,13 +206,6 @@
         "_test": "test - no files",
         "biological_replicate_number": 2,
         "experiment": "ENCSR999NOF",
-        "flowcell_details": [
-            {
-                "flowcell": "C1WA6ACXX",
-                "lane": "3",
-                "machine": "HWI-ST382"
-            }
-        ],
         "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
         "notes": "Has read length",
         "paired_ended": true,
@@ -272,7 +222,6 @@
         "experiment": "ENCSR000ACT",
         "library": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
         "paired_ended": false,
-        "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "6049cceb-3703-47d8-be52-0747fb6680aa"
@@ -282,7 +231,6 @@
         "biological_replicate_number": 1,
         "experiment": "ENCSR666EMD",
         "paired_ended": false,
-        "platform": "da150a82-63cd-4471-ba3e-ffe7ca96bcda",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "rbns_protein_concentration": 5,
@@ -300,5 +248,56 @@
         "rbns_protein_concentration": 20,
         "rbns_protein_concentration_units":"nM",
         "uuid": "2743cbc5-dc25-4fe4-8808-47df3e632339"
+    },
+    {
+        "_test": "DNA-me pipeline test",
+        "status": "in progress",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "biological_replicate_number": 1,
+        "uuid": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
+        "read_length_units": "nt",
+        "read_length": 100,
+        "technical_replicate_number": 1,
+        "platform": "da150a82-63cd-4471-ba3e-ffe7ca96bcda",
+        "paired_ended": true,
+        "flowcell_details": [],
+        "library": "ENCLB742NWU",
+        "experiment": "/experiments/ENCSR765JPC/",
+        "aliases": []
+    },
+    {
+        "_test": "ENCODE 2 pipeline test control",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000EYX",
+        "library": "ENCLB723GTS",
+        "paired_ended": false,
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "2a4fd72c-72ab-445f-a50a-12a9f97a6d8f"
+    },
+    {
+        "_test": "ENCODE 2 pipeline test rep 1",
+        "antibody": "ENCAB000AFX",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000DZQ",
+        "library": "ENCLB209APR",
+        "paired_ended": false,
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "3e2a2c90-91fb-40f6-82db-d2bf2f2a914e"
+    },
+    {
+        "_test": "ENCODE 2 pipeline test rep 2",
+        "antibody": "ENCAB000AFX",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000DZQ",
+        "library": "ENCLB209APS",
+        "paired_ended": false,
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "befa63a2-a597-4521-8dec-8acce5d2af01"
     }
 ]

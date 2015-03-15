@@ -1,11 +1,11 @@
 from base64 import b64decode
-from cStringIO import StringIO
+from io import BytesIO
 from mimetypes import guess_type
 from PIL import Image
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
 from pyramid.view import view_config
-from urllib2 import (
+from urllib.parse import (
     quote,
     unquote,
 )
@@ -62,7 +62,7 @@ class ItemWithAttachment(Item):
     download_property = 'attachment'
 
     @classmethod
-    def _process_downloads(cls, parent, properties, sheets):
+    def _process_downloads(cls, properties, sheets):
         prop_name = cls.download_property
         attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
@@ -89,7 +89,7 @@ class ItemWithAttachment(Item):
             if charset is not None:
                 download_meta['charset'] = charset
             # Make sure the mimetype appears to be what the client says it is
-            mime_type_detected = magic.from_buffer(data, mime=True)
+            mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
             if mime_type_declared and not mimetypes_are_equal(
                     mime_type_declared, mime_type_detected):
                 msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
@@ -101,7 +101,7 @@ class ItemWithAttachment(Item):
 
             # Make sure mimetype is not disallowed
             try:
-                allowed_types = parent.schema['properties'][prop_name]['properties']['type']['enum']
+                allowed_types = cls.schema['properties'][prop_name]['properties']['type']['enum']
             except KeyError:
                 pass
             else:
@@ -120,7 +120,7 @@ class ItemWithAttachment(Item):
             # Validate images and store height/width
             major, minor = mime_type.split('/')
             if major == 'image' and minor in ('png', 'jpeg', 'gif', 'tiff'):
-                stream = StringIO(data)
+                stream = BytesIO(data)
                 im = Image.open(stream)
                 im.verify()
                 attachment['width'], attachment['height'] = im.size
@@ -136,10 +136,9 @@ class ItemWithAttachment(Item):
         return properties, sheets
 
     @classmethod
-    def create(cls, parent, uuid, properties, sheets=None):
-        properties, sheets = cls._process_downloads(parent, properties, sheets)
-        item = super(ItemWithAttachment, cls).create(
-            parent, uuid, properties, sheets)
+    def create(cls, registry, uuid, properties, sheets=None):
+        properties, sheets = cls._process_downloads(properties, sheets)
+        item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
         return item
 
     def update(self, properties, sheets=None):
@@ -156,8 +155,7 @@ class ItemWithAttachment(Item):
                     msg = "Expected data uri or existing uri."
                     raise ValidationFailure('body', [prop_name, 'href'], msg)
             else:
-                properties, sheets = self._process_downloads(
-                    self.__parent__, properties, sheets)
+                properties, sheets = self._process_downloads(properties, sheets)
 
         super(ItemWithAttachment, self).update(properties, sheets)
 
@@ -166,7 +164,7 @@ class ItemWithAttachment(Item):
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath
-    downloads = context.model['downloads']
+    downloads = context.propsheets['downloads']
     try:
         download_meta = downloads[prop_name]
     except KeyError:

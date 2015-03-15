@@ -9,7 +9,10 @@ Example.
 import boto
 import requests
 import sys
-from urlparse import urljoin
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
 
 EPILOG = __doc__
 
@@ -48,6 +51,7 @@ def check_format(item, path):
     gzip_types = [
         "CEL",
         "bam",
+        "bed",
         "bed_bed3",
         "bed_bed6",
         "bed_bedLogR",
@@ -74,7 +78,18 @@ def check_format(item, path):
         if is_gzipped:
             errors['gzip'] = 'Expected un-gzipped file'
 
-    chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+    if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
+        if 'assembly' not in item:
+            errors['assembly'] = 'missing assembly'
+        if 'genome_annotation' not in item:
+            errors['genome_annotation'] = 'missing genome_annotation'
+        if errors:
+            return errors
+        chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
+            encValData, item['assembly'], item['genome_annotation'])
+    else:
+        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
+
     validate_map = {
         'bam': ['-type=bam', chromInfo],
         'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
@@ -121,7 +136,11 @@ def check_format(item, path):
 def check_file(item):
     import hashlib
     import os.path
-    from urlparse import urlparse
+    try:
+        from urllib.parse import urlparse
+    except ImportError:
+        from urlparse import urlparse
+
     result = None
     errors = {}
     r = requests.head(

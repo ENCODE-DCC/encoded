@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "targets"],
-    "calculatedProperties": ["lot_reviews"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -14,7 +13,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
@@ -165,8 +164,16 @@
             "title": "Eligibility status",
             "type": "string"
         },
-        "characterizations.target.organism.scientific_name": {
+        "targets.organism.scientific_name": {
             "title": "Target Organism",
+            "type": "string"
+        },
+        "targets.investigated_as": {
+            "title": "Target of antibody",
+            "type": "string"
+        },
+        "characterizations.characterization_method": {
+            "title": "Characterization method",
             "type": "string"
         },
         "source.title" : {
@@ -244,66 +251,6 @@
             "type": "string"
         }
     },
-    "calculated_props": {
-        "lot_reviews": {
-            "title": "Antibody lot reviews",
-            "description": "Review outcome of an antibody lot in each characterized cell type submitted for review.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Antibody lot review",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "biosample_term_id": {
-                        "title": "Ontology ID",
-                        "description": "Ontology identifier describing biosample.",
-                        "comment": "NTR is a new term request identifier provided by the DCC.",
-                        "type": "string",
-                        "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
-                    },
-                    "biosample_term_name": {
-                        "title": "Ontology term",
-                        "description": "Ontology term describing biosample.",
-                        "type":  "string"
-                    },
-                    "organisms": {
-                        "title": "Organism",
-                        "type": "array",
-                        "items": {
-                            "comment": "See organism.json for available identifiers.",
-                            "type": "string",
-                            "linkTo": "organism"
-                        }
-                    },
-                    "targets": {
-                        "title": "Targets",
-                        "type": "array",
-                        "items": {
-                            "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
-                            "comment": "See target.json for available identifiers.",
-                            "type": "string",
-                            "linkTo": "target"
-                        }
-                    },
-                    "status": {
-                        "title": "Status",
-                        "description": "The current state of the antibody characterizations.",
-                        "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
-                        "type": "string",
-                        "default": "awaiting lab characterization",
-                        "enum" : [
-                            "awaiting lab characterization",
-                            "pending dcc review",
-                            "eligible for new data",
-                            "not eligible for new data",
-                            "not pursued"
-                        ]
-                    }
-                }
-            }
-        }
-    },
     "boost_values": {
         "accession": 1.0,
         "alternate_accessions": 1.0,
@@ -319,6 +266,13 @@
         "host_organism.name": 1.0,
         "host_organism.scientific_name": 1.0,
         "host_organism.taxon_id": 1.0,
+        "targets.gene_name": 1.0,
+        "targets.label": 1.0,
+        "targets.dbxref": 1.0,
+        "targets.aliases": 1.0,
+        "targets.organism.name": 1.0,
+        "targets.organism.scientific_name": 1.0,
+        "targets.organism.taxon_id": 1.0,
         "characterizations.primary_characterization_method": 1.0,
         "characterizations.secondary_characterization_method": 1.0,
         "characterizations.award.title": 1.0,

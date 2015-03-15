@@ -1,0 +1,179 @@
+{
+    "title": "Pipeline",
+    "description": "Schema for submitting a series of analysis for a given data type.",
+    "id": "/profiles/pipeline.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["title"],
+    "identifyingProperties": ["uuid", "aliases", "accession"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version"},
+        { "$ref": "mixins.json#/uuid"},
+        { "$ref": "mixins.json#/accession"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/accessioned_status"},
+        { "$ref": "mixins.json#/notes"},
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/assay"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "name": {
+            "title": "Name",
+            "description": "Unique name of the software package, lower cased version of title.",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+$",
+            "uniqueKey": true
+        },
+        "accession": {
+            "accessionType": "PL"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the pipeline.",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
+            "type": "string",
+            "permission": "import_items",
+            "default": ""
+        },
+        "version": {
+            "title": "Version",
+            "description": "The version of a particular pipeline.",
+            "comment": "Increments with each change to the series of analysis." ,
+            "type": "integer"
+        },
+        "analysis_steps": {
+            "title": "Analysis steps",
+            "description": "The particular computational analysis steps used by the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Analysis step",
+                "description": "A particular computational analysis step used by the pipeline.",
+                "comment": "See analysis_step.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
+            }
+        },
+        "end_points": {
+            "title": "End Points of Pipeline",
+            "description": "A subset of analysis steps that represent the end of the pipeline",
+            "type": "array",
+            "items": {
+                "title": "Analysis step",
+                "description": "A particular end step computational analysis step used by the pipeline.",
+                "comment": "See analysis_step.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
+            }
+        },
+        "source_url": {
+            "title": "Source URL",
+            "description": "An external resource to the code base.",
+            "type": "string",
+            "format": "uri"
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
+            }
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay",
+            "type": "string"
+        },
+        "status": {
+            "title": "Pipeline status",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.title": {
+            "title": "Software",
+            "type": "array"
+        },
+        "analysis_steps.software_versions.software.references.published_by": {
+            "title": "Created by",
+            "type": "array"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "title": {
+            "title": "Pipeline",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay Type",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.version": {
+            "title": "Software",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.downloaded_url": {
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "analysis_steps.software_versions.download_checksum": {
+            "title": "Checksum",
+            "type": "string",
+            "format": "hex"
+        },
+        "analysis_steps.software_versions.software.title": {
+            "title": "Software",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.downloaded_url": {
+            "title": "Download URL",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.download_checksum": {
+            "title": "Download checksum",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.@id": {
+            "title": "ID",
+            "type": "string"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "accession": 1.0,
+        "aliases": 1.0,
+        "analysis_steps.software_versions.software.title": 1.0,
+        "analysis_steps.software_versions.software.name": 1.0,
+        "analysis_steps.software_versions.software.purpose": 1.0,
+        "analysis_steps.software_versions.software.used_by": 1.0,
+        "analysis_steps.software_versions.software.references.title": 1.0,
+        "assay_term_name": 1.0,
+        "assay_term_id": 1.0,
+        "title": 1.0,
+        "version": 1.0
+    }
+}

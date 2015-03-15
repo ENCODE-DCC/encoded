@@ -1,0 +1,169 @@
+{ 
+    "title": "Analysis step",
+    "description": "Schema for submitting a computational analysis steps as a subobject of pipeline that transforms input files to output files.",
+    "id": "/profiles/analysis_step.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["name", "title", "analysis_step_types", "software_versions", "input_file_types"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid", "aliases", "name"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/notes"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "name": {
+            "title": "Name",
+            "description": "Unique name of the analysis step",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+$",
+            "uniqueKey": true
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the analysis step, likely the same as the name.",
+            "type": "string"
+        },
+        "analysis_step_types": {
+            "title": "Types",
+             "description": "The classification of the software",
+             "type": "array",
+             "items": {
+                 "title": "Type",
+                 "type": "string",
+                 "enum": [
+                     "genome indexing",
+                     "genome segmentation",
+                     "fastq concatenation",
+                     "filtering",
+                     "file format conversion",
+                     "QA calculation",
+                     "peak calling",
+                     "IDR",
+                     "alignment",
+                     "signal generation",
+                     "quantification",
+                     "transcript identification",
+                     "transcriptome assembly",
+                     "variant annotation"
+                 ]
+             }
+        },
+        "software_versions": {
+            "title": "Software version",
+            "description": "The software version used in the analysis.",
+            "type": "array",
+            "items": {
+                "comment": "See software_version.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "software_version"
+            }
+        },
+        "input_file_types": {
+            "title": "Input file types",
+            "description": "The file types used as input for the analysis.",
+            "type": "array",
+            "items": {
+                "title": "Input file type",
+                "description": "A file type used as input for the analysis.",
+                "type": "string",
+                "enum": [
+                    "sam",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
+                    "bigWig",
+                    "broadPeak",
+                    "bed_broadPeak",
+                    "fasta",
+                    "fastq",
+                    "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
+                    "tsv",
+                    "csv"
+                ]
+            }
+        },
+        "output_file_types": {
+            "title": "Output file types",
+            "description": "The file types generated as output for the analysis.",
+            "type": "array",
+            "items": {
+                "title": "Output file type",
+                "description": "A file type generated as output for the analysis.",
+                "type": "string",
+                "enum": [
+                    "sam",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
+                    "bigWig",
+                    "broadPeak",
+                    "bed_broadPeak",
+                    "fasta",
+                    "fastq",
+                    "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
+                    "tsv",
+                    "csv"
+                ]
+            }
+        },
+        "qa_stats_generated": {
+            "title": "QA statistics",
+            "description": "The QA statistics generated by the analysis.",
+            "type": "array",
+            "items": {
+                "title": "QA statistic",
+                "description": "A QA statistic generated by the analysis.",
+                "type": "string"
+            }
+        },
+        "parents": {
+            "title": "Parents",
+            "description": "The precursor steps.",
+            "type": "array",
+            "items": {
+                "description": "A precusor step.",
+                "comment": "See analysis_step.json for available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
+            }
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
+            }
+        }
+    }
+}

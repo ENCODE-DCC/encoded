@@ -3,7 +3,8 @@ import pytest
 
 def basic_auth(username, password):
     from base64 import b64encode
-    return 'Basic ' + b64encode('%s:%s' % (username, password))
+    from pyramid.compat import ascii_native_
+    return 'Basic ' + ascii_native_(b64encode(('%s:%s' % (username, password)).encode('utf-8')))
 
 
 @pytest.yield_fixture(scope='session')
@@ -143,14 +144,6 @@ def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key, f
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get(access_key['location'] + query, headers=headers)
     assert 'secret_access_key_hash' not in res.json
-
-
-def test_notfound_denied_anonymous(anontestapp):
-    anontestapp.get('/access-keys/badname', status=403)
-
-
-def test_notfound_admin(testapp):
-    testapp.get('/access-keys/badname', status=404)
 
 
 def test_access_key_uses_edw_hash(app, access_key):

@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculatedProperties": ["model_organism_donor_constructs"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -15,7 +14,7 @@
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
@@ -26,16 +25,110 @@
     "dependencies": {
         "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
+        "post_synchronization_time_units": ["post_synchronization_time"],
+        "post_synchronization_time": ["post_synchronization_time_units"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
+        },
+        "biosample_type": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum": ["whole organisms"]
+                        },
+                        "organism": {
+                            "linkEnum": [
+                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                                "5be68469-94ba-4d60-b361-dde8958399ca",
+                                "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                                "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                                "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                                "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                                "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c",
+                                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                                "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                                "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                                "a7e711b9-534c-44a3-a782-2a15af620739", 
+                                "451f9e49-685d-40d5-ad89-760b2512262a",
+                                "3413218c-3d86-498b-a0a2-9a406638e786"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "biosample_type": {
+                                "enum": ["whole organisms"]
+                            },
+                            "organism": {
+                                "linkEnum": [
+                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "fly_life_stage": {
+            "properties": {
+                "organism": {
+                    "linkEnum": [
+                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                        "5be68469-94ba-4d60-b361-dde8958399ca",
+                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+                    ]
+                }
+            }
+        },
+        "fly_synchronization_stage": {
+            "properties": {
+                "organism": {
+                    "linkEnum": [
+                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                        "5be68469-94ba-4d60-b361-dde8958399ca",
+                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+                    ]
+                }
+            }
+        },
+        "worm_life_stage": {
+            "properties": {
+                "organism": {
+                    "linkEnum": [
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                        "a7e711b9-534c-44a3-a782-2a15af620739", 
+                        "451f9e49-685d-40d5-ad89-760b2512262a"
+                    ]
+                }
+            }
+        },
+        "mouse_life_stage": {
+            "properties": {
+                "organism": {
+                    "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
+                }
+            }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "accession": {
             "accessionType": "BS"
@@ -107,7 +200,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
+                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+))$"
             }
         },
         "protocol_documents": {
@@ -157,7 +250,9 @@
                     "digestive system",
                     "arthropod fat body",
                     "antenna",
-                    "adult maxillary segment"
+                    "adult maxillary segment",
+                    "female reproductive system",
+                    "male reproductive system"
                 ]
             }
         },
@@ -179,7 +274,9 @@
                     "UBERON:0001007",
                     "UBERON:0003917",
                     "UBERON:0000972",
-                    "FBbt:00003016"
+                    "FBbt:00003016",
+                    "UBERON:0000474",
+                    "UBERON:0000079"
                 ]
             }
         },
@@ -239,7 +336,8 @@
                 "nuclear matrix",
                 "nucleolus",
                 "nucleoplasm",
-                "polysome"
+                "polysome",
+                "insoluble cytoplasmic fraction"
             ]
         },
         "subcellular_fraction_term_id": {
@@ -257,7 +355,8 @@
                 "GO:0016363",
                 "GO:0005730",
                 "GO:0005654",
-                "GO:0005844"
+                "GO:0005844",
+                "NTR:0002594"
             ]
 
         },
@@ -404,7 +503,7 @@
             "title": "Post-synchronization time",
             "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_synchronization_time_units": {
             "title": "Post-synchronization time units",
@@ -416,7 +515,6 @@
                 "day",
                 "week",
                 "month",
-                "year",
                 "stage"
             ]
         },       
@@ -454,7 +552,7 @@
             "title": "Model organism donor age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
             "title": "Model organism donor age units",
@@ -479,6 +577,7 @@
                 "deleted",
                 "replaced",
                 "released",
+                "revoked",
                 "preliminary",
                 "proposed"
             ]
@@ -521,12 +620,24 @@
             "title": "Biosample treatment",
             "type": "array"
         },
+        "transfection_type": {
+            "title": "Transfection type",
+            "type": "string"
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "type": "string"
+        },
         "source.title": {
             "title": "Source",
             "type": "string"
         },
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -551,6 +662,18 @@
             "title": "Type",
             "type": "string"
         },
+        "synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        },       
         "organism.scientific_name": {
             "title": "Species",
             "type": "string"
@@ -591,6 +714,14 @@
             "title": "Date obtained",
             "type": "string"
         },
+        "model_organism_donor_constructs.target.label": {
+            "title": "Constructs",
+            "type": "string"
+        },
+        "donor.mutated_gene.label": {
+            "title": "Mutated gene",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
@@ -598,61 +729,6 @@
         "constructs.length": {
             "title": "Constructs",
             "type": "array"
-        }
-    },
-    "calculated_props": {
-        "organ_slims": {
-            "title": "Organ slims",
-            "type": "string"
-        },
-        "system_slims": {
-            "title": "System slims",
-            "type": "string"
-        },
-        "developmental_slims": {
-            "title": "Developmental slims",
-            "type": "string"
-        },
-        "synonyms": {
-            "title": "Ontology synonyms",
-            "type": "string"
-        },
-        "sex": {
-            "title": "Sex",
-            "type": "string"
-        },
-        "age": {
-            "title": "Age",
-            "type": "string"
-        },
-        "age_units": {
-            "title": "Age units",
-            "type": "string"
-        },
-        "health_status": {
-            "title": "Health status",
-            "type": "string"
-        },
-        "life_stage": {
-            "title": "Life stage",
-            "type": "string"
-        },
-        "synchronization": {
-            "title": "Synchronization",
-            "type": "string"
-        },
-        "model_organism_donor_constructs": {
-            "default": [],
-            "items": {
-                "title": "DNA Constructs",
-                "description": "An expression or targeting vector stably or transiently transfected (not RNAi) into a donor organism.",
-                "comment": "See contstruct.json for available identifiers.",
-                "type": "string",
-                "linkTo": "construct"
-            },
-            "type": "array",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi) into a donor organism.",
-            "title": "DNA constructs"
         }
     },
     "boost_values": {

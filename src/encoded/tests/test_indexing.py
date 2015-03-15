@@ -14,11 +14,13 @@ pytestmark = [pytest.mark.indexing]
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
+    settings['create_tables'] = True
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
+    settings['indexer'] = True
     return settings
 
 
@@ -34,7 +36,10 @@ def app(app_settings):
 
     yield app
 
-    # Dispose connections so postgres can tear down
+    # Shutdown multiprocessing pool to close db conns.
+    app.registry['indexer'].shutdown()
+
+    # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
     DBSession.remove()
     DBSession.configure(bind=None)
@@ -52,16 +57,6 @@ def teardown(app, dbapi_conn):
 @pytest.fixture
 def external_tx():
     pass
-
-
-@pytest.fixture
-def indexer_testapp(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'INDEXER',
-    }
-    return TestApp(app, environ)
 
 
 @pytest.yield_fixture
@@ -88,7 +83,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['count'] == 1
+    assert res.json['indexed'] == 1
 
     from ..loadxl import load_all
     from pkg_resources import resource_filename
@@ -96,7 +91,8 @@ def test_indexing_workbook(testapp, indexer_testapp):
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
     res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['invalidated']
+    assert res.json['updated']
+    assert res.json['indexed']
 
     res = testapp.get('/search/?type=biosample')
     assert res.json['total'] > 5
@@ -106,15 +102,15 @@ def test_indexing_simple(testapp, indexer_testapp):
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['count'] == 1
+    assert res.json['indexed'] == 1
     assert 'txn_count' not in res.json
 
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
     res = indexer_testapp.post_json('/index', {'record': True})
-    assert res.json['count'] == 1
+    assert res.json['indexed'] == 1
     assert res.json['txn_count'] == 1
-    assert res.json['invalidated'] == [uuid]
+    assert res.json['updated'] == [uuid]
     res = testapp.get('/search/?type=testing_post_put_patch')
     assert res.json['total'] == 2
 

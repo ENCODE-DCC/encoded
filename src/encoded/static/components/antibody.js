@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
@@ -9,9 +8,13 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
 var Attachment = image.Attachment;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
@@ -20,6 +23,7 @@ var statusOrder = globals.statusOrder;
 
 
 var Lot = module.exports.Lot = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
 
@@ -30,11 +34,13 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Build array of characterization panels
         var characterizations = sortedChars.map(function(item) {
-            return globals.panel_views.lookup(item)({context: item, key: item['@id']});
+            var PanelView = globals.panel_views.lookup(item);
+            return <PanelView context={item} key={item['@id']} />;
         });
 
         // Build antibody status panel
-        var antibodyStatuses = globals.panel_views.lookup(context)({context: context, key: context['@id']});
+        var PanelView = globals.panel_views.lookup(context);
+        var antibodyStatuses = <PanelView context={context} key={context['@id']} />;
 
         // Make an array of targets with no falsy entries and no repeats
         var targets = {};
@@ -69,8 +75,12 @@ var Lot = module.exports.Lot = React.createClass({
                                 <span>Antibody</span>
                             }
                         </h3>
+                        <div className="status-line">
+                            <AuditIndicators audits={context.audit} id="antibody-audit" />
+                        </div>
                     </div>
                 </header>
+                <AuditDetail audits={context.audit} id="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
@@ -179,9 +189,7 @@ var Lot = module.exports.Lot = React.createClass({
                     {characterizations}
                 </div>
 
-                {this.transferPropsTo(
-                    <FetchedItems url={experiments_url} Component={ExperimentsUsingAntibody} />
-                )}
+                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingAntibody} />
             </div>
         );
     }
@@ -202,9 +210,7 @@ var ExperimentsUsingAntibody = React.createClass({
 
                 <div>
                     <h3>Experiments using antibody {context.accession}</h3>
-                    {this.transferPropsTo(
-                        <ExperimentTable limit={5} total={this.props.total} />
-                    )}
+                    <ExperimentTable {...this.props} limit={5} />
                 </div>
             </div>
         );

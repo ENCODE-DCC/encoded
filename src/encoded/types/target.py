@@ -2,46 +2,64 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    calculated_property,
+    collection,
 )
 from .base import (
-    ALIAS_KEYS,
-    Collection,
+    Item,
 )
 from pyramid.traversal import (
     find_root,
 )
 
 
-@location('targets')
-class Target(Collection):
-    item_type = 'target'
-    schema = load_schema('target.json')
-    properties = {
+@collection(
+    name='targets',
+    unique_key='target:name',
+    properties={
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
-    }
-    unique_key = 'target:name'
+    })
+class Target(Item):
+    item_type = 'target'
+    schema = load_schema('target.json')
+    embedded = ['organism']
 
-    class Item(Collection.Item):
-        namespace_from_path = {
-            'organism_name': 'organism.name',
-            'scientific_name': 'organism.scientific_name',
-        }
-        template = {
-            'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
-        }
-        embedded = ['organism']
-        keys = ALIAS_KEYS + [
-            {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
-        ]
+    def unique_keys(self, properties):
+        keys = super(Target, self).unique_keys(properties)
+        keys.setdefault('target:name', []).append(self._name(properties))
+        return keys
 
-        @property
-        def __name__(self):
-            properties = self.upgrade_properties(finalize=False)
-            root = find_root(self)
-            organism = root.get_by_uuid(self.properties['organism'])
-            organism_properties = organism.upgrade_properties(finalize=False)
-            return u'{label}-{organism_name}'.format(
-                organism_name=organism_properties['name'], **properties)
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+    })
+    def name(self):
+        return self.__name__
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, request, organism, label):
+        organism_props = request.embed(organism, '@@object')
+        return u'{} ({})'.format(label, organism_props['scientific_name'])
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties()
+        return self._name(properties)
+
+    def _name(self, properties):
+        root = find_root(self)
+        organism = root.get_by_uuid(properties['organism'])
+        organism_props = organism.upgrade_properties()
+        return u'{}-{}'.format(properties['label'], organism_props['name'])
+
+    def __resource_url__(self, request, info):
+        request._linked_uuids.add(str(self.uuid))
+        # Record organism uuid in linked_uuids so linking objects record
+        # the rename dependency.
+        properties = self.upgrade_properties()
+        request._linked_uuids.add(str(properties['organism']))
+        return None

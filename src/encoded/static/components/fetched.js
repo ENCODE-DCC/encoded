@@ -1,14 +1,17 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var parseError = require('./mixins').parseError;
+var parseAndLogError = require('./mixins').parseAndLogError;
 var globals = require('./globals');
 var ga = require('google-analytics');
-var merge = require('react/lib/merge');
+var _ = require('underscore');
 
 
 var Param = module.exports.Param = React.createClass({
+    contextTypes: {
+        fetch: React.PropTypes.func
+    },
+
     getInitialState: function () {
         return {
             fetchedRequest: undefined,
@@ -21,12 +24,11 @@ var Param = module.exports.Param = React.createClass({
 
     componentWillUnmount: function () {
         var xhr = this.state.fetchedRequest;
-        if (xhr && xhr.state() == 'pending') {
-            xhr.abort();
-        }
+        if (xhr) xhr.abort();
     },
 
     componentWillReceiveProps: function (nextProps) {
+        if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
             nextProps.session === this.props.session) return;
@@ -34,52 +36,37 @@ var Param = module.exports.Param = React.createClass({
     },
 
     fetch: function (url) {
-        var xhr = this.state.fetchedRequest;
-        if (xhr && xhr.state() == 'pending') {
-            xhr.abort();
-        }
+        var request = this.state.fetchedRequest;
+        if (request) request.abort();
+
         if (!url) {
             this.props.handleFetch();
             this.setState({
                 fetchedRequest: undefined,
             });
         }
-        var $ = require('jquery');
-        xhr = $.ajax({
-            url: url,
-            type: 'GET',
-            dataType: 'json'
-        }).fail(this.fail)
-        .done(this.receive);
-        xhr.href = url;
+        request = this.context.fetch(url, {
+            headers: {'Accept': 'application/json'}
+        });
+        request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+        .then(this.receive);
+
         this.setState({
-            fetchedRequest: xhr
+            fetchedRequest: request
         });
     },
 
-    fail: function (xhr, status, error) {
-        if (status == 'abort') return;
-        var data = parseError(xhr, status);
-        ga('send', 'exception', {
-            'exDescription': 'fetchedRequest:' + status + ':' + xhr.statusText,
-            'location': window.location.href
-        });
-        this.receive(data, status, xhr, true);
-    },
-
-    receive: function (res, status, xhr, erred) {
-        var error = erred ? res : null;
-        var data = {};
-        if (!erred) {
-            if (this.props.converter) {
-                res = this.props.converter(res);
-            }
-            data[this.props.name] = res;
-            if (this.props.etagName) {
-                data[this.props.etagName] = xhr.getResponseHeader('ETag');
-            }
+    receive: function (data) {
+        var result = {};
+        result[this.props.name] = data;
+        if (this.props.etagName) {
+            result[this.props.etagName] = this.state.fetchedRequest.etag;
         }
-        this.props.handleFetch(data, error);
+        this.props.handleFetch(result);
     },
 
     render: function() { return null; }
@@ -93,10 +80,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
     },
 
     getInitialState: function() {
-        return {
-            error: false,
-            data: {},
-        };
+        return {};
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
@@ -107,14 +91,8 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         }
     },
 
-    handleFetch: function(data, error) {
-        var nextState = {
-            error: error
-        };
-        if (data) {
-            nextState['data'] = merge(this.state.data, data);
-        }
-        this.setState(nextState);
+    handleFetch: function(result) {
+        this.setState(result);
     },
 
     render: function () {
@@ -123,14 +101,14 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         var children = [];
         if (this.props.children) {
             React.Children.forEach(this.props.children, function(child) {
-                if (child instanceof Param) {
+                if (child.type === Param.type) {
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
                         handleFetchStart: this.handleFetchStart,
                         session: this.props.session
                     }));
-                    if (this.state.data[child.props.name] === undefined) {
+                    if (this.state[child.props.name] === undefined) {
                         communicating = true;
                     }                    
                 } else {
@@ -143,12 +121,16 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             return null;
         }
 
-        if (this.state.error) {
-            var errorView = globals.content_views.lookup(this.state.error);
-            if (!errorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
+        var errors = params.map(param => this.state[param.props.name])
+            .filter(obj => obj && (obj['@type'] || []).indexOf('error') > -1);
+
+        if (errors.length) {
             return (
                 <div className="error done">
-                    {this.transferPropsTo(<errorView context={this.state.error} />)}
+                    {errors.map(error => {
+                        var ErrorView = globals.content_views.lookup(error);
+                        return <ErrorView {...this.props} context={error} />;
+                    })}
                 </div>
             );
         }
@@ -164,7 +146,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
         return (
             <div className="done">
-                {children.map(child => cloneWithProps(child, merge(this.props, this.state.data)))}
+                {children.map(child => cloneWithProps(child, _.extend({}, this.props, this.state)))}
                 {params}
             </div>
         );
@@ -179,7 +161,7 @@ var Items = React.createClass({
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
         if (!items.length) return null;
-        return this.transferPropsTo(<Component items={items} total={data.total} />);
+        return <Component {...this.props} items={items} total={data.total} />;
     }
 
 });
@@ -191,7 +173,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
         return (
             <FetchedData loadingComplete={this.props.loadingComplete}>
                 <Param name="data" url={this.props.url} />
-                {this.transferPropsTo(<Items />)}
+                <Items {...this.props} />
             </FetchedData>
         );
     }

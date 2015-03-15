@@ -2,41 +2,13 @@ from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
     Authenticated,
+    Deny,
     DENY_ALL,
     Everyone,
 )
-from pyramid.traversal import (
-    find_resource,
-)
-from ..contentbase import (
-    Collection as BaseCollection,
-)
-
-ACCESSION_KEYS = [
-    {
-        'name': 'accession',
-        'value': '{accession}',
-        '$templated': True,
-        '$condition': lambda accession=None, status=None: accession and status != 'replaced'
-    },
-    {
-        'name': 'accession',
-        'value': '{accession}',
-        '$repeat': 'accession alternate_accessions',
-        '$templated': True,
-        '$condition': 'alternate_accessions',
-    },
-]
-
-ALIAS_KEYS = [
-    {
-        'name': 'alias',
-        'value': '{alias}',
-        '$repeat': 'alias aliases',
-        '$templated': True,
-        '$condition': 'aliases',
-    },
-]
+from pyramid.threadlocal import get_current_request
+from .. import contentbase
+from ..schema_formats import is_accession
 
 
 ALLOW_EVERYONE_VIEW = [
@@ -64,107 +36,159 @@ ALLOW_CURRENT = [
 
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
-    (Allow, 'group.read-only-admin', ['traverse', 'view']),
-    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
-    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    (Allow, 'group.read-only-admin', ['view']),
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
 
-ADD_ACTION = {
-    'name': 'add',
-    'title': 'Add',
-    'profile': '/profiles/{item_type}.json',
-    'href': '{collection_uri}#!add',
-    'className': 'btn-success',
-    '$templated': True,
-    '$condition': 'permission:add',
-}
-
-EDIT_ACTION = {
-    'name': 'edit',
-    'title': 'Edit',
-    'profile': '/profiles/{item_type}.json',
-    'href': '#!edit',
-    '$templated': True,
-}
+DELETED = [
+    (Deny, Everyone, 'visible_for_edit')
+] + ONLY_ADMIN_VIEW
 
 
-def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
-    return [
-        path for path in paths
-        if find_resource(root, path).upgrade_properties().get('status') not in exclude
-    ]
+def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
+    if include is not None:
+        return [
+            path for path in paths
+            if request.embed(path, '@@object').get('status') in include
+        ]
+    else:
+        return [
+            path for path in paths
+            if request.embed(path, '@@object').get('status') not in exclude
+        ]
 
 
-class Collection(BaseCollection):
-    template = {
-        # 'actions': [ADD_ACTION],  # XXX forms. Remove redundant page add action when done.
-    }
-
-    def __init__(self, parent, name):
-        super(Collection, self).__init__(parent, name)
+class Collection(contentbase.Collection):
+    def __init__(self, *args, **kw):
+        super(Item.Collection, self).__init__(*args, **kw)
         if hasattr(self, '__acl__'):
             return
-        if 'lab' in self.schema['properties']:
+        # XXX collections should be setup after all types are registered.
+        # Don't access type_info.schema here as that precaches calculated schema too early.
+        if 'lab' in self.type_info.factory.schema['properties']:
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
-    class Item(BaseCollection.Item):
-        STATUS_ACL = {
-            # standard_status
-            'released': ALLOW_CURRENT,
-            'deleted': ONLY_ADMIN_VIEW,
-            'replaced': ONLY_ADMIN_VIEW,
+    def get(self, name, default=None):
+        resource = super(Collection, self).get(name, None)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.connection.get_by_unique_key('accession', name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        if ':' in name:
+            resource = self.connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                if resource.collection is not self and resource.__parent__ is not self:
+                    return default
+                return resource
+        return default
 
-            # shared_status
-            'current': ALLOW_CURRENT,
-            'disabled': ONLY_ADMIN_VIEW,
 
-            # file
-            'obsolete': ONLY_ADMIN_VIEW,
+class Item(contentbase.Item):
+    Collection = Collection
+    STATUS_ACL = {
+        # standard_status
+        'released': ALLOW_CURRENT,
+        'deleted': DELETED,
+        'replaced': DELETED,
 
-            # antibody_characterization
-            'compliant': ALLOW_CURRENT,
-            'not compliant': ALLOW_CURRENT,
-            'not reviewed': ALLOW_CURRENT,
-            'not submitted for review by lab': ALLOW_CURRENT,
+        # shared_status
+        'current': ALLOW_CURRENT,
+        'disabled': ONLY_ADMIN_VIEW,
 
-            # antibody_lot
-            'eligible for new data': ALLOW_CURRENT,
-            'not eligible for new data': ALLOW_CURRENT,
-            'not pursued': ALLOW_CURRENT,
+        # file
+        'obsolete': ONLY_ADMIN_VIEW,
 
-            # dataset / experiment
-            'release ready': ALLOW_AUTHENTICATED_VIEW,
-            'revoked': ALLOW_CURRENT,
+        # antibody_characterization
+        'compliant': ALLOW_CURRENT,
+        'not compliant': ALLOW_CURRENT,
+        'not reviewed': ALLOW_CURRENT,
+        'not submitted for review by lab': ALLOW_CURRENT,
 
-            # publication
-            'published': ALLOW_CURRENT,
+        # antibody_lot
+        'eligible for new data': ALLOW_CURRENT,
+        'not eligible for new data': ALLOW_CURRENT,
+        'not pursued': ALLOW_CURRENT,
+
+        # dataset / experiment
+        'release ready': ALLOW_AUTHENTICATED_VIEW,
+        'revoked': ALLOW_CURRENT,
+
+        # publication
+        'published': ALLOW_CURRENT,
+    }
+
+    @property
+    def __name__(self):
+        if self.name_key is None:
+            return self.uuid
+        properties = self.upgrade_properties()
+        if properties.get('status') == 'replaced':
+            return self.uuid
+        return properties.get(self.name_key, None) or self.uuid
+
+    def __acl__(self):
+        # Don't finalize to avoid validation here.
+        properties = self.upgrade_properties().copy()
+        status = properties.get('status')
+        return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
+
+    def __ac_local_roles__(self):
+        roles = {}
+        properties = self.upgrade_properties().copy()
+        if 'lab' in properties:
+            lab_submitters = 'submits_for.%s' % properties['lab']
+            roles[lab_submitters] = 'role.lab_submitter'
+        return roles
+
+    def unique_keys(self, properties):
+        keys = super(Item, self).unique_keys(properties)
+        if 'accession' not in self.schema['properties']:
+            return keys
+        keys.setdefault('accession', []).extend(properties.get('alternate_accessions', []))
+        if properties.get('status') != 'replaced' and 'accession' in properties:
+            keys['accession'].append(properties['accession'])
+        return keys
+
+
+def contextless_has_permission(permission):
+    request = get_current_request()
+    return request.has_permission('forms', request.root)
+
+
+@contentbase.calculated_property(context=Item.Collection, category='action')
+def add(item_uri, item_type, has_permission):
+    if has_permission('add') and contextless_has_permission('forms'):
+        return {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': '{item_uri}#!add'.format(item_uri=item_uri),
         }
-        actions = [EDIT_ACTION]
 
-        @property
-        def __name__(self):
-            if self.name_key is None:
-                return self.uuid
-            properties = self.upgrade_properties(finalize=False)
-            if properties.get('status') == 'replaced':
-                return self.uuid
-            return properties.get(self.name_key, None) or self.uuid
 
-        def __acl__(self):
-            # Don't finalize to avoid validation here.
-            properties = self.upgrade_properties(finalize=False).copy()
-            ns = self.template_namespace(properties)
-            properties.update(ns)
-            status = ns.get('status')
-            return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
+@contentbase.calculated_property(context=Item, category='action')
+def edit(item_uri, item_type, has_permission):
+    if has_permission('edit') and contextless_has_permission('forms'):
+        return {
+            'name': 'edit',
+            'title': 'Edit',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': item_uri + '#!edit',
+        }
 
-        def __ac_local_roles__(self):
-            roles = {}
-            properties = self.upgrade_properties(finalize=False).copy()
-            ns = self.template_namespace(properties)
-            properties.update(ns)
-            if 'lab' in properties:
-                lab_submitters = 'submits_for.%s' % properties['lab']
-                roles[lab_submitters] = 'role.lab_submitter'
-            return roles
+
+@contentbase.calculated_property(context=Item, category='action')
+def edit_json(item_uri, item_type, has_permission):
+    if has_permission('edit'):
+        return {
+            'name': 'edit-json',
+            'title': 'Edit JSON',
+            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
+            'href': item_uri + '#!edit-json',
+        }

@@ -1,8 +1,7 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var parseError = require('./mixins').parseError;
+var parseAndLogError = require('./mixins').parseAndLogError;
 var fetched = require('./fetched');
 var _ = require('underscore');
 var $script = require('scriptjs');
@@ -41,7 +40,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 </header>
                 <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="data" url={url} etagName="etag" />
-                    {this.transferPropsTo(<EditForm />)}
+                    <EditForm {...this.props} />
                 </fetched.FetchedData>
             </div>
         );
@@ -49,6 +48,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
 });
 
 var EditForm = module.exports.EditForm = React.createClass({
+    contextTypes: {
+        fetch: React.PropTypes.func
+    },
+
     render: function () {
         var error = this.state.error;
         return (
@@ -112,51 +115,42 @@ var EditForm = module.exports.EditForm = React.createClass({
         };
     },
 
-    save: function (event) {
-        var $ = require('jquery');
+    save: function (e) {
+        e.preventDefault();
         var value = this.state.editor.getValue();
         var url = this.props.context['@id'];
-        var xhr = $.ajax({
-            url: url,
-            type: 'PUT',
-            contentType: "application/json",
-            data: value,
-            dataType: 'json',
-            headers: {'If-Match': this.props.etag}
-        }).fail(this.fail)
-        .done(this.receive);
-        xhr.href = url;
+        var request = this.context.fetch(url, {
+            method: 'PUT',
+            headers: {
+                'If-Match': this.props.etag,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: value
+        });
+        request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .then(this.receive);
         this.setState({
             communicating: true,
-            putRequest: xhr
+            putRequest: request
         });
-        xhr.done(this.finish);
     },
 
-    finish: function () {
-        this.props.navigate('');
-    },
-
-    fail: function (xhr, status, error) {
-        if (status == 'abort') return;
-        var data = parseError(xhr, status);
-        ga('send', 'exception', {
-            'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
-            'location': window.location.href
-        });
-        this.receive(data, status, xhr, true);
-    },
-
-    receive: function (data, status, xhr, erred) {
+    receive: function (data) {
+        var erred = (data['@type'] || []).indexOf('error') > -1;
         this.setState({
             data: data,
             communicating: false,
             erred: erred,
             error: erred ? data : undefined
         });
+        if (!erred) this.props.navigate('');
     }
 });
 
 
 globals.content_views.register(ItemEdit, 'item', 'edit-json');
-globals.content_views.register(ItemEdit, 'item', 'edit');  // XXX forms

@@ -1,5 +1,6 @@
-from urllib import quote
+from urllib.parse import quote
 import os.path
+import sys
 try:
     import subprocess32 as subprocess
 except ImportError:
@@ -19,7 +20,7 @@ def initdb(datadir, prefix='', echo=False):
         stderr=subprocess.STDOUT,
     )
     if echo:
-        print output
+        print(output.decode('utf-8'))
 
 
 def server_process(datadir, prefix='', echo=False):
@@ -38,25 +39,25 @@ def server_process(datadir, prefix='', echo=False):
         stderr=subprocess.STDOUT,
     )
 
-    SUCCESS_LINE = 'database system is ready to accept connections\n'
+    SUCCESS_LINE = b'database system is ready to accept connections\n'
 
     lines = []
-    for line in iter(process.stdout.readline, ''):
+    for line in iter(process.stdout.readline, b''):
         if echo:
-            print line,
+            sys.stdout.write(line.decode('utf-8'))
         lines.append(line)
         if line.endswith(SUCCESS_LINE):
             break
     else:
         code = process.wait()
-        msg = ('Process return code: %d\n' % code) + ''.join(lines)
+        msg = ('Process return code: %d\n' % code) + b''.join(lines).decode('utf-8')
         raise Exception(msg)
 
     if not echo:
         process.stdout.close()
 
     if echo:
-        print 'Created: postgresql://postgres@:5432/postgres?host=%s' % quote(datadir)
+        print('Created: postgresql://postgres@:5432/postgres?host=%s' % quote(datadir))
 
     return process
 
@@ -67,12 +68,12 @@ def main():
     import tempfile
     datadir = tempfile.mkdtemp()
 
-    print 'Starting in dir: %s' % datadir
+    print('Starting in dir: %s' % datadir)
     try:
         process = server_process(datadir, echo=True)
     except:
         shutil.rmtree(datadir)
-        print 'Cleaned dir: %s' % datadir
+        print('Cleaned dir: %s' % datadir)
         raise
 
     @atexit.register
@@ -81,17 +82,17 @@ def main():
             if process.poll() is None:
                 process.terminate()
                 for line in process.stdout:
-                    print line,
+                    sys.stdout.write(line.decode('utf-8'))
                 process.wait()
         finally:
             shutil.rmtree(datadir)
-            print 'Cleaned dir: %s' % datadir
+            print('Cleaned dir: %s' % datadir)
 
-    print 'Started. ^C to exit.'
+    print('Started. ^C to exit.')
 
     try:
-        for line in iter(process.stdout.readline, ''):
-            print line,
+        for line in iter(process.stdout.readline, b''):
+            sys.stdout.write(line.decode('utf-8'))
     except KeyboardInterrupt:
         raise SystemExit(0)
 

@@ -320,5 +320,27 @@
         "uuid": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
         "targets": ["eGFP-avictoria"],
         "status": "in progress"
+    },
+    {
+        "accession": "ENCAB000AFX",
+        "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
+        "award": "U54HG004576",
+        "clonality": "monoclonal",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:EBF1_(SC-137065)"
+        ],
+        "host_organism": "mouse",
+        "isotype": "IgG",
+        "lab": "richard-myers",
+        "lot_id": "J0505",
+        "product_id": "sc-137065",
+        "source": "santa-cruz-biotech",
+        "status": "released",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "targets": [
+            "EBF1-human"
+        ],
+        "url": "http://www.scbt.com/datasheet-137065-ebf-c-8-antibody.html",
+        "uuid": "d48d93fe-5909-4a8a-b78f-2f7aad159dfc"
     }
 ]

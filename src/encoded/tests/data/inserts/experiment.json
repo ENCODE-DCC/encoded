@@ -120,7 +120,7 @@
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-       "lab": "richard-myers",
+        "lab": "richard-myers",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
@@ -250,5 +250,66 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
+    },
+    {
+        "_test": "DNA-me pipeline test",
+        "accession": "ENCSR765JPC",
+        "dbxrefs": [],
+        "uuid": "e998735d-9a72-453f-b947-5fb604027d01",
+        "biosample_type": "immortalized cell line",
+        "award": "U54HG006998",
+        "biosample_term_id": "EFO:0002067",
+        "organ_slims": [],
+        "biosample_term_name": "K562",
+        "dataset_type": "experiment",
+        "assay_term_id": "OBI:0001863",
+        "status": "proposed",
+        "description": "HAIB Whole Genome Bisulfite Sequencing K562",
+        "assay_term_name": "whole genome bisulfite sequencing",
+        "lab": "richard-myers",
+        "submitted_by": "facilisi.tristique@potenti.vivamus"
+    },
+    {
+        "_test": "ENCODE 2 pipeline ChIP-seq control",
+        "accession": "ENCSR000EYX",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG004558/",
+        "biosample_term_id": "EFO:0002784",
+        "biosample_term_name": "GM12878",
+        "biosample_type": "immortalized cell line",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH000625",
+            "GEO:GSM935413"
+        ],
+        "description": "Control ChIP-seq on human GM12878",
+        "lab": "michael-snyder",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "Control-human",
+        "uuid": "4b180e2c-f469-4ffc-b7ad-e14ff6e41f78"
+    },
+    {
+        "_test": "ENCODE 2 pipeline ChIP-seq",
+        "accession": "ENCSR000DZQ",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG004558/",
+        "biosample_term_id": "EFO:0002784",
+        "biosample_term_name": "GM12878",
+        "biosample_type": "immortalized cell line",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH001832",
+            "GEO:GSM935375"
+        ],
+        "description": "EBF1 ChIP-seq on human GM12878 produced by the Snyder lab",
+        "lab": "michael-snyder/",
+        "possible_controls": [
+            "ENCSR000EYX"
+        ],
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "EBF1-human",
+        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
     }
 ]

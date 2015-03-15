@@ -6,12 +6,6 @@
     "type": "object",
     "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
-    "calculated_props": {
-        "href": {
-            "title": "Download URL",
-            "type": "string"
-        }
-    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -19,7 +13,8 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },        
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -226,7 +221,17 @@
                         "splice junctions",
                         "unique minus signal",
                         "unique plus signal",
-                        "unique signal"
+                        "unique signal",
+                        "genome reference",
+                        "genome index",
+                        "transcriptome alignments",
+                        "exon quantifications",
+                        "genome quantifications",
+                        "transcript quantifications",
+                        "methyl CG",
+                        "methyl CHG",
+                        "methyl CHH",
+                        "enhancer validation"
                     ]
                 },
                 {
@@ -342,10 +347,35 @@
         },
         "assembly": {
             "title": "Mapping assembly",
-            "description": "UCSC genome assembly that files were mapped to.",
-            "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
+            "description": "Genome assembly that files were mapped to.",
+            "comment": "Applies to mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "enum": ["mm9", "hg19", "mm10", "ce10", "dm3", "dm6"]
+            "enum": [
+                "mm9",
+                "mm10",
+                "hg19",
+                "GRCh38",
+                "ce10",
+                "dm3",
+                "dm6"
+                ]
+        },
+        "genome_annotation": {
+            "title": "Genome annotation",
+            "description": "Genome annotation that file was generated with.",
+            "comment": "Applies to files created using annotations.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "None",
+                "M2",
+                "M3",
+                "M4",
+                "V3c",
+                "V7",
+                "V10",
+                "V19"
+                ]
         },
         "submitted_file_name": {
             "title": "Original file name",
@@ -367,6 +397,27 @@
                 "revoked",
                 "released"
                 ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            }
+        },
+        "step_run": {
+            "title": "Analysis step run",
+            "description": "The run instance of the step the file was generated from.",
+            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
+            "type": "string",
+             "linkTo": "analysis_step_run"
         }
     },
     "columns": {
@@ -395,7 +446,7 @@
         "2bit": ".2bit",
         "CEL": ".cel.gz",
         "bam": ".bam",
-        "bedLogR": ".bedLogR.bigBed  ",
+        "bedLogR": ".bedLogR.bigBed",
         "bedMethyl": ".bedMethyl.bigBed",
         "bedRnaElements": ".bedRnaElements.bigBed",
         "bed": ".bed.gz",

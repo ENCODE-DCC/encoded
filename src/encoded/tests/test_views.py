@@ -5,9 +5,11 @@ def _type_length():
     # Not a fixture as we need to parameterize tests on this
     from ..loadxl import ORDER
     from pkg_resources import resource_stream
+    import codecs
     import json
+    utf8 = codecs.getreader("utf-8")
     return {
-        name: len(json.load(resource_stream('encoded', 'tests/data/inserts/%s.json' % name)))
+        name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
     }
 
@@ -27,7 +29,7 @@ PUBLIC_COLLECTIONS = [
 
 def test_home(anonhtmltestapp):
     res = anonhtmltestapp.get('/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
+    assert res.body.startswith(b'<!DOCTYPE html>')
 
 
 def test_home_json(testapp):
@@ -56,13 +58,13 @@ def test_collections_anon(workbook, anontestapp, item_type):
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
 def test_html_collections_anon(workbook, anonhtmltestapp, item_type):
     res = anonhtmltestapp.get('/' + item_type).follow(status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
+    assert res.body.startswith(b'<!DOCTYPE html>')
 
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_html_collections(workbook, htmltestapp, item_type):
     res = htmltestapp.get('/' + item_type).follow(status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
+    assert res.body.startswith(b'<!DOCTYPE html>')
 
 
 @pytest.mark.slow
@@ -71,7 +73,7 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
     res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
     for item in res.json['@graph']:
         res = htmltestapp.get(item['@id'])
-        assert res.body.startswith('<!DOCTYPE html>')
+        assert res.body.startswith(b'<!DOCTYPE html>')
 
 
 @pytest.mark.slow
@@ -88,8 +90,8 @@ def test_html_server_pages(workbook, item_type, server):
     )
     for item in res.json['@graph']:
         res = testapp.get(item['@id'], status=200)
-        assert res.body.startswith('<!DOCTYPE html>')
-        assert 'Internal Server Error' not in res.body
+        assert res.body.startswith(b'<!DOCTYPE html>')
+        assert b'Internal Server Error' not in res.body
 
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
@@ -99,15 +101,16 @@ def test_json(testapp, item_type):
 
 
 def test_json_basic_auth(anonhtmltestapp):
-    import base64
+    from base64 import b64encode
+    from pyramid.compat import ascii_native_
     url = '/'
-    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
     res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=401)
     assert res.content_type == 'application/json'
 
 
 def _test_antibody_approval_creation(testapp):
-    from urlparse import urlparse
+    from urllib.parse import urlparse
     new_antibody = {'foo': 'bar'}
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
@@ -170,17 +173,18 @@ def test_collection_post_missing_content_type(testapp):
 
 
 def test_collection_post_bad_(anontestapp):
-    import base64
-    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    from base64 import b64encode
+    from pyramid.compat import ascii_native_
+    value = "Authorization: Basic %s" % ascii_native_(b64encode(b'nobody:pass'))
     anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
 
 
 def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
     res = testapp.get('/pages/')
-    assert any(action for action in res.json['actions'] if action['name'] == 'add')
+    assert any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
     res = anontestapp.get('/pages/')
-    assert not any(action for action in res.json['actions'] if action['name'] == 'add')
+    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
 
 def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
@@ -212,8 +216,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(2):
-        res = testapp.get('/' + uuid).follow().json
+    res = testapp.get('/' + uuid).follow().json
 
     for key in update:
         assert res[key] == update[key]
@@ -289,3 +292,19 @@ def test_jsonld_context(testapp):
 def test_jsonld_term(testapp):
     res = testapp.get('/terms/submitted_by')
     assert res.json
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
+    res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
+    for item in res.json['@graph']:
+        indexer_testapp.get(item['@id'] + '@@index-data')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_profiles(testapp, item_type):
+    from jsonschema import Draft4Validator
+    res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
+    errors = Draft4Validator.check_schema(res.json)
+    assert not errors

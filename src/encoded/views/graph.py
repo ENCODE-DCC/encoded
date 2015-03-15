@@ -1,4 +1,5 @@
 from collections import defaultdict
+from past.builtins import basestring
 from pyramid.response import Response
 from pyramid.view import view_config
 from subprocess import Popen, PIPE
@@ -46,19 +47,19 @@ def digraph(root, exclude=None):
     ]
 
     subclasses = defaultdict(list)
-    for source, collection in root.by_item_type.iteritems():
-        for base in collection.Item.base_types[:-1]:
+    for source, collection in root.by_item_type.items():
+        for base in collection.type_info.base_types[:-1]:
             subclasses[base].append(source)
 
-    for source, collection in root.by_item_type.iteritems():
-        if collection.schema is None:
+    for source, collection in root.by_item_type.items():
+        if collection.type_info.schema is None:
             continue
         if source.startswith('testing_'):
             continue
         if source == 'antibody_approval':
             continue
-        out.extend(node(source, collection.schema['properties']))
-        for name, prop in collection.schema['properties'].iteritems():
+        out.extend(node(source, collection.type_info.schema['properties']))
+        for name, prop in collection.type_info.schema['properties'].items():
             if name in exclude:
                 continue
             prop = prop.get('items', prop)

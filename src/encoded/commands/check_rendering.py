@@ -12,6 +12,7 @@ For the development.ini you must supply the paster app name:
 """
 import json
 import logging
+from future.utils import itervalues
 from pyramid.traversal import resource_path
 
 EPILOG = __doc__
@@ -48,7 +49,7 @@ def run(testapp, collections=None):
         collection_path = resource_path(collection, '')
         check_path(testapp, collection_path)
         failed = 0
-        for count, item in enumerate(collection.itervalues()):
+        for count, item in enumerate(itervalues(collection)):
             path = resource_path(item, '')
             if not check_path(testapp, path):
                 failed += 1

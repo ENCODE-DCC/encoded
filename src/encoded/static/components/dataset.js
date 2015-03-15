@@ -1,13 +1,17 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var cx = require('react/lib/cx');
+var moment = require('moment');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var fetched = require('./fetched');
 var statuslabel = require('./statuslabel');
+var graph = require('./graph');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
@@ -17,7 +21,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 var Dataset = module.exports.Dataset = React.createClass({
@@ -104,12 +109,41 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 : null }
 
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
+
             </div>
         );
     }
 });
 
 globals.content_views.register(Dataset, 'dataset');
+
+
+var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
+    var file_states = [
+        '',
+        "uploading",
+        "uploaded",
+        "upload failed",
+        "format check failed",
+        "in progress"
+    ].map(encodeURIComponent).join('&status=');
+    return '/search/?limit=all&frame=embedded&type=file&dataset=' + context['@id'] + file_states;
+};
+
+var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Unreleased files linked to {context.accession}</h3>
+                <FileTable {...this.props} />
+            </div>
+        );
+    }
+});
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
@@ -171,25 +205,125 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     }
 });
 
+function humanFileSize(size) {
+    if (size === undefined) return undefined;
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+}
 
 var FileTable = module.exports.FileTable = React.createClass({
+    getInitialState: function() {
+        return {col: '', reversed: false};
+    },
+
+    sortDir: function(col) {
+        var reversed = col === this.state.col ? !this.state.reversed : false;
+        this.setState({col: col, reversed: reversed});
+    },
+
+    sortCol: function(a, b) {
+        var diff;
+
+        switch (this.state.col) {
+            case 'accession':
+                diff = a.accession > b.accession ? 1 : -1;
+                break;
+            case 'file_format':
+                diff = a.file_format > b.file_format ? 1 : (a.file_format === b.file_format ? 0 : -1);
+                break;
+            case 'output_type':
+                var aLower = a.output_type.toLowerCase();
+                var bLower = b.output_type.toLowerCase();
+                diff = aLower > bLower ? 1 : (aLower === bLower ? 0 : -1);
+                break;
+            case 'paired_end':
+                if (a.paired_end && b.paired_end) {
+                    diff = a.paired_end - b.paired_end;
+                } else {
+                    diff = a.paired_end ? -1 : (b.paired_end ? 1 : 0);
+                }
+                break;
+            case 'bio_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.biological_replicate_number - b.replicate.biological_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
+                break;
+            case 'tech_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.technical_replicate_number - b.replicate.technical_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
+                break;
+            case 'assembly':
+                if (a.assembly && b.assembly) {
+                    diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
+                } else {
+                    diff = a.assembly ? -1 : (b.assembly ? 1 : 0);
+                }
+                break;
+            case 'annotation':
+                if (a.genome_annotation && b.genome_annotation) {
+                    diff = a.genome_annotation > b.genome_annotation ? 1 : (a.genome_annotation === b.genome_annotation ? 0 : -1);
+                } else {
+                    diff = a.genome_annotation ? -1 : (b.genome_annotation ? 1 : 0);
+                }
+                break;
+            case 'title':
+                diff = a.lab.title > b.lab.title ? 1 : (a.lab.title === b.lab.title ? 0 : -1);
+                break;
+            case 'date_created':
+                if (a.date_created && b.date_created) {
+                    diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                } else {
+                    diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
+                }
+                break;
+            case 'file_size':
+                diff = (a.file_size || 0) - (b.file_size || 0);
+                break;
+            default:
+                diff = 0;
+                break;
+        }
+        return this.state.reversed ? -diff : diff;
+    },
+
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
         var encodevers = this.props.encodevers;
-        this.props.items.forEach(function (file) {
+        var cellClass = {
+            accession: 'tcell-sort',
+            file_format: 'tcell-sort',
+            output_type: 'tcell-sort',
+            paired_end: 'tcell-sort',
+            bio_replicate: 'tcell-sort',
+            tech_replicate: 'tcell-sort',
+            assembly: 'tcell-sort',
+            annotation: 'tcell-sort',
+            title: 'tcell-sort',
+            date_created: 'tcell-sort',
+            file_size: 'tcell-sort'
+        };
+        cellClass[this.state.col] = this.state.reversed ? 'tcell-desc' : 'tcell-asc';
+        var files = this.props.items.slice(0);
+        files.sort(this.sortCol).forEach(function (file) {
             rows[file['@id']] = (
                 <tr>
                     <td>{file.accession}</td>
                     <td>{file.file_format}</td>
                     <td>{file.output_type}</td>
                     <td>{file.paired_end}</td>
-                    <td>{file.replicate ?
-                        '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
-                        : null}
-                    </td>
-                    <td>{file.submitted_by.title}</td>
-                    <td>{file.date_created}</td>
+                    <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                    <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
+                    <td>{file.assembly}</td>
+                    <td>{file.genome_annotation}</td>
+                    <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                    <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                    <td>{humanFileSize(file.file_size)}</td>
                     <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
@@ -197,26 +331,30 @@ var FileTable = module.exports.FileTable = React.createClass({
         });
         return (
             <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover">
+                <table className="table table-panel table-striped table-hover table-file">
                     <thead>
                         <tr>
-                            <th>Accession</th>
-                            <th>File type</th>
-                            <th>Output type</th>
-                            <th>Paired end</th>
-                            <th>Associated replicates</th>
-                            <th>Added by</th>
-                            <th>Date added</th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type<i className={cellClass.file_format}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'output_type')}>Output type<i className={cellClass.output_type}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end<i className={cellClass.paired_end}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate<i className={cellClass.bio_replicate}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate<i className={cellClass.tech_replicate}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'assembly')}>Mapping assembly<i className={cellClass.assembly}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'annotation')}>Genome annotation<i className={cellClass.annotation}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Lab<i className={cellClass.title}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'date_created')}>Date added<i className={cellClass.date_created}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_size')}>File size<i className={cellClass.file_size}></i></th>
                             <th>File download</th>
                             {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
                     </thead>
                     <tbody>
-                    {rows}
+                        {rows}
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={encodevers == "3" ? 9 : 8}></td>
+                            <td colSpan={encodevers == "3" ? 13 : 12}></td>
                         </tr>
                     </tfoot>
                 </table>

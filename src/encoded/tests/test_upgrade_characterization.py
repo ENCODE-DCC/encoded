@@ -1,5 +1,9 @@
 import pytest
 
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
+
 
 @pytest.fixture
 def antibody_characterization(submitter, award, lab, antibody_lot, target):
@@ -45,6 +49,7 @@ def antibody_characterization_1(antibody_characterization):
         'schema_version': '1',
         'status': 'SUBMITTED',
         'characterization_method': 'mass spectrometry after IP',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT}
     })
     return item
 
@@ -245,8 +250,9 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
 
 
-def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
-    schema = root.by_item_type['antibody_characterization'].schema
+def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_characterization_1):
+    from ..contentbase import TYPES
+    schema = registry[TYPES]['antibody_characterization'].schema
 
     res = testapp.post_json('/antibody-characterizations?validate=false&render=uuid', antibody_characterization_1)
     location = res.location

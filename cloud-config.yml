@@ -1,121 +1,10 @@
 #cloud-config
-#
-# Use ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140416.1 (ami-f64f77b3)
 
-# Debug log
-output: {all: '| tee -a /var/log/cloud-init-output.log'}
-
-package_upgrade: true
-packages:
-- apache2-mpm-event
-- build-essential
-- elasticsearch
-- git
-- graphviz
-- libapache2-mod-wsgi
-- libevent-dev
-- libfreetype6-dev
-- libjpeg-dev
-- liblcms2-dev
-- libmagic-dev
-- libpq-dev
-- libssl-dev
-- libtiff5-dev
-- libwebp-dev
-- libxml2-dev
-- libxslt1-dev
-- lzop
-- nodejs-dev
-- nodejs-legacy
-- npm
-- openjdk-7-jre-headless
-- postgresql-9.3
-- pv
-- python2.7-dev
-- python-software-properties
-- python-virtualenv
-- ruby-dev
-- zlib1g-dev
-
-bootcmd:
-- mkfs -t ext4 /dev/xvdf
-- mkfs -t ext4 /dev/xvdg
-- mkdir -p /var/lib/postgresql/9.3
-- mkdir -p /var/lib/elasticsearch/elasticsearch
-- echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
-
-mounts:
-- [ xvdf, /var/lib/postgresql/9.3, "auto", "defaults,nobootwait", "0", "2" ]
-- [ xvdg, /var/lib/elasticsearch/elasticsearch, "auto", "defaults,nobootwait", "0", "2" ]
-
-users:
-- default
-- name: encoded
-  gecos: ENCODE Metadata Database daemon user
-  inactive: true
-  system: true
-  # Specified homedir must exist
-  # https://github.com/rubygems/rubygems/issues/689
-  homedir: /srv/encoded
-
-write_files:
-- path: /etc/ssh/users_ca.pub
-  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
-- path: /etc/postgresql/9.3/main/recovery.conf
-  content: restore_command = '/srv/encoded/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
-
-runcmd:
-# Ideally this would build as a different user so encoded only has read
-# permissions
-- set -e
-- sudo update-rc.d elasticsearch defaults
-- sudo service elasticsearch start
-- chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
-- sudo -u postgres createuser encoded
-- sudo -u postgres createdb --owner=encoded encoded
-- mkdir /srv/encoded
-- chown encoded:encoded /srv/encoded
-- cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
-- sudo -u encoded git checkout %(COMMIT)s
-- sudo -u encoded python2.7 bootstrap.py -v 2.2.1
-- sudo -u encoded bin/buildout
-- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
-- sudo /etc/init.d/postgresql stop
-- sudo -u postgres bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
-- sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
-- sudo /etc/init.d/postgresql start
-- until sudo -u postgres psql postgres -c ""; do sleep 10; done
-- sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/update-keys-links production.ini
-- sudo -u encoded bin/create-mapping production.ini
-- sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
-- sudo ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
-- sudo a2enmod headers
-- sudo a2enmod proxy_http
-- sudo a2enmod rewrite
-- sudo a2enmod ssl
-- sudo a2ensite encoded.conf
-- sudo a2dissite 000-default
-- sudo a2enconf logging
-- sudo a2disconf charset
-- sudo a2disconf javascript-common
-- sudo a2disconf localized-error-pages
-- sudo a2disconf other-vhosts-access-log
-- sudo a2disconf serve-cgi-bin
-- sudo service apache2 reload
-- sleep 10
-- sudo -u encoded bin/upgrade production.ini
-#- sleep 60
-#- PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd"
-
-## Or specify public keys:
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
+# Instance
 
 apt_sources:
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
+- source: "ppa:webupd8team/java"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -148,3 +37,173 @@ apt_sources:
     qPDlGRlOgVTd9xUfHFkzB52c70E=
     =92oX
     -----END PGP PUBLIC KEY BLOCK-----
+
+bootcmd:
+- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
+- cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+- cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
+- cloud-init-per once chmod-swapfile chmod 600 /swapfile
+- cloud-init-per once mkswap-swapfile mkswap /swapfile
+- sysctl "vm.swappiness=0"
+- swapon /swapfile
+
+package_upgrade: true
+
+packages:
+- apache2-mpm-worker
+- build-essential
+- elasticsearch
+- git
+- graphviz
+- libapache2-mod-wsgi-py3
+- libevent-dev
+- libfreetype6-dev
+- libjpeg-dev
+- liblcms2-dev
+- libmagic-dev
+- libpq-dev
+- libssl-dev
+- libtiff5-dev
+- libwebp-dev
+- libxml2-dev
+- libxslt1-dev
+- lzop
+- nodejs-dev
+- nodejs-legacy
+- npm
+- ntp
+- oracle-java8-installer
+- oracle-java8-set-default
+- postgresql-9.3
+- pv
+- python2.7-dev
+- python3.4-dev
+- python-software-properties
+- python-virtualenv
+- ruby-dev
+- unattended-upgrades
+- update-notifier-common
+- zlib1g-dev
+
+power_state:
+  mode: reboot
+
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+
+runcmd:
+# Ideally this would build as a different user so encoded only has read
+# permissions
+- set -e
+- update-rc.d elasticsearch defaults
+- service elasticsearch start
+- chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+- sudo -u postgres echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+- sudo -u postgres createuser encoded
+- sudo -u postgres createdb --owner=encoded encoded
+- mkdir /srv/encoded
+- chown encoded:encoded /srv/encoded
+- cd /srv/encoded
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
+- sudo -u encoded git checkout %(COMMIT)s
+- mkdir /opt/wal-e
+- chown postgres:postgres /opt/wal-e
+- sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
+- sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
+- /etc/init.d/postgresql stop
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
+- /etc/init.d/postgresql start
+- sudo -u encoded python3.4 bootstrap.py -v 2.2.5 --setuptools-version 7.0
+- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
+- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+- until sudo -u postgres psql postgres -c ""; do sleep 10; done
+- sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
+- sudo -u encoded bin/create-mapping production.ini --app-name app
+- ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
+- a2enmod headers
+- a2enmod proxy_http
+- a2enmod rewrite
+- a2enmod ssl
+- a2ensite encoded.conf
+- a2dissite 000-default
+- a2enconf logging
+- a2disconf charset
+- a2disconf javascript-common
+- a2disconf localized-error-pages
+- a2disconf other-vhosts-access-log
+- a2disconf serve-cgi-bin
+- if test "%(ROLE)s" = "demo"
+- then
+-   pg_ctlcluster 9.3 main promote
+-   until test "f" = $(sudo -u postgres psql postgres -c "select pg_is_in_recovery()" --tuples-only | tr -d "\\n "); do sleep 10; done
+-   sudo -u encoded bin/update-keys-links production.ini --app-name app
+-   sudo -u encoded bin/upgrade production.ini --app-name app
+- fi
+# - sleep 10
+# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+# - pg_ctlcluster 9.3 main reload
+# - pg_ctlcluster 9.3 main promote
+# - sudo -u encoded bin/update-keys-links production.ini --app-name app
+# - sudo -u encoded bin/upgrade production.ini --app-name app
+# - sudo -i -u postgres /opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-push /var/lib/postgresql/9.3/main
+# - sleep 60
+# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
+
+ssh_authorized_keys:
+- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
+
+users:
+- default
+- name: encoded
+  gecos: ENCODE Metadata Database daemon user
+  inactive: true
+  system: true
+  # Specified homedir must exist
+  # https://github.com/rubygems/rubygems/issues/689
+  homedir: /srv/encoded
+
+write_files:
+- path: /etc/apt/apt.conf.d/20auto-upgrades
+  content: |
+    APT::Periodic::Update-Package-Lists "1";
+    APT::Periodic::Unattended-Upgrade "1";
+
+- path: /etc/apt/apt.conf.d/50unattended-upgrades
+  content: |
+    Unattended-Upgrade::Allowed-Origins {
+        "${distro_id} ${distro_codename}-security";
+    };
+    Unattended-Upgrade::Automatic-Reboot "true";
+
+- path: /etc/default/elasticsearch
+  content: |
+    ES_HEAP_SIZE=2g
+
+- path: /etc/postgresql/9.3/main/custom.conf
+  content: |
+    hot_standby = on
+    max_standby_archive_delay = -1
+    wal_level = hot_standby
+    archive_mode = on
+    archive_timeout = 60
+    # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
+    checkpoint_timeout = 1h
+
+- path: /etc/postgresql/9.3/main/master.conf
+  content: |
+    archive_command = '/opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-push "%%p"'
+
+- path: /etc/postgresql/9.3/main/recovery.conf
+  content: |
+    # recovery.conf must be linked into data dir to do anything
+    recovery_target_timeline = 'latest'
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" wal-fetch "%%f" "%%p"'
+    standby_mode = on
+
+- path: /etc/postgresql/9.3/main/wale_s3_prefix
+  content: "%(WALE_S3_PREFIX)s"
+
+- path: /etc/ssh/users_ca.pub
+  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org

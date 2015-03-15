@@ -25,17 +25,10 @@ def fastq_no_replicate(award, experiment, lab):
 
 
 @pytest.fixture
-def fastq(award, experiment, lab, replicate):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'status': 'in progress',
-    }
+def fastq(fastq_no_replicate, replicate):
+    item = fastq_no_replicate.copy()
+    item['replicate'] = replicate['@id']
+    return item
 
 
 def test_file_post_fastq_no_replicate(testapp, fastq_no_replicate):
@@ -63,65 +56,32 @@ def file(testapp, award, experiment, lab, replicate):
 
 
 @pytest.fixture
-def fastq_pair_1(award, experiment, lab, replicate):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'paired_end': '1',
-        'status': 'in progress',
-    }
+def fastq_pair_1(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '1'
+    return item
 
 
 @pytest.fixture
-def fastq_pair_1_paired_with(award, experiment, file, lab, replicate):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'paired_end': '1',
-        'paired_with': file['@id'],
-        'status': 'in progress',
-    }
+def fastq_pair_1_paired_with(fastq_pair_1, file):
+    item = fastq_pair_1.copy()
+    item['paired_with'] = file['@id']
+    return item
 
 
 @pytest.fixture
-def fastq_pair_2(award, experiment, lab, replicate):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'paired_end': '2',
-        'status': 'in progress',
-    }
+def fastq_pair_2(fastq):
+    item = fastq.copy()
+    item['paired_end'] = '2'
+    item['md5sum'] = '2123456789abcdef0123456789abcdef'
+    return item
 
 
 @pytest.fixture
-def fastq_pair_2_paired_with(award, experiment, file, lab, replicate):
-    return {
-        'award': award['@id'],
-        'dataset': experiment['@id'],
-        'lab': lab['@id'],
-        'replicate': replicate['@id'],
-        'file_format': 'fastq',
-        'md5sum': '0123456789abcdef0123456789abcdef',
-        'output_type': 'raw data',
-        'paired_end': '2',
-        'paired_with': file['@id'],
-        'status': 'in progress',
-    }
+def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
+    item = fastq_pair_2.copy()
+    item['paired_with'] = 'md5:' + fastq_pair_1['md5sum']
+    return item
 
 
 def test_file_post_fastq_pair_1_paired_with(testapp, fastq_pair_1_paired_with):
@@ -132,9 +92,27 @@ def test_file_post_fastq_pair_1(testapp, fastq_pair_1):
     testapp.post_json('/file', fastq_pair_1, status=201)
 
 
-def test_file_post_fastq_pair_2_paired_with(testapp, fastq_pair_2_paired_with):
+def test_file_post_fastq_pair_2_paired_with(testapp, fastq_pair_1, fastq_pair_2_paired_with):
+    testapp.post_json('/file', fastq_pair_1, status=201)
     testapp.post_json('/file', fastq_pair_2_paired_with, status=201)
 
 
-def test_file_post_fastq_pair_2(testapp, fastq_pair_2):
+def test_file_post_fastq_pair_2_paired_with_again(testapp, fastq_pair_1, fastq_pair_2_paired_with):
+    testapp.post_json('/file', fastq_pair_1, status=201)
+    testapp.post_json('/file', fastq_pair_2_paired_with, status=201)
+    item = fastq_pair_2_paired_with.copy()
+    item['md5sum'] = '3123456789abcdef0123456789abcdef'
+    testapp.post_json('/file', item, status=409)
+
+
+def test_file_post_fastq_pair_2_no_pair_1(testapp, fastq_pair_2):
     testapp.post_json('/file', fastq_pair_2, status=422)
+
+
+def test_file_paired_with_back_calculated(testapp, fastq_pair_1, fastq_pair_2_paired_with):
+    res = testapp.post_json('/file', fastq_pair_1, status=201)
+    location1 = res.json['@graph'][0]['@id']
+    res = testapp.post_json('/file', fastq_pair_2_paired_with, status=201)
+    location2 = res.json['@graph'][0]['@id']
+    res = testapp.get(location1)
+    assert res.json['paired_with'] == location2

@@ -1,19 +1,14 @@
-from copy import deepcopy
 from pkg_resources import resource_filename
 from pyramid.events import (
     BeforeRender,
     subscriber,
 )
-from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPMovedPermanently,
-    HTTPNotFound,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
     HTTPUnsupportedMediaType,
 )
-from pyramid.renderers import render_to_response
 from pyramid.security import forget
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -24,8 +19,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
-from urllib import unquote
-from .cache import ManagerLRUCache
+
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import json
@@ -50,7 +44,6 @@ def includeme(config):
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
-    config.add_tween('.renderers.es_tween_factory', under='.renderers.security_tween_factory')
     config.scan(__name__)
 
 
@@ -63,6 +56,18 @@ class JSON(pyramid.renderers.JSON):
         return json.dumps(value, default=default, **self.kw)
 
 
+class BinaryFromJSON:
+    def __init__(self, app_iter):
+        self.app_iter = app_iter
+
+    def __len__(self):
+        return len(self.app_iter)
+
+    def __iter__(self):
+        for s in self.app_iter:
+            yield s.encode('utf-8')
+
+
 class JSONResult(object):
     def __init__(self):
         self.app_iter = []
@@ -72,7 +77,10 @@ class JSONResult(object):
     def serializer(cls, value, **kw):
         fp = cls()
         json.dump(value, fp, **kw)
-        return fp.app_iter
+        if str is bytes:
+            return fp.app_iter
+        else:
+            return BinaryFromJSON(fp.app_iter)
 
 
 json_renderer = JSON(serializer=JSONResult.serializer)
@@ -82,7 +90,13 @@ def uuid_adapter(obj, request):
     return str(obj)
 
 
+def listy_adapter(obj, request):
+    return list(obj)
+
+
 json_renderer.add_adapter(uuid.UUID, uuid_adapter)
+json_renderer.add_adapter(set, listy_adapter)
+json_renderer.add_adapter(frozenset, listy_adapter)
 
 
 class NullRenderer:
@@ -97,66 +111,6 @@ class NullRenderer:
             return value
         request.response = value
         return None
-
-
-def make_subrequest(request, path):
-    """ Make a subrequest
-
-    Copies request environ data for authentication.
-
-    May be better to just pull out the resource through traversal and manually
-    perform security checks.
-    """
-    env = request.environ.copy()
-    if path and '?' in path:
-        path_info, query_string = path.split('?', 1)
-        path_info = unquote(path_info)
-    else:
-        path_info = unquote(path)
-        query_string = ''
-    env['PATH_INFO'] = path_info
-    env['QUERY_STRING'] = query_string
-    subreq = request.__class__(env, method='GET', content_type=None,
-                               body=b'')
-    subreq.remove_conditional_headers()
-    # XXX "This does not remove headers like If-Match"
-    return subreq
-
-
-embed_cache = ManagerLRUCache('embed_cache')
-
-
-def embed(request, path, as_user=False):
-    # Should really be more careful about what gets included instead.
-    # Cache cut response time from ~800ms to ~420ms.
-    if as_user:
-        return _embed(request, path, as_user)
-    result = embed_cache.get(path, None)
-    if result is None:
-        result = _embed(request, path, as_user)
-        embed_cache[path] = result
-    return deepcopy(result)
-
-
-def _embed(request, path, as_user=False):
-    subreq = make_subrequest(request, path)
-    subreq.override_renderer = 'null_renderer'
-    if not as_user:
-        if 'HTTP_COOKIE' in subreq.environ:
-            del subreq.environ['HTTP_COOKIE']
-        subreq.remote_user = 'EMBED'
-    try:
-        return request.invoke_subrequest(subreq)
-    except HTTPNotFound:
-        raise KeyError(path)
-
-
-def maybe_include_embedded(request, result):
-    if len(manager.stack) != 1:
-        return
-    embedded = manager.stack[0].get('encoded_embedded', None)
-    if embedded:
-        result['_embedded'] = {'resources': embedded}
 
 
 def fix_request_method_tween_factory(handler, registry):
@@ -214,7 +168,7 @@ def security_tween_factory(handler, registry):
             login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
-            if namespace != 'mailto':
+            if namespace not in ('mailto', 'persona'):
                 return handler(request)
         raise CSRFTokenError('Missing CSRF token')
 
@@ -281,6 +235,9 @@ def canonical_redirect(event):
     request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
     if (request_path == canonical_path.rstrip('/') and
             request.path_info.endswith('/') == canonical_path.endswith('/')):
+        return
+
+    if '/@@' in request.path_info:
         return
 
     qs = request.query_string
@@ -358,68 +315,3 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
-
-
-def es_tween_factory(handler, registry):
-    from .indexing import ELASTIC_SEARCH
-    es = registry.get(ELASTIC_SEARCH)
-    if es is None:
-        return handler
-
-    default_datastore = registry.settings.get('item_datastore', 'database')
-
-    ignore = {
-        '/',
-        '/favicon.ico',
-        '/search',
-        '/session',
-        '/login',
-        '/logout',
-    }
-
-    def es_tween(request):
-        if request.method not in ('GET', 'HEAD'):
-            return handler(request)
-
-        if request.params.get('datastore', default_datastore) != 'elasticsearch':
-            return handler(request)
-
-        frame = request.params.get('frame', 'page')
-        if frame not in ('object', 'embedded', 'page',):
-            return handler(request)
-
-        # Normalize path
-        path_tuple = split_path_info(request.path_info)
-        path = _join_path_tuple(('',) + path_tuple)
-
-        if path in ignore or path.startswith('/static/'):
-            return handler(request)
-
-        query = {'query': {'term': {'paths': path}}}
-        data = es.search(index='encoded', body=query)
-        hits = data['hits']['hits']
-        if len(hits) != 1:
-            return handler(request)
-
-        source = hits[0]['_source']
-        allowed = set(source['principals_allowed_view'])
-        if allowed.isdisjoint(request.effective_principals):
-            raise HTTPForbidden()
-
-        if frame == 'page':
-            properties = source['embedded']
-            request.root = registry.getUtility(IRootFactory)(request)
-            collection = request.root.get(properties['@type'][0])
-            rendering_val = collection.Item.expand_page(request, properties)
-
-            # Add actions
-            allowed = set(source['principals_allowed_edit'])
-            if allowed.intersection(request.effective_principals):
-                rendering_val['actions'] = collection.Item.actions
-                rendering_val['audit'] = source['audit']
-
-        else:
-            rendering_val = source[frame]
-        return render_to_response(None, rendering_val, request)
-
-    return es_tween

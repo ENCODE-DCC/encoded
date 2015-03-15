@@ -5,13 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
-    "calculated_props": {
-        "publication_year": {
-            "title": "Publication year",
-            "type": "string"
-        }
-    },
-    "identifyingProperties": ["uuid", "title", "reference"],
+    "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -26,7 +20,8 @@
         "title": {
             "title": "Title",
             "description": "Title of the publication or communication.",
-            "type": "string"
+            "type": "string",
+            "uniqueKey":  "publication:identifer"
         },
         "abstract": {
             "rdfs:subPropertyOf": "dc:abstract",
@@ -284,6 +279,7 @@
     "boost_values": {
         "title": 1.0,
         "authors": 1.0,
-        "references": 1.0
+        "references": 1.0,
+        "abstract": 1.0
     }
 }

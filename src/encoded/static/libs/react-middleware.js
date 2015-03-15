@@ -13,10 +13,9 @@ var render = function (Component, body, res) {
         href: res.getHeader('X-href') || context['@id'],
         inline: inline
     };
-    var component, markup;
+    var markup;
     try {
-        component = Component(props);
-        markup = React.renderComponentToString(component);
+        markup = React.renderToString(<Component {...props} />);
     } catch (err) {
         props.context = {
             '@type': ['RenderingError', 'error'],
@@ -32,8 +31,7 @@ var render = function (Component, body, res) {
         // To debug in browser, pause on caught exceptions:
         //   app.setProps({context: app.props.context.context})
         res.statusCode = 500;
-        component = Component(props);
-        markup = React.renderComponentToString(component);
+        markup = React.renderToString(<Component {...props} />);
     }
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     //var duration = process.hrtime(start);

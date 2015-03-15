@@ -2,17 +2,22 @@ from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    location,
+    collection,
 )
 from .base import (
-    ADD_ACTION,
-    Collection,
+    Item,
 )
 from .download import ItemWithAttachment
 
 
-@location('images')
-class Image(Collection):
+@collection(
+    name='images',
+    unique_key='image:filename',
+    properties={
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    })
+class Image(ItemWithAttachment, Item):
     item_type = 'image'
     schema = load_schema('image.json')
     schema['properties']['attachment']['properties']['type']['enum'] = [
@@ -20,21 +25,10 @@ class Image(Collection):
         'image/jpeg',
         'image/gif',
     ]
-    properties = {
-        'title': 'Image',
-        'description': 'Listing of portal images',
-    }
-    unique_key = 'image:filename'
-    template = {
-        'actions': [ADD_ACTION],
-    }
+    embedded = ['submitted_by']
 
-    class Item(ItemWithAttachment, Collection.Item):
-        embedded = ['submitted_by']
-        keys = [
-            {
-                'name': 'image:filename',
-                'value': "{attachment[download]}",
-                '$templated': True,
-            },
-        ]
+    def unique_keys(self, properties):
+        keys = super(Image, self).unique_keys(properties)
+        value = properties['attachment']['download']
+        keys.setdefault('image:filename', []).append(value)
+        return keys

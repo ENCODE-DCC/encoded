@@ -7,79 +7,61 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
-from .base import Collection
+from .base import Item
 from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
     Root,
-    item_view,
-    item_view_edit,
-    item_view_raw,
-    location,
+    calculated_property,
+    item_view_object,
+    collection,
 )
-from ..renderers import make_subrequest
+from ..embedding import embed
 
 
-@location('users')
-class User(Collection):
-    item_type = 'user'
-    unique_key = 'user:email'
-    schema = load_schema('user.json')
-    properties = {
+@collection(
+    name='users',
+    unique_key='user:email',
+    properties={
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
-    }
-
-    __acl__ = [
+    },
+    acl=[
         (Allow, 'group.admin', ['list', 'view_details']),
         (Allow, 'group.read-only-admin', ['list', 'view_details']),
         (Allow, 'role.owner', ['edit', 'view_details']),
         (Allow, 'remoteuser.INDEXER', ['list', 'view']),
-        (Allow, Everyone, ['view', 'traverse']),
+        (Allow, 'remoteuser.EMBED', ['list', 'view']),
+        (Allow, Everyone, ['view']),
         (Deny, Everyone, ['list', 'view_details']),
-    ]
+    ])
+class User(Item):
+    item_type = 'user'
+    schema = load_schema('user.json')
 
-    class Item(Collection.Item):
-        keys = ['email']
-        unique_key = 'user.email'
-        template = {
-            'title': '{first_name} {last_name}',
-            '$templated': True,
-        }
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, first_name, last_name):
+        return u'{} {}'.format(first_name, last_name)
 
-        def __ac_local_roles__(self):
-            owner = 'userid.%s' % self.uuid
-            return {owner: 'role.owner'}
+    def __ac_local_roles__(self):
+        owner = 'userid.%s' % self.uuid
+        return {owner: 'role.owner'}
 
 
-@view_config(context=User.Item, permission='view', request_method='GET',
-             additional_permission='view_details')
+@view_config(context=User, permission='view_details', request_method='GET',
+             name='details')
 def user_details_view(context, request):
-    return item_view(context, request)
+    return item_view_object(context, request)
 
 
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             additional_permission='view_details',
-             request_param=['frame=raw'])
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=raw'])
-def user_view_raw(context, request):
-    return item_view_raw(context, request)
-
-
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             additional_permission='view_details',
-             request_param=['frame=edit'])
-@view_config(context=User.Item, permission='view_raw', request_method='GET',
-             request_param=['frame=edit'])
-def user_view_edit(context, request):
-    return item_view_edit(context, request)
-
-
-@view_config(context=User.Item, permission='view', request_method='GET')
+@view_config(context=User, permission='view', request_method='GET',
+             name='object')
 def user_basic_view(context, request):
-    properties = item_view(context, request)
+    properties = item_view_object(context, request)
     filtered = {}
     for key in ['@id', '@type', 'uuid', 'lab', 'title']:
         try:
@@ -99,7 +81,5 @@ def current_user(request):
         return {}
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid)
-    subreq = make_subrequest(request, path)
-    subreq.override_renderer = 'null_renderer'
-    return request.invoke_subrequest(subreq)
+    path = request.resource_path(collection, userid, '@@details')
+    return embed(request, path, as_user=True)
