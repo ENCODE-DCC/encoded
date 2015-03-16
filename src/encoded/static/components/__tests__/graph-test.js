@@ -148,4 +148,32 @@ describe('Experiment Graph', function() {
             expect(hasParents(graph, "file:ENCFF008COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
+
+    // Two files derive from two overlapping sets of files. The analysis
+    // step should get duplicated, one for each set of derived_from files.
+    describe('Two files derived from overlapping set of files', function() {
+        var experimentGraph, graph, files;
+
+        beforeEach(function() {
+            var context_graph = _.clone(context);
+            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bam-10cos'), require('../testdata/file/bam-11cos')];
+            graph = assembleGraph(context_graph, '', files);
+        });
+
+        it('Has the correct number of nodes and edges', function() {
+            expect(graph.nodes.length).toEqual(7);
+            expect(graph.edges.length).toEqual(6);
+        });
+
+        it('has the right nodes', function() {
+            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF000VUZ", "file:ENCFF010COS", "file:ENCFF011COS", "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+
+        it('has the right relationships between edges and nodes', function() {
+            expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ", "file:ENCFF000VUS"])).toBeTruthy();
+            expect(hasParents(graph, "step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS", "file:ENCFF000VUZ"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF010COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:ENCFF011COS", ["step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+        });
+    });
 });
