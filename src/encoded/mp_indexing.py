@@ -34,7 +34,10 @@ from .indexing import (
 def includeme(config):
     if config.registry.settings.get('indexer_worker'):
         return
-    config.registry[INDEXER] = MPIndexer(config.registry)
+    processes = config.registry.settings.get('indexer.processes')
+    if processes is not None:
+        processes = int(processes)
+    config.registry[INDEXER] = MPIndexer(config.registry, processes=processes)
 
 
 # Running in subprocess
@@ -141,8 +144,9 @@ def handle_results(request, value_holder):
 
 
 class MPIndexer(Indexer):
-    def __init__(self, registry):
+    def __init__(self, registry, processes=None):
         self.pool = EventLoopPool(
+            processes=processes,
             initializer=initializer,
             initargs=(registry.settings,),
             context=get_context('forkserver'),
