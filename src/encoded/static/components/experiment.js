@@ -602,7 +602,7 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
-// Can't be a proper panel as the control must be passed in.
+// Can't be a properzz panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
 // Controls the drawing of the file graph for the experiment. It displays both files and
 
@@ -674,7 +674,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
         console.log('No graph: no files have step runs');
-        return;
+        return null;
     }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
@@ -748,7 +748,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Don't draw anything if a file others derive from outside a replicate doesn't exist
     if (abortGraph) {
         console.log('No graph: derived_from file outside replicate missing [' + abortAccession + ']');
-        return;
+        return null;
     }
 
     // Check for other conditions in which to abort graph drawing
@@ -774,7 +774,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     if (abortGraph) {
         console.log('No graph: other condition [' + abortAccession + ']');
-        return;
+        return null;
     }
 
     // Create an empty graph architecture that we fill in next.
