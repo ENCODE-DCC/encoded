@@ -103,15 +103,16 @@ and to maintain referential integrity::
     ]
 
 Also:
-* additional property sheets
-* transaction logging
-* object versioning
+    * additional property sheets
+    * transaction logging
+    * object versioning
 
 
 
 Rendering
 =========
 
+::
     * raw properties
       -> link canonicalization
         -> calculated properties
