@@ -113,6 +113,7 @@ Rendering
 =========
 
 ::
+
     * raw properties
       -> link canonicalization
         -> calculated properties
