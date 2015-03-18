@@ -42,8 +42,8 @@ describe('Experiment Page', function() {
 
         it('has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(10);
-            expect(defDescs.length).toEqual(10);
+            expect(defTerms.length).toEqual(9);
+            expect(defDescs.length).toEqual(9);
         });
 
         it('has proper biosample summary for no-biosample case (code adds space always)', function() {
@@ -57,15 +57,8 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper links in References key-values', function() {
-            var dbxrefs = defDescs[8].getElementsByTagName('a');
-            expect(dbxrefs.length).toEqual(2);
-            expect(dbxrefs[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
-        });
-
         it('has proper release date', function() {
-            expect(defDescs[9].textContent).toEqual('2011-10-29');
+            expect(defDescs[8].textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
@@ -171,19 +164,6 @@ describe('Experiment Page', function() {
             expect(defTerms.length).toEqual(4);
             var defDescs = docKeyValue[1].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(4);
-            var item = docKeyValue[1].querySelector('[data-test="references"]');
-            var refUl = item.getElementsByTagName('ul');
-            expect(refUl.length).toEqual(1);
-            var refLi = refUl[0].getElementsByTagName('li');
-            expect(refLi.length).toEqual(2);
-
-            // Make sure each link in references is correct
-            var anchors = refLi[0].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
-            anchors = refLi[1].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
         });
     });
 

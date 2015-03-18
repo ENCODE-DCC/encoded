@@ -13,6 +13,7 @@ var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
 var PubReferences = reference.PubReferences;
+var refCount = reference.refCount;
 
 
 var Software = module.exports.Software = React.createClass({

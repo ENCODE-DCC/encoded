@@ -334,7 +334,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.references && context.references.length ?
                             <div data-test="references">
                                 <dt>References</dt>
-                                <dd><References pubs={context.references} /></dd>
+                                <dd><PubReferences pubs={context.references} /></dd>
                             </div>
                         : null}
 

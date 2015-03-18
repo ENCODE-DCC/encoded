@@ -1,12 +1,16 @@
 'use strict';
 var React = require('react');
+var _ = require('underscore');
+var dbxref = require('./dbxref');
 var globals = require('./globals');
 var Citation = require('./publication').Citation;
+
+var DbxrefList = dbxref.DbxrefList;
 
 
 // Count the total number of references in all the publications passed
 // in the pubs array parameter.
-function refCount(pubs) {
+module.exports.refCount = function refCount(pubs) {
     var total = 0;
     if (pubs) {
         pubs.forEach(function(pub) {
@@ -18,13 +22,13 @@ function refCount(pubs) {
 
 
 // Display all PMID/PMCID references in the array of publications in the 'pubs' property.
-var PubReferences = React.createClass({
+var PubReferences = module.exports.PubReferences = React.createClass({
     render: function() {
         // Collect all publications' references into one array
         // and remove duplicates
-        var allRefs = [];untitled
+        var allRefs = [];
         this.props.pubs.forEach(function(pub) {
-            allRefs = allRefs.concat(pub.identifers);
+            allRefs = allRefs.concat(pub.identifiers);
         });
         allRefs = _.uniq(allRefs);
 
