@@ -333,6 +333,15 @@
          ]
     },
     {
+        "uuid": "eeb7cd3f-a10f-4405-99b6-58a00e3a3bf0",
+        "status": "finished",
+        "analysis_step": "4c4042c6-27b0-42c5-b608-9061005e32ab",
+        "aliases": [
+            "dnanexus:job-BZ4G0v00z53VFzF33kQJ3bG1"
+        ],
+        "workflow_run": "364f1d61-63d5-48ab-bb9c-eff36b764e96"
+    },
+    {
         "uuid": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
         "status": "finished",
         "analysis_step": "aa598eaa-eda4-4fb3-b313-072f95de58a4",

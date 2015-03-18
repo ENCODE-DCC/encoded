@@ -1,5 +1,21 @@
 [
      {
+        "accession": "ENCPL001MQC",
+        "assay_term_id": "OBI:0000748",
+        "assay_term_name": "whole genome bisulfite sequencing",
+        "name": "dna-methylation-pipeline-qc",
+        "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
+        "title": "WGBS Methlyation Pipeline - QC",
+        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
+        "end_points": [
+            "4c4042c6-27b0-42c5-b608-9061005e32ab"
+        ],
+        "analysis_steps": [
+            "4c4042c6-27b0-42c5-b608-9061005e32ab"
+        ],
+        "status": "released"
+    },
+    {
         "accession": "ENCPL000MEG",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
@@ -15,7 +31,7 @@
         ],
         "status": "released"
     },
-   {
+    {
         "accession": "ENCPL002BIS",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",

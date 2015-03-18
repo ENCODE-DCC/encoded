@@ -146,6 +146,13 @@
         "output_file_types": ["tsv", "bam"],
         "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
         "analysis_step_types": ["signal generation"],
+        "qa_stats_generated":  [
+            "Sequences analysed in total",
+            "Mapping efficiency",
+            "C methylated in CpG context",
+            "C methylated in CHG context",
+            "C methylated in CHH context"
+        ],
         "software_versions": [
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
@@ -268,5 +275,32 @@
         "software_versions": [
             "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
         ]
+    },
+    {
+        "uuid": "4c4042c6-27b0-42c5-b608-9061005e32ab",
+        "name": "wgbs_lambda_qc",
+        "title": "Bismark Lambda QC",
+        "input_file_types": ["sam"],
+        "output_file_types": ["tsv", "bam"],
+        "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
+        "qa_stats_generated":  [
+            "lambda Sequences analysed in total",
+            "lambda Mapping efficiency",
+            "lambda C methylated in CpG context",
+            "lambda C methylated in CHG context",
+            "lambda C methylated in CHH context"
+        ],
+        "software_versions": [
+            "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
+            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
+            "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
+        ],
+        "analysis_step_types": ["signal generation", "QA calculation"],
+        "software_versions": [
+            "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
+            "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
+            "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
+        ]
     }
+
 ]
