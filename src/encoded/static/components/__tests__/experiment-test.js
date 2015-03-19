@@ -210,12 +210,16 @@ describe('Experiment Page', function() {
             expect(italics.length).toEqual(2);
             expect(italics[0].textContent).toEqual('Homo sapiens');
             expect(italics[1].textContent).toEqual('Mus musculus');
+
+            // Treatments
+            var item = summary[0].getDOMNode().querySelector('[data-test="treatment"]');
+            var treatments = item.getElementsByTagName('dd')[0];
+            expect(treatments.textContent).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour');
         });
 
         it('has two replicate panels', function() {
             expect(replicates.length).toEqual(2);
         });
- 
 
         it('has links to the proper biosamples in both replicate panels', function() {
             var anchors = replicates[0].getDOMNode().getElementsByTagName('a');
