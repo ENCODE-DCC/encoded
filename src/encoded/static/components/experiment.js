@@ -11,6 +11,7 @@ var audit = require('./audit');
 var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
+var biosample = require('./biosample');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -23,6 +24,7 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var SingleTreatment = biosample.SingleTreatment;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -86,7 +88,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
-        var treatmentText = [];
+        var treatments;
         var synchText = [];
         var depletedIns = [];
         var mutatedGenes = {};
@@ -94,17 +96,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
-            treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
-                var singleTreatment = '';
-                if (treatment.concentration) {
-                    singleTreatment += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-                }
-                singleTreatment += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-                if (treatment.duration) {
-                    singleTreatment += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-                }
-                return singleTreatment;
-            }));
+            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
             // Collect synchronizations
             if (biosample.synchronization) {
@@ -134,7 +126,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 cellCycles[biosample.phase] = true;
             }
         });
-        treatmentText = treatmentText && _.uniq(treatmentText);
         synchText = synchText && _.uniq(synchText);
         depletedIns = depletedIns && _.uniq(depletedIns);
         var mutatedGeneNames = Object.keys(mutatedGenes);
@@ -250,16 +241,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {treatmentText.length ?
+                        {treatments ?
                             <div data-test="treatment">
-                                <dt>Treatment</dt>
-                                <dd>
-                                    <ul>
-                                        {treatmentText.map(function (treatment) {
-                                            return (<li key={treatment}>{treatment}</li>);
-                                        })}
-                                    </ul>
-                                </dd>
+                                <dt>Treatments</dt>
+                                <dd><BiosampleTreatments biosamples={biosamples} /></dd>
                             </div>
                         : null}
 
@@ -604,9 +589,35 @@ var Replicate = module.exports.Replicate = function (props) {
 };
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
+
+
+var BiosampleTreatments = module.exports.BiosampleTreatments = React.createClass({
+    render: function() {
+        var biosamples = this.props.biosamples;
+        var treatmentTexts = [];
+
+        // Build up array of treatment strings
+        if (biosamples && biosamples.length) {
+            biosamples.forEach(function(biosample) {
+                if (biosample.treatments && biosample.treatments.length) {
+                    biosample.treatments.forEach(function(treatment) {
+                        treatmentTexts.push(SingleTreatment(treatment));
+                    });
+                }
+            });
+        }
+
+        // Component output of treatment strings
+        if (treatmentTexts.length) {
+            treatmentTexts = _.uniq(treatmentTexts);
+            return <span className={this.props.classes}>{treatmentTexts.join(', ')}</span>;
+        }
+        return null;
+    }
+});
+
+
 // Controls the drawing of the file graph for the experiment. It displays both files and
-
-
 // analysis steps.
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     // Create nodes based on all files in this experiment
