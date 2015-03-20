@@ -62,8 +62,8 @@ describe('Experiment Page', function() {
         it('has proper links in Publications key-values', function() {
             var dbxrefs = defDescs[8].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
-            expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('/publications/4cb65ec0-bd49-11e4-bb52-0800200c9a66');
+            expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66/');
+            expect(dbxrefs[1].getAttribute('href')).toEqual('/publications/4cb65ec0-bd49-11e4-bb52-0800200c9a66/');
         });
 
         it('has proper release date', function() {
@@ -170,9 +170,9 @@ describe('Experiment Page', function() {
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(2);
             var defTerms = docKeyValue[1].getElementsByTagName('dt');
-            expect(defTerms.length).toEqual(4);
+            expect(defTerms.length).toEqual(3);
             var defDescs = docKeyValue[1].getElementsByTagName('dd');
-            expect(defDescs.length).toEqual(4);
+            expect(defDescs.length).toEqual(3);
         });
     });
 
