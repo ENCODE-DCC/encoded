@@ -1,3 +1,4 @@
+
 'use strict';
 
 jest.autoMockOff();
@@ -58,7 +59,7 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper links in References key-values', function() {
+        it('has proper links in Publications key-values', function() {
             var dbxrefs = defDescs[8].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66');
