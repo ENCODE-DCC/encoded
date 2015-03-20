@@ -21,6 +21,7 @@ controlRequiredAssayList = [
     'RIP-seq',
     'RAMPAGE',
     'CAGE',
+    'shRNA knockdown followed by RNA-seq'
     ]
 
 seq_assays = [
