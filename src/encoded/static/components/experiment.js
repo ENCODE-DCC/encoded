@@ -24,7 +24,7 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
-var PubReferences = reference.PubReferences;
+var PubReferenceList = reference.PubReferenceList;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -333,8 +333,10 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferences pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
 

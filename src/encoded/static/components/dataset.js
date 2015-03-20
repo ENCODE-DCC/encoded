@@ -14,7 +14,7 @@ var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
-var PubReferences = reference.PubReferences;
+var PubReferenceList = reference.PubReferenceList;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -85,8 +85,10 @@ var Dataset = module.exports.Dataset = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferences pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
                     </dl>
