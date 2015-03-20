@@ -125,14 +125,13 @@ class MyDummyRequest(DummyRequest):
 
 @fixture
 def dummy_request(root, registry, app):
+    from pyramid.request import apply_request_extensions
     request = app.request_factory.blank('/dummy')
     request.root = root
     request.registry = registry
     request._stats = {}
     request.invoke_subrequest = app.invoke_subrequest
-    extensions = app.request_extensions
-    if extensions is not None:
-        request._set_extensions(extensions)
+    apply_request_extensions(request)
     return request
 
 
