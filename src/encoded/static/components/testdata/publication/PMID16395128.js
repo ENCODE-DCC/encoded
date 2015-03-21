@@ -1,4 +1,5 @@
 module.exports = {
+    "@id": "/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66/",
     "abstract": "The ability to inhibit a response is an important component of normal behavioral control and is an aspect of psychopathology when diminished. Converging evidence implicates the serotonergic neurotransmitter system in response inhibition circuitry.",
     "authors": "Stoltenberg SF, Glass JM, Chermack ST, Flynn HA, Li S, Weston ME, Burmeister M.",
     "identifiers": [
