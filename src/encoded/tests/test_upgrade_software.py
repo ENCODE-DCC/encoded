@@ -7,6 +7,7 @@ def software():
         "name": "star",
         "title": "STAR",
         "description": "STAR (Spliced Transcript Alignment to a Reference)."
+    }
 
 
 @pytest.fixture
