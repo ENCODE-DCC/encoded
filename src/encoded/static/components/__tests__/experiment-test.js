@@ -1,3 +1,4 @@
+
 'use strict';
 
 jest.autoMockOff();
@@ -8,7 +9,7 @@ jest.dontMock('underscore');
 
 
 describe('Experiment Page', function() {
-    var React, TestUtils, Experiment, context, _;
+    var React, TestUtils, Experiment, FetchContext, context, _;
 
     beforeEach(function() {
         React = require('react');
@@ -18,15 +19,23 @@ describe('Experiment Page', function() {
         Experiment = require('../experiment').Experiment;
         context = require('../testdata/experiment');
 
+        FetchContext = {
+            fetch: function(url, options) {
+                return Promise.resolve({json: () => ({'@graph': []})});
+            }
+        };
     });
 
     describe('Minimal Experiment', function() {
         var experiment, summary, defTerms, defDescs;
 
         beforeEach(function() {
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context} />
-            );
+            context.references = [require('../testdata/publication/PMID16395128'), require('../testdata/publication/PMID23000965')];
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context} />
+                );
+            });
 
             summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
             defTerms = summary[0].getDOMNode().getElementsByTagName('dt');
@@ -50,11 +59,11 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper links in References key-values', function() {
+        it('has proper links in Publications key-values', function() {
             var dbxrefs = defDescs[8].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
-            expect(dbxrefs[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
+            expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66/');
+            expect(dbxrefs[1].getAttribute('href')).toEqual('/publications/4cb65ec0-bd49-11e4-bb52-0800200c9a66/');
         });
 
         it('has proper release date', function() {
@@ -74,9 +83,11 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_fs = _.clone(context);
             context_fs.files = [require('../testdata/file/text'), require('../testdata/file/fastq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_fs} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_fs} />
+                );
+            });
 
             fileList = TestUtils.findRenderedDOMComponentWithTag(experiment, 'tbody').getDOMNode();
             fileDl = fileList.getElementsByTagName('a');
@@ -101,9 +112,11 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/myerschipseq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_doc} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_doc} />
+                );
+            });
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -144,9 +157,11 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_doc} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_doc} />
+                );
+            });
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -155,22 +170,9 @@ describe('Experiment Page', function() {
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(2);
             var defTerms = docKeyValue[1].getElementsByTagName('dt');
-            expect(defTerms.length).toEqual(4);
+            expect(defTerms.length).toEqual(3);
             var defDescs = docKeyValue[1].getElementsByTagName('dd');
-            expect(defDescs.length).toEqual(4);
-            var item = docKeyValue[1].querySelector('[data-test="references"]');
-            var refUl = item.getElementsByTagName('ul');
-            expect(refUl.length).toEqual(1);
-            var refLi = refUl[0].getElementsByTagName('li');
-            expect(refLi.length).toEqual(2);
-
-            // Make sure each link in references is correct
-            var anchors = refLi[0].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
-            anchors = refLi[1].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
+            expect(defDescs.length).toEqual(3);
         });
     });
 
@@ -181,9 +183,11 @@ describe('Experiment Page', function() {
             var context_rep = _.clone(context);
             context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
             context_rep.files = [require('../testdata/file/fastq')];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_rep} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_rep} />
+                );
+            });
             replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
         });
 
@@ -249,9 +253,11 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_alt = _.clone(context);
             context_alt.alternate_accessions = ["ENCSR000ACT", "ENCSR999NOF"];
-            experiment = TestUtils.renderIntoDocument(
-                <Experiment context={context_alt} />
-            );
+            experiment = React.withContext(FetchContext, function() {
+                return TestUtils.renderIntoDocument(
+                    <Experiment context={context_alt} />
+                );
+            });
             alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
         });
 

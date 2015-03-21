@@ -1,8 +1,6 @@
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
 var fetched = require('./fetched');
-var Form = require('./form').Form;
 var globals = require('./globals');
 var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
@@ -148,6 +146,7 @@ var FetchedFieldset = React.createClass({
     },
 
     render: function() {
+        var ReactForms = require('react-forms');
         var schema = this.props.schema;
         var value = this.props.value;
         var externalValidation = value.externalValidation;
@@ -208,6 +207,7 @@ var FetchedFieldset = React.createClass({
 
 
 var jsonSchemaToFormSchema = function(attrs) {
+    var ReactForms = require('react-forms');
     var schemas = attrs.schemas,
         p = attrs.jsonNode,
         props = attrs.props,
@@ -306,6 +306,7 @@ var jsonSchemaToDefaultValue = function(schema) {
 var FetchedForm = React.createClass({
 
     render: function() {
+        var Form = require('./form').Form;
         var type = this.props.type;
         var schemas = this.props.schemas;
         var schema = jsonSchemaToFormSchema({

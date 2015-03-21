@@ -9,10 +9,6 @@ var Listing = search.Listing;
 var ResultTable = search.ResultTable;
 var Table = collection.Table;
 
-var ReactForms = require('react-forms');
-var Mapping = ReactForms.schema.Mapping;
-var Scalar = ReactForms.schema.Scalar;
-
 
 var SearchResultsLayout = React.createClass({
     render: function() {
@@ -87,9 +83,13 @@ var displayModeSelect = (
 globals.blocks.register({
     label: 'search block',
     icon: 'icon icon-search',
-    schema: Mapping({}, {
-        display: Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
-        search: Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
-    }),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.Mapping({}, {
+            display: ReactForms.Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
+            search: ReactForms.Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: SearchBlock
 }, 'searchblock');

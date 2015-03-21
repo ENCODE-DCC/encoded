@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var dbxref = require('./dbxref');
 var search = require('./search');
 var pipeline = require('./pipeline');
 var fetched = require('./fetched');
@@ -9,10 +8,9 @@ var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var _ = require('underscore');
 
-var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
-var PubReferences = reference.PubReferences;
+var PubReferenceList = reference.PubReferenceList;
 
 
 var Software = module.exports.Software = React.createClass({
@@ -64,8 +62,10 @@ var Software = module.exports.Software = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferences pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
                     </dl>
@@ -162,12 +162,6 @@ var Listing = React.createClass({
                             </div>
                         : null}
 
-                        {refCount(context.references) ?
-                            <div>
-                                <strong>Publication: </strong>
-                                <PubReferences pubs={context.references} listClass="list-reference" />
-                            </div>
-                        : null}
                     </div>
             </li>
         );

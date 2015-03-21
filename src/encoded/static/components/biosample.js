@@ -20,7 +20,7 @@ var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
-var PubReferences = reference.PubReferences;
+var PubReferenceList = reference.PubReferenceList;
 
 
 var Panel = function (props) {
@@ -224,6 +224,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{aliasList}</dd>
+                            </div>
+                        : null}
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
 
@@ -964,12 +973,6 @@ var Document = module.exports.Document = React.createClass({
                                 </div>
                             : null}
 
-                            {context.references && context.references.length ?
-                                <div data-test="references">
-                                    <dt>References</dt>
-                                    <dd><References pubs={context.references} /></dd>
-                                </div>
-                            : null}
                         </dl>
                     </div>
 

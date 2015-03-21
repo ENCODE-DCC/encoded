@@ -17,10 +17,7 @@ module.exports = {
     "files": [],
     "lab": require('./lab'),
     "possible_controls": [],
-    "references": [
-        "PMID:23000965",
-        "PMID:16395128"
-    ],
+    "references": [],
     "replicates": [],
     "status": "released",
     "submitted_by": require('./submitter'),

@@ -1,5 +1,4 @@
 from pyramid.paster import get_app
-from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
 
@@ -9,14 +8,17 @@ EPILOG = __doc__
 
 
 def run(app, collections=None, record=False):
-    root = app.root_factory(app)
-    es = app.registry[ELASTIC_SEARCH]
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'INDEXER',
     }
     testapp = TestApp(app, environ)
-    testapp.post_json('/index', {'last_xmin': None, 'types': collections})
+    testapp.post_json('/index', {
+        'last_xmin': None,
+        'types': collections,
+        'recovery': True
+        }
+    )
 
 
 def main():
