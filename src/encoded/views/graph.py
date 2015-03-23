@@ -80,5 +80,5 @@ def schema_dot(request):
 def schema_svg(request):
     dot = digraph(request.root, request.params.getall('exclude'))
     p = Popen(['dot', '-Tsvg'], stdin=PIPE, stdout=PIPE)
-    svg, err = p.communicate(dot)
+    svg, err = p.communicate(dot.encode('utf-8'))
     return Response(svg, content_type='image/svg+xml')
