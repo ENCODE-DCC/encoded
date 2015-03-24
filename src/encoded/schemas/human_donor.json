@@ -14,7 +14,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
@@ -24,7 +24,6 @@
             "required": ["age"],
             "not": {
                 "properties": {
-                    "required": ["age"],
                     "age": {
                         "enum": ["unknown"]
                     }
@@ -174,6 +173,31 @@
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked",
+                "preliminary",
+                "proposed"
+            ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+))$"
+            }
         }
     }
 }

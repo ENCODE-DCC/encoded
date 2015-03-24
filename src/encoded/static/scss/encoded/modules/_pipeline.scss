@@ -5,6 +5,9 @@ $pipeline-node-types:
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
     g.pipeline-node-#{$node-type} {
+        font-size: 14px;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: bold;
         fill: $color;
 
         &.active {
@@ -20,6 +23,10 @@ $pipeline-node-types:
             }
         }
 
+        &.error {
+            fill: #ffc0c0;
+        }
+
         &:hover {
             cursor: pointer;
         }
@@ -30,10 +37,21 @@ $pipeline-node-types:
     }
 }
 
+g.label {
+    font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    fill: #000;
+}
+
 g.node {
     rect, ellipse {
         stroke: #a0a0a0;
         stroke-width: 1.5px;
+    }
+
+    &.contributing {
+        stroke-dasharray: 4,2; 
     }
 
     line {
@@ -46,6 +64,10 @@ g.cluster {
     rect {
         fill: #f0f8f0;
         stroke: #c0c0c0;
+    }
+
+    tspan {
+        font-size: 14px;
     }
 }
 
@@ -72,28 +94,8 @@ g.edgePath {
     color: #c0c0c0;
 }
 
-.scroll-graph {
-    width: 50px;
-    height: 20px;
-    border: none;
-    background-color: transparent;
-    background-image: none;
-    -webkit-touch-callout: none; // The following prevents text highlighting on mobile when
-    -webkit-user-select: none;   // tap-and-holding on the scroll buttons
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-
-    &:disabled {
-        color: #e0e0e0;
-    }
-}
-
-#scroll-buttons {
-    padding-top: 3px;
-    text-align: center;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #e0e0e0;
+.graph-dl {
+    margin: 0;
+    padding: 5px;
+    border-bottom: 1px solid #e8e8e8;
 }

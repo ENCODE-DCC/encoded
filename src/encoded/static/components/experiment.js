@@ -1,7 +1,7 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -10,16 +10,19 @@ var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
+var pipeline = require('./pipeline');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
 var FetchedItems = fetched.FetchedItems;
+var FetchedData = fetched.FetchedData;
+var Param = fetched.Param;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
-var ExperimentGraph = graph.ExperimentGraph;
+var JsonGraph = graph.JsonGraph;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -28,7 +31,8 @@ var Panel = function (props) {
         context = props;
         props = {context: context};
     }
-    return globals.panel_views.lookup(props.context)(props);
+    var PanelView = globals.panel_views.lookup(props.context);
+    return <PanelView {...props} />;
 };
 
 
@@ -81,9 +85,13 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string array and the synchronization string array
+        // Build the text of the Treatment, synchronization, and mutatedGene string arrays
         var treatmentText = [];
         var synchText = [];
+        var depletedIns = [];
+        var mutatedGenes = {};
+        var subcellularTerms = {};
+        var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -105,13 +113,33 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
+
+            // Collect depleted_in
+            if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+                depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
+            }
+
+            // Collect mutated genes
+            if (biosample.donor && biosample.donor.mutated_gene) {
+                mutatedGenes[biosample.donor.mutated_gene.label] = true;
+            }
+
+            // Collect subcellular fraction term names
+            if (biosample.subcellular_fraction_term_name) {
+                subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+            }
+
+            // Collect cell-cycle phases
+            if (biosample.phase) {
+                cellCycles[biosample.phase] = true;
+            }
         });
-        if (treatmentText) {
-            treatmentText = _.uniq(treatmentText);
-        }
-        if (synchText) {
-            synchText = _.uniq(synchText);
-        }
+        treatmentText = treatmentText && _.uniq(treatmentText);
+        synchText = synchText && _.uniq(synchText);
+        depletedIns = depletedIns && _.uniq(depletedIns);
+        var mutatedGeneNames = Object.keys(mutatedGenes);
+        var subcellularTermNames = Object.keys(subcellularTerms);
+        var cellCycleNames = Object.keys(cellCycles);
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
@@ -160,11 +188,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} key="experiment-audit" />
+                            <AuditIndicators audits={context.audit} id="experiment-audit" />
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} key="experiment-audit" />
+                <AuditDetail audits={context.audit} id="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
@@ -181,8 +209,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
                                 <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
-                                    {organismName.length || lifeAge.length ? '(' : null}
+                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
+                                    {depletedIns.length ?
+                                        <span>{' missing ' + depletedIns.join(', ')}</span>
+                                    : null}
+                                    {mutatedGeneNames.length ? <span>{', mutated gene: ' + mutatedGeneNames.join('/')}</span> : null}
+                                    {subcellularTermNames.length ? <span>{', subcellular fraction: ' + subcellularTermNames.join('/')}</span> : null}
+                                    {cellCycleNames.length ? <span>{', cell-cycle phase: ' + cellCycleNames.join('/')}</span> : null}
+                                    {organismName.length || lifeAge.length ? ' (' : null}
                                     {organismName.length ?
                                         <span>
                                             {organismName.map(function(name, i) {
@@ -222,7 +256,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>
                                     <ul>
                                         {treatmentText.map(function (treatment) {
-                                            return (<li>{treatment}</li>);
+                                            return (<li key={treatment}>{treatment}</li>);
                                         })}
                                     </ul>
                                 </dd>
@@ -240,7 +274,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div data-test="antibody">
                                 <dt>Antibody</dt>
                                 <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                    return (<span>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                    return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
                                 })}</dd>
                             </div>
                         : null}
@@ -311,7 +345,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                <AssayDetails context={context} replicates={replicates} />
+                {AssayDetails({context: context, replicates: replicates})}
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -323,9 +357,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 {replicates.map(function (replicate, index) {
-                    return (
-                        <Replicate replicate={replicate} key={index} />
-                    );
+                    return Replicate({replicate: replicate, key: index});
                 })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
@@ -334,7 +366,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
-                <ExperimentGraph context={context} />
+                <FetchedData loadingComplete={this.props.loadingComplete}>
+                    <Param name="data" url={dataset.unreleased_files_url(context)} />
+                    <ExperimentGraph context={context} />
+                </FetchedData>
 
                 {context.files.length ?
                     <div>
@@ -343,9 +378,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </div>
                 : null }
 
-                {{'released': 1, 'release ready': 1}[context.status] ? this.transferPropsTo(
-                    <FetchedItems url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
-                ): null}
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
 
             </div>
         );
@@ -508,7 +543,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
     return (
-        <div key={props.key} className="panel-replicate">
+        <div className="panel-replicate" key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <div data-test="techreplicate">
@@ -567,7 +602,431 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
-
-
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
+// Controls the drawing of the file graph for the experiment. It displays both files and
+
+
+// analysis steps.
+var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
+    // Create nodes based on all files in this experiment
+    assembleGraph: function(context, infoNodeId, files) {
+
+        // Calculate a step ID from a file's derived_from array
+        function _derivedAccessions(file) {
+            if (file.derived_from) {
+                return file.derived_from.map(function(derived) {
+                    return derived.accession;
+                }).sort().join();
+            } else {
+                return '';
+            }
+        }
+
+        var jsonGraph; // JSON graph object of entire graph; see graph.js
+        var derivedFromFiles = {}; // List of all files that other files derived from
+        var allFiles = {}; // All files' accessions as keys
+        var allReplicates = {}; // All file's replicates as keys; each key references an array of files
+        var allPipelines = {}; // List of all pipelines indexed by step @id
+        var stepExists = false; // True if at least one file has an analysis_step
+        var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
+        var abortGraph = false; // True if graph shouldn't be drawn
+        var derivedAccessions = _.memoize(_derivedAccessions, function(file) {
+            return file.accession;
+        });
+
+        // Collect derived_from files, used replicates, and used pipelines
+        files.forEach(function(file) {
+            // Build an object keyed with all files that other files derive from
+            if (file.derived_from) {
+                file.derived_from.forEach(function(derived_from) {
+                    derivedFromFiles[derived_from.accession] = derived_from;
+                });
+            }
+
+            // Keep track of all used replicates by keeping track of all file objects for each replicate.
+            // Each key is a replicate number, and each references an array of file objects using that replicate.
+            if (file.replicate) {
+                if (!allReplicates[file.replicate.biological_replicate_number]) {
+                    // Place a new array in allReplicates if needed
+                    allReplicates[file.replicate.biological_replicate_number] = [];   
+                }
+                allReplicates[file.replicate.biological_replicate_number].push(file);
+            }
+
+            // Track all the pipelines used for each step that's part of a pipeline.
+            if (file.pipeline && file.pipeline.analysis_steps) {
+                file.pipeline.analysis_steps.forEach(function(step) {
+                    allPipelines[step] = file.pipeline;
+                });
+            }
+
+            // Note whether any files have analysis steps.
+            stepExists = stepExists || !!file.analysis_step;
+
+            // Build a list of all files in the graph, including contributed files, for convenience
+            allFiles[file.accession] = file;
+
+            // Keep track of whether files exist outside replicates
+            fileOutsideReplicate = fileOutsideReplicate || !!file.replicate;
+        });
+        // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
+        // derivedFromFiles points to derived_from file objects
+
+        // Don't draw anything if no files have an analysis_step
+        if (!stepExists) {
+            return;
+        }
+
+        // Now that we know at least some files derive from each other through analysis steps, mark file objects that
+        // don't derive from other files — and that no files derive from them — as removed from the graph.
+        files.forEach(function(file) {
+            file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file.accession];
+
+            // If the file's removed, remember it's removed from the derived_From file objects too
+            if (file.removed && derivedFromFiles[file.accession]) {
+                derivedFromFiles[file.accession].removed = true;
+            }
+        });
+
+        // Add contributing files to the allFiles object that other files derive from.
+        // Don't worry about files they derive from; they're not included in the graph.
+        context.contributing_files.forEach(function(file) {
+            if (derivedFromFiles[file.accession]) {
+                allFiles[file.accession] = file;
+            }
+        });
+
+        // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
+        Object.keys(derivedFromFiles).forEach(function(derivedFromAccession) {
+            if (!(derivedFromAccession in allFiles)) {
+                // A file others derive from doesn't exist; check if it's in a replicate or not
+                // Note the derived_from file object exists even if it doesn't exist in given files array.
+                var derivedFromFile = derivedFromFiles[derivedFromAccession];
+                if (derivedFromFile.replicate) {
+                    // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
+                    if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
+                        allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
+                            file.removed = true;
+
+                            // Remember it's removed from the derived_from file objects too
+                            if (derivedFromFiles[file.accession]) {
+                                derivedFromFiles[file.accession].removed = true;
+                            }
+                        });
+                    } else {
+                        // Derived-from file is in a replicate, but not seen in files array;
+                        // just remove it from derivedFromFiles.
+                        derivedFromFile.removed = true;
+                    }
+
+                    // Indicate that this replicate is not to be rendered
+                    allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
+                } else {
+                    // Missing derived-from file not in a replicate; don't draw any graph
+                    abortGraph = abortGraph || true;
+                }
+            } // else the derived_from file is in files array; normal case
+        });
+
+        // Don't draw anything if a file others derive from outside a replicate doesn't exist
+        if (abortGraph) {
+            return;
+        }
+
+        // Check for other conditions in which to abort graph drawing
+        Object.keys(allFiles).forEach(function(fileAccession) {
+            var file = allFiles[fileAccession];
+
+            // A file outside a replicate derives from a file that's been removed from the graph
+            if (!file.replicate && file.derived_from) {
+                abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
+                    return derivedFromFile.removed;
+                });
+            }
+
+            // No files exist outside replicates, and all replicates are removed
+            abortGraph = abortGraph || (fileOutsideReplicate && _(Object.keys(allReplicates)).all(function(replicateNum) {
+                return !allReplicates[replicateNum].length;
+            }));
+        });
+
+        if (abortGraph) {
+            return;
+        }
+
+        // Create an empty graph architecture that we fill in next.
+        jsonGraph = new JsonGraph(context.accession);
+
+        // Create nodes for the replicates
+        Object.keys(allReplicates).forEach(function(replicateNum) {
+            if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
+                jsonGraph.addNode('rep:' + replicateNum, 'Replicate ' + replicateNum,
+                    {
+                        cssClass: 'pipeline-replicate',
+                        type: 'rep',
+                        shape: 'rect',
+                        cornerRadius: 0
+                    });
+            }
+        });
+
+        // Go through each file (released or unreleased) to add it and associated steps to the graph
+        files.forEach(function(file) {
+            // Only add files derived from others, or that others derive from,
+            // and that aren't part of a removed replicate
+            if (!file.removed) {
+                var stepId;
+                var label;
+                var pipelineInfo;
+                var error;
+                var fileId = 'file:' + file.accession;
+                var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
+
+                // Add file to the graph as a node
+                jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                    {
+                        cssClass: 'pipeline-node-file' + (this.state.infoNodeId === fileId ? ' active' : ''),
+                        type: 'file',
+                        shape: 'rect',
+                        cornerRadius: 16,
+                        parentNode: replicateNode,
+                        ref: file
+                    });
+
+                // If the file has an analysis step, prepare it for graph insertion
+                if (file.analysis_step) {
+                    // Make an ID and label for the step
+                    stepId = 'step:' + derivedAccessions(file) + file.analysis_step['@id'];
+                    label = file.analysis_step.analysis_step_types;
+                    pipelineInfo = allPipelines[file.analysis_step['@id']];
+                    error = false;
+                } else if (derivedAccessions(file)) {
+                    // File derives from others, but no analysis step; make dummy step
+                    stepId = 'error:' + derivedAccessions(file);
+                    label = 'Software unknown';
+                    pipelineInfo = null;
+                    error = true;
+                } else {
+                    // No analysis step and no derived_from; don't add a step
+                    stepId = '';
+                }
+
+                if (stepId) {
+                    // Add the step to the graph only if we haven't for this derived-from set already
+                    if (!jsonGraph.getNode(stepId)) {
+                        jsonGraph.addNode(stepId, label,
+                            {
+                                cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
+                                type: 'step',
+                                shape: 'rect',
+                                cornerRadius: 4,
+                                parentNode: replicateNode,
+                                ref: file.analysis_step,
+                                pipeline: pipelineInfo,
+                                fileAccession: file.accession
+                            });
+                    }
+
+                    // Connect the file to the step, and the step to the derived_from files
+                    jsonGraph.addEdge(stepId, fileId);
+                    file.derived_from.forEach(function(derived) {
+                        jsonGraph.addEdge('file:' + derived.accession, stepId);
+                    });
+                }
+            }
+        }, this);
+
+        // Add contributing files to the graph
+        context.contributing_files.forEach(function(file) {
+            var fileId = 'file:' + file.accession;
+
+            // Assemble a single file node; can have file and step nodes in this graph
+            jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
+                {
+                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                    type: 'file',
+                    shape: 'rect',
+                    cornerRadius: 16,
+                    ref: file,
+                    contributing: true
+                });
+        }, this);
+
+        return jsonGraph;
+    },
+
+    getInitialState: function() {
+        return {
+            infoNodeId: '' // @id of node whose info panel is open
+        };
+    },
+
+    // Render metadata if a graph node is selected.
+    // jsonGraph: JSON graph data.
+    // infoNodeId: ID of the selected node
+    detailNodes: function(jsonGraph, infoNodeId) {
+        var meta;
+
+        // Find data matching selected node, if any
+        if (infoNodeId) {
+            var node = jsonGraph.getNode(infoNodeId);
+            if (node) {
+                meta = globals.graph_detail.lookup(node)(node);
+            }
+        }
+
+        return meta;
+    },
+
+    // Handle a click in a graph node
+    handleNodeClick: function(e, nodeId) {
+        e.stopPropagation(); e.preventDefault();
+        this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
+    },
+
+    render: function() {
+        var context = this.props.context;
+        var data = this.props.data;
+        var items = data ? data['@graph'] : [];
+        var files = context.files.concat(items);
+
+        // Build node graph of the files and analysis steps with this experiment
+        if (files && files.length) {
+            this.jsonGraph = this.assembleGraph(context, this.state.infoNodeId, files);
+            if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+                var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+                return (
+                    <div>
+                        <h3>Files generated by pipeline</h3>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                            <div id="graph-node-info">
+                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                            </div>
+                        </Graph>
+                    </div>
+                );
+            }
+        }
+        return null;
+    }
+});
+
+
+// Display the metadata of the selected file in the graph
+var FileDetailView = function(node) {
+    // The node is for a file
+    var selectedFile = node.metadata.ref;
+    var meta;
+
+    if (selectedFile) {
+        var contributingAccession;
+
+        if (node.metadata.contributing) {
+            var accessionStart = selectedFile.dataset.indexOf('/', 1) + 1;
+            var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
+            contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
+        }
+        var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
+        return (
+            <dl className="key-value">
+                {selectedFile.file_format ?
+                    <div data-test="format">
+                        <dt>Format</dt>
+                        <dd>{selectedFile.file_format}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.output_type ?
+                    <div data-test="output">
+                        <dt>Output</dt>
+                        <dd>{selectedFile.output_type}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.paired_end ?
+                    <div data-test="pairedend">
+                        <dt>Paired end</dt>
+                        <dd>{selectedFile.paired_end}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.replicate ?
+                    <div data-test="replicate">
+                        <dt>Associated replicates</dt>
+                        <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.assembly ?
+                    <div data-test="assembly">
+                        <dt>Mapping assembly</dt>
+                        <dd>{selectedFile.assembly}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.genome_annotation ?
+                    <div data-test="annotation">
+                        <dt>Genome annotation</dt>
+                        <dd>{selectedFile.genome_annotation}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.lab && selectedFile.lab.title ?
+                    <div data-test="submitted">
+                        <dt>Lab</dt>
+                        <dd>{selectedFile.lab.title}</dd>
+                    </div>
+                : null}
+
+                {dateString ?
+                    <div data-test="datecreated">
+                        <dt>Date added</dt>
+                        <dd>{dateString}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.step_run ?
+                    <div>
+                        <dt>Software</dt>
+                        <dd>
+                            {selectedFile.analysis_step.software_versions.map(function(version, i) {
+                                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                return (
+                                    <a href={version.software['@id']} key={i} className="software-version">
+                                        <span className="software">{version.software.name}</span>
+                                        {version.version ?
+                                            <span className="version">{versionNum}</span>
+                                        : null}
+                                    </a>
+                                );
+                            })}
+                        </dd>
+                    </div>
+                : null}
+
+                {node.metadata.contributing && selectedFile.dataset ?
+                    <div>
+                        <dt>Contributed from</dt>
+                        <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
+                    </div>
+                : null}
+
+                {selectedFile.href ?
+                    <div data-test="download">
+                        <dt>File download</dt>
+                        <dd>
+                            <a href={selectedFile.href} download={selectedFile.href.substr(selectedFile.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i>
+                                &nbsp;Download
+                            </a>
+                        </dd>
+                    </div>
+                : null}
+            </dl>
+        );
+    } else {
+        return null;
+    }
+};
+
+globals.graph_detail.register(FileDetailView, 'file');

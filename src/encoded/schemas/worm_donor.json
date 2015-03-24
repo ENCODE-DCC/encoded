@@ -14,8 +14,8 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/strains"},
@@ -61,6 +61,17 @@
                 "69efae2b-4df5-4957-81da-346f1b93cb98", 
                 "a7e711b9-534c-44a3-a782-2a15af620739", 
                 "451f9e49-685d-40d5-ad89-760b2512262a"
+            ]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked",
+                "preliminary",
+                "proposed"
             ]
         }
     }

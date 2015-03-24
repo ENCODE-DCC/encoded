@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var fetched = require('../fetched');
@@ -7,27 +6,34 @@ var item = require('./item');
 var richtext = require('./richtext');
 var _ = require('underscore');
 
-var ReactForms = require('react-forms');
-var Schema = ReactForms.schema.Schema;
-var Property = ReactForms.schema.Property;
-
 var ItemBlockView = item.ItemBlockView;
 var ObjectPicker = require('../inputs').ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
 
 
 var TeaserCore = React.createClass({
-    render: function() {
-        var url = this.props.value.image;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
+    renderImage: function() {
+        var context = this.props.value.image;
+        if (typeof context === 'object') {
+            return <ItemBlockView context={context} />;
         }
-        return (
-            <div className="teaser thumbnail clearfix">
+        if (typeof context === 'string') {
+            return (
                 <fetched.FetchedData>
-                    <fetched.Param name="context" url={url} />
+                    <fetched.Param name="context" url={context} />
                     <ItemBlockView />
                 </fetched.FetchedData>
+            );
+        }
+        return null;
+    },
+
+    render: function() {
+        var image = this.props.value.image;
+        // Must work with both paths (edit form) and embedded objects (display)
+        return (
+            <div className="teaser thumbnail clearfix">
+                {this.renderImage()}
                 <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
             </div>
         );
@@ -54,11 +60,11 @@ var TeaserBlockView = React.createClass({
             <div>
                 {this.props.value.href ?
                     <a className="img-link" href={this.props.value.href}>
-                        {this.transferPropsTo(<TeaserCore />)}
+                        <TeaserCore {...this.props} />
                     </a>
                 :
                     <div>
-                        {this.transferPropsTo(<TeaserCore />)}
+                        <TeaserCore {...this.props} />
                     </div>
                 }
             </div>
@@ -84,7 +90,7 @@ var RichEditor = React.createClass({
     render: function() {
         return (
             <div className="form-control" style={{height: 'auto'}}>
-                {this.transferPropsTo(<RichTextBlockView value={this.state.value} onChange={this.onChange} />)}
+                <RichTextBlockView {...this.props} value={this.state.value} onChange={this.onChange} />
             </div>
         );
     },
@@ -106,13 +112,15 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 globals.blocks.register({
     label: 'teaser block',
     icon: 'icon icon-image',
-    schema: (
-        <Schema>
-            <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
-            <Property name="image" label="Image" input={imagePicker} />
-            <Property name="body" label="Caption" input={<RichEditor />} />
-            <Property name="href" label="Link URL" />
-        </Schema>
-    ),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.Mapping({}, {
+            display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
+            image: Scalar({label: "Image", input: imagePicker}),
+            body: Scalar({label: "Caption", input: <RichEditor />}),
+            href: Scalar({label: "Link URL"}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: TeaserBlockView
 }, 'teaserblock');

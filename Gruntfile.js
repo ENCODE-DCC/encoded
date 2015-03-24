@@ -60,7 +60,7 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -90,15 +90,8 @@ module.exports = function(grunt) {
                     'scriptjs',
                     'google-analytics',
                 ],
-                require: [
-                    'domready',
-                    'jquery',
-                    'react',
-                    'underscore',
-                    'url',
-                ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],

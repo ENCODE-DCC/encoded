@@ -1,17 +1,19 @@
-{
-    "description": "Schema for submitting a computational analysis that transforms input files to output files.",
+{ 
+    "title": "Analysis step",
+    "description": "Schema for submitting a computational analysis steps as a subobject of pipeline that transforms input files to output files.",
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysis_step_types", "software_versions", "input_file_types"],
+    "required": ["name", "title", "analysis_step_types", "software_versions", "input_file_types"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "aliases"],
+    "identifyingProperties": ["uuid", "aliases", "name"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted"}
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/notes"}
     ],
     "properties": {
         "schema_version": {
@@ -21,7 +23,13 @@
             "title": "Name",
             "description": "Unique name of the analysis step",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+$"
+            "pattern": "^[a-z0-9\\-\\_]+$",
+            "uniqueKey": true
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the analysis step, likely the same as the name.",
+            "type": "string"
         },
         "analysis_step_types": {
             "title": "Types",
@@ -32,14 +40,19 @@
                  "type": "string",
                  "enum": [
                      "genome indexing",
+                     "genome segmentation",
+                     "fastq concatenation",
                      "filtering",
                      "file format conversion",
                      "QA calculation",
                      "peak calling",
                      "IDR",
                      "alignment",
-                     "signal calling",
-                     "quantification"
+                     "signal generation",
+                     "quantification",
+                     "transcript identification",
+                     "transcriptome assembly",
+                     "variant annotation"
                  ]
              }
         },
@@ -62,17 +75,27 @@
                 "description": "A file type used as input for the analysis.",
                 "type": "string",
                 "enum": [
-                    "bam",
                     "sam",
-                    "fastq",
-                    "tagAlign",
-                    "narrowPeak",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
+                    "bigWig",
                     "broadPeak",
-                    "tsv",
-                    "csv",
-                    "gtf",
+                    "bed_broadPeak",
                     "fasta",
-                    "bed"
+                    "fastq",
+                    "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
+                    "tsv",
+                    "csv"
                 ]
             }
         },
@@ -85,14 +108,25 @@
                 "description": "A file type generated as output for the analysis.",
                 "type": "string",
                 "enum": [
-                    "bam",
                     "sam",
-                    "tagAlign",
-                    "narrowPeak",
-                    "broadPeak",
+                    "bam",
+                    "bed",
+                    "bedLogR",
+                    "bed_bedLogR",
+                    "bedMethyl",
+                    "bed_bedMethyl",
+                    "bigBed",
                     "bigWig",
-                    "postScript",
+                    "broadPeak",
+                    "bed_broadPeak",
+                    "fasta",
+                    "fastq",
                     "gtf",
+                    "idat",
+                    "narrowPeak",
+                    "bed_narrowPeak",
+                    "rcc",
+                    "CEL",
                     "tsv",
                     "csv"
                 ]
@@ -117,6 +151,18 @@
                 "comment": "See analysis_step.json for available identifiers.",
                 "type": "string",
                 "linkTo": "analysis_step"
+            }
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
             }
         }
     }

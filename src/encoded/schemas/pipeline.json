@@ -12,7 +12,7 @@
         { "$ref": "mixins.json#/uuid"},
         { "$ref": "mixins.json#/accession"},
         { "$ref": "mixins.json#/aliases"},
-        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/accessioned_status"},
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/assay"}
@@ -35,6 +35,13 @@
             "title": "Title",
             "description": "The preferred viewable name of the pipeline.",
             "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
+            "type": "string",
+            "permission": "import_items",
+            "default": ""
         },
         "version": {
             "title": "Version",

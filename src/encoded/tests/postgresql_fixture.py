@@ -20,7 +20,7 @@ def initdb(datadir, prefix='', echo=False):
         stderr=subprocess.STDOUT,
     )
     if echo:
-        print(output)
+        print(output.decode('utf-8'))
 
 
 def server_process(datadir, prefix='', echo=False):
@@ -42,15 +42,15 @@ def server_process(datadir, prefix='', echo=False):
     SUCCESS_LINE = b'database system is ready to accept connections\n'
 
     lines = []
-    for line in iter(process.stdout.readline, ''):
+    for line in iter(process.stdout.readline, b''):
         if echo:
-            sys.stdout.write(line)
+            sys.stdout.write(line.decode('utf-8'))
         lines.append(line)
         if line.endswith(SUCCESS_LINE):
             break
     else:
         code = process.wait()
-        msg = ('Process return code: %d\n' % code) + ''.join(lines)
+        msg = ('Process return code: %d\n' % code) + b''.join(lines).decode('utf-8')
         raise Exception(msg)
 
     if not echo:
@@ -82,7 +82,7 @@ def main():
             if process.poll() is None:
                 process.terminate()
                 for line in process.stdout:
-                    sys.stdout.write(line)
+                    sys.stdout.write(line.decode('utf-8'))
                 process.wait()
         finally:
             shutil.rmtree(datadir)
@@ -91,8 +91,8 @@ def main():
     print('Started. ^C to exit.')
 
     try:
-        for line in iter(process.stdout.readline, ''):
-            sys.stdout.write(line)
+        for line in iter(process.stdout.readline, b''):
+            sys.stdout.write(line.decode('utf-8'))
     except KeyboardInterrupt:
         raise SystemExit(0)
 

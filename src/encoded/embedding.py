@@ -7,6 +7,8 @@ from pyramid.compat import (
     unquote_bytes_to_wsgi,
 )
 from pyramid.httpexceptions import HTTPNotFound
+import logging
+log = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -14,6 +16,7 @@ def includeme(config):
     config.add_request_method(embed, 'embed')
     config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
     config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
+    config.add_request_method(lambda request: None, '__parent__', reify=True)
 
 
 def make_subrequest(request, path):
@@ -52,6 +55,7 @@ def embed(request, *elements, **kw):
     as_user = kw.get('as_user')
     path = join(*elements)
     path = unquote_bytes_to_wsgi(native_(path))
+    log.debug('embed: %s', path)
     if as_user is not None:
         result, embedded, linked = _embed(request, path, as_user)
     else:

@@ -14,6 +14,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -137,6 +138,15 @@
         },
         "md5sum": {
             "title": "MD5sum",
+            "description": "The md5sum of the file being transferred.",
+            "comment": "This can vary for files of same content gzipped at different times",
+            "type": "string",
+            "format": "hex"
+        },
+        "content_md5sum": {
+            "title": "Content MD5sum",
+            "description": "The MD5sum of the uncompressed file.",
+            "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex"
         },
@@ -229,7 +239,8 @@
                         "transcript quantifications",
                         "methyl CG",
                         "methyl CHG",
-                        "methyl CHH"
+                        "methyl CHH",
+                        "enhancer validation"
                     ]
                 },
                 {
@@ -410,24 +421,12 @@
                 "pattern": "^\\S+:\\S+"
             }
         },
-        "pipeline": {
-            "title": "Pipeline",
-            "description": "The pipeline the file was generated from.",
-            "comment": "For pipelines, see pipeline.json for available identifiers.",
+        "step_run": {
+            "title": "Analysis step run",
+            "description": "The run instance of the step the file was generated from.",
+            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
-            "linkTo": "pipeline"
-        },
-        "steps": {
-            "title": "Analysis steps" ,
-            "description": "The runs of the step the file was generated from.",
-            "type": "array",
-            "items": {
-                "title": "Analysis step",
-                "description": "The run instance of the step the file was generated from.",
-                "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
-                "type": "string",
-                "linkTo": "analysis_step_run"
-            }
+             "linkTo": "analysis_step_run"
         }
     },
     "columns": {
@@ -456,7 +455,7 @@
         "2bit": ".2bit",
         "CEL": ".cel.gz",
         "bam": ".bam",
-        "bedLogR": ".bedLogR.bigBed  ",
+        "bedLogR": ".bedLogR.bigBed",
         "bedMethyl": ".bedMethyl.bigBed",
         "bedRnaElements": ".bedRnaElements.bigBed",
         "bed": ".bed.gz",

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
@@ -150,9 +149,7 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
         return (
             <div>
                 <h3>Pipelines using software {context.title}</h3>
-                {this.transferPropsTo(
-                    <PipelineTable />
-                )}
+                <PipelineTable {...this.props} />
             </div>
         );
     }
@@ -165,7 +162,13 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
         this.props.items.forEach(function (version) {
             rows[version['@id']] = (
                 <tr>
-                    <td><a href={version.downloaded_url}>{version.version}</a></td>
+                    <td>
+                        {version.downloaded_url ?
+                            <a href={version.downloaded_url}>{version.version}</a>
+                        :
+                            <span>{version.version}</span>
+                        }
+                    </td>
                     <td>{version.download_checksum}</td>
                 </tr>
             );
@@ -177,7 +180,6 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
                         <tr>
                             <th>Version</th>
                             <th>Download checksum</th>
-
                         </tr>
                     </thead>
                     <tbody>

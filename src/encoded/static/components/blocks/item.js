@@ -1,7 +1,5 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
 var fetched = require('../fetched');
 var globals = require('../globals');
 var ObjectPicker = require('../inputs').ObjectPicker;
@@ -10,7 +8,7 @@ var ObjectPicker = require('../inputs').ObjectPicker;
 var ItemBlockView = module.exports.ItemBlockView = React.createClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.context);
-        return this.transferPropsTo(<ViewComponent context={this.props.context} />);
+        return <ViewComponent {...this.props} />;
     }
 });
 
@@ -22,16 +20,19 @@ var FetchedItemBlockView = React.createClass({
     },
 
     render: function() {
-        var url = this.props.value.item;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
+        var context = this.props.value.item;
+        if (typeof context === 'object') {
+            return <ItemBlockView context={context} />;
         }
-        return (
-            <fetched.FetchedData>
-                <fetched.Param name="context" url={url} />
-                <ItemBlockView />
-            </fetched.FetchedData>
-        );
+        if (typeof context === 'string') {
+            return (
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={context} />
+                    <ItemBlockView />
+                </fetched.FetchedData>
+            );
+        }
+        return null;
     }
 });
 
@@ -39,10 +40,12 @@ var FetchedItemBlockView = React.createClass({
 globals.blocks.register({
     label: 'item block',
     icon: 'icon icon-paperclip',
-    schema: (
-        <ReactForms.schema.Schema>
-          <ReactForms.schema.Property name="item" label="Item" input={<ObjectPicker />} />
-        </ReactForms.schema.Schema>
-    ),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.schema.Mapping({}, {
+            item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: FetchedItemBlockView
 }, 'itemblock');

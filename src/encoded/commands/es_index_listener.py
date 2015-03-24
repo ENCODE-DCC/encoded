@@ -18,6 +18,7 @@ import select
 import signal
 import socket
 import sqlalchemy.exc
+import sys
 import threading
 import time
 from urllib.parse import parse_qsl
@@ -26,6 +27,7 @@ log = logging.getLogger(__name__)
 
 EPILOG = __doc__
 DEFAULT_TIMEOUT = 60
+PY2 = sys.version_info[0] == 2
 
 # We need this because of MVCC visibility.
 # See slide 9 at http://momjian.us/main/writings/pgsql/mvcc.pdf
@@ -94,8 +96,6 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     })
                 else:
                     timestamp = datetime.datetime.now().isoformat()
-                    if res.json.get('txn_count', True):
-                        log.debug(res.json)
                     result = res.json
                     result['stats'] = {
                         k: int(v) for k, v in parse_qsl(
@@ -105,6 +105,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     update_status(last_result=result)
                     if result.get('indexed', 0):
                         update_status(result=result)
+                        log.info(result)
 
                 update_status(
                     status='waiting',
@@ -138,13 +139,26 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
 
 
 class ErrorHandlingThread(threading.Thread):
+    if PY2:
+        @property
+        def _kwargs(self):
+            return self._Thread__kwargs
+
+        @property
+        def _args(self):
+            return self._Thread__args
+
+        @property
+        def _target(self):
+            return self._Thread__target
+
     def run(self):
-        timeout = self._Thread__kwargs.get('timeout', DEFAULT_TIMEOUT)
-        update_status = self._Thread__kwargs['update_status']
-        control = self._Thread__kwargs['control']
+        timeout = self._kwargs.get('timeout', DEFAULT_TIMEOUT)
+        update_status = self._kwargs['update_status']
+        control = self._kwargs['control']
         while True:
             try:
-                self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
+                self._target(*self._args, **self._kwargs)
             except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError) as e:
                 # Handle database restart
                 log.exception('Database went away')
@@ -174,6 +188,15 @@ class ErrorHandlingThread(threading.Thread):
 
 
 def composite(loader, global_conf, **settings):
+    listener = None
+
+    # Register before testapp creation.
+    @atexit.register
+    def join_listener():
+        if listener:
+            log.debug('joining listening thread')
+            listener.join()
+
     # Composite app is used so we can load the main app
     app_name = settings.get('app', None)
     app = loader.get_app(app_name, global_conf=global_conf)
@@ -207,7 +230,6 @@ def composite(loader, global_conf, **settings):
             status['results'] = [result] + status['results'][:9]
         status_holder['status'] = status
 
-
     kwargs = {
         'testapp': testapp,
         'control': control,
@@ -221,12 +243,12 @@ def composite(loader, global_conf, **settings):
     log.debug('starting listener')
     listener.start()
 
+    # Register before testapp creation.
     @atexit.register
     def shutdown_listener():
         log.debug('shutting down listening thread')
         control  # Prevent early gc
         controller.shutdown(socket.SHUT_RDWR)
-        listener.join()
 
     def status_app(environ, start_response):
         status = '200 OK'

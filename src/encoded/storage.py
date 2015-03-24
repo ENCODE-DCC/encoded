@@ -1,4 +1,3 @@
-from past.builtins import basestring
 from pyramid.httpexceptions import HTTPConflict
 from sqlalchemy import (
     Column,
@@ -10,19 +9,17 @@ from sqlalchemy import (
     null,
     orm,
     schema,
+    text,
     types,
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
 from sqlalchemy.orm.exc import (
     FlushError,
     NoResultFound,
-)
-from .precompiled_query import (
-    PrecompiledQuery,
-    precompiled_query_builder,
 )
 from .renderers import json_renderer
 import json
@@ -30,31 +27,14 @@ import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
+DBSession = orm.scoped_session(orm.sessionmaker())
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
-
-def _get_by_uuid_instance_map(rid):
-    # Internals from sqlalchemy/orm/query.py:Query.get
-    session = DBSession()
-    mapper = orm.class_mapper(Resource)
-    ident = [rid]
-    key = mapper.identity_key_from_primary_key(ident)
-    return orm.loading.get_from_identity(
-        session, key, orm.attributes.PASSIVE_OFF)
-
-
-@precompiled_query_builder(DBSession)
-def _get_by_uuid_query():
-    session = DBSession()
-    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
-
-
-@precompiled_query_builder(DBSession)
-def _get_by_unique_key_query():
-    session = DBSession()
-    return session.query(Key).options(
+bakery = baked.bakery()
+baked_query_resource = bakery(lambda session: session.query(Resource))
+baked_query_unique_key = bakery(
+    lambda session: session.query(Key).options(
         orm.joinedload_all(
             Key.resource,
             Resource.data,
@@ -62,37 +42,36 @@ def _get_by_unique_key_query():
             innerjoin=True,
         ),
     ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+)
 
 
 class RDBStorage(object):
+    batchsize = 1000
+
     def get_by_uuid(self, rid, default=None):
-        if isinstance(rid, basestring):
-            try:
-                rid = uuid.UUID(rid)
-            except ValueError:
-                return default
-        elif not isinstance(rid, uuid.UUID):
-            raise TypeError(rid)
-
-        model = _get_by_uuid_instance_map(rid)
-
+        session = DBSession()
+        model = baked_query_resource(session).get(uuid.UUID(rid))
         if model is None:
-            try:
-                model = _get_by_uuid_query().params(rid=rid).one()
-            except NoResultFound:
-                return default
-
+            return default
         return model
 
     def get_by_unique_key(self, unique_key, name, default=None):
+        session = DBSession()
         try:
-            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
+            key = baked_query_unique_key(session).params(name=unique_key, value=name).one()
         except NoResultFound:
             return default
         else:
             return key.resource
 
-    def __iter__(self, item_type=None, batchsize=1000):
+    def get_rev_links(self, model, item_type, rel):
+        return [
+            link.source_rid
+            for link in model.revs
+            if (link.source.item_type, link.rel) == (item_type, rel)
+        ]
+
+    def __iter__(self, item_type=None):
         session = DBSession()
         query = session.query(Resource.rid)
 
@@ -101,7 +80,7 @@ class RDBStorage(object):
                 Resource.item_type == item_type
             )
 
-        for rid, in query.yield_per(batchsize):
+        for rid, in query.yield_per(self.batchsize):
             yield rid
 
     def __len__(self, item_type=None):
@@ -393,6 +372,10 @@ class Resource(Base):
     def keys(self):
         return self.data.keys()
 
+    def items(self):
+        for k in self.keys():
+            yield k, self[k]
+
     def get(self, key, default=None):
         try:
             return self.propsheets[key]
@@ -414,6 +397,12 @@ class Resource(Base):
     @property
     def tid(self):
         return self.data[''].propsheet.tid
+
+    def invalidated(self):
+        return False
+
+    def used_for(self, item):
+        pass
 
 
 class Blob(Base):
@@ -509,14 +498,33 @@ def record_transaction_data(session):
     session.add(record)
 
 
-@event.listens_for(DBSession, 'after_begin')
-def read_only_doomed_transaction(session, sqla_txn, connection):
-    ''' Doomed transactions can be read-only.
+_set_transaction_snapshot = text(
+    "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY;"
+    "SET TRANSACTION SNAPSHOT :snapshot_id;"
+)
 
+
+@event.listens_for(DBSession, 'after_begin')
+def set_transaction_isolation_level(session, sqla_txn, connection):
+    ''' Set appropriate transaction isolation level.
+
+    Doomed transactions can be read-only.
     ``transaction.doom()`` must be called before the connection is used.
+
+    Othewise assume it is a write which must be REPEATABLE READ.
     '''
-    if not transaction.isDoomed():
-        return
     if connection.engine.url.drivername != 'postgresql':
         return
-    connection.execute("SET TRANSACTION READ ONLY;")
+
+    txn = transaction.get()
+    if not txn.isDoomed():
+        # connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
+        return
+
+    data = txn._extension
+    if 'snapshot_id' in data:
+        connection.execute(
+            _set_transaction_snapshot,
+            snapshot_id=data['snapshot_id'])
+    else:
+        connection.execute("SET TRANSACTION READ ONLY;")

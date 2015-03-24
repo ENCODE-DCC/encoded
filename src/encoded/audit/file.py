@@ -70,10 +70,10 @@ def audit_file_controlled_by(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
         return
 
-    if 'target' in value['dataset'] and value['dataset']['target'].get('investigated_as') == 'Control':
+    if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):
         return
 
     if 'controlled_by' not in value:
@@ -84,13 +84,13 @@ def audit_file_controlled_by(value, system):
             value['accession'],
             value['dataset']['assay_term_name']
             )
-        raise AuditFailure('missing controlled_by', detail, level='ERROR')
+        raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
 
     possible_controls = value['dataset'].get('possible_controls')
-    biosample = value['dataset']['biosample_term_id']
+    biosample = value['dataset'].get('biosample_term_id')
 
     for ff in value['controlled_by']:
-        control_bs = ff['dataset']['biosample_term_id']
+        control_bs = ff['dataset'].get('biosample_term_id')
 
         if control_bs != biosample:
             detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(

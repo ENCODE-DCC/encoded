@@ -47,8 +47,8 @@ def run(testapp, collections=None, exclude=None, dry_run=False):
         if collection_name in exclude:
             continue
         collection = root[collection_name]
-        if collection.Item.schema is None or \
-                'date_created' not in collection.Item.schema.get('properties', ()):
+        if collection.type_info.schema is None or \
+                'date_created' not in collection.type_info.schema.get('properties', ()):
             logger.info('Skipped %s', collection_name)
             continue
         count = 0
