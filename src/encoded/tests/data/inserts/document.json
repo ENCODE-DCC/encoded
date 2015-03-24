@@ -312,6 +312,17 @@
     },
     {
         "aliases": [
+            "encode:bedMethyl.as"
+        ],
+        "attachment": "bedMethyl.as",
+        "award": "U54HG004557",
+        "document_type": "file format specification",
+        "lab": "w-james-kent",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "98e684xx-8e7a-4b5e-9968-4a0bv5ae9900"
+    },
+    {
+        "aliases": [
             "ENCODE:ZhBTc4_Stam_protocol"
         ],
         "attachment": "ZhBTc4_Stam_protocol.pdf",

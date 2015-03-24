@@ -185,6 +185,16 @@
                 }
            ]
         },
+        "file_format_specifications": {
+            "title": "File format specifications documents",
+            "description": "Text or .as files the further explain the file format",
+            "type": "array",
+            "items": {
+                    "comment": "See document.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "document"
+                    }
+        },
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
