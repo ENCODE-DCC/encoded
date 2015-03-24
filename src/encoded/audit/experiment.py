@@ -518,10 +518,6 @@ def audit_experiment_paired_end(value, system):
         lib = rep['library']
         lib_paired_ended = lib.get('paired_ended')
 
-        if lib_paired_ended is None:
-            detail = '{} is missing value for paired_ended'.format(lib['accession'])
-            yield AuditFailure('missing library.paired_ended', detail, level='WARNING')
-
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
             detail = 'Library {} paired_ended is False. {} requires paired-end libraries'.format(
                 lib['accession'],
@@ -529,18 +525,9 @@ def audit_experiment_paired_end(value, system):
                 )
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
-        # Maybe we ditch this one as well or change it to look at files?
-        if (rep_paired_ended is True) and (lib_paired_ended is False):
-            detail = 'Library {} has paired_ended as false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
-            yield AuditFailure('mismatched paired_ended', detail, level='ERROR')
-
-    reps_set = set(reps_list)
-    if len(reps_set) > 1:
-        detail = '{} has mixed paired_ended replicates: {}'.format(
-            value['accession'],
-            repr(reps_set)
-            )
-        yield AuditFailure('mismatched paired_ended', detail, level='WARNING')
+        if lib_paired_ended is None and value['award']['rfa'] in ['ENCODE3']:
+            detail = '{} is missing value for paired_ended'.format(lib['accession'])
+            yield AuditFailure('missing library.paired_ended', detail, level='WARNING')
 
 
 @audit_checker(
