@@ -152,37 +152,24 @@ def audit_paired_with(value, system):
             # If we keep the replicate.paired_end we should check with consistency
             # Maybe we should check against library
             return
-    print 1        
+
     if value['paired_end'] == '1':
         context = system['context']
         paired_with = context.get_rev_links('paired_with')
-        print 2
+
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
                 value['accession'],
                 paired_with,
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
-        elif len(paired_with) == 0:
-            print 2.5
-            detail = 'Paired end 1 {} file has no paired_end 2 file'.format(value['accession'])
-            raise AuditFailure('missing paired_with', detail, level='ERROR')
-    print 3
-    for ff in ['paired_with']:
-        if ff['replicate'] != value['replicate']:
-            detail = 'File {} has a paired_with file {} from a different replicate {}'.format(
-                value['accession'],
-                ff['accession'],
-                ff['replicate']
+        return
+     
+        if 'paired_with' not in value:
+            detail = 'Paired end 1 {} file has no paired_end 2 file'.format(
+                value['accession']
                 )
-            yield AuditFailure('replicate mismatch', detail, level='ERROR')
-        if ff['paired_end'] == value['paired_end']:
-            detail = 'File {} has a paired_with file {} with the same paired_end value'.format(
-                value['accession'],
-                ff['accession'],
-                ff['paired_end']
-                )
-            yield AuditFailure('pair mismatch', detail, level='ERROR')
+            raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
 
 @audit_checker('file', frame='object')

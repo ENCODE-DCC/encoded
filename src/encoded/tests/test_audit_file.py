@@ -99,7 +99,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
 
 
 def test_audit_paired_with(testapp, file1):
-    testapp.patch_json(file1['@id'] + '?validate=false', {'paired_end': '1'})
+    testapp.patch_json(file1['@id'] + '?validate=false', {'paired_end': '2'})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []

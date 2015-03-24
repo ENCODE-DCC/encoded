@@ -238,16 +238,6 @@ def test_audit_experiment_library_paired_end(testapp, base_experiment, base_repl
     assert any(error['category'] == 'missing library.paired_ended' for error in errors_list)
 
 
-def test_audit_experiment_paired_end_mismatch(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_library['@id'], {'paired_ended': False})
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': True})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched paired_ended' for error in errors_list)
-
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_library['@id'], {'size_range': '>200'})
@@ -258,6 +248,7 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing spikeins_used' for error in errors_list)
+
 
 def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})
