@@ -134,7 +134,7 @@
                         "bed_broadPeak",
                         "fasta",
                         "fastq",
-                        "gff"
+                        "gff",
                         "gtf",
                         "idat",
                         "narrowPeak",
