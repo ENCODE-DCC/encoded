@@ -136,24 +136,27 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
     A paired_with should be the same replicate
-    DISABLING until ticket 1795 is implemented
     '''
 
     if value['status'] in ['deleted', 'replaced']:
         return
 
     if 'paired_end' not in value:
-        return
+            # Maybe we should check to see the assay_type
+            # If we keep the replicate.paired_end we should check with consistency
+            # Maybe we should check against library
+            return
 
     if value['paired_end'] == '1':
         context = system['context']
         paired_with = context.get_rev_links('paired_with')
+
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
                 value['accession'],
@@ -161,14 +164,12 @@ def audit_paired_with(value, system):
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
         return
-
-    if 'paired_with' not in value:
-        detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
-            value['accession'],
-            value['paired_end'])
-        raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
-
-    # Would love to then check to see if the files shared the same replicate
+     
+        if 'paired_with' not in value:
+            detail = 'Paired end 1 {} file has no paired_end 2 file'.format(
+                value['accession']
+                )
+            raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
 
 @audit_checker('file', frame='object')
