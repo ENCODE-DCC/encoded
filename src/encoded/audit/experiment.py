@@ -495,7 +495,6 @@ def audit_experiment_paired_end(value, system):
         return
 
     reps_list = []
-    libs_list = []
 
     for rep in value['replicates']:
 
@@ -508,7 +507,10 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('missing replicate.paired_ended', detail, level='ERROR')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(term_name, rep['uuid'])
+            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(
+                term_name,
+                rep['uuid']
+                )
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
         if 'library' not in rep:
