@@ -314,7 +314,7 @@
         "aliases": [
             "encode:bedMethyl.as"
         ],
-        "attachment": "bedMethyl.as",
+        "attachment": "bedMethyl.txt",
         "award": "U54HG004557",
         "document_type": "file format specification",
         "lab": "w-james-kent",
