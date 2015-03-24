@@ -212,7 +212,6 @@
         "paired_ended": {
             "title": "Paired ended",
             "description": "Whether or not the library was prepared with paired ends",
-            "comment": "This is for the library preparation not for the actual run information",
             "type": "boolean"
         },
         "strand_specificity": {
