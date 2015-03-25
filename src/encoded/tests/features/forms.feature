@@ -29,6 +29,9 @@ Feature: Edit forms
 		And I click the link with text "ENCODE"
 		And I dismiss the alert
 		Then field "antigen_description" should have the value "It's not a very nice antigen"
+		# Make sure we don't leave a dirty form that will interfere with subsequent tests
+		And I click the link with text "ENCODE"
+		And I accept the alert
 
 	Scenario: Validation errors are shown in context
 		When I visit "/antibodies/ENCAB728YTO/#!edit"
