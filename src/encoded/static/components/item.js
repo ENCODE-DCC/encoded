@@ -305,17 +305,22 @@ var jsonSchemaToDefaultValue = function(schema) {
 
 var FetchedForm = React.createClass({
 
-    render: function() {
-        var Form = require('./form').Form;
+    getInitialState: function() {
         var type = this.props.type;
         var schemas = this.props.schemas;
-        var schema = jsonSchemaToFormSchema({
-            schemas: schemas,
-            jsonNode: schemas[type],
-            id: this.props.id
-        });
-        var value = this.props.context || jsonSchemaToDefaultValue(schemas[type]);
-        return <Form {...this.props} defaultValue={value} schema={schema} />;
+        return {
+            schema: jsonSchemaToFormSchema({
+                schemas: schemas,
+                jsonNode: schemas[type],
+                id: this.props.id
+            }),
+            value: this.props.context || jsonSchemaToDefaultValue(schemas[type]),
+        };
+    },
+
+    render: function() {
+        var Form = require('./form').Form;
+        return <Form {...this.props} defaultValue={this.state.value} schema={this.state.schema} />;
     }
 
 });
@@ -332,7 +337,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData>
+                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
                 </fetched.FetchedData>
@@ -343,7 +348,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData>
+                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
