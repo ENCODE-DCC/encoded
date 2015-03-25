@@ -67,6 +67,7 @@
         "status": "released",
         "level": "file",
         "files": ["ENCFF001MYM"],
+        "attachment": "fastqc_report.html",
         "Total Sequences": 25811817,
         "Sequences flagged as poor quality": 0,
         "Sequence length": 100,
