@@ -179,7 +179,7 @@
                         "image/jpeg",
                         "image/tiff",
                         "image/gif",
-                        "image/html",
+                        "text/html",
                         "image/png"
                     ]
                 },
