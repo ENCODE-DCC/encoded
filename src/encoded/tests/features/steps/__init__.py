@@ -80,6 +80,11 @@ def wait_for_content(context):
     assert context.browser.is_element_not_present_by_css("#application.communicating")
 
 
+@step(u'I wait for an element with the css selector "{css}" to load')
+def wait_for_css(context, css):
+    assert context.browser.is_element_present_by_css(css)
+
+
 @step(u'The "{url}" section should be active')
 def url_section_active(context, url):
     assert context.browser.is_element_present_by_css("#global-sections > li.active > a[href='%s']" % url)
