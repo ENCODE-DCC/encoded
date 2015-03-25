@@ -41,6 +41,7 @@ non_seq_assays = [
     'RNA profiling by array assay',
     'DNA methylation profiling by array assay',
     'Genotype',
+    'comparative genomic hybridization by array',
     'RIP-chip',
     'protein sequencing by tandem mass spectrometry assay',
     'microRNA profiling by array assay',
@@ -482,8 +483,6 @@ def audit_experiment_paired_end(value, system):
     Libraries and replicates of certain assays should be paired end.
     Libraries and replicates of ignore_assays are not applicable for paired_end.
     All other libraries and replicates should have a value for paired_end.
-    If a replicate says it is paired_end and it's library does not, that is an error.
-    If a library says it is paired_end and it's replicate is not, that is informational.
     If two replicates do not match, that is a warning.
     '''
 
@@ -496,7 +495,6 @@ def audit_experiment_paired_end(value, system):
         return
 
     reps_list = []
-    libs_list = []
 
     for rep in value['replicates']:
 
@@ -509,7 +507,10 @@ def audit_experiment_paired_end(value, system):
             yield AuditFailure('missing replicate.paired_ended', detail, level='ERROR')
 
         if (rep_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(term_name, rep['uuid'])
+            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(
+                term_name,
+                rep['uuid']
+                )
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
         if 'library' not in rep:
@@ -517,28 +518,16 @@ def audit_experiment_paired_end(value, system):
 
         lib = rep['library']
         lib_paired_ended = lib.get('paired_ended')
-        if lib_paired_ended is not None:
-            libs_list.append(lib_paired_ended)
-
-        if lib_paired_ended is None:
-            detail = '{} is missing value for paired_ended'.format(lib['accession'])
-            yield AuditFailure('missing library.paired_ended', detail, level='WARNING')
 
         if (lib_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(term_name, lib['accession'])
+            detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(
+                term_name,
+                lib['accession'])
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
-        if (rep_paired_ended is True) and (lib_paired_ended is False):
-            detail = 'Library {} has paired_ended as false and replicate {} is not false'.format(lib['accession'], rep['uuid'])
-            yield AuditFailure('mismatched paired_ended', detail, level='ERROR')
-
-    if len(set(reps_list)) > 1:
-            detail = '{} has mixed paired_ended replicates: {}'.format(value['accession'], repr(reps_list))
-            yield AuditFailure('mismatched paired_ended', detail, level='WARNING')
-
-    if len(set(libs_list)) > 1:
-            detail = '{} has mixed paired_ended libraries: {}'.format(value['accession'], repr(reps_list))
-            yield AuditFailure('mismatched paired_ended', detail, level='WARNING')
+        if lib_paired_ended is None and value['award']['rfa'] in ['ENCODE3']:
+            detail = '{} is missing value for paired_ended'.format(lib['accession'])
+            yield AuditFailure('missing library.paired_ended', detail, level='WARNING')
 
 
 @audit_checker(
