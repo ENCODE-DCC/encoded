@@ -35,8 +35,8 @@ Feature: Edit forms
 		And I wait for an element with the css selector "form.rf-Form" to load
 		And I fill in "date_created" with "bogus"
 		And I press "Save"
+		And I wait for an element with the css selector "input[name=date_created] + .rf-Message" to load
 		Then I should see "u'bogus' is not valid under any of the given schemas"
-		And I should see an element with the css selector "input[name=date_created] + .rf-Message"
 
 # To add:
 # - interacting with the object picker
