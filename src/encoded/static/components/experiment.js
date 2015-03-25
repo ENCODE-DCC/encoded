@@ -756,7 +756,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         var file = allFiles[fileAccession];
 
         // A file derives from a file that's been removed from the graph
-        if (file.derived_from) {
+        if (file.derived_from && !file.removed) {
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
                 return derivedFromFile.removed;
             });
