@@ -138,6 +138,15 @@
         },
         "md5sum": {
             "title": "MD5sum",
+            "description": "The md5sum of the file being transferred.",
+            "comment": "This can vary for files of same content gzipped at different times",
+            "type": "string",
+            "format": "hex"
+        },
+        "content_md5sum": {
+            "title": "Content MD5sum",
+            "description": "The MD5sum of the uncompressed file.",
+            "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex"
         },

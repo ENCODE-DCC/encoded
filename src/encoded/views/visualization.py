@@ -252,7 +252,7 @@ def generate_batch_hubs(context, request):
 
     results = {}
     txt = request.matchdict['txt']
-    param_list = parse_qs(request.matchdict['search_params'].encode('utf-8').replace(',,', '&'))
+    param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
     if len(request.matchdict) == 3:
 

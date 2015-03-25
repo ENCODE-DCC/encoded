@@ -1,6 +1,5 @@
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
 var fetched = require('../fetched');
 var globals = require('../globals');
 var ObjectPicker = require('../inputs').ObjectPicker;
@@ -41,8 +40,12 @@ var FetchedItemBlockView = React.createClass({
 globals.blocks.register({
     label: 'item block',
     icon: 'icon icon-paperclip',
-    schema: ReactForms.schema.Mapping({}, {
-        item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />})
-    }),
+    schema: function() {
+        var ReactForms = require('react-forms');
+        return ReactForms.schema.Mapping({}, {
+            item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />}),
+            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+        });
+    },
     view: FetchedItemBlockView
 }, 'itemblock');

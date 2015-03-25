@@ -117,7 +117,7 @@ def home(context, request):
 
 
 def _filtered_schema(collection, request):
-    schema = collection.type_info.schema
+    schema = collection.type_info.schema.copy()
 
     properties = OrderedDict()
     for k, v in schema['properties'].items():
