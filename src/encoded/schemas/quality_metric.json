@@ -11,12 +11,10 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
-        "schema_version": {
-            "default": "1"
-        },
         "step_run": {
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
@@ -44,11 +42,23 @@
             "description": "The level at which comparisons should be visualized.",
             "title": "QC level"
         },
-        "sequencing coverage": {
+        "SD of log ratios": {
             "type": "number",
-            "description": ""
+            "description": "Standard Deviation of replicate log ratios from RNA-seq quantification"
         },
-        "Per base sequence quality": {
+        "Pearson correlation": {
+            "type": "number",
+            "description": "Pearson correlation coefficient of replicates from RNA-seq quantification"
+        },
+        "Spearman correlation": {
+            "type": "number",
+            "description": "Spearman correlation coefficient of replicates from RNA-seq quantification"
+        },
+        "MAD of log ratios": {
+            "type": "number",
+            "description": "Mean-Average-Deviation of replicate log ratios from RNA-seq quantification"
+        },
+        "sequencing coverage": {
             "type": "number",
             "description": ""
         },
@@ -60,35 +70,7 @@
             "type": "number",
             "description": ""
         },
-        "Per base sequence content": {
-            "type": "number",
-            "description": ""
-        },
-        "Spearman correlation": {
-            "type": "number",
-            "description": ""
-        },
-        "Basic Statistics": {
-            "type": "number",
-            "description": ""
-        },
-        "singletons": {
-            "type": "number",
-            "description": ""
-        },
-        "C methylated in CHG context": {
-            "type": "string",
-            "description": ""
-        },
-        "Kmer Content": {
-            "type": "number",
-            "description": ""
-        },
-        "SD of log ratios": {
-            "type": "number",
-            "description": ""
-        },
-        "Sequence Duplication Levels": {
+        "PBC": {
             "type": "number",
             "description": ""
         },
@@ -96,16 +78,137 @@
             "type": "number",
             "description": ""
         },
-        "schema_version": {
-            "default": "1"
-        },
-        "MAD of log ratios": {
+        "RSC": {
             "type": "number",
             "description": ""
+        },
+        "singletons": {
+            "type": "number",
+            "description": ""
+        },
+        "Total Sequences": {
+            "type": "number",
+            "description": "FastQC Summary metric"
+        },
+        "Sequences flagged as poor quality": {
+            "type": "number",
+            "description": "FastQC Summary metric"
+        },
+        "Sequence length": {
+            "type": "number",
+            "description": "FastQC Summary metric"
+        },
+        "%GC": {
+            "type": "number",
+            "description": "FastQC Summary metric"
+        },
+        "Per base sequence quality": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Per base sequence content": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Basic Statistics": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Kmer Content": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Sequence Duplication Levels": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
         },
         "Sequence Length Distribution": {
-            "type": "number",
-            "description": ""
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Overrepresented sequences": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Per sequence GC content": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Adapter Content": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Per tile sequence quality": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Per base N content": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
+        },
+        "Per sequence quality scores": {
+            "type": "string",
+            "enum": [
+                "PASS",
+                "FAIL",
+                "WARN"
+            ],
+            "description": "FastQC metric"
         },
         "mapped reads": {
             "type": "number",
@@ -121,7 +224,7 @@
         },
         "Mapping efficiency": {
             "type": "string",
-            "description": "Bismark mapping efficiency for WGBS vs. biosample genome"
+            "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
         "lambda Mapping efficiency": {
             "type": "string",
@@ -129,23 +232,27 @@
         },
         "lambda C methylated in CpG context": {
             "type": "string",
-            "description": ""
+            "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "lambda C methylated in CHG context": {
             "type": "string",
-            "description": ""
+            "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "lambda C methylated in CHH context": {
             "type": "string",
-            "description": ""
+            "description": "Bismark mapping efficiency for WGBS vs. lambda phage genome"
         },
         "C methylated in CHH context": {
             "type": "string",
-            "description": ""
+            "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
-        "Overrepresented sequences": {
-            "type": "number",
-            "description": ""
+        "C methylated in CHG context": {
+            "type": "string",
+            "description": "Bismark mapping efficiency for WGBS vs. reference genome"
+        },
+        "C methylated in CpG context": {
+            "type": "string",
+            "description": "Bismark mapping efficiency for WGBS vs. reference genome"
         },
         "mate mapped different chr (mapQ>=5)": {
             "type": "number",
@@ -159,28 +266,8 @@
             "type": "number",
             "description": ""
         },
-        "Per sequence GC content": {
-            "type": "number",
-            "description": ""
-        },
-        "PBC": {
-            "type": "number",
-            "description": ""
-        },
-        "Adapter Content": {
-            "type": "number",
-            "description": ""
-        },
-        "Per tile sequence quality": {
-            "type": "number",
-            "description": ""
-        },
         "read1 mapped": {
             "type": "number",
-            "description": ""
-        },
-        "C methylated in CpG context": {
-            "type": "string",
             "description": ""
         },
         "Minimum unique reads": {
@@ -195,27 +282,11 @@
             "type": "number",
             "description": ""
         },
-        "RSC": {
-            "type": "number",
-            "description": ""
-        },
-        "Pearson correlation": {
-            "type": "number",
-            "description": ""
-        },
         "properly paired": {
             "type": "number",
             "description": ""
         },
-        "Per base N content": {
-            "type": "number",
-            "description": ""
-        },
         "mate mapped different chr": {
-            "type": "number",
-            "description": ""
-        },
-        "Per sequence quality scores": {
             "type": "number",
             "description": ""
         }

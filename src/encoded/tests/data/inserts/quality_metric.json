@@ -32,7 +32,8 @@
         "Spearman correlation": 0.974901,
         "SD of log ratios": 0.469,
         "level": "experiment",
-        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a"
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "RNA-seq"
     },
     {
         "uuid": "67b7d0be-f0a2-43c7-9ad3-ea4f9255340e",
@@ -44,7 +45,8 @@
         "Mapping efficiency": "78.70%",
         "C methylated in CpG context": "62.00%",
         "C methylated in CHG context": "0.40%",
-        "C methylated in CHH context": "0.40%"
+        "C methylated in CHH context": "0.40%",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
     },
     {
         "uuid": "c912ad14-b35f-4c02-941f-7cd9cc884de9",
@@ -56,7 +58,30 @@
         "lambda Mapping efficiency": "0.60%",
         "lambda C methylated in CpG context": "0.30%",
         "lambda C methylated in CHG context": "0.40%",
-        "lambda C methylated in CHH context": "0.40%"
+        "lambda C methylated in CHH context": "0.40%",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
+    },
+    {
+        "uuid": "129bcdd9-2099-4c77-b7f7-7565dae83f87",
+        "step_run": "635ac7ff-7822-4f72-aad5-5d8b51b60d95",
+        "status": "released",
+        "level": "file",
+        "files": ["ENCFF001MYM"],
+        "Total Sequences": 25811817,
+        "Sequences flagged as poor quality": 0,
+        "Sequence length": 100,
+        "%GC": 47,
+        "Basic Statistics": "PASS",
+        "Per base sequence quality": "PASS",
+        "Per tile sequence quality": "FAIL",
+        "Per sequence quality scores": "PASS",
+        "Per base sequence content": "FAIL",
+        "Per sequence GC content": "WARN",
+        "Per base N content": "PASS",
+        "Sequence Length Distribution": "PASS",
+        "Sequence Duplication Levels": "FAIL",
+        "Overrepresented sequences": "WARN",
+        "Adapter Content": "FAIL",
+        "Kmer Content": "FAIL"
     }
-
 ]
