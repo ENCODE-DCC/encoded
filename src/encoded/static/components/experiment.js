@@ -673,7 +673,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
-        console.log('No graph: no files have step runs');
+        console.warn('No graph: no files have step runs');
         return null;
     }
 
@@ -747,7 +747,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Don't draw anything if a file others derive from outside a replicate doesn't exist
     if (abortGraph) {
-        console.log('No graph: derived_from file outside replicate missing [' + abortAccession + ']');
+        console.warn('No graph: derived_from file outside replicate missing [' + abortAccession + ']');
         return null;
     }
 
@@ -773,7 +773,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
 
     if (abortGraph) {
-        console.log('No graph: other condition [' + abortAccession + ']');
+        console.warn('No graph: other condition [' + abortAccession + ']');
         return null;
     }
 
