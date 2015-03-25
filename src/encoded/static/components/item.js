@@ -199,7 +199,7 @@ var FetchedFieldset = React.createClass({
     },
 
     onUpdate: function(value) {
-        value['@id'] = this.state.url;
+        value = value.set('@id', this.state.url);
         this.props.value.setSerialized(value);
     }
 
@@ -234,10 +234,14 @@ var jsonSchemaToFormSchema = function(attrs) {
             if (p.properties[name].calculatedProperty) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
+            var subprops = {required: required};
+            if (name == 'schema_version') {
+                subprops.input = <input type="text" disabled />;
+            }
             properties[name] = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
-                props: {required: required},
+                props: subprops,
             });
         }
         return ReactForms.schema.Mapping(props, properties);
@@ -283,9 +287,6 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
-        }
-        if (props.name == 'schema_version') {
-            props.input = <input type="text" disabled />;
         }
         return ReactForms.schema.Scalar(props);
     }
