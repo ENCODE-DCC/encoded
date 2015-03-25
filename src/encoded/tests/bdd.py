@@ -431,6 +431,12 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
 
     def collect(self):
         for step in self.scenario:
+            match = self.runner.step_registry.find_match(step)
+            if match is None:
+                raise Exception(
+                    'Failed to match step "{} {}" at {} line {}'.format(
+                        step.keyword, step.name, step.location.filename, step.location.line,
+                        ))
             yield Step(step, self)
 
     def setup(self):
