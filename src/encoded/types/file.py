@@ -85,6 +85,7 @@ class File(Item):
         'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
+        'lab',
         'derived_from',
         'submitted_by',
         'pipeline',

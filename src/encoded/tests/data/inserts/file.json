@@ -958,7 +958,7 @@
         "accession": "ENCFF000VUS",
         "assembly": "hg19",
         "award": "U54HG004558",
-        "dataset": "ENCSR000DZQ",
+        "dataset": "ENCSR000ACY",
         "file_format": "bam",
         "file_size": 473944988,
         "lab": "michael-snyder",
@@ -975,8 +975,7 @@
         "award": "ENCODE2",
         "dataset": "ENCSR000DZQ",
         "derived_from": [
-            "ENCFF000VUQ",
-            "ENCFF000VUS"
+            "ENCFF000VUQ"
         ],
         "file_format": "bed_narrowPeak",
         "file_size": 2433593,
@@ -988,6 +987,24 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
         "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
+    },
+    {
+        "accession": "ENCFF003COS",
+        "award": "ENCODE2",
+        "dataset": "ENCSR000DZQ",
+        "derived_from": [
+            "ENCFF000VUQ"
+        ],
+        "file_format": "bed_narrowPeak",
+        "file_size": 2433593,
+        "lab": "j-michael-cherry",
+        "md5sum": "9f39f46aa18273f269360535fce32ed2",
+        "output_type": "UniformlyProcessedPeakCalls",
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
+        "uuid": "af5c17df-e5f0-44f9-997a-f9caef22be08"
     },
     {
         "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
