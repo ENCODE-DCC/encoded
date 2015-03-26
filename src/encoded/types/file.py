@@ -131,6 +131,17 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @calculated_property(schema={
+        "title": "Read length units",
+        "type": "string",
+        "enum": [
+            "nt"
+        ]
+        })
+    def read_length_units(self, read_length=None):
+        if read_length is not None:
+            return "nt"
+
+    @calculated_property(schema={
         "title": "Pipeline",
         "type": "string",
         "linkTo": "pipeline"

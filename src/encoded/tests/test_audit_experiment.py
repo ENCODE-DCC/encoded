@@ -209,15 +209,6 @@ def test_audit_experiment_target(testapp, base_experiment):
     assert any(error['category'] == 'missing target' for error in errors_list)
 
 
-def test_audit_experiment_replicate_read_length(testapp, base_experiment, base_replicate):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read_length' for error in errors_list)
-
 def test_audit_experiment_library_paired_end(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')

@@ -303,37 +303,6 @@ def audit_experiment_ChIP_control(value, system):
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['replicates'], condition=rfa('ENCODE3', 'FlyWormChIP'))
-def audit_experiment_readlength(value, system):
-    '''
-    All ENCODE 3 experiments of sequencing type should specify their read_length
-    Read-lengths should likely match across replicates
-    Other rfas likely should have warning
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    if value.get('assay_term_name') not in seq_assays:
-        return
-
-    read_lengths = []
-
-    for i in range(len(value['replicates'])):
-        rep = value['replicates'][i]
-        read_length = rep.get('read_length')
-        read_lengths.append(read_length)
-
-        if read_length is None:
-            detail = 'Replicate {} requires a value for read_length'.format(rep['uuid'])
-            yield AuditFailure('missing read_length', detail, level='ERROR')
-
-    if len(set(read_lengths)) > 1:
-        list_of_lens = str(read_lengths)
-        detail = '{} has mixed values for read_length between replicates: {}'.format(value['accession'], list_of_lens)
-        yield AuditFailure('mismatched read_length', detail, level='WARNING')
-
-
 @audit_checker('experiment', frame=['files','files.platform'])
 def audit_experiment_platform(value, system):
     '''
