@@ -77,19 +77,6 @@
                     }
                 },
                 {
-                    "not": {
-                        "properties": {
-                            "file_format": {
-                                "enum": ["fastq"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
-        "file_format":{
-            "oneOf": [
-                {
                     "required": ["file_format_type"],
                     "properties": {
                         "file_format": {
@@ -101,7 +88,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["bed","bigBed","gff","gtf"]
+                                "enum": ["fastq", "gff"]
                             }
                         }
                     }
