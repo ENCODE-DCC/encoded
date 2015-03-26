@@ -7,7 +7,6 @@ Feature: Edit forms
 		And I click the element with the css selector ".icon-gear"
 		And I click the link to "/antibodies/ENCAB728YTO/#!edit"
 		And I wait for an element with the css selector "form.rf-Form" to load
-		And "schema_version" should be disabled
 		And I fill in "antigen_description" with "It's not a very nice antigen"
 		And I press "Save"
 		And I wait for an element with the css selector ".view-item.type-antibody_lot" to load
