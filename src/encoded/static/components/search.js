@@ -735,7 +735,7 @@ var AuditMixin = audit.AuditMixin;
             var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
-            if (!facets.length) return <div />;
+            if (!facets.length && this.props.mode != 'picker') return <div />;
             var hideTypes;
             if (this.props.mode == 'picker') {
                 hideTypes = false;

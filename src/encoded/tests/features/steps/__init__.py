@@ -13,11 +13,6 @@ def is_text_present_in_element_by_css(self, selector, text, wait_time=None):
             return True
         except ValueError:
             pass
-        except NoSuchElementException:
-            # This exception will be thrown if the body tag isn't present
-            # This has occasionally been observed. Assume that the
-            # page isn't fully loaded yet
-            pass
     return False
 
 
@@ -78,6 +73,11 @@ def wait_for_form(context):
 def wait_for_content(context):
     assert context.browser.is_element_present_by_css("#application")
     assert context.browser.is_element_not_present_by_css("#application.communicating")
+
+
+@step(u'I wait for an element with the css selector "{css}" to load')
+def wait_for_css(context, css):
+    assert context.browser.is_element_present_by_css(css)
 
 
 @step(u'The "{url}" section should be active')
