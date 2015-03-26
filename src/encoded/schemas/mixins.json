@@ -179,6 +179,7 @@
                         "image/jpeg",
                         "image/tiff",
                         "image/gif",
+                        "text/html",
                         "image/png"
                     ]
                 },
@@ -279,7 +280,7 @@
         "genotype": {
             "title": "Strain genotype",
             "description": "The genotype of the strain according to accepted nomenclature conventions.",
-            "type": "string" 
+            "type": "string"
         },
         "mutagen": {
             "title": "Mutagen",
@@ -294,7 +295,7 @@
                 "transposon",
                 "TMP/UV",
                 "unknown",
-                "none" 
+                "none"
             ]
         },
         "constructs": {

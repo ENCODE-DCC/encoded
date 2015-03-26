@@ -12,6 +12,7 @@ from multiprocessing.pool import (
 from elasticsearch.exceptions import (
     ConflictError,
 )
+from pyramid.request import apply_request_extensions
 from pyramid.threadlocal import (
     get_current_request,
     manager,
@@ -85,12 +86,10 @@ def set_snapshot(xmin, snapshot_id):
 
     registry = app.registry
     request = app.request_factory.blank('/_indexing_pool')
-    request.datastore = 'database'
-    extensions = app.request_extensions
-    if extensions is not None:
-        request._set_extensions(extensions)
-    request.invoke_subrequest = app.invoke_subrequest
     request.registry = registry
+    request.datastore = 'database'
+    apply_request_extensions(request)
+    request.invoke_subrequest = app.invoke_subrequest
     request.root = app.root_factory(request)
     request._stats = {}
     manager.push({'request': request, 'registry': registry})

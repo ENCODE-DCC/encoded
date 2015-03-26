@@ -1,42 +1,88 @@
 [
     {
-    	"step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
-    	"files": ["ENCFF000VUQ"],
-    	"qc_details": [
-    		{
-    			"metric": "SPOT",
-    			"value": 0.11906231714263
-    		},
-		{
-    			"metric": "NSC",
-    			"value": 1.61437706164671
-    		},
-		{
-    			"metric": "RSC",
-    			"value": 1.71
-    		}
-    	],
-            "status": "released",
-    	"uuid": "4a61b110-9ab2-11e4-bd06-0800200c9a66"
+        "files": [
+            "ENCFF000VUQ"
+        ],
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "NSC": 1.61437706164671,
+        "SPOT": 0.11906231714263,
+        "RSC": 1.71,
+        "level": "file",
+        "uuid": "4a61b110-9ab2-11e4-bd06-0800200c9a66"
     },
     {
-    	"step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
-    	"files": ["ENCFF000VUS"],
-    	"qc_details": [
-    		{
-    			"metric": "SPOT",
-    			"value": 0.28479310889427
-    		},
-		{
-    			"metric": "NSC",
-    			"value": 2.44662908860751
-    		},
-		{
-    			"metric": "RSC",
-    			"value": 1.55
-    		}
-    	],
-            "status": "released",
-    	"uuid": "9cdd9120-9ab2-11e4-bd06-0800200c9a66"
+        "files": [
+            "ENCFF000VUS"
+        ],
+        "status": "released",
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "NSC": 2.44662908860751,
+        "SPOT": 0.28479310889427,
+        "RSC": 1.55,
+        "level": "file",
+        "uuid": "9cdd9120-9ab2-11e4-bd06-0800200c9a66"
+    },
+    {
+        "files": ["ENCFF413RGP", "ENCFF946MFS"],
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "MAD of log ratios": 0.378,
+        "Pearson correlation": 0.9786789,
+        "Spearman correlation": 0.974901,
+        "SD of log ratios": 0.469,
+        "level": "experiment",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "RNA-seq"
+    },
+    {
+        "uuid": "67b7d0be-f0a2-43c7-9ad3-ea4f9255340e",
+        "status": "released",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "level": "file",
+        "files": ["ENCFF434GXF"],
+        "Sequences analysed in total": 410211284,
+        "Mapping efficiency": "78.70%",
+        "C methylated in CpG context": "62.00%",
+        "C methylated in CHG context": "0.40%",
+        "C methylated in CHH context": "0.40%",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
+    },
+    {
+        "uuid": "c912ad14-b35f-4c02-941f-7cd9cc884de9",
+        "status": "released",
+        "step_run": "eeb7cd3f-a10f-4405-99b6-58a00e3a3bf0",
+        "level": "file",
+        "files": ["ENCFF434GXF"],
+        "lambda Sequences analysed in total": 410211284,
+        "lambda Mapping efficiency": "0.60%",
+        "lambda C methylated in CpG context": "0.30%",
+        "lambda C methylated in CHG context": "0.40%",
+        "lambda C methylated in CHH context": "0.40%",
+        "assay_term_name": "whole-genome shotgun bisulfite sequencing"
+    },
+    {
+        "uuid": "129bcdd9-2099-4c77-b7f7-7565dae83f87",
+        "step_run": "635ac7ff-7822-4f72-aad5-5d8b51b60d95",
+        "status": "released",
+        "level": "file",
+        "files": ["ENCFF001MYM"],
+        "attachment": "fastqc_report.html",
+        "Total Sequences": 25811817,
+        "Sequences flagged as poor quality": 0,
+        "Sequence length": 100,
+        "%GC": 47,
+        "Basic Statistics": "PASS",
+        "Per base sequence quality": "PASS",
+        "Per tile sequence quality": "FAIL",
+        "Per sequence quality scores": "PASS",
+        "Per base sequence content": "FAIL",
+        "Per sequence GC content": "WARN",
+        "Per base N content": "PASS",
+        "Sequence Length Distribution": "PASS",
+        "Sequence Duplication Levels": "FAIL",
+        "Overrepresented sequences": "WARN",
+        "Adapter Content": "FAIL",
+        "Kmer Content": "FAIL"
     }
 ]
