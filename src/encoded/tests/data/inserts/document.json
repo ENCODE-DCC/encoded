@@ -25,6 +25,17 @@
     },
     {
         "aliases": [
+            "encode:bedMethyl.as" 
+        ],
+        "attachment": "bedMethyl.txt",
+        "award": "U54HG004557",
+        "document_type": "file format specification",
+        "lab": "richard-myers",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+    },
+    {
+        "aliases": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
@@ -309,17 +320,6 @@
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
-    },
-    {
-        "aliases": [
-            "encode:bedMethyl.as"
-        ],
-        "attachment": "bedMethyl.txt",
-        "award": "U54HG004557",
-        "document_type": "file format specification",
-        "lab": "w-james-kent",
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "98e684xx-8e7a-4b5e-9968-4a0bv5ae9900"
     },
     {
         "aliases": [
