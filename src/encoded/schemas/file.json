@@ -77,10 +77,18 @@
                     }
                 },
                 {
+                    "required": ["file_format_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["gff"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq"]
+                                "enum": ["fastq", "gff"]
                             }
                         }
                     }
@@ -137,6 +145,43 @@
                     ]
                 }
             ]
+        },
+        "file_format_type": {
+            "title": "Specific file format type",
+            "description": "Files of type bed and gff require further specification",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "bed6",
+                        "bed9",
+                        "bedLogR",
+                        "bedMethyl",
+                        "broadPeak",
+                        "gff2",
+                        "gff3",
+                        "narrowPeak"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "unknown",
+                        "bedRnaElements"
+                    ]
+                }
+           ]
+        },
+        "file_format_specifications": {
+            "title": "File format specifications documents",
+            "description": "Text or .as files the further explain the file format",
+            "type": "array",
+            "items": {
+                    "comment": "See document.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "document"
+                    }
         },
         "md5sum": {
             "title": "MD5sum",
