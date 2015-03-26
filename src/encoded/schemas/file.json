@@ -480,7 +480,7 @@
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
-        "hdf5": ".hdf5",
+        "hdf5": ".h5",
         "idat": ".idat",
         "narrowPeak": ".narrowPeak.bigBed",
         "rcc": ".rcc",
