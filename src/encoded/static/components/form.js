@@ -14,7 +14,7 @@ var filterValue = function(value) {
         value.map(filterValue);
     } else if (typeof value == 'object') {
         _.each(value, function(v, k) {
-            if (v === null) {
+            if (v === null || k == 'schema_version') {
                 delete value[k];
             } else {
                 filterValue(v);
