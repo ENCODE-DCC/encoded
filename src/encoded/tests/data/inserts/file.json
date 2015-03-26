@@ -73,7 +73,7 @@
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -96,7 +96,7 @@
         "dataset": "ENCSR000ADH",
         "date_created": "2013-04-18",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -219,7 +219,7 @@
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -241,7 +241,7 @@
         "dataset": "ENCSR000ADI",
         "date_created": "2010-05-12",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -264,7 +264,7 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -287,7 +287,7 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -310,7 +310,7 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -333,7 +333,7 @@
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-14",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -356,7 +356,7 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -380,7 +380,7 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -404,7 +404,7 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -429,7 +429,7 @@
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -438,7 +438,7 @@
         {
             "flowcell": "C5WA6ACUU",
             "lane": "8",
-            "machine": "HWI-ST382"    
+            "machine": "HWI-ST382"
         }],
         "lab":"j-michael-cherry",
         "md5sum": "3541f1a048453b65ab01a673b743a573",
@@ -541,7 +541,7 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -564,7 +564,7 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -589,7 +589,7 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -615,7 +615,7 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-14",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -640,7 +640,7 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -662,7 +662,7 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-13",
         "file_format": "fastq",
-        "flowcell_details": 
+        "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
             "lane": "3",
@@ -1005,5 +1005,55 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
         "uuid": "af5c17df-e5f0-44f9-997a-f9caef22be08"
+    },
+    {
+        "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
+        "genome_annotation": "V19",
+        "derived_from": [],
+        "award": "/awards/U54HG007004/",
+        "aliases": [],
+        "lab": "/labs/j-michael-cherry/",
+        "assembly": "hg19",
+        "md5sum": "b6bda8755cea56d4741fc027442d370a",
+        "status": "released",
+        "file_size": 9528125,
+        "date_created": "2014-12-21T03:33:43.516795+00:00",
+        "flowcell_details": [],
+        "output_type": "genome quantifications",
+        "uuid": "238dc341-150b-44db-acaf-a959307eb7af",
+        "alternate_accessions": [],
+        "dbxrefs": [],
+        "notes": "{\"dx-createdBy\": {\"job\": \"job-BX3pPz00F1G03f7Zx1JZF143\", \"executable\": \"applet-BX3jXk00F1G79Gbb68P630vj\", \"user\": \"user-tdreszer\"}, \"software_versions\": [{\"version\": \"v1.2.19\", \"software\": \"RSEM\"}], \"dx-id\": \"file-BX3zzv80jFJX2bJYQJpf7b76\"}",
+        "accession": "ENCFF946MFS",
+        "schema_version": "4",
+        "submitted_file_name": "/lrna/hg19/ENCSR000AEV/rep2_1/ENCFF001ROX-ENCFF001ROW_star_anno_rsem.genes.results",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "file_format": "tsv",
+        "dataset": "/experiments/ENCSR000AEM/"
+    },
+    {
+        "replicate": "/replicates/30a3e114-139a-4297-9287-4f23d2754c25",
+        "award": "/awards/U54HG007004/",
+        "accession": "ENCFF413RGP",
+        "status": "released",
+        "genome_annotation": "V19",
+        "flowcell_details": [],
+        "derived_from": [],
+        "lab": "/labs/j-michael-cherry/",
+        "file_size": 9486940,
+        "file_format": "tsv",
+        "submitted_file_name": "/lrna/hg19/ENCSR000AEV/rep1_1/ENCFF001RND-ENCFF001RNC_star_anno_rsem.genes.results",
+        "assembly": "hg19",
+        "date_created": "2014-12-21T02:15:03.609521+00:00",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "schema_version": "4",
+        "output_type": "genome quantifications",
+        "md5sum": "eb82583476e2604a42d5599a70608f13",
+        "alternate_accessions": [],
+        "dataset": "/experiments/ENCSR000AEM/",
+        "notes": "{\"dx-createdBy\": {\"job\": \"job-BX3pPg80F1GG6245Kk09G9p9\", \"executable\": \"applet-BX3jXk00F1G79Gbb68P630vj\", \"user\": \"user-tdreszer\"}, \"software_versions\": [{\"version\": \"v1.2.19\", \"software\": \"RSEM\"}], \"dx-id\": \"file-BX3z5980zVf8PyY514B62vK6\"}",
+        "uuid": "510ee3db-460a-4d56-80bd-fac3758ba688",
+        "aliases": [],
+        "dbxrefs": []
     }
 ]
