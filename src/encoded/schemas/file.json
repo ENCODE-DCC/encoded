@@ -299,6 +299,17 @@
                 }
             ]
         },
+        "run_type": {
+            "title": "Run type for sequencing files",
+            "description": "Whether this file part of a single, paired or mixed run",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "mixed",
+                "unknown"
+            ]
+        },
         "paired_end": {
             "title": "Paired End Identifier",
             "description": "Which pair the file belongs to (if paired end library)",
