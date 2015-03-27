@@ -161,6 +161,21 @@ class File(Item):
         if step_run is not None:
             return request.embed(step_run, '@@object').get('analysis_step')
 
+    @calculated_property(schema={
+        "title": "Output category",
+        "type": "string",
+        "enum": [
+            "raw data",
+            "alignment",
+            "signal",
+            "annotation",
+            "quantification",
+            "reference"
+        ]
+    })
+    def output_category(self, output_type):
+        return self.schema['output_type_output_category'].get(output_type)
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
