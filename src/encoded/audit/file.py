@@ -202,7 +202,7 @@ def audit_file_size(value, system):
 @audit_checker('file', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
-    for doc in value['file_format_specifications']:
+    for doc in value.get('file_format_specifications', []):
         if doc['document_type'] != "file format specification":
             detail = 'File {} has document {} not of type file format specification'.format(
                 value['accession'],
