@@ -199,6 +199,18 @@ def audit_file_size(value, system):
         raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
+@audit_checker('file', frame=['file_format_specifications'],)
+def audit_file_format_specifications(value, system):
+
+    for doc in value.get('file_format_specifications', []):
+        if doc['document_type'] != "file format specification":
+            detail = 'File {} has document {} not of type file format specification'.format(
+                value['accession'],
+                doc['uuid']
+                )
+            raise AuditFailure('wrong document_type', detail, level='ERROR')
+
+
 @audit_checker('file', frame='object')
 def audit_file_output_type(value, system):
     '''
