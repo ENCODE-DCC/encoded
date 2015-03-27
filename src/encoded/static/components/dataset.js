@@ -257,6 +257,20 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
                 }
                 break;
+            case 'read_length':
+                if (a.read_length && b.read_length) {
+                    diff = a.read_length - b.read_length;
+                } else {
+                    diff = a.read_length ? -1 : (b.read_length ? 1 : 0);
+                }
+                break;
+            case 'run_type':
+                if (a.run_type && b.run_type) {
+                    diff = a.run_type - b.run_type;
+                } else {
+                    diff = a.run_type ? -1 : (b.run_type ? 1 : 0);
+                }
+                break;
             case 'assembly':
                 if (a.assembly && b.assembly) {
                     diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
@@ -302,12 +316,15 @@ var FileTable = module.exports.FileTable = React.createClass({
             paired_end: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
+            read_length: 'tcell-sort',
+            run_type: 'tcell-sort',
             assembly: 'tcell-sort',
             annotation: 'tcell-sort',
             title: 'tcell-sort',
             date_created: 'tcell-sort',
             file_size: 'tcell-sort'
         };
+
         cellClass[this.state.col] = this.state.reversed ? 'tcell-desc' : 'tcell-asc';
         var files = this.props.items.slice(0);
         files.sort(this.sortCol).forEach(function (file) {
@@ -319,6 +336,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.paired_end}</td>
                     <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                     <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
+                    <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
+                    <td>{file.run_type ? file.run_type : null}</td>
                     <td>{file.assembly}</td>
                     <td>{file.genome_annotation}</td>
                     <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
@@ -340,6 +359,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end<i className={cellClass.paired_end}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate<i className={cellClass.bio_replicate}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate<i className={cellClass.tech_replicate}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'read_length')}>Read length<i className={cellClass.read_length}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'run_type')}>Run type<i className={cellClass.run_type}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'assembly')}>Mapping assembly<i className={cellClass.assembly}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'annotation')}>Genome annotation<i className={cellClass.annotation}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Lab<i className={cellClass.title}></i></th>
@@ -354,7 +375,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={encodevers == "3" ? 13 : 12}></td>
+                            <td colSpan={encodevers == "3" ? Object.keys(cellClass).length + 2 : Object.keys(cellClass).length + 1}></td>
                         </tr>
                     </tfoot>
                 </table>

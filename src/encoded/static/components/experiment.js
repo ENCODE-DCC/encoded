@@ -584,20 +584,6 @@ var Replicate = module.exports.Replicate = function (props) {
                         : null}
                     </div>
                 : null}
-
-                {replicate.read_length ?
-                    <div data-test="runtype">
-                        <dt>Run type</dt>
-                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="readlength">
-                        <dt>Read length</dt>
-                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
-                    </div>
-                : null}
             </dl>
         </div>
     );
