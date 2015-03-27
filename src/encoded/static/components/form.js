@@ -35,6 +35,16 @@ class JSONNode extends ReactForms.schema.ScalarNode {
 module.exports.JSONNode = JSONNode;
 
 
+var makeValidationResult = function(validation) {
+    return new ReactForms.ValidationResult(
+        validation.error ? validation.error : null,
+        validation.children ? _.mapObject(validation.children, function(v, k) {
+            return makeValidationResult(v);
+        }) : null
+    );
+};
+
+
 var Form = module.exports.Form = React.createClass({
     contextTypes: {
         adviseUnsavedChanges: React.PropTypes.func,
@@ -152,7 +162,8 @@ var Form = module.exports.Form = React.createClass({
     },
 
     showErrors: function (data) {
-        var externalValidation = {children: {}, validation: {}};
+        // unflatten validation errors
+        var externalValidation = {children: {}, error: null};
         var schemaErrors = [];
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
@@ -165,19 +176,19 @@ var Form = module.exports.Form = React.createClass({
                     var v = externalValidation;
                     for (var i = 0; i < name.length; i++) {
                         if (v.children[name[i]] === undefined) {
-                            v.children[name[i]] = {children: {}, validation: {}};
+                            v.children[name[i]] = {children: {}, error: null};
                         }
                         v = v.children[name[i]];
                     }
-                    v.validation = {
-                        failure: error.description,
-                        validation: {failure: error.description}
-                    };
+                    v.error = error.description;
                 } else {
                     schemaErrors.push(error.description);
                 }
             });
         }
+
+        // convert to format expected by react-forms
+        externalValidation = makeValidationResult(externalValidation);
 
         // make sure we scroll to error again
         this.setState({errors: null});

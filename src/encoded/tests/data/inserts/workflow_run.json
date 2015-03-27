@@ -24,5 +24,20 @@
             "ENCFF019HGN"
         ],
         "status": "finished"
+    },
+    {
+        "uuid": "364f1d61-63d5-48ab-bb9c-eff36b764e96",
+        "pipeline": "ENCPL001MQC",
+        "dx_analysis_id": "analysis-BYgq6Y80z53jVG9z0bj1YQB8",
+        "started_running": "2015-02-14T22:47:10.000000+00:00",
+        "stopped_running": "2015-02-15T11:42:35.000000+00:00",
+        "input_files": [
+            "ENCFF431TKZ",
+            "ENCFF504RKH",
+            "ENCFF958GWJ",
+            "ENCFF360FSI",
+            "ENCFF019HBG"
+        ],
+        "status": "finished"
     }
 ]

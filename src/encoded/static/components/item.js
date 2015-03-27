@@ -199,7 +199,7 @@ var FetchedFieldset = React.createClass({
     },
 
     onUpdate: function(value) {
-        value['@id'] = this.state.url;
+        value = value.set('@id', this.state.url);
         this.props.value.setSerialized(value);
     }
 
@@ -230,14 +230,15 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         var properties = {}, name;
         for (name in p.properties) {
-            if (name == 'uuid') continue;
+            if (name == 'uuid' || name == 'schema_version') continue;
             if (p.properties[name].calculatedProperty) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
+            var subprops = {required: required};
             properties[name] = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
-                props: {required: required},
+                props: subprops,
             });
         }
         return ReactForms.schema.Mapping(props, properties);
@@ -251,7 +252,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required) {
+            if (!props.required && !p.default) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control">{options}</select>;
@@ -284,9 +285,6 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
         }
-        if (props.name == 'schema_version') {
-            props.input = <input type="text" disabled />;
-        }
         return ReactForms.schema.Scalar(props);
     }
 };
@@ -305,17 +303,22 @@ var jsonSchemaToDefaultValue = function(schema) {
 
 var FetchedForm = React.createClass({
 
-    render: function() {
-        var Form = require('./form').Form;
+    getInitialState: function() {
         var type = this.props.type;
         var schemas = this.props.schemas;
-        var schema = jsonSchemaToFormSchema({
-            schemas: schemas,
-            jsonNode: schemas[type],
-            id: this.props.id
-        });
-        var value = this.props.context || jsonSchemaToDefaultValue(schemas[type]);
-        return <Form {...this.props} defaultValue={value} schema={schema} />;
+        return {
+            schema: jsonSchemaToFormSchema({
+                schemas: schemas,
+                jsonNode: schemas[type],
+                id: this.props.id
+            }),
+            value: this.props.context || jsonSchemaToDefaultValue(schemas[type]),
+        };
+    },
+
+    render: function() {
+        var Form = require('./form').Form;
+        return <Form {...this.props} defaultValue={this.state.value} schema={this.state.schema} />;
     }
 
 });
@@ -332,7 +335,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData>
+                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
                 </fetched.FetchedData>
@@ -343,7 +346,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData>
+                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />

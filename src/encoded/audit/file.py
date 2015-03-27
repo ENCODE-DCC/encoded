@@ -58,6 +58,23 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
+@audit_checker('file', frame='object')
+def audit_file_read_length(value, system):
+    '''
+    A fastq file should have a read_length
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['file_format'] not in ['fastq']:
+        return
+
+    if 'read_length' not in value:
+        detail = 'Fastq file {} missing read_length'.format(value['accession'])
+        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+
+
 @audit_checker('file',
                frame=['dataset', 'dataset.target', 'controlled_by',
                       'controlled_by.dataset'],

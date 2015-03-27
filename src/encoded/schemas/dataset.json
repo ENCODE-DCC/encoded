@@ -110,7 +110,8 @@
                 "released",
                 "deleted",
                 "replaced",
-                "revoked"
+                "revoked",
+                "ready for review"
             ]
         }
     },

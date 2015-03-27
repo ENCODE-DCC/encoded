@@ -273,5 +273,16 @@
         "lab": "j-michael-cherry",
         "url": "http://www.bioinformatics.babraham.ac.uk/projects/fastqc/",
         "uuid":  "40d96460-a590-11e4-bcd8-0800200c9a66"
+    },
+    {
+        "name": "mad_cc_lrna",
+        "title": "MAD and CC",
+        "description": "MAD and correlation calculation for RNA-seq quantifiications",
+        "software_type": ["quality metric"],
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
+        "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
     }
+
 ]
