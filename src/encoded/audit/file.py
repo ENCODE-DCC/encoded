@@ -70,7 +70,7 @@ def audit_file_controlled_by(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
         return
 
     if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):

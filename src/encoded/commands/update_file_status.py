@@ -47,6 +47,7 @@ def run(fp, url, username, password):
             data=json.dumps({
                 'status': 'in progress',
                 'file_size': result['file_size'],
+                'content_md5sum': result['content_md5sum']
             }),
             auth=(username, password),
             headers=HEADERS,
