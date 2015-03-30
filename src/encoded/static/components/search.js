@@ -758,7 +758,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    
+
     var AdvSearch = React.createClass({
         getInitialState: function() {
             return {
@@ -797,10 +797,12 @@ var AuditMixin = audit.AuditMixin;
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                             </div>
                             <div className="form-group col-md-5">
-                                <label htmlFor="peakid">Organism</label>
-                                <select ref="organism" name="organism" className="form-control" onChange={this.handleChange} >
-                                    <option selected="selected">human</option>
-                                    <option>mouse</option>
+                                <label htmlFor="peakid">Genome Annotation</label>
+                                <select ref="annotation" name="annotation" className="form-control" onChange={this.handleChange} >
+                                    <option selected="selected">hg19</option>
+                                    <option>mm9</option>
+                                    <option>mm10</option>
+                                    <option>dm3</option>
                                 </select>
                             </div>
                             <div className="form-group col-md-2">

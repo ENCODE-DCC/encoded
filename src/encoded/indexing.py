@@ -1,5 +1,6 @@
 from collections import defaultdict
-from elasticsearch import Elasticsearch
+from .embedding import embed
+from elasticsearch import Elasticsearch, helpers
 from elasticsearch.exceptions import (
     ConflictError,
     NotFoundError,
@@ -32,9 +33,14 @@ import logging
 import pytz
 import transaction
 import urllib3
-import csv
 import gzip
-from io import StringIO
+import io
+import gc
+import pandas as pd
+import numpy as np
+from urllib.parse import (
+    urlencode,
+)
 
 
 log = logging.getLogger(__name__)
@@ -368,8 +374,7 @@ def file_index(request):
     '''Indexes bed files in ENCODE'''
 
     file_index = 'peaks'
-    human_doc_type = 'hg19'
-    mouse_doc_type = 'mm9'
+    doc_types = ['hg19', 'mm9', 'mm10', 'dm3']
 
     mapping = {
         'properties': {
@@ -383,7 +388,7 @@ def file_index(request):
                 'index': 'not_analyzed',
                 'include_in_all': False,
             },
-            'stop': {
+            'end': {
                 'type': 'long',
                 'index': 'not_analyzed',
                 'include_in_all': False,
@@ -416,47 +421,56 @@ def file_index(request):
         es.indices.create(index=file_index)
 
     es.indices.refresh(index=file_index)
-    for doc_type in [human_doc_type, mouse_doc_type]:
+    for doc_type in doc_types:
         create_mapping(doc_type)
 
     http = urllib3.PoolManager()
-    types = ['bed_narrowPeak', 'bed_broadPeak']
-    collection = request.root.by_item_type['file']
-    counter = 1
-    for count, uuid in enumerate(collection):
-        item = request.root.get_by_uuid(uuid)
-        properties = item.__json__(request)
-        if 'assembly' in properties and properties['status'] != 'revoked':
-            if properties['file_format'] in types:
-                r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
-                comp = StringIO.StringIO()
-                comp.write(r.data)
-                comp.seek(0)
-                f = gzip.GzipFile(fileobj=comp, mode='rb')
-                r.release_conn()
-                try:
-                    file_data = list(csv.reader(f, delimiter='\t'))
-                except:
-                    print ('File has problem - ' + properties['href'])
-                else:
-                    for row in file_data:
-                        result = {
-                            'chromosome': row[0],
-                            'start': int(row[1]) + 1,
-                            'stop': int(row[2]) + 1,
-                            'uuid': properties['uuid'],
-                        }
-                        es.index(
-                            index=file_index,
-                            doc_type=properties['assembly'],
-                            body=result,
-                            id=counter,
-                            timeout="10m"
-                        )
-                        counter = counter + 1
-                    es.indices.flush(
-                        index=file_index,
-                        full=True,
-                        force=True
-                    )
-            es.indices.refresh(index=file_index)
+    params = {
+        'type': ['file'],
+        'file_format': ['bed_narrowPeak', 'bed_broadPeak'],
+        'status': ['released'],
+        'field': ['href', 'assembly', 'uuid'],
+        'limit': ['all']
+    }
+    path = '/search/?%s' % urlencode(params, True)
+    for properties in embed(request, path, as_user=True)['@graph']:
+        if 'assembly' in properties:
+            r = http.request('GET', 'https://www.encodedcc.org' +
+                             properties['href'])
+            comp = io.BytesIO()
+            comp.write(r.data)
+            comp.seek(0)
+            f = gzip.GzipFile(fileobj=comp, mode='rb')
+            del comp
+            r.release_conn()
+            file_data = pd.read_csv(
+                f, delimiter='\t', header=None, chunksize=500)
+            for new_frame in file_data:
+                # dropping useless columns
+                new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
+                new_frame.columns = ['chromosome', 'start', 'end']
+                new_frame[['start', 'end']] = new_frame[['start', 'end']].astype(int)
+                new_frame = new_frame[~np.isnan(new_frame['start'])]
+                new_frame = new_frame[~np.isnan(new_frame['end'])]
+                new_frame['start'] = new_frame['start'] + 1
+                new_frame['end'] = new_frame['end'] + 1
+                new_frame['uuid'] = properties['uuid']
+                records = new_frame.where(pd.notnull(new_frame), None).T.to_dict()
+                list_records = [records[it] for it in records]
+                del new_frame, records
+                helpers.bulk(
+                    es,
+                    list_records,
+                    index=file_index,
+                    doc_type=properties['assembly']
+                )
+                es.indices.flush(
+                    index=file_index,
+                    full=True,
+                    force=True
+                )
+                del list_records
+                gc.collect()
+            del file_data
+            gc.collect()
+        es.indices.refresh(index=file_index)

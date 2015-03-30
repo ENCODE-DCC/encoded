@@ -16,7 +16,7 @@ extra_params = [
     'frame',
     'datastore',
     'regionid',
-    'organism',
+    'annotation',
 ]
 ENSEMBL_URL = 'http://rest.ensembl.org/'
 
@@ -99,7 +99,7 @@ def search_peaks(request):
     species = 'human'
     old_assembly = 'GRCh37'
     new_assembly = 'GRCh38'
-    if request.params.get('organism', 'human') != 'human':
+    if request.params.get('annotation', '') != 'hg19':
         assembly = 'mm9'
         species = 'mouse'
         old_assembly = 'NCBIM37'
