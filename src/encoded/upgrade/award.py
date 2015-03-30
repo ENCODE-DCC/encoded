@@ -16,3 +16,11 @@ def award_0_2(value, system):
     if 'url' in value:
         if value['url'] == '':
             del value['url']
+
+
+@upgrade_step('award', '2', '3')
+def award_2_3(value, system):
+    # http://encode.stanford.edu/issues/2726
+
+    if 'project' not in value:
+        value['project'] = 'ENCODE'
