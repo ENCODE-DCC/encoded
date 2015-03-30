@@ -108,8 +108,8 @@
             "title": "Biosample treatment",
             "type": "array"
         },
-        "files.file_format": {
-            "title": "Available data",
+        "files.output_category": {
+            "title": "Output category",
             "type": "string"
         },
         "files.run_type": {
