@@ -431,6 +431,12 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
 
     def collect(self):
         for step in self.scenario:
+            match = self.runner.step_registry.find_match(step)
+            if match is None:
+                raise Exception(
+                    'Failed to match step "{} {}" at {} line {}'.format(
+                        step.keyword, step.name, step.location.filename, step.location.line,
+                        ))
             yield Step(step, self)
 
     def setup(self):
@@ -485,7 +491,7 @@ class Step(FixtureRequestMixin, pytest.Item):
 
     def __init__(self, model, parent):
         name = u'%s %s' % (model.keyword, model.name)
-        name = str(name.encode('ascii', 'backslashreplace'))
+        name = str(name.encode('ascii', 'backslashreplace').decode('ascii'))
         super(Step, self).__init__(name, parent)
         self.step = self.model = model
         self._init_fixtures()

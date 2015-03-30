@@ -117,8 +117,11 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             }, this);
         }
 
-        if (!this.props.loadingComplete || !params.length) {
+        if (!params.length) {
             return null;
+        }
+        if (!this.props.loadingComplete) {
+            return <div className="loading-spinner"></div>;
         }
 
         var errors = params.map(param => this.state[param.props.name])
@@ -146,7 +149,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
         return (
             <div className="done">
-                {children.map(child => cloneWithProps(child, _.extend({}, this.props, this.state)))}
+                {children.map((child, i) => cloneWithProps(child, _.extend({key: i}, this.props, this.state)))}
                 {params}
             </div>
         );

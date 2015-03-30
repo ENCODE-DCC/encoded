@@ -25,6 +25,17 @@
     },
     {
         "aliases": [
+            "encode:bedMethyl.as" 
+        ],
+        "attachment": "bedMethyl.txt",
+        "award": "U54HG004557",
+        "document_type": "file format specification",
+        "lab": "richard-myers",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+    },
+    {
+        "aliases": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",

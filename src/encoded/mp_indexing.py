@@ -12,6 +12,7 @@ from multiprocessing.pool import (
 from elasticsearch.exceptions import (
     ConflictError,
 )
+from pyramid.request import apply_request_extensions
 from pyramid.threadlocal import (
     get_current_request,
     manager,
@@ -34,7 +35,10 @@ from .indexing import (
 def includeme(config):
     if config.registry.settings.get('indexer_worker'):
         return
-    config.registry[INDEXER] = MPIndexer(config.registry)
+    processes = config.registry.settings.get('indexer.processes')
+    if processes is not None:
+        processes = int(processes)
+    config.registry[INDEXER] = MPIndexer(config.registry, processes=processes)
 
 
 # Running in subprocess
@@ -82,12 +86,10 @@ def set_snapshot(xmin, snapshot_id):
 
     registry = app.registry
     request = app.request_factory.blank('/_indexing_pool')
-    request.datastore = 'database'
-    extensions = app.request_extensions
-    if extensions is not None:
-        request._set_extensions(extensions)
-    request.invoke_subrequest = app.invoke_subrequest
     request.registry = registry
+    request.datastore = 'database'
+    apply_request_extensions(request)
+    request.invoke_subrequest = app.invoke_subrequest
     request.root = app.root_factory(request)
     request._stats = {}
     manager.push({'request': request, 'registry': registry})
@@ -141,8 +143,9 @@ def handle_results(request, value_holder):
 
 
 class MPIndexer(Indexer):
-    def __init__(self, registry):
+    def __init__(self, registry, processes=None):
         self.pool = EventLoopPool(
+            processes=processes,
             initializer=initializer,
             initargs=(registry.settings,),
             context=get_context('forkserver'),

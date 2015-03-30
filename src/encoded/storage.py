@@ -14,15 +14,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
 from sqlalchemy.orm.exc import (
     FlushError,
     NoResultFound,
-)
-from .precompiled_query import (
-    PrecompiledQuery,
-    precompiled_query_builder,
 )
 from .renderers import json_renderer
 import json
@@ -30,31 +27,14 @@ import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
+DBSession = orm.scoped_session(orm.sessionmaker())
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
-
-def _get_by_uuid_instance_map(rid):
-    # Internals from sqlalchemy/orm/query.py:Query.get
-    session = DBSession()
-    mapper = orm.class_mapper(Resource)
-    ident = [rid]
-    key = mapper.identity_key_from_primary_key(ident)
-    return orm.loading.get_from_identity(
-        session, key, orm.attributes.PASSIVE_OFF)
-
-
-@precompiled_query_builder(DBSession)
-def _get_by_uuid_query():
-    session = DBSession()
-    return session.query(Resource).filter(Resource.rid == bindparam('rid'))
-
-
-@precompiled_query_builder(DBSession)
-def _get_by_unique_key_query():
-    session = DBSession()
-    return session.query(Key).options(
+bakery = baked.bakery()
+baked_query_resource = bakery(lambda session: session.query(Resource))
+baked_query_unique_key = bakery(
+    lambda session: session.query(Key).options(
         orm.joinedload_all(
             Key.resource,
             Resource.data,
@@ -62,25 +42,23 @@ def _get_by_unique_key_query():
             innerjoin=True,
         ),
     ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+)
 
 
 class RDBStorage(object):
     batchsize = 1000
 
     def get_by_uuid(self, rid, default=None):
-        model = _get_by_uuid_instance_map(uuid.UUID(rid))
-
+        session = DBSession()
+        model = baked_query_resource(session).get(uuid.UUID(rid))
         if model is None:
-            try:
-                model = _get_by_uuid_query().params(rid=rid).one()
-            except NoResultFound:
-                return default
-
+            return default
         return model
 
     def get_by_unique_key(self, unique_key, name, default=None):
+        session = DBSession()
         try:
-            key = _get_by_unique_key_query().params(name=unique_key, value=name).one()
+            key = baked_query_unique_key(session).params(name=unique_key, value=name).one()
         except NoResultFound:
             return default
         else:

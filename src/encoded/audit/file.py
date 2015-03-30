@@ -58,6 +58,23 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
+@audit_checker('file', frame='object')
+def audit_file_read_length(value, system):
+    '''
+    A fastq file should have a read_length
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['file_format'] not in ['fastq']:
+        return
+
+    if 'read_length' not in value:
+        detail = 'Fastq file {} missing read_length'.format(value['accession'])
+        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+
+
 @audit_checker('file',
                frame=['dataset', 'dataset.target', 'controlled_by',
                       'controlled_by.dataset'],
@@ -70,7 +87,7 @@ def audit_file_controlled_by(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE']:
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
         return
 
     if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):
@@ -180,6 +197,18 @@ def audit_file_size(value, system):
     if 'file_size' not in value:
         detail = 'File {} requires a value for file_size'.format(value['accession'])
         raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
+
+
+@audit_checker('file', frame=['file_format_specifications'],)
+def audit_file_format_specifications(value, system):
+
+    for doc in value.get('file_format_specifications', []):
+        if doc['document_type'] != "file format specification":
+            detail = 'File {} has document {} not of type file format specification'.format(
+                value['accession'],
+                doc['uuid']
+                )
+            raise AuditFailure('wrong document_type', detail, level='ERROR')
 
 
 @audit_checker('file', frame='object')

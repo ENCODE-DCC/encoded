@@ -77,10 +77,18 @@
                     }
                 },
                 {
+                    "required": ["file_format_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["gff"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq"]
+                                "enum": ["fastq", "gff"]
                             }
                         }
                     }
@@ -113,7 +121,9 @@
                         "bed_broadPeak",
                         "fasta",
                         "fastq",
+                        "gff",
                         "gtf",
+                        "hdf5",
                         "idat",
                         "narrowPeak",
                         "bed_narrowPeak",
@@ -136,8 +146,54 @@
                 }
             ]
         },
+        "file_format_type": {
+            "title": "Specific file format type",
+            "description": "Files of type bed and gff require further specification",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "bed6",
+                        "bed9",
+                        "bedLogR",
+                        "bedMethyl",
+                        "broadPeak",
+                        "gff2",
+                        "gff3",
+                        "narrowPeak"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "unknown",
+                        "bedRnaElements"
+                    ]
+                }
+           ]
+        },
+        "file_format_specifications": {
+            "title": "File format specifications documents",
+            "description": "Text or .as files the further explain the file format",
+            "type": "array",
+            "items": {
+                    "comment": "See document.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "document"
+                    }
+        },
         "md5sum": {
             "title": "MD5sum",
+            "description": "The md5sum of the file being transferred.",
+            "comment": "This can vary for files of same content gzipped at different times",
+            "type": "string",
+            "format": "hex"
+        },
+        "content_md5sum": {
+            "title": "Content MD5sum",
+            "description": "The MD5sum of the uncompressed file.",
+            "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex"
         },
@@ -152,6 +208,11 @@
             "comment": "See platform.json for available identifiers.",
             "type": "string",
             "linkTo": "platform"
+        },
+        "read_length": {
+            "title": "Read length",
+            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "type": "integer"
         },
         "flowcell_details": {
             "title": "Flowcells",
@@ -283,6 +344,17 @@
                         "WaveSignal"
                     ]
                 }
+            ]
+        },
+        "run_type": {
+            "title": "Run type for sequencing files",
+            "description": "Whether this file part of a single, paired or mixed run",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "mixed",
+                "unknown"
             ]
         },
         "paired_end": {
@@ -442,6 +514,93 @@
             "type": "string"
         }
     },
+    "output_type_output_category": {
+        "CNV":"",
+        "HMM":"",
+        "alignments":"alignment",
+        "clusters":"annotation",
+        "contigs":"annotation",
+        "enhancers":"annotation",
+        "enrichment":"quantification",
+        "hotspots":"annotation",
+        "idat green file":"raw data",
+        "idat red file":"raw data",
+        "interactions":"annotation",
+        "library_fraction":"quantification",
+        "multi-read minus signal":"signal",
+        "multi-read plus signal":"signal",
+        "multi-read signal":"signal",
+        "multi-read normalized signal":"signal",
+        "peaks":"annotation",
+        "plus signal":"signal",
+        "raw data":"raw data",
+        "raw minus signal":"signal",
+        "raw plus signal":"signal",
+        "raw signal":"signal",
+        "raw normalized signal":"signal",
+        "reads":"raw data",
+        "rejected reads":"raw data",
+        "signal":"signal",
+        "sites":"annotation",
+        "spike-ins":"alignment",
+        "splice junctions":"annotation",
+        "unique minus signal":"signal",
+        "unique plus signal":"signal",
+        "unique signal":"signal",
+        "genome reference":"reference",
+        "genome index":"reference",
+        "transcriptome alignments":"alignment",
+        "exon quantifications":"quantification",
+        "genome quantifications":"quantification",
+        "transcript quantifications":"quantification",
+        "methyl CG":"quantification",
+        "methyl CHG":"quantification",
+        "methyl CHH":"quantification",
+        "enhancer validation":"quantification",
+        "Alignability":"reference",
+        "Base_Overlap_Signal":"signal",
+        "enhancers_forebrain":"",
+        "enhancers_heart":"",
+        "enhancers_wholebrain":"",
+        "Excludable":"reference",
+        "ExonsDeNovo":"quantification",
+        "ExonsEnsV65IAcuff":"quantification",
+        "ExonsGencV10":"quantification",
+        "ExonsGencV3c":"quantification",
+        "ExonsGencV7":"quantification",
+        "FiltTransfrags":"annotation",
+        "GeneDeNovo":"quantification",
+        "GeneEnsV65IAcuff":"quantification",
+        "GeneGencV10":"quantification",
+        "GeneGencV3c":"quantification",
+        "GeneGencV7":"quantification",
+        "Junctions":"annotation",
+        "Matrix":"",
+        "minus signal":"signal",
+        "mPepMapGcFt":"quantification",
+        "mPepMapGcUnFt":"quantification",
+        "PctSignal":"signal",
+        "pepMapGcFt":"quantification",
+        "pepMapGcUnFt":"quantification",
+        "Primer":"",
+        "PrimerPeaks":"",
+        "RbpAssocRna":"annotation",
+        "SumSignal":"signal",
+        "TranscriptDeNovo":"quantification",
+        "TranscriptEnsV65IAcuff":"quantification",
+        "TranscriptGencV10":"quantification",
+        "TranscriptGencV3c":"quantification",
+        "TranscriptGencV7":"quantification",
+        "Transfrags":"annotation",
+        "TssGencV3c":"annotation",
+        "TssGencV7":"annotation",
+        "TssHmm":"",
+        "UniformlyProcessedPeakCalls":"annotation",
+        "Uniqueness":"",
+        "Validation":"",
+        "Valleys":"annotation",
+        "WaveSignal": "signal"
+    },
     "file_format_file_extension": {
         "2bit": ".2bit",
         "CEL": ".cel.gz",
@@ -464,6 +623,7 @@
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
+        "hdf5": ".h5",
         "idat": ".idat",
         "narrowPeak": ".narrowPeak.bigBed",
         "rcc": ".rcc",
