@@ -213,7 +213,12 @@ function humanFileSize(size) {
 
 var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
-        return {col: '', reversed: false};
+        return {
+            colRaw: '',
+            colProc: '',
+            reversedRaw: false,
+            reversedProc: false
+        };
     },
 
     sortDir: function(col) {
@@ -325,6 +330,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             file_size: 'tcell-sort'
         };
 
+        var colCount = encodevers == "3" ? Object.keys(cellClass).length + 2 : Object.keys(cellClass).length + 1;
         cellClass[this.state.col] = this.state.reversed ? 'tcell-desc' : 'tcell-asc';
         var files = this.props.items.slice(0);
         files.sort(this.sortCol).forEach(function (file) {
@@ -349,9 +355,10 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         });
         return (
-            <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover table-file">
+            <div className="table-responsive table-panel table-file">
+                <table className="table table-striped">
                     <thead>
+                        <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
                         <tr>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession<i className={cellClass.accession}></i></th>
                             <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type<i className={cellClass.file_format}></i></th>
@@ -375,7 +382,38 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan={encodevers == "3" ? Object.keys(cellClass).length + 2 : Object.keys(cellClass).length + 1}></td>
+                            <td colSpan={colCount}></td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <table className="table table-striped table-file">
+                    <thead>
+                        <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
+                        <tr>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'accession')}>Accession<i className={cellClass.accession}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_format')}>File type<i className={cellClass.file_format}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'output_type')}>Output type<i className={cellClass.output_type}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'paired_end')}>Paired end<i className={cellClass.paired_end}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'bio_replicate')}>Biological replicate<i className={cellClass.bio_replicate}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'tech_replicate')}>Technical replicate<i className={cellClass.tech_replicate}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'read_length')}>Read length<i className={cellClass.read_length}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'run_type')}>Run type<i className={cellClass.run_type}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'assembly')}>Mapping assembly<i className={cellClass.assembly}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'annotation')}>Genome annotation<i className={cellClass.annotation}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'title')}>Lab<i className={cellClass.title}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'date_created')}>Date added<i className={cellClass.date_created}></i></th>
+                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'file_size')}>File size<i className={cellClass.file_size}></i></th>
+                            <th>File download</th>
+                            {encodevers == "3" ? <th>Validation status</th> : null}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan={colCount}></td>
                         </tr>
                     </tfoot>
                 </table>

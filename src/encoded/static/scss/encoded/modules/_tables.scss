@@ -39,7 +39,7 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-panel {
     border-collapse: separate;
     background-color: #fff;
-    border: 1px solid #ced5dc;
+    border: 1px solid #a0a0a0;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
 
@@ -146,6 +146,8 @@ form.table-filter {
 }
 
 .table-file {
+    margin-bottom: 20px;
+
     thead {
         tr {
             border-bottom: 1px solid #e0e0e0;
@@ -162,6 +164,20 @@ form.table-filter {
                 }
             }
         }
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+}
+
+.table-section {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #d8d8d8;
+
+    th {
+        height: auto !important;
     }
 }
 
