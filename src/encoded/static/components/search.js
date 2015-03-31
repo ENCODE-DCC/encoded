@@ -796,15 +796,6 @@ var AuditMixin = audit.AuditMixin;
                                 <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                             </div>
-                            <div className="form-group col-md-5">
-                                <label htmlFor="peakid">Genome Annotation</label>
-                                <select ref="annotation" name="annotation" className="form-control" onChange={this.handleChange} >
-                                    <option selected="selected">hg19</option>
-                                    <option>mm9</option>
-                                    <option>mm10</option>
-                                    <option>dm3</option>
-                                </select>
-                            </div>
                             <div className="form-group col-md-2">
                                 <label htmlFor="spacing">&nbsp;</label>
                                 <a className="btn btn-sm btn-info adv-search-submit" href={query}>Submit</a>

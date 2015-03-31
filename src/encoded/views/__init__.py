@@ -23,6 +23,7 @@ from .visualization import generate_batch_hubs
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('suggest', '/suggest{slash:/?}')
     config.add_route('schemas', '/profiles/')
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('jsonld_context', '/terms/')

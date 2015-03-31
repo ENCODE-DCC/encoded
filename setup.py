@@ -87,6 +87,7 @@ setup(
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
         file-indexer = encoded.commands.file_indexer:main
+        annotation-indexer = encoded.commands.annotation_indexer:main
 
         [paste.app_factory]
         main = encoded:main

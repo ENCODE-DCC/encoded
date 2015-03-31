@@ -92,13 +92,16 @@ def assembly_mapper(location, species, old_assembly, new_assembly):
 
 
 def search_peaks(request):
-    """ return file uuids which have the snp or interval found in """
+    """
+    return file uuids which have the snp or interval found in given region
+    """
     es = request.registry[ELASTIC_SEARCH]
     peakid = request.params.get('regionid', None).lower()
+
     assembly = 'hg19'
-    species = 'human'
     old_assembly = 'GRCh37'
     new_assembly = 'GRCh38'
+
     if request.params.get('annotation', '') != 'hg19':
         assembly = 'mm9'
         species = 'mouse'
@@ -119,7 +122,10 @@ def search_peaks(request):
         else:
             if 'mappings' in response:
                 location = response['mappings'][0]['location']
-                chromosome, start, end = assembly_mapper(location, species, old_assembly, new_assembly)
+                chromosome, start, end = assembly_mapper(location,
+                                                         species,
+                                                         old_assembly,
+                                                         new_assembly)
     elif peakid.startswith('chr'):
         # Address should be handled here
         params = peakid.split('-')
@@ -258,9 +264,8 @@ def search(context, request, search_type=None):
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
-            doc_types = ['antibody_lot', 'biosample',
-                         'experiment', 'target', 'dataset', 'page', 'publication',
-                         'software']
+            doc_types = ['antibody_lot', 'biosample', 'experiment', 'target',
+                         'dataset', 'page', 'publication', 'software']
     else:
         for item_type in doc_types:
             qs = urlencode([
@@ -323,7 +328,6 @@ def search(context, request, search_type=None):
     # Setting filters
     query_filters = query['filter']['and']['filters']
 
-
     peak_files_uuids = []
     if 'regionid' in request.params:
         peak_files_uuids, notification = search_peaks(request)
@@ -331,7 +335,8 @@ def search(context, request, search_type=None):
             if notification is 'success':
                 result['notification'] = 'No results found for region entered'
             else:
-                result['notification'] = 'Invalid region search term. Please enter(GeneId, RSID or chr#-start-stop)'
+                result['notification'] = 'Invalid region search term. \
+                Please enter(GeneId, RSID or chr#-start-stop)'
             return result
         else:
             query_filters.append({
@@ -515,4 +520,33 @@ def search(context, request, search_type=None):
     result['total'] = results['hits']['total']
     result['notification'] = 'Success' if result['total'] else 'No results found'
 
+    return result
+
+
+@view_config(route_name='suggest', request_method='GET', permission='search')
+def suggest(context, request, search_type=None):
+    text = ''
+    result = {
+        '@id': '/suggest/' + ('?q=' + text),
+        '@type': ['suggest'],
+        'title': 'Suggest',
+        '@graph': [],
+    }
+    if 'q' in request.params:
+        text = request.params.get('q', '')
+    else:
+        return []
+    es = request.registry[ELASTIC_SEARCH]
+    query = {
+        "suggester": {
+            "text": text,
+            "completion": {
+                "field": "name_suggest",
+                "size": 10
+            }
+        }
+    }
+    results = es.suggest(index='annotations', body=query)
+    result['@id'] = '/suggest/' + ('?q=' + text)
+    result['@graph'] = results['suggester'][0]['options']
     return result
