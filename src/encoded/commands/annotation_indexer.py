@@ -54,23 +54,29 @@ def human_annotations(es):
     data_frame = pd.read_csv(_HGNC_FILE, delimiter='\t')
     records = data_frame.where(pd.notnull(data_frame), None).T.to_dict()
     results = [records[it] for it in records]
+    species = ' (homo sapiens)'
     counter = 0
     for i, r in enumerate(results):
         if r['Ensembl Gene ID'] is None:
             continue
         r['annotations'] = []
         r['name_suggest'] = {
-            'input': [
-                r['Approved Name'],
-                r['Approved Symbol'],
-                r['Ensembl Gene ID'],
-                r['HGNC ID']
-                ],
+            'input': [r['Approved Name'] + species,
+                      r['Approved Symbol'] + species,
+                      r['Ensembl Gene ID'] + species,
+                      r['HGNC ID'] + species],
             'payload': {'id': i}
             }
+
+        # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None:
-            synonyms = [x.strip(' ') for x in r['Synonyms'].split(',')]
+            synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
             r['name_suggest']['input'] = r['name_suggest']['input'] + synonyms
+
+        # Adding Entrez gene id if there exists one to autocomplete
+        if 'Entrez Gene ID' in r:
+            if isinstance(r['Entrez Gene ID'], float):
+                r['name_suggest']['input'].append(str(int(r['Entrez Gene ID'])) + ' (Gene ID)')
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
@@ -109,35 +115,52 @@ def all_annotations(es, counter):
     """
     Mouse, C Elegans, Drosophila annotations are handled here
     """
-    urls = [_CE_FILE]
+    urls = [_MOUSE_FILE, _DM_FILE, _CE_FILE]
     results = []
     for url in urls:
         data_frame = pd.read_csv(url, delimiter='\t')
         records = data_frame.where(pd.notnull(data_frame), None).T.to_dict()
         results = results + [records[it] for it in records]
         for r in results:
+            if 'Chromosome Name' not in r:
+                continue
             counter += 1
             r['annotations'] = []
             annotation = get_annotation()
             if url == _MOUSE_FILE:
+                species = ' (mus musculus)'
                 r['name_suggest'] = {
-                    'input': [r['MGI symbol'], r['Ensembl Gene ID'], r['MGI ID']],
+                    'input': [r['Ensembl Gene ID'] + species],
                     'payload': {'id': counter}
                 }
+                if 'MGI symbol' in r and r['MGI symbol'] is not None:
+                    r['name_suggest']['input'].append(r['MGI symbol'] + species)
+                if 'MGI ID' in r and r['MGI ID'] is not None:
+                    r['name_suggest']['input'].append(r['MGI ID'] + species)
                 annotation['assembly_name'] = 'GRCm38'
             elif url == _DM_FILE:
+                species = ' (drosophila melanogaster)'
                 r['name_suggest'] = {
-                    'input': [r['Associated Gene Name'], r['Ensembl Gene ID'],
-                              r['Ensembl Gene ID.1']],
+                    'input': [r['Associated Gene Name'] + species,
+                              r['Ensembl Gene ID'] + species,
+                              r['Ensembl Gene ID.1'] + species],
                     'payload': {'id': counter}
                 }
                 annotation['assembly_name'] = 'BDGP6'
             else:
+                species = ' (c. elegans)'
                 r['name_suggest'] = {
-                    'input': [r['Associated Gene Name'], r['Ensembl Gene ID']],
+                    'input': [r['Associated Gene Name'] + species,
+                              r['Ensembl Gene ID'] + species],
                     'payload': {'id': counter}
                 }
                 annotation['assembly_name'] = 'WBcel235'
+
+            # Adding Entrez gene id if there exists one to autocomplete
+            if 'EntrezGene ID' in r:
+                if isinstance(r['EntrezGene ID'], float):
+                    r['name_suggest']['input'].append(str(int(r['EntrezGene ID'])) + ' (Gene ID)')
+
             annotation['chromosome'] = r['Chromosome Name']
             annotation['start'] = r['Gene Start (bp)']
             annotation['end'] = r['Gene End (bp)']
@@ -197,7 +220,8 @@ def main():
     app = get_app(args.config_uri, args.app_name)
     es = app.registry[ELASTIC_SEARCH]
     create_index(es)
-    counter = human_annotations(es)
+    #counter = human_annotations(es)
+    counter = 0
     all_annotations(es, counter)
 
 
