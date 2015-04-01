@@ -380,54 +380,58 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         });
         return (
-            <div className="table-responsive table-panel table-file">
-                <table className="table table-striped">
-                    <thead>
-                        <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
-                        <tr>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rowsRaw}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={colCount}></td>
-                        </tr>
-                    </tfoot>
-                </table>
+            <div className="table-panel table-file">
+                <div className="table-responsive">
+                    <table className="table table-responsive table-striped">
+                        <thead>
+                            <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
+                            <tr>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rowsRaw}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colSpan={colCount}></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
 
-                <table className="table table-striped table-file">
-                    <thead>
-                        <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
-                        <tr>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Lab<i className={cellClassProc.title}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
-                            <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_size')}>File size<i className={cellClassProc.file_size}></i></th>
-                            <th>File download</th>
-                            {encodevers == "3" ? <th>Validation status</th> : null}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rowsProc}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan={colCount}></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                <div className="table-responsive">
+                    <table className="table table-striped">
+                        <thead>
+                            <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
+                            <tr>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Lab<i className={cellClassProc.title}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
+                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_size')}>File size<i className={cellClassProc.file_size}></i></th>
+                                <th>File download</th>
+                                {encodevers == "3" ? <th>Validation status</th> : null}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rowsProc}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colSpan={colCount}></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         );
     }
