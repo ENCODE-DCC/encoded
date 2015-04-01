@@ -90,21 +90,18 @@ describe('Experiment Page', function() {
             fileTables = TestUtils.scryRenderedDOMComponentsWithTag(experiment, 'table');
         });
 
-        it('has two tables; one for raw, one for processed', function() {
-            expect(fileTables.length).toEqual(2);
+        it('has one table', function() {
+            expect(fileTables.length).toEqual(1);
         });
 
-        it('has three rows in each file list, including secion title', function() {
+        it('has three rows in the file list, including secion title', function() {
             var fileList = fileTables[0].getDOMNode();
             expect(fileList.hasChildNodes()).toBeTruthy();
             expect(fileList.childNodes.length).toEqual(3);
-            var fileList = fileTables[1].getDOMNode();
-            expect(fileList.hasChildNodes()).toBeTruthy();
-            expect(fileList.childNodes.length).toEqual(3);
         });
 
-        it('has two proper download links in the second table', function() {
-            var fileList = fileTables[1].getDOMNode();
+        it('has two proper download links in the file list', function() {
+            var fileList = fileTables[0].getDOMNode();
             var fileDl = fileList.getElementsByTagName('a');
             expect(fileDl.length).toEqual(2);
             expect(fileDl[0].getAttribute('href')).toEqual('/files/ENCFF001REL/@@download/ENCFF001REL.txt.gz');

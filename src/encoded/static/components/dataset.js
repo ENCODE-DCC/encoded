@@ -232,6 +232,9 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'accession':
                 diff = a.accession > b.accession ? 1 : -1;
                 break;
+            case 'file_format':
+                diff = a.file_format > b.file_format ? 1 : (a.file_format === b.file_format ? 0 : -1);
+                break;
             case 'paired_end':
                 if (a.paired_end && b.paired_end) {
                     diff = a.paired_end - b.paired_end;
@@ -267,6 +270,13 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.run_type ? -1 : (b.run_type ? 1 : 0);
                 }
                 break;
+            case 'date_created':
+                if (a.date_created && b.date_created) {
+                    diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                } else {
+                    diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
+                }
+                break;
             default:
                 diff = 0;
                 break;
@@ -288,6 +298,20 @@ var FileTable = module.exports.FileTable = React.createClass({
                 var aLower = a.output_type.toLowerCase();
                 var bLower = b.output_type.toLowerCase();
                 diff = aLower > bLower ? 1 : (aLower === bLower ? 0 : -1);
+                break;
+            case 'bio_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.biological_replicate_number - b.replicate.biological_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
+                break;
+            case 'tech_replicate':
+                if (a.replicate && b.replicate) {
+                    diff = a.replicate.technical_replicate_number - b.replicate.technical_replicate_number;
+                } else {
+                    diff = a.replicate ? -1 : (b.replicate ? 1 : 0);
+                }
                 break;
             case 'assembly':
                 if (a.assembly && b.assembly) {
@@ -313,9 +337,6 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
                 }
                 break;
-            case 'file_size':
-                diff = (a.file_size || 0) - (b.file_size || 0);
-                break;
             default:
                 diff = 0;
                 break;
@@ -330,108 +351,133 @@ var FileTable = module.exports.FileTable = React.createClass({
         var encodevers = this.props.encodevers;
         var cellClassRaw = {
             accession: 'tcell-sort',
+            file_format: 'tcell-sort',
             paired_end: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
+            run_type: 'tcell-sort',
             read_length: 'tcell-sort',
-            run_type: 'tcell-sort'
+            date_created: 'tcell-sort'
         };
         var cellClassProc = {
             accession: 'tcell-sort',
             file_format: 'tcell-sort',
             output_type: 'tcell-sort',
+            bio_replicate: 'tcell-sort',
+            tech_replicate: 'tcell-sort',
             assembly: 'tcell-sort',
             annotation: 'tcell-sort',
             title: 'tcell-sort',
-            date_created: 'tcell-sort',
-            file_size: 'tcell-sort'
+            date_created: 'tcell-sort'
         };
 
         var colCount = 100;
         cellClassRaw[this.state.col.raw] = this.state.reversed.raw ? 'tcell-desc' : 'tcell-asc';
         cellClassProc[this.state.col.proc] = this.state.reversed.proc ? 'tcell-desc' : 'tcell-asc';
-        var files = this.props.items.slice(0);
-        files.sort(this.sortColRaw).forEach(function (file) {
-            rowsRaw[file['@id']] = (
-                <tr>
-                    <td>{file.accession}</td>
-                    <td>{file.paired_end}</td>
-                    <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
-                    <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
-                    <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
-                    <td>{file.run_type ? file.run_type : null}</td>
-                </tr>
-            );
+        var files = _(this.props.items).groupBy(function(file) {
+            return file.output_category === 'raw data' ? 'raw' : 'proc';
         });
-        files.sort(this.sortColProc).forEach(function (file) {
-            rowsProc[file['@id']] = (
-                <tr>
-                    <td>{file.accession}</td>
-                    <td>{file.file_format}</td>
-                    <td>{file.output_type}</td>
-                    <td>{file.assembly}</td>
-                    <td>{file.genome_annotation}</td>
-                    <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                    <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
-                    <td>{humanFileSize(file.file_size)}</td>
-                    <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
-                    {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
-                </tr>
-            );
-        });
+        if (files.raw) {
+            files.raw.sort(this.sortColRaw).forEach(function (file) {
+                rowsRaw[file['@id']] = (
+                    <tr>
+                        <td>
+                            {file.accession}<br />
+                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                            {humanFileSize(file.file_size)}
+                        </td>
+                        <td>{file.file_format}</td>
+                        <td>{file.paired_end}</td>
+                        <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                        <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
+                        <td>{file.run_type ? file.run_type : null}</td>
+                        <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
+                        <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                    </tr>
+                );
+            });
+        }
+        if (files.proc) {
+            files.proc.sort(this.sortColProc).forEach(function (file) {
+                rowsProc[file['@id']] = (
+                    <tr>
+                        <td>
+                            {file.accession}<br />
+                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                            {humanFileSize(file.file_size)}
+                        </td>
+                        <td>{file.file_format}</td>
+                        <td>{file.output_type}</td>
+                        <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                        <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
+                        <td>{file.assembly}</td>
+                        <td>{file.genome_annotation}</td>
+                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                        <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                        {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
+                    </tr>
+                );
+            });
+        }
         return (
             <div className="table-panel table-file">
-                <div className="table-responsive">
-                    <table className="table table-responsive table-striped">
-                        <thead>
-                            <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
-                            <tr>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rowsRaw}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colSpan={colCount}></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                {files.raw ?
+                    <div className="table-responsive">
+                        <table className="table table-responsive table-striped">
+                            <thead>
+                                <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
+                                <tr>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rowsRaw}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan={colCount}></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                : null}
 
-                <div className="table-responsive">
-                    <table className="table table-striped">
-                        <thead>
-                            <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
-                            <tr>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Lab<i className={cellClassProc.title}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
-                                <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_size')}>File size<i className={cellClassProc.file_size}></i></th>
-                                <th>File download</th>
-                                {encodevers == "3" ? <th>Validation status</th> : null}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rowsProc}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colSpan={colCount}></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
+                {files.proc ?
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
+                                <tr>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Lab<i className={cellClassProc.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
+                                    {encodevers == "3" ? <th>Validation status</th> : null}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rowsProc}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan={colCount}></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                : null}
             </div>
         );
     }
