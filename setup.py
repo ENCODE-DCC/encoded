@@ -35,6 +35,7 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
+    'pandas',
 ]
 
 if sys.version_info.major == 2:
