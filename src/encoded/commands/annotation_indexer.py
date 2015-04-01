@@ -220,8 +220,7 @@ def main():
     app = get_app(args.config_uri, args.app_name)
     es = app.registry[ELASTIC_SEARCH]
     create_index(es)
-    #counter = human_annotations(es)
-    counter = 0
+    counter = human_annotations(es)
     all_annotations(es, counter)
 
 
