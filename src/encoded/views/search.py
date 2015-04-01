@@ -5,7 +5,6 @@ from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
-import requests
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 extra_params = [
@@ -18,7 +17,16 @@ extra_params = [
     'regionid',
     'annotation',
 ]
-ENSEMBL_URL = 'http://rest.ensembl.org/'
+
+_ASSEMBLY_MAPPER = {
+    'GRCh38': 'hg19',
+    'GRCh37': 'hg18',
+    'GRCm38': 'mm10',
+    'GRCm37': 'mm9',
+    'BDGP6': 'dm4',
+    'BDGP5': 'dm3',
+    'WBcel235': 'WBcel235'
+}
 
 hgConnect = ''.join([
     'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
@@ -74,136 +82,67 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-def assembly_mapper(location, species, old_assembly, new_assembly):
-    # All others
-    new_url = ENSEMBL_URL + 'map/' + species + '/' \
-        + new_assembly + '/' + location + '/' + old_assembly \
-        + '/?content-type=application/json'
-    try:
-        new_response = requests.get(new_url).json()
-    except:
-        return('', '', '')
-    else:
-        data = new_response['mappings'][0]['mapped']
-        chromosome = 'chr' + data['seq_region_name']
-        start = data['start']
-        end = data['end']
-        return(chromosome, start, end)
-
-
 def search_peaks(request):
     """
     return file uuids which have the snp or interval found in given region
     """
     es = request.registry[ELASTIC_SEARCH]
-    peakid = request.params.get('regionid', None).lower()
-
-    assembly = 'hg19'
-    old_assembly = 'GRCh37'
-    new_assembly = 'GRCh38'
-
-    if request.params.get('annotation', '') != 'hg19':
-        assembly = 'mm9'
-        species = 'mouse'
-        old_assembly = 'NCBIM37'
-        new_assembly = 'GRCm38'
-    chromosome = ''
-    start = ''
-    end = ''
-
-    if peakid.startswith('rs'):
-        # RSIDs should be handled here
-        url = ENSEMBL_URL + 'variation/' + species + '/' + peakid \
-            + '/?content-type=application/json'
-        try:
-            response = requests.get(url).json()
-        except:
-            return([], 'Failed search')
-        else:
-            if 'mappings' in response:
-                location = response['mappings'][0]['location']
-                chromosome, start, end = assembly_mapper(location,
-                                                         species,
-                                                         old_assembly,
-                                                         new_assembly)
-    elif peakid.startswith('chr'):
-        # Address should be handled here
-        params = peakid.split('-')
-        chromosome = params[0]
-        start = params[1]
-        end = params[1]
-        if len(params) > 2:
-            end = params[2]
-    else:
-        try:
-            url = 'http://www.mygene.info/v2/gene/' \
-                + peakid + '?fields=genomic_pos,genomic_pos_hg19'
-            response = requests.get(url).json()
-        except:
-            return([], 'Failed search')
-        else:
-            if 'genomic_pos_hg19' in response:
-                # Human assemgly since we have hg19
-                chromosome = 'chr' + response['genomic_pos_hg19']['chr']
-                start = response['genomic_pos_hg19']['start']
-                end = response['genomic_pos_hg19']['end']
-            elif 'genomic_pos_mm9' in response:
-                # mouse assemble since we have mm9
-                chromosome = 'chr' + response['genomic_pos_mm9']['chr']
-                start = response['genomic_pos_mm9']['start']
-                end = response['genomic_pos_mm9']['end']
-            elif 'genomic_pos' in response:
-                # All others
-                location = response['genomic_pos']['chr'] \
-                    + ':' + str(response['genomic_pos']['start']) \
-                    + '-' + str(response['genomic_pos']['end'])
-                chromosome, start, end = assembly_mapper(location, species, old_assembly, new_assembly)
-            else:
-                return([], 'Failed search')
-
-    file_ids = []
-    if chromosome == '' or start == '':
+    annotation = request.params.get('regionid', None).lower()
+    try:
+        record = es.get(index='annotations', doc_type='default', id=id)
+    except:
         notification = 'Invalid entry'
-        return (file_ids, notification)
+        return ([], notification)
     else:
-        query = {
-            'query': {
-                'filtered': {
+        file_ids = []
+        for annotation in record['_source']['annotations']:
+            chromosome = 'chr' + annotation['chromosome']
+            start = annotation['start']
+            end = annotation['end']
+            assembly = _ASSEMBLY_MAPPER[annotation['assembly_name']]
+            if chromosome == '' or start == '':
+                notification = 'Invalid entry'
+                return (file_ids, notification)
+            else:
+                query = {
                     'query': {
-                        'term': {
-                            'chromosome': chromosome
+                        'filtered': {
+                            'query': {
+                                'term': {
+                                    'chromosome': chromosome
+                                }
+                            },
+                            'filter': {
+                                'and': {
+                                    'filters': [
+                                        {
+                                            'range': {
+                                                'start': {
+                                                    'lte': end,
+                                                }
+                                            }
+                                        },
+                                        {
+                                            'range': {
+                                                'stop': {
+                                                    'gte': start
+                                                }
+                                            }
+                                        }
+                                    ],
+                                    '_cache': True
+                                }
+                            }
                         }
                     },
-                    'filter': {
-                        'and': {
-                            'filters': [
-                                {
-                                    'range': {
-                                        'start': {
-                                            'lte': end,
-                                        }
-                                    }
-                                },
-                                {
-                                    'range': {
-                                        'stop': {
-                                            'gte': start
-                                        }
-                                    }
-                                }
-                            ],
-                            '_cache': True
-                        }
-                    }
+                    'fields': ['uuid']
                 }
-            },
-            'fields': ['uuid']
-        }
-        results = es.search(body=query, index='peaks', doc_type=assembly or None, size=99999999)
-        for hit in results['hits']['hits']:
-            if hit['fields']['uuid'] not in file_ids:
-                file_ids.append(hit['fields']['uuid'][0])
-        return (file_ids, 'success')
+                results = es.search(body=query, index='peaks',
+                                    doc_type=assembly or None, size=99999999)
+                for hit in results['hits']['hits']:
+                    if hit['fields']['uuid'] not in file_ids:
+                        file_ids.append(hit['fields']['uuid'][0])
+            return (file_ids, 'success')
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
