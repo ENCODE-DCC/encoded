@@ -114,7 +114,7 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
-- sudo -u pip install pandas
+- pip install pandas
 - sudo -u encoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 14.3
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
