@@ -813,14 +813,33 @@ var Param = fetched.Param;
         },
 
         handleChange: function(e) {
-            var newTerms = this.state.terms;
-            newTerms[e.target.name] = e.target.value;
-            this.setState({terms: newTerms, hideAutocomplete: false});
+            this.newTerms = _.clone(this.state.terms);
+            this.newTerms[e.target.name] = e.target.value;
         },
 
         handleAutocompleteClick: function(term) {
             this.refs.regionid.getDOMNode().value = term;
             this.setState({terms: {regionid: term}, hideAutocomplete: true});
+        },
+
+        componentDidMount: function() {
+            this.timer = setInterval(this.tick, 1000);
+        },
+
+        componentWillUnmount: function() {
+            clearInterval(this.timer);
+        },
+
+        tick: function() {
+            if (this.newTerms) {
+                var changedTerm = _(Object.keys(this.newTerms)).any(function(term) {
+                    return this.newTerms[term] !== this.state.terms[term];
+                }, this);
+                if (changedTerm) {
+                    this.setState({terms: this.newTerms, hideAutocomplete: false});
+                    this.newTerms = {};
+                }
+            }
         },
 
         render: function() {
