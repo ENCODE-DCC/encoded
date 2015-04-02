@@ -811,6 +811,7 @@ var Param = fetched.Param;
             this.newTerms = _.clone(this.state.terms);
             this.newTerms[e.target.name] = e.target.value;
             this.setState({hideAutocomplete: false});
+            // Now let the timer update the terms state when it gets around to it.
         },
 
         handleAutocompleteClick: function(term, name) {
@@ -831,7 +832,7 @@ var Param = fetched.Param;
 
         tick: function() {
             if (this.newTerms) {
-                // Did any terms change?
+                // The timer expired; did any terms change since the last time?
                 var changedTerm = _(Object.keys(this.newTerms)).any(function(term) {
                     return this.newTerms[term] !== this.state.terms[term];
                 }, this);
