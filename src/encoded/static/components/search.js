@@ -11,12 +11,15 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
+var fetched = require('./fetched');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var FetchedData = fetched.FetchedData;
+var Param = fetched.Param;
 
     // Should really be singular...
     var types = {
@@ -759,6 +762,47 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
+    var AutocompleteBox = React.createClass({
+        getInitialState: function() {
+            return {
+                boxVisible: true
+            }
+        },
+
+        render: function() {
+            var terms = this.props.auto['@graph'];
+            var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase();
+
+            if (userTerm && userTerm.length && terms && terms.length) {
+                return (
+                    <ul className="adv-search-autocomplete">
+                        {terms.map(function(term) {
+                            var matchStart, matchEnd;
+                            var preText, matchText, postText;
+
+                            if (userTerm) {
+                                matchStart = term.text.toLowerCase().indexOf(userTerm);
+                                if (matchStart >= 0) {
+                                    matchEnd = matchStart + userTerm.length;
+                                    preText = term.text.substring(0, matchStart);
+                                    matchText = term.text.substring(matchStart, matchEnd);
+                                    postText = term.text.substring(matchEnd);
+                                } else {
+                                    preText = term.text;
+                                }
+                            } else {
+                                preText = term.text;
+                            }
+                            return <li tabIndex="0">{preText}<b>{matchText}</b>{postText}</li>;
+                        })}
+                    </ul>
+                );
+            } else {
+                return null;
+            }
+        }
+    });
+
     var AdvSearch = React.createClass({
         getInitialState: function() {
             return {
@@ -795,6 +839,12 @@ var AuditMixin = audit.AuditMixin;
                             <div className="form-group col-md-5">
                                 <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
+
+                                <FetchedData loadingComplete={true}>
+                                    <Param name="auto" url={'/suggest/?q=' + this.state.terms} />
+                                    <AutocompleteBox userTerm={this.state.terms.regionid} />
+                                </FetchedData>
+
                             </div>
                             <div className="form-group col-md-2">
                                 <label htmlFor="spacing">&nbsp;</label>
@@ -896,7 +946,7 @@ var AuditMixin = audit.AuditMixin;
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9">
+                            <div className="col-sm-7 col-md-8 col-lg-9 search-list">
                                 <AdvSearch />
                                 {context['notification'] === 'Success' ?
                                     <h4>
