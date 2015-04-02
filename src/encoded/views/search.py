@@ -7,20 +7,10 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
-extra_params = [
-    'type',
-    'limit',
-    'mode',
-    'format',
-    'frame',
-    'datastore',
-    'regionid',
-    'annotation',
-]
 
 _ASSEMBLY_MAPPER = {
-    'GRCh38': 'hg19',
-    'GRCh37': 'hg18',
+    'GRCh38': 'hg20',
+    'GRCh37': 'hg19',
     'GRCm38': 'mm10',
     'GRCm37': 'mm9',
     'BDGP6': 'dm4',
@@ -89,7 +79,7 @@ def search_peaks(request):
     es = request.registry[ELASTIC_SEARCH]
     annotation = request.params.get('regionid', None).lower()
     try:
-        record = es.get(index='annotations', doc_type='default', id=id)
+        record = es.get(index='annotations', doc_type='default', id=annotation)
     except:
         notification = 'Invalid entry'
         return ([], notification)
@@ -124,8 +114,8 @@ def search_peaks(request):
                                         },
                                         {
                                             'range': {
-                                                'stop': {
-                                                    'gte': start
+                                                'end': {
+                                                    'gte': start,
                                                 }
                                             }
                                         }
@@ -142,7 +132,7 @@ def search_peaks(request):
                 for hit in results['hits']['hits']:
                     if hit['fields']['uuid'] not in file_ids:
                         file_ids.append(hit['fields']['uuid'][0])
-            return (file_ids, 'success')
+        return (list(set(file_ids)), 'success')
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
@@ -274,8 +264,7 @@ def search(context, request, search_type=None):
             if notification is 'success':
                 result['notification'] = 'No results found for region entered'
             else:
-                result['notification'] = 'Invalid region search term. \
-                Please enter(GeneId, RSID or chr#-start-stop)'
+                result['notification'] = 'Invalid region search term.'
             return result
         else:
             query_filters.append({
@@ -287,7 +276,7 @@ def search(context, request, search_type=None):
     used_filters = {}
     for field, term in request.params.items():
         if field in ['type', 'limit', 'mode', 'searchTerm',
-                     'format', 'frame', 'datastore', 'field']:
+                     'format', 'frame', 'datastore', 'field', 'regionid']:
             continue
 
         # Add filter to result
@@ -376,7 +365,7 @@ def search(context, request, search_type=None):
             }
 
         for count, used_facet in enumerate(result['filters']):
-            if used_facet['field'] == 'searchTerm':
+            if used_facet['field'] in ['searchTerm', 'regionid']:
                 continue
             if field != used_facet['field'] and used_facet['field'] != 'type':
                 if used_facet['field'] != 'audit.category':
@@ -406,7 +395,6 @@ def search(context, request, search_type=None):
                                 q_field: [used_facet['term']]
                             }
                         })
-
     # Execute the query
     results = es.search(body=query, index='encoded',
                         doc_type=doc_types or None, size=size)
