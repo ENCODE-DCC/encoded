@@ -763,15 +763,9 @@ var Param = fetched.Param;
     });
 
     var AutocompleteBox = React.createClass({
-        getInitialState: function() {
-            return {
-                boxVisible: true
-            }
-        },
-
         render: function() {
-            var terms = this.props.auto['@graph'];
-            var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase();
+            var terms = this.props.auto['@graph']; // List of matching terms from server
+            var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
 
             if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
                 return (
@@ -780,6 +774,7 @@ var Param = fetched.Param;
                             var matchStart, matchEnd;
                             var preText, matchText, postText;
 
+                            // Boldface matching part of term
                             matchStart = term.text.toLowerCase().indexOf(userTerm);
                             if (matchStart >= 0) {
                                 matchEnd = matchStart + userTerm.length;
@@ -789,7 +784,7 @@ var Param = fetched.Param;
                             } else {
                                 preText = term.text;
                             }
-                            return <li key={i} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text)}>{preText}<b>{matchText}</b>{postText}</li>;
+                            return <li key={i} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
                         }, this)}
                     </ul>
                 );
@@ -815,14 +810,18 @@ var Param = fetched.Param;
         handleChange: function(e) {
             this.newTerms = _.clone(this.state.terms);
             this.newTerms[e.target.name] = e.target.value;
+            this.setState({hideAutocomplete: false});
         },
 
-        handleAutocompleteClick: function(term) {
+        handleAutocompleteClick: function(term, name) {
             this.refs.regionid.getDOMNode().value = term;
-            this.setState({terms: {regionid: term}, hideAutocomplete: true});
+            this.newTerms[name] = term;
+            this.setState({hideAutocomplete: true});
+            // Now let the timer update the terms state when it gets around to it.
         },
 
         componentDidMount: function() {
+            // Use timer to limit to one request per second
             this.timer = setInterval(this.tick, 1000);
         },
 
@@ -832,11 +831,14 @@ var Param = fetched.Param;
 
         tick: function() {
             if (this.newTerms) {
+                // Did any terms change?
                 var changedTerm = _(Object.keys(this.newTerms)).any(function(term) {
                     return this.newTerms[term] !== this.state.terms[term];
                 }, this);
+
+                // If any terms changed, set the new terms state which will trigger a new request
                 if (changedTerm) {
-                    this.setState({terms: this.newTerms, hideAutocomplete: false});
+                    this.setState({terms: this.newTerms});
                     this.newTerms = {};
                 }
             }
@@ -860,12 +862,10 @@ var Param = fetched.Param;
                             <div className="form-group col-md-5">
                                 <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
-
                                 <FetchedData loadingComplete={true}>
                                     <Param name="auto" url={'/suggest/?q=' + this.state.terms.regionid} />
-                                    <AutocompleteBox userTerm={this.state.terms.regionid} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                    <AutocompleteBox name="regionid" userTerm={this.state.terms.regionid} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
-
                             </div>
                             <div className="form-group col-md-2">
                                 <label htmlFor="spacing">&nbsp;</label>
