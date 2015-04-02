@@ -180,7 +180,8 @@
                         "image/tiff",
                         "image/gif",
                         "text/html",
-                        "image/png"
+                        "image/png",
+                        "text/autosql"
                     ]
                 },
                 "md5sum": {

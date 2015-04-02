@@ -131,6 +131,17 @@ class File(Item):
         return self.propsheets['external']['upload_credentials']
 
     @calculated_property(schema={
+        "title": "Read length units",
+        "type": "string",
+        "enum": [
+            "nt"
+        ]
+        })
+    def read_length_units(self, read_length=None):
+        if read_length is not None:
+            return "nt"
+
+    @calculated_property(schema={
         "title": "Pipeline",
         "type": "string",
         "linkTo": "pipeline"
@@ -149,6 +160,21 @@ class File(Item):
     def analysis_step(self, request, step_run=None):
         if step_run is not None:
             return request.embed(step_run, '@@object').get('analysis_step')
+
+    @calculated_property(schema={
+        "title": "Output category",
+        "type": "string",
+        "enum": [
+            "raw data",
+            "alignment",
+            "signal",
+            "annotation",
+            "quantification",
+            "reference"
+        ]
+    })
+    def output_category(self, output_type):
+        return self.schema['output_type_output_category'].get(output_type)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

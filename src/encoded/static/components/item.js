@@ -230,14 +230,11 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         var properties = {}, name;
         for (name in p.properties) {
-            if (name == 'uuid') continue;
+            if (name == 'uuid' || name == 'schema_version') continue;
             if (p.properties[name].calculatedProperty) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
             var subprops = {required: required};
-            if (name == 'schema_version') {
-                subprops.input = <input type="text" disabled />;
-            }
             properties[name] = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
@@ -255,7 +252,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required) {
+            if (!props.required && !p.default) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control">{options}</select>;

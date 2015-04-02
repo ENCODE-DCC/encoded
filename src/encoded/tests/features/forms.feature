@@ -7,7 +7,6 @@ Feature: Edit forms
 		And I click the element with the css selector ".icon-gear"
 		And I click the link to "/antibodies/ENCAB728YTO/#!edit"
 		And I wait for an element with the css selector "form.rf-Form" to load
-		And "schema_version" should be disabled
 		And I fill in "antigen_description" with "It's not a very nice antigen"
 		And I press "Save"
 		And I wait for an element with the css selector ".view-item.type-antibody_lot" to load
@@ -40,8 +39,7 @@ Feature: Edit forms
 		And I fill in "date_created" with "bogus"
 		And I press "Save"
 		Then I wait for an element with the css selector "input[name=date_created] + .rf-Message" to load
-		# The next line fails on Chrome on travis for some reason
-		# Then I should see "u'bogus' is not valid under any of the given schemas" within 2 seconds
+		Then I should see "'bogus' is not valid under any of the given schemas" within 2 seconds
 		# Make sure we don't leave a dirty form that will interfere with subsequent tests
 		And I click the link with text "ENCODE"
 		And I accept the alert
