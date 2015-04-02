@@ -773,28 +773,24 @@ var Param = fetched.Param;
             var terms = this.props.auto['@graph'];
             var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase();
 
-            if (userTerm && userTerm.length && terms && terms.length) {
+            if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
                 return (
                     <ul className="adv-search-autocomplete">
-                        {terms.map(function(term) {
+                        {terms.map(function(term, i) {
                             var matchStart, matchEnd;
                             var preText, matchText, postText;
 
-                            if (userTerm) {
-                                matchStart = term.text.toLowerCase().indexOf(userTerm);
-                                if (matchStart >= 0) {
-                                    matchEnd = matchStart + userTerm.length;
-                                    preText = term.text.substring(0, matchStart);
-                                    matchText = term.text.substring(matchStart, matchEnd);
-                                    postText = term.text.substring(matchEnd);
-                                } else {
-                                    preText = term.text;
-                                }
+                            matchStart = term.text.toLowerCase().indexOf(userTerm);
+                            if (matchStart >= 0) {
+                                matchEnd = matchStart + userTerm.length;
+                                preText = term.text.substring(0, matchStart);
+                                matchText = term.text.substring(matchStart, matchEnd);
+                                postText = term.text.substring(matchEnd);
                             } else {
                                 preText = term.text;
                             }
-                            return <li tabIndex="0">{preText}<b>{matchText}</b>{postText}</li>;
-                        })}
+                            return <li key={i} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text)}>{preText}<b>{matchText}</b>{postText}</li>;
+                        }, this)}
                     </ul>
                 );
             } else {
@@ -807,7 +803,8 @@ var Param = fetched.Param;
         getInitialState: function() {
             return {
                 disclosed: false,
-                terms: {}
+                terms: {},
+                hideAutocomplete: false
             };
         },
 
@@ -818,7 +815,12 @@ var Param = fetched.Param;
         handleChange: function(e) {
             var newTerms = this.state.terms;
             newTerms[e.target.name] = e.target.value;
-            this.setState({terms: newTerms});
+            this.setState({terms: newTerms, hideAutocomplete: false});
+        },
+
+        handleAutocompleteClick: function(term) {
+            this.refs.regionid.getDOMNode().value = term;
+            this.setState({terms: {regionid: term}, hideAutocomplete: true});
         },
 
         render: function() {
@@ -841,8 +843,8 @@ var Param = fetched.Param;
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
 
                                 <FetchedData loadingComplete={true}>
-                                    <Param name="auto" url={'/suggest/?q=' + this.state.terms} />
-                                    <AutocompleteBox userTerm={this.state.terms.regionid} />
+                                    <Param name="auto" url={'/suggest/?q=' + this.state.terms.regionid} />
+                                    <AutocompleteBox userTerm={this.state.terms.regionid} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
 
                             </div>
