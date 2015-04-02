@@ -100,6 +100,18 @@
             "title": "Organ",
             "type": "array"
         },
+        "category_slims": {
+            "title": "Assay category",
+            "type": "array"
+        },
+        "type_slims": {
+            "title": "Assay type ",
+            "type": "array"
+         },
+         "objective_slims": {
+            "title": "Assay objective",
+            "type": "array"
+        },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage",
             "type": "string"
@@ -243,6 +255,9 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "category_slims": 1.0,
+        "objective_slims": 1.0,
+        "type_slims": 1.0,
         "assay_synonyms": 1.0,
         "biosample_synonyms": 1.0,
         "files.accession": 1.0,
