@@ -85,6 +85,8 @@ $form-bg: #f3f3f3;
     right: 15px;
     left: 15px;
     padding: 0;
+    max-height: 300px;
+    overflow-y: scroll;
     background-color: #fff;
     border: 1px solid #c0c0c0;
     list-style: none;
