@@ -11,12 +11,15 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
+var fetched = require('./fetched');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var FetchedData = fetched.FetchedData;
+var Param = fetched.Param;
 
     // Should really be singular...
     var types = {
@@ -759,11 +762,44 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
+    var AutocompleteBox = React.createClass({
+        render: function() {
+            var terms = this.props.auto['@graph']; // List of matching terms from server
+            var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
+
+            if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
+                return (
+                    <ul className="adv-search-autocomplete">
+                        {terms.map(function(term, i) {
+                            var matchStart, matchEnd;
+                            var preText, matchText, postText;
+
+                            // Boldface matching part of term
+                            matchStart = term.text.toLowerCase().indexOf(userTerm);
+                            if (matchStart >= 0) {
+                                matchEnd = matchStart + userTerm.length;
+                                preText = term.text.substring(0, matchStart);
+                                matchText = term.text.substring(matchStart, matchEnd);
+                                postText = term.text.substring(matchEnd);
+                            } else {
+                                preText = term.text;
+                            }
+                            return <li key={i} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
+                        }, this)}
+                    </ul>
+                );
+            } else {
+                return null;
+            }
+        }
+    });
+
     var AdvSearch = React.createClass({
         getInitialState: function() {
             return {
                 disclosed: false,
-                terms: {}
+                terms: {},
+                hideAutocomplete: false
             };
         },
 
@@ -772,9 +808,41 @@ var AuditMixin = audit.AuditMixin;
         },
 
         handleChange: function(e) {
-            var newTerms = this.state.terms;
-            newTerms[e.target.name] = e.target.value;
-            this.setState({terms: newTerms});
+            this.newTerms = _.clone(this.state.terms);
+            this.newTerms[e.target.name] = e.target.value;
+            this.setState({hideAutocomplete: false});
+            // Now let the timer update the terms state when it gets around to it.
+        },
+
+        handleAutocompleteClick: function(term, name) {
+            this.refs.regionid.getDOMNode().value = term;
+            this.newTerms[name] = term;
+            this.setState({hideAutocomplete: true});
+            // Now let the timer update the terms state when it gets around to it.
+        },
+
+        componentDidMount: function() {
+            // Use timer to limit to one request per second
+            this.timer = setInterval(this.tick, 1000);
+        },
+
+        componentWillUnmount: function() {
+            clearInterval(this.timer);
+        },
+
+        tick: function() {
+            if (this.newTerms) {
+                // The timer expired; did any terms change since the last time?
+                var changedTerm = _(Object.keys(this.newTerms)).any(function(term) {
+                    return this.newTerms[term] !== this.state.terms[term];
+                }, this);
+
+                // If any terms changed, set the new terms state which will trigger a new request
+                if (changedTerm) {
+                    this.setState({terms: this.newTerms});
+                    this.newTerms = {};
+                }
+            }
         },
 
         render: function() {
@@ -795,6 +863,10 @@ var AuditMixin = audit.AuditMixin;
                             <div className="form-group col-md-5">
                                 <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
+                                <FetchedData loadingComplete={true}>
+                                    <Param name="auto" url={'/suggest/?q=' + this.state.terms.regionid} />
+                                    <AutocompleteBox name="regionid" userTerm={this.state.terms.regionid} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                </FetchedData>
                             </div>
                             <div className="form-group col-md-2">
                                 <label htmlFor="spacing">&nbsp;</label>
@@ -896,7 +968,7 @@ var AuditMixin = audit.AuditMixin;
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9">
+                            <div className="col-sm-7 col-md-8 col-lg-9 search-list">
                                 <AdvSearch />
                                 {context['notification'] === 'Success' ?
                                     <h4>
