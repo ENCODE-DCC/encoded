@@ -17,6 +17,7 @@ _DM_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/drosoph
 _CE_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/worm/c_elegans.txt'
 _JSON_ANNOTATION_FILE = ''
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
+_GENEINFO_URL = 'http://mygene.info/v2/gene/'
 
 
 def get_annotation():
@@ -138,6 +139,22 @@ def all_annotations(es, counter):
                 if 'MGI ID' in r and r['MGI ID'] is not None:
                     r['name_suggest']['input'].append(r['MGI ID'] + species)
                 annotation['assembly_name'] = 'GRCm38'
+                mm9_url = '{geneinfo}{ensembl}?fields=genomic_pos_mm9'.format(
+                    geneinfo=_GENEINFO_URL,
+                    ensembl=r['Ensembl Gene ID']
+                )
+                try:
+                    response = requests.get(mm9_url).json()
+                except:
+                    continue
+                else:
+                    if 'genomic_pos_mm9' in response and isinstance(response['genomic_pos_mm9'], dict):
+                            ann = get_annotation()
+                            ann['assembly_name'] = 'GRCm37'
+                            ann['chromosome'] = response['genomic_pos_mm9']['chr']
+                            ann['start'] = response['genomic_pos_mm9']['start']
+                            ann['end'] = response['genomic_pos_mm9']['end']
+                            r['annotations'].append(ann)
             elif url == _DM_FILE:
                 species = ' (drosophila melanogaster)'
                 r['name_suggest'] = {

@@ -452,7 +452,7 @@ def search(context, request, search_type=None):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request, search_type=None):
-    '''text = ''
+    text = ''
     result = {
         '@id': '/suggest/' + ('?q=' + text),
         '@type': ['suggest'],
@@ -475,84 +475,5 @@ def suggest(context, request, search_type=None):
     }
     results = es.suggest(index='annotations', body=query)
     result['@id'] = '/suggest/' + ('?q=' + text)
-    result['@graph'] = results['suggester'][0]['options']'''
-    result = {
-        "title": "Suggest",
-        "@graph": [
-            {
-                "text": "BRCA1",
-                "payload": {
-                    "id": 2386
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1 associated RING domain 1",
-                "payload": {
-                    "id": 2033
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1 associated protein",
-                "payload": {
-                    "id": 2384
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1 associated protein-1 (ubiquitin carboxy-terminal hydrolase)",
-                "payload": {
-                    "id": 2032
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1-associated ATM activator 1",
-                "payload": {
-                    "id": 2385
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1/BRCA2-containing complex, subunit 3",
-                "payload": {
-                    "id": 2390
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA1/BRCA2-containing complex, subunit 3 pseudogene 1",
-                "payload": {
-                    "id": 2391
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA2",
-                "payload": {
-                    "id": 2388
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCA2 and CDKN1A interacting protein",
-                "payload": {
-                    "id": 2082
-                },
-                "score": 1
-            },
-            {
-                "text": "BRCAA1",
-                "payload": {
-                    "id": 1395
-                },
-                "score": 1
-            }
-        ],
-        "@type": [
-            "suggest"
-        ],
-        "@id": "/suggest/?q=brca"
-    }
+    result['@graph'] = results['suggester'][0]['options']
     return result
