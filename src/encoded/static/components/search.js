@@ -770,7 +770,7 @@ var Param = fetched.Param;
             if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
                 return (
                     <ul className="adv-search-autocomplete">
-                        {terms.map(function(term, i) {
+                        {terms.map(function(term) {
                             var matchStart, matchEnd;
                             var preText, matchText, postText;
 
@@ -784,7 +784,7 @@ var Param = fetched.Param;
                             } else {
                                 preText = term.text;
                             }
-                            return <li key={i} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
+                            return <li key={term.payload.id} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, term.payload.id, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
                         }, this)}
                     </ul>
                 );
@@ -798,8 +798,10 @@ var Param = fetched.Param;
         getInitialState: function() {
             return {
                 disclosed: false,
+                searchTerm: '',
                 terms: {},
-                hideAutocomplete: false
+                hideAutocomplete: false,
+                termChosen: false
             };
         },
 
@@ -808,16 +810,18 @@ var Param = fetched.Param;
         },
 
         handleChange: function(e) {
-            this.newTerms = _.clone(this.state.terms);
-            this.newTerms[e.target.name] = e.target.value;
-            this.setState({hideAutocomplete: false});
-            // Now let the timer update the terms state when it gets around to it.
+            this.newSearchTerm = e.target.value;
+            this.setState({hideAutocomplete: false, termChosen: false});
+            // Now let the timer update the search terms state when it gets around to it.
         },
 
-        handleAutocompleteClick: function(term, name) {
-            this.refs.regionid.getDOMNode().value = term;
-            this.newTerms[name] = term;
-            this.setState({hideAutocomplete: true});
+        handleAutocompleteClick: function(term, id, name) {
+            var newTerms = {};
+
+            this.refs.regionid.getDOMNode().value = this.newSearchTerm = term;
+            newTerms[name] = id;
+            this.setState({terms: newTerms, hideAutocomplete: true, termChosen: true});
+            this.newSearchTerm = '';
             // Now let the timer update the terms state when it gets around to it.
         },
 
@@ -831,26 +835,17 @@ var Param = fetched.Param;
         },
 
         tick: function() {
-            if (this.newTerms) {
-                // The timer expired; did any terms change since the last time?
-                var changedTerm = _(Object.keys(this.newTerms)).any(function(term) {
-                    return this.newTerms[term] !== this.state.terms[term];
-                }, this);
-
-                // If any terms changed, set the new terms state which will trigger a new request
-                if (changedTerm) {
-                    this.setState({terms: this.newTerms});
-                    this.newTerms = {};
-                }
+            if (!this.state.hideAutocomplete && (this.newSearchTerm !== this.state.searchTerm)) {
+                this.setState({searchTerm: this.newSearchTerm});
             }
         },
 
         render: function() {
             var query = '';
             Object.keys(this.state.terms).forEach(function(key) {
-                query += this.state.terms[key] ? '&' + key + '=' + this.state.terms[key].replace(/ /g, "+") : '';
-            }.bind(this));
-            query = '/search/?type=experiment&' + query.substr(1);
+                query += this.state.terms[key] ? '&' + key + '=' + this.state.terms[key] : '';
+            }, this);
+            query = '/search/?type=experiment' + query;
 
             var btnClass = 'btn btn-disclose' + (this.state.disclosed ? ' active' : '');
             var discloseClass = 'icon icon-disclose ' + (this.state.disclosed ? 'icon-caret-down' : 'icon-caret-right');
@@ -863,14 +858,16 @@ var Param = fetched.Param;
                             <div className="form-group col-md-5">
                                 <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
                                 <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
-                                <FetchedData loadingComplete={true}>
-                                    <Param name="auto" url={'/suggest/?q=' + this.state.terms.regionid} />
-                                    <AutocompleteBox name="regionid" userTerm={this.state.terms.regionid} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
-                                </FetchedData>
+                                {this.state.searchTerm ?
+                                    <FetchedData loadingComplete={true}>
+                                        <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                        <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                    </FetchedData>
+                                : null}
                             </div>
                             <div className="form-group col-md-2">
                                 <label htmlFor="spacing">&nbsp;</label>
-                                <a className="btn btn-sm btn-info adv-search-submit" href={query}>Submit</a>
+                                <a className="btn btn-sm btn-info adv-search-submit" disabled={!this.state.termChosen} href={query}>Submit</a>
                             </div>
                         </form>
                     : null}
