@@ -215,7 +215,7 @@ var Listing = React.createClass({
                 <div className="data-row">
                     {authors ? <p className="list-author">{authors}.</p> : null}
                     <p className="list-citation"><Citation {...this.props} /></p>
-                    {result.references && result.references.length ? <DbxrefList values={result.references} className="list-reference" /> : '' }
+                    {result.identifiers && result.identifiers.length ? <DbxrefList values={result.identifiers} className="list-reference" /> : '' }
                     {result.supplementary_data && result.supplementary_data.length ?
                         <div>
                             {result.supplementary_data.map(function(data, i) {
