@@ -830,6 +830,7 @@ var AuditMixin = audit.AuditMixin;
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
+            var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
             _.each(facets, function(facet) {
@@ -841,6 +842,15 @@ var AuditMixin = audit.AuditMixin;
                 }
             }.bind(this));
 
+            // See if all results match a certain type
+            var types = {};
+            results.forEach(function(result) {
+                types[result['@type'][0]] = true;
+            });
+            if (Object.keys(types).length === 1) {
+                label = Object.keys(types)[0] + 's';
+            }
+
             return (
                     <div>
                         <div className="row">
@@ -851,7 +861,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total}
+                                        Showing {results.length} of {total} {label}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
