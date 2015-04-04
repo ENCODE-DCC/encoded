@@ -35,7 +35,6 @@ import transaction
 import urllib3
 import gzip
 import io
-import gc
 import pandas as pd
 import numpy as np
 from urllib.parse import (
@@ -464,13 +463,4 @@ def file_index(request):
                     index=file_index,
                     doc_type=properties['assembly']
                 )
-                es.indices.flush(
-                    index=file_index,
-                    full=True,
-                    force=True
-                )
                 del list_records
-                gc.collect()
-            del file_data
-            gc.collect()
-        es.indices.refresh(index=file_index)
