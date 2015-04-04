@@ -446,7 +446,13 @@ def file_index(request):
                 f, delimiter='\t', header=None, chunksize=500)
             for new_frame in file_data:
                 # dropping useless columns
-                new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
+                if len(new_frame.columns) == 10:
+                    new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
+                elif len(new_frame.columns) == 9:
+                    new_frame = new_frame.drop([3, 4, 5, 6, 7, 8], 1)
+                else:
+                    print(properties['uuid'])
+                    continue
                 new_frame.columns = ['chromosome', 'start', 'end']
                 new_frame[['start', 'end']] = new_frame[['start', 'end']].astype(int)
                 new_frame = new_frame[~np.isnan(new_frame['start'])]
