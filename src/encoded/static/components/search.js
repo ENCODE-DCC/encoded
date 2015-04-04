@@ -855,19 +855,21 @@ var Param = fetched.Param;
                     <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
                         <form id="panel1" ref="adv-search" role="form" aria-labeledby="tab1">
-                            <div className="form-group col-md-5">
-                                <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
-                                <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
-                                {this.state.searchTerm ?
-                                    <FetchedData loadingComplete={true}>
-                                        <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                        <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
-                                    </FetchedData>
-                                : null}
-                            </div>
-                            <div className="form-group col-md-2">
-                                <label htmlFor="spacing">&nbsp;</label>
-                                <a className="btn btn-sm btn-info adv-search-submit" disabled={!this.state.termChosen} href={query}>Submit</a>
+                            <div className="row">
+                                <div className="form-group col-md-8">
+                                    <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
+                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
+                                    {this.state.searchTerm ?
+                                        <FetchedData loadingComplete={true}>
+                                            <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                        </FetchedData>
+                                    : null}
+                                </div>
+                                <div className="form-group col-md-2">
+                                    <label htmlFor="spacing">&nbsp;</label>
+                                    <a className="btn btn-sm btn-info adv-search-submit" disabled={!this.state.termChosen} href={query}>Submit</a>
+                                </div>
                             </div>
                         </form>
                     : null}
