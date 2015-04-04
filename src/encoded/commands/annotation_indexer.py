@@ -159,10 +159,11 @@ def all_annotations(es, counter):
                 species = ' (drosophila melanogaster)'
                 r['name_suggest'] = {
                     'input': [r['Associated Gene Name'] + species,
-                              r['Ensembl Gene ID'] + species,
-                              r['Ensembl Gene ID.1'] + species],
+                              r['Ensembl Gene ID'] + species],
                     'payload': {'id': counter}
                 }
+                if 'Ensembl Gene ID.1' in r:
+                    r['name_suggest']['input'].append(r['Ensembl Gene ID.1'] + species)
                 annotation['assembly_name'] = 'BDGP6'
             else:
                 species = ' (c. elegans)'
