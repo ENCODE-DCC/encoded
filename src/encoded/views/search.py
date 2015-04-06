@@ -97,6 +97,11 @@ def search_peaks(request):
                 query = {
                     'query': {
                         'filtered': {
+                            'query': {
+                                'term': {
+                                    'chromosome': chromosome
+                                }
+                            },
                             'filter': {
                                 'and': {
                                     'filters': [
@@ -112,11 +117,6 @@ def search_peaks(request):
                                                 'end': {
                                                     'gte': start,
                                                 }
-                                            }
-                                        },
-                                        {
-                                            "term": {
-                                                'chromosome': chromosome,
                                             }
                                         }
                                     ],
