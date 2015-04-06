@@ -377,11 +377,6 @@ def file_index(request):
 
     mapping = {
         'properties': {
-            'chromosome': {
-                'type': 'string',
-                'index': 'not_analyzed',
-                'include_in_all': False,
-            },
             'start': {
                 'type': 'long',
                 'index': 'not_analyzed',
@@ -443,7 +438,7 @@ def file_index(request):
             del comp
             r.release_conn()
             file_data = pd.read_csv(
-                f, delimiter='\t', header=None, chunksize=500)
+                f, delimiter='\t', header=None, chunksize=10000)
             for new_frame in file_data:
                 # dropping useless columns
                 if len(new_frame.columns) == 10:
@@ -460,13 +455,14 @@ def file_index(request):
                 new_frame['start'] = new_frame['start'] + 1
                 new_frame['end'] = new_frame['end'] + 1
                 new_frame['uuid'] = properties['uuid']
-                records = new_frame.where(pd.notnull(new_frame), None).T.to_dict()
-                list_records = [records[it] for it in records]
-                del new_frame, records
-                helpers.bulk(
-                    es,
-                    list_records,
-                    index=file_index,
-                    doc_type=properties['assembly']
-                )
-                del list_records
+                gp_chr = dict(list(new_frame.groupby('chromosome')))
+                for g in gp_chr:
+                    chr_data = gp_chr[g]
+                    records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
+                    list_records = [records[it] for it in records]
+                    helpers.bulk(
+                        es,
+                        list_records,
+                        index=properties['assembly'],
+                        doc_type=g
+                    )
