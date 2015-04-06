@@ -219,16 +219,6 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing spikeins_used' for error in errors_list)
 
-def test_audit_experiment_paired_end_required(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001849', 'assay_term_name': 'DNA-PET'})
-    testapp.patch_json(base_library['@id'], {'paired_ended': False})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'paired end required for assay' for error in errors_list)
-
 
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
     other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP-AVCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
