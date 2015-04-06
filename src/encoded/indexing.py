@@ -62,6 +62,7 @@ def includeme(config):
             [registry.settings['elasticsearch.server']],
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
+            timeout=100,
         )
         registry[ELASTIC_SEARCH] = es
         registry[INDEXER] = Indexer(registry)
