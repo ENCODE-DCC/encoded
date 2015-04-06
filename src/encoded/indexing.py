@@ -372,8 +372,7 @@ def es_update_data(event):
 def file_index(request):
     '''Indexes bed files in ENCODE'''
 
-    file_index = 'peaks'
-    doc_types = ['hg19', 'mm9', 'mm10', 'dm3']
+    file_indices = ['hg19', 'hg20', 'mm9', 'mm10', 'dm3', 'wbcel235']
 
     mapping = {
         'properties': {
@@ -408,15 +407,12 @@ def file_index(request):
         else:
             es.indices.refresh(index=file_index)
 
-    try:
-        es.indices.create(index=file_index)
-    except RequestError:
-        es.indices.delete(index=file_index)
-        es.indices.create(index=file_index)
-
-    es.indices.refresh(index=file_index)
-    for doc_type in doc_types:
-        create_mapping(doc_type)
+    for file_index in file_indices:
+        try:
+            es.indices.create(index=file_index)
+        except RequestError:
+            es.indices.delete(index=file_index)
+            es.indices.create(index=file_index)
 
     http = urllib3.PoolManager()
     params = {
