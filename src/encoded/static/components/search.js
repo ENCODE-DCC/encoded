@@ -848,7 +848,8 @@ var AuditMixin = audit.AuditMixin;
                 types[result['@type'][0]] = true;
             });
             if (Object.keys(types).length === 1) {
-                label = Object.keys(types)[0] + 's';
+                // All results have the same time; extract label from its path
+                label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
             }
 
             return (
