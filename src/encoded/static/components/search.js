@@ -861,7 +861,7 @@ var Param = fetched.Param;
                 <div className="adv-search-form">
                     <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
-                        <form id="panel1" action="" ref="adv-search" role="form" aria-labeledby="tab1">
+                        <form id="panel1" action={query} ref="adv-search" role="form" data-submit="true" autoComplete="off" aria-labeledby="tab1">
                             <div className="row">
                                 <div className="form-group col-md-8">
                                     <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
@@ -875,7 +875,7 @@ var Param = fetched.Param;
                                 </div>
                                 <div className="form-group col-md-2">
                                     <label htmlFor="spacing">&nbsp;</label>
-                                    <input type="submit" value="Search" formAction={query} className="btn btn-sm btn-info adv-search-submit" disabled={!this.context.autocompleteTermChosen} />
+                                    <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" disabled={!this.context.autocompleteTermChosen} />
                                 </div>
                             </div>
                         </form>
