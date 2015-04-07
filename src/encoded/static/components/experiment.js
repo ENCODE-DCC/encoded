@@ -720,23 +720,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
                     allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
                         file.removed = true;
-
-                        // Remember it's removed from the derived_from file objects too
-                        if (derivedFromFiles[file.accession]) {
-                            derivedFromFiles[file.accession].removed = true;
-                        }
                     });
-                } else {
-                    // Derived-from file is in a replicate, but not seen in files array;
-                    // just remove it from derivedFromFiles.
-                    derivedFromFile.removed = true;
                 }
 
                 // Indicate that this replicate is not to be rendered
                 allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
-
-                // Mark this file as removed
-                derivedFromFile.removed = true;
             } else {
                 // Missing derived-from file not in a replicate; don't draw any graph
                 abortGraph = abortGraph || true;
@@ -758,7 +746,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // A file derives from a file that's been removed from the graph
         if (file.derived_from && !file.removed) {
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
-                return derivedFromFile.removed;
+                return !(derivedFromFile.accession in allFiles);
             });
         }
 
