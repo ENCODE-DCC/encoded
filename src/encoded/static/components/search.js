@@ -857,7 +857,7 @@ var Param = fetched.Param;
                         <form id="panel1" ref="adv-search" role="form" aria-labeledby="tab1">
                             <div className="row">
                                 <div className="form-group col-md-8">
-                                    <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
+                                    <label htmlFor="regionid">Select Annotation</label>
                                     <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
                                     {this.state.searchTerm ?
                                         <FetchedData loadingComplete={true}>
