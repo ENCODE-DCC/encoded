@@ -122,8 +122,8 @@ def search_peaks(request):
                     },
                     'fields': ['uuid']
                 }
-                results = es.search(body=query, index=assembly,
-                                    doc_type=chromosome, size=99999999)
+                results = es.search(body=query, index=chromosome,
+                                    doc_type=assembly, size=9999999)
                 for hit in results['hits']['hits']:
                     if hit['fields']['uuid'] not in file_ids:
                         file_ids.append(hit['fields']['uuid'][0])

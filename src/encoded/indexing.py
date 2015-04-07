@@ -4,7 +4,6 @@ from elasticsearch import Elasticsearch, helpers
 from elasticsearch.exceptions import (
     ConflictError,
     NotFoundError,
-    RequestError,
 )
 from pyramid.events import (
     BeforeRender,
@@ -373,48 +372,7 @@ def es_update_data(event):
 def file_index(request):
     '''Indexes bed files in ENCODE'''
 
-    file_indices = ['hg19', 'hg20', 'mm9', 'mm10', 'dm3', 'wbcel235']
-
-    mapping = {
-        'properties': {
-            'start': {
-                'type': 'long',
-                'index': 'not_analyzed',
-                'include_in_all': False,
-            },
-            'end': {
-                'type': 'long',
-                'index': 'not_analyzed',
-                'include_in_all': False,
-            },
-            'uuid': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed'
-            }
-        }
-    }
     es = request.registry.get(ELASTIC_SEARCH, None)
-
-    def create_mapping(doc_type):
-        try:
-            es.indices.put_mapping(
-                index=file_index,
-                doc_type=doc_type,
-                body={doc_type: mapping}
-            )
-        except:
-            log.info("Could not create mapping for the collection %s", doc_type)
-        else:
-            es.indices.refresh(index=file_index)
-
-    for file_index in file_indices:
-        try:
-            es.indices.create(index=file_index)
-        except RequestError:
-            es.indices.delete(index=file_index)
-            es.indices.create(index=file_index)
-
     http = urllib3.PoolManager()
     params = {
         'type': ['file'],
@@ -455,11 +413,15 @@ def file_index(request):
                 gp_chr = dict(list(new_frame.groupby('chromosome')))
                 for g in gp_chr:
                     chr_data = gp_chr[g]
+                    try:
+                        es.create(index=g)
+                    except:
+                        pass
                     records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
                     list_records = [records[it] for it in records]
                     helpers.bulk(
                         es,
                         list_records,
-                        index=properties['assembly'],
-                        doc_type=g
+                        index=g,
+                        doc_type=properties['assembly']
                     )
