@@ -74,21 +74,26 @@ var App = React.createClass({
             errors: [],
             portal: portal,
             user_actions: user_actions,
-            dropdownComponent: undefined
+            dropdownComponent: undefined,
+            autocompleteTermChosen: false
         };
     },
 
     // Dropdown context using React context mechanism.
     childContextTypes: {
         dropdownComponent: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func
+        onDropdownChange: React.PropTypes.func,
+        autocompleteTermChosen: React.PropTypes.bool,
+        onAutocompleteChosenChange: React.PropTypes.func
     },
 
     // Retrieve current React context
     getChildContext: function() {
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
-            onDropdownChange: this.handleDropdownChange // Function to process dropdown state change
+            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
+            autocompleteTermChosen: this.state.autocompleteTermChosen, // True if visitor chose autocomplete term
+            onAutocompleteChosenChange: this.handleAutocompleteChosenChange // Function to process autocomplete chosen change
         };
     },
 
@@ -97,6 +102,10 @@ var App = React.createClass({
         // Use React _rootNodeID to uniquely identify a dropdown menu;
         // It's passed in as componentID
         this.setState({dropdownComponent: componentID});
+    },
+
+    handleAutocompleteChosenChange: function(chosen) {
+        this.setState({autocompleteTermChosen: chosen});
     },
 
     // Handle a click outside a dropdown menu by clearing currently dropped down menu
@@ -111,6 +120,8 @@ var App = React.createClass({
         if (e.which === 27 && this.state.dropdownComponent !== undefined) {
             e.preventDefault();
             this.handleDropdownChange(undefined);
+        } else if (e.which === 13 && !this.state.autocompleteTermChosen) {
+            e.preventDefault();
         }
     },
 

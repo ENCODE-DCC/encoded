@@ -800,9 +800,13 @@ var Param = fetched.Param;
                 disclosed: false,
                 searchTerm: '',
                 terms: {},
-                hideAutocomplete: false,
-                termChosen: false
+                hideAutocomplete: false
             };
+        },
+
+        contextTypes: {
+            autocompleteTermChosen: React.PropTypes.bool,
+            onAutocompleteChosenChange: React.PropTypes.func
         },
 
         handleDiscloseClick: function(e) {
@@ -811,7 +815,8 @@ var Param = fetched.Param;
 
         handleChange: function(e) {
             this.newSearchTerm = e.target.value;
-            this.setState({hideAutocomplete: false, termChosen: false});
+            this.setState({hideAutocomplete: false});
+            this.context.onAutocompleteChosenChange(false);
             // Now let the timer update the search terms state when it gets around to it.
         },
 
@@ -820,8 +825,10 @@ var Param = fetched.Param;
 
             this.refs.regionid.getDOMNode().value = this.newSearchTerm = term;
             newTerms[name] = id;
-            this.setState({terms: newTerms, hideAutocomplete: true, termChosen: true});
+            this.setState({terms: newTerms, hideAutocomplete: true});
+            this.context.onAutocompleteChosenChange(true);
             this.newSearchTerm = '';
+            this.refs.regionid.getDOMNode().focus();
             // Now let the timer update the terms state when it gets around to it.
         },
 
@@ -854,7 +861,7 @@ var Param = fetched.Param;
                 <div className="adv-search-form">
                     <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
-                        <form id="panel1" ref="adv-search" role="form" aria-labeledby="tab1">
+                        <form id="panel1" action="" ref="adv-search" role="form" aria-labeledby="tab1">
                             <div className="row">
                                 <div className="form-group col-md-8">
                                     <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
@@ -868,7 +875,7 @@ var Param = fetched.Param;
                                 </div>
                                 <div className="form-group col-md-2">
                                     <label htmlFor="spacing">&nbsp;</label>
-                                    <a className="btn btn-sm btn-info adv-search-submit" disabled={!this.state.termChosen} href={query}>Submit</a>
+                                    <input type="submit" value="Search" formAction={query} className="btn btn-sm btn-info adv-search-submit" disabled={!this.context.autocompleteTermChosen} />
                                 </div>
                             </div>
                         </form>
