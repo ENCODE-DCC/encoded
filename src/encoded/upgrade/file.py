@@ -179,3 +179,165 @@ def file_3_4(value, system):
     if value.get('submitted_by') == '0e04cd39-006b-4b4a-afb3-b6d76c4182ff':
         value['lab'] = 'fb0af3d0-3a4c-4e96-b67a-f273fe527b04'
         value['award'] = '8bafd685-aa17-43fe-95aa-37bc1c90074a'
+
+
+@upgrade_step('file', '4', '5')
+def file_4_5(value, system):
+    #  http://redmine.encodedcc.org/issues/2566
+    # we need to remeber  bedRnaElements,
+
+    bed_files = {
+        "bed_bedLogR": "bedLogR",
+        "bed_bedMethyl": "bedMethyl",
+        "bed_broadPeak": "broadPeak",
+        "bed_narrowPeak": "bed_narrowPeak"
+    }
+
+    bigBed_files = [
+        "bedLogR",
+        "bedMethyl",
+        "broadPeak",
+        "narrowPeak",
+        "bedRnaElements"
+    ]
+
+    current = value['file_format']
+
+    if current in ['bed', 'bigBed']:
+        value['file_format_type'] = 'unknown'
+        # we do not know what those formats were,  wranglers  will need to investigate
+    elif current in bigBed_files:
+        value['file_format_type'] = current
+        value['file_format'] = 'bigBed'
+    elif current in bed_files:
+        value['file_format_type'] = bed_files[current]
+        value['file_format'] = 'bed'
+    elif current in ['gff']:
+        value['file_format_type'] = 'unknown'
+        #all gffs todate were in gff3, but we wouldn't know without wranglers checking
+
+
+    # next is the output_type
+
+    output_mapping = {
+        "idat green file": "idat green channel",
+        "idat red file": "idat red channel",
+        "reads": "reads",
+        "rejected reads": "rejected reads",
+        "raw data": "raw data",
+
+        "alignments": "alignments",
+        "transcriptome alignments": "transcriptome alignments",
+        "spike-ins": "spike-in alignments",
+
+        "multi-read minus signal": "multi-read minus signal",
+        "multi-read plus signal": "multi-read plus signal",
+        "multi-read signal": "multi-read signal",
+        "multi-read normalized signal": "multi-read normalized signal",
+        "raw minus signal": "raw minus signal",
+        "raw plus signal": "raw plus signal",
+        "raw signal": "raw signal",
+        "raw normalized signal": "raw normalized signal",
+        "unique minus signal": "unique minus signal",
+        "unique plus signal": "unique plus signal",
+        "unique signal": "unique signal",
+        "signal": "signal",
+        "minus signal": "minus signal",
+        "plus signal": "plus signal",
+        "Base_Overlap_Signal": "base overlap signal",
+        "PctSignal": "percentage normalized signal",
+        "SumSignal": "summed densities signal",
+        "WaveSignal": "wavelet-smoothed signal",
+
+        "enrichment": "enrichment",
+        "exon quantifications": "exon quantifications",
+        "ExonsDeNovo": "exon quantifications",
+        "ExonsEnsV65IAcuff": "exon quantifications",
+        "ExonsGencV10": "exon quantifications",
+        "ExonsGencV3c": "exon quantifications",
+        "ExonsGencV7": "exon quantifications",
+        "GeneDeNovo": "gene quantifications",
+        "GeneEnsV65IAcuff": "gene quantifications",
+        "GeneGencV10": "gene quantifications",
+        "GeneGencV3c": "gene quantifications",
+        "GeneGencV7": "gene quantifications",
+        "genome quantifications": "gene quantifications",
+        "library_fraction": "library fraction",
+        "transcript quantifications": "transcript quantifications",
+        "TranscriptDeNovo": "transcript quantifications",
+        "TranscriptEnsV65IAcuff": "transcript quantifications",
+        "TranscriptGencV10": "transcript quantifications",
+        "TranscriptGencV3c": "transcript quantifications",
+        "TranscriptGencV7": "transcript quantifications",
+        "mPepMapGcFt": "filtered modified peptide mapping",
+        "mPepMapGcUnFt": "unfiltered modified peptide mapping",
+        "pepMapGcFt": "filtered peptide mapping",
+        "pepMapGcUnFt": "unfiltered peptide mapping",
+
+        "clusters": "clusters",
+        "CNV": "copy number variant",  #need to clean up the others
+        "contigs": "contigs",
+        "enhancer validation": "enhancer validation",
+        "FiltTransfrags": "filtered transfrags",
+        "hotspots": "hotspots",
+        "interactions": "chromatin interactions",
+        "Junctions": "splice junctions",
+        "Matrix":"matrix",
+        "methyl CG":"quantification",  #should these be methylation
+        "methyl CHG":"quantification",
+        "methyl CHH":"quantification",
+        "peaks": "peaks",
+        "PrimerPeaks":"",
+        "RbpAssocRna": "RNA-binding protein associated mRNAs",
+        "sites": "sites",
+        "splice junctions": "splice junctions",
+        "Transfrags": "transfrags",
+        "TssGencV3c": "transcription start sites",
+        "TssGencV7": "transcription start sites",
+        "Valleys": "valleys",
+
+        "Alignability": "sequence alignability",
+        "Excludable":"reference",
+        "genome index": "genome index",
+        "genome reference": "genome reference",
+        "Primer": "primer sequence",
+        "spike-ins sequence": "spike-ins sequence",
+        "Uniqueness": "sequence uniqueness",
+
+        "enhancers_forebrain": "predicted forebrain enhancers",
+        "enhancers_heart": "predicted heart enhancers",
+        "enhancers_wholebrain": "predicted whole brain enhancers",
+        "TssHmm":"",
+        "UniformlyProcessedPeakCalls":"UniformlyProcessedPeakCalls",
+        "Validation":"unknown",  # These are a confused mess
+        "HMM":"HMM predicted chromatin state"
+    }
+
+    old_output_type = value['output_type']
+
+    # The peptide mapping files from UCSC all assumed V10 hg19
+    if old_output_type in ["mPepMapGcFt", "mPepMapGcUnFt", "pepMapGcFt", "pepMapGcUnFt"]:
+        value['genome_annotation'] = "V10"
+        value['assembly'] = "hg19"
+
+    if old_output_type in ["ExonsEnsV65IAcuff", "GeneEnsV65IAcuff", "TranscriptEnsV65IAcuff"]:
+        value['genome_annotation'] = "ENSEMBL V65"
+
+    if old_output_type in ["ExonsGencV3c", "GeneGencV3c", "TranscriptGencV3c", "TssGencV3c"]:
+        value['genome_annotation'] = "V3c"
+
+    if old_output_type in ["ExonsGencV7", "GeneGenc7", "TranscriptGencV7", "TssGencV7"]:
+        value['genome_annotation'] = "V7"
+
+    if old_output_type in ["ExonsGencV10", "GeneGenc10", "TranscriptGencV10", "TssGencV10"]:
+        value['genome_annotation'] = "V10"
+
+    if old_output_type in ["spike-ins"] and value['file_format'] == 'fasta':
+        old_output_type = "spike-ins sequence"
+
+    if old_output_type in ["raw data"] and value['file_format'] == 'fastq':
+        old_output_type = "reads"
+
+        "1MDuoManifest" in value['submitted_file_name']
+
+    value['output_type'] = output_mapping[old_output_type]
