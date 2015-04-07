@@ -273,7 +273,6 @@ def search(context, request, search_type=None):
         if field in ['type', 'limit', 'mode', 'searchTerm',
                      'format', 'frame', 'datastore', 'field', 'regionid']:
             continue
-
         # Add filter to result
         qs = urlencode([
             (k.encode('utf-8'), v.encode('utf-8'))
@@ -349,18 +348,18 @@ def search(context, request, search_type=None):
 
         # Handling region search using filters
         if len(peak_files_uuids):
-            o_terms = query['aggs'][agg_name]['filter']
+            o_terms = query['aggs'][agg_name]['filter']['bool']['must']
             n_terms = {'terms': {
                 'embedded.files.uuid': peak_files_uuids
             }}
             query['aggs'][agg_name]['filter'] = {
                 'bool': {
-                    'must': [o_terms, n_terms]
+                    'must': o_terms + [n_terms]
                 }
             }
 
         for count, used_facet in enumerate(result['filters']):
-            if used_facet['field'] in ['searchTerm', 'regionid']:
+            if used_facet['field'] in ['searchTerm']:
                 continue
             if field != used_facet['field'] and used_facet['field'] != 'type':
                 if used_facet['field'] != 'audit.category':
