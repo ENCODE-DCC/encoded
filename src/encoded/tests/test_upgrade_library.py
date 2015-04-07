@@ -22,6 +22,16 @@ def library_1(library):
     return item
 
 
+@pytest.fixture
+def library_2(library):
+    item = library.copy()
+    item.update({
+        'schema_version': '3',
+        'paired_ended': False
+    })
+    return item
+
+
 def test_library_upgrade(app, library_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('library', library_1, target_version='3')
@@ -43,3 +53,10 @@ def test_library_upgrade_status_deleted(app, library_1):
     value = migrator.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
+
+
+def test_library_upgrade_paired_ended(app, library_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('library', library_2, target_version='4')
+    assert value['schema_version'] == '4'
+    assert 'paired_ended' not in value
