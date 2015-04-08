@@ -179,7 +179,9 @@
                         "image/jpeg",
                         "image/tiff",
                         "image/gif",
-                        "image/png"
+                        "text/html",
+                        "image/png",
+                        "text/autosql"
                     ]
                 },
                 "md5sum": {
@@ -279,7 +281,7 @@
         "genotype": {
             "title": "Strain genotype",
             "description": "The genotype of the strain according to accepted nomenclature conventions.",
-            "type": "string" 
+            "type": "string"
         },
         "mutagen": {
             "title": "Mutagen",
@@ -294,7 +296,7 @@
                 "transposon",
                 "TMP/UV",
                 "unknown",
-                "none" 
+                "none"
             ]
         },
         "constructs": {
