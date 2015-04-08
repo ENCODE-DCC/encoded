@@ -74,21 +74,31 @@ var App = React.createClass({
             errors: [],
             portal: portal,
             user_actions: user_actions,
-            dropdownComponent: undefined
+            dropdownComponent: undefined,
+            autocompleteTermChosen: false,
+            autocompleteHidden: false
         };
     },
 
     // Dropdown context using React context mechanism.
     childContextTypes: {
         dropdownComponent: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func
+        onDropdownChange: React.PropTypes.func,
+        autocompleteTermChosen: React.PropTypes.bool,
+        onAutocompleteChosenChange: React.PropTypes.func,
+        autocompleteHidden: React.PropTypes.bool,
+        onAutocompleteHiddenChange: React.PropTypes.func
     },
 
     // Retrieve current React context
     getChildContext: function() {
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
-            onDropdownChange: this.handleDropdownChange // Function to process dropdown state change
+            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
+            autocompleteTermChosen: this.state.autocompleteTermChosen, // True if visitor chose autocomplete term
+            onAutocompleteChosenChange: this.handleAutocompleteChosenChange, // Function to process autocomplete chosen change
+            autocompleteHidden: this.state.autocompleteHidden, // True if autocomplete menu hidden
+            onAutocompleteHiddenChange: this.handleAutocompleteHiddenChange // Function to handle autocomplete menu hiding
         };
     },
 
@@ -97,6 +107,14 @@ var App = React.createClass({
         // Use React _rootNodeID to uniquely identify a dropdown menu;
         // It's passed in as componentID
         this.setState({dropdownComponent: componentID});
+    },
+
+    handleAutocompleteChosenChange: function(chosen) {
+        this.setState({autocompleteTermChosen: chosen});
+    },
+
+    handleAutocompleteHiddenChange: function(hidden) {
+        this.setState({autocompleteHidden: hidden});
     },
 
     // Handle a click outside a dropdown menu by clearing currently dropped down menu
@@ -108,9 +126,16 @@ var App = React.createClass({
 
     // If ESC pressed while drop-down menu open, close the menu
     handleKey: function(e) {
-        if (e.which === 27 && this.state.dropdownComponent !== undefined) {
+        if (e.which === 27) {
+            if (this.state.dropdownComponent !== undefined) {
+                e.preventDefault();
+                this.handleDropdownChange(undefined);
+            } else if (!this.state.autocompleteHidden) {
+                e.preventDefault();
+                this.handleAutocompleteHiddenChange(true);
+            }
+        } else if (e.which === 13 && !this.state.autocompleteTermChosen) {
             e.preventDefault();
-            this.handleDropdownChange(undefined);
         }
     },
 

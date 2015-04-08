@@ -799,10 +799,15 @@ var Param = fetched.Param;
             return {
                 disclosed: false,
                 searchTerm: '',
-                terms: {},
-                hideAutocomplete: false,
-                termChosen: false
+                terms: {}
             };
+        },
+
+        contextTypes: {
+            autocompleteTermChosen: React.PropTypes.bool,
+            onAutocompleteChosenChange: React.PropTypes.func,
+            autocompleteHidden: React.PropTypes.bool,
+            onAutocompleteHiddenChange: React.PropTypes.func
         },
 
         handleDiscloseClick: function(e) {
@@ -811,17 +816,21 @@ var Param = fetched.Param;
 
         handleChange: function(e) {
             this.newSearchTerm = e.target.value;
-            this.setState({hideAutocomplete: false, termChosen: false});
+            this.context.onAutocompleteHiddenChange(false);
+            this.context.onAutocompleteChosenChange(false);
             // Now let the timer update the search terms state when it gets around to it.
         },
 
         handleAutocompleteClick: function(term, id, name) {
             var newTerms = {};
+            var inputNode = this.refs.regionid.getDOMNode();
 
-            this.refs.regionid.getDOMNode().value = this.newSearchTerm = term;
+            inputNode.value = this.newSearchTerm = term;
             newTerms[name] = id;
-            this.setState({terms: newTerms, hideAutocomplete: true, termChosen: true});
-            this.newSearchTerm = '';
+            this.setState({terms: newTerms});
+            this.context.onAutocompleteHiddenChange(true);
+            this.context.onAutocompleteChosenChange(true);
+            inputNode.focus();
             // Now let the timer update the terms state when it gets around to it.
         },
 
@@ -835,7 +844,7 @@ var Param = fetched.Param;
         },
 
         tick: function() {
-            if (!this.state.hideAutocomplete && (this.newSearchTerm !== this.state.searchTerm)) {
+            if (!this.context.autocompleteHidden && (this.newSearchTerm !== this.state.searchTerm)) {
                 this.setState({searchTerm: this.newSearchTerm});
             }
         },
@@ -854,7 +863,7 @@ var Param = fetched.Param;
                 <div className="adv-search-form">
                     <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
-                        <form id="panel1" ref="adv-search" role="form" aria-labeledby="tab1">
+                        <form id="panel1" action={query} ref="adv-search" role="form" data-submit="true" autoComplete="off" aria-labeledby="tab1">
                             <div className="row">
                                 <div className="form-group col-md-8">
                                     <label htmlFor="regionid">Select Annotation</label>
@@ -862,13 +871,13 @@ var Param = fetched.Param;
                                     {this.state.searchTerm ?
                                         <FetchedData loadingComplete={true}>
                                             <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.context.autocompleteHidden} handleClick={this.handleAutocompleteClick} />
                                         </FetchedData>
                                     : null}
                                 </div>
                                 <div className="form-group col-md-2">
                                     <label htmlFor="spacing">&nbsp;</label>
-                                    <a className="btn btn-sm btn-info adv-search-submit" disabled={!this.state.termChosen} href={query}>Submit</a>
+                                    <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" disabled={!this.context.autocompleteTermChosen} />
                                 </div>
                             </div>
                         </form>
