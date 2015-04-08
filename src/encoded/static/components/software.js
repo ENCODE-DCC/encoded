@@ -1,76 +1,16 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var dbxref = require('./dbxref');
 var search = require('./search');
 var pipeline = require('./pipeline');
 var fetched = require('./fetched');
+var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
-var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
-var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
-
-// Count the total number of references in all the publications passed
-// in the pubs array parameter.
-function refCount(pubs) {
-    var total = 0;
-    if (pubs) {
-        pubs.forEach(function(pub) {
-            total += pub.references ? pub.references.length : 0;
-        });
-    }
-    return total;
-}
-
-
-// Display all references in the array of publications in the 'pubs' property.
-var References = React.createClass({
-    render: function() {
-        return (
-            <div>
-                {this.props.pubs ?
-                    <div>
-                        {this.props.pubs.map(function(pub) {
-                            return (
-                                <div className="multi-dd">
-                                    <div>
-                                        {pub.authors ? pub.authors + '. ' : ''}
-                                        {pub.title + ' '}
-                                        <Citation context={pub} />
-                                    </div>
-                                    {pub.references && pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
-                                </div>
-                            );
-                        })}
-                    </div>
-                : null}
-            </div>
-        );
-    }
-});
-
-
-// Display all PMID/PMCID references in the array of publications in the 'pubs' property.
-var PubReferences = React.createClass({
-    render: function() {
-        // Collect all publications' references into one array
-        // and remove duplicates
-        var allRefs = [];
-        this.props.pubs.forEach(function(pub) {
-            allRefs = allRefs.concat(pub.references);
-        });
-        allRefs = _.uniq(allRefs);
-
-        if (allRefs) {
-            return <DbxrefList values={allRefs} className={this.props.listClass} />;
-        } else {
-            return <span></span>;
-        }
-    }
-});
+var PubReferenceList = reference.PubReferenceList;
 
 
 var Software = module.exports.Software = React.createClass({
@@ -122,8 +62,10 @@ var Software = module.exports.Software = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><References pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
                     </dl>
@@ -220,12 +162,6 @@ var Listing = React.createClass({
                             </div>
                         : null}
 
-                        {refCount(context.references) ?
-                            <div>
-                                <strong>Publication: </strong>
-                                <PubReferences pubs={context.references} listClass="list-reference" />
-                            </div>
-                        : null}
                     </div>
             </li>
         );
