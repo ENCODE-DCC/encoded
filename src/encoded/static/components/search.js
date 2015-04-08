@@ -799,14 +799,15 @@ var Param = fetched.Param;
             return {
                 disclosed: false,
                 searchTerm: '',
-                terms: {},
-                hideAutocomplete: false
+                terms: {}
             };
         },
 
         contextTypes: {
             autocompleteTermChosen: React.PropTypes.bool,
-            onAutocompleteChosenChange: React.PropTypes.func
+            onAutocompleteChosenChange: React.PropTypes.func,
+            autocompleteHidden: React.PropTypes.bool,
+            onAutocompleteHiddenChange: React.PropTypes.func
         },
 
         handleDiscloseClick: function(e) {
@@ -815,20 +816,21 @@ var Param = fetched.Param;
 
         handleChange: function(e) {
             this.newSearchTerm = e.target.value;
-            this.setState({hideAutocomplete: false});
+            this.context.onAutocompleteHiddenChange(false);
             this.context.onAutocompleteChosenChange(false);
             // Now let the timer update the search terms state when it gets around to it.
         },
 
         handleAutocompleteClick: function(term, id, name) {
             var newTerms = {};
+            var inputNode = this.refs.regionid.getDOMNode();
 
-            this.refs.regionid.getDOMNode().value = this.newSearchTerm = term;
+            inputNode.value = this.newSearchTerm = term;
             newTerms[name] = id;
-            this.setState({terms: newTerms, hideAutocomplete: true});
+            this.setState({terms: newTerms});
+            this.context.onAutocompleteHiddenChange(true);
             this.context.onAutocompleteChosenChange(true);
-            this.newSearchTerm = '';
-            this.refs.regionid.getDOMNode().focus();
+            inputNode.focus();
             // Now let the timer update the terms state when it gets around to it.
         },
 
@@ -842,7 +844,7 @@ var Param = fetched.Param;
         },
 
         tick: function() {
-            if (!this.state.hideAutocomplete && (this.newSearchTerm !== this.state.searchTerm)) {
+            if (!this.context.autocompleteHidden && (this.newSearchTerm !== this.state.searchTerm)) {
                 this.setState({searchTerm: this.newSearchTerm});
             }
         },
@@ -869,7 +871,7 @@ var Param = fetched.Param;
                                     {this.state.searchTerm ?
                                         <FetchedData loadingComplete={true}>
                                             <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.state.hideAutocomplete} handleClick={this.handleAutocompleteClick} />
+                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.context.autocompleteHidden} handleClick={this.handleAutocompleteClick} />
                                         </FetchedData>
                                     : null}
                                 </div>
