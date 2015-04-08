@@ -1,5 +1,5 @@
 from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 
 @upgrade_step('antibody_characterization', '', '3')
@@ -101,3 +101,25 @@ def antibody_characterization_4_5(value, system):
         elif value['status'] in ['compliant', 'not compliant']:
             value['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
             value['documents'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
+
+
+@upgrade_step('antibody_characterization', '5', '6')
+def antibody_characterization_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    if 'references' in value:
+        new_references = []
+        for ref in value['references']:
+            new_references.append(REFERENCES_UUID[ref])
+        value['references'] = new_references
+
+
+@upgrade_step('biosample_characterization', '4', '5')
+@upgrade_step('rnai_characterization', '4', '5')
+@upgrade_step('construct_characterization', '4', '5')
+def characterization_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    if 'references' in value:
+        new_references = []
+        for ref in value['references']:
+            new_references.append(REFERENCES_UUID[ref])
+        value['references'] = new_references

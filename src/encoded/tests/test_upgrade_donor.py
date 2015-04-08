@@ -62,6 +62,17 @@ def mouse_donor_2(mouse_donor):
     return item
 
 
+@pytest.fixture
+def mouse_donor_3(mouse_donor):
+    item = mouse_donor.copy()
+    item.update({
+        'schema_version': '3',
+        'references': ['PMID:21795386']
+
+    })
+    return item
+
+
 def test_human_donor_upgrade(app, human_donor_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
@@ -96,3 +107,10 @@ def test_human_donor_age(app, human_donor_2):
     value = migrator.upgrade('human_donor', human_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['age'] == '11'
+
+
+def test_mouse_donor_upgrade_references(app, mouse_donor_3):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('mouse_donor', mouse_donor_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['references'] == ['8a17005c-86ea-4da4-8740-b837851271df']

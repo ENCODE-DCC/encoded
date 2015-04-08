@@ -4,18 +4,18 @@
     "id": "/profiles/publication.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "title" ],
+    "required": [ "title", "award", "lab" ],
     "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references"}
+        { "$ref": "mixins.json#/attribution" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "title": {
             "title": "Title",
@@ -79,6 +79,17 @@
                 "deleted",
                 "replaced"
             ]
+        },
+        "identifiers": {
+            "title": "Identifiers",
+            "description": "The identifiers that reference data found in the object.",
+            "type": "array",
+            "items": {
+                "title": "Identifier",
+                "description": "An identifier that references data found in the object.",
+                "type": "string",
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
+            }
         },
         "datasets": {
             "title": "Dataset",
@@ -271,15 +282,15 @@
             "title": "Data summary",
             "type": "string"
         },
-        "references": {
-            "title": "References",
+        "identifiers": {
+            "title": "identifiers",
             "type": "array"
         }
     },
     "boost_values": {
         "title": 1.0,
         "authors": 1.0,
-        "references": 1.0,
+        "identifiers": 1.0,
         "abstract": 1.0
     }
 }

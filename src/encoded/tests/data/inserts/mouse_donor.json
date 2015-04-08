@@ -21,8 +21,8 @@
         "lab": "j-michael-cherry",
         "organism": "mouse",
         "references": [
-            "PMID:23000965",
-            "PMID:16395128"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "strain_background": "129/Ola",
         "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7"
