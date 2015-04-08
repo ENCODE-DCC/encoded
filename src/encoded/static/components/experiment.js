@@ -11,6 +11,7 @@ var audit = require('./audit');
 var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
+var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -23,6 +24,7 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var PubReferenceList = reference.PubReferenceList;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -329,10 +331,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.references.length ?
+                        {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
 

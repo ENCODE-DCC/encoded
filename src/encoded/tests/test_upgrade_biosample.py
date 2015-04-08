@@ -91,6 +91,16 @@ def biosample_8(biosample):
     return item
 
 
+@pytest.fixture
+def biosample_9(biosample):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '9',
+        'references': ["PMID:19465919"]
+    })
+    return item
+
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -274,9 +284,17 @@ def test_biosample_age_pattern(app, biosample_8):
     assert value['schema_version'] == '9'
     assert value['model_organism_age'] == '15'
 
+
 def test_biosample_age_pattern(app, biosample_8):
     biosample_8['model_organism_age'] = '15.0-16.0'
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_8, target_version='9')
     assert value['schema_version'] == '9'
     assert value['model_organism_age'] == '15-16'
+
+
+def test_biosample_references(app, biosample_9):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_9, target_version='10')
+    assert value['schema_version'] == '10'
+    assert value['references'] ==  ['4c0a722c-a4f6-481f-b181-1a5330660d73']

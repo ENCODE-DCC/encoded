@@ -22,8 +22,8 @@
         "lab": "bradley-bernstein",
         "status": "pending dcc review",
         "references": [
-            "PMID:23000965",
-            "PMID:16395128"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
@@ -206,7 +206,7 @@
         "date": "2013-11-22",
         "lab": "richard-myers",
         "references": [
-            "PMID:22955991"
+            "06a28ab0-bd4b-11e4-bb52-0800200c9a66"
         ],
         "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
