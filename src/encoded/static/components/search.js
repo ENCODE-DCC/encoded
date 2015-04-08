@@ -806,6 +806,7 @@ var Param = fetched.Param;
         contextTypes: {
             autocompleteTermChosen: React.PropTypes.bool,
             onAutocompleteChosenChange: React.PropTypes.func,
+            onAutocompleteFocusChange: React.PropTypes.func,
             autocompleteHidden: React.PropTypes.bool,
             onAutocompleteHiddenChange: React.PropTypes.func
         },
@@ -832,6 +833,10 @@ var Param = fetched.Param;
             this.context.onAutocompleteChosenChange(true);
             inputNode.focus();
             // Now let the timer update the terms state when it gets around to it.
+        },
+
+        handleFocus: function(focused) {
+            this.context.onAutocompleteFocusChange(focused);
         },
 
         componentDidMount: function() {
@@ -867,7 +872,8 @@ var Param = fetched.Param;
                             <div className="row">
                                 <div className="form-group col-md-8">
                                     <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
-                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange} />
+                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange}
+                                        onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)} />
                                     {this.state.searchTerm ?
                                         <FetchedData loadingComplete={true}>
                                             <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />

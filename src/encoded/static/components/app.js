@@ -76,6 +76,7 @@ var App = React.createClass({
             user_actions: user_actions,
             dropdownComponent: undefined,
             autocompleteTermChosen: false,
+            autocompleteFocused: false,
             autocompleteHidden: false
         };
     },
@@ -86,6 +87,8 @@ var App = React.createClass({
         onDropdownChange: React.PropTypes.func,
         autocompleteTermChosen: React.PropTypes.bool,
         onAutocompleteChosenChange: React.PropTypes.func,
+        autocompleteFocused: React.PropTypes.bool,
+        onAutocompleteFocusChange: React.PropTypes.func,
         autocompleteHidden: React.PropTypes.bool,
         onAutocompleteHiddenChange: React.PropTypes.func
     },
@@ -97,8 +100,10 @@ var App = React.createClass({
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             autocompleteTermChosen: this.state.autocompleteTermChosen, // True if visitor chose autocomplete term
             onAutocompleteChosenChange: this.handleAutocompleteChosenChange, // Function to process autocomplete chosen change
+            autocompleteFocused: this.state.autocompleteFocused, // True if autocomplete input field focused
+            onAutocompleteFocusChange: this.handleAutocompleteFocusChange, // Function to process autocomplete focus change
             autocompleteHidden: this.state.autocompleteHidden, // True if autocomplete menu hidden
-            onAutocompleteHiddenChange: this.handleAutocompleteHiddenChange // Function to handle autocomplete menu hiding
+            onAutocompleteHiddenChange: this.handleAutocompleteHiddenChange, // Function to handle autocomplete menu hiding
         };
     },
 
@@ -111,6 +116,10 @@ var App = React.createClass({
 
     handleAutocompleteChosenChange: function(chosen) {
         this.setState({autocompleteTermChosen: chosen});
+    },
+
+    handleAutocompleteFocusChange: function(focused) {
+        this.setState({autocompleteFocused: focused});
     },
 
     handleAutocompleteHiddenChange: function(hidden) {
@@ -134,7 +143,7 @@ var App = React.createClass({
                 e.preventDefault();
                 this.handleAutocompleteHiddenChange(true);
             }
-        } else if (e.which === 13 && !this.state.autocompleteTermChosen) {
+        } else if (e.which === 13 && this.state.autocompleteFocused && !this.state.autocompleteTermChosen) {
             e.preventDefault();
         }
     },
