@@ -7,6 +7,7 @@ from ..contentbase import (
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 
 
@@ -62,8 +63,23 @@ class AnalysisStepRun(Item):
     schema = load_schema('analysis_step_run.json')
     embedded = [
         'analysis_step',
-        'workflow_run'
+        'workflow_run',
+        'qc_metrics'
     ]
+    rev = {
+        'qc_metrics': ('quality_metric', 'step_run'),
+    }
+
+    @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.step_run",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
 
 
 @collection(
