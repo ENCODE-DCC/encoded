@@ -130,7 +130,9 @@
                         "rcc",
                         "CEL",
                         "tsv",
-                        "csv"
+                        "csv",
+                        "sam",
+                        "wig"
                     ]
                 },
                 {
