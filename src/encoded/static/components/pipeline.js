@@ -43,6 +43,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
     assembleGraph: function() {
         var jsonGraph;
+        var analysis_steps = this.props.context.analysis_steps;
+
+        // Make an object with all step UUIDs in the pipeline
+        var allSteps = {}
+        analysis_steps.forEach(function(step) {
+            allSteps[step.uuid] = step;
+        });
 
         // Only produce a graph if there's at least one analysis step
         if (this.props.context.analysis_steps) {
@@ -50,7 +57,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             jsonGraph = new JsonGraph(this.props.context.accession);
 
             // Add files and their steps as nodes to the graph
-            this.props.context.analysis_steps.forEach(function(step) {
+            analysis_steps.forEach(function(step) {
                 var stepId = step['@id'];
 
                 // Make an array of step types
@@ -65,26 +72,30 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        jsonGraph.addEdge(parent['@id'], stepId);
+                        if (parent.uuid in allSteps) {
+                            jsonGraph.addEdge(parent['@id'], stepId);
+                        }
                     });
                 }
             }, this);
 
             // If any analysis step parents haven't been seen yet,
             // add them to the graph too
-            this.props.context.analysis_steps.forEach(function(step) {
-                if (step.parents) {
+            analysis_steps.forEach(function(step) {
+                if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        var stepId = parent['@id'];
-                        if (!jsonGraph.getNode(stepId)) {
-                            // Make an array of step types
-                            var stepTypesList = parent.analysis_step_types.map(function(type) {
-                                return type;
-                            });
+                        if (parent.uuid in allSteps) {
+                            var stepId = parent['@id'];
+                            if (!jsonGraph.getNode(stepId)) {
+                                // Make an array of step types
+                                var stepTypesList = parent.analysis_step_types.map(function(type) {
+                                    return type;
+                                });
 
-                            // Assemble a single analysis step node.
-                            jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
+                                // Assemble a single analysis step node.
+                                jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
+                            }
                         }
                     }, this);
                 }
@@ -244,6 +255,11 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                     <div data-test="steptype">
                         <dt>Step type</dt>
                         <dd>{selectedStep.analysis_step_types.join(', ')}</dd>
+                    </div>
+
+                    <div data-test="steptype">
+                        <dt>Step name</dt>
+                        <dd>{selectedStep.name}</dd>
                     </div>
 
                     {selectedStep.input_file_types && selectedStep.input_file_types.length ?
