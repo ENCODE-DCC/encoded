@@ -174,7 +174,7 @@ def read_single_sheet(path, name=None):
 
     if name is None:
         root, ext = os.path.splitext(path)
-        stream = open(path, 'rb')
+        stream = open(path, 'r')
 
         if ext == '.xlsx':
             return read_xl(stream)
@@ -191,7 +191,7 @@ def read_single_sheet(path, name=None):
         raise ValueError('Unknown file extension for %r' % path)
 
     if path.endswith('.xlsx'):
-        return cast_row_values(xlreader.DictReader(open(path, 'rb'), sheetname=name))
+        return cast_row_values(xlreader.DictReader(open(path, 'r'), sheetname=name))
 
     if path.endswith('.zip'):
         zf = ZipFile(path)
