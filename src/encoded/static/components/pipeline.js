@@ -45,14 +45,14 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var jsonGraph;
         var analysis_steps = this.props.context.analysis_steps;
 
-        // Make an object with all step UUIDs in the pipeline
-        var allSteps = {}
-        analysis_steps.forEach(function(step) {
-            allSteps[step.uuid] = step;
-        });
-
         // Only produce a graph if there's at least one analysis step
-        if (this.props.context.analysis_steps) {
+        if (analysis_steps && analysis_steps.length) {
+            // Make an object with all step UUIDs in the pipeline
+            var allSteps = {};
+            analysis_steps.forEach(function(step) {
+                allSteps[step.uuid] = step;
+            });
+
             // Create an empty graph architecture
             jsonGraph = new JsonGraph(this.props.context.accession);
 
