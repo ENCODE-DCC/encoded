@@ -76,5 +76,10 @@
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string"
         }
-    }
+    },
+    "boost_values": {
+        "name": 1.0,
+        "title": 1.0,
+        "project": 1.0
+        }
  }
