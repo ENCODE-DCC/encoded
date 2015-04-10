@@ -221,15 +221,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rbU')
+            stream = open(root + '.tsv', 'rU')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rbU')
+            stream = open(root + '.csv', 'rU')
             return read_csv(stream)
 
         if os.path.exists(root + '.json'):
-            stream = open(root + '.json', 'rb')
+            stream = open(root + '.json', 'r')
             return read_json(stream)
 
     return []
