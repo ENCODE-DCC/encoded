@@ -246,10 +246,8 @@ def read_csv(stream, **kw):
 
 
 def read_json(stream):
-    import codecs
     import json
-    utf8 = codecs.getreader('utf-8')
-    obj = json.load(utf8(stream))
+    obj = json.load(stream)
     if isinstance(obj, dict):
         return [obj]
     return obj
