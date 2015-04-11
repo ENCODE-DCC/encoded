@@ -368,60 +368,73 @@ def es_update_data(event):
     # txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))
 
 
+def get_file(es, properties):
+    print("Indexing file - " + properties['href'])
+    urllib3.disable_warnings()
+    http = urllib3.PoolManager()
+    r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
+    comp = io.BytesIO()
+    comp.write(r.data)
+    comp.seek(0)
+    f = gzip.GzipFile(fileobj=comp, mode='rb')
+    del comp
+    r.release_conn()
+    file_data = pd.read_csv(
+        f, delimiter='\t', header=None, chunksize=10000)
+    for new_frame in file_data:
+        # dropping useless columns
+        if len(new_frame.columns) == 10:
+            new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
+        elif len(new_frame.columns) == 9:
+            new_frame = new_frame.drop([3, 4, 5, 6, 7, 8], 1)
+        else:
+            print(properties['uuid'])
+            continue
+        new_frame.columns = ['chromosome', 'start', 'end']
+        new_frame[['start', 'end']] = new_frame[['start', 'end']].astype(int)
+        new_frame = new_frame[~np.isnan(new_frame['start'])]
+        new_frame = new_frame[~np.isnan(new_frame['end'])]
+        new_frame['start'] = new_frame['start'] + 1
+        new_frame['end'] = new_frame['end'] + 1
+        new_frame['uuid'] = properties['uuid']
+        gp_chr = dict(list(new_frame.groupby('chromosome')))
+        for g in gp_chr:
+            chr_data = gp_chr[g]
+            try:
+                es.create(index=g)
+            except:
+                pass
+            records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
+            list_records = [records[it] for it in records]
+            helpers.bulk(
+                es,
+                list_records,
+                index=g,
+                doc_type=properties['assembly']
+            )
+
+
 @view_config(route_name='file_index', request_method='POST', permission="index")
 def file_index(request):
     '''Indexes bed files in ENCODE'''
 
     es = request.registry.get(ELASTIC_SEARCH, None)
-    http = urllib3.PoolManager()
     params = {
-        'type': ['file'],
-        'file_format': ['bed_narrowPeak', 'bed_broadPeak'],
+        'type': ['experiment'],
         'status': ['released'],
-        'field': ['href', 'assembly', 'uuid'],
+        'assay_term_name': ['ChIP-seq', 'DNase-seq'],
+        'replicates.library.biosample.donor.organism.scientific_name': ['Homo sapiens'],
+        'field': ['assay_term_name', 'files.href', 'files.assembly', 'files.uuid',
+                  'files.output_type', 'files.file_format'],
         'limit': ['all']
     }
     path = '/search/?%s' % urlencode(params, True)
     for properties in embed(request, path, as_user=True)['@graph']:
-        if 'assembly' in properties:
-            r = http.request('GET', 'https://www.encodedcc.org' +
-                             properties['href'])
-            comp = io.BytesIO()
-            comp.write(r.data)
-            comp.seek(0)
-            f = gzip.GzipFile(fileobj=comp, mode='rb')
-            del comp
-            r.release_conn()
-            file_data = pd.read_csv(
-                f, delimiter='\t', header=None, chunksize=10000)
-            for new_frame in file_data:
-                # dropping useless columns
-                if len(new_frame.columns) == 10:
-                    new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
-                elif len(new_frame.columns) == 9:
-                    new_frame = new_frame.drop([3, 4, 5, 6, 7, 8], 1)
-                else:
-                    print(properties['uuid'])
-                    continue
-                new_frame.columns = ['chromosome', 'start', 'end']
-                new_frame[['start', 'end']] = new_frame[['start', 'end']].astype(int)
-                new_frame = new_frame[~np.isnan(new_frame['start'])]
-                new_frame = new_frame[~np.isnan(new_frame['end'])]
-                new_frame['start'] = new_frame['start'] + 1
-                new_frame['end'] = new_frame['end'] + 1
-                new_frame['uuid'] = properties['uuid']
-                gp_chr = dict(list(new_frame.groupby('chromosome')))
-                for g in gp_chr:
-                    chr_data = gp_chr[g]
-                    try:
-                        es.create(index=g)
-                    except:
-                        pass
-                    records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
-                    list_records = [records[it] for it in records]
-                    helpers.bulk(
-                        es,
-                        list_records,
-                        index=g,
-                        doc_type=properties['assembly']
-                    )
+        for f in properties['files']:
+            # This is totally hack to restrict number of files indexed.
+            if properties['assay_term_name'] == 'ChIP-seq' and \
+                    f['output_type'] == 'UniformlyProcessedPeakCalls':
+                    get_file(es, f)
+            else:
+                if f['file_format'] == 'bed_narrowPeak':
+                    get_file(es, f)
