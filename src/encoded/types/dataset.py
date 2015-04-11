@@ -54,6 +54,7 @@ class Dataset(Item):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
+         'references'
     ]
     audit_inherit = [
         'original_files',

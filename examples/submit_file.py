@@ -63,6 +63,8 @@ gzip_types = [
     "gff",
     "gtf",
     "tar",
+    "sam",
+    "wig"
 ]
 
 magic_number = open(path, 'rb').read(2)
@@ -98,6 +100,10 @@ validate_map = {
     'csqual': ['-type=csqual'],
     'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
     'CEL': None,
+    'sam': None,
+    'wig': None,
+    'hdf5': None,
+    'gff': None
 }
 
 validate_args = validate_map.get(data['file_format'])

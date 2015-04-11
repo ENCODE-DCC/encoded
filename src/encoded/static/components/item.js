@@ -248,7 +248,7 @@ var jsonSchemaToFormSchema = function(attrs) {
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
-            props.validate = function(schema, value) { return value.match(p.pattern); };
+            props.validate = function(schema, value) { return (typeof value == 'string') ? value.match(p.pattern) : true; };
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);

@@ -138,6 +138,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
+-   sudo -u postgres echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 -   pg_ctlcluster 9.3 main promote
 -   until test "f" = $(sudo -u postgres psql postgres -c "select pg_is_in_recovery()" --tuples-only | tr -d "\\n "); do sleep 10; done
 -   sudo -u encoded bin/update-keys-links production.ini --app-name app
@@ -192,6 +193,10 @@ write_files:
     archive_timeout = 60
     # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
+
+- path: /etc/postgresql/9.3/main/demo.conf
+  content: |
+    archive_command = '/bin/true'
 
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
