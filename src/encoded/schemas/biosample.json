@@ -41,6 +41,7 @@
                             "enum": ["whole organisms"]
                         },
                         "organism": {
+                            "linkTo": "organism",
                             "linkEnum": [
                                 "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                                 "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -66,6 +67,7 @@
                                 "enum": ["whole organisms"]
                             },
                             "organism": {
+                                "linkTo": "organism",
                                 "linkEnum": [
                                     "7745b647-ff15-4ff3-9ced-b897d4e2983c"
                                 ]
@@ -78,6 +80,7 @@
         "fly_life_stage": {
             "properties": {
                 "organism": {
+                    "linkTo": "organism",
                     "linkEnum": [
                         "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                         "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -93,6 +96,7 @@
         "fly_synchronization_stage": {
             "properties": {
                 "organism": {
+                    "linkTo": "organism",
                     "linkEnum": [
                         "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                         "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -108,6 +112,7 @@
         "worm_life_stage": {
             "properties": {
                 "organism": {
+                    "linkTo": "organism",
                     "linkEnum": [
                         "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
                         "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
@@ -121,6 +126,7 @@
         "mouse_life_stage": {
             "properties": {
                 "organism": {
+                    "linkTo": "organism",
                     "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
                 }
             }

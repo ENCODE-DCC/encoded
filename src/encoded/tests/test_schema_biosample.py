@@ -33,6 +33,15 @@ def biosample_starting_amount(biosample):
     return item
 
 
+@pytest.fixture
+def mouse_biosample(biosample, mouse):
+    item = biosample.copy()
+    item.update({
+        'organism': mouse['uuid']
+    })
+    return item
+
+
 def test_biosample_depleted_in(testapp, biosample_depleted_in):
     testapp.post_json('/biosample', biosample_depleted_in)
 
@@ -53,4 +62,14 @@ def test_biosample_starting_amount(testapp, biosample_starting_amount):
 
 def test_biosample_transfection_method(testapp, biosample):
     biosample['transfection_method'] = 'transduction'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_mouse_life_stage(testapp, mouse_biosample):
+    mouse_biosample['mouse_life_stage'] = 'adult'
+    testapp.post_json('/biosample', mouse_biosample)
+
+
+def test_biosample_mouse_life_stage_fail(testapp, biosample):
+    biosample['mouse_life_stage'] = 'adult'
     testapp.post_json('/biosample', biosample, status=422)
