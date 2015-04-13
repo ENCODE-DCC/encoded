@@ -32,8 +32,8 @@ import logging
 import pytz
 import transaction
 import urllib3
-import gzip
 import io
+import gzip
 import pandas as pd
 import numpy as np
 from urllib.parse import (
@@ -369,18 +369,18 @@ def es_update_data(event):
 
 
 def get_file(es, properties):
-    print("Indexing file - " + properties['href'])
+    url = 'https://www.encodedcc.org' + properties['href']
+    print("Indexing file - " + url)
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
-    r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
+    r = http.request('GET', url)
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
     f = gzip.GzipFile(fileobj=comp, mode='rb')
     del comp
     r.release_conn()
-    file_data = pd.read_csv(
-        f, delimiter='\t', header=None, chunksize=10000, engine="python")
+    file_data = pd.read_csv(f, delimiter='\t', header=None, chunksize=10000)
     for new_frame in file_data:
         # dropping useless columns
         if len(new_frame.columns) == 10:
@@ -401,7 +401,7 @@ def get_file(es, properties):
         for g in gp_chr:
             chr_data = gp_chr[g]
             try:
-                es.create(index=g)
+                es.create(index=g.lower())
             except:
                 pass
             records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
@@ -409,7 +409,7 @@ def get_file(es, properties):
             helpers.bulk(
                 es,
                 list_records,
-                index=g,
+                index=g.lower(),
                 doc_type=properties['assembly']
             )
 
