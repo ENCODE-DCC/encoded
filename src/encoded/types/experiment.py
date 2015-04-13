@@ -37,6 +37,8 @@ class Experiment(Dataset):
         'files.analysis_step.software_versions',
         'files.analysis_step.software_versions.software',
         'files.qc_metrics',
+        'files.qc_metrics.step_run',
+        'files.qc_metrics.step_run.analysis_step',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
@@ -62,7 +64,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
-         'references'
+        'references'
     ]
     audit_inherit = [
         'original_files',

@@ -94,7 +94,7 @@ class File(Item):
         'analysis_step',
         'analysis_step.software_versions',
         'analysis_step.software_versions.software',
-        'qc_metrics',
+        'qc_metrics.step_run.analysis_step',
     ]
 
     def unique_keys(self, properties):
