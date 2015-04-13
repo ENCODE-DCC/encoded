@@ -380,7 +380,7 @@ def get_file(es, properties):
     del comp
     r.release_conn()
     file_data = pd.read_csv(
-        f, delimiter='\t', header=None, chunksize=10000)
+        f, delimiter='\t', header=None, chunksize=10000, engine="python")
     for new_frame in file_data:
         # dropping useless columns
         if len(new_frame.columns) == 10:
