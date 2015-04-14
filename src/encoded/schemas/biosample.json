@@ -80,6 +80,20 @@
                 }
             }
         },
+        "worm_synchronization_stage": {
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": [
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                        "a7e711b9-534c-44a3-a782-2a15af620739", 
+                        "451f9e49-685d-40d5-ad89-760b2512262a" 
+                    ]
+                }
+            }
+        },
         "worm_life_stage": {
             "properties": {
                 "organism": {
