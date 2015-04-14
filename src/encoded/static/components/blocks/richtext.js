@@ -68,8 +68,8 @@ globals.blocks.register({
     icon: 'icon icon-file-text',
     schema: function() {
         var ReactForms = require('react-forms');
-        return ReactForms.Mapping({}, {
-            body: ReactForms.Scalar({label: 'HTML Source', input: <textarea rows="15" cols="80" />}),
+        return ReactForms.schema.Mapping({}, {
+            body: ReactForms.schema.Scalar({label: 'HTML Source', input: <textarea rows="15" cols="80" />}),
             className: ReactForms.schema.Scalar({label: 'CSS Class'}),
         });
     },

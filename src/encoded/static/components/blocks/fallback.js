@@ -18,8 +18,7 @@ var FallbackBlockView = React.createClass({
 var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
     render: function() {
         var ReactForms = require('react-forms');
-        var schema = this.props.schema();
-        return <ReactForms.Form {...this.props} schema={schema} defaultValue={this.props.value} />;
+        return <ReactForms.Form {...this.props} defaultValue={this.props.value} />;
     }
 });
 
@@ -27,7 +26,7 @@ var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
 // Use this as a fallback for any block we haven't registered
 globals.blocks.fallback = function (obj) {
     return {
-        label: ','.join(obj['@type']),
+        label: obj['@type'].join(','),
         schema: function() {
             var JSONNode = require('../form').JSONNode;
             return JSONNode.create({

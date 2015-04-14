@@ -114,12 +114,13 @@ globals.blocks.register({
     icon: 'icon icon-image',
     schema: function() {
         var ReactForms = require('react-forms');
-        return ReactForms.Mapping({}, {
+        var Scalar = ReactForms.schema.Scalar;
+        return ReactForms.schema.Mapping({}, {
             display: Scalar({label: "Display Layout", input: displayModeSelect, defaultValue: "search"}),
             image: Scalar({label: "Image", input: imagePicker}),
             body: Scalar({label: "Caption", input: <RichEditor />}),
             href: Scalar({label: "Link URL"}),
-            className: ReactForms.schema.Scalar({label: 'CSS Class'}),
+            className: Scalar({label: 'CSS Class'}),
         });
     },
     view: TeaserBlockView
