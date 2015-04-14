@@ -51,6 +51,8 @@ GZIP_TYPES = [
     "gff",
     "gtf",
     "tar",
+    "sam",
+    "wig"
 ]
 
 
@@ -116,6 +118,10 @@ def check_format(item, path):
         'csqual': ['-type=csqual'],
         'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
         'CEL': None,
+        'sam': None,
+        'wig': None,
+        'hdf5': None,
+        'gff': None
     }
 
     validate_args = validate_map.get(item['file_format'])

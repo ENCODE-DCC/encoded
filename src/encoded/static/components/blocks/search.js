@@ -85,9 +85,9 @@ globals.blocks.register({
     icon: 'icon icon-search',
     schema: function() {
         var ReactForms = require('react-forms');
-        return ReactForms.Mapping({}, {
-            display: ReactForms.Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
-            search: ReactForms.Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
+        return ReactForms.schema.Mapping({}, {
+            display: ReactForms.schema.Scalar({label: 'Display Layout', input: displayModeSelect, defaultValue: 'search'}),
+            search: ReactForms.schema.Scalar({label: 'Search Criteria', input: <SearchBlock mode="edit" />}),
             className: ReactForms.schema.Scalar({label: 'CSS Class'}),
         });
     },

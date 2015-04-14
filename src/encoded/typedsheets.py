@@ -12,7 +12,7 @@ def parse_object(types, value):
 
 def parse_string(types, value):
     assert not types
-    return value.decode('utf-8')
+    return value
 
 
 def parse_ignore(types, value):

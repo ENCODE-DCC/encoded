@@ -125,6 +125,11 @@ module.exports.Persona = {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
         }
+        // Strip url fragment.
+        var url_hash = url.indexOf('#');
+        if (url_hash > -1) {
+            url = url.slice(0, url_hash);
+        }
         var request = fetch(url, options);
         request.xhr_begin = 1 * new Date();
         request.then(response => {
