@@ -435,6 +435,6 @@ def file_index(request):
             if properties['assay_term_name'] == 'ChIP-seq' and \
                     f['output_type'] == 'UniformlyProcessedPeakCalls':
                     get_file(es, f)
-            else:
-                if f['file_format'] == 'bed_narrowPeak':
+            elif properties['assay_term_name'] == 'DNase-seq' and \
+                    f['file_format'] == 'bed_narrowPeak':
                     get_file(es, f)
