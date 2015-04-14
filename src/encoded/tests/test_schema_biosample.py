@@ -14,8 +14,8 @@ def biosample(submitter, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_depleted_in(biosample):
-    item = biosample.copy()
+def biosample_depleted_in(mouse_biosample):
+    item = mouse_biosample.copy()
     item.update({
         'depleted_in_term_name': ['head'],
         'depleted_in_term_id': ["UBERON:0000033"],
