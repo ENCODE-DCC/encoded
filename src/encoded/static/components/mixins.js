@@ -450,20 +450,16 @@ module.exports.HistoryAndTriggers = {
 
         var options = {};
         var action_url = url.parse(url.resolve(this.props.href, target.action));
-        if (target.getAttribute('data-submit')) {
-            href = action_url.href;
-        } else {
-            options.replace = action_url.pathname == url.parse(this.props.href).pathname;
-            var search = serialize(target);
-            if (target.getAttribute('data-removeempty')) {
-                search = search.split('&').filter(function (item) {
-                    return item.slice(-1) != '=';
-                }).join('&');
-            }
-            var href = action_url.pathname;
-            if (search) {
-                href += '?' + search;
-            }
+        options.replace = action_url.pathname == url.parse(this.props.href).pathname;
+        var search = serialize(target);
+        if (target.getAttribute('data-removeempty')) {
+            search = search.split('&').filter(function (item) {
+                return item.slice(-1) != '=';
+            }).join('&');
+        }
+        var href = action_url.pathname;
+        if (search) {
+            href += '?' + search;
         }
         options.skipRequest = target.getAttribute('data-skiprequest');
 
