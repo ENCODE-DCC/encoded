@@ -289,6 +289,102 @@
         "mate mapped different chr": {
             "type": "number",
             "description": ""
+        },
+        "% of reads mapped to multiple loci": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "% of reads mapped to too many loci": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "% of reads unmapped: other": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "% of reads unmapped: too many mismatches": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "% of reads unmapped: too short": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Average input read length": {
+            "description": "STAR mapping metric",
+            "type": "number"
+        },
+        "Average mapped length": {
+            "description": "STAR mapping metric",
+            "type": "number"
+        },
+        "Deletion average length": {
+            "description": "STAR mapping metric",
+            "type": "number"
+        },
+        "Deletion rate per base": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Insertion average length": {
+            "description": "STAR mapping metric",
+            "type": "number"
+        },
+        "Insertion rate per base": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Mapping speed, Million of reads per hour": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Mismatch rate per base, %": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of input reads": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of reads mapped to multiple loci": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of reads mapped to too many loci": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: AT/AC": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: Annotated (sjdb)": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: GC/AG": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: GT/AG": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: Non-canonical": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Number of splices: Total": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Uniquely mapped reads %": {
+            "description": "STAR mapping metric",
+            "type": "string"
+        },
+        "Uniquely mapped reads number": {
+            "description": "STAR mapping metric",
+            "type": "number"
         }
     }
 }
