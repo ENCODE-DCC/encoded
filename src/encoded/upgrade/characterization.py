@@ -1,5 +1,6 @@
 from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS, REFERENCES_UUID
+from .shared import ENCODE2_AWARDS
+from pyramid.traversal import find_root
 
 
 @upgrade_step('antibody_characterization', '', '3')
@@ -106,10 +107,14 @@ def antibody_characterization_4_5(value, system):
 @upgrade_step('antibody_characterization', '5', '6')
 def antibody_characterization_5_6(value, system):
     # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            new_references.append(REFERENCES_UUID[ref])
+            item = publications[ref]
+            new_references.append(str(item.uuid))
         value['references'] = new_references
 
 
@@ -118,8 +123,12 @@ def antibody_characterization_5_6(value, system):
 @upgrade_step('construct_characterization', '4', '5')
 def characterization_4_5(value, system):
     # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            new_references.append(REFERENCES_UUID[ref])
+            item = publications[ref]
+            new_references.append(str(item.uuid))
         value['references'] = new_references
