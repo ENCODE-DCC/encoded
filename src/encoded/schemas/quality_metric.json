@@ -336,7 +336,7 @@
         },
         "Mapping speed, Million of reads per hour": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Mismatch rate per base, %": {
             "description": "STAR mapping metric",
@@ -344,39 +344,39 @@
         },
         "Number of input reads": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of reads mapped to multiple loci": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of reads mapped to too many loci": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: AT/AC": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: Annotated (sjdb)": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: GC/AG": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: GT/AG": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: Non-canonical": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Number of splices: Total": {
             "description": "STAR mapping metric",
-            "type": "string"
+            "type": "number"
         },
         "Uniquely mapped reads %": {
             "description": "STAR mapping metric",

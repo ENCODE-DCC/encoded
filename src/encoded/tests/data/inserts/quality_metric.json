@@ -87,10 +87,10 @@
     },
     {
         "uuid": "50ee4857-41e2-43a2-b009-2a09971d597b",
-        "step_run": "635ac7ff-7822-4f72-aad5-5d8b51b60d95",
+        "step_run": "56c6a019-a247-495c-8179-1639f4836ef8",
         "status": "released",
         "level": "file",
-        "files": [""],
+        "files": ["ENCFF001RCW"],
         "% of reads mapped to multiple loci": "4.69%",
         "% of reads mapped to too many loci": "0.02%",
         "% of reads unmapped: other": "0.07%",
