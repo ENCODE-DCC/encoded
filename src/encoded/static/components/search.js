@@ -855,12 +855,6 @@ var Param = fetched.Param;
         },
 
         render: function() {
-            var query = '';
-            Object.keys(this.state.terms).forEach(function(key) {
-                query += this.state.terms[key] ? '&' + key + '=' + this.state.terms[key] : '';
-            }, this);
-            query = '/search/?type=experiment' + query;
-
             var btnClass = 'btn btn-disclose' + (this.state.disclosed ? ' active' : '');
             var discloseClass = 'icon icon-disclose ' + (this.state.disclosed ? 'icon-caret-down' : 'icon-caret-right');
 
@@ -868,11 +862,15 @@ var Param = fetched.Param;
                 <div className="adv-search-form">
                     <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
                     {this.state.disclosed ?
-                        <form id="panel1" action={query} ref="adv-search" role="form" data-submit="true" autoComplete="off" aria-labeledby="tab1">
+                        <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
                             <div className="row">
                                 <div className="form-group col-md-8">
-                                    <label htmlFor="regionid">GeneID or &ldquo;chr#-start-end&rdquo;</label>
-                                    <input ref="regionid" name="regionid" type="text" className="form-control" onChange={this.handleChange}
+                                    <input type="hidden" name="type" value="experiment" />
+                                    {Object.keys(this.state.terms).map(function(key) {
+                                        return <input type="hidden" name={key} value={this.state.terms[key]} />;
+                                    }, this)}
+                                    <label>GeneID or &ldquo;chr#-start-end&rdquo;</label>
+                                    <input ref="regionid" type="text" className="form-control" onChange={this.handleChange}
                                         onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)} />
                                     {this.state.searchTerm ?
                                         <FetchedData loadingComplete={true}>
