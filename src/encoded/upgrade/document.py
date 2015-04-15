@@ -1,7 +1,9 @@
 from past.builtins import basestring
 from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from pyramid.traversal import find_root
+from uuid import UUID
+import re
 
 
 def fix_reference(value):
@@ -42,6 +44,9 @@ def document_3_4(value, system):
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            item = publications[ref]
-            new_references.append(str(item.uuid))
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
         value['references'] = new_references

@@ -1,5 +1,5 @@
 from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from past.builtins import long
 import re
 from pyramid.traversal import find_root
@@ -153,6 +153,9 @@ def biosample_9_10(value, system):
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            item = publications[ref]
-            new_references.append(str(item.uuid))
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
         value['references'] = new_references
