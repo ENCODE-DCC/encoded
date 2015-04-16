@@ -597,6 +597,11 @@ def human(organisms):
 
 
 @pytest.fixture
+def mouse(organisms):
+    return [o for o in organisms if o['name'] == 'mouse'][0]
+
+
+@pytest.fixture
 def organism(human):
     return human
 

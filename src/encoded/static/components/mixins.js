@@ -111,7 +111,7 @@ module.exports.Persona = {
     },
 
     fetch: function (url, options) {
-        options = _.extend({}, options);
+        options = _.extend({credentials: 'same-origin'}, options);
         var http_method = options.method || 'GET';
         if (!(http_method === 'GET' || http_method === 'HEAD')) {
             var headers = options.headers = _.extend({}, options.headers);
@@ -124,6 +124,11 @@ module.exports.Persona = {
             if (session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
+        }
+        // Strip url fragment.
+        var url_hash = url.indexOf('#');
+        if (url_hash > -1) {
+            url = url.slice(0, url_hash);
         }
         var request = fetch(url, options);
         request.xhr_begin = 1 * new Date();
@@ -138,7 +143,7 @@ module.exports.Persona = {
     },
 
     extractSessionCookie: function () {
-        var cookie = require('cookie-cutter');
+        var cookie = require('cookie-monster');
         var session_cookie = cookie(document).get('session');
         if (this.props.session_cookie !== session_cookie) {
             this.setProps({session_cookie: session_cookie});

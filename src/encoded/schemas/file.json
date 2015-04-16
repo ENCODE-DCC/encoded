@@ -630,6 +630,8 @@
         "rcc": ".rcc",
         "tar": ".tar.gz",
         "tsv": ".tsv",
-        "csv": ".csv"
+        "csv": ".csv",
+        "wig": ".wig.gz",
+        "sam": ".sam.gz"
     }
 }

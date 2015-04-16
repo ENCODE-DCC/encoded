@@ -168,7 +168,7 @@ var Form = module.exports.Form = React.createClass({
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
                 var name = error.name;
-                var match = /u'(\w+)' is a required property/.exec(error.description);
+                var match = /^u?'([^']+)' is a required property$/.exec(error.description);
                 if (match) {
                     name.push(match[1]);
                 }
