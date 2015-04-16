@@ -111,7 +111,7 @@ module.exports.Persona = {
     },
 
     fetch: function (url, options) {
-        options = _.extend({}, options);
+        options = _.extend({credentials: 'same-origin'}, options);
         var http_method = options.method || 'GET';
         if (!(http_method === 'GET' || http_method === 'HEAD')) {
             var headers = options.headers = _.extend({}, options.headers);
