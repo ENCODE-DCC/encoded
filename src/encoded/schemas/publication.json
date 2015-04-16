@@ -21,7 +21,6 @@
             "title": "Title",
             "description": "Title of the publication or communication.",
             "type": "string",
-            "uniqueKey":  "publication:identifer"
         },
         "abstract": {
             "rdfs:subPropertyOf": "dc:abstract",
@@ -84,6 +83,7 @@
             "title": "Identifiers",
             "description": "The identifiers that reference data found in the object.",
             "type": "array",
+            "uniqueKey":  "publication:identifier",
             "items": {
                 "title": "Identifier",
                 "description": "An identifier that references data found in the object.",
