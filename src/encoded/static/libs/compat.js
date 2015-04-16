@@ -3,7 +3,7 @@ require('es5-shim');
 require('es5-shim/es5-sham');
 require('html5shiv/dist/html5shiv');
 if (!('Promise' in window)) require('es6-promise').polyfill();
-// Chrome 42 fetch is broken
+// Chrome 42 fetch does not have abort.
 window.fetch = undefined;
 require('whatwg-fetch');
 
