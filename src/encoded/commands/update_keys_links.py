@@ -28,16 +28,7 @@ EPILOG = __doc__
 logger = logging.getLogger(__name__)
 
 DEFAULT_COLLECTIONS = [
-    antibody_characterization,
-    biosample,
-    biosample_characterization,
-    dataset,
-    document,
-    donor_characterization,
-    experiment,
-    human_donor,
-    mouse_donor,
-    publication
+    'publication',
 ]
 
 
