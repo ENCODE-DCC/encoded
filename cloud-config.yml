@@ -136,9 +136,10 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -u postgres echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
--   pg_ctlcluster 9.3 main promote
--   until test "f" = $(sudo -u postgres psql postgres -c "select pg_is_in_recovery()" --tuples-only | tr -d "\\n "); do sleep 10; done
+-   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
+-   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+-   pg_ctlcluster 9.3 main restart
+-   until sudo -u postgres psql postgres -c ""; do sleep 10; done
 -   sudo -u encoded bin/update-keys-links production.ini --app-name app
 -   sudo -u encoded bin/upgrade production.ini --app-name app
 - fi
