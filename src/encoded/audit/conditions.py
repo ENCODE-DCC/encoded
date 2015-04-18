@@ -29,4 +29,4 @@ def rfa(*rfa_names):
 @memoize
 def _award_rfa(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
-    return award.upgrade_properties()['rfa']
+    return award.upgrade_properties().get('rfa')
