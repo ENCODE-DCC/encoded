@@ -3,6 +3,7 @@ var React = require('react');
 var fetched = require('../fetched');
 var globals = require('../globals');
 var item = require('./item');
+var noarg_memoize = require('../../libs/noarg-memoize');
 var richtext = require('./richtext');
 var _ = require('underscore');
 
@@ -112,7 +113,7 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 globals.blocks.register({
     label: 'teaser block',
     icon: 'icon icon-image',
-    schema: function() {
+    schema: noarg_memoize(function() {
         var ReactForms = require('react-forms');
         var Scalar = ReactForms.schema.Scalar;
         return ReactForms.schema.Mapping({}, {
@@ -122,6 +123,6 @@ globals.blocks.register({
             href: Scalar({label: "Link URL"}),
             className: Scalar({label: 'CSS Class'}),
         });
-    },
+    }),
     view: TeaserBlockView
 }, 'teaserblock');
