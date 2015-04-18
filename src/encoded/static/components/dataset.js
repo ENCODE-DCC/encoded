@@ -330,7 +330,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.assembly}</td>
                     <td>{file.genome_annotation}</td>
                     <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                    <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                    <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                     <td>{humanFileSize(file.file_size)}</td>
                     <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
