@@ -98,7 +98,12 @@ runcmd:
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
-- sudo -u postgres echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+- echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+- if test "%(ROLE)s" = "demo"
+- then
+-   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
+-   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
+- fi
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
@@ -136,10 +141,6 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
--   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
--   pg_ctlcluster 9.3 main restart
--   until sudo -u postgres psql postgres -c ""; do sleep 10; done
 -   sudo -u encoded bin/update-keys-links production.ini --app-name app
 -   sudo -u encoded bin/upgrade production.ini --app-name app
 - fi
