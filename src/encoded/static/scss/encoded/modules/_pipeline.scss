@@ -61,6 +61,13 @@ g.node {
     }
 }
 
+g.subnodes {
+    circle {
+        stroke: #a0a0a0;
+        stroke-width: 1.5px;
+    }
+}
+
 g.cluster {
     rect {
         fill: #f0f8f0;

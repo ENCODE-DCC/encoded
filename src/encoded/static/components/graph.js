@@ -116,9 +116,20 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
-                    rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
-                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
+                var subNodes = [];
+                if (node.id === "file:ENCFF000VUQ") {
+                    subNodes = ["1", "2"];
+                }
+
+                graph.setNode(node.id + '', {
+                    label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius,
+                    ry: node.metadata.cornerRadius,
+                    class: node.metadata.cssClass,
+                    shape: node.metadata.shape,
+                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10",
+                    subnodes: subNodes
+                });
                 if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
                 }
