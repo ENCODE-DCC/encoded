@@ -15,32 +15,14 @@
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
         "step_run": {
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
             "linkTo": "analysis_step_run"
-        },
-        "files": {
-            "title": "QC Input files",
-            "description": "All ENCFF files used to initiate the qc metrics",
-            "type": "array",
-            "items": {
-                "title": "Input File",
-                "type": "string",
-                "linkTo": "file"
-            }
-        },
-        "level": {
-            "enum": [
-                "file",
-                "replicate",
-                "library",
-                "experiment"
-            ],
-            "type": "string",
-            "description": "The level at which comparisons should be visualized.",
-            "title": "QC level"
         },
         "SD of log ratios": {
             "type": "number",
