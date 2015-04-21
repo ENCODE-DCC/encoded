@@ -14,85 +14,87 @@ var BrowserFeat = require('./browserfeat').BrowserFeat;
 // In this implementation, all edges are in the root object, not in the nodes array.
 // This allows edges to cross between children and parents.
 
-// Constructor for a graph architecture
-function JsonGraph(id) {
-    this.id = id;
-    this.root = true;
-    this['@type'] = [];
-    this.label = [];
-    this.shape = '';
-    this.metadata = {};
-    this.nodes = [];
-    this.edges = [];
-}
+class JsonGraph {
 
-// Add node to the graph architecture. The caller must keep track that all node IDs
-// are unique -- this code doesn't verify this.
-// id: uniquely identify the node
-// label: text to display in the node
-// cssClass: optional CSS class to assign to the SVG object for this node
-// type: Optional text type to track the type of node this is
-// parentNode: Optional reference to parent node; defaults to graph root
-JsonGraph.prototype.addNode = function(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
-    var newNode = {};
-    newNode.id = id;
-    newNode['@type'] = [];
-    newNode['@type'][0] = options.type;
-    newNode.label = [];
-    if (typeof label === 'string' || typeof label === 'number') {
-        // label is a string; assign to first array element
-        newNode.label[0] = label;
-    } else {
-        // Otherwise, assume label is an array; clone it
-        newNode.label = label.slice(0);
+    constructor(id) {
+        this.id = id;
+        this.root = true;
+        this['@type'] = [];
+        this.label = [];
+        this.shape = '';
+        this.metadata = {};
+        this.nodes = [];
+        this.edges = [];
     }
-    newNode.metadata = _.clone(options);
-    newNode.nodes = [];
-    var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
-    target.push(newNode);
-};
 
-// Add edge to the graph architecture
-// source: ID of node for the edge to originate; corresponds to 'id' parm of addNode
-// target: ID of node for the edge to terminate
-JsonGraph.prototype.addEdge = function(source, target) {
-    var newEdge = {};
-    newEdge.id = '';
-    newEdge.source = source;
-    newEdge.target = target;
-    this.edges.push(newEdge);
-};
+    // Add node to the graph architecture. The caller must keep track that all node IDs
+    // are unique -- this code doesn't verify this.
+    // id: uniquely identify the node
+    // label: text to display in the node
+    // cssClass: optional CSS class to assign to the SVG object for this node
+    // type: Optional text type to track the type of node this is
+    // parentNode: Optional reference to parent node; defaults to graph root
+    addNode(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
+        var newNode = {};
+        newNode.id = id;
+        newNode['@type'] = [];
+        newNode['@type'][0] = options.type;
+        newNode.label = [];
+        if (typeof label === 'string' || typeof label === 'number') {
+            // label is a string; assign to first array element
+            newNode.label[0] = label;
+        } else {
+            // Otherwise, assume label is an array; clone it
+            newNode.label = label.slice(0);
+        }
+        newNode.metadata = _.clone(options);
+        newNode.nodes = [];
+        var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
+        target.push(newNode);
+    }
 
-// Return the JSON graph node matching the given ID. This function finds the node
-// regardless of where it is in the hierarchy of nodes.
-// id: ID of the node to search for
-// parent: Optional parent node to begin the search; graph root by default
-JsonGraph.prototype.getNode = function(id, parent) {
-    var nodes = (parent && parent.nodes) || this.nodes;
+    // Add edge to the graph architecture
+    // source: ID of node for the edge to originate; corresponds to 'id' parm of addNode
+    // target: ID of node for the edge to terminate
+    addEdge(source, target) {
+        var newEdge = {};
+        newEdge.id = '';
+        newEdge.source = source;
+        newEdge.target = target;
+        this.edges.push(newEdge);
+    }
 
-    for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].id === id) {
-            return nodes[i];
-        } else if (nodes[i].nodes.length) {
-            var matching = this.getNode(id, nodes[i]);
-            if (matching) {
-                return matching;
+    // Return the JSON graph node matching the given ID. This function finds the node
+    // regardless of where it is in the hierarchy of nodes.
+    // id: ID of the node to search for
+    // parent: Optional parent node to begin the search; graph root by default
+    getNode(id, parent) {
+        var nodes = (parent && parent.nodes) || this.nodes;
+
+        for (var i = 0; i < nodes.length; i++) {
+            if (nodes[i].id === id) {
+                return nodes[i];
+            } else if (nodes[i].nodes.length) {
+                var matching = this.getNode(id, nodes[i]);
+                if (matching) {
+                    return matching;
+                }
             }
         }
+        return undefined;
     }
-    return undefined;
-};
 
-// Return 
-JsonGraph.prototype.getEdge = function(source, target) {
-    if (this.edges && this.edges.length) {
-        var matching = _(this.edges).find(function(edge) {
-            return (source === edge.source) && (target === edge.target);
-        });
-        return matching;
+    getEdge(source, target) {
+        if (this.edges && this.edges.length) {
+            var matching = _(this.edges).find(function(edge) {
+                return (source === edge.source) && (target === edge.target);
+            });
+            return matching;
+        }
+        return undefined;
     }
-    return undefined;
-}
+
+};
 
 module.exports.JsonGraph = JsonGraph;
 
@@ -114,9 +116,20 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                graph.setNode(node.id + '', {label: node.label.length > 1 ? node.label : node.label[0],
-                    rx: node.metadata.cornerRadius, ry: node.metadata.cornerRadius, class: node.metadata.cssClass, shape: node.metadata.shape,
-                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10"});
+                var subNodes = [];
+                if (node.id === "file:ENCFF000VUQ") {
+                    subNodes = ["1", "2"];
+                }
+
+                graph.setNode(node.id + '', {
+                    label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius,
+                    ry: node.metadata.cornerRadius,
+                    class: node.metadata.cssClass,
+                    shape: node.metadata.shape,
+                    paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10",
+                    subnodes: subNodes
+                });
                 if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
                 }

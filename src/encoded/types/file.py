@@ -9,6 +9,7 @@ from ..schema_utils import (
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -78,6 +79,7 @@ class File(Item):
 
     rev = {
         'paired_with': ('file', 'paired_with'),
+        'qc_metrics': ('quality_metric', 'files'),
     }
 
     embedded = [
@@ -91,7 +93,8 @@ class File(Item):
         'pipeline',
         'analysis_step',
         'analysis_step.software_versions',
-        'analysis_step.software_versions.software'
+        'analysis_step.software_versions.software',
+        'qc_metrics.step_run.analysis_step',
     ]
 
     def unique_keys(self, properties):
@@ -175,6 +178,17 @@ class File(Item):
     })
     def output_category(self, output_type):
         return self.schema['output_type_output_category'].get(output_type)
+
+    @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.files",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
