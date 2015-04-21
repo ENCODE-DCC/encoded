@@ -3,7 +3,7 @@
     "id": "/profiles/mad_cc_lrna_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run", "files"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -19,21 +19,29 @@
         "schema_version": {
             "default": "1"
         },
-        "SD of log ratios": {
+        "NSC": {
             "type": "number",
-            "description": "Standard Deviation of replicate log ratios from RNA-seq quantification"
+            "description": ""
         },
-        "Pearson correlation": {
+        "RSC": {
             "type": "number",
-            "description": "Pearson correlation coefficient of replicates from RNA-seq quantification"
+            "description": ""
         },
-        "Spearman correlation": {
+        "PBC1": {
             "type": "number",
-            "description": "Spearman correlation coefficient of replicates from RNA-seq quantification"
+            "description": ""
         },
-        "MAD of log ratios": {
+        "PBC2": {
             "type": "number",
-            "description": "Mean-Average-Deviation of replicate log ratios from RNA-seq quantification"
+            "description": ""
+        },
+         "fragment length": {
+            "type": "number",
+            "description": ""
+        },
+       "NRF": {
+            "type": "number",
+            "description": ""
         }
     }
 }

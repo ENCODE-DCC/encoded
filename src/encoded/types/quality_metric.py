@@ -25,20 +25,16 @@ class QualityMetric(Item):
 class MadCCLrnaMetric(QualityMetric):
     item_type = 'mad_cc_lrna_qc_metric'
     schema = load_schema('mad_cc_lrna_qc_metric.json')
-    embedded = [
-        'applies_to'
-    ]
-    ref = {
-        "applies_to": ('input_files', 'workflow_run', 'step_run')
-    }
 
     @calculated_property(schema={
         "title": "Applies to",
         "type": "array",
         "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "step_run.workflow_run.input_files",
+            "type": 'string',
+            "linkTo": "file",
         },
     })
-    def applies_to(self, request, applies_to):
-        return paths_filtered_by_status(request, applies_to)
+    def applies_to(self, request, step_run):
+        workflow_run = request.embed(step_run, '@@object')['workflow_run']
+        input_files = request.embed(workflow_run, '@@object')['input_files']
+        return input_files
