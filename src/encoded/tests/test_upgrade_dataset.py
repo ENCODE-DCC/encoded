@@ -191,10 +191,10 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_references(root, registry, dataset, dataset_5, threadlocals, dummy_request):
+def test_dataset_upgrade_references(root, registry, dataset, dataset_5, publications, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_5, target_version='6', context=context)
     assert value['schema_version'] == '6'
-    assert value['references'] == ["8312fc0c-b241-4cb2-9b01-1438910550ad"]
+    assert value['references'] == [publications[0]['uuid']]
