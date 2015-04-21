@@ -247,7 +247,7 @@ class Software(Item):
     schema = load_schema('software.json')
     name_key = 'name'
     embedded = [
-        'references', 
+        'references',
         'versions'
     ]
     rev = {
