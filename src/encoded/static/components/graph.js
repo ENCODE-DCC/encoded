@@ -25,6 +25,7 @@ class JsonGraph {
         this.metadata = {};
         this.nodes = [];
         this.edges = [];
+        this.subnodes = [];
     }
 
     // Add node to the graph architecture. The caller must keep track that all node IDs
@@ -34,7 +35,7 @@ class JsonGraph {
     // cssClass: optional CSS class to assign to the SVG object for this node
     // type: Optional text type to track the type of node this is
     // parentNode: Optional reference to parent node; defaults to graph root
-    addNode(id, label, options) { //cssClass, type, shape, cornerRadius, parentNode
+    addNode(id, label, options, subnodes) { //cssClass, type, shape, cornerRadius, parentNode
         var newNode = {};
         newNode.id = id;
         newNode['@type'] = [];
@@ -49,6 +50,7 @@ class JsonGraph {
         }
         newNode.metadata = _.clone(options);
         newNode.nodes = [];
+        newNode.subnodes = subnodes;
         var target = (options.parentNode && options.parentNode.nodes) || this.nodes;
         target.push(newNode);
     }
@@ -74,6 +76,27 @@ class JsonGraph {
         for (var i = 0; i < nodes.length; i++) {
             if (nodes[i].id === id) {
                 return nodes[i];
+            } else if (nodes[i].nodes.length) {
+                var matching = this.getNode(id, nodes[i]);
+                if (matching) {
+                    return matching;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    getSubnode(id, parent) {
+        var nodes = (parent && parent.nodes) || this.nodes;
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+            if (node.subnodes && node.subnodes.length) {
+                for (var j = 0; j < node.subnodes.length; j++) {
+                    if (node.subnodes[j].id === id) {
+                        return node.subnodes[j];
+                    }
+                }
             } else if (nodes[i].nodes.length) {
                 var matching = this.getNode(id, nodes[i]);
                 if (matching) {
@@ -116,11 +139,6 @@ var Graph = module.exports.Graph = React.createClass({
         function convertGraphInner(graph, parent) {
             // For each node in parent node (or top-level graph)
             parent.nodes.forEach(function(node) {
-                var subNodes = [];
-                if (node.id === "file:ENCFF000VUQ") {
-                    subNodes = ["1", "2"];
-                }
-
                 graph.setNode(node.id + '', {
                     label: node.label.length > 1 ? node.label : node.label[0],
                     rx: node.metadata.cornerRadius,
@@ -128,7 +146,7 @@ var Graph = module.exports.Graph = React.createClass({
                     class: node.metadata.cssClass,
                     shape: node.metadata.shape,
                     paddingLeft: "20", paddingRight: "20", paddingTop: "10", paddingBottom: "10",
-                    subnodes: subNodes
+                    subnodes: node.subnodes
                 });
                 if (!parent.root) {
                     graph.setParent(node.id + '', parent.id + '');
@@ -176,6 +194,22 @@ var Graph = module.exports.Graph = React.createClass({
             .attr("viewBox", "-20 -40 " + (width + 40) + " " + (height + 60));
     },
 
+    bindClickHandlers: function(d3, el) {
+        // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
+        var svg = d3.select(el);
+        var reactThis = this;
+        var nodes = svg.selectAll("g.node");
+        var subnodes = svg.selectAll("g.subnode circle");
+
+        nodes.on('click', function(nodeId) {
+            reactThis.props.nodeClickHandler(nodeId);
+        });
+        subnodes.on('click', function(subnode) {
+            d3.event.stopPropagation();
+            reactThis.props.nodeClickHandler(subnode.id);
+        });
+    },
+
     componentDidMount: function () {
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
@@ -195,13 +229,8 @@ var Graph = module.exports.Graph = React.createClass({
                 // Draw the graph into the panel
                 this.drawGraph(el);
 
-                // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
-                var reactThis = this;
-                svg.selectAll("g.node").each(function(nodeId) {
-                    globals.bindEvent(this, 'click', function(e) {
-                        reactThis.props.nodeClickHandler(e, nodeId);
-                    });
-                });
+                // Bind node/subnode click handlers to parent component handlers
+                this.bindClickHandlers(d3, el);
             }.bind(this));
         } else {
             // Output text indicating that graphs aren't supported.
@@ -216,6 +245,7 @@ var Graph = module.exports.Graph = React.createClass({
             el.setAttribute('disabled', 'disabled');
         }
 
+        // Disable download button if running on Trident (IE non-Spartan) browsers
         if (BrowserFeat.getBrowserCaps('uaTrident')) {
             this.setState({dlDisabled: true});
         }
@@ -224,8 +254,10 @@ var Graph = module.exports.Graph = React.createClass({
     // State change; redraw the graph
     componentDidUpdate: function() {
         if (this.dagreLoaded) {
+            var d3 = require('d3');
             var el = this.refs.graphdisplay.getDOMNode();
             this.drawGraph(el);
+            this.bindClickHandlers(d3, el);
         }
     },
 

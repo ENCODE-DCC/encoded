@@ -835,6 +835,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var error;
             var fileId = 'file:' + file.accession;
             var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
+            var metricsInfo;
+
+            // Add QC metrics info from the file to the list to generate the nodes later
+            if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
+                metricsInfo = file.qc_metrics.map(function(metric) {
+                    var qcId = 'qc:' + metric.uuid;
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+                });
+            }
 
             // Add file to the graph as a node
             jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')', {
@@ -844,7 +853,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: file
-            });
+            }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
             if (file.analysis_step) {
@@ -886,15 +895,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         jsonGraph.addEdge('file:' + derived.accession, stepId);                        
                     }
                 });
-
-                // Add QC metrics info from the file to the list to generate the nodes later
-                if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
-                    file.qc_metrics.forEach(function(metric) {
-                        if (metric.step_run.analysis_step['@id'] === file.analysis_step['@id']) {
-                            allMetricsInfo.push({metric: metric, fileId: fileId, stepId: stepId, rep: replicateNode});
-                        }
-                    });
-                }
             }
         }
     }, this);
@@ -914,26 +914,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 contributing: true
             });
         }, this);
-    }
-
-    // Add QC nodes to the graph.
-    allMetricsInfo = _(allMetricsInfo).uniq(function(metricInfo) {
-        return metricInfo.metric['@id'];
-    });
-    if (allMetricsInfo.length) {
-        allMetricsInfo.forEach(function(metricInfo) {
-            var qcId = 'qc:' + qcFileAccessions(metricInfo.metric) + metricInfo.stepId;
-            jsonGraph.addNode(qcId, 'QC Metrics', {
-                cssClass: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''),
-                type: 'qc',
-                shape: 'rect',
-                cornerRadius: 0,
-                parentNode: metricInfo.rep,
-                ref: metricInfo.metric
-            });
-            jsonGraph.addEdge(metricInfo.stepId, qcId);
-            jsonGraph.addEdge(metricInfo.fileId, qcId);
-        });
     }
 
     return jsonGraph;
@@ -956,9 +936,18 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Find data matching selected node, if any
         if (infoNodeId) {
-            var node = jsonGraph.getNode(infoNodeId);
-            if (node) {
-                meta = globals.graph_detail.lookup(node)(node);
+            if (infoNodeId.indexOf('qc:') === -1) {
+                // Not a QC subnode; render normally
+                var node = jsonGraph.getNode(infoNodeId);
+                if (node) {
+                    meta = globals.graph_detail.lookup(node)(node);
+                }
+            } else {
+                // QC subnode
+                var subnode = jsonGraph.getSubnode(infoNodeId);
+                if (subnode) {
+                    meta = QcDetailsView(subnode);
+                }
             }
         }
 
@@ -966,8 +955,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     // Handle a click in a graph node
-    handleNodeClick: function(e, nodeId) {
-        e.stopPropagation(); e.preventDefault();
+    handleNodeClick: function(nodeId) {
+        console.log(nodeId);
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
@@ -1118,19 +1107,18 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'file');
 
 
-var QcDetailsView = function(node) {
-    var metrics = node.metadata.ref;
+var QcDetailsView = function(metrics) {
     var reserved = {'uuid': true, 'assay_term_name': true, 'level': true, 'status': true, 'date_created': true};
 
     if (metrics) {
         return (
             <dl className="key-value">
-                {Object.keys(metrics).map(function(key) {
-                    if (typeof metrics[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
+                {Object.keys(metrics.ref).map(function(key) {
+                    if (typeof metrics.ref[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
                         return(
                             <div>
                                 <dt>{key}</dt>
-                                <dd>{metrics[key]}</dd>
+                                <dd>{metrics.ref[key]}</dd>
                             </div>
                         );
                     }
@@ -1142,5 +1130,3 @@ var QcDetailsView = function(node) {
         return null;
     }
 };
-
-globals.graph_detail.register(QcDetailsView, 'qc');
