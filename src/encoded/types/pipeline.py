@@ -88,7 +88,7 @@ class AnalysisStepRun(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkFrom": "quality_metric.step_run",
+            "linkFrom": "file.step_run",
         },
     })
     def output_files(self, request, output_files):

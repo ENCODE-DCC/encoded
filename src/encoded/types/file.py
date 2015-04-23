@@ -144,7 +144,6 @@ class File(Item):
         if read_length is not None:
             return "nt"
 
-    '''
     @calculated_property(schema={
         "title": "Pipeline",
         "type": "string",
@@ -152,7 +151,7 @@ class File(Item):
     })
     def pipeline(self, request, step_run=None):
         if step_run is not None:
-            workflow = request.embed(step_run, '@@object').get('workflow_run')
+            workflow = request.embed(step_run, '@@raw').get('workflow_run')
             if workflow:
                 return request.embed(workflow, '@@object').get('pipeline')
 
@@ -161,10 +160,9 @@ class File(Item):
         "type": "string",
         "linkTo": "analysis_step"
     })
-    '''
     def analysis_step(self, request, step_run=None):
         if step_run is not None:
-            return request.embed(step_run, '@@object').get('analysis_step')
+            return request.embed(step_run, '@@raw').get('analysis_step')
 
     @calculated_property(schema={
         "title": "Output category",
