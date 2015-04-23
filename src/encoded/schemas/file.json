@@ -130,7 +130,9 @@
                         "rcc",
                         "CEL",
                         "tsv",
-                        "csv"
+                        "csv",
+                        "sam",
+                        "wig"
                     ]
                 },
                 {
@@ -353,7 +355,6 @@
             "enum": [
                 "single-ended",
                 "paired-ended",
-                "mixed",
                 "unknown"
             ]
         },
@@ -629,6 +630,8 @@
         "rcc": ".rcc",
         "tar": ".tar.gz",
         "tsv": ".tsv",
-        "csv": ".csv"
+        "csv": ".csv",
+        "wig": ".wig.gz",
+        "sam": ".sam.gz"
     }
 }

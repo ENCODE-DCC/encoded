@@ -16,6 +16,7 @@ ORDER = [
     'organism',
     'source',
     'target',
+    'publication',
     'document',
     'antibody_lot',
     'antibody_characterization',
@@ -38,7 +39,6 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
-    'publication',
     'software',
     'software_version',
     'analysis_step',
@@ -174,7 +174,7 @@ def read_single_sheet(path, name=None):
 
     if name is None:
         root, ext = os.path.splitext(path)
-        stream = open(path, 'rb')
+        stream = open(path, 'r')
 
         if ext == '.xlsx':
             return read_xl(stream)
@@ -221,15 +221,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rbU')
+            stream = open(root + '.tsv', 'rU')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rbU')
+            stream = open(root + '.csv', 'rU')
             return read_csv(stream)
 
         if os.path.exists(root + '.json'):
-            stream = open(root + '.json', 'rb')
+            stream = open(root + '.json', 'r')
             return read_json(stream)
 
     return []
@@ -246,10 +246,8 @@ def read_csv(stream, **kw):
 
 
 def read_json(stream):
-    import codecs
     import json
-    utf8 = codecs.getreader('utf-8')
-    obj = json.load(utf8(stream))
+    obj = json.load(stream)
     if isinstance(obj, dict):
         return [obj]
     return obj
@@ -518,6 +516,9 @@ PHASE1_PIPELINES = {
     'workflow_run': [
         remove_keys('input_files'),
     ],
+    'publication': [
+        remove_keys('datasets'),
+    ]
 }
 
 
@@ -547,6 +548,9 @@ PHASE2_PIPELINES = {
     'workflow_run': [
         skip_rows_missing_all_keys('input_files'),
     ],
+    'publication': [
+        skip_rows_missing_all_keys('datasets'),
+    ]
 }
 
 
