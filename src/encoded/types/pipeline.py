@@ -36,7 +36,7 @@ class Pipeline(Item):
 
 @collection(
     name='analysis-steps',
-        unique_key='analysis_step:name',
+    unique_key='analysis_step:name',
     properties={
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps',
@@ -88,7 +88,7 @@ class AnalysisStepRun(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkFrom": "file.step_run",
+            "linkFrom": "quality_metric.step_run",
         },
     })
     def output_files(self, request, output_files):

@@ -144,6 +144,7 @@ class File(Item):
         if read_length is not None:
             return "nt"
 
+    '''
     @calculated_property(schema={
         "title": "Pipeline",
         "type": "string",
@@ -160,6 +161,7 @@ class File(Item):
         "type": "string",
         "linkTo": "analysis_step"
     })
+    '''
     def analysis_step(self, request, step_run=None):
         if step_run is not None:
             return request.embed(step_run, '@@object').get('analysis_step')
@@ -184,7 +186,7 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.files",
+            "linkFrom": "quality_metric.analysis_step_run",
         },
     })
     def qc_metrics(self, request, qc_metrics):
