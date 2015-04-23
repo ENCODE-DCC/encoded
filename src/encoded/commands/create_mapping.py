@@ -180,7 +180,7 @@ def audit_mapping():
 def es_mapping(mapping):
     return {
         '_all': {
-            'analyzer': 'encoded_index_analyzer'
+            'enabled': False
         },
         'dynamic_templates': [
             {
@@ -231,24 +231,6 @@ def es_mapping(mapping):
                 'index': 'not_analyzed'
             },
             'embedded': mapping,
-            'encoded_all_ngram': {
-                'type': 'string',
-                'include_in_all': False,
-                'boost': 1,
-                'search_analyzer': 'encoded_search_analyzer',
-                'index_analyzer': 'encoded_index_analyzer'
-            },
-            'encoded_all_standard': {
-                'type': 'string',
-                'include_in_all': False,
-                'boost': 2
-            },
-            'encoded_all_untouched': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed',
-                'boost': 3
-            },
             'object': {
                 'type': 'object',
                 'enabled': False,
@@ -427,10 +409,19 @@ def type_mapping(types, item_type, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
-
-        new_mapping[last]['boost'] = boost_values[value]
-        new_mapping[last]['copy_to'] = \
-            ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
+        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
+        new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
+        new_mapping[last]['term_vector'] = 'with_positions_offsets'
+        new_mapping[last]['store'] = True
+        new_mapping[last]['fields'] = {
+            'raw': {
+                'type': 'string',
+                'index': 'not_analyzed'
+            }
+        }
+        del new_mapping[last]['include_in_all']
+        if 'index' in new_mapping[last]:
+            del new_mapping[last]['index']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
