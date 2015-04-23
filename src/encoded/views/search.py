@@ -225,7 +225,9 @@ def load_results(request, es_results, result):
 
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
-    ''' Search view connects to ElasticSearch and returns the results'''
+    """
+    Search view connects to ElasticSearch and returns the results
+    """
     root = request.root
     types = request.registry[TYPES]
     result = {
@@ -351,7 +353,6 @@ def search(context, request, search_type=None):
             })
 
     # generate batch hub URL for experiments
-    # TODO: should extend to datasets as well
     if doc_types == ['experiment'] and any(
             facet['doc_count'] > 0
             for facet in es_results['aggregations']['assembly']['assembly']['buckets']):
