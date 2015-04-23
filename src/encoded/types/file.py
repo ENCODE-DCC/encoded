@@ -18,6 +18,7 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
+from pyramid.traversal import traverse
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -149,11 +150,16 @@ class File(Item):
         "type": "string",
         "linkTo": "pipeline"
     })
-    def pipeline(self, request, step_run=None):
-        if step_run is not None:
-            workflow = request.embed(step_run, '@@raw').get('workflow_run')
-            if workflow:
-                return request.embed(workflow, '@@object').get('pipeline')
+    def pipeline(self, root, request, step_run=None):
+        if step_run is None:
+            return
+        workflow_uuid = traverse(root, step_run)['context'].__json__(request).get('workflow_run')
+        if workflow_uuid is None:
+            return
+        pipeline_uuid = root[workflow_uuid].__json__(request).get('pipeline')
+        if pipeline_uuid is None:
+            return
+        return request.resource_path(root[pipeline_uuid])
 
     @calculated_property(schema={
         "title": "Analysis Step",
@@ -162,7 +168,7 @@ class File(Item):
     })
     def analysis_step(self, request, step_run=None):
         if step_run is not None:
-            return request.embed(step_run, '@@raw').get('analysis_step')
+            return request.embed(step_run, '@@object').get('analysis_step')
 
     @calculated_property(schema={
         "title": "Output category",

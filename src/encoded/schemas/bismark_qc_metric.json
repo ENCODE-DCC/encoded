@@ -3,7 +3,7 @@
     "id": "/profiles/mad_cc_lrna_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "files"],
+    "required": ["step_run"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [

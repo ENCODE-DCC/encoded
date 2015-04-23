@@ -35,8 +35,11 @@ class MadCCLrnaMetric(QualityMetric):
         },
     })
     def applies_to(self, request, step_run):
-        workflow_run = request.embed(step_run, '@@object')['workflow_run']
-        input_files = request.embed(workflow_run, '@@object')['input_files']
+        workflow_run = request.embed(step_run, '@@object').get('workflow_run', {})
+        if workflow_run:
+            input_files = request.embed(workflow_run, '@@object')['input_files']
+        else:
+            input_files = []
         return input_files
 
 
