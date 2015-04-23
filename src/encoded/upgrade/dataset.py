@@ -89,8 +89,15 @@ def experiment_4_5(value, system):
 @upgrade_step('dataset', '5', '6')
 def experiment_5_6(value, system):
     # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
     if 'references' in value:
         new_references = []
         for ref in value['references']:
-            new_references.append(REFERENCES_UUID[ref])
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
         value['references'] = new_references

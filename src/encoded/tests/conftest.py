@@ -597,6 +597,11 @@ def human(organisms):
 
 
 @pytest.fixture
+def mouse(organisms):
+    return [o for o in organisms if o['name'] == 'mouse'][0]
+
+
+@pytest.fixture
 def organism(human):
     return human
 
@@ -732,6 +737,50 @@ def datasets(testapp, labs, awards):
 @pytest.fixture
 def dataset(datasets):
     return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
+
+
+@pytest.fixture
+def publications(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'publication')
+
+
+@pytest.fixture
+def publication(publications):
+    return publications[0]
+
+
+@pytest.fixture
+def documents(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'document')
+
+
+@pytest.fixture
+def document(documents):
+    return documents[0]
+
+
+@pytest.fixture
+def biosample_characterizations(testapp, awards, labs, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample_characterization')
+
+
+@pytest.fixture
+def biosample_characterization(biosample_characterizations):
+    return biosample_characterizations[0]
+
+
+@pytest.fixture
+def mouse_donors(testapp, awards, labs, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'mouse_donor')
+
+
+@pytest.fixture
+def mouse_donor(mouse_donors):
+    return mouse_donors[0]
 
 
 @pytest.mark.fixture_cost(10)

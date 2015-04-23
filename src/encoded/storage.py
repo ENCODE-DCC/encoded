@@ -335,6 +335,7 @@ class CurrentPropertySheet(Base):
         post_update=True,  # Break cyclic dependency
         primaryjoin="""and_(CurrentPropertySheet.rid==PropertySheet.rid,
                     CurrentPropertySheet.name==PropertySheet.name)""",
+        viewonly=True,
     )
     resource = orm.relationship('Resource')
 
