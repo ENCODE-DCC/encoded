@@ -1385,10 +1385,10 @@
         }
       }
     },
-    "cookie-cutter": {
-      "version": "0.1.1",
-      "from": "cookie-cutter@>=0.1.1 <0.2.0",
-      "resolved": "https://registry.npmjs.org/cookie-cutter/-/cookie-cutter-0.1.1.tgz"
+    "cookie-monster": {
+      "version": "0.0.7",
+      "from": "cookie-monster@*",
+      "resolved": "https://registry.npmjs.org/cookie-monster/-/cookie-monster-0.0.7.tgz"
     },
     "d3": {
       "version": "3.5.5",

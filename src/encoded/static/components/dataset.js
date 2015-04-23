@@ -392,7 +392,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
-                        <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                     </tr>
                 );
             });
@@ -413,7 +413,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.assembly}</td>
                         <td>{file.genome_annotation}</td>
                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                        <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                         {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                     </tr>
                 );

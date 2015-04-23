@@ -61,6 +61,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
+         'references'
     ]
     audit_inherit = [
         'original_files',

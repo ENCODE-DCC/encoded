@@ -126,14 +126,14 @@
     "references": {
         "references": {
             "title": "References",
-            "description": "The identifiers that reference data found in the object.",
+            "description": "The publications that provide more information about the object.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "An identifier that references data found in the object.",
+                "description": "A publication that provide smore information about the object.",
                 "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
+                "linkTo": "publication"
             }
         }
     },

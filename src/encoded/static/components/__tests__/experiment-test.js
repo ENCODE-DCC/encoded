@@ -1,3 +1,4 @@
+
 'use strict';
 
 jest.autoMockOff();
@@ -29,6 +30,7 @@ describe('Experiment Page', function() {
         var experiment, summary, defTerms, defDescs;
 
         beforeEach(function() {
+            context.references = [require('../testdata/publication/PMID16395128'), require('../testdata/publication/PMID23000965')];
             experiment = React.withContext(FetchContext, function() {
                 return TestUtils.renderIntoDocument(
                     <Experiment context={context} />
@@ -57,11 +59,11 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper links in References key-values', function() {
+        it('has proper links in Publications key-values', function() {
             var dbxrefs = defDescs[8].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
-            expect(dbxrefs[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
+            expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66/');
+            expect(dbxrefs[1].getAttribute('href')).toEqual('/publications/4cb65ec0-bd49-11e4-bb52-0800200c9a66/');
         });
 
         it('has proper release date', function() {
@@ -174,22 +176,9 @@ describe('Experiment Page', function() {
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(2);
             var defTerms = docKeyValue[1].getElementsByTagName('dt');
-            expect(defTerms.length).toEqual(4);
+            expect(defTerms.length).toEqual(3);
             var defDescs = docKeyValue[1].getElementsByTagName('dd');
-            expect(defDescs.length).toEqual(4);
-            var item = docKeyValue[1].querySelector('[data-test="references"]');
-            var refUl = item.getElementsByTagName('ul');
-            expect(refUl.length).toEqual(1);
-            var refLi = refUl[0].getElementsByTagName('li');
-            expect(refLi.length).toEqual(2);
-
-            // Make sure each link in references is correct
-            var anchors = refLi[0].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
-            anchors = refLi[1].getElementsByTagName('a');
-            expect(anchors.length).toEqual(1);
-            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
+            expect(defDescs.length).toEqual(3);
         });
     });
 

@@ -221,12 +221,10 @@ class Publication(Item):
     schema = load_schema('publication.json')
     embedded = ['datasets']
 
-    # XXX the references mixin is only a key for this type
-    # Should probably become 'identifiers' for publication
     def unique_keys(self, properties):
         keys = super(Publication, self).unique_keys(properties)
-        if properties.get('references'):
-            keys.setdefault('publication:identifier', []).extend(properties['references'])
+        if properties.get('identifiers'):
+            keys.setdefault('alias', []).extend(properties['identifiers'])
         return keys
 
     @calculated_property(condition='date_published', schema={
