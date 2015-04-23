@@ -251,7 +251,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
         // The node is for an analysis step
         return (
             <div>
-                <dl className="key-value">
+                <dl className="key-value-flex">
                     <div data-test="steptype">
                         <dt>Step type</dt>
                         <dd>{selectedStep.analysis_step_types.join(', ')}</dd>

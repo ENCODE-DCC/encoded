@@ -1004,7 +1004,7 @@ var FileDetailView = function(node) {
         }
         var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
-            <dl className="key-value">
+            <dl className="key-value-flex">
                 {selectedFile.file_format ?
                     <div data-test="format">
                         <dt>Format</dt>
@@ -1112,7 +1112,7 @@ var QcDetailsView = function(metrics) {
 
     if (metrics) {
         return (
-            <dl className="key-value">
+            <dl className="key-value-flex">
                 {Object.keys(metrics.ref).map(function(key) {
                     if (typeof metrics.ref[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
                         return(
