@@ -7,6 +7,7 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.threadlocal import get_current_request
+from pyramid.traversal import traverse
 from .. import contentbase
 from ..schema_formats import is_accession
 
@@ -51,12 +52,12 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
     if include is not None:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') in include
+            if traverse(request.root, path)['context'].__json__(request).get('status') in include
         ]
     else:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') not in exclude
+            if traverse(request.root, path)['context'].__json__(request).get('status') not in exclude
         ]
 
 
