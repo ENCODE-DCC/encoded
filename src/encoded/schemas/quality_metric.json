@@ -11,7 +11,6 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
-        { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/assay" }
    ],
     "properties": {

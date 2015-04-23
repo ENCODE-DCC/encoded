@@ -64,10 +64,12 @@ class AnalysisStepRun(Item):
     embedded = [
         'analysis_step',
         'workflow_run',
-        'qc_metrics'
+        'qc_metrics',
+        'output_files'
     ]
     rev = {
         'qc_metrics': ('quality_metric', 'step_run'),
+        'output_files': ('file', 'step_run')
     }
 
     @calculated_property(schema={
@@ -80,6 +82,17 @@ class AnalysisStepRun(Item):
     })
     def qc_metrics(self, request, qc_metrics):
         return paths_filtered_by_status(request, qc_metrics)
+
+    @calculated_property(schema={
+        "title": "Output Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkFrom": "file.step_run",
+        },
+    })
+    def output_files(self, request, output_files):
+        return paths_filtered_by_status(request, output_files)
 
 
 @collection(
