@@ -18,10 +18,9 @@ module.exports = function(grunt) {
         browserify: {
             brace: {
                 dest: './src/encoded/static/build/brace.js',
+                src: ['./src/encoded/static/brace.js'],
                 require: [
                     'brace',
-                    'brace/mode/json',
-                    'brace/theme/solarized_light',
                 ],
                 plugin: [
                     ['minifyify', {
