@@ -1002,7 +1002,7 @@ var FileDetailView = function(node) {
             var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
+        var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
             <dl className="key-value">
                 {selectedFile.file_format ?
