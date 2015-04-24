@@ -145,14 +145,25 @@ def set_filters(request, query, result):
         else:
             query_field = 'embedded.' + field + '.raw'
 
-        if query_field not in used_filters:
-            query_terms = used_filters[query_field] = []
+        if field not in used_filters:
+            query_terms = used_filters[field] = []
+
+        if field.endswith('!'):
+            #Setting not filter instead of terms filter
+            query_filters.append({
+                'not': {
+                    'terms': {
+                        'embedded.' + field[:-1] + '.raw': [term],
+                    }
+                }
+            })
+        else:
             query_filters.append({
                 'terms': {
                     query_field: query_terms,
                 }
             })
-        used_filters[query_field].append(term)
+        used_filters[field].append(term)
     return used_filters
 
 
@@ -170,14 +181,18 @@ def set_facets(facets, used_filters, query, principals):
         agg_name = field.replace('.', '-')
 
         terms = [
-            {'terms': {q_field: q_terms}}
+            {'terms': {'embedded.' + q_field + '.raw': q_terms}}
             for q_field, q_terms in used_filters.items()
-            if q_field != query_field
+            if q_field != field and not q_field.endswith('!')
+        ]
+        terms = terms + [
+            {'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}}
+            for q_field, q_terms in used_filters.items()
+            if q_field != field and q_field.endswith('!')
         ]
         terms.append(
             {'terms': {'principals_allowed.view': principals}}
         )
-
         query['aggs'][agg_name] = {
             'aggs': {
                 agg_name: {
