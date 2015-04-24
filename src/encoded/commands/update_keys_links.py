@@ -28,7 +28,6 @@ EPILOG = __doc__
 logger = logging.getLogger(__name__)
 
 DEFAULT_COLLECTIONS = [
-    'publication',
 ]
 
 
