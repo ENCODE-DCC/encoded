@@ -43,6 +43,7 @@ class Experiment(Dataset):
         'contributing_files.analysis_step',
         'contributing_files.analysis_step.software_versions',
         'contributing_files.analysis_step.software_versions.software',
+        'award.pi',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',
@@ -61,7 +62,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
-         'references'
+        'references'
     ]
     audit_inherit = [
         'original_files',
