@@ -1,3 +1,4 @@
+'use strict';
 /* Wrapper component to require async script loading.
 
 Example::
@@ -7,7 +8,6 @@ Example::
     </ScriptReady>
 
 */
-
 var React = require('react');
 var $script = require('scriptjs');
 var ScriptReady = module.exports = React.createClass({
