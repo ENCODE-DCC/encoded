@@ -83,30 +83,31 @@ def schema_mapping(name, schema):
     if type_ == 'string':
         return {
             'type': 'string',
-            'include_in_all': False,
-            'copy_to': [],
-            'index': 'not_analyzed',
+            'index_analyzer': 'encoded_index_analyzer',
+            'search_analyser': 'encoded_search_analyzer',
+            'term_vector': 'with_positions_offsets',
+            'store': True,
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                }
+            }
         }
 
     if type_ == 'number':
         return {
-            'type': 'float',
-            'copy_to': [],
-            'include_in_all': False
+            'type': 'float'
         }
 
     if type_ == 'integer':
         return {
-            'type': 'long',
-            'copy_to': [],
-            'include_in_all': False
+            'type': 'long'
         }
 
     if type_ == 'boolean':
         return {
-            'type': 'boolean',
-            'copy_to': [],
-            'include_in_all': False
+            'type': 'boolean'
         }
 
 
@@ -401,27 +402,6 @@ def type_mapping(types, item_type, embed=True):
                 m['properties'][p] = schema_mapping(p, s)
 
             m = m['properties'][p]
-
-    boost_values = schema.get('boost_values', ())
-    for value in boost_values:
-        props = value.split('.')
-        last = props.pop()
-        new_mapping = mapping['properties']
-        for prop in props:
-            new_mapping = new_mapping[prop]['properties']
-        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
-        new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        new_mapping[last]['term_vector'] = 'with_positions_offsets'
-        new_mapping[last]['store'] = True
-        new_mapping[last]['fields'] = {
-            'raw': {
-                'type': 'string',
-                'index': 'not_analyzed'
-            }
-        }
-        del new_mapping[last]['include_in_all']
-        if 'index' in new_mapping[last]:
-            del new_mapping[last]['index']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
