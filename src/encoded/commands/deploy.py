@@ -106,8 +106,8 @@ def main():
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
     parser.add_argument(
-        '--image-id', default='ami-3d50120d',
-        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
+        '--image-id', default='ami-5189a661',
+        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20150325")
     parser.add_argument(
         '--instance-type', default='t2.medium',
         help="specify 'm3.large' for faster indexing.")

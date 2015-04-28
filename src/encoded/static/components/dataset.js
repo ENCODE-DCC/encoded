@@ -8,11 +8,13 @@ var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var statuslabel = require('./statuslabel');
 var graph = require('./graph');
+var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
+var PubReferenceList = reference.PubReferenceList;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -81,8 +83,14 @@ var Dataset = module.exports.Dataset = React.createClass({
                             : <em>None submitted</em> }
                         </dd>
 
-                        {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
+                            </div>
+                        : null}
                     </dl>
                 </div>
 
@@ -322,7 +330,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.assembly}</td>
                     <td>{file.genome_annotation}</td>
                     <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                    <td>{moment(file.date_created).format('YYYY-MM-DD')}</td>
+                    <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                     <td>{humanFileSize(file.file_size)}</td>
                     <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
