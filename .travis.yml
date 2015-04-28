@@ -31,6 +31,7 @@ before_install:
   - postgres --version
   - initdb --version
   - elasticsearch -v
+  - nvm use 0.10
 install:
   - npm config set python /usr/bin/python2.7
   - python bootstrap.py -v 2.3.1 --setuptools-version 14.3
