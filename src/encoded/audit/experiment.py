@@ -446,59 +446,6 @@ def audit_experiment_biosample_term(value, system):
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame='embedded')
-def audit_experiment_paired_end(value, system):
-    '''
-    Libraries and replicates of certain assays should be paired end.
-    Libraries and replicates of ignore_assays are not applicable for paired_end.
-    All other libraries and replicates should have a value for paired_end.
-    If two replicates do not match, that is a warning.
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    term_name = value.get('assay_term_name')
-
-    if (term_name in non_seq_assays) or (term_name is None):
-        return
-
-    reps_list = []
-
-    for rep in value['replicates']:
-
-        rep_paired_ended = rep.get('paired_ended')
-        if rep_paired_ended is not None:
-            reps_list.append(rep_paired_ended)
-
-        if rep_paired_ended is None:
-            detail = 'Replicate {} is missing value for paired_ended'.format(rep['uuid'])
-            yield AuditFailure('missing replicate.paired_ended', detail, level='ERROR')
-
-        if (rep_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(
-                term_name,
-                rep['uuid']
-                )
-            yield AuditFailure('paired end required for assay', detail, level='ERROR')
-
-        if 'library' not in rep:
-            continue
-
-        lib = rep['library']
-        lib_paired_ended = lib.get('paired_ended')
-
-        if (lib_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end libraries. {}.paired_ended is False'.format(
-                term_name,
-                lib['accession'])
-            yield AuditFailure('paired end required for assay', detail, level='ERROR')
-
-        if lib_paired_ended is None and value['award']['rfa'] in ['ENCODE3']:
-            detail = '{} is missing value for paired_ended'.format(lib['accession'])
-            yield AuditFailure('missing library.paired_ended', detail, level='WARNING')
-
-
 @audit_checker(
     'experiment',
     frame=[

@@ -147,16 +147,25 @@
             "title": "Fragmentation method",
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
-            "XXXenum": [
-                "sonication",
+            "enum": [
+                "chemical (generic)",
+                "chemical (DnaseI)",
+                "chemical (HindIII/DpnII restriction)",
+                "chemical (Tn5 transposase)",
+                "chemical (micrococcal nuclease)",
+                "chemical (Illumina TruSeq)",
+                "chemical (Nextera tagmentation)",
+                "shearing (generic)",
+                "shearing (Covaris generic)",
+                "shearing (Covaris S2)",
+                "sonication (generic)",
+                "sonication (Bioruptor generic)",
+                "sonication (Bioruptor Plus)",
+                "sonication (Bioruptor Twin)",
                 "see document",
-                "covaris shearing",
-                "chemical (part of Illumina TruSeq mRNA Kit)",
-                "Illumina/Nextera tagmentation",
-                "bioruptor twin",
-                "n/a"
-            ],
-            "format": "semi-controlled"
+                "none",
+                "N/A"
+            ]
         },
         "fragmentation_date":{
             "title": "Fragmentation date",
