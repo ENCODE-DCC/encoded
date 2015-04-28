@@ -76,6 +76,10 @@ def schema_mapping(name, schema):
                     'ignore_malformed': True,
                     'include_in_all': False,
                     'copy_to': []
+                },
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -93,17 +97,35 @@ def schema_mapping(name, schema):
 
     if type_ == 'number':
         return {
-            'type': 'float'
+            'type': 'float',
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                }
+            }
         }
 
     if type_ == 'integer':
         return {
-            'type': 'long'
+            'type': 'long',
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                }
+            }
         }
 
     if type_ == 'boolean':
         return {
-            'type': 'boolean'
+            'type': 'boolean',
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed'
+                }
+            }
         }
 
 
