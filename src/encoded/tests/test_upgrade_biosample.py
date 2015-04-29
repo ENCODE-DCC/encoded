@@ -102,6 +102,17 @@ def biosample_9(root, biosample):
     return properties
 
 
+@pytest.fixture
+def biosample_10(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'worm_synchronization_stage': 'starved L1 larva'
+    })
+    return properties
+
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -301,3 +312,13 @@ def test_biosample_references(root, registry, biosample,  biosample_9, publicati
     value = migrator.upgrade('biosample', biosample_9, target_version='10', context=context)
     assert value['schema_version'] == '10'
     assert value['references'] == [publications[1]['uuid']]
+
+
+def test_biosample_worm_synch_stage(root, registry, biosample, biosample_10, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    biosample_10['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
+    value = migrator.upgrade('biosample', biosample_10, target_version='11', context=context)
+    assert value['schema_version'] == '11'
+    assert value['worm_synchronizatiom_stage'] == 'L1 larva starved after bleaching'
