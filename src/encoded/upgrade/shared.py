@@ -24,3 +24,11 @@ ENCODE2_AWARDS = frozenset([
     '2cda932c-07d5-4740-a024-d585635f5650',
     '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
+
+
+#Upgrade references to link to publication objects for DOI objects.
+REFERENCES_UUID = {
+    "doi:10.1038/nrm2003": "9c7ff198-0588-4e22-86dd-600966bfdfac",
+    "doi:10.1214/11-AOAS466": "8312fc0c-b241-4cb2-9b01-1438910550ad",
+    "doi:10.1101/006163": "e237344e-070f-4910-b135-56b35568c9f2",
+}

@@ -11,7 +11,7 @@ def human_donor(lab, award, organism):
 
 
 @pytest.fixture
-def mouse_donor(lab, award):
+def mouse_donor_base(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -41,8 +41,8 @@ def human_donor_2(human_donor):
 
 
 @pytest.fixture
-def mouse_donor_1(mouse_donor):
-    item = mouse_donor.copy()
+def mouse_donor_1(mouse_donor_base):
+    item = mouse_donor_base.copy()
     item.update({
         'schema_version': '1',
         'status': 'CURRENT',
@@ -52,14 +52,26 @@ def mouse_donor_1(mouse_donor):
 
 
 @pytest.fixture
-def mouse_donor_2(mouse_donor):
-    item = mouse_donor.copy()
+def mouse_donor_2(mouse_donor_base):
+    item = mouse_donor_base.copy()
     item.update({
         'schema_version': '2',
         'sex': 'male',
 
     })
     return item
+
+
+@pytest.fixture
+def mouse_donor_3(root, mouse_donor):
+    item = root.get_by_uuid(mouse_donor['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '3',
+        'references': ['PMID:19752085']
+
+    })
+    return properties
 
 
 def test_human_donor_upgrade(app, human_donor_1):
@@ -96,3 +108,12 @@ def test_human_donor_age(app, human_donor_2):
     value = migrator.upgrade('human_donor', human_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['age'] == '11'
+
+
+def test_mouse_donor_upgrade_references(root, registry, mouse_donor, mouse_donor_3, publications, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(mouse_donor['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('mouse_donor', mouse_donor_3, target_version='4', context=context)
+    assert value['schema_version'] == '4'
+    assert value['references'] == [publications[3]['uuid']]

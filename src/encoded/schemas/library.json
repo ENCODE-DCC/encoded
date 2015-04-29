@@ -123,6 +123,7 @@
             "enum": [
                 "cells",
                 "cell-equivalent",
+                "µg",
                 "ng",
                 "pg",
                 "mg"
