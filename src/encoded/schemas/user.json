@@ -68,7 +68,7 @@
             "enum": [
                 "ENCODE",
                 "GGR",
-                "REMC",
+                "REMC"
             ]
         },
         "job_title": {
