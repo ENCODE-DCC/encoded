@@ -188,11 +188,11 @@
         "document_type": "general protocol",
         "lab": "michael-snyder",
         "references": [
-            "PMID:19706456",
-            "PMID:17568005",
-            "PMID:14527995",
-            "PMID:17558387",
-            "PMID:19122651"
+            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
+            "341bf550-be0c-11e4-bb52-0800200c9a66",
+            "cf890830-bdfc-11e4-bb52-0800200c9a66",
+            "4be68100-be0c-11e4-bb52-0800200c9a66",
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
         ],
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
