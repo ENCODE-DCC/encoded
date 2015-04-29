@@ -196,7 +196,7 @@ write_files:
 
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
-    archive_command = '/bin/true'
+    archive_mode = off
 
 - path: /etc/postgresql/9.3/main/master.conf
   content: |
