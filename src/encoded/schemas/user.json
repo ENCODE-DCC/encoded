@@ -3,7 +3,7 @@
     "id": "/profiles/user.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "email", "first_name", "last_name"],
+    "required": [ "email", "first_name", "last_name", "projects"],
     "identifyingProperties": ["uuid", "email"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -60,6 +60,16 @@
             "items": {
                 "type": "string"
             }
+        },
+        "projects": {
+            "title": "BioProject",
+            "description": "The collection of biological data related to a single initiative, typically originating from a consortium.",
+            "type": "array",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "REMC",
+            ]
         },
         "job_title": {
             "title": "Job title",
