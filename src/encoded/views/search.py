@@ -27,7 +27,7 @@ audit_facets = [
 def get_filtered_query(term, search_fields, result_fields, highlights, principals):
     return {
         'query': {
-            'multi_match': {
+            'query_string': {
                 'query': term,
                 'fields': search_fields
             }
@@ -328,7 +328,7 @@ def search(context, request, search_type=None):
     if search_term == '*':
         query['sort'] = get_sort_order()
         query['query']['match_all'] = {}
-        del query['query']['multi_match']
+        del query['query']['query_string']
 
     # Setting filters
     used_filters = set_filters(request, query, result)

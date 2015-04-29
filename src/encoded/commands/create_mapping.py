@@ -143,7 +143,7 @@ def index_settings():
                 'analyzer': {
                     'default': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
                         'filter': [
                             'standard',
@@ -152,7 +152,7 @@ def index_settings():
                     },
                     'encoded_index_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
                         'filter': [
                             'standard',
@@ -163,7 +163,7 @@ def index_settings():
                     },
                     'encoded_search_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'filter': [
                             'standard',
                             'lowercase',
