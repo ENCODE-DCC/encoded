@@ -127,7 +127,7 @@ $characterization-figure-height: 200px;
     border-bottom: 1px solid #c0c0c0;
     font-weight: bold;
     text-align: left;
-    font-size: 14px;
+    @include font-size(1);
 }
 
 
@@ -178,7 +178,7 @@ $characterization-figure-height: 200px;
         padding: 5px 20px 8px;
         background-color: desaturate(lighten(#0a253d,30%),30%);
         color: #fff;
-        font-size: 15px;
+        @include font-size(1.1);
         font-weight: bold;
     }
 
@@ -210,7 +210,7 @@ $characterization-figure-height: 200px;
 .characterization-status {
     margin-bottom: 8px;
     font-weight: bold;
-    font-size: 1.5em;
+    @include font-size(1.5);
 
     %status-pos {
         top: -5px;
@@ -243,7 +243,7 @@ $characterization-figure-height: 200px;
 .characterization-status-labels {
     display: block;
     font-weight: bold;
-    font-size: 20px;
+    @include font-size(1.4);
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
@@ -262,7 +262,7 @@ $characterization-figure-height: 200px;
     text-shadow: 0 -1px 0 rgba(0,0,0,.3);
     text-align: left;
     padding: .3em .5em .4em;
-    font-size: 0.8em;
+    @include font-size(0.8);
     background-color: $gray-light;
 
     @media screen and (min-width: $screen-sm-min) {
@@ -306,13 +306,13 @@ $characterization-figure-height: 200px;
 
 .status-list-title {
     display: block;
-    font-size: 12px;
+    @include font-size(0.85);
     font-weight: normal;
     text-align: left;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline;
-        font-size: 16px;
+        @include font-size(1.2);
     }
 }
 
@@ -444,7 +444,7 @@ $characterization-figure-height: 200px;
     color: #fff;
     text-align: center;
     white-space: nowrap;
-    font-size: 13px;
+    @include font-size(0.9);
     @include border-radius(4px);
 
     span:last-child {
@@ -459,14 +459,14 @@ $characterization-figure-height: 200px;
 .tooltip-trigger {
     position: relative;
     margin-left: 5px;
-    font-size: 16px;
+    @include font-size(1.2);
     cursor: default;
 }
 
 
 .facet-term-key {
     margin-right: 5px;
-    font-size: 15px;
+    @include font-size(1.1);
 }
 
 
@@ -548,7 +548,7 @@ $characterization-figure-height: 200px;
         width: 100%;
         padding: 8px 0;
         text-align: center;
-        font-size: 12px;
+        @include font-size(0.85);
     }
 }
 
@@ -604,12 +604,12 @@ $characterization-figure-height: 200px;
 
     h3 {
         margin: 0;
-        font-size: 16px;
+        @include font-size(1.2);
     }
 
     p {
         margin: 2px 0 0 0;
-        font-size: 14px;
+        @include font-size(1);
         word-wrap: break-word;
     }
 }

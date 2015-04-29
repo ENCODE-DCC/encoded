@@ -5,9 +5,6 @@ $pipeline-node-types:
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
     g.pipeline-node-#{$node-type} {
-        font-size: 14px;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-weight: bold;
         fill: $color;
 
         &.active {
@@ -38,7 +35,7 @@ $pipeline-node-types:
 }
 
 g.label {
-    font-size: 12px;
+    font-size: $font-size-base * 0.85; // Don't change size on mobile
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;
@@ -67,7 +64,7 @@ g.cluster {
     }
 
     tspan {
-        font-size: 14px;
+        @include font-size(1);
     }
 }
 
