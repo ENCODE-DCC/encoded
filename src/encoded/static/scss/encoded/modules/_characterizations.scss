@@ -243,7 +243,6 @@ $characterization-figure-height: 200px;
 .characterization-status-labels {
     display: block;
     font-weight: bold;
-    @include font-size(1.4);
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
@@ -262,11 +261,13 @@ $characterization-figure-height: 200px;
     text-shadow: 0 -1px 0 rgba(0,0,0,.3);
     text-align: left;
     padding: .3em .5em .4em;
-    @include font-size(0.8);
+    @include font-size(1);
+    line-height: 1.1;
     background-color: $gray-light;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
+        @include font-size(1.1);
     }
 }
 
@@ -306,7 +307,7 @@ $characterization-figure-height: 200px;
 
 .status-list-title {
     display: block;
-    @include font-size(0.85);
+    @include font-size(0.7);
     font-weight: normal;
     text-align: left;
 
@@ -710,4 +711,8 @@ $characterization-figure-height: 200px;
 
 .status-line {
     vertical-align: top;
+}
+
+.journal, .author {
+    @include font-size(1);
 }

@@ -35,7 +35,7 @@ $pipeline-node-types:
 }
 
 g.label {
-    font-size: $font-size-base * 0.85; // Don't change size on mobile
+    font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;

@@ -69,6 +69,7 @@
         @media screen and (min-width: $screen-md-min) {
             width: 100%;
             text-align: center;
+            @include font-size(1);
         }
     }
 }

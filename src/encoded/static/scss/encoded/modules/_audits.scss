@@ -1,13 +1,14 @@
 .audit-indicators {
     margin-top: 5px;
-    height: 28px;
     vertical-align: top;
     padding: 0 5px;
     background: #fff;
+    @include font-size(1);
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
         margin: 0;
+        height: 28px;
     }
 
     .search-meta & {
