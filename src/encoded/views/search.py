@@ -339,6 +339,9 @@ def search(context, request, search_type=None):
     ]
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
+    else:
+        if len(doc_types) != 1:
+            del query['query']['query_string']['fields']
 
     if search_audit:
         for audit_facet in audit_facets:

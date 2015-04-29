@@ -79,7 +79,8 @@ def schema_mapping(name, schema):
                 },
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed'
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -87,10 +88,12 @@ def schema_mapping(name, schema):
     if type_ == 'string':
         return {
             'type': 'string',
+            'include_in_all': False,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed'
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -98,10 +101,12 @@ def schema_mapping(name, schema):
     if type_ == 'number':
         return {
             'type': 'float',
+            'include_in_all': False,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed'
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -109,10 +114,12 @@ def schema_mapping(name, schema):
     if type_ == 'integer':
         return {
             'type': 'long',
+            'include_in_all': False,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed'
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -120,10 +127,12 @@ def schema_mapping(name, schema):
     if type_ == 'boolean':
         return {
             'type': 'boolean',
+            'include_in_all': False,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed'
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -199,7 +208,9 @@ def audit_mapping():
 def es_mapping(mapping):
     return {
         '_all': {
-            'enabled': False
+            'enabled': True,
+            'index_analyzer': 'encoded_index_analyzer',
+            'search_analyzer': 'encoded_search_analyzer'
         },
         'dynamic_templates': [
             {
@@ -432,11 +443,11 @@ def type_mapping(types, item_type, embed=True):
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
         new_mapping[last]['term_vector'] = 'with_positions_offsets'
         new_mapping[last]['store'] = True
+        del new_mapping[last]['include_in_all']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
-        mapping['properties']['uuid']['boost'] = 1.0
-        mapping['properties']['uuid']['copy_to'] = ['encoded_all_untouched']
+        mapping['properties']['uuid']['index'] = 'not_analyzed'
     return mapping
 
 
