@@ -51,6 +51,7 @@ def file_4(file_base):
     item.update({
         'schema_version': '4',
         'file_format': 'bed_bedMethyl',
+        'download_path': 'bob.bigBed',
         'output_type': 'Base_Overlap_Signal'
     })
     return item
@@ -87,7 +88,7 @@ def test_file_upgrade4(root, registry, file_4, file, threadlocals, dummy_request
     migrator = registry['migrator']
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('file', file_4, target_version='4', context=context)
+    value = migrator.upgrade('file', file_4, target_version='5', context=context)
     assert value['schema_version'] == '5'
     assert value['file_format'] == 'bed'
     assert value['file_format_type'] == 'bedMethyl'

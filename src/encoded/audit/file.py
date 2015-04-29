@@ -214,53 +214,21 @@ def audit_file_format_specifications(value, system):
 @audit_checker('file', frame='object')
 def audit_file_output_type(value, system):
     '''
-    The differing RFA's will have differeing acceptable output_types
+    The differing RFA's will have differing acceptable output_types
     '''
 
     if value.get('status') in ['deleted']:
         return
 
     undesirable_output_type = [
-        'Base_Overlap_Signal',
-        'enhancers_forebrain',
-        'enhancers_heart',
-        'enhancers_wholebrain',
         'Excludable',
-        'ExonsDeNovo',
-        'ExonsEnsV65IAcuff',
-        'ExonsGencV10',
-        'ExonsGencV3c',
-        'ExonsGencV7',
-        'FiltTransfrags',
-        'GeneDeNovo',
-        'GeneEnsV65IAcuff',
-        'GeneGencV10',
-        'GeneGencV3c',
-        'GeneGencV7',
-        'Junctions',
-        'library_fraction',
-        'Matrix',
-        'mPepMapGcFt',
-        'mPepMapGcUnFt'
-        'PctSignal'
-        'pepMapGcFt',
-        'pepMapGcUnFt',
-        'PrimerPeaks',
-        'RbpAssocRna',
-        'SumSignal',
-        'TranscriptDeNovo',
-        'TranscriptEnsV65IAcuff',
-        'TranscriptGencV10',
-        'TranscriptGencV3c',
-        'TranscriptGencV7',
-        'Transfrags',
-        'TssGencV3c',
-        'TssGencV7',
-        'TssHmm',
-        'UniformlyProcessedPeakCalls',
-        'Validation',
-        'Valleys',
-        'WaveSignal',
+        'optimal idr thresholded peak calls',
+        'validation',
+        'sequence alignability',
+        'sequence uniqueness',
+        'predicted forebrain enhancers',
+        'predicted heart enhancers',
+        'predicted wholebrain enhancers',
         ]
 
     # if value['dataset']['award']['rfa'] != 'ENCODE3':

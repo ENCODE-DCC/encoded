@@ -220,9 +220,10 @@ def file_4_5(value, system):
     # next is the output_type
 
     output_mapping = {
+        # Category: Raw data
         "idat green file": "idat green channel",
         "idat red file": "idat red channel",
-        "reads": "reads",
+        "reads": "sequencing reads",
         "rejected reads": "rejected reads",
         "raw data": "raw data",
 
@@ -230,20 +231,20 @@ def file_4_5(value, system):
         "transcriptome alignments": "transcriptome alignments",
         "spike-ins": "spike-in alignments",
 
-        "multi-read minus signal": "multi-read minus signal",
-        "multi-read plus signal": "multi-read plus signal",
-        "multi-read signal": "multi-read signal",
-        "multi-read normalized signal": "multi-read normalized signal",
+        "multi-read minus signal": "minus strand signal of multi-mapped reads",
+        "multi-read plus signal": "plus strand signal of multi-mapped reads",
+        "multi-read signal": "signal of multi-mapped reads",
+        "multi-read normalized signal": "normalized signal of multi-mapped reads",
         "raw minus signal": "raw minus signal",
         "raw plus signal": "raw plus signal",
         "raw signal": "raw signal",
         "raw normalized signal": "raw normalized signal",
-        "unique minus signal": "unique minus signal",
-        "unique plus signal": "unique plus signal",
-        "unique signal": "unique signal",
+        "unique minus signal": "minus signal of unique reads",
+        "unique plus signal": "plus signal of unique reads",
+        "unique signal": "signal of unique reads",
         "signal": "signal",
-        "minus signal": "minus signal",
-        "plus signal": "plus signal",
+        "minus signal": "minus strand signal",
+        "plus signal": "plus strand signal",
         "Base_Overlap_Signal": "base overlap signal",
         "PctSignal": "percentage normalized signal",
         "SumSignal": "summed densities signal",
@@ -269,25 +270,25 @@ def file_4_5(value, system):
         "TranscriptGencV10": "transcript quantifications",
         "TranscriptGencV3c": "transcript quantifications",
         "TranscriptGencV7": "transcript quantifications",
-        "mPepMapGcFt": "filtered modified peptide mapping",
-        "mPepMapGcUnFt": "unfiltered modified peptide mapping",
-        "pepMapGcFt": "filtered peptide mapping",
-        "pepMapGcUnFt": "unfiltered peptide mapping",
+        "mPepMapGcFt": "filtered modified peptide quantifications",
+        "mPepMapGcUnFt": "unfiltered modified peptide quantifications",
+        "pepMapGcFt": "filtered peptide quantifications",
+        "pepMapGcUnFt": "unfiltered peptide quantifications",
 
         "clusters": "clusters",
-        "CNV": "copy number variant",  #need to clean up the others
+        "CNV": "copy number variant",
         "contigs": "contigs",
         "enhancer validation": "enhancer validation",
         "FiltTransfrags": "filtered transfrags",
         "hotspots": "hotspots",
-        "interactions": "chromatin interactions",
         "Junctions": "splice junctions",
-        "Matrix":"matrix",
-        "methyl CG":"quantification",  #should these be methylation
-        "methyl CHG":"quantification",
-        "methyl CHH":"quantification",
+        "interactions": "long range chromatin interactions",
+        "Matrix": "long range chromatin interactions",
+        "PrimerPeaks": "long range chromatin interactions",
+        "methyl CG": "methylation state at CpG",
+        "methyl CHG": "methylation state at CHG",
+        "methyl CHH": "methylation state at CHH",
         "peaks": "peaks",
-        "PrimerPeaks":"",
         "RbpAssocRna": "RNA-binding protein associated mRNAs",
         "sites": "sites",
         "splice junctions": "splice junctions",
@@ -295,21 +296,21 @@ def file_4_5(value, system):
         "TssGencV3c": "transcription start sites",
         "TssGencV7": "transcription start sites",
         "Valleys": "valleys",
-
         "Alignability": "sequence alignability",
         "Excludable":"reference",
+        "Uniqueness": "sequence uniqueness",
+
         "genome index": "genome index",
         "genome reference": "genome reference",
         "Primer": "primer sequence",
-        "spike-ins sequence": "spike-ins sequence",
-        "Uniqueness": "sequence uniqueness",
+        "spike-in sequence": "spike-in sequence",
 
         "enhancers_forebrain": "predicted forebrain enhancers",
         "enhancers_heart": "predicted heart enhancers",
         "enhancers_wholebrain": "predicted whole brain enhancers",
         "TssHmm":"",
-        "UniformlyProcessedPeakCalls":"UniformlyProcessedPeakCalls",
-        "Validation":"unknown",  # These are a confused mess
+        "UniformlyProcessedPeakCalls": "optimal idr thresholded peak calls",
+        "Validation": "validation",
         "HMM":"HMM predicted chromatin state"
     }
 
@@ -333,11 +334,14 @@ def file_4_5(value, system):
         value['genome_annotation'] = "V10"
 
     if old_output_type in ["spike-ins"] and value['file_format'] == 'fasta':
-        old_output_type = "spike-ins sequence"
+        old_output_type = "spike-in sequence"
 
     if old_output_type in ["raw data"] and value['file_format'] == 'fastq':
         old_output_type = "reads"
 
-        "1MDuoManifest" in value['submitted_file_name']
+    if old_output_type in ["Validation"] and value['file_format'] == '2bit':
+        old_output_type = "genome reference"
+
+    # if   "1MDuoManifest" in value['submitted_file_name']
 
     value['output_type'] = output_mapping[old_output_type]
