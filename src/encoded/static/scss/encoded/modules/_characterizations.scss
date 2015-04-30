@@ -178,7 +178,7 @@ $characterization-figure-height: 200px;
         padding: 5px 20px 8px;
         background-color: desaturate(lighten(#0a253d,30%),30%);
         color: #fff;
-        @include font-size(1.1);
+        @include font-size(0.8);
         font-weight: bold;
     }
 
@@ -203,6 +203,7 @@ $characterization-figure-height: 200px;
 
     .label {
         display: inline-block;
+        @include font-size(0.8);
     }
 }
 

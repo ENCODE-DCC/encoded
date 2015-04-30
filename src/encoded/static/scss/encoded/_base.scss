@@ -44,7 +44,7 @@ $mobile-font-factor: 1.2;
 html {
     font-size: $font-size-base * $mobile-font-factor;
 
-    @media screen and (min-width: $screen-xs-min) {
+    @media screen and (min-width: $screen-sm-min) {
         font-size: $font-size-base;
     }
 }
