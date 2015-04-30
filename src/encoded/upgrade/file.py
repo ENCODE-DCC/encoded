@@ -184,6 +184,7 @@ def file_3_4(value, system):
 @upgrade_step('file', '4', '5')
 def file_4_5(value, system):
     #  http://redmine.encodedcc.org/issues/2566
+    #  http://redmine.encodedcc.org/issues/2565
     # we need to remeber  bedRnaElements,
 
     bed_files = {
@@ -216,9 +217,7 @@ def file_4_5(value, system):
         value['file_format_type'] = 'unknown'
         #all gffs todate were in gff3, but we wouldn't know without wranglers checking
 
-
-    # next is the output_type
-
+    #  http://redmine.encodedcc.org/issues/2565
     output_mapping = {
         # Category: Raw data
         "idat green file": "idat green channel",
