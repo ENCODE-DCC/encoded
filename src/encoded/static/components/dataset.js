@@ -395,10 +395,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                             {humanFileSize(file.file_size)}
                         </td>
                         <td>{file.file_format}</td>
-                        <td>{file.paired_end}</td>
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
+                        <td>{file.paired_end}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                     </tr>
@@ -437,10 +437,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_format')}>File type<i className={cellClassRaw.file_format}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                 </tr>
