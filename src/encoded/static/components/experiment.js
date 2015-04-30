@@ -11,6 +11,7 @@ var audit = require('./audit');
 var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
+var reference = require('./reference');
 var biosample = require('./biosample');
 
 var DbxrefList = dbxref.DbxrefList;
@@ -24,6 +25,7 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var PubReferenceList = reference.PubReferenceList;
 var SingleTreatment = biosample.SingleTreatment;
 
 var Panel = function (props) {
@@ -314,10 +316,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.references.length ?
+                        {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
 
@@ -968,7 +972,7 @@ var FileDetailView = function(node) {
             var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
+        var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
             <dl className="key-value">
                 {selectedFile.file_format ?

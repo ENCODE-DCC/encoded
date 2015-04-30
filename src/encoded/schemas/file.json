@@ -121,6 +121,8 @@
                         "bed_broadPeak",
                         "fasta",
                         "fastq",
+                        "gappedPeak",
+                        "bed_gappedPeak",
                         "gff",
                         "gtf",
                         "hdf5",
@@ -130,7 +132,9 @@
                         "rcc",
                         "CEL",
                         "tsv",
-                        "csv"
+                        "csv",
+                        "sam",
+                        "wig"
                     ]
                 },
                 {
@@ -158,6 +162,7 @@
                         "bedLogR",
                         "bedMethyl",
                         "broadPeak",
+                        "gappedPeak",
                         "gff2",
                         "gff3",
                         "narrowPeak"
@@ -353,7 +358,6 @@
             "enum": [
                 "single-ended",
                 "paired-ended",
-                "mixed",
                 "unknown"
             ]
         },
@@ -613,6 +617,7 @@
         "bed_bedMethyl": ".bedMethyl.gz",
         "bed_bedRnaElements": ".bedRnaElements.gz",
         "bed_broadPeak": ".broadPeak.gz",
+        "bed_gappedPeak": ".gappedPeak.gz",
         "bed_narrowPeak": ".narrowPeak.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
@@ -621,6 +626,7 @@
         "csqual": ".csqual.gz",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
+        "gappedPeak": ".gappedPeak.bigBed",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
         "hdf5": ".h5",
@@ -629,6 +635,8 @@
         "rcc": ".rcc",
         "tar": ".tar.gz",
         "tsv": ".tsv",
-        "csv": ".csv"
+        "csv": ".csv",
+        "wig": ".wig.gz",
+        "sam": ".sam.gz"
     }
 }

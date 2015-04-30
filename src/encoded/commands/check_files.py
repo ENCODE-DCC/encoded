@@ -42,6 +42,7 @@ GZIP_TYPES = [
     "bed_bedMethyl",
     "bed_bedRnaElements",
     "bed_broadPeak",
+    "bed_gappedPeak",
     "bed_narrowPeak",
     "bed_peptideMapping",
     "csfasta",
@@ -51,6 +52,8 @@ GZIP_TYPES = [
     "gff",
     "gtf",
     "tar",
+    "sam",
+    "wig"
 ]
 
 
@@ -104,6 +107,8 @@ def check_format(item, path):
         'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
         'fasta': ['-type=fasta'],
         'fastq': ['-type=fastq'],
+        'gappedPeak': ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+        'bed_gappedPeak': ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
         'gtf': None,
         'idat': ['-type=idat'],
         'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
@@ -116,6 +121,10 @@ def check_format(item, path):
         'csqual': ['-type=csqual'],
         'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
         'CEL': None,
+        'sam': None,
+        'wig': None,
+        'hdf5': None,
+        'gff': None
     }
 
     validate_args = validate_map.get(item['file_format'])

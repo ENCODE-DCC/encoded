@@ -1,6 +1,8 @@
 from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 import re
+from pyramid.traversal import find_root
+from uuid import UUID
 
 
 @upgrade_step('human_donor', '', '2')
@@ -45,3 +47,21 @@ def human_donor_2_3(value, system):
         if re.match('\d+.0(-\d+.0)?', age):
             new_age = age.replace('.0', '')
             value['age'] = new_age
+
+
+@upgrade_step('human_donor', '3', '4')
+@upgrade_step('mouse_donor', '3', '4')
+def donor_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
+    if 'references' in value:
+        new_references = []
+        for ref in value['references']:
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
+        value['references'] = new_references

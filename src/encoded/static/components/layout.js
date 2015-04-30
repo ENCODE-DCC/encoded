@@ -190,7 +190,7 @@ var BlockAddButton = React.createClass({
 
     dragStart: function(e) {
         var block = {
-            '@type': [this.props.key, 'block'],
+            '@type': [this.props.blocktype, 'block'],
             'is_new': true
         };
         if (this.props.blockprops.initial !== undefined) {
@@ -236,7 +236,7 @@ var LayoutToolbar = React.createClass({
             <div className={'layout-toolbar navbar navbar-default'}>
               <div className="container-fluid">
                 <div className="navbar-left">
-                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
+                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} /> )}
                 </div>
                 <div className="navbar-right">
                     <a href="" className="btn btn-default navbar-btn">Cancel</a>
@@ -547,6 +547,7 @@ var Layout = module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
+        if (typeof target == 'string') return;
         target = target || this;
         var target_node = target.getDOMNode();
         if (!target_node.childNodes.length) return;

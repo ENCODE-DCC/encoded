@@ -15,6 +15,19 @@ def base_biosample(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
+def base_mouse_biosample(testapp, lab, award, source, mouse):
+    item = {
+        'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        'biosample_type': 'tissue',
+        'lab': lab['uuid'],
+        'organism': mouse['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_human_donor(testapp, lab, award, organism):
     item = {
         'award': award['uuid'],
@@ -83,9 +96,9 @@ def test_audit_subcellular(testapp, base_biosample):
     assert any(error['category'] == 'mismatched subcellular_fraction_term' for error in errors_list)
 
 
-def test_audit_depleted_in(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+def test_audit_depleted_in(testapp, base_mouse_biosample):
+    testapp.patch_json(base_mouse_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
+    res = testapp.get(base_mouse_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -93,9 +106,9 @@ def test_audit_depleted_in(testapp, base_biosample):
     assert any(error['category'] == 'mismatched depleted_in_term' for error in errors_list)
 
 
-def test_audit_depleted_in_length(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473']})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
+def test_audit_depleted_in_length(testapp, base_mouse_biosample):
+    testapp.patch_json(base_mouse_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473']})
+    res = testapp.get(base_mouse_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
