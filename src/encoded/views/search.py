@@ -29,7 +29,8 @@ def get_filtered_query(term, search_fields, result_fields, highlights, principal
         'query': {
             'query_string': {
                 'query': term,
-                'fields': search_fields
+                'fields': search_fields,
+                'default_operator': 'AND'
             }
         },
         'filter': {
@@ -273,6 +274,10 @@ def search(context, request, search_type=None):
     search_term = request.params.get('searchTerm', '*')
     if search_term != '*':
         search_term = sanitize_search_string(search_term.strip())
+        search_term_array = search_term.split()
+        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
+            del search_term_array[-1]
+            search_term = ' '.join(search_term_array)
 
     # Handling whitespaces in the search term
     if not search_term:
