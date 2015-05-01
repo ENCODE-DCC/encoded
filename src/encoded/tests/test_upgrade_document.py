@@ -4,12 +4,12 @@ import pytest
 @pytest.fixture
 def document_0():
     return {
-        'references': ['PUBMED:19620212', 'PMID: 19122651']
+        'references': ["PMID:17558387", "PMID:19752085"]
     }
 
 
 @pytest.fixture
-def document(lab, award):
+def document_base(lab, award):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -18,8 +18,8 @@ def document(lab, award):
 
 
 @pytest.fixture
-def document_1(document):
-    item = document.copy()
+def document_1(document_base):
+    item = document_base.copy()
     item.update({
         'schema_version': '2',
         'status': 'CURRENT',
@@ -29,13 +29,14 @@ def document_1(document):
 
 
 @pytest.fixture
-def document_3(document):
-    item = document.copy()
-    item.update({
+def document_3(root, document):
+    item = root.get_by_uuid(document['uuid'])
+    properties = item.properties.copy()
+    properties.update({
         'schema_version': '3',
-        'references': ['PMID:19620212', 'PMID:19122651']
+        'references': ["PMID:17558387", "PMID:19752085"]
     })
-    return item
+    return properties
 
 
 
@@ -43,7 +44,7 @@ def test_document_0_upgrade(registry, document_0):
     migrator = registry['migrator']
     value = migrator.upgrade('document', document_0, target_version='2')
     assert value['schema_version'] == '2'
-    assert value['references'] == ['PMID:19620212', 'PMID:19122651']
+    assert value['references'] == ["PMID:17558387", "PMID:19752085"]
 
 
 def test_document_upgrade_status(registry, document_1):
@@ -69,8 +70,10 @@ def test_document_upgrade_status_deleted(registry, document_1):
     assert value['status'] == 'deleted'
 
 
-def test_document_upgrade_references(registry, document_3):
+def test_document_upgrade_references(root, registry, document, document_3, publications, threadlocals, dummy_request):
     migrator = registry['migrator']
-    value = migrator.upgrade('document', document_3, target_version='4')
+    context = root.get_by_uuid(document['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('document', document_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
-    assert value['references'] == ['a66aada1-0a84-4ba6-9f00-06758cf7390a', '084bde2d-2010-4950-aeb8-ea48229c7035']
+    assert value['references'] == [publications[2]['uuid'], publications[3]['uuid']]
