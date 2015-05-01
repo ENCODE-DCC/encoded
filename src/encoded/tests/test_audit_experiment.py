@@ -208,6 +208,7 @@ def test_audit_experiment_target(testapp, base_experiment):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing target' for error in errors_list)
 
+
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_library['@id'], {'size_range': '>200'})
