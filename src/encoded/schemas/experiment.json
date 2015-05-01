@@ -109,7 +109,7 @@
             "type": "array"
         },
         "files.file_type": {
-            "title": "File type",
+            "title": "Available data",
             "type": "string"
         },
         "files.run_type": {
