@@ -353,7 +353,7 @@
         },
         "run_type": {
             "title": "Run type for sequencing files",
-            "description": "Whether this file part of a single, paired or mixed run",
+            "description": "Indicates if file is part of a single or paired run",
             "type": "string",
             "enum": [
                 "single-ended",
