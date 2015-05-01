@@ -18,16 +18,6 @@ def award_1(award):
     return item
 
 
-@pytest.fixture
-def award_2(award):
-    item = award.copy()
-    item = award.copy()
-    item.update({
-        'schema_version': '2',
-        'rfa': "ENCODE3"
-    })
-    return item
-
 def test_award_upgrade(app, award_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('award', award_1, target_version='2')
@@ -49,9 +39,3 @@ def test_award_upgrade_url(app, award_1):
     value = migrator.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'url' not in value
-
-def test_award_upgrade_project(app, award_2):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('award', award_2, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['project'] == 'ENCODE'
