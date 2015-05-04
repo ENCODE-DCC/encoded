@@ -61,9 +61,9 @@
                 "type": "string"
             }
         },
-        "projects": {
-            "title": "BioProject",
-            "description": "The collection of biological data related to a single initiative, typically originating from a consortium.",
+        "viewing_groups": {
+            "title": "View access group",
+            "description": "The group that determines which set of data the user has permission to view.",
             "type": "array",
             "uniqueItems": true,
             "items": {
