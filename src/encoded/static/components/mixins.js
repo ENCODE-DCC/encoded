@@ -432,6 +432,9 @@ module.exports.HistoryAndTriggers = {
         // Skip links with a different target
         if (target.getAttribute('target')) return;
 
+        // Skip @@download links
+        if (href.indexOf('/@@download') != -1) return;
+
         // With HTML5 history supported, local navigation is passed
         // through the navigate method.
         if (this.historyEnabled) {
