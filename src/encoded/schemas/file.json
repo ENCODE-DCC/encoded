@@ -115,6 +115,8 @@
                         "bigWig",
                         "fasta",
                         "fastq",
+                        "gappedPeak",
+                        "bed_gappedPeak",
                         "gff",
                         "gtf",
                         "hdf5",
@@ -152,6 +154,7 @@
                         "bedLogR",
                         "bedMethyl",
                         "broadPeak",
+                        "gappedPeak",
                         "gff2",
                         "gff3",
                         "narrowPeak"
@@ -342,7 +345,7 @@
         },
         "run_type": {
             "title": "Run type for sequencing files",
-            "description": "Whether this file part of a single, paired or mixed run",
+            "description": "Indicates if file is part of a single or paired run",
             "type": "string",
             "enum": [
                 "single-ended",
@@ -599,6 +602,7 @@
         "bed_bedMethyl": ".bedMethyl.gz",
         "bed_bedRnaElements": ".bedRnaElements.gz",
         "bed_broadPeak": ".broadPeak.gz",
+        "bed_gappedPeak": ".gappedPeak.gz",
         "bed_narrowPeak": ".narrowPeak.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
@@ -607,6 +611,7 @@
         "csqual": ".csqual.gz",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
+        "gappedPeak": ".gappedPeak.bigBed",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
         "hdf5": ".h5",
