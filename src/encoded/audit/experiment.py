@@ -49,12 +49,6 @@ non_seq_assays = [
     '5C',
     ]
 
-paired_end_assays = [
-    'RNA-PET',
-    'ChIA-PET',
-    'DNA-PET',
-    ]
-
 
 @audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):

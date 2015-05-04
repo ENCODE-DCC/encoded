@@ -15,6 +15,12 @@ raw_data_formats = [
     'CEL',
     ]
 
+paired_end_assays = [
+    'RNA-PET',
+    'ChIA-PET',
+    'DNA-PET',
+    ]
+
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
