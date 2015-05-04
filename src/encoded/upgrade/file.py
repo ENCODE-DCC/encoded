@@ -222,8 +222,10 @@ def file_4_5(value, system):
         # Category: Raw data
         "idat green file": "idat green channel",
         "idat red file": "idat red channel",
-        "reads": "sequencing reads",
+        "reads": "reads",
         "rejected reads": "rejected reads",
+        "rcc": "reporter code counts",
+        "CEL": "intensity values",
         "raw data": "raw data",
 
         "alignments": "alignments",
@@ -275,42 +277,43 @@ def file_4_5(value, system):
         "pepMapGcUnFt": "unfiltered peptide quantifications",
 
         "clusters": "clusters",
-        "CNV": "copy number variant",
+        "CNV": "copy number variation",
         "contigs": "contigs",
         "enhancer validation": "enhancer validation",
-        "FiltTransfrags": "filtered transfrags",
+        "FiltTransfrags": "filtered transcribed fragments",
         "hotspots": "hotspots",
         "Junctions": "splice junctions",
         "interactions": "long range chromatin interactions",
         "Matrix": "long range chromatin interactions",
         "PrimerPeaks": "long range chromatin interactions",
+        "sites": "methylation state at CpG",
         "methyl CG": "methylation state at CpG",
         "methyl CHG": "methylation state at CHG",
         "methyl CHH": "methylation state at CHH",
         "peaks": "peaks",
         "RbpAssocRna": "RNA-binding protein associated mRNAs",
-        "sites": "sites",
         "splice junctions": "splice junctions",
-        "Transfrags": "transfrags",
+        "Transfrags": "transcribed fragments",
         "TssGencV3c": "transcription start sites",
         "TssGencV7": "transcription start sites",
         "Valleys": "valleys",
         "Alignability": "sequence alignability",
-        "Excludable":"reference",
+        "Excludable": "blacklisted regions",
         "Uniqueness": "sequence uniqueness",
 
         "genome index": "genome index",
         "genome reference": "genome reference",
         "Primer": "primer sequence",
         "spike-in sequence": "spike-in sequence",
+        "reference": "reference",
 
         "enhancers_forebrain": "predicted forebrain enhancers",
         "enhancers_heart": "predicted heart enhancers",
         "enhancers_wholebrain": "predicted whole brain enhancers",
-        "TssHmm":"",
-        "UniformlyProcessedPeakCalls": "optimal idr thresholded peak calls",
+        "TssHmm": "predicted transcription start sites",
+        "UniformlyProcessedPeakCalls": "optimal idr thresholded peaks",
         "Validation": "validation",
-        "HMM":"HMM predicted chromatin state"
+        "HMM": "HMM predicted chromatin state"
     }
 
     old_output_type = value['output_type']
@@ -335,12 +338,25 @@ def file_4_5(value, system):
     if old_output_type in ["spike-ins"] and value['file_format'] == 'fasta':
         old_output_type = "spike-in sequence"
 
-    if old_output_type in ["raw data"] and value['file_format'] == 'fastq':
+    if old_output_type in ["raw data"] and value['file_format'] in ['fastq', 'csfasta', 'csqual']:
         old_output_type = "reads"
+
+    if old_output_type in ["raw data"] and value['file_format'] in ['CEL', 'tar']:
+        old_output_type = "CEL"
+
+    if old_output_type in ["raw data"] and value['file_format'] in ['rcc']:
+        old_output_type = "rcc"
+
+    if old_output_type in ["raw data"] and value['lab'] in ['/labs/timothy-hubbard/']:
+        old_output_type = "reference"
+
+    if old_output_type in ["raw data"] and ('These are protocol documents' in value['notes']):
+        old_output_type = "reference"
+
+    if old_output_type == 'sites' and value['file_format'] == "tsv":
+        old_output_type = "long range chromatin interactions"
 
     if old_output_type in ["Validation"] and value['file_format'] == '2bit':
         old_output_type = "genome reference"
-
-    # if   "1MDuoManifest" in value['submitted_file_name']
 
     value['output_type'] = output_mapping[old_output_type]

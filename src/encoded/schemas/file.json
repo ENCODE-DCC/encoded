@@ -270,13 +270,13 @@
                         "gene quantifications",
                         "transcript quantifications",
                         "library fraction",
+                        "methylation state at CpG",
+                        "methylation state at CHG",
+                        "methylation state at CHH",
                         "enrichment",
 
                         "hotspots",
                         "long range chromatin interactions",
-                        "methylation state at CpG",
-                        "methylation state at CHG",
-                        "methylation state at CHH",
                         "peaks",
                         "RNA-binding protein associated mRNAs",           
                         "splice junctions",
@@ -308,6 +308,7 @@
                         "percentage normalized signal",
                         "base overlap signal",
                         "wavelet-smoothed signal",
+
                         "filtered modified peptide quantification",
                         "unfiltered modified peptide quantification",
                         "filtered peptide quantification",
@@ -315,25 +316,25 @@
 
                         "clusters",
                         "contigs",
-                        "copy number variants",
-                        "transfrags",
-                        "filtered transfrags",
+                        "copy number variation",
+                        "transcribed fragments",
+                        "filtered transcribed fragments",
                         "valleys",
-                        "sites",
                         "sequence alignability",
                         "sequence uniqueness",
-                        "Excludable",
+                        "blacklisted regions",
 
                         "primer sequence",
+                        "reference",
                         
-
                         "predicted enhancers",
                         "predicted transcription start sites",
-                        "optimal idr thresholded peak calls",
+                        "optimal idr thresholded peaks",
+                        "conserved idr thresholded peaks",
 
                         "validation",
 
-                        "HMM"
+                        "HMM predicted chromatin state"
 
                     ]
                 }
@@ -544,47 +545,46 @@
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
         "transcript quantifications": "quantification",
+        "methylation state at CpG": "quantification",
+        "methylation state at CHG": "quantification",
+        "methylation state at CHH": "quantification",
         "filtered modified peptide quantification": "quantification",
         "unfiltered modified peptide quantification": "quantification",
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
 
-
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
-        "methylation state at CpG": "annotation",
-        "methylation state at CHG": "annotation",
-        "methylation state at CHH": "annotation",
         "peaks": "annotation",
         "RNA-binding protein associated mRNAs": "annotation",
         "splice junctions": "annotation",
-        "copy number variants": "annotation",
+        "copy number variation": "annotation",
         "clusters": "annotation",
         "contigs": "annotation",
-        "sites": "annotation",
-        "transfrags": "annotation",
+        "transcribed fragments": "annotation",
+        "filtered transcribed fragments": "annotation",
         "valleys": "annotation",
         "sequence alignability": "annotation",
         "sequence uniqueness": "annotation",
-        "Excludable": "annotation",
-        "optimal idr thresholded peak calls": "annotation",
+        "blacklisted regions": "annotation",
+        "optimal idr thresholded peaks": "annotation",
+        "conserved idr thresholded peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
         "predicted transcription start sites": "annotation",
-        "filtered transfrags": "annotation",
                 
-        
         "genome index": "reference",
         "genome reference": "reference",
         "primer sequence": "reference",
         "spike-in sequence": "reference",
-        
+        "reference": "reference",
+
         "enhancer validation": "validation",
-        "validation":"validation",
+        "validation": "validation",
         
-        "HMM":""
+        "HMM predicted chromatin state": "annotation"
         
     },
     "file_format_file_extension": {
