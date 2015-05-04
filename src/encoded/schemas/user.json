@@ -67,7 +67,7 @@
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "type": "string"
+                "type": "string",
                 "enum": [
                     "ENCODE",
                     "GGR",
