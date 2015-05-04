@@ -78,7 +78,7 @@ describe('Experiment Page', function() {
     });
 
     describe('Experiment with files', function() {
-        var experiment, fileList, fileDl;
+        var experiment, fileTables;
 
         beforeEach(function() {
             var context_fs = _.clone(context);
@@ -89,16 +89,22 @@ describe('Experiment Page', function() {
                 );
             });
 
-            fileList = TestUtils.findRenderedDOMComponentWithTag(experiment, 'tbody').getDOMNode();
-            fileDl = fileList.getElementsByTagName('a');
+            fileTables = TestUtils.scryRenderedDOMComponentsWithTag(experiment, 'table');
         });
 
-        it('has two rows in the file list', function() {
+        it('has one table', function() {
+            expect(fileTables.length).toEqual(1);
+        });
+
+        it('has three rows in the file list, including secion title', function() {
+            var fileList = fileTables[0].getDOMNode();
             expect(fileList.hasChildNodes()).toBeTruthy();
-            expect(fileList.childNodes.length).toEqual(2);
+            expect(fileList.childNodes.length).toEqual(3);
         });
 
-        it('has two proper download links', function() {
+        it('has two proper download links in the file list', function() {
+            var fileList = fileTables[0].getDOMNode();
+            var fileDl = fileList.getElementsByTagName('a');
             expect(fileDl.length).toEqual(2);
             expect(fileDl[0].getAttribute('href')).toEqual('/files/ENCFF001REL/@@download/ENCFF001REL.txt.gz');
             expect(fileDl[1].getAttribute('href')).toEqual('/files/ENCFF001REQ/@@download/ENCFF001REQ.fastq.gz');
