@@ -250,7 +250,7 @@
                     "enum": [
                         "idat green channel",
                         "idat red channel",
-                        "sequencing reads",
+                        "reads",
                         
                         "alignments",
                         "transcriptome alignments",
