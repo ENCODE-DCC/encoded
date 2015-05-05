@@ -69,7 +69,7 @@ def audit_experiment_replicated(value, system):
     '''
     if value['status'] in ['ready for review', 'release ready']:
         if len(value['replicates']) <= 1:
-            detail = 'Experiment {} is unreplicated, at least 2 replicates is typically expected before release'.format(value['accession'])
+            detail = 'Experiment {} is unreplicated, more than one replicate is typically expected before release'.format(value['accession'])
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
