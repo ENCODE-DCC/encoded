@@ -372,18 +372,17 @@ def file_4_5(value, system):
         root = find_root(context)
         replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
 
-        if replicate is None:
-            continue
+        if replicate is not None:
 
-        if 'read_length' not in value:
-            new_length = replicate.get('read_length')
-            if new_length is not None:
-                value['read_length'] = new_length
+            if 'read_length' not in value:
+                new_length = replicate.get('read_length')
+                if new_length is not None:
+                    value['read_length'] = new_length
 
-        run_type_dict = {
-            True: 'paired-ended',
-            False: 'single-ended',
-            None: 'unknown'
-        }
-        if 'run_type' not in value:
-            value['run_type'] = run_type_dict[replicate.get('paired_ended')]
+            run_type_dict = {
+                True: 'paired-ended',
+                False: 'single-ended',
+                None: 'unknown'
+            }
+            if 'run_type' not in value:
+                value['run_type'] = run_type_dict[replicate.get('paired_ended')]
