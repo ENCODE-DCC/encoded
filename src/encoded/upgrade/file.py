@@ -310,6 +310,7 @@ def file_4_5(value, system):
         'spike-in sequence': 'spike-in sequence',
         'reference': 'reference',
 
+        'enhancers': 'predicted enhancers',
         'enhancers_forebrain': 'predicted forebrain enhancers',
         'enhancers_heart': 'predicted heart enhancers',
         'enhancers_wholebrain': 'predicted whole brain enhancers',
@@ -365,12 +366,14 @@ def file_4_5(value, system):
 
     value['output_type'] = output_mapping[old_output_type]
 
-
     #  Get the replicate information
     if value['file_format'] in ['fastq', 'fasta', 'csfasta']:
         context = system['context']
         root = find_root(context)
         replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
+
+        if replicate is None:
+            continue
 
         if 'read_length' not in value:
             new_length = replicate.get('read_length')
