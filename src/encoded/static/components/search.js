@@ -842,13 +842,15 @@ var AuditMixin = audit.AuditMixin;
                 }
             }.bind(this));
 
-            // See if all results match a certain type
-            var types = {};
-            results.forEach(function(result) {
-                types[result['@type'][0]] = true;
+            // See if a specific result type was requested ('type=x')
+            // Satisfied iff exactly one type is in the search
+            var specificFilter;
+            filters.forEach(function(filter) {
+                if (filter.field === 'type') {
+                    specificFilter = specificFilter ? '' : filter.term;
+                }
             });
-            if (Object.keys(types).length === 1) {
-                // All results have the same time; extract label from its path
+            if (typeof specificFilter === 'string' && specificFilter.length) {
                 label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
             }
 
