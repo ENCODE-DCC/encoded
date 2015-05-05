@@ -121,6 +121,7 @@ def ENCODE3_award(testapp):
     item = {
         'name': 'ABC1234',
         'rfa': 'ENCODE3',
+        'project': 'ENCODE'
     }
     return testapp.post_json('/award', item, status=201).json['@graph'][0]
 
