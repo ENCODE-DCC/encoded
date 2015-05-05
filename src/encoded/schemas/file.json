@@ -514,7 +514,7 @@
     "output_type_output_category": {
         "idat green channel": "raw data",
         "idat red channel": "raw data",
-        "sequencing reads": "raw data",
+        "reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
 

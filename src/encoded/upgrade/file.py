@@ -88,69 +88,69 @@ def file_2_3(value, system):
 
     # http://redmine.encodedcc.org/issues/568
     output_type_dict = {
-                        "": "raw data",
-                        "Alignments": "alignments",
-                        "bigBed": "sites",
-                        "bigWig": "sites",
-                        "Clusters": "clusters",
-                        "Contigs": "contigs",
-                        "FastqRd1": "reads",
-                        "FastqRd2": "reads",
-                        "forebrain_enhancers": "enhancers_forebrain",
-                        "heart_enhancers": "enhancers_heart",
-                        "GreenIdat": "idat green file",
-                        "hotspot_broad_peaks": "hotspots",
-                        "hotspot_narrow_peaks": "hotspots",
-                        "hotspot_signal": "hotspots",
-                        "Hotspots": "hotspots",
-                        "Interactions": "interactions",
-                        "MinusRawSignal": "raw minus signal",
-                        "PlusRawSignal": "raw plus signal",
-                        "macs2_dnase_peaks": "peaks",
-                        "macs2_dnase_signal": "signal",
-                        "MinusSignal": "minus signal",
-                        "minusSignal": "minus signal",
-                        "MultiMinus": "multi-read minus signal",
-                        "MultiPlus": "multi-read plus signal",
-                        "MultiSignal": "multi-read signal",
-                        "MultiUnstranded": "multi-read signal",
-                        "RawData2": "reads",
-                        "RedIdat": "idat red file",
-                        "peak": "peaks",
-                        "PeakCalls": "peaks",
-                        "Peaks": "peaks",
-                        "PlusSignal": "plus signal",
-                        "plusSignal": "plus signal",
-                        "predicted_enhancers_heart": "enhancers_heart",
-                        "RawSignal": "raw signal",
-                        "RawData": "raw data",
-                        "rcc": "raw data",
-                        "Read": "reads",
-                        "read": "reads",
-                        "read1": "reads",
-                        "rejected_reads": "rejected reads",
-                        "RepPeaks": "peaks",
-                        "RepSignal": "signal",
-                        "Signal": "signal",
-                        "SimpleSignal": "signal",
-                        "Sites": "sites",
-                        "Spikeins": "spike-ins",
-                        "Spikes": "spike-ins",
-                        "Splices": "splice junctions",
-                        "uniqueReads": "unique signal",
-                        "UniqueSignal": "unique signal",
-                        "uniqueSignal": "unique signal",
-                        "UniqueMinus": "unique minus signal",
-                        "uniqueMinusSignal": "unique minus signal",
-                        "UniquePlus": "unique plus signal",
-                        "uniquePlusSignal": "unique plus signal",
-                        "UniqueUnstranded": "unique signal",
-                        "UnstrandedSignal": "signal",
-                        "dataset_used": "enhancers",
-                        "TRAINING_DATA_MOUSE_VISTA": "enhancers",
-                        "method_description": "enhancers",
-                        "unknown": "enhancers",
-                        "Protocol": "raw data",
+                        '': 'raw data',
+                        'Alignments': 'alignments',
+                        'bigBed': 'sites',
+                        'bigWig': 'sites',
+                        'Clusters': 'clusters',
+                        'Contigs': 'contigs',
+                        'FastqRd1': 'reads',
+                        'FastqRd2': 'reads',
+                        'forebrain_enhancers': 'enhancers_forebrain',
+                        'heart_enhancers': 'enhancers_heart',
+                        'GreenIdat': 'idat green file',
+                        'hotspot_broad_peaks': 'hotspots',
+                        'hotspot_narrow_peaks': 'hotspots',
+                        'hotspot_signal': 'hotspots',
+                        'Hotspots': 'hotspots',
+                        'Interactions': 'interactions',
+                        'MinusRawSignal': 'raw minus signal',
+                        'PlusRawSignal': 'raw plus signal',
+                        'macs2_dnase_peaks': 'peaks',
+                        'macs2_dnase_signal': 'signal',
+                        'MinusSignal': 'minus signal',
+                        'minusSignal': 'minus signal',
+                        'MultiMinus': 'multi-read minus signal',
+                        'MultiPlus': 'multi-read plus signal',
+                        'MultiSignal': 'multi-read signal',
+                        'MultiUnstranded': 'multi-read signal',
+                        'RawData2': 'reads',
+                        'RedIdat': 'idat red file',
+                        'peak': 'peaks',
+                        'PeakCalls': 'peaks',
+                        'Peaks': 'peaks',
+                        'PlusSignal': 'plus signal',
+                        'plusSignal': 'plus signal',
+                        'predicted_enhancers_heart': 'enhancers_heart',
+                        'RawSignal': 'raw signal',
+                        'RawData': 'raw data',
+                        'rcc': 'raw data',
+                        'Read': 'reads',
+                        'read': 'reads',
+                        'read1': 'reads',
+                        'rejected_reads': 'rejected reads',
+                        'RepPeaks': 'peaks',
+                        'RepSignal': 'signal',
+                        'Signal': 'signal',
+                        'SimpleSignal': 'signal',
+                        'Sites': 'sites',
+                        'Spikeins': 'spike-ins',
+                        'Spikes': 'spike-ins',
+                        'Splices': 'splice junctions',
+                        'uniqueReads': 'unique signal',
+                        'UniqueSignal': 'unique signal',
+                        'uniqueSignal': 'unique signal',
+                        'UniqueMinus': 'unique minus signal',
+                        'uniqueMinusSignal': 'unique minus signal',
+                        'UniquePlus': 'unique plus signal',
+                        'uniquePlusSignal': 'unique plus signal',
+                        'UniqueUnstranded': 'unique signal',
+                        'UnstrandedSignal': 'signal',
+                        'dataset_used': 'enhancers',
+                        'TRAINING_DATA_MOUSE_VISTA': 'enhancers',
+                        'method_description': 'enhancers',
+                        'unknown': 'enhancers',
+                        'Protocol': 'raw data',
                         }
 
     current_output_type = value['output_type']
@@ -158,7 +158,7 @@ def file_2_3(value, system):
         value['output_type'] = output_type_dict[current_output_type]
 
     # Help the raw data problem
-    if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
+    if value['output_type'] == 'raw data' and value['file_format'] == 'fastq':
         value['output_type'] = 'reads'
 
 
@@ -188,18 +188,21 @@ def file_4_5(value, system):
     # we need to remeber  bedRnaElements,
 
     bed_files = {
-        "bed_bedLogR": "bedLogR",
-        "bed_bedMethyl": "bedMethyl",
-        "bed_broadPeak": "broadPeak",
-        "bed_narrowPeak": "bed_narrowPeak"
+        'bed_bedLogR': 'bedLogR',
+        'bed_bedMethyl': 'bedMethyl',
+        'bed_broadPeak': 'broadPeak',
+        'bed_gappedPeak': 'gappedPeak',
+        'bed_narrowPeak': 'narrowPeak',
+        'bed_bedRnaElements': 'bedRnaElements'
     }
 
     bigBed_files = [
-        "bedLogR",
-        "bedMethyl",
-        "broadPeak",
-        "narrowPeak",
-        "bedRnaElements"
+        'bedLogR',
+        'bedMethyl',
+        'broadPeak',
+        'narrowPeak',
+        'gappedPeak',
+        'bedRnaElements'
     ]
 
     current = value['file_format']
@@ -220,143 +223,161 @@ def file_4_5(value, system):
     #  http://redmine.encodedcc.org/issues/2565
     output_mapping = {
         # Category: Raw data
-        "idat green file": "idat green channel",
-        "idat red file": "idat red channel",
-        "reads": "reads",
-        "rejected reads": "rejected reads",
-        "rcc": "reporter code counts",
-        "CEL": "intensity values",
-        "raw data": "raw data",
+        'idat green file': 'idat green channel',
+        'idat red file': 'idat red channel',
+        'reads': 'reads',
+        'rejected reads': 'rejected reads',
+        'rcc': 'reporter code counts',
+        'CEL': 'intensity values',
+        'raw data': 'raw data',
 
-        "alignments": "alignments",
-        "transcriptome alignments": "transcriptome alignments",
-        "spike-ins": "spike-in alignments",
+        'alignments': 'alignments',
+        'transcriptome alignments': 'transcriptome alignments',
+        'spike-ins': 'spike-in alignments',
 
-        "multi-read minus signal": "minus strand signal of multi-mapped reads",
-        "multi-read plus signal": "plus strand signal of multi-mapped reads",
-        "multi-read signal": "signal of multi-mapped reads",
-        "multi-read normalized signal": "normalized signal of multi-mapped reads",
-        "raw minus signal": "raw minus signal",
-        "raw plus signal": "raw plus signal",
-        "raw signal": "raw signal",
-        "raw normalized signal": "raw normalized signal",
-        "unique minus signal": "minus signal of unique reads",
-        "unique plus signal": "plus signal of unique reads",
-        "unique signal": "signal of unique reads",
-        "signal": "signal",
-        "minus signal": "minus strand signal",
-        "plus signal": "plus strand signal",
-        "Base_Overlap_Signal": "base overlap signal",
-        "PctSignal": "percentage normalized signal",
-        "SumSignal": "summed densities signal",
-        "WaveSignal": "wavelet-smoothed signal",
+        'multi-read minus signal': 'minus strand signal of multi-mapped reads',
+        'multi-read plus signal': 'plus strand signal of multi-mapped reads',
+        'multi-read signal': 'signal of multi-mapped reads',
+        'multi-read normalized signal': 'normalized signal of multi-mapped reads',
+        'raw minus signal': 'raw minus signal',
+        'raw plus signal': 'raw plus signal',
+        'raw signal': 'raw signal',
+        'raw normalized signal': 'raw normalized signal',
+        'unique minus signal': 'minus signal of unique reads',
+        'unique plus signal': 'plus signal of unique reads',
+        'unique signal': 'signal of unique reads',
+        'signal': 'signal',
+        'minus signal': 'minus strand signal',
+        'plus signal': 'plus strand signal',
+        'Base_Overlap_Signal': 'base overlap signal',
+        'PctSignal': 'percentage normalized signal',
+        'SumSignal': 'summed densities signal',
+        'WaveSignal': 'wavelet-smoothed signal',
 
-        "enrichment": "enrichment",
-        "exon quantifications": "exon quantifications",
-        "ExonsDeNovo": "exon quantifications",
-        "ExonsEnsV65IAcuff": "exon quantifications",
-        "ExonsGencV10": "exon quantifications",
-        "ExonsGencV3c": "exon quantifications",
-        "ExonsGencV7": "exon quantifications",
-        "GeneDeNovo": "gene quantifications",
-        "GeneEnsV65IAcuff": "gene quantifications",
-        "GeneGencV10": "gene quantifications",
-        "GeneGencV3c": "gene quantifications",
-        "GeneGencV7": "gene quantifications",
-        "genome quantifications": "gene quantifications",
-        "library_fraction": "library fraction",
-        "transcript quantifications": "transcript quantifications",
-        "TranscriptDeNovo": "transcript quantifications",
-        "TranscriptEnsV65IAcuff": "transcript quantifications",
-        "TranscriptGencV10": "transcript quantifications",
-        "TranscriptGencV3c": "transcript quantifications",
-        "TranscriptGencV7": "transcript quantifications",
-        "mPepMapGcFt": "filtered modified peptide quantifications",
-        "mPepMapGcUnFt": "unfiltered modified peptide quantifications",
-        "pepMapGcFt": "filtered peptide quantifications",
-        "pepMapGcUnFt": "unfiltered peptide quantifications",
+        'enrichment': 'enrichment',
+        'exon quantifications': 'exon quantifications',
+        'ExonsDeNovo': 'exon quantifications',
+        'ExonsEnsV65IAcuff': 'exon quantifications',
+        'ExonsGencV10': 'exon quantifications',
+        'ExonsGencV3c': 'exon quantifications',
+        'ExonsGencV7': 'exon quantifications',
+        'GeneDeNovo': 'gene quantifications',
+        'GeneEnsV65IAcuff': 'gene quantifications',
+        'GeneGencV10': 'gene quantifications',
+        'GeneGencV3c': 'gene quantifications',
+        'GeneGencV7': 'gene quantifications',
+        'genome quantifications': 'gene quantifications',
+        'library_fraction': 'library fraction',
+        'transcript quantifications': 'transcript quantifications',
+        'TranscriptDeNovo': 'transcript quantifications',
+        'TranscriptEnsV65IAcuff': 'transcript quantifications',
+        'TranscriptGencV10': 'transcript quantifications',
+        'TranscriptGencV3c': 'transcript quantifications',
+        'TranscriptGencV7': 'transcript quantifications',
+        'mPepMapGcFt': 'filtered modified peptide quantifications',
+        'mPepMapGcUnFt': 'unfiltered modified peptide quantifications',
+        'pepMapGcFt': 'filtered peptide quantifications',
+        'pepMapGcUnFt': 'unfiltered peptide quantifications',
 
-        "clusters": "clusters",
-        "CNV": "copy number variation",
-        "contigs": "contigs",
-        "enhancer validation": "enhancer validation",
-        "FiltTransfrags": "filtered transcribed fragments",
-        "hotspots": "hotspots",
-        "Junctions": "splice junctions",
-        "interactions": "long range chromatin interactions",
-        "Matrix": "long range chromatin interactions",
-        "PrimerPeaks": "long range chromatin interactions",
-        "sites": "methylation state at CpG",
-        "methyl CG": "methylation state at CpG",
-        "methyl CHG": "methylation state at CHG",
-        "methyl CHH": "methylation state at CHH",
-        "peaks": "peaks",
-        "RbpAssocRna": "RNA-binding protein associated mRNAs",
-        "splice junctions": "splice junctions",
-        "Transfrags": "transcribed fragments",
-        "TssGencV3c": "transcription start sites",
-        "TssGencV7": "transcription start sites",
-        "Valleys": "valleys",
-        "Alignability": "sequence alignability",
-        "Excludable": "blacklisted regions",
-        "Uniqueness": "sequence uniqueness",
+        'clusters': 'clusters',
+        'CNV': 'copy number variation',
+        'contigs': 'contigs',
+        'enhancer validation': 'enhancer validation',
+        'FiltTransfrags': 'filtered transcribed fragments',
+        'hotspots': 'hotspots',
+        'Junctions': 'splice junctions',
+        'interactions': 'long range chromatin interactions',
+        'Matrix': 'long range chromatin interactions',
+        'PrimerPeaks': 'long range chromatin interactions',
+        'sites': 'methylation state at CpG',
+        'methyl CG': 'methylation state at CpG',
+        'methyl CHG': 'methylation state at CHG',
+        'methyl CHH': 'methylation state at CHH',
+        'peaks': 'peaks',
+        'RbpAssocRna': 'RNA-binding protein associated mRNAs',
+        'splice junctions': 'splice junctions',
+        'Transfrags': 'transcribed fragments',
+        'TssGencV3c': 'transcription start sites',
+        'TssGencV7': 'transcription start sites',
+        'Valleys': 'valleys',
+        'Alignability': 'sequence alignability',
+        'Excludable': 'blacklisted regions',
+        'Uniqueness': 'sequence uniqueness',
 
-        "genome index": "genome index",
-        "genome reference": "genome reference",
-        "Primer": "primer sequence",
-        "spike-in sequence": "spike-in sequence",
-        "reference": "reference",
+        'genome index': 'genome index',
+        'genome reference': 'genome reference',
+        'Primer': 'primer sequence',
+        'spike-in sequence': 'spike-in sequence',
+        'reference': 'reference',
 
-        "enhancers_forebrain": "predicted forebrain enhancers",
-        "enhancers_heart": "predicted heart enhancers",
-        "enhancers_wholebrain": "predicted whole brain enhancers",
-        "TssHmm": "predicted transcription start sites",
-        "UniformlyProcessedPeakCalls": "optimal idr thresholded peaks",
-        "Validation": "validation",
-        "HMM": "HMM predicted chromatin state"
+        'enhancers_forebrain': 'predicted forebrain enhancers',
+        'enhancers_heart': 'predicted heart enhancers',
+        'enhancers_wholebrain': 'predicted whole brain enhancers',
+        'TssHmm': 'predicted transcription start sites',
+        'UniformlyProcessedPeakCalls': 'optimal idr thresholded peaks',
+        'Validation': 'validation',
+        'HMM': 'HMM predicted chromatin state'
     }
 
     old_output_type = value['output_type']
 
     # The peptide mapping files from UCSC all assumed V10 hg19
-    if old_output_type in ["mPepMapGcFt", "mPepMapGcUnFt", "pepMapGcFt", "pepMapGcUnFt"]:
-        value['genome_annotation'] = "V10"
-        value['assembly'] = "hg19"
+    if old_output_type in ['mPepMapGcFt', 'mPepMapGcUnFt', 'pepMapGcFt', 'pepMapGcUnFt']:
+        value['genome_annotation'] = 'V10'
+        value['assembly'] = 'hg19'
 
-    if old_output_type in ["ExonsEnsV65IAcuff", "GeneEnsV65IAcuff", "TranscriptEnsV65IAcuff"]:
-        value['genome_annotation'] = "ENSEMBL V65"
+    elif old_output_type in ['ExonsEnsV65IAcuff', 'GeneEnsV65IAcuff', 'TranscriptEnsV65IAcuff']:
+        value['genome_annotation'] = 'ENSEMBL V65'
 
-    if old_output_type in ["ExonsGencV3c", "GeneGencV3c", "TranscriptGencV3c", "TssGencV3c"]:
-        value['genome_annotation'] = "V3c"
+    elif old_output_type in ['ExonsGencV3c', 'GeneGencV3c', 'TranscriptGencV3c', 'TssGencV3c']:
+        value['genome_annotation'] = 'V3c'
 
-    if old_output_type in ["ExonsGencV7", "GeneGenc7", "TranscriptGencV7", "TssGencV7"]:
-        value['genome_annotation'] = "V7"
+    elif old_output_type in ['ExonsGencV7', 'GeneGenc7', 'TranscriptGencV7', 'TssGencV7']:
+        value['genome_annotation'] = 'V7'
 
-    if old_output_type in ["ExonsGencV10", "GeneGenc10", "TranscriptGencV10", "TssGencV10"]:
-        value['genome_annotation'] = "V10"
+    elif old_output_type in ['ExonsGencV10', 'GeneGenc10', 'TranscriptGencV10', 'TssGencV10']:
+        value['genome_annotation'] = 'V10'
 
-    if old_output_type in ["spike-ins"] and value['file_format'] == 'fasta':
-        old_output_type = "spike-in sequence"
+    elif old_output_type in ['spike-ins'] and value['file_format'] == 'fasta':
+        old_output_type = 'spike-in sequence'
 
-    if old_output_type in ["raw data"] and value['file_format'] in ['fastq', 'csfasta', 'csqual']:
-        old_output_type = "reads"
+    elif old_output_type in ['raw data'] and value['file_format'] in ['fastq', 'csfasta', 'csqual']:
+        old_output_type = 'reads'
 
-    if old_output_type in ["raw data"] and value['file_format'] in ['CEL', 'tar']:
-        old_output_type = "CEL"
+    elif old_output_type in ['raw data'] and value['file_format'] in ['CEL', 'tar']:
+        old_output_type = 'CEL'
 
-    if old_output_type in ["raw data"] and value['file_format'] in ['rcc']:
-        old_output_type = "rcc"
+    elif old_output_type in ['raw data'] and value['file_format'] in ['rcc']:
+        old_output_type = 'rcc'
 
-    if old_output_type in ["raw data"] and value['lab'] in ['/labs/timothy-hubbard/']:
-        old_output_type = "reference"
+    elif old_output_type in ['raw data'] and value['lab'] == '/labs/timothy-hubbard/':
+        old_output_type = 'reference'
 
-    if old_output_type in ["raw data"] and ('These are protocol documents' in value['notes']):
-        old_output_type = "reference"
+    elif old_output_type in ['raw data'] and ('These are protocol documents' in value['notes']):
+        old_output_type = 'reference'
 
-    if old_output_type == 'sites' and value['file_format'] == "tsv":
-        old_output_type = "long range chromatin interactions"
+    elif old_output_type == 'sites' and value['file_format'] == 'tsv':
+        old_output_type = 'long range chromatin interactions'
 
-    if old_output_type in ["Validation"] and value['file_format'] == '2bit':
-        old_output_type = "genome reference"
+    elif old_output_type in ['Validation'] and value['file_format'] == '2bit':
+        old_output_type = 'genome reference'
 
     value['output_type'] = output_mapping[old_output_type]
+
+
+    #  Get the replicate information
+    if value['file_format'] == 'fastq':
+        context = system['context']
+        root = find_root(context)
+        replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
+
+        if 'read_length' not in value:
+            value['read_length'] = replicate.get('read_length')
+
+        run_type_dict = {
+            True: 'paired_ended',
+            False: 'single_ended',
+            None: 'unknown'
+        }
+        if 'run_type' not in value:
+            value['run_type'] = run_type_dict[replicate.get('paired_ended')]

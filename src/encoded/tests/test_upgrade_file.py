@@ -57,6 +57,18 @@ def file_4(file_base):
     return item
 
 
+@pytest.fixture
+def file_5(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '4',
+        'file_format': 'fastq',
+        'download_path': 'bob.bigBed',
+        'output_type': 'reads'
+    })
+    return item
+
+
 def test_file_upgrade(registry, file_1):
     migrator = registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
