@@ -251,6 +251,8 @@
                         "idat green channel",
                         "idat red channel",
                         "reads",
+                        "intensity values",
+                        "reporter code counts",
                         
                         "alignments",
                         "transcriptome alignments",
@@ -623,5 +625,20 @@
         "csv": ".csv",
         "wig": ".wig.gz",
         "sam": ".sam.gz"
+    },
+    "change_log": [ {
+        "version": "5",
+        "changes":{
+            "run_type": "migrated this field from replicate paired_ended",
+            "read_length": "migrated this field from replicate read_length",
+            "read_length_units": "added as a calculated field",
+            "file_format_specifications": "added this field",
+            "file_format_type": "added this field",
+            "file_format": "changed this enum",
+            "output_category": "added as a calculated field",
+            "output_type": "changed this enum",
+            "md5sum_content": "added this DCC provided field"
+        }
     }
+    ]
 }

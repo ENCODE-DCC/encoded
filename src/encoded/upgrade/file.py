@@ -243,8 +243,8 @@ def file_4_5(value, system):
         'raw plus signal': 'raw plus signal',
         'raw signal': 'raw signal',
         'raw normalized signal': 'raw normalized signal',
-        'unique minus signal': 'minus signal of unique reads',
-        'unique plus signal': 'plus signal of unique reads',
+        'unique minus signal': 'minus strand signal of unique reads',
+        'unique plus signal': 'plus strand signal of unique reads',
         'unique signal': 'signal of unique reads',
         'signal': 'signal',
         'minus signal': 'minus strand signal',
@@ -353,8 +353,9 @@ def file_4_5(value, system):
     elif old_output_type in ['raw data'] and value['lab'] == '/labs/timothy-hubbard/':
         old_output_type = 'reference'
 
-    elif old_output_type in ['raw data'] and ('These are protocol documents' in value['notes']):
-        old_output_type = 'reference'
+    elif old_output_type in ['raw data']:
+        if 'These are protocol documents' in value.get('notes'):
+            old_output_type = 'reference'
 
     elif old_output_type == 'sites' and value['file_format'] == 'tsv':
         old_output_type = 'long range chromatin interactions'
