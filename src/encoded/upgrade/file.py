@@ -367,17 +367,19 @@ def file_4_5(value, system):
 
 
     #  Get the replicate information
-    if value['file_format'] == 'fastq':
+    if value['file_format'] in ['fastq', 'fasta', 'csfasta']:
         context = system['context']
         root = find_root(context)
         replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
 
         if 'read_length' not in value:
-            value['read_length'] = replicate.get('read_length')
+            new_length = replicate.get('read_length')
+            if new_length is not None:
+                value['read_length'] = new_length
 
         run_type_dict = {
-            True: 'paired_ended',
-            False: 'single_ended',
+            True: 'paired-ended',
+            False: 'single-ended',
             None: 'unknown'
         }
         if 'run_type' not in value:
