@@ -11,7 +11,7 @@ def audit_rep_extra_items(value, system):
     Should be in the schema.
     '''
 
-    for item in ['platform', 'read_length', 'paired_end']:
+    for item in ['platform', 'read_length', 'paired_ended']:
 
         if item in value:
             detail = 'Replicate {} has a item {}'.format(
