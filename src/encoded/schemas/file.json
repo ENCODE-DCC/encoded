@@ -359,8 +359,7 @@
 
                         "primer sequence",
                         "reference",
-                        
-                        "predicted enhancers",
+
                         "predicted transcription start sites",
                         "optimal idr thresholded peaks",
                         "conserved idr thresholded peaks",
