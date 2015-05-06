@@ -108,7 +108,7 @@
                     "required": ["file_format_type"],
                     "properties": {
                         "file_format": {
-                            "enum": ["gff","bed","bigBed", "tar"]
+                            "enum": ["gff","bed","bigBed"]
                         }
                     }
                 },
@@ -116,7 +116,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed", "tar"]
+                                "enum": ["fastq", "gff", "bed", "bigBed"]
                             }
                         }
                     }
