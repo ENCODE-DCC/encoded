@@ -309,37 +309,6 @@ def audit_experiment_ChIP_control(value, system):
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['files','files.platform'])
-def audit_experiment_platform(value, system):
-    '''
-    Platform has moved to file.  It is checked for presence there.
-    Here we look for mismatched platforms.
-    We should likely check that the platform is valid for the assay type
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    platforms = set()
-
-    for ff in value['files']:
-        platform = ff.get('platform')
-
-        if ff['file_format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
-            continue
-
-        if platform is None:
-            continue  # This error is caught in file
-        else:
-            platforms.add(platform['@id'])
-
-    if len(platforms) > 1:
-        detail = '{} has mixed values for platform files {}'.format(
-            value['accession'],
-            repr(sorted(platforms)))
-        yield AuditFailure('mismatched platform', detail, level='WARNING')
-
-
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_spikeins(value, system):
     '''
