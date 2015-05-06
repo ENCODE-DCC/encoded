@@ -118,7 +118,6 @@
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
-                    "predicted enhancers",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
                     "conserved idr thresholded peaks"
@@ -177,7 +176,6 @@
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
-                    "predicted enhancers",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
                     "conserved idr thresholded peaks"
