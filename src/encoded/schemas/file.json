@@ -108,7 +108,7 @@
                     "required": ["file_format_type"],
                     "properties": {
                         "file_format": {
-                            "enum": ["gff","bed","bigBed"]
+                            "enum": ["gff","bed","bigBed", "tar"]
                         }
                     }
                 },
@@ -116,7 +116,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "bed", "bigBed"]
+                                "enum": ["fastq", "gff", "bed", "bigBed", "tar"]
                             }
                         }
                     }
@@ -152,6 +152,7 @@
                         "tsv",
                         "csv",
                         "sam",
+                        "tar",
                         "wig"
                     ]
                 },
@@ -159,7 +160,6 @@
                     "comment": "Historical file formats, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
-                        "tar",
                         "2bit",
                         "csfasta",
                         "csqual"
@@ -625,12 +625,6 @@
         "CEL": ".cel.gz",
         "bam": ".bam",
         "bed": ".bed.gz",
-        "bed_bedLogR": ".bedLogR.gz",
-        "bed_bedMethyl": ".bedMethyl.gz",
-        "bed_bedRnaElements": ".bedRnaElements.gz",
-        "bed_broadPeak": ".broadPeak.gz",
-        "bed_gappedPeak": ".gappedPeak.gz",
-        "bed_narrowPeak": ".narrowPeak.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
         "csfasta": ".csfasta.gz",
