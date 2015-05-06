@@ -370,14 +370,11 @@ def file_4_5(value, system):
     if value['file_format'] in ['fastq', 'fasta', 'csfasta']:
         context = system['context']
         root = find_root(context)
-        replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
-
-        if replicate is not None:
+        if 'replicate' in value:
+            replicate = root.get_by_uuid(value['replicate']).upgrade_properties()
 
             if 'read_length' not in value:
-                new_length = replicate.get('read_length')
-                if new_length is not None:
-                    value['read_length'] = new_length
+                value['read_length'] = replicate.get('read_length')
 
             run_type_dict = {
                 True: 'paired-ended',
@@ -386,3 +383,5 @@ def file_4_5(value, system):
             }
             if 'run_type' not in value:
                 value['run_type'] = run_type_dict[replicate.get('paired_ended')]
+        if value.get('paired_end') in [1, 2]:
+            value['run_type'] = 'paired-ended'

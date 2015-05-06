@@ -67,13 +67,13 @@ def audit_file_platform(value, system):
 @audit_checker('file', frame='object')
 def audit_file_read_length(value, system):
     '''
-    A fastq file should have a read_length
+    Reads files should have a read_length
     '''
 
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value['file_format'] not in ['fastq']:
+    if value['output_type'] != 'reads':
         return
 
     if 'read_length' not in value:
@@ -227,8 +227,6 @@ def audit_file_output_type(value, system):
         return
 
     undesirable_output_type = [
-        'Excludable',
-        'optimal idr thresholded peak calls',
         'validation',
         'sequence alignability',
         'sequence uniqueness',

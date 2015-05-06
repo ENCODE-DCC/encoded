@@ -5,18 +5,21 @@ from ..auditor import (
 
 
 @audit_checker('replicate', frame='object')
-def audit_rep_platform(value, system):
+def audit_rep_extra_items(value, system):
     '''
-    A replicate should no longer have platforms
+    A replicate should no longer have platforms, read_length, paired_end
     Should be in the schema.
     '''
 
-    if 'platform' in value:
-        detail = 'Replicate {} has a platform {}'.format(
-            value['uuid'],
-            value['platform']  # ['name']
-            )
-        raise AuditFailure('replicate with platform', detail, level='DCC_ACTION')
+    for item in ['platform', 'read_length', 'paired_end']:
+
+        if item in value:
+            detail = 'Replicate {} has a item {}'.format(
+                value['uuid'],
+                value[item]  # ['name']
+                )
+            error_message = 'replicate with {}'.format(item)
+            raise AuditFailure(error_message, detail, level='DCC_ACTION')
 
 
 @audit_checker('replicate', frame=['experiment'])
