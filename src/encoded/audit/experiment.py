@@ -463,7 +463,7 @@ def audit_experiment_biosample_term(value, system):
         'replicates.library.biosample',
         'replicates.library.biosample.organism',
     ],
-    condition=rfa('ENCODE3', 'FlyWormChIP'))
+    condition=rfa('ENCODE3', 'modERN'))
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
