@@ -342,7 +342,7 @@ def file_4_5(value, system):
     elif old_output_type in ['spike-ins'] and value['file_format'] == 'fasta':
         old_output_type = 'spike-in sequence'
 
-    elif old_output_type in ['raw data'] and value['file_format'] in ['fastq', 'csfasta', 'csqual']:
+    elif old_output_type in ['raw data'] and value['file_format'] in ['fastq', 'csfasta', 'csqual', 'fasta']:
         old_output_type = 'reads'
 
     elif old_output_type in ['raw data'] and value['file_format'] in ['CEL', 'tar']:
@@ -359,7 +359,7 @@ def file_4_5(value, system):
             old_output_type = 'reference'
 
     elif old_output_type == 'sites' and value['file_format'] == 'tsv':
-        old_output_type = 'long range chromatin interactions'
+        old_output_type = 'interactions'
 
     elif old_output_type in ['Validation'] and value['file_format'] == '2bit':
         old_output_type = 'genome reference'
@@ -367,7 +367,7 @@ def file_4_5(value, system):
     value['output_type'] = output_mapping[old_output_type]
 
     #  Get the replicate information
-    if value['file_format'] in ['fastq', 'fasta', 'csfasta']:
+    if value.get('file_format') in ['fastq', 'fasta', 'csfasta']:
         context = system['context']
         root = find_root(context)
         if 'replicate' in value:
@@ -375,6 +375,8 @@ def file_4_5(value, system):
 
             if 'read_length' not in value:
                 value['read_length'] = replicate.get('read_length')
+                if value['read_length'] is None:
+                    del value['read_length']
 
             run_type_dict = {
                 True: 'paired-ended',
@@ -383,5 +385,6 @@ def file_4_5(value, system):
             }
             if 'run_type' not in value:
                 value['run_type'] = run_type_dict[replicate.get('paired_ended')]
-        if value.get('paired_end') in [1, 2]:
+
+        if value.get('paired_end') in ['1', '2']:
             value['run_type'] = 'paired-ended'
