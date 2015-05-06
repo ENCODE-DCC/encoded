@@ -240,8 +240,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'accession':
                 diff = a.accession > b.accession ? 1 : -1;
                 break;
-            case 'file_format':
-                diff = a.file_format > b.file_format ? 1 : (a.file_format === b.file_format ? 0 : -1);
+            case 'file_type':
+                diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
                 break;
             case 'paired_end':
                 if (a.paired_end && b.paired_end) {
@@ -299,8 +299,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'accession':
                 diff = a.accession > b.accession ? 1 : -1;
                 break;
-            case 'file_format':
-                diff = a.file_format > b.file_format ? 1 : (a.file_format === b.file_format ? 0 : -1);
+            case 'file_type':
+                diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
                 break;
             case 'output_type':
                 var aLower = a.output_type.toLowerCase();
@@ -359,7 +359,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         var encodevers = this.props.encodevers;
         var cellClassRaw = {
             accession: 'tcell-sort',
-            file_format: 'tcell-sort',
+            file_type: 'tcell-sort',
             paired_end: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
@@ -369,7 +369,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         };
         var cellClassProc = {
             accession: 'tcell-sort',
-            file_format: 'tcell-sort',
+            file_type: 'tcell-sort',
             output_type: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
@@ -394,7 +394,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
-                        <td>{file.file_format}</td>
+                        <td>{file.file_type}</td>
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
@@ -414,7 +414,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
-                        <td>{file.file_format}</td>
+                        <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
@@ -436,7 +436,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_format')}>File type<i className={cellClassRaw.file_format}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
@@ -464,7 +464,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_format')}>File type<i className={cellClassProc.file_format}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate<i className={cellClassProc.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'tech_replicate')}>Technical replicate<i className={cellClassProc.tech_replicate}></i></th>
