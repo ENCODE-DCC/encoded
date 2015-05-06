@@ -67,7 +67,7 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "in progress",
+            "default": "in preparation",
             "enum" : [
                 "planned",
                 "in preparation",
