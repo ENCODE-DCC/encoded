@@ -19,8 +19,6 @@
         ],
         "input_file_types": ["alignments"],
         "output_file_types": [
-            "minus strand signal of multi-mapped reads",
-            "plus strand signal of multi-mapped reads",
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
@@ -44,7 +42,7 @@
         "analysis_step_types": ["quantification"],
         "software_versions": ["d84714c0-5af2-11e4-8ed6-0800200c9a66"],
         "input_file_types": ["alignments", "reference genes"],
-        "output_file_types": ["gene quantification"],
+        "output_file_types": ["gene quantifications"],
         "status": "released",
         "parents": ["54ae7770-5ae8-11e4-8ed6-0800200c9a66"],
         "uuid": "1e418e10-5ae9-11e4-8ed6-0800200c9a66"
@@ -54,8 +52,8 @@
         "title": "IDR test step 1",
         "analysis_step_types": ["IDR"],
         "software_versions": ["d2cde860-5af3-11e4-8ed6-0800200c9a66"],
-        "input_file_types": ["gene quantification"],
-        "output_file_types": ["validation"],
+        "input_file_types": ["gene quantifications"],
+        "output_file_types": ["gene quantifications"],
         "status": "released",
         "parents": ["1e418e10-5ae9-11e4-8ed6-0800200c9a66"],
         "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66"
@@ -81,7 +79,7 @@
             "d0c7d890-3446-41b5-82f0-388347f7e8dd"
         ],
         "input_file_types": ["alignments", "reads", "blacklisted regions"],
-        "output_file_types": ["signal", "optimal idr thresholded peaks"],
+        "output_file_types": ["optimal idr thresholded peaks"],
         "qa_stats_generated": ["NSC", "RSC", "SPOT"],
         "status": "released",
         "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
@@ -151,7 +149,7 @@
         "title": "extract-bismark",
         "uuid": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
         "input_file_types": ["alignments"],
-        "output_file_types": ["methlation state at CpG", "alignments"],
+        "output_file_types": ["methylation state at CpG"],
         "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
         "analysis_step_types": ["signal generation"],
         "qa_stats_generated":  [
@@ -299,7 +297,7 @@
         "name": "wgbs_lambda_qc",
         "title": "Bismark Lambda QC",
         "input_file_types": ["alignments"],
-        "output_file_types": ["methylation state at CpG", "alignments"],
+        "output_file_types": ["methylation state at CpG"],
         "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
         "qa_stats_generated":  [
             "lambda Sequences analysed in total",

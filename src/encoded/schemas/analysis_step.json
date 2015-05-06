@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "name": {
             "title": "Name",
@@ -80,10 +80,8 @@
                     "reads",
                     "intensity values",
                     "reporter code counts",
-                    
                     "alignments",
                     "transcriptome alignments",
-
                     "minus strand signal of multi-mapped reads",
                     "plus strand signal of multi-mapped reads",
                     "signal of multi-mapped reads",
@@ -97,7 +95,6 @@
                     "minus strand signal of unique reads",
                     "plus strand signal of unique reads",
                     "signal of unique reads",
-                    
                     "exon quantifications",
                     "gene quantifications",
                     "transcript quantifications",
@@ -106,7 +103,6 @@
                     "methylation state at CHG",
                     "methylation state at CHH",
                     "enrichment",
-
                     "hotspots",
                     "long range chromatin interactions",
                     "peaks",
@@ -117,13 +113,11 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
-                    
                     "genome reference",
                     "genome index",
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
-
                     "predicted enhancers",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
@@ -145,10 +139,8 @@
                     "reads",
                     "intensity values",
                     "reporter code counts",
-                    
                     "alignments",
                     "transcriptome alignments",
-
                     "minus strand signal of multi-mapped reads",
                     "plus strand signal of multi-mapped reads",
                     "signal of multi-mapped reads",
@@ -162,7 +154,6 @@
                     "minus strand signal of unique reads",
                     "plus strand signal of unique reads",
                     "signal of unique reads",
-                    
                     "exon quantifications",
                     "gene quantifications",
                     "transcript quantifications",
@@ -171,7 +162,6 @@
                     "methylation state at CHG",
                     "methylation state at CHH",
                     "enrichment",
-
                     "hotspots",
                     "long range chromatin interactions",
                     "peaks",
@@ -182,13 +172,11 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
-                    
                     "genome reference",
                     "genome index",
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
-                    
                     "predicted enhancers",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
