@@ -77,7 +77,7 @@ def audit_file_read_length(value, system):
         return
 
     if 'read_length' not in value:
-        detail = 'Fastq file {} missing read_length'.format(value['accession'])
+        detail = 'Reads file {} missing read_length'.format(value['accession'])
         raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
 
 
