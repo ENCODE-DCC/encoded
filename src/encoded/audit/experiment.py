@@ -263,7 +263,7 @@ def audit_experiment_control(value, system):
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
             detail = 'Control {} is for {} but experiment is done on {}'.format(
                 control['accession'],
-                control['biosample_term_name'],
+                control.get('biosample_term_name'),
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
