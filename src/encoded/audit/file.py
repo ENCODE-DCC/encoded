@@ -46,7 +46,7 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -84,7 +84,7 @@ def audit_file_read_length(value, system):
 @audit_checker('file',
                frame=['dataset', 'dataset.target', 'controlled_by',
                       'controlled_by.dataset'],
-               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'FlyWormChIP'))
+               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'modERN'))
 def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
@@ -141,7 +141,7 @@ def audit_file_controlled_by(value, system):
             raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
