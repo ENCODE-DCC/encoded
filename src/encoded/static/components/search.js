@@ -630,6 +630,10 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var facet = this.props.facet;
             var filters = this.props.filters;
+            var title = facet['title'];
+            var field = facet['field'];
+            var total = facet['total'];
+            var termID = title.replace(/\s+/g, '');
             var terms = facet['terms'].filter(function (term) {
                 if (term.key) {
                     for(var filter in filters) {
@@ -642,11 +646,8 @@ var AuditMixin = audit.AuditMixin;
                     return false;
                 }
             });
+            terms = field === 'files.file_type' ? _(terms).sortBy('key') : terms;
             var moreTerms = terms.slice(5);
-            var title = facet['title'];
-            var field = facet['field'];
-            var total = facet['total'];
-            var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
             var moreTermSelected = selectedTermCount > 0;

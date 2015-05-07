@@ -75,6 +75,16 @@
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string"
+        },
+        "viewing_group": {
+            "title": "View access group",
+            "description": "The group that determines which set of data the user has permission to view.",
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "REMC"
+            ]
         }
     }
  }

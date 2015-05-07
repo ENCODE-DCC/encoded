@@ -136,7 +136,7 @@ class File(Item):
         "enum": [
             "nt"
         ]
-        })
+    })
     def read_length_units(self, read_length=None):
         if read_length is not None:
             return "nt"
@@ -175,6 +175,16 @@ class File(Item):
     })
     def output_category(self, output_type):
         return self.schema['output_type_output_category'].get(output_type)
+
+    @calculated_property(schema={
+        "title": "File type",
+        "type": "string"
+    })
+    def file_type(self, file_format, file_format_type=None):
+        if file_format_type is None:
+            return file_format
+        else:
+            return file_format + ' ' + file_format_type
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):

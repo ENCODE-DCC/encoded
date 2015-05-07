@@ -438,11 +438,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
             }
         });
     }
-
-    // If no platforms found in files, get the platform from the first replicate, if it has one
-    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
-        platforms[replicates[0].platform['@id']] = replicates[0].platform;
-    }
+    var platformKeys = Object.keys(platforms);
 
     return (
         <div className = "panel-assay">
@@ -506,11 +502,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     </div>
                 : null}
 
-                {Object.keys(platforms).length ?
+                {platformKeys.length ?
                     <div data-test="platform">
                         <dt>Platform</dt>
                         <dd>
-                            {Object.keys(platforms).map(function(platformId) {
+                            {platformKeys.map(function(platformId) {
                                 return(
                                     <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                 );
@@ -586,20 +582,6 @@ var Replicate = module.exports.Replicate = function (props) {
                                 </a>{' '}-{' '}{biosample.biosample_term_name}
                             </dd>
                         : null}
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="runtype">
-                        <dt>Run type</dt>
-                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="readlength">
-                        <dt>Read length</dt>
-                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
                     </div>
                 : null}
             </dl>
