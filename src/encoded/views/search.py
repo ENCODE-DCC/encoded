@@ -181,16 +181,16 @@ def set_facets(facets, used_filters, query, principals):
             query_field = 'embedded.' + field + '.raw'
         agg_name = field.replace('.', '-')
 
-        terms = [
-            {'terms': {'embedded.' + q_field + '.raw': q_terms}}
-            for q_field, q_terms in used_filters.items()
-            if q_field != field and not q_field.endswith('!')
-        ]
-        terms = terms + [
-            {'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}}
-            for q_field, q_terms in used_filters.items()
-            if q_field != field and q_field.endswith('!')
-        ]
+        terms = []
+        # Adding facets based on filters
+        for q_field, q_terms in used_filters.items():
+            if q_field != field and q_field.startswith('audit'):
+                terms.append({'terms': {q_field: q_terms}})
+            elif q_field != field and not q_field.endswith('!'):
+                terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
+            elif q_field != field and q_field.endswith('!'):
+                terms.append({'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
+
         terms.append(
             {'terms': {'principals_allowed.view': principals}}
         )
@@ -352,6 +352,7 @@ def search(context, request, search_type=None):
             facets.append(audit_facet)
 
     set_facets(facets, used_filters, query, principals)
+    import pdb; pdb.set_trace()
 
     # Execute the query
     es_results = es.search(body=query, index='encoded',
