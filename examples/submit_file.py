@@ -32,7 +32,6 @@ with open(path, 'rb') as f:
 data = {
     "dataset": "ENCSR000ACY",
     "file_format": "fastq",
-    "file_format_type": None,
     "file_size": os.path.getsize(path),
     "md5sum": md5sum.hexdigest(),
     "output_type": "reads",
@@ -105,7 +104,7 @@ validate_map = {
     ('gff', None): None
 }
 
-validate_args = validate_map.get((data['file_format'], data['file_format_type']))
+validate_args = validate_map.get((data['file_format'], data.get('file_format_type')))
 if validate_args is not None:
     print("Validating file.")
     try:
