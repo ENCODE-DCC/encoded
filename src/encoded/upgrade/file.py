@@ -355,7 +355,7 @@ def file_4_5(value, system):
         old_output_type = 'reference'
 
     elif old_output_type in ['raw data']:
-        if 'These are protocol documents' in value.get('notes'):
+        if 'These are protocol documents' in value.get('notes', ''):
             old_output_type = 'reference'
 
     elif old_output_type == 'sites' and value['file_format'] == 'tsv':

@@ -1,4 +1,6 @@
 from ..contentbase import (
+    AfterModified,
+    BeforeModified,
     calculated_property,
     collection,
 )
@@ -234,7 +236,12 @@ def post_upload(context, request):
     name = 'up{time:.6f}-{accession}'.format(
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
+
+    registry = request.registry
+    registry.notify(BeforeModified(context, request))
     context.update(None, {'external': creds})
+    registry.notify(AfterModified(context, request))
+
     rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
