@@ -27,7 +27,22 @@ class Experiment(Dataset):
     schema = load_schema('experiment.json')
     base_types = [Dataset.item_type] + Dataset.base_types
     embedded = Dataset.embedded + [
+        'files.lab',
         'files.platform',
+        'files.lab',
+        'files.derived_from',
+        'files.derived_from.replicate',
+        'files.pipeline',
+        'files.analysis_step',
+        'files.analysis_step.software_versions',
+        'files.analysis_step.software_versions.software',
+        'contributing_files.platform',
+        'contributing_files.lab',
+        'contributing_files.derived_from',
+        'contributing_files.pipeline',
+        'contributing_files.analysis_step',
+        'contributing_files.analysis_step.software_versions',
+        'contributing_files.analysis_step.software_versions.software',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',
@@ -39,12 +54,14 @@ class Experiment(Dataset):
         'replicates.library.biosample.organism',
         'replicates.library.biosample.treatments',
         'replicates.library.biosample.donor.organism',
+        'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
         'replicates.platform',
         'possible_controls',
         'target.organism',
+         'references'
     ]
     audit_inherit = [
         'original_files',
@@ -151,23 +168,11 @@ class Experiment(Dataset):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
     @calculated_property(schema={
-        "title": "Run type",
-        "type": "string",
-    })
-    def run_type(self, request, replicates):
-        for replicate in replicates:
-            properties = request.embed(replicate, '@@object')
-            if properties.get('status') in ('deleted', 'replaced'):
-                continue
-            if 'paired_ended' in properties:
-                return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
-
-    @calculated_property(schema={
         "title": "Replicates",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "replicate",
+            "type": ['string', 'object'],
+            "linkFrom": "replicate.experiment",
         },
     })
     def replicates(self, request, replicates):
@@ -189,16 +194,15 @@ class Replicate(Item):
         'platform',
     ]
 
-    def keys(self):
-        keys = super(Replicate, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(Replicate, self).unique_keys(properties)
         value = u'{experiment}/{biological_replicate_number}/{technical_replicate_number}'.format(
             **properties)
         keys.setdefault('replicate:experiment_biological_technical', []).append(value)
         return keys
 
     def __ac_local_roles__(self):
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
         root = find_root(self)
         experiment = root.get_by_uuid(properties['experiment'])
         return experiment.__ac_local_roles__()

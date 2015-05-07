@@ -42,16 +42,7 @@
             "properties": {
                 "rows": {
                     "type": "array",
-                    "items": {},
-                    "default": [
-                        {
-                            "cols": [
-                                {
-                                    "blocks": ["#block1"]
-                                }
-                            ]
-                        }
-                    ]
+                    "items": {}
                 },
                 "blocks": {
                     "type": "array",
@@ -60,17 +51,36 @@
                         "properties": {
                             "body": {
                                 "type": "string"
+                            },
+                            "image": {
+                                "type": "string",
+                                "linkTo": "image"
+                            },
+                            "item": {
+                                "type": "string",
+                                "linkTo": "item"
                             }
                         }
-                    },
-                    "default": [
-                        {
-                            "@id": "#block1",
-                            "@type": "richtextblock",
-                            "body": "<p></p>"
-                        }
-                    ]
+                    }
                 }
+            },
+            "default": {
+                "rows": [
+                    {
+                        "cols": [
+                            {
+                                "blocks": ["#block1"]
+                            }
+                        ]
+                    }
+                ],
+                "blocks": [
+                    {
+                        "@id": "#block1",
+                        "@type": "richtextblock",
+                        "body": "<p></p>"
+                    }
+                ]
             }
         }
     },

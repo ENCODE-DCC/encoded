@@ -17,7 +17,6 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
-from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -81,12 +80,29 @@ class File(Item):
         'paired_with': ('file', 'paired_with'),
     }
 
-    def keys(self):
-        keys = super(File, self).keys()
-        properties = self.upgrade_properties(finalize=False)
-        if properties.get('md5sum') and properties.get('status') != 'replaced':
-            value = 'md5:{md5sum}'.format(**properties)
-            keys.setdefault('alias', []).append(value)
+    embedded = [
+        'replicate',
+        'replicate.experiment',
+        'replicate.experiment.lab',
+        'replicate.experiment.target',
+        'lab',
+        'derived_from',
+        'submitted_by',
+        'pipeline',
+        'analysis_step',
+        'analysis_step.software_versions',
+        'analysis_step.software_versions.software'
+    ]
+
+    def unique_keys(self, properties):
+        keys = super(File, self).unique_keys(properties)
+        if properties.get('status') != 'replaced':
+            if 'md5sum' in properties:
+                value = 'md5:{md5sum}'.format(**properties)
+                keys.setdefault('alias', []).append(value)
+            # Ensure no files have multiple reverse paired_with
+            if 'paired_with' in properties:
+                keys.setdefault('file:paired_with', []).append(properties['paired_with'])
         return keys
 
     # Don't specify schema as this just overwrites the existing value
@@ -94,7 +110,7 @@ class File(Item):
         condition=lambda paired_end=None: paired_end == '1')
     def paired_with(self, root, request):
         paired_with = self.get_rev_links('paired_with')
-        if len(paired_with) != 1:
+        if not paired_with:
             return None
         item = root.get_by_uuid(paired_with[0])
         return request.resource_path(item)
@@ -105,7 +121,8 @@ class File(Item):
     })
     def href(self, request, accession, file_format):
         file_extension = self.schema['file_format_file_extension'][file_format]
-        return request.resource_path(self, '@@download/{}{}'.format(accession, file_extension))
+        filename = '{}{}'.format(accession, file_extension)
+        return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
         "type": "object",
@@ -113,23 +130,78 @@ class File(Item):
     def upload_credentials(self):
         return self.propsheets['external']['upload_credentials']
 
+    @calculated_property(schema={
+        "title": "Read length units",
+        "type": "string",
+        "enum": [
+            "nt"
+        ]
+    })
+    def read_length_units(self, read_length=None):
+        if read_length is not None:
+            return "nt"
+
+    @calculated_property(schema={
+        "title": "Pipeline",
+        "type": "string",
+        "linkTo": "pipeline"
+    })
+    def pipeline(self, request, step_run=None):
+        if step_run is not None:
+            workflow = request.embed(step_run, '@@object').get('workflow_run')
+            if workflow:
+                return request.embed(workflow, '@@object').get('pipeline')
+
+    @calculated_property(schema={
+        "title": "Analysis Step",
+        "type": "string",
+        "linkTo": "analysis_step"
+    })
+    def analysis_step(self, request, step_run=None):
+        if step_run is not None:
+            return request.embed(step_run, '@@object').get('analysis_step')
+
+    @calculated_property(schema={
+        "title": "Output category",
+        "type": "string",
+        "enum": [
+            "raw data",
+            "alignment",
+            "signal",
+            "annotation",
+            "quantification",
+            "reference"
+        ]
+    })
+    def output_category(self, output_type):
+        return self.schema['output_type_output_category'].get(output_type)
+
+    @calculated_property(schema={
+        "title": "File type",
+        "type": "string"
+    })
+    def file_type(self, file_format, file_format_type=None):
+        if file_format_type is None:
+            return file_format
+        else:
+            return file_format + ' ' + file_format_type
+
     @classmethod
-    def create(cls, parent, properties, sheets=None):
+    def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
             sheets = {} if sheets is None else sheets.copy()
 
-            registry = find_root(parent).registry
             bucket = registry.settings['file_upload_bucket']
             mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
             date = properties['date_created'].split('T')[0].replace('-', '/')
             key = '{date}/{uuid}/{accession}{file_extension}'.format(
-                date=date, file_extension=file_extension, **properties)
-            name = 'upload-{time}-{accession}'.format(
+                date=date, file_extension=file_extension, uuid=uuid, **properties)
+            name = 'up{time:.6f}-{accession}'.format(
                 time=time.time(), **properties)  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
-        return super(File, cls).create(parent, properties, sheets)
+        return super(File, cls).create(registry, uuid, properties, sheets)
 
 
 @view_config(name='upload', context=File, request_method='GET',
@@ -149,7 +221,7 @@ def get_upload(context, request):
 @view_config(name='upload', context=File, request_method='POST',
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
@@ -159,7 +231,7 @@ def post_upload(context, request):
 
     bucket = external['bucket']
     key = external['key']
-    name = 'upload-{time}-{accession}'.format(
+    name = 'up{time:.6f}-{accession}'.format(
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
     context.update(None, {'external': creds})
@@ -172,17 +244,10 @@ def post_upload(context, request):
     return result
 
 
-class InternalResponse(Response):
-    def _abs_headerlist(self, environ):
-        """Avoid making the Location header absolute.
-        """
-        return list(self.headerlist)
-
-
 @view_config(name='download', context=File, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
-    properties = context.upgrade_properties(finalize=False)
+    properties = context.upgrade_properties()
     mapping = context.schema['file_format_file_extension']
     file_extension = mapping[properties['file_format']]
     filename = properties['accession'] + file_extension
@@ -191,22 +256,18 @@ def download(context, request):
         if filename != _filename:
             raise HTTPNotFound(_filename)
 
-    proxy = asbool(request.params.get('proxy'))
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
-        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
         location = conn.generate_url(
-            36*60*60, method, external['bucket'], external['key'],
-            response_headers={
+            36*60*60, request.method, external['bucket'], external['key'],
+            force_http=proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
         raise ValueError(external.get('service'))
-
-    if proxy:
-        return InternalResponse(location='/_proxy/' + location)
 
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
@@ -215,6 +276,9 @@ def download(context, request):
             'location': location,
             'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
         }
+
+    if proxy:
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

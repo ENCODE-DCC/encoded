@@ -209,6 +209,11 @@ div.meta-status {
         content: none;
         display: block;
     }
+
+    .pull-right {
+        position: relative;
+        z-index: 2;
+    }
 }
 
  

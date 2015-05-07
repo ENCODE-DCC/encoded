@@ -50,9 +50,8 @@ class AntibodyLot(Item):
         'lot_reviews.organisms'
     ]
 
-    def keys(self):
-        keys = super(AntibodyLot, self).keys()
-        properties = self.upgrade_properties(finalize=False)
+    def unique_keys(self, properties):
+        keys = super(AntibodyLot, self).unique_keys(properties)
         source = properties['source']
         product_id = properties['product_id']
         lot_ids = [properties['lot_id']] + properties.get('lot_id_alias', [])
@@ -71,8 +70,8 @@ class AntibodyLot(Item):
         "title": "Characterizations",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "antibody_characterization",
+            "type": ['string', 'object'],
+            "linkFrom": "antibody_characterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

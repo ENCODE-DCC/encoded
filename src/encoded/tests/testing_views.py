@@ -93,6 +93,12 @@ class TestingLinkSource(Item):
     schema = {
         'type': 'object',
         'properties': {
+            'name': {
+                'type': 'string',
+            },
+            'uuid': {
+                'type': 'string',
+            },
             'target': {
                 'type': 'string',
                 'linkTo': 'testing_link_target',
@@ -100,20 +106,31 @@ class TestingLinkSource(Item):
             'status': {
                 'type': 'string',
             },
-        }
+        },
+        'required': ['target'],
+        'additionalProperties': False,
     }
 
 
-@collection('testing-link-targets')
+@collection('testing-link-targets', unique_key='testing_link_target:name')
 class TestingLinkTarget(Item):
     item_type = 'testing_link_target'
+    name_key = 'name'
     schema = {
         'type': 'object',
         'properties': {
+            'name': {
+                'type': 'string',
+                'uniqueKey': True,
+            },
+            'uuid': {
+                'type': 'string',
+            },
             'status': {
                 'type': 'string',
             },
-        }
+        },
+        'additionalProperties': False,
     }
     rev = {
         'reverse': ('testing_link_source', 'target'),
@@ -122,7 +139,14 @@ class TestingLinkTarget(Item):
         'reverse',
     ]
 
-    @calculated_property()
+    @calculated_property(schema={
+        "title": "Sources",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "testing_link_source.target",
+        },
+    })
     def reverse(self, request, reverse):
         return paths_filtered_by_status(request, reverse)
 

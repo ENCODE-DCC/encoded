@@ -1,28 +1,192 @@
+from pyramid.httpexceptions import HTTPConflict
 from sqlalchemy import (
     Column,
     DDL,
     ForeignKey,
+    bindparam,
     event,
     func,
     null,
     orm,
     schema,
+    text,
     types,
 )
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext import baked
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
-from .precompiled_query import PrecompiledQuery
+from sqlalchemy.orm.exc import (
+    FlushError,
+    NoResultFound,
+)
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(query_cls=PrecompiledQuery))
+DBSession = orm.scoped_session(orm.sessionmaker())
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
+
+bakery = baked.bakery()
+baked_query_resource = bakery(lambda session: session.query(Resource))
+baked_query_unique_key = bakery(
+    lambda session: session.query(Key).options(
+        orm.joinedload_all(
+            Key.resource,
+            Resource.data,
+            CurrentPropertySheet.propsheet,
+            innerjoin=True,
+        ),
+    ).filter(Key.name == bindparam('name'), Key.value == bindparam('value'))
+)
+
+
+class RDBStorage(object):
+    batchsize = 1000
+
+    def get_by_uuid(self, rid, default=None):
+        session = DBSession()
+        model = baked_query_resource(session).get(uuid.UUID(rid))
+        if model is None:
+            return default
+        return model
+
+    def get_by_unique_key(self, unique_key, name, default=None):
+        session = DBSession()
+        try:
+            key = baked_query_unique_key(session).params(name=unique_key, value=name).one()
+        except NoResultFound:
+            return default
+        else:
+            return key.resource
+
+    def get_rev_links(self, model, item_type, rel):
+        return [
+            link.source_rid
+            for link in model.revs
+            if (link.source.item_type, link.rel) == (item_type, rel)
+        ]
+
+    def __iter__(self, item_type=None):
+        session = DBSession()
+        query = session.query(Resource.rid)
+
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+
+        for rid, in query.yield_per(self.batchsize):
+            yield rid
+
+    def __len__(self, item_type=None):
+        session = DBSession()
+        query = session.query(Resource.rid)
+        if item_type is not None:
+            query = query.filter(
+                Resource.item_type == item_type
+            )
+        return query.count()
+
+    def create(self, item_type, rid):
+        return Resource(item_type, rid=rid)
+
+    def update(self, model, properties=None, sheets=None, unique_keys=None, links=None):
+        session = DBSession()
+        sp = session.begin_nested()
+        try:
+            session.add(model)
+            update_properties(model, properties, sheets)
+            if links is not None:
+                update_rels(model, links)
+            if unique_keys is not None:
+                keys_add, keys_remove = update_keys(model, unique_keys)
+            sp.commit()
+        except (IntegrityError, FlushError):
+            sp.rollback()
+        else:
+            return
+
+        # Try again more carefully
+        try:
+            session.add(model)
+            update_properties(model, properties, sheets)
+            if links is not None:
+                update_rels(model, links)
+            session.flush()
+        except (IntegrityError, FlushError):
+            msg = 'UUID conflict'
+            raise HTTPConflict(msg)
+        assert unique_keys is not None
+        conflicts = check_duplicate_keys(model, keys_add)
+        assert conflicts
+        msg = 'Keys conflict: %r' % conflicts
+        raise HTTPConflict(msg)
+
+
+def update_properties(model, properties, sheets=None):
+    if properties is not None:
+        model.propsheets[''] = properties
+    if sheets is not None:
+        for key, value in sheets.items():
+            model.propsheets[key] = value
+
+
+def update_keys(model, unique_keys):
+    keys_set = {(k, v) for k, values in unique_keys.items() for v in values}
+
+    existing = {
+        (key.name, key.value)
+        for key in model.unique_keys
+    }
+
+    to_remove = existing - keys_set
+    to_add = keys_set - existing
+
+    session = DBSession()
+    for pk in to_remove:
+        key = session.query(Key).get(pk)
+        session.delete(key)
+
+    for name, value in to_add:
+        key = Key(rid=model.rid, name=name, value=value)
+        session.add(key)
+
+    return to_add, to_remove
+
+
+def check_duplicate_keys(model, keys):
+    session = DBSession()
+    return [pk for pk in keys if session.query(Key).get(pk) is not None]
+
+
+def update_rels(model, links):
+    session = DBSession()
+    source = model.rid
+
+    rels = {(k, uuid.UUID(target)) for k, targets in links.items() for target in targets}
+
+    existing = {
+        (link.rel, link.target_rid)
+        for link in model.rels
+    }
+
+    to_remove = existing - rels
+    to_add = rels - existing
+
+    for rel, target in to_remove:
+        link = session.query(Link).get((source, rel, target))
+        session.delete(link)
+
+    for rel, target in to_add:
+        link = Link(source_rid=source, rel=rel, target_rid=target)
+        session.add(link)
+
+    return to_add, to_remove
 
 
 class UUID(types.TypeDecorator):
@@ -171,6 +335,7 @@ class CurrentPropertySheet(Base):
         post_update=True,  # Break cyclic dependency
         primaryjoin="""and_(CurrentPropertySheet.rid==PropertySheet.rid,
                     CurrentPropertySheet.name==PropertySheet.name)""",
+        viewonly=True,
     )
     resource = orm.relationship('Resource')
 
@@ -193,7 +358,7 @@ class Resource(Base):
         super(Resource, self).__init__(item_type=item_type, rid=rid)
         if data is not None:
             for k, v in data.items():
-                self[k] = v
+                self.propsheets[k] = v
 
     def __getitem__(self, key):
         return self.data[key].propsheet.properties
@@ -207,6 +372,38 @@ class Resource(Base):
 
     def keys(self):
         return self.data.keys()
+
+    def items(self):
+        for k in self.keys():
+            yield k, self[k]
+
+    def get(self, key, default=None):
+        try:
+            return self.propsheets[key]
+        except KeyError:
+            return default
+
+    @property
+    def properties(self):
+        return self.propsheets['']
+
+    @property
+    def propsheets(self):
+        return self
+
+    @property
+    def uuid(self):
+        return self.rid
+
+    @property
+    def tid(self):
+        return self.data[''].propsheet.tid
+
+    def invalidated(self):
+        return False
+
+    def used_for(self, item):
+        pass
 
 
 class Blob(Base):
@@ -223,7 +420,7 @@ class TransactionRecord(Base):
     tid = Column(UUID, default=uuid.uuid4, nullable=False, unique=True)
     data = Column(JSON)
     timestamp = Column(
-        types.DateTime, nullable=False, server_default=func.now())
+        types.DateTime(timezone=True), nullable=False, server_default=func.now())
     # A server_default is necessary for the notify_ddl overwrite to work
     xid = Column(types.BigInteger, nullable=True, server_default=null())
     __mapper_args__ = {
@@ -302,14 +499,33 @@ def record_transaction_data(session):
     session.add(record)
 
 
-@event.listens_for(DBSession, 'after_begin')
-def read_only_doomed_transaction(session, sqla_txn, connection):
-    ''' Doomed transactions can be read-only.
+_set_transaction_snapshot = text(
+    "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY;"
+    "SET TRANSACTION SNAPSHOT :snapshot_id;"
+)
 
+
+@event.listens_for(DBSession, 'after_begin')
+def set_transaction_isolation_level(session, sqla_txn, connection):
+    ''' Set appropriate transaction isolation level.
+
+    Doomed transactions can be read-only.
     ``transaction.doom()`` must be called before the connection is used.
+
+    Othewise assume it is a write which must be REPEATABLE READ.
     '''
-    if not transaction.isDoomed():
-        return
     if connection.engine.url.drivername != 'postgresql':
         return
-    connection.execute("SET TRANSACTION READ ONLY;")
+
+    txn = transaction.get()
+    if not txn.isDoomed():
+        # connection.execute("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;")
+        return
+
+    data = txn._extension
+    if 'snapshot_id' in data:
+        connection.execute(
+            _set_transaction_snapshot,
+            snapshot_id=data['snapshot_id'])
+    else:
+        connection.execute("SET TRANSACTION READ ONLY;")

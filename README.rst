@@ -15,12 +15,17 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql node graphviz
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
 
 Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::
 
-    $ brew install python
+    $ brew install python3
+
+Install Node 0.10 from homebrew/versions::
+
+    $ brew tap homebrew/versions
+    $ brew install node010
 
 If you need to update dependencies::
 
@@ -31,7 +36,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python2.7 bootstrap.py -v 2.2.5 --setuptools-version 7.0
+    $ python3.4 bootstrap.py -v 2.3.1 --setuptools-version 14.3
     $ bin/buildout
 
 If you see a clang error like this::

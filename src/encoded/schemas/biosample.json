@@ -14,7 +14,7 @@
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
@@ -33,216 +33,93 @@
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         },
-        "model_organism_mating_status": {
-            "oneOf": [
-                {
-                    "required": ["model_organism_sex"],
-                    "properties": {
-                        "model_organism_sex": {
-                            "enum": ["male", "female"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "required": ["model_organism_sex"],
-                        "properties": {
-                            "model_organism_sex": {
-                                "enum": ["mixed", "unknown", "hermaphrodite"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
         "biosample_type": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "biosample_type": {
-                            "enum": ["whole organisms"]
-                        },
-                        "organism": {
-                            "linkEnum": [
-                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                "5be68469-94ba-4d60-b361-dde8958399ca",
-                                "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c",
-                                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                                "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                                "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                                "a7e711b9-534c-44a3-a782-2a15af620739", 
-                                "451f9e49-685d-40d5-ad89-760b2512262a",
-                                "3413218c-3d86-498b-a0a2-9a406638e786"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "biosample_type": {
-                                "enum": ["whole organisms"]
-                            },
-                            "organism": {
-                                "linkEnum": [
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                ]
-                            }
-                        }
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": ["whole organisms"]
+                    },
+                    "organism": {
+                        "linkTo": "organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
                     }
                 }
-            ]
+            }
         },
         "fly_life_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "organism": {
-                            "linkEnum": [
-                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                "5be68469-94ba-4d60-b361-dde8958399ca",
-                                "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkEnum": [
-                                    "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                                    "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                                    "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                                    "a7e711b9-534c-44a3-a782-2a15af620739", 
-                                    "451f9e49-685d-40d5-ad89-760b2512262a",
-                                    "3413218c-3d86-498b-a0a2-9a406638e786",
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                ]
-                            }
-                        }
-                    }
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": [
+                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                        "5be68469-94ba-4d60-b361-dde8958399ca",
+                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+                    ]
                 }
-            ]
+            }
         },
         "fly_synchronization_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "organism": {
-                            "linkEnum": [
-                                "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                "5be68469-94ba-4d60-b361-dde8958399ca",
-                                "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkEnum": [
-                                    "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                                    "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                                    "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                                    "a7e711b9-534c-44a3-a782-2a15af620739", 
-                                    "451f9e49-685d-40d5-ad89-760b2512262a",
-                                    "3413218c-3d86-498b-a0a2-9a406638e786",
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                ]
-                            }
-                        }
-                    }
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": [
+                        "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                        "5be68469-94ba-4d60-b361-dde8958399ca",
+                        "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                        "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                        "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                        "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                        "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+                    ]
                 }
-            ]
+            }
+        },
+        "worm_synchronization_stage": {
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": [
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                        "a7e711b9-534c-44a3-a782-2a15af620739", 
+                        "451f9e49-685d-40d5-ad89-760b2512262a" 
+                    ]
+                }
+            }
         },
         "worm_life_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "organism": {
-                            "linkEnum": [
-                                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                                "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                                "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                                "a7e711b9-534c-44a3-a782-2a15af620739", 
-                                "451f9e49-685d-40d5-ad89-760b2512262a"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkEnum": [
-                                    "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                    "5be68469-94ba-4d60-b361-dde8958399ca",
-                                    "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                    "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                    "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                    "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                    "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c",
-                                    "3413218c-3d86-498b-a0a2-9a406638e786",
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                    ]
-                            }
-                        }
-                    }
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": [
+                        "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                        "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                        "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                        "a7e711b9-534c-44a3-a782-2a15af620739", 
+                        "451f9e49-685d-40d5-ad89-760b2512262a"
+                    ]
                 }
-            ]
+            }
         },
         "mouse_life_stage": {
-            "oneOf": [
-                {
-                    "properties": {
-                        "organism": {
-                            "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "organism": {
-                                "linkEnum": [
-                                    "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                    "5be68469-94ba-4d60-b361-dde8958399ca",
-                                    "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                    "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                    "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                    "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                    "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c",
-                                    "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
-                                    "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
-                                    "69efae2b-4df5-4957-81da-346f1b93cb98", 
-                                    "a7e711b9-534c-44a3-a782-2a15af620739", 
-                                    "451f9e49-685d-40d5-ad89-760b2512262a",
-                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                                ]
-                            }
-                        }
-                    }
+            "properties": {
+                "organism": {
+                    "linkTo": "organism",
+                    "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
                 }
-            ]
+            }
         }
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "accession": {
             "accessionType": "BS"
@@ -314,7 +191,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
+                "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+))$"
             }
         },
         "protocol_documents": {
@@ -364,7 +241,9 @@
                     "digestive system",
                     "arthropod fat body",
                     "antenna",
-                    "adult maxillary segment"
+                    "adult maxillary segment",
+                    "female reproductive system",
+                    "male reproductive system"
                 ]
             }
         },
@@ -386,7 +265,9 @@
                     "UBERON:0001007",
                     "UBERON:0003917",
                     "UBERON:0000972",
-                    "FBbt:00003016"
+                    "FBbt:00003016",
+                    "UBERON:0000474",
+                    "UBERON:0000079"
                 ]
             }
         },
@@ -446,7 +327,8 @@
                 "nuclear matrix",
                 "nucleolus",
                 "nucleoplasm",
-                "polysome"
+                "polysome",
+                "insoluble cytoplasmic fraction"
             ]
         },
         "subcellular_fraction_term_id": {
@@ -464,7 +346,8 @@
                 "GO:0016363",
                 "GO:0005730",
                 "GO:0005654",
-                "GO:0005844"
+                "GO:0005844",
+                "NTR:0002594"
             ]
 
         },
@@ -660,7 +543,7 @@
             "title": "Model organism donor age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+            "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
             "title": "Model organism donor age units",
@@ -685,6 +568,7 @@
                 "deleted",
                 "replaced",
                 "released",
+                "revoked",
                 "preliminary",
                 "proposed"
             ]
@@ -821,6 +705,14 @@
             "title": "Date obtained",
             "type": "string"
         },
+        "model_organism_donor_constructs.target.label": {
+            "title": "Constructs",
+            "type": "string"
+        },
+        "donor.mutated_gene.label": {
+            "title": "Mutated gene",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
@@ -887,6 +779,7 @@
         "rnais.source.title": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0 
+        "organism.taxon_id": 1.0,
+        "references.title": 1.0
     }
 }

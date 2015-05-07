@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 jest.autoMockOff();
@@ -60,7 +59,7 @@ describe('Software', function() {
         beforeEach(function() {
             var context_ref = _.clone(context);
             context_ref.references = [require('../testdata/publication')];
-            context_ref.references[0].references = ['PMID:19352372', 'PMCID:PMC3062402'];
+            context_ref.references[0].identifiers = ['PMID:19352372', 'PMCID:PMC3062402'];
 
             software = TestUtils.renderIntoDocument(
                 <Software context={context_ref} />
@@ -78,11 +77,11 @@ describe('Software', function() {
 
             var anchor = lis[0].getElementsByTagName('a')[0];
             expect(anchor.textContent).toEqual('PMID:19352372');
-            expect(anchor.getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19352372');
+            expect(anchor.getAttribute('href')).toEqual('/publication/52e85c70-fe2d-11e3-9191-0800200c9a66/');
 
             anchor = lis[1].getElementsByTagName('a')[0];
             expect(anchor.textContent).toEqual('PMCID:PMC3062402');
-            expect(anchor.getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062402');
+            expect(anchor.getAttribute('href')).toEqual('/publication/52e85c70-fe2d-11e3-9191-0800200c9a66/');
         });
     });
 });

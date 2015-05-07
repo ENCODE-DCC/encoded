@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('../globals');
@@ -6,26 +5,40 @@ var fetched = require('../fetched');
 var ResultTable = require('../search').ResultTable;
 
 
+var openLinksInNewWindow = function(e) {
+    if (e.isDefaultPrevented()) return;
+
+    // intercept links and open in new tab
+    var target = event.target;
+    while (target && (target.tagName.toLowerCase() != 'a')) {
+        target = target.parentElement;
+    }
+    if (!target) return;
+
+    e.preventDefault();
+    window.open(target.getAttribute('href'), '_blank');
+};
+
+
 var SearchBlockEdit = React.createClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
-            <div className="well" style={styles}>
-                {this.transferPropsTo(<ResultTable mode="picker" />)}
+            <div className="well" style={styles} onClick={openLinksInNewWindow}>
+                <ResultTable {...this.props} mode="picker" />
             </div>
         );
     }
 });
 
 
-var ItemPreview = React.createClass({
+var ItemPreview = module.exports.ItemPreview = React.createClass({
     render: function() {
         var context = this.props.data['@graph'][0];
         if (context === undefined) return null;
-        var style = {width: '80%'};
         var Listing = globals.listing_views.lookup(context);
         return (
-            <ul className="nav result-table">
+            <ul className="nav result-table" onClick={openLinksInNewWindow}>
                 <Listing context={context} columns={this.props.data.columns} key={context['@id']} />
             </ul>
         );
@@ -33,7 +46,7 @@ var ItemPreview = React.createClass({
 });
 
 
-var ObjectPicker = React.createClass({
+var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     getDefaultProps: function() {
         return {
@@ -51,8 +64,8 @@ var ObjectPicker = React.createClass({
 
     render: function() {
         var url = this.props.value;
-        var previewUrl = '/search?mode=picker&@id=' + url;
-        var searchUrl = '/search' + this.state.search;
+        var previewUrl = '/search/?mode=picker&@id=' + encodeURIComponent(url);
+        var searchUrl = '/search/' + this.state.search;
         var actions = [
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
@@ -64,7 +77,7 @@ var ObjectPicker = React.createClass({
                     {url ?
                         <fetched.FetchedData>
                             <fetched.Param name="data" url={previewUrl} />
-                            {this.transferPropsTo(<ItemPreview />)}
+                            <ItemPreview {...this.props} />
                         </fetched.FetchedData> : ''}
                 </div>
                 {this.state.browsing ? 
@@ -95,9 +108,6 @@ var ObjectPicker = React.createClass({
 
     handleClear: function(e) {
         this.props.onChange("");
-        return false;
+        e.preventDefault();
     }
 });
-
-
-module.exports = ObjectPicker;

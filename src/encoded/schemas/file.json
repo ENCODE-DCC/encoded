@@ -14,6 +14,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -21,12 +22,21 @@
             "title": "File status",
             "type": "string"
         },
-        "output_type": {
-            "title": "Output type",
+        "output_category": {
+            "title": "Data category",
             "type": "string"
         },
+        "output_type": {
+            "title": "Data type",
+            "type": "string"
+        },
+
         "file_format": {
             "title": "File format",
+            "type": "string"
+        },
+        "file_format_type": {
+            "title": "Specific file format type",
             "type": "string"
         },
         "lab.title": {
@@ -54,6 +64,25 @@
                 }
             ]
         },
+        "run_type": {
+            "oneOf": [
+                {
+                   "required": ["paired_end"],
+                    "properties": {
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "run_type": {
+                            "enum": ["single-ended","unknown"]
+                        }
+                    }
+                }
+            ]
+        },
         "paired_with": {
             "required": ["paired_end"],
             "properties": {
@@ -76,10 +105,18 @@
                     }
                 },
                 {
+                    "required": ["file_format_type"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["gff","bed","bigBed"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq"]
+                                "enum": ["fastq", "gff", "bed", "bigBed"]
                             }
                         }
                     }
@@ -89,7 +126,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "FF"
@@ -102,41 +139,84 @@
                     "enum": [
                         "bam",
                         "bed",
-                        "bedLogR",
-                        "bed_bedLogR",
-                        "bedMethyl",
-                        "bed_bedMethyl",
                         "bigBed",
                         "bigWig",
-                        "broadPeak",
-                        "bed_broadPeak",
                         "fasta",
                         "fastq",
+                        "gff",
                         "gtf",
+                        "hdf5",
                         "idat",
-                        "narrowPeak",
-                        "bed_narrowPeak",
                         "rcc",
                         "CEL",
                         "tsv",
-                        "csv"
+                        "csv",
+                        "sam",
+                        "tar",
+                        "wig"
                     ]
                 },
                 {
                     "comment": "Historical file formats, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
-                        "tar",
                         "2bit",
                         "csfasta",
-                        "csqual",
-                        "bedRnaElements"
+                        "csqual"
                     ]
                 }
             ]
         },
+        "file_format_type": {
+            "title": "Specific file format type",
+            "description": "Files of type bed and gff require further specification",
+            "type": "string",
+            "oneOf": [
+                {
+                    "enum": [
+                        "bed6",
+                        "bed9",
+                        "bedGraph",
+                        "bedLogR",
+                        "bedMethyl",
+                        "broadPeak",
+                        "gappedPeak",
+                        "gff2",
+                        "gff3",
+                        "narrowPeak"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "unknown",
+                        "bedRnaElements"
+                    ]
+                }
+           ]
+        },
+        "file_format_specifications": {
+            "title": "File format specifications documents",
+            "description": "Text or .as files the further explain the file format",
+            "type": "array",
+            "items": {
+                    "comment": "See document.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "document"
+                    }
+        },
         "md5sum": {
             "title": "MD5sum",
+            "description": "The md5sum of the file being transferred.",
+            "comment": "This can vary for files of same content gzipped at different times",
+            "type": "string",
+            "format": "hex"
+        },
+        "content_md5sum": {
+            "title": "Content MD5sum",
+            "description": "The MD5sum of the uncompressed file.",
+            "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex"
         },
@@ -151,6 +231,11 @@
             "comment": "See platform.json for available identifiers.",
             "type": "string",
             "linkTo": "platform"
+        },
+        "read_length": {
+            "title": "Read length",
+            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "type": "integer"
         },
         "flowcell_details": {
             "title": "Flowcells",
@@ -189,95 +274,112 @@
             "oneOf": [
                 {
                     "enum": [
-                        "CNV",
-                        "HMM",
+                        "idat green channel",
+                        "idat red channel",
+                        "reads",
+                        "intensity values",
+                        "reporter code counts",
+                        
                         "alignments",
-                        "clusters",
-                        "contigs",
-                        "enhancers",
-                        "enrichment",
-                        "hotspots",
-                        "idat green file",
-                        "idat red file",
-                        "interactions",
-                        "library_fraction",
-                        "multi-read minus signal",
-                        "multi-read plus signal",
-                        "multi-read signal",
-                        "multi-read normalized signal",
-                        "peaks",
-                        "plus signal",
-                        "raw data",
-                        "raw minus signal",
-                        "raw plus signal",
+                        "transcriptome alignments",
+
+                        "minus strand signal of multi-mapped reads",
+                        "plus strand signal of multi-mapped reads",
+                        "signal of multi-mapped reads",
+                        "normalized signal of multi-mapped reads",
+                        "raw minus strand signal",
+                        "raw plus strand signal",
                         "raw signal",
                         "raw normalized signal",
-                        "reads",
-                        "rejected reads",
-                        "signal",
-                        "sites",
-                        "spike-ins",
-                        "splice junctions",
-                        "unique minus signal",
-                        "unique plus signal",
-                        "unique signal",
-                        "transcriptome alignments",
-                        "genome quantifications",
+                        "read-depth normalized signal",
+                        "control normalized signal",
+                        "minus strand signal of unique reads",
+                        "plus strand signal of unique reads",
+                        "signal of unique reads",
+                        
+                        "exon quantifications",
+                        "gene quantifications",
                         "transcript quantifications",
-                        "methyl CG",
-                        "methyl CHG",
-                        "methyl CHH"
+                        "library fraction",
+                        "methylation state at CpG",
+                        "methylation state at CHG",
+                        "methylation state at CHH",
+                        "enrichment",
+
+                        "hotspots",
+                        "long range chromatin interactions",
+                        "peaks",
+                        "RNA-binding protein associated mRNAs",           
+                        "splice junctions",
+                        "transcription start sites",
+                        "predicted enhancers",
+                        "predicted forebrain enhancers",
+                        "predicted heart enhancers",
+                        "predicted wholebrain enhancers",
+                        
+                        "genome reference",
+                        "genome index",
+                        "spike-in sequence",
+
+                        "enhancer validation"
+
                     ]
                 },
                 {
                     "comment": "Historical output types, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
-                        "Alignability",
-                        "Base_Overlap_Signal",
-                        "enhancers_forebrain",
-                        "enhancers_heart",
-                        "enhancers_wholebrain",
-                        "Excludable",
-                        "ExonsDeNovo",
-                        "ExonsEnsV65IAcuff",
-                        "ExonsGencV10",
-                        "ExonsGencV3c",
-                        "ExonsGencV7",
-                        "FiltTransfrags",
-                        "GeneDeNovo",
-                        "GeneEnsV65IAcuff",
-                        "GeneGencV10",
-                        "GeneGencV3c",
-                        "GeneGencV7",
-                        "Junctions",
-                        "Matrix",
-                        "minus signal",
-                        "mPepMapGcFt",
-                        "mPepMapGcUnFt",
-                        "PctSignal",
-                        "pepMapGcFt",
-                        "pepMapGcUnFt",
-                        "Primer",
-                        "PrimerPeaks",
-                        "RbpAssocRna",
-                        "SumSignal",
-                        "TranscriptDeNovo",
-                        "TranscriptEnsV65IAcuff",
-                        "TranscriptGencV10",
-                        "TranscriptGencV3c",
-                        "TranscriptGencV7",
-                        "Transfrags",
-                        "TssGencV3c",
-                        "TssGencV7",
-                        "TssHmm",
-                        "UniformlyProcessedPeakCalls",
-                        "Uniqueness",
-                        "Validation",
-                        "Valleys",
-                        "WaveSignal"
+                        "rejected reads",
+                        "raw data",
+
+                        "spike-in alignments",
+
+                        "signal",
+                        "minus strand signal",
+                        "plus strand signal",
+                        "summed densities signal",
+                        "percentage normalized signal",
+                        "base overlap signal",
+                        "wavelet-smoothed signal",
+
+                        "filtered modified peptide quantification",
+                        "unfiltered modified peptide quantification",
+                        "filtered peptide quantification",
+                        "unfiltered peptide quantification",
+
+                        "clusters",
+                        "contigs",
+                        "copy number variation",
+                        "transcribed fragments",
+                        "filtered transcribed fragments",
+                        "valleys",
+                        "sequence alignability",
+                        "sequence uniqueness",
+                        "blacklisted regions",
+
+                        "primer sequence",
+                        "reference",
+
+                        "predicted transcription start sites",
+                        "optimal idr thresholded peaks",
+                        "conserved idr thresholded peaks",
+
+                        "validation",
+
+                        "HMM predicted chromatin state"
+
                     ]
                 }
+            ]
+        },
+        "run_type": {
+            "title": "Run type for sequencing files",
+            "description": "Indicates if file is part of a single or paired run",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
             ]
         },
         "paired_end": {
@@ -362,10 +464,15 @@
             "type": "string",
             "permission": "import_items",
             "enum": [
+                "None",
                 "M2",
                 "M3",
                 "M4",
-                "V19"
+                "V3c",
+                "V7",
+                "V10",
+                "V19",
+                "ENSEMBL V65"
                 ]
         },
         "submitted_file_name": {
@@ -388,6 +495,27 @@
                 "revoked",
                 "released"
                 ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            }
+        },
+        "step_run": {
+            "title": "Analysis step run",
+            "description": "The run instance of the step the file was generated from.",
+            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
+            "type": "string",
+             "linkTo": "analysis_step_run"
         }
     },
     "columns": {
@@ -412,33 +540,120 @@
             "type": "string"
         }
     },
+    "output_type_output_category": {
+        "idat green channel": "raw data",
+        "idat red channel": "raw data",
+        "reads": "raw data",
+        "rejected reads": "raw data",
+        "raw data": "raw data",
+
+        "alignments": "alignment",
+        "transcriptome alignments": "alignment",
+        "spike-in alignments": "alignment",
+
+        "minus strand signal of multi-mapped reads": "signal",
+        "plus strand signal of multi-mapped reads": "signal",
+        "signal of multi-mapped reads": "signal",
+        "normalized signal of multi-mapped reads": "signal",
+        "raw minus strand signal": "signal",
+        "raw plus strand signal": "signal",
+        "raw signal": "signal",
+        "raw normalized signal": "signal",
+        "read-depth normalized signal": "signal",
+        "control normalized signal": "signal",
+        "minus strand signal of unique reads": "signal",
+        "plus strand signal of unique reads": "signal",
+        "signal of unique reads": "signal",
+        "minus strand signal": "signal",
+        "plus strand signal": "signal",
+        "signal": "signal",
+        "base overlap signal": "signal",
+        "percentage normalized signal":"signal",
+        "summed densities signal": "signal",
+        "wavelet-smoothed signal": "signal",
+
+        "enrichment": "quantification",
+        "library fraction": "quantification",
+        "exon quantifications": "quantification",
+        "gene quantifications": "quantification",
+        "transcript quantifications": "quantification",
+        "methylation state at CpG": "quantification",
+        "methylation state at CHG": "quantification",
+        "methylation state at CHH": "quantification",
+        "filtered modified peptide quantification": "quantification",
+        "unfiltered modified peptide quantification": "quantification",
+        "filtered peptide quantification": "quantification",
+        "unfiltered peptide quantification": "quantification",
+
+        "hotspots": "annotation",
+        "long range chromatin interactions": "annotation",
+        "peaks": "annotation",
+        "RNA-binding protein associated mRNAs": "annotation",
+        "splice junctions": "annotation",
+        "copy number variation": "annotation",
+        "clusters": "annotation",
+        "contigs": "annotation",
+        "transcribed fragments": "annotation",
+        "filtered transcribed fragments": "annotation",
+        "valleys": "annotation",
+        "sequence alignability": "annotation",
+        "sequence uniqueness": "annotation",
+        "blacklisted regions": "annotation",
+        "optimal idr thresholded peaks": "annotation",
+        "conserved idr thresholded peaks": "annotation",
+        "predicted forebrain enhancers": "annotation",
+        "predicted heart enhancers": "annotation",
+        "predicted whole brain enhancers": "annotation",
+        "predicted enhancers": "annotation",
+        "predicted transcription start sites": "annotation",
+                
+        "genome index": "reference",
+        "genome reference": "reference",
+        "primer sequence": "reference",
+        "spike-in sequence": "reference",
+        "reference": "reference",
+
+        "enhancer validation": "validation",
+        "validation": "validation",
+        
+        "HMM predicted chromatin state": "annotation"
+        
+    },
     "file_format_file_extension": {
         "2bit": ".2bit",
         "CEL": ".cel.gz",
         "bam": ".bam",
-        "bedLogR": ".bedLogR.bigBed  ",
-        "bedMethyl": ".bedMethyl.bigBed",
-        "bedRnaElements": ".bedRnaElements.bigBed",
         "bed": ".bed.gz",
-        "bed_bedLogR": ".bedLogR.gz",
-        "bed_bedMethyl": ".bedMethyl.gz",
-        "bed_bedRnaElements": ".bedRnaElements.gz",
-        "bed_broadPeak": ".broadPeak.gz",
-        "bed_narrowPeak": ".narrowPeak.gz",
         "bigBed": ".bigBed",
         "bigWig": ".bigWig",
-        "broadPeak": ".broadPeak.bigbed",
         "csfasta": ".csfasta.gz",
         "csqual": ".csqual.gz",
         "fasta": ".fasta.gz",
         "fastq": ".fastq.gz",
         "gff": ".gff.gz",
         "gtf": ".gtf.gz",
+        "hdf5": ".h5",
         "idat": ".idat",
-        "narrowPeak": ".narrowPeak.bigBed",
         "rcc": ".rcc",
         "tar": ".tar.gz",
         "tsv": ".tsv",
-        "csv": ".csv"
+        "csv": ".csv",
+        "wig": ".wig.gz",
+        "sam": ".sam.gz"
+    },
+    "change_log": [ {
+        "version": "5",
+        "changes":{
+            "run_type": "migrated this field from replicate paired_ended",
+            "read_length": "migrated this field from replicate read_length",
+            "read_length_units": "added as a calculated field",
+            "file_format_specifications": "added this field",
+            "file_format_type": "added this field",
+            "file_format": "changed this enum",
+            "output_category": "added as a calculated field",
+            "output_type": "changed this enum",
+            "md5sum_content": "added this DCC provided field"
+        }
     }
+    ]
 }

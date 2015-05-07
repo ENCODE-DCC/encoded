@@ -19,11 +19,12 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/biosample_classification" }
+        { "$ref": "mixins.json#/biosample_classification" },
+        { "$ref": "mixins.json#/assay" }
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "target": {
             "title": "Target",
@@ -31,20 +32,6 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
-        },
-        "assay_term_name": {
-            "@id": null,
-            "title": "Assay name",
-            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
-            "default": "",
-            "type":  "string"
-        },
-        "assay_term_id": {
-            "@type": "@id",
-            "title": "Assay ID",
-            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
-            "type": "string",
-            "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "dataset_type": {
             "title": "Type",
@@ -94,7 +81,7 @@
             "type": "string"
         },
         "assembly": {
-            "title": "Genome assembly",
+            "title": "Genome assembly (visualization)",
             "type": "string"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
@@ -121,15 +108,15 @@
             "title": "Biosample treatment",
             "type": "array"
         },
-        "files.file_format": {
+        "files.file_type": {
             "title": "Available data",
             "type": "string"
         },
-        "run_type": {
+        "files.run_type": {
             "title": "Run type",
             "type": "string"
         },
-        "replicates.read_length": {
+        "files.read_length": {
             "title": "Read length (nt)",
             "type": "string"
         },
@@ -300,6 +287,7 @@
         "target.label": 1.0,
         "target.dbxref": 1.0,
         "target.organism.name": 1.0,
-        "target.organism.scientific_name": 1.0 
+        "target.organism.scientific_name": 1.0,
+        "references.title": 1.0
     }
 }

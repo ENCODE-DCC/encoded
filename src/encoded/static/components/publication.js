@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
@@ -18,12 +17,12 @@ var Publication = module.exports.Panel = React.createClass({
                 <h2>{context.title}</h2>
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
-                    {this.transferPropsTo(<Citation />)}
+                    <Citation {...this.props} />
                 </div>
 
-                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.references && context.references.length) ?
+                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.identifiers && context.identifiers.length) ?
                     <div className="view-detail panel">
-                        {this.transferPropsTo(<Abstract />)}
+                        <Abstract {...this.props} />
                     </div>
                 : null}
 
@@ -93,10 +92,10 @@ var Abstract = React.createClass({
                     </div>
                 : null}
 
-                {context.references && context.references.length ?
+                {context.identifiers && context.identifiers.length ?
                     <div data-test="references">
                         <dt>References</dt>
-                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                        <dd><DbxrefList values={context.identifiers} className="multi-value" /></dd>
                     </div>
                 : null}
            </dl>
@@ -215,8 +214,8 @@ var Listing = React.createClass({
                 <div className="accession"><a href={result['@id']}>{result.title}</a></div>
                 <div className="data-row">
                     {authors ? <p className="list-author">{authors}.</p> : null}
-                    <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
-                    {result.references && result.references.length ? <DbxrefList values={result.references} className="list-reference" /> : '' }
+                    <p className="list-citation"><Citation {...this.props} /></p>
+                    {result.identifiers && result.identifiers.length ? <DbxrefList values={result.identifiers} className="list-reference" /> : '' }
                     {result.supplementary_data && result.supplementary_data.length ?
                         <div>
                             {result.supplementary_data.map(function(data, i) {

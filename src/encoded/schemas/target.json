@@ -61,10 +61,12 @@
                     "transcription factor",
                     "RNA binding protein",
                     "chromatin remodeller",
+                    "histone",
                     "control",
                     "tag",
                     "recombinant protein",
                     "nucleotide modification",
+                    "other post-translational modification",
                     "other context"
                 ]
             }

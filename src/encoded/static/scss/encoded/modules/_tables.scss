@@ -39,7 +39,7 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 .table-panel {
     border-collapse: separate;
     background-color: #fff;
-    border: 1px solid #ced5dc;
+    border: 1px solid #a0a0a0;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
 
@@ -139,4 +139,72 @@ form.table-filter {
 
 .col-headers th:hover {
     cursor: pointer;
+}
+
+.tcell-sortable {
+    cursor: pointer;
+}
+
+.table-file {
+    margin-bottom: 20px;
+
+    thead {
+        tr {
+            border-bottom: 1px solid #e0e0e0;
+
+            th {
+                position: relative;
+                height: 4em;
+                vertical-align: middle;
+                border-left: 1px solid #e0e0e0 !important;
+                border-bottom: 1px solid #e0e0e0 !important;
+
+                &:first-child {
+                    border-left: none !important;
+                }
+            }
+        }
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+}
+
+.table-section {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #d8d8d8;
+
+    th {
+        height: auto !important;
+    }
+}
+
+.tcell-sortable {
+    &:hover {
+        background-color: #e0e0e0;
+    }
+}
+
+%tcell-template {
+    @extend .icon;
+    position: absolute;
+    right: 5px;
+    top: 1.6em;
+}
+
+.tcell-sort {
+    @extend %tcell-template;
+    @extend .icon-sort;
+}
+
+.tcell-asc {
+    @extend %tcell-template;
+    @extend .icon-sort-asc;
+}
+
+.tcell-desc {
+    @extend %tcell-template;
+    @extend .icon-sort-desc;
 }

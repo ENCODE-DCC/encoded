@@ -3,6 +3,7 @@ install_aliases()
 import base64
 import json
 import os
+import sys
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -16,6 +17,7 @@ from .storage import (
     Base,
     DBSession,
 )
+PY2 = sys.version_info.major == 2
 STATIC_MAX_AGE = 0
 
 
@@ -49,7 +51,10 @@ def configure_engine(settings, test_setup=False):
         return None
     engine_opts = {}
     if engine_url.startswith('postgresql'):
-        engine_opts['json_serializer'] = json_renderer.dumps
+        engine_opts = dict(
+            isolation_level='REPEATABLE READ',
+            json_serializer=json_renderer.dumps,
+        )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
@@ -58,7 +63,7 @@ def configure_engine(settings, test_setup=False):
             set_postgresql_statement_timeout(engine, timeout)
     if test_setup:
         return engine
-    if asbool(settings.get('create_tables', True)):
+    if asbool(settings.get('create_tables', False)):
         Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
@@ -159,13 +164,17 @@ def main(global_config, **local_config):
     config.include('.authentication')
     config.include('.validation')
     config.include('.predicates')
-    config.include('.contentbase')
     config.include('.indexing')
+    config.include('.es_storage')
+    config.include('.contentbase')
     config.include('.server_defaults')
     config.include('.types')
     config.include('.views')
     config.include('.migrator')
     config.include('.auditor')
+
+    if asbool(settings.get('indexer')) and not PY2:
+        config.include('.mp_indexing')
 
     settings = config.registry.settings
     hostname_command = settings.get('hostname_command', '').strip()

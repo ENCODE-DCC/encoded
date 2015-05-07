@@ -19,7 +19,7 @@ def rfa(*rfa_names):
     """
     def rfa_condition(value, system):
         context = system['context']
-        award_uuid = context.upgrade_properties(finalize=False)['award']
+        award_uuid = context.upgrade_properties()['award']
         rfa = _award_rfa(award_uuid, system['root'])
         return rfa in rfa_names
 
@@ -29,4 +29,4 @@ def rfa(*rfa_names):
 @memoize
 def _award_rfa(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
-    return award.upgrade_properties(finalize=False)['rfa']
+    return award.upgrade_properties().get('rfa')

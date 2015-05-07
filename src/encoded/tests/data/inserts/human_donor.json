@@ -44,8 +44,8 @@
         "life_stage": "unknown",
         "organism": "human",
         "references": [
-            "PMID:23000965",
-            "PMID:16395128"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "sex": "unknown",
         "uuid": "d90607d9-a5fa-4988-8cbf-c7fe8fcd0998"
@@ -92,5 +92,24 @@
         "organism": "human",
         "sex": "unknown",
         "uuid": "f585f150-e6b2-11e3-ac10-0800200c9a66"
+    },
+    {
+        "accession": "ENCDO000AAK",
+        "age": "53",
+        "age_units": "year",
+        "aliases": [
+            "encode:donor_of_GM12878",
+            "encode:donor of GM12878"
+        ],
+        "award": "U41HG006992",
+        "ethnicity": "Caucasian",
+        "health_status": "unknown",
+        "lab": "j-michael-cherry",
+        "life_stage": "adult",
+        "organism": "human",
+        "sex": "female",
+        "status": "released",
+        "url": "http://ccr.coriell.org/Sections/BrowseCatalog/FamilyTypeSubDetail.aspx?PgId=402&fam=1463&coll=GM",
+        "uuid": "44d24e3f-bc5b-469a-8500-7ebd728f8ed5"
     }
 ]

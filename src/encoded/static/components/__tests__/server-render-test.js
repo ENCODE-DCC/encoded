@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 jest.autoMockOff();
@@ -25,7 +24,7 @@ describe("Server rendering", function () {
         React = require('react');
         App = require('..');
         var server_app = <App context={home} href={home_url} />;
-        var markup = '<!DOCTYPE html>\n' + React.renderComponentToString(server_app);
+        var markup = '<!DOCTYPE html>\n' + React.renderToString(server_app);
         var parser = new DOMParser();
         document = parser.parseFromString(markup, 'text/html');
     });
@@ -41,7 +40,7 @@ describe("Server rendering", function () {
 
     it("mounts the application over the rendered html", function () {
         var props = App.getRenderedProps(document);
-        var app = React.renderComponent(App(props), document);
+        var app = React.render(<App {...props} />, document);
         expect(app.getDOMNode()).toBe(document.documentElement);
     });
 });

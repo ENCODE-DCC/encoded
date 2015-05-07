@@ -25,6 +25,17 @@
     },
     {
         "aliases": [
+            "encode:bedMethyl.as" 
+        ],
+        "attachment": "bedMethyl.txt",
+        "award": "U54HG004557",
+        "document_type": "file format specification",
+        "lab": "richard-myers",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+    },
+    {
+        "aliases": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
@@ -177,11 +188,11 @@
         "document_type": "general protocol",
         "lab": "michael-snyder",
         "references": [
-            "PMID:19706456",
-            "PMID:17568005",
-            "PMID:14527995",
-            "PMID:17558387",
-            "PMID:19122651"
+            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
+            "341bf550-be0c-11e4-bb52-0800200c9a66",
+            "cf890830-bdfc-11e4-bb52-0800200c9a66",
+            "4be68100-be0c-11e4-bb52-0800200c9a66",
+            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
         ],
         "submitted_by": "amet.fusce@est.fermentum",
         "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
@@ -353,5 +364,65 @@
         "lab": "robert-waterston",
         "submitted_by": "uskuf.shyec@doton.danona",
         "uuid": "30705939-d234-4aca-8379-cd355686fd48"
+    },
+    {
+        "aliases": [
+            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+        ],
+        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "brenton-graveley",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
+    },
+    {
+        "aliases": [
+            "roderic-guigo:GeneQuantificationPipeline"
+        ],
+        "attachment": "GeneQuantificationPipeline.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "roderic-guigo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "aliases": [
+            "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram"
+        ],
+        "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
+        "award": "ENCODE2",
+        "document_type": "pipeline protocol",
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "c256d912-be84-4463-8e95-cef789e8d6ba"
+    },
+    {
+        "aliases": [
+            "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
+        ],
+        "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
+        "award": "ENCODE2",
+        "document_type": "pipeline protocol",
+        "lab": "encode2-project",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "0f2f78fc-4675-4534-af7a-1c77e03c0cd3"
+    },
+    {
+        "aliases": [
+            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+        ],
+        "attachment": "iCLIP_pipeline_ENCODE.pdf",
+        "award": "U54HG007005",
+        "document_type": "pipeline protocol",
+        "lab": "gene-yeo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
     }
 ]

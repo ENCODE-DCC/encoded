@@ -25,9 +25,9 @@ class Target(Item):
     schema = load_schema('target.json')
     embedded = ['organism']
 
-    def keys(self):
-        keys = super(Target, self).keys()
-        keys.setdefault('target:name', []).append(self.__name__)
+    def unique_keys(self, properties):
+        keys = super(Target, self).unique_keys(properties)
+        keys.setdefault('target:name', []).append(self._name(properties))
         return keys
 
     @calculated_property(schema={
@@ -47,16 +47,19 @@ class Target(Item):
 
     @property
     def __name__(self):
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
+        return self._name(properties)
+
+    def _name(self, properties):
         root = find_root(self)
         organism = root.get_by_uuid(properties['organism'])
-        organism_props = organism.upgrade_properties(finalize=False)
+        organism_props = organism.upgrade_properties()
         return u'{}-{}'.format(properties['label'], organism_props['name'])
 
     def __resource_url__(self, request, info):
         request._linked_uuids.add(str(self.uuid))
         # Record organism uuid in linked_uuids so linking objects record
         # the rename dependency.
-        properties = self.upgrade_properties(finalize=False)
+        properties = self.upgrade_properties()
         request._linked_uuids.add(str(properties['organism']))
         return None

@@ -1,7 +1,8 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var Modal = require('react-bootstrap/lib/Modal');
+var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -37,7 +38,8 @@ var AuditMixin = audit.AuditMixin;
             context = props;
             props = {context: context,  key: context['@id']};
         }
-        return globals.listing_views.lookup(props.context)(props);
+        var ListingView = globals.listing_views.lookup(props.context);
+        return <ListingView {...props} />;
     };
 
     var PickerActionsMixin = module.exports.PickerActionsMixin = {
@@ -68,7 +70,7 @@ var AuditMixin = audit.AuditMixin;
                         {result.accession ?
                             <div className="pull-right type sentence-case search-meta">
                                 <p>{item_type}: {' ' + result['accession']}</p>
-                                <AuditIndicators context={result} key={this.props.context['@id']} search />
+                                <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                             </div>
                         : null}
                         <div className="accession">
@@ -78,7 +80,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -212,12 +214,12 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
                                 return (
-                                    <div>
+                                    <div key={target}>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
                                             {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
@@ -232,7 +234,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -249,9 +251,15 @@ var AuditMixin = audit.AuditMixin;
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
-            var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
+            var constructs;
+            if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
+                constructs = result.model_organism_donor_constructs[0].target.label;
+            } else {
+                constructs = result.constructs[0] ? result.constructs[0].target.label : '';
+            }
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
- 
+            var mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
+
             // Build the text of the synchronization string
             var synchText;
             if (result.synchronization) {
@@ -269,7 +277,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Biosample</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -298,16 +306,22 @@ var AuditMixin = audit.AuditMixin;
                                     {treatment}
                                 </div>
                             : null}
-                            {result['culture_harvest_date'] ?
+                            {mutatedGenes ?
                                 <div>
-                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
-                                    {result['culture_harvest_date']}
+                                    <strong>{columns['donor.mutated_gene.label']['title'] + ': '}</strong>
+                                    {mutatedGenes}
                                 </div>
                             : null}
-                            {result['date_obtained'] ?
+                            {result.culture_harvest_date ?
+                                <div>
+                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
+                                    {result.culture_harvest_date}
+                                </div>
+                            : null}
+                            {result.date_obtained ?
                                 <div>
                                     <strong>{columns['date_obtained']['title'] + ': '}</strong>
-                                    {result['date_obtained']}
+                                    {result.date_obtained}
                                 </div>
                             : null}
                             {synchText ?
@@ -319,7 +333,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -387,7 +401,7 @@ var AuditMixin = audit.AuditMixin;
                             <p className="type meta-title">Experiment</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -424,7 +438,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -443,7 +457,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Dataset</p>
                             <p className="type">{' ' + result['accession']}</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result['description']}</a>
@@ -459,7 +473,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -477,7 +491,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Target</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
@@ -492,7 +506,7 @@ var AuditMixin = audit.AuditMixin;
                                 : <em> None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -511,7 +525,7 @@ var AuditMixin = audit.AuditMixin;
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Image</p>
-                            <AuditIndicators context={result} key={this.props.context['@id']} search />
+                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>{result.caption}</a>
@@ -520,7 +534,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail context={result} key={this.props.context['@id']} forceEditLink />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -597,7 +611,7 @@ var AuditMixin = audit.AuditMixin;
                 title = term;
             }
             var total = this.props.total;
-            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
+            return <Term {...this.props} title={title} filters={filters} total={total} />;
         }
     });
 
@@ -616,6 +630,10 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var facet = this.props.facet;
             var filters = this.props.filters;
+            var title = facet['title'];
+            var field = facet['field'];
+            var total = facet['total'];
+            var termID = title.replace(/\s+/g, '');
             var terms = facet['terms'].filter(function (term) {
                 if (term.key) {
                     for(var filter in filters) {
@@ -628,11 +646,8 @@ var AuditMixin = audit.AuditMixin;
                     return false;
                 }
             });
+            terms = field === 'files.file_type' ? _(terms).sortBy('key') : terms;
             var moreTerms = terms.slice(5);
-            var title = facet['title'];
-            var field = facet['field'];
-            var total = facet['total'];
-            var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
             var moreTermSelected = selectedTermCount > 0;
@@ -645,13 +660,13 @@ var AuditMixin = audit.AuditMixin;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
+                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
                         : null}
@@ -694,7 +709,7 @@ var AuditMixin = audit.AuditMixin;
 
         onChange: function(e) {
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         },
 
         onBlur: function(e) {
@@ -711,7 +726,7 @@ var AuditMixin = audit.AuditMixin;
         onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
-                return false;
+                e.preventDefault();
             }
         }
     });
@@ -721,7 +736,7 @@ var AuditMixin = audit.AuditMixin;
             var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
-            if (!facets.length) return <div />;
+            if (!facets.length && this.props.mode != 'picker') return <div />;
             var hideTypes;
             if (this.props.mode == 'picker') {
                 hideTypes = false;
@@ -732,12 +747,12 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
+                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return this.transferPropsTo(<Facet key={facet.field} facet={facet} filters={filters} />);
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
                         }
                     }.bind(this))}
                 </div>
@@ -745,11 +760,57 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
+    var BatchDownload = search.BatchDownload = React.createClass({
+        mixins: [OverlayMixin],
+
+        getInitialState: function () {
+            return {
+              isModalOpen: false
+            };
+          },
+
+          handleToggle: function () {
+            this.setState({
+              isModalOpen: !this.state.isModalOpen
+            });
+          },
+
+          render: function () {
+            return (
+                <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
+            );
+          },
+
+          renderOverlay: function () {
+            var link = this.props.context['batch_download'];
+            if (!this.state.isModalOpen) {
+              return <span/>;
+            }
+            return (
+                <Modal title="Using batch download" onRequestHide={this.handleToggle}>
+                  <div className="modal-body">
+                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+
+                    <p>The "files.txt" file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:</p><br />
+                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+                  </div>
+                  <div className="modal-footer">
+                        <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
+                        <a data-bypass="true" target="_self" private-browsing="true" className="btn btn-info btn-sm"
+                            href={link}>{'Download'}</a>
+                  </div>
+                </Modal>
+              );
+          }
+    });
+
     var ResultTable = search.ResultTable = React.createClass({
 
         getDefaultProps: function() {
             return {
-
                 restrictions: {},
                 searchBase: ''
             };
@@ -785,10 +846,8 @@ var AuditMixin = audit.AuditMixin;
                     <div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
-                                {this.transferPropsTo(
-                                    <FacetList facets={facets} filters={filters}
-                                               searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                                )}
+                                <FacetList {...this.props} facets={facets} filters={filters}
+                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
@@ -811,7 +870,13 @@ var AuditMixin = audit.AuditMixin;
                                                 : null}
                                             </span>
                                         }
-                                        
+
+                                        {context['batch_download'] ?
+                                            <span className="pull-right">
+                                                <BatchDownload context={context} />&nbsp;
+                                            </span>
+                                        : null}
+
                                         {context['batch_hub'] ?
                                             <span className="pull-right">
                                                 <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
@@ -840,7 +905,7 @@ var AuditMixin = audit.AuditMixin;
             var search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
             e.stopPropagation();
-            return false;
+            e.preventDefault();
         }
     });
 
@@ -857,7 +922,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

@@ -9,7 +9,18 @@ Example.
 import boto
 import requests
 import sys
-from urllib.parse import urljoin
+try:
+    from shlex import quote
+except ImportError:
+    from pipes import quote
+try:
+    import subprocess32 as subprocess  # Needed on Python 2.6
+except ImportError:
+    import subprocess
+try:
+    from urllib.parse import urljoin
+except ImportError:
+    from urlparse import urljoin
 
 EPILOG = __doc__
 
@@ -20,6 +31,30 @@ HEADERS = {
 
 BUCKET = None
 CONFIG = None
+
+GZIP_TYPES = [
+    "CEL",
+    "bam",
+    "bed",
+    "bed_bed3",
+    "bed_bed6",
+    "bed_bedLogR",
+    "bed_bedMethyl",
+    "bed_bedRnaElements",
+    "bed_broadPeak",
+    "bed_gappedPeak",
+    "bed_narrowPeak",
+    "bed_peptideMapping",
+    "csfasta",
+    "csqual",
+    "fasta",
+    "fastq",
+    "gff",
+    "gtf",
+    "tar",
+    "sam",
+    "wig"
+]
 
 
 def set_config(url, username, password, encValData, bucket, mirror):
@@ -35,47 +70,30 @@ def set_config(url, username, password, encValData, bucket, mirror):
     }
 
 
+def is_path_gzipped(path):
+    with open(path, 'rb') as f:
+        magic_number = f.read(2)
+    return magic_number == b'\x1f\x8b'
+
+
 def check_format(item, path):
     """ Local validation
     """
-    try:
-        import subprocess32 as subprocess  # Needed on Python 2.6
-    except ImportError:
-        import subprocess
-
     encValData = CONFIG['encValData']
     errors = {}
-    gzip_types = [
-        "CEL",
-        "bam",
-        "bed",
-        "bed_bed3",
-        "bed_bed6",
-        "bed_bedLogR",
-        "bed_bedMethyl",
-        "bed_bedRnaElements",
-        "bed_broadPeak",
-        "bed_narrowPeak",
-        "bed_peptideMapping",
-        "csfasta",
-        "csqual",
-        "fasta",
-        "fastq",
-        "gff",
-        "gtf",
-        "tar",
-    ]
 
-    magic_number = open(path, 'rb').read(2)
-    is_gzipped = magic_number == b'\x1f\x8b'
-    if item['file_format'] in gzip_types:
-        if not is_gzipped:
-            errors['gzip'] = 'Expected gzipped file'
+    if item['file_format'] == 'bam' and item.get('output_type') == 'transcriptome alignments':
+        if 'assembly' not in item:
+            errors['assembly'] = 'missing assembly'
+        if 'genome_annotation' not in item:
+            errors['genome_annotation'] = 'missing genome_annotation'
+        if errors:
+            return errors
+        chromInfo = '-chromInfo=%s/%s/%s/chrom.sizes' % (
+            encValData, item['assembly'], item['genome_annotation'])
     else:
-        if is_gzipped:
-            errors['gzip'] = 'Expected un-gzipped file'
+        chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
 
-    chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
     validate_map = {
         'bam': ['-type=bam', chromInfo],
         'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
@@ -89,6 +107,8 @@ def check_format(item, path):
         'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
         'fasta': ['-type=fasta'],
         'fastq': ['-type=fastq'],
+        'gappedPeak': ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+        'bed_gappedPeak': ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
         'gtf': None,
         'idat': ['-type=idat'],
         'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
@@ -101,6 +121,10 @@ def check_format(item, path):
         'csqual': ['-type=csqual'],
         'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
         'CEL': None,
+        'sam': None,
+        'wig': None,
+        'hdf5': None,
+        'gff': None
     }
 
     validate_args = validate_map.get(item['file_format'])
@@ -120,37 +144,32 @@ def check_format(item, path):
 
 
 def check_file(item):
-    import hashlib
     import os.path
-    from urllib.parse import urlparse
+    try:
+        from urllib.parse import urlparse
+    except ImportError:
+        from urlparse import urlparse
+
     result = None
     errors = {}
     r = requests.head(
         urljoin(CONFIG['url'], item['@id'] + '@@download'),
         auth=(CONFIG['username'], CONFIG['password']), headers=HEADERS)
     path = urlparse(r.headers['Location']).path[1:]
+    local_path = CONFIG['mirror'] + path
 
     key = BUCKET.get_key(path)
     if key is None:
         errors['key'] = 'not in s3'
         return item, result, errors
 
-    if not os.path.exists(CONFIG['mirror'] + path):
+    if not os.path.exists(local_path):
         errors['sync'] = 'not synced'
         return item, result, errors
 
-    if os.path.getsize(CONFIG['mirror'] + path) != key.size:
+    if os.path.getsize(local_path) != key.size:
         errors['sync'] = 'sync size mismatch'
         return item, result, errors
-
-    md5sum = hashlib.md5()
-    with open(CONFIG['mirror'] + path, 'rb') as f:
-        for chunk in iter(lambda: f.read(1024*1024), ''):
-            md5sum.update(chunk)
-
-    if md5sum.hexdigest() != item['md5sum']:
-        errors['md5sum'] = \
-            'checked %s does not match item %s' % (md5sum.hexdigest(), item['md5sum'])
 
     if 'file_size' in item and key.size != item['file_size']:
         errors['file_size'] = \
@@ -160,11 +179,43 @@ def check_file(item):
         "accession": item['accession'],
         "path": path,
         "file_size": key.size,
-        "md5sum": md5sum.hexdigest(),
     }
 
+    # Faster than doing it in Python.
+    try:
+        output = subprocess.check_output(['md5sum', local_path])
+    except subprocess.CalledProcessError as e:
+        errors['md5sum'] = e.output
+    else:
+        result['md5sum'] = output[:32].decode('ascii')
+        if result['md5sum'] != item['md5sum']:
+            errors['md5sum'] = \
+                'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
+
+    is_gzipped = is_path_gzipped(local_path)
+    if item['file_format'] not in GZIP_TYPES:
+        if is_gzipped:
+            errors['gzip'] = 'Expected un-gzipped file'
+    elif not is_gzipped:
+        errors['gzip'] = 'Expected gzipped file'
+    else:
+        # May want to replace this with something like:
+        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+        # or http://stackoverflow.com/a/15343686/199100
+        try:
+            output = subprocess.check_output(
+                'set -o pipefail; gunzip --stdout  %s | md5sum' % quote(local_path), shell=True)
+        except subprocess.CalledProcessError as e:
+            errors['content_md5sum'] = e.output
+        else:
+            result['content_md5sum'] = output[:32].decode('ascii')
+            try:
+                int(result['content_md5sum'], 16)
+            except ValueError:
+                errors['content_md5sum'] = output
+
     if not errors:
-        errors.update(check_format(item, CONFIG['mirror'] + path))
+        errors.update(check_format(item, local_path))
 
     return item, result, errors
 

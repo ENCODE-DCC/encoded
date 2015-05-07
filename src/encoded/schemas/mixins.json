@@ -60,6 +60,20 @@
             }
         }
     },
+    "accessioned_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum": [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked"
+            ]
+        }
+    },
     "standard_status": {
         "status": {
             "title": "Status",
@@ -112,14 +126,14 @@
     "references": {
         "references": {
             "title": "References",
-            "description": "The identifiers that reference data found in the object.",
+            "description": "The publications that provide more information about the object.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "An identifier that references data found in the object.",
+                "description": "A publication that provide smore information about the object.",
                 "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
+                "linkTo": "publication"
             }
         }
     },
@@ -165,7 +179,9 @@
                         "image/jpeg",
                         "image/tiff",
                         "image/gif",
-                        "image/png"
+                        "text/html",
+                        "image/png",
+                        "text/autosql"
                     ]
                 },
                 "md5sum": {
@@ -265,7 +281,7 @@
         "genotype": {
             "title": "Strain genotype",
             "description": "The genotype of the strain according to accepted nomenclature conventions.",
-            "type": "string" 
+            "type": "string"
         },
         "mutagen": {
             "title": "Mutagen",
@@ -278,8 +294,9 @@
                 "UV radiation",
                 "PTT",
                 "transposon",
+                "TMP/UV",
                 "unknown",
-                "none" 
+                "none"
             ]
         },
         "constructs": {
@@ -294,6 +311,29 @@
                 "type":  "string",
                 "linkTo": "construct"
             }
+        },
+        "mutated_gene": {
+            "title": "Mutated gene",
+            "description": "The gene that was altered/disrupted resulting in a loss of function.",
+            "comment": "See target.json for available identifiers.",
+            "type": "string",
+            "linkTo": "target"
+        }
+    },
+    "assay": {
+        "assay_term_name": {
+            "@id": null,
+            "title": "Assay name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+            "default": "",
+            "type": "string"
+        },
+        "assay_term_id": {
+            "@type": "@id",
+            "title": "Assay ID",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
+            "type": "string",
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
         }
     }
 }

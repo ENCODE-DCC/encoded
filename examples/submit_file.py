@@ -26,7 +26,7 @@ assembly = 'hg19'
 print("Calculating md5sum.")
 md5sum = hashlib.md5()
 with open(path, 'rb') as f:
-    for chunk in iter(lambda: f.read(1024*1024), ''):
+    for chunk in iter(lambda: f.read(1024*1024), b''):
         md5sum.update(chunk)
 
 data = {
@@ -54,6 +54,7 @@ gzip_types = [
     "bed_bedMethyl",
     "bed_bedRnaElements",
     "bed_broadPeak",
+    "bed_gappedPeak",
     "bed_narrowPeak",
     "bed_peptideMapping",
     "csfasta",
@@ -63,6 +64,8 @@ gzip_types = [
     "gff",
     "gtf",
     "tar",
+    "sam",
+    "wig"
 ]
 
 magic_number = open(path, 'rb').read(2)
@@ -86,6 +89,8 @@ validate_map = {
     'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
     'fasta': ['-type=fasta'],
     'fastq': ['-type=fastq'],
+    'gappedPeak': ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+    'bed_gappedPeak': ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
     'gtf': None,
     'idat': ['-type=idat'],
     'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
@@ -98,6 +103,10 @@ validate_map = {
     'csqual': ['-type=csqual'],
     'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
     'CEL': None,
+    'sam': None,
+    'wig': None,
+    'hdf5': None,
+    'gff': None
 }
 
 validate_args = validate_map.get(data['file_format'])

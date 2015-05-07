@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var Registry = require('../libs/registry');
 
@@ -16,6 +15,9 @@ module.exports.listing_titles = new Registry();
 
 // Blocks
 module.exports.blocks = new Registry();
+
+// Graph detail view
+module.exports.graph_detail = new Registry();
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
@@ -50,6 +52,26 @@ module.exports.truncateString = function (str, len) {
         str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…'; // Back up to word boundary
     }
     return str;
+};
+
+module.exports.bindEvent = function (el, eventName, eventHandler) {
+    if (el.addEventListener) {
+        // Modern browsers
+        el.addEventListener(eventName, eventHandler, false); 
+    } else if (el.attachEvent) {
+        // IE8 specific
+        el.attachEvent('on' + eventName, eventHandler);
+    }
+};
+
+module.exports.unbindEvent = function (el, eventName, eventHandler) {
+    if (el.removeEventListener) {
+        // Modern browsers
+        el.removeEventListener(eventName, eventHandler, false); 
+    } else if (el.detachEvent) {
+        // IE8 specific
+        el.detachEvent('on' + eventName, eventHandler);
+    }
 };
 
 // Order that antibody statuses should be displayed

@@ -40,7 +40,7 @@ class ItemNamespace(object):
             return value
         if name in self._properties:
             value = self._properties[name]
-            if name in context.schema_links:
+            if name in context.type_info.schema_links:
                 if isinstance(value, list):
                     value = [
                         request.resource_path(self.root.get_by_uuid(v))
@@ -88,6 +88,12 @@ class CalculatedProperties(object):
     def __init__(self):
         self.category_cls_props = {}
 
+    def register_prop(self, fn, name, context, condition=None, schema=None,
+                      attr=None, define=False, category='object'):
+        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
+        cls_props = self.category_cls_props.setdefault(category, {})
+        cls_props.setdefault(context, {})[name] = prop
+
     def props_for(self, context, category='object'):
         if isinstance(context, type):
             cls = context
@@ -98,22 +104,6 @@ class CalculatedProperties(object):
         for base in reversed(cls.mro()):
             props.update(cls_props.get(base, {}))
         return props
-
-    def schema_for(self, context):
-        props = self.props_for(context)
-        schema = context.schema or {'type': 'object', 'properties': {}}
-        schema = schema.copy()
-        schema['properties'] = schema['properties'].copy()
-        for name, prop in props.items():
-            if prop.schema is not None:
-                schema['properties'][name] = prop.schema
-        return schema
-
-    def register_prop(self, fn, name, context, condition=None, schema=None,
-                      attr=None, define=False, category='object'):
-        prop = CalculatedProperty(fn, name, attr, condition, schema, define)
-        cls_props = self.category_cls_props.setdefault(category, {})
-        cls_props.setdefault(context, {})[name] = prop
 
 
 class CalculatedProperty(object):
@@ -129,8 +119,9 @@ class CalculatedProperty(object):
         if schema is not None:
             if 'default' in schema:
                 raise ValueError('schema may not specify default for calculated property')
-            schema = schema.copy()
-            schema['calculatedProperty'] = True
+            if 'linkFrom' not in schema.get('items', {}):
+                schema = schema.copy()
+                schema['calculatedProperty'] = True
         self.schema = schema
 
     def __call__(self, namespace):

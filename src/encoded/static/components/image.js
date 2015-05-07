@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
@@ -18,16 +17,12 @@ var Lightbox = module.exports.Lightbox = React.createClass({
     },
 
     componentDidMount: function() {
-        if (window.addEventListener) {
-            window.addEventListener('resize', this.handleResize);
-        } else {
-            window.attachEvent('onresize', this.handleResize);
-        }
+        globals.bindEvent(window, 'resize', this.handleResize);
         this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
     },
 
     componentWillUnmount: function() {
-        window.removeEventListener('resize', this.handleResize);
+        globals.unbindEvent(window, 'resize', this.handleResize);
     },
 
     render: function() {
@@ -79,20 +74,12 @@ var Attachment = module.exports.Attachment = React.createClass({
 
     // Register for keyup events for ESC key
     componentDidMount: function() {
-        if (window.addEventListener){
-            window.addEventListener('keyup', this.handleEscKey, false); 
-        } else if (window.attachEvent){
-            window.attachEvent('onKeyup', this.handleEscKey);
-        }
+        globals.bindEvent(window, 'keyup', this.handleEscKey);
     },
 
     // Unregister keyup events when component closes
     componentWillUnmount: function() {
-        if (window.removeEventListener){
-            window.removeEventListener('keyup', this.handleEscKey, false); 
-        } else if (window.detachEvent){
-            window.detachEvent('onKeyup', this.handleEscKey);
-        }
+        globals.unbindEvent(window, 'keyup', this.handleEscKey);
     },
 
     render: function() {

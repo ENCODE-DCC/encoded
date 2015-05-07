@@ -1,80 +1,25 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var dbxref = require('./dbxref');
 var search = require('./search');
+var pipeline = require('./pipeline');
+var fetched = require('./fetched');
+var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
-var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
-var DbxrefList = dbxref.DbxrefList;
-
-
-// Count the total number of references in all the publications passed
-// in the pubs array parameter.
-function refCount(pubs) {
-    var total = 0;
-    if (pubs) {
-        pubs.forEach(function(pub) {
-            total += pub.references ? pub.references.length : 0;
-        });
-    }
-    return total;
-}
-
-
-// Display all references in the array of publications in the 'pubs' property.
-var References = React.createClass({
-    render: function() {
-        return (
-            <div>
-                {this.props.pubs ?
-                    <div>
-                        {this.props.pubs.map(function(pub) {
-                            return (
-                                <div className="multi-dd">
-                                    <div>
-                                        {pub.authors ? pub.authors + '. ' : ''}
-                                        {pub.title + ' '}
-                                        <Citation context={pub} />
-                                    </div>
-                                    {pub.references && pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
-                                </div>
-                            );
-                        })}
-                    </div>
-                : null}
-            </div>
-        );
-    }
-});
-
-
-// Display all PMID/PMCID references in the array of publications in the 'pubs' property.
-var PubReferences = React.createClass({
-    render: function() {
-        // Collect all publications' references into one array
-        // and remove duplicates
-        var allRefs = [];
-        this.props.pubs.forEach(function(pub) {
-            allRefs = allRefs.concat(pub.references);
-        });
-        allRefs = _.uniq(allRefs);
-
-        if (allRefs) {
-            return <DbxrefList values={allRefs} className={this.props.listClass} />;
-        } else {
-            return <span></span>;
-        }
-    }
-});
+var PipelineTable = pipeline.PipelineTable;
+var FetchedItems = fetched.FetchedItems;
+var PubReferenceList = reference.PubReferenceList;
 
 
 var Software = module.exports.Software = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+
+        var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -117,17 +62,78 @@ var Software = module.exports.Software = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><References pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
                     </dl>
                 </div>
+
+                {context.versions && context.versions.length ?
+                    <div>
+                        <h3>Software Versions</h3>
+                        <SoftwareVersionTable items={context.versions} />
+                    </div>
+                : null }
             </div>
         );
     }
 });
 globals.content_views.register(Software, 'software');
+
+// Commenting out until pipelines are used.
+
+var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Pipelines using software {context.title}</h3>
+                <PipelineTable {...this.props} />
+            </div>
+        );
+    }
+});
+
+
+var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
+    render: function() {
+        var rows = {};
+        this.props.items.forEach(function (version) {
+            rows[version['@id']] = (
+                <tr>
+                    <td>
+                        {version.downloaded_url ?
+                            <a href={version.downloaded_url}>{version.version}</a>
+                        :
+                            <span>{version.version}</span>
+                        }
+                    </td>
+                    <td>{version.download_checksum}</td>
+                </tr>
+            );
+        });
+        return (
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Download checksum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        );
+    }
+});
 
 
 var Listing = React.createClass({
@@ -156,12 +162,6 @@ var Listing = React.createClass({
                             </div>
                         : null}
 
-                        {refCount(context.references) ?
-                            <div>
-                                <strong>Publication: </strong>
-                                <PubReferences pubs={context.references} listClass="list-reference" />
-                            </div>
-                        : null}
                     </div>
             </li>
         );

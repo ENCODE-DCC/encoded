@@ -1,8 +1,8 @@
-from past.builtins import basestring
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from ..contentbase import simple_path_ids
 from ..embedding import embed
 from ..schema_utils import validate
 
@@ -16,7 +16,7 @@ def audit_item_schema(value, system):
 
     properties = context.properties.copy()
     current_version = properties.get('schema_version', '')
-    target_version = context.schema_version
+    target_version = context.type_info.schema_version
     if target_version is not None and current_version != target_version:
         migrator = registry['migrator']
         try:
@@ -76,12 +76,6 @@ STATUS_LEVEL = {
 }
 
 
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
-
-
 @audit_checker('item', frame='object')
 def audit_item_status(value, system):
     if 'status' not in value:
@@ -94,8 +88,10 @@ def audit_item_status(value, system):
     context = system['context']
     request = system['request']
     linked = set()
-    for key in context.schema_links:
-        linked.update(aslist(value.get(key, ())))
+    for schema_path in context.type_info.schema_links:
+        if schema_path in ['supercedes', 'step_run']:
+            continue
+        linked.update(simple_path_ids(value, schema_path))
 
     for path in linked:
         linked_value = embed(request, path + '@@object')
@@ -107,8 +103,8 @@ def audit_item_status(value, system):
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('status mismatch', detail, level='ERROR')
+            yield AuditFailure('mismatched status', detail, level='ERROR')
         elif linked_level < level:
             detail = '{} {} has {} subobject {}'.format(
                 value['status'], value['@id'], linked_value['status'], linked_value['@id'])
-            yield AuditFailure('status mismatch', detail, level='DCC_ACTION')
+            yield AuditFailure('mismatched status', detail, level='DCC_ACTION')

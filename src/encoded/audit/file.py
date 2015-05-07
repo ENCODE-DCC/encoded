@@ -15,8 +15,38 @@ raw_data_formats = [
     'CEL',
     ]
 
+paired_end_assays = [
+    'RNA-PET',
+    'ChIA-PET',
+    'DNA-PET',
+    ]
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+
+@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
+def audit_file_replicate_match(value, system):
+    '''
+    A file's replicate should belong to the same experiment that the file
+    does.  These tend to get confused when replacing objects.
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    rep_exp = value['replicate']['experiment']['uuid']
+    file_exp = value['dataset']['uuid']
+
+    if rep_exp != file_exp:
+        detail = 'File {} has a replicate {} in experiment {}'.format(
+            value['accession'],
+            value['replicate']['uuid'],
+            value['replicate']['experiment']['accession'])
+        raise AuditFailure('mismatched replicate', detail, level='ERROR')
+
+
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -34,7 +64,84 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='object')
+def audit_file_read_length(value, system):
+    '''
+    Reads files should have a read_length
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['output_type'] != 'reads':
+        return
+
+    if 'read_length' not in value:
+        detail = 'Reads file {} missing read_length'.format(value['accession'])
+        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+
+
+@audit_checker('file',
+               frame=['dataset', 'dataset.target', 'controlled_by',
+                      'controlled_by.dataset'],
+               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'modERN'))
+def audit_file_controlled_by(value, system):
+    '''
+    A fastq in a ChIP-seq experiment should have a controlled_by
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
+        return
+
+    if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):
+        return
+
+    if 'controlled_by' not in value:
+        value['controlled_by'] = []
+
+    if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
+        detail = 'Fastq file {} from {} requires controlled_by'.format(
+            value['accession'],
+            value['dataset']['assay_term_name']
+            )
+        raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+
+    possible_controls = value['dataset'].get('possible_controls')
+    biosample = value['dataset'].get('biosample_term_id')
+
+    for ff in value['controlled_by']:
+        control_bs = ff['dataset'].get('biosample_term_id')
+
+        if control_bs != biosample:
+            detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
+                value['accession'],
+                ff['accession'],
+                control_bs)
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+            return
+
+        if ff['file_format'] != value['file_format']:
+            detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
+                value['accession'],
+                value['file_format'],
+                ff['accession'],
+                ff['file_format']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+
+        if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
+            detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
+                value['accession'],
+                ff['accession'],
+                ff['dataset']['accession']
+                )
+            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
+
+
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -98,61 +205,34 @@ def audit_file_size(value, system):
         raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
+@audit_checker('file', frame=['file_format_specifications'],)
+def audit_file_format_specifications(value, system):
+
+    for doc in value.get('file_format_specifications', []):
+        if doc['document_type'] != "file format specification":
+            detail = 'File {} has document {} not of type file format specification'.format(
+                value['accession'],
+                doc['uuid']
+                )
+            raise AuditFailure('wrong document_type', detail, level='ERROR')
+
+
 @audit_checker('file', frame='object')
 def audit_file_output_type(value, system):
     '''
-    The differing RFA's will have differeing acceptable output_types
+    The differing RFA's will have differing acceptable output_types
     '''
 
     if value.get('status') in ['deleted']:
         return
 
     undesirable_output_type = [
-        'Alignability',
-        'Base_Overlap_Signal',
-        'enhancers_forebrain',
-        'enhancers_heart',
-        'enhancers_wholebrain',
-        'Excludable',
-        'ExonsDeNovo',
-        'ExonsEnsV65IAcuff',
-        'ExonsGencV10',
-        'ExonsGencV3c',
-        'ExonsGencV7',
-        'FiltTransfrags',
-        'GeneDeNovo',
-        'GeneEnsV65IAcuff',
-        'GeneGencV10',
-        'GeneGencV3c',
-        'GeneGencV7',
-        'HMM',
-        'Junctions',
-        'library_fraction',
-        'Matrix',
-        'minus signal',
-        'mPepMapGcFt',
-        'mPepMapGcUnFt'
-        'PctSignal'
-        'pepMapGcFt',
-        'pepMapGcUnFt',
-        'Primer',
-        'PrimerPeaks',
-        'RbpAssocRna',
-        'SumSignal',
-        'TranscriptDeNovo',
-        'TranscriptEnsV65IAcuff',
-        'TranscriptGencV10',
-        'TranscriptGencV3c',
-        'TranscriptGencV7',
-        'Transfrags',
-        'TssGencV3c',
-        'TssGencV7',
-        'TssHmm',
-        'UniformlyProcessedPeakCalls',
-        'Uniqueness',
-        'Validation',
-        'Valleys',
-        'WaveSignal',
+        'validation',
+        'sequence alignability',
+        'sequence uniqueness',
+        'predicted forebrain enhancers',
+        'predicted heart enhancers',
+        'predicted wholebrain enhancers',
         ]
 
     # if value['dataset']['award']['rfa'] != 'ENCODE3':
@@ -160,4 +240,4 @@ def audit_file_output_type(value, system):
             detail = 'File {} has output_type "{}" which is not a standard value'.format(
                 value['accession'],
                 value['output_type'])
-            raise AuditFailure('undesirable output type', detail, level='DCC_ACTION')
+            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')

@@ -1,3 +1,4 @@
+from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
 import logging
@@ -15,6 +16,7 @@ ORDER = [
     'organism',
     'source',
     'target',
+    'publication',
     'document',
     'antibody_lot',
     'antibody_characterization',
@@ -37,11 +39,16 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
+    'software',
+    'software_version',
+    'analysis_step',
+    'pipeline',
+    'workflow_run',
+    'analysis_step_run',
     'file',
+    'quality_metric',
     'image',
     'page',
-    'publication',
-    'software',
 ]
 
 ##############################################################################
@@ -167,7 +174,7 @@ def read_single_sheet(path, name=None):
 
     if name is None:
         root, ext = os.path.splitext(path)
-        stream = open(path, 'rb')
+        stream = open(path, 'r')
 
         if ext == '.xlsx':
             return read_xl(stream)
@@ -214,15 +221,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rbU')
+            stream = open(root + '.tsv', 'rU')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rbU')
+            stream = open(root + '.csv', 'rU')
             return read_csv(stream)
 
         if os.path.exists(root + '.json'):
-            stream = open(root + '.json', 'rb')
+            stream = open(root + '.json', 'r')
             return read_json(stream)
 
     return []
@@ -239,10 +246,8 @@ def read_csv(stream, **kw):
 
 
 def read_json(stream):
-    import codecs
     import json
-    utf8 = codecs.getreader('utf-8')
-    obj = json.load(utf8(stream))
+    obj = json.load(stream)
     if isinstance(obj, dict):
         return [obj]
     return obj
@@ -418,7 +423,7 @@ def attachment(path):
             'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()).decode('ascii'))
         }
 
-        if mime_type in ('application/pdf', 'text/plain', 'text/tab-separated-values'):
+        if mime_type in ('application/pdf', 'text/plain', 'text/tab-separated-values', 'text/html'):
             # XXX Should use chardet to detect charset for text files here.
             return attach
 
@@ -465,7 +470,12 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'strain_background', 'age',  # 'flowcell_details.machine',
+            'strain_background', 'age', 'version',
+            'model_organism_health_status',
+            'model_organism_age',
+            'model_organism_sex',
+            'mouse_life_stage',
+            # 'flowcell_details.machine',
         ),
         add_attachment(docsdir),
     ]
@@ -503,6 +513,12 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('related_files', 'possible_controls'),
     ],
+    'workflow_run': [
+        remove_keys('input_files'),
+    ],
+    'publication': [
+        remove_keys('datasets'),
+    ]
 }
 
 
@@ -529,6 +545,12 @@ PHASE2_PIPELINES = {
     'dataset': [
         skip_rows_missing_all_keys('related_files'),
     ],
+    'workflow_run': [
+        skip_rows_missing_all_keys('input_files'),
+    ],
+    'publication': [
+        skip_rows_missing_all_keys('datasets'),
+    ]
 }
 
 

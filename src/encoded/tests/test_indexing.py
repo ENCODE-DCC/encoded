@@ -14,11 +14,14 @@ pytestmark = [pytest.mark.indexing]
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
+    settings['create_tables'] = True
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
+    settings['indexer'] = True
+    settings['indexer.processes'] = 2
     return settings
 
 
@@ -34,7 +37,10 @@ def app(app_settings):
 
     yield app
 
-    # Dispose connections so postgres can tear down
+    # Shutdown multiprocessing pool to close db conns.
+    app.registry['indexer'].shutdown()
+
+    # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
     DBSession.remove()
     DBSession.configure(bind=None)

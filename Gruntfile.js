@@ -32,6 +32,24 @@ module.exports = function(grunt) {
                     }],
                 ],
             },
+            dagre: {
+                dest: './src/encoded/static/build/dagre.js',
+                require: [
+                    'dagre-d3',
+                    'd3',
+                ],
+                options: {
+                    debug: true,
+                },
+                plugin: [
+                    ['minifyify', {
+                        map: 'dagre.js.map',
+                        output: './src/encoded/static/build/dagre.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
+                ],
+            },
             inline: {
                 dest: './src/encoded/static/build/inline.js',
                 src: [
@@ -42,7 +60,7 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -67,18 +85,13 @@ module.exports = function(grunt) {
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
+                    'dagre-d3',
+                    'd3',
                     'scriptjs',
                     'google-analytics',
                 ],
-                require: [
-                    'domready',
-                    'jquery',
-                    'react',
-                    'underscore',
-                    'url',
-                ],
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -116,11 +129,12 @@ module.exports = function(grunt) {
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
+                    'dagre-d3',
+                    'd3',
                     'source-map-support',
                 ],
                 ignore: [
                     'jquery',
-                    'd3',
                     'scriptjs',
                     'google-analytics',
                     'ckeditor',

@@ -14,6 +14,11 @@ For the development.ini you must supply the paster app name:
 """
 import logging
 import transaction
+from ..storage import (
+    DBSession,
+    update_keys,
+    update_rels,
+)
 from future.utils import itervalues
 from pyramid.paster import get_app
 from pyramid.traversal import resource_path
@@ -28,28 +33,40 @@ DEFAULT_COLLECTIONS = [
 
 def run(app, collections=None):
     root = app.root_factory(app)
+    session = DBSession()
     if not collections:
         collections = DEFAULT_COLLECTIONS
     for collection_name in collections:
         collection = root[collection_name]
         collection_path = resource_path(collection)
         updated = 0
+        errors = 0
         for count, item in enumerate(itervalues(collection)):
             path = resource_path(item)
-            keys_add, keys_remove = item.update_keys()
             update = False
-            if keys_add or keys_remove:
-                logger.debug('Updated keys: %s' % path)
-                update = True
-
-            rels_add, rels_remove = item.update_rels()
-            if rels_add or rels_remove:
-                logger.debug('Updated links: %s' % path)
-                update = True
+            sp = session.begin_nested()
+            try:
+                properties = item.upgrade_properties()
+                unique_keys = item.unique_keys(properties)
+                links = item.links(properties)
+                keys_add, keys_remove = update_keys(item.model, unique_keys)
+                if keys_add or keys_remove:
+                    logger.debug('Updated keys: %s' % path)
+                    update = True
+                rels_add, rels_remove = update_rels(item.model, links)
+                if rels_add or rels_remove:
+                    logger.debug('Updated links: %s' % path)
+                    update = True
+            except Exception:
+                logger.exception('Error updating keys: %s', path)
+                sp.rollback()
+                errors += 1
+            else:
+                sp.commit()
             if update:
                 updated += 1
-        logger.info('Collection %s: Updated %d of %d.' %
-            (collection_path, updated, count))
+        logger.info('Collection %s: Updated %d of %d (errors %d)' %
+                    (collection_path, updated, count + 1, errors))
 
 
 def main():

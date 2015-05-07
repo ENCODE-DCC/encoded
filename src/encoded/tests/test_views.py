@@ -300,3 +300,11 @@ def test_index_data_workbook(workbook, testapp, indexer_testapp, item_type):
     res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
     for item in res.json['@graph']:
         indexer_testapp.get(item['@id'] + '@@index-data')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_profiles(testapp, item_type):
+    from jsonschema import Draft4Validator
+    res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
+    errors = Draft4Validator.check_schema(res.json)
+    assert not errors

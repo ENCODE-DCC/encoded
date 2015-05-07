@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
@@ -35,11 +34,13 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Build array of characterization panels
         var characterizations = sortedChars.map(function(item) {
-            return globals.panel_views.lookup(item)({context: item, key: item['@id']});
+            var PanelView = globals.panel_views.lookup(item);
+            return <PanelView context={item} key={item['@id']} />;
         });
 
         // Build antibody status panel
-        var antibodyStatuses = globals.panel_views.lookup(context)({context: context, key: context['@id']});
+        var PanelView = globals.panel_views.lookup(context);
+        var antibodyStatuses = <PanelView context={context} key={context['@id']} />;
 
         // Make an array of targets with no falsy entries and no repeats
         var targets = {};
@@ -75,11 +76,11 @@ var Lot = module.exports.Lot = React.createClass({
                             }
                         </h3>
                         <div className="status-line">
-                            <AuditIndicators context={context} key="antibody-audit" />
+                            <AuditIndicators audits={context.audit} id="antibody-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="antibody-audit" />
+                <AuditDetail context={context} id="antibody-audit" />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
@@ -188,9 +189,7 @@ var Lot = module.exports.Lot = React.createClass({
                     {characterizations}
                 </div>
 
-                {this.transferPropsTo(
-                    <FetchedItems url={experiments_url} Component={ExperimentsUsingAntibody} />
-                )}
+                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingAntibody} />
             </div>
         );
     }
@@ -211,9 +210,7 @@ var ExperimentsUsingAntibody = React.createClass({
 
                 <div>
                     <h3>Experiments using antibody {context.accession}</h3>
-                    {this.transferPropsTo(
-                        <ExperimentTable limit={5} total={this.props.total} />
-                    )}
+                    <ExperimentTable {...this.props} limit={5} />
                 </div>
             </div>
         );

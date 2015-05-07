@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 jest.autoMockOff();
@@ -65,7 +64,7 @@ describe('Publication', function() {
 
         beforeEach(function() {
             var context_ref = _.clone(context);
-            context_ref.references = ['PMID:19352372', 'PMCID:PMC3062402'];
+            context_ref.identifiers = ['PMID:19352372', 'PMCID:PMC3062402'];
             publication = TestUtils.renderIntoDocument(
                 <Panel context={context_ref} />
             );

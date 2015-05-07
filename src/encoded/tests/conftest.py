@@ -7,6 +7,8 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
+    'collection_datastore': 'database',
+    'item_datastore': 'database',
     'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
@@ -100,9 +102,12 @@ def threadlocals(request, dummy_request, registry):
 
 
 from pyramid.testing import DummyRequest
+
+
 class MyDummyRequest(DummyRequest):
     def remove_conditional_headers(self):
         pass
+
     def _get_registry(self):
         from pyramid.threadlocal import get_current_registry
         if self._registry is None:
@@ -117,16 +122,16 @@ class MyDummyRequest(DummyRequest):
 
     registry = property(_get_registry, _set_registry, _del_registry)
 
+
 @fixture
 def dummy_request(root, registry, app):
+    from pyramid.request import apply_request_extensions
     request = app.request_factory.blank('/dummy')
     request.root = root
     request.registry = registry
     request._stats = {}
     request.invoke_subrequest = app.invoke_subrequest
-    extensions = app.request_extensions
-    if extensions is not None:
-        request._set_extensions(extensions)
+    apply_request_extensions(request)
     return request
 
 
@@ -175,6 +180,7 @@ def workbook(connection, app, app_settings):
         yield
     finally:
         tx.rollback()
+
 
 @fixture
 def anonhtmltestapp(app, external_tx):
@@ -338,7 +344,7 @@ def external_tx(request, connection):
     print('BEGIN external_tx')
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
-    ## The database should be empty unless a data fixture was loaded
+    # # The database should be empty unless a data fixture was loaded
     # from encoded.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
@@ -519,12 +525,10 @@ def no_deps(request, connection):
 
     @event.listens_for(session, 'after_flush')
     def check_dependencies(session, flush_context):
-        #import pytest; pytest.set_trace()
         assert not flush_context.cycles
 
     @event.listens_for(connection, "before_execute", retval=True)
     def before_execute(conn, clauseelement, multiparams, params):
-        #import pytest; pytest.set_trace()
         return clauseelement, multiparams, params
 
     @request.addfinalizer
@@ -590,6 +594,11 @@ def organisms(testapp):
 @pytest.fixture
 def human(organisms):
     return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def mouse(organisms):
+    return [o for o in organisms if o['name'] == 'mouse'][0]
 
 
 @pytest.fixture
@@ -664,7 +673,7 @@ def antibody_lot(antibody_lots):
 
 
 @pytest.fixture
-def targets(testapp,organisms):
+def targets(testapp, organisms):
     from . import sample_data
     return sample_data.load(testapp, 'target')
 
@@ -693,11 +702,12 @@ def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_c
 
 @pytest.fixture
 def antibody_approval(antibody_approvals):
-    return [aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
+    return [
+        aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
 
 
 @pytest.fixture
-def rnais(testapp,labs, awards, targets):
+def rnais(testapp, labs, awards, targets):
     from . import sample_data
     return sample_data.load(testapp, 'rnai')
 
@@ -708,7 +718,7 @@ def rnai(rnais):
 
 
 @pytest.fixture
-def constructs(testapp,labs, awards, targets, sources):
+def constructs(testapp, labs, awards, targets, sources):
     from . import sample_data
     return sample_data.load(testapp, 'construct')
 
@@ -727,6 +737,51 @@ def datasets(testapp, labs, awards):
 @pytest.fixture
 def dataset(datasets):
     return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
+
+
+@pytest.fixture
+def publications(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'publication')
+
+
+@pytest.fixture
+def publication(publications):
+    return publications[0]
+
+
+@pytest.fixture
+def documents(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'document')
+
+
+@pytest.fixture
+def document(documents):
+    return documents[0]
+
+
+@pytest.fixture
+def biosample_characterizations(testapp, awards, labs, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample_characterization')
+
+
+@pytest.fixture
+def biosample_characterization(biosample_characterizations):
+    return biosample_characterizations[0]
+
+
+@pytest.fixture
+def mouse_donors(testapp, awards, labs, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'mouse_donor')
+
+
+@pytest.fixture
+def mouse_donor(mouse_donors):
+    return mouse_donors[0]
+
 
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')

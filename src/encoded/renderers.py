@@ -3,15 +3,12 @@ from pyramid.events import (
     BeforeRender,
     subscriber,
 )
-from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
-    HTTPForbidden,
     HTTPMovedPermanently,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
     HTTPUnsupportedMediaType,
 )
-from pyramid.renderers import render_to_response
 from pyramid.security import forget
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -22,7 +19,7 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
-from .calculated import calculate_properties
+
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import json
@@ -47,7 +44,6 @@ def includeme(config):
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
-    config.add_tween('.renderers.es_tween_factory', under='.renderers.security_tween_factory')
     config.scan(__name__)
 
 
@@ -172,7 +168,7 @@ def security_tween_factory(handler, registry):
             login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
-            if namespace != 'mailto':
+            if namespace not in ('mailto', 'persona'):
                 return handler(request)
         raise CSRFTokenError('Missing CSRF token')
 
@@ -319,95 +315,3 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
-
-
-def es_permission_checker(source, request):
-    def checker(permission):
-        allowed = set(source['principals_allowed'][permission])
-        return allowed.intersection(request.effective_principals)
-    return checker
-
-
-def es_tween_factory(handler, registry):
-    from .indexing import ELASTIC_SEARCH
-    es = registry.get(ELASTIC_SEARCH)
-    if es is None:
-        return handler
-
-    default_datastore = registry.settings.get('item_datastore', 'database')
-
-    ignore = {
-        '/',
-        '/favicon.ico',
-        '/search',
-        '/session',
-        '/login',
-        '/logout',
-    }
-
-    def es_tween(request):
-        if request.method not in ('GET', 'HEAD'):
-            return handler(request)
-
-        if request.params.get('datastore', default_datastore) != 'elasticsearch':
-            return handler(request)
-
-        frame = request.params.get('frame', 'page')
-        if frame not in ('object', 'embedded', 'page',):
-            return handler(request)
-
-        # Normalize path
-        path_tuple = split_path_info(request.path_info)
-        path = _join_path_tuple(('',) + path_tuple)
-
-        if path in ignore or path.startswith('/static/'):
-            return handler(request)
-
-        query = {'filter': {'term': {'paths': path}}, 'version': True}
-        data = es.search(index='encoded', body=query)
-        hits = data['hits']['hits']
-        if len(hits) != 1:
-            return handler(request)
-
-        source = hits[0]['_source']
-        edits = dict.get(request.session, 'edits', None)
-        if edits is not None:
-            version = hits[0]['_version']
-            linked_uuids = set(source['linked_uuids'])
-            embedded_uuids = set(source['embedded_uuids'])
-            for xid, updated, linked in edits:
-                if xid < version:
-                    continue
-                if not embedded_uuids.isdisjoint(updated):
-                    return handler(request)
-                if not linked_uuids.isdisjoint(linked):
-                    return handler(request)
-
-        allowed = set(source['principals_allowed']['view'])
-        if allowed.isdisjoint(request.effective_principals):
-            raise HTTPForbidden()
-
-        if frame == 'page':
-            properties = source['embedded']
-            request.root = registry.getUtility(IRootFactory)(request)
-            collection = request.root.get(properties['@type'][0])
-            rendering_val = collection.Item.expand_page(request, properties)
-
-            # Add actions
-            ns = {
-                'has_permission': es_permission_checker(source, request),
-                'item_uri': source['object']['@id'],
-                'item_type': collection.item_type,
-            }
-            actions = calculate_properties(collection.Item, request, ns, category='action')
-            if actions:
-                rendering_val['actions'] = list(actions.values())
-
-            if ns['has_permission']('audit'):
-                rendering_val['audit'] = source['audit']
-
-        else:
-            rendering_val = source[frame]
-        return render_to_response(None, rendering_val, request)
-
-    return es_tween

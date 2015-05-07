@@ -15,6 +15,15 @@
     margin-bottom: 10px;
 }
 
+.panel-full {
+    @extend .panel;
+    padding: 0;
+}
+
+.panel-insert {
+    padding: 15px 30px;
+}
+
 .panel-blue {
 background-color: #4284d8;
 border: 1px solid #3276ca;

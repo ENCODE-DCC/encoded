@@ -65,13 +65,12 @@ def make_jsonld_context(event):
         'collection': prefix + 'collection',
     }
 
-    calculated_properties = app.registry['calculated_properties']
     for name, collection in root.by_item_type.items():
         if name.startswith('testing_'):
             continue
-        schema = calculated_properties.schema_for(collection.Item)
+        schema = collection.type_info.schema
         context.update(context_from_schema(
-            schema, prefix, collection.item_type, collection.Item.base_types))
+            schema, prefix, collection.item_type, collection.type_info.base_types))
 
     namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
     context.update(namespaces)
@@ -115,9 +114,9 @@ def make_jsonld_context(event):
     for name, collection in root.by_item_type.items():
         if name.startswith('testing_'):
             continue
-        schema = calculated_properties.schema_for(collection.Item)
+        schema = collection.type_info.schema
         iter_defs = ontology_from_schema(
-            schema, prefix, collection.item_type, collection.Item.base_types)
+            schema, prefix, collection.item_type, collection.type_info.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):
@@ -246,21 +245,23 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         if 'rdfs:subPropertyOf' in subschema:
             prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
 
-        subschema.get('items', subschema)
+        subschema = subschema.get('items', subschema)
         if 'title' in subschema:
             prop_ld['rdfs:label'] = subschema['title']
 
         if 'description' in subschema:
             prop_ld['rdfs:comment'] = subschema['description']
 
-        linkTo = aslist(subschema.get('linkTo', []))
-        if len(linkTo) == 1:
-            linkTo, = linkTo
-            prop_ld['rdfs:range'] = term_path + linkTo
-        elif len(linkTo) > 1:
+        links = aslist(subschema.get('linkTo', []))
+        if subschema.get('linkFrom'):
+            links.append(subschema['linkFrom'].split('.')[0])
+        if len(links) == 1:
+            links, = links
+            prop_ld['rdfs:range'] = term_path + links
+        elif len(links) > 1:
             prop_ld['rdfs:range'] = {
                 '@type': 'owl:Class',
-                'owl:unionOf': [term_path + type_name for type_name in aslist(linkTo)],
+                'owl:unionOf': [term_path + type_name for type_name in aslist(links)],
             }
 
         yield prop_ld

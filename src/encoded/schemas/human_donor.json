@@ -14,13 +14,14 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
         "age_units":  {
+            "required": ["age"],
             "not": {
                 "properties": {
                     "age": {
@@ -45,7 +46,7 @@
                             "enum": ["year"]
                         },
                         "age": {
-                            "pattern": "^([1-8]?\\d)|(90 or above)|(unknown)$"
+                            "pattern": "^(([1-8]?\\d)|(90 or above))$"
                         }
                     }
                 },
@@ -56,7 +57,7 @@
                             "enum": ["day", "week","month"]
                         },
                         "age": {
-                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
+                            "pattern":  "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)$"
                         }
                     }
                 }
@@ -66,7 +67,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "ethnicity": {
             "title": "Ethnicity",
@@ -76,7 +77,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor when biological material was sampled.",
             "type": "string",
-            "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above)$"
+            "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
         },
         "age_units": {
             "title": "Donor age units",
@@ -172,6 +173,31 @@
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "revoked",
+                "preliminary",
+                "proposed"
+            ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+))$"
+            }
         }
     }
 }

@@ -45,8 +45,8 @@
         "note": "(PMID: 4357757)",
         "organism": "human",
         "references": [
-            "PMID:23000965",
-            "PMID:16395128"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "passage_number": 5,
         "product_id": "HTB-22",
@@ -648,5 +648,25 @@
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
-    }  
+    },
+    {
+        "accession": "ENCBS630AAA",
+        "award": "ENCODE2",
+        "biosample_term_id": "EFO:0002784",
+        "biosample_term_name": "GM12878",
+        "biosample_type": "immortalized cell line",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:GM12878"
+        ],
+        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project - CEPH/Utah - European Caucasion, Epstein-Barr Virus",
+        "donor": "ENCDO000AAK",
+        "lab": "michael-snyder",
+        "organism": "human",
+        "product_id": "GM12878",
+        "source": "coriell",
+        "status": "released",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
+        "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
+    }
 ]

@@ -1,4 +1,3 @@
-import copy
 import os
 from collections import OrderedDict
 from pyramid.decorator import reify
@@ -9,6 +8,7 @@ from ..contentbase import (
     Root,
     root,
 )
+from ..schema_formats import is_accession
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -23,6 +23,7 @@ from .visualization import generate_batch_hubs
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('schemas', '/profiles/')
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('jsonld_context', '/terms/')
     config.add_route('jsonld_context_no_slash', '/terms')
@@ -31,6 +32,8 @@ def includeme(config):
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.add_route('graph_dot', '/profiles/graph.dot')
     config.add_route('graph_svg', '/profiles/graph.svg')
+    config.add_route('batch_download', '/batch_download/{search_params}')
+    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.scan()
 
 
@@ -72,10 +75,28 @@ class EncodedRoot(Root):
             (Allow, Everyone, ['list', 'search']),
             (Allow, 'group.submitter', ['search_audit', 'audit']),
             (Allow, 'group.admin', ALL_PERMISSIONS),
+            (Allow, 'group.forms', ('forms',)),
             # Avoid schema validation errors during audit
             (Allow, 'remoteuser.EMBED', 'import_items'),
         ] + Root.__acl__
         return acl
+
+    def get(self, name, default=None):
+        resource = super(EncodedRoot, self).get(name, None)
+        if resource is not None:
+            return resource
+        resource = self.connection.get_by_unique_key('page:location', name)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.connection.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = self.connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource
+        return default
 
 
 @view_config(context=Root, request_method='GET')
@@ -95,15 +116,9 @@ def home(context, request):
     return result
 
 
-@view_config(route_name='schema', request_method='GET')
-def schema(context, request):
-    item_type = request.matchdict['item_type']
-    try:
-        collection = context.by_item_type[item_type]
-    except KeyError:
-        raise HTTPNotFound(item_type)
+def _filtered_schema(collection, request):
+    schema = collection.type_info.schema.copy()
 
-    schema = copy.deepcopy(collection.Item.schema)
     properties = OrderedDict()
     for k, v in schema['properties'].items():
         if 'permission' in v:
@@ -112,6 +127,25 @@ def schema(context, request):
         properties[k] = v
     schema['properties'] = properties
     return schema
+
+
+@view_config(route_name='schema', request_method='GET')
+def schema(context, request):
+    item_type = request.matchdict['item_type']
+    try:
+        collection = context.by_item_type[item_type]
+    except KeyError:
+        raise HTTPNotFound(item_type)
+
+    return _filtered_schema(collection, request)
+
+
+@view_config(route_name='schemas', request_method='GET')
+def schemas(context, request):
+    schemas = {}
+    for typename, collection in context.by_item_type.items():
+        schemas[typename] = _filtered_schema(collection, request)
+    return schemas
 
 
 @view_config(route_name='batch_hub')

@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 // Require all components to ensure javascript load ordering
@@ -13,6 +12,7 @@ require('./errors');
 require('./experiment');
 require('./footer');
 require('./globals');
+require('./graph');
 require('./home');
 require('./item');
 require('./page');
@@ -23,6 +23,7 @@ require('./statuslabel');
 require('./search');
 require('./target');
 require('./publication');
+require('./pipeline');
 require('./software');
 require('./testing');
 require('./edit');

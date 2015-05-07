@@ -27,6 +27,7 @@ class Biosample(Item):
     }
     embedded = [
         'donor',
+        'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
         'donor.characterizations.award',
@@ -65,6 +66,7 @@ class Biosample(Item):
         'rnais.documents.award',
         'rnais.documents.lab',
         'organism',
+         'references'
     ]
 
     @calculated_property(condition='biosample_term_id', schema={
@@ -145,7 +147,7 @@ class Biosample(Item):
         if donor is not None:
             return request.embed(donor, '@@object').get('age_units')
 
-    @calculated_property(condition='health_status', schema={
+    @calculated_property(schema={
         "title": "Health status",
         "type": "string",
     })
@@ -209,8 +211,8 @@ class Biosample(Item):
         "title": "Characterizations",
         "type": "array",
         "items": {
-            "type": "string",
-            "linkTo": "biosample_characterization",
+            "type": ['string', 'object'],
+            "linkFrom": "biosample_characterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

@@ -1,16 +1,14 @@
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var ReactForms = require('react-forms');
-var form = require('./form');
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
+var closest = require('../libs/closest');
+var offset = require('../libs/offset');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
-var merge = require('react/lib/merge');
-var ModalTrigger = require('react-bootstrap/ModalTrigger');
-var Modal = require('react-bootstrap/Modal');
+var ModalTrigger = require('react-bootstrap/lib/ModalTrigger');
+var Modal = require('react-bootstrap/lib/Modal');
 
 var LAYOUT_CONTEXT = {
     dragStart: React.PropTypes.func,
@@ -25,30 +23,29 @@ var LAYOUT_CONTEXT = {
     blocks: React.PropTypes.object
 };
 
+var MODAL_CONTEXT = {
+    fetch: React.PropTypes.func
+};
+
 
 var BlockEditModal = React.createClass({
+
+    childContextTypes: MODAL_CONTEXT,
+
+    getChildContext: function() {
+        return this.props.modalcontext;
+    },
 
     getInitialState: function() {
         return {value: this.props.value};
     },
 
-    _extendedSchemaCache: {},
-
     render: function() {
         var blocktype = globals.blocks.lookup(this.props.value);
-        var schema = blocktype.schema;
-        if (schema !== undefined) {
-            schema = this._extendedSchemaCache[blocktype.label];
-            if (schema === undefined) {
-                // add CSS class property
-                var schema_props = _.values(blocktype.schema.children);
-                schema_props.push(ReactForms.schema.Property({name: 'className', label: 'CSS Class'}));
-                schema = this._extendedSchemaCache[blocktype.label] = ReactForms.schema.Schema(null, schema_props);                
-            }
-        }
+        var schema = blocktype.schema();
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
-        return this.transferPropsTo(
-            <Modal title={'Edit ' + blocktype.label}>
+        return (
+            <Modal {...this.props} title={'Edit ' + blocktype.label}>
                 <div className="modal-body">
                     <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
                 </div>
@@ -61,6 +58,7 @@ var BlockEditModal = React.createClass({
     },
 
     onChange: function(value) {
+        if (value.toJS !== undefined) value = value.toJS();
         this.setState({value: value});
     },
 
@@ -81,14 +79,19 @@ var BlockEditModal = React.createClass({
 
 var Block = module.exports.Block = React.createClass({
 
-    contextTypes: LAYOUT_CONTEXT,
+    contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
 
     getInitialState: function() {
         return {hover: false, focused: false};
     },
 
     renderToolbar: function() {
-        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} onCancel={this.onCancelEdit} />;
+        var modal = <BlockEditModal
+            modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
+            value={this.props.value}
+            onChange={this.onChange}
+            onCancel={this.onCancelEdit} />;
+
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
@@ -183,16 +186,16 @@ var BlockAddButton = React.createClass({
         );
     },
 
-    click: function() { return false; },
+    click: function(e) { e.preventDefault(); },
 
     dragStart: function(e) {
         var block = {
-            '@type': [this.props.key, 'block'],
+            '@type': [this.props.blocktype, 'block'],
             'is_new': true
         };
         if (this.props.blockprops.initial !== undefined) {
             delete block.is_new;
-            block = merge(block, this.props.blockprops.initial);
+            block = _.extend({}, block, this.props.blockprops.initial);
         }
         this.context.dragStart(e, block);
     }
@@ -203,7 +206,9 @@ var BlockAddButton = React.createClass({
 var LayoutToolbar = React.createClass({
 
     contextTypes: {
-        onTriggerSave: React.PropTypes.func
+        canSave: React.PropTypes.func,
+        onTriggerSave: React.PropTypes.func,
+        formEvents: React.PropTypes.object
     },
 
     getInitialState: function() {
@@ -211,13 +216,14 @@ var LayoutToolbar = React.createClass({
     },
 
     componentDidMount: function() {
-        var $ = require('jquery');
-        this.origTop = $(this.getDOMNode()).offset().top;
-        window.addEventListener('scroll', this.scrollspy);
+        this.origTop = offset(this.getDOMNode()).top;
+        globals.bindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.addListener('update', this.scrollspy)
     },
 
     componentWillUnmount: function() {
-        window.removeEventListener('scroll', this.scrollspy);
+        globals.unbindEvent(window, 'scroll', this.scrollspy);
+        this.context.formEvents.removeListener('update', this.scrollspy)
     },
 
     scrollspy: function() {
@@ -230,12 +236,12 @@ var LayoutToolbar = React.createClass({
             <div className={'layout-toolbar navbar navbar-default'}>
               <div className="container-fluid">
                 <div className="navbar-left">
-                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
+                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} /> )}
                 </div>
                 <div className="navbar-right">
                     <a href="" className="btn btn-default navbar-btn">Cancel</a>
                     {' '}
-                    <button onClick={this.context.onTriggerSave} className="btn btn-success navbar-btn">Save</button>
+                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
                 </div>
               </div>
             </div>
@@ -260,13 +266,14 @@ var LayoutToolbar = React.createClass({
 var Col = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
-    renderBlock: function(blockId, pos) {
+    renderBlock: function(blockId, k) {
+        var pos = this.props.pos.concat([k]);
         if (typeof blockId == 'string') {
             var block = this.context.blocks[blockId];
-            return <Block value={block} key={block['@id']} pos={pos} />;
+            return <Block value={block} key={k} pos={pos} />;
         } else {
             var row = blockId;
-            return <Row value={row} pos={pos} />;
+            return <Row value={row} key={k} pos={pos} />;
         }
     },
 
@@ -279,7 +286,7 @@ var Col = React.createClass({
         var blocks = this.props.value.blocks;
         return (
             <div className={cx(classes)} onDragOver={this.dragOver}>
-                {blocks.map((blockId, k) => this.renderBlock(blockId, this.props.pos.concat([k])))}
+                {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
     },
@@ -307,7 +314,7 @@ var Row = React.createClass({
         }
         return (
             <div className={cx(classes)} onDragOver={this.dragOver}>
-                {cols.map((col, j) => <Col value={col} className={col.className || col_class} pos={this.props.pos.concat([j])} />)}
+                {cols.map((col, j) => <Col value={col} className={col.className || col_class} key={j} pos={this.props.pos.concat([j])} />)}
             </div>
         );
     },
@@ -326,18 +333,34 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     getInitialState: function() {
+        return this.stateFromProps(this.props);
+    },
+
+    stateFromProps: function(props) {
+        var value = props.value;
+        if (value.toJS !== undefined) value = value.toJS();
+
+        var blockMap = {};
         var nextBlockNum = 2;
-        Object.keys(this.props.value.blocks).map(function(block_id) {
+        value.blocks.map(function(block) {
+            var block_id = block['@id'];
+            blockMap[block_id] = block;
             var blockNum = parseInt(block_id.replace(/\D/g, ''));
             if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
         });
+        value = _.extend({}, value, {blocks: blockMap});
+
         return {
             'nextBlockNum': nextBlockNum,
-            'value': this.props.value,
+            'value': value,
             'src_pos': null,
             'dst_pos': null,
             'dst_quad': null,
         };
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.setState(this.stateFromProps(nextProps));
     },
 
     childContextTypes: LAYOUT_CONTEXT,
@@ -352,17 +375,8 @@ var Layout = module.exports.Layout = React.createClass({
             src_pos: this.state.src_pos,
             dst_pos: this.state.dst_pos,
             dst_quad: this.state.dst_quad,
-            blocks: this.props.value.blocks
+            blocks: this.state.value.blocks
         };
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({value: nextProps.value});
-    },
-
-    componentDidMount: function() {
-        this.$ = require('jquery');
-        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
     },
 
     render: function() {
@@ -376,7 +390,8 @@ var Layout = module.exports.Layout = React.createClass({
         return (
             <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
-                {this.state.value.rows.map((row, i) => <Row value={row} pos={[i]} />)}
+                {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
+                <canvas id="drag-marker" height="1" width="1"></canvas>
             </div>
         );
     },
@@ -385,7 +400,7 @@ var Layout = module.exports.Layout = React.createClass({
         if (!this.props.editable) {
             return;
         }
-        if (this.$(e.target).closest('[contenteditable]').length) {
+        if (closest(e.target, '[contenteditable]')) {
             // cancel drag to avoid interfering with dragging text
             return;
         }
@@ -407,7 +422,7 @@ var Layout = module.exports.Layout = React.createClass({
         } else if (types.contains && types.contains('application/x-encoded-block')) {
             return true;
         }   
-        return false;     
+        e.preventDefault();
     },
 
     drop: function(e) {
@@ -521,7 +536,7 @@ var Layout = module.exports.Layout = React.createClass({
 
         // make sure we re-render and notify form of new value
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
     },
 
     dragOver: function(e, target) {
@@ -532,13 +547,15 @@ var Layout = module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
-        target = (typeof target == 'string' ? this : target);
-        var $target = this.$(target.getDOMNode());
-        if (!$target.length) return;
-        var x = e.pageX - $target.offset().left;
-        var y = e.pageY - $target.offset().top;
-        var h = $target.height();
-        var w = $target.width();
+        if (typeof target == 'string') return;
+        target = target || this;
+        var target_node = target.getDOMNode();
+        if (!target_node.childNodes.length) return;
+        var target_offset = offset(target_node);
+        var x = e.pageX - target_offset.left;
+        var y = e.pageY - target_offset.top;
+        var h = target_node.clientHeight;
+        var w = target_node.clientWidth;
         var sw_ne = h * x / w;
         var nw_se = h * (1 - x / w);
         var quad;
@@ -573,7 +590,7 @@ var Layout = module.exports.Layout = React.createClass({
     change: function(value) {
         this.state.value.blocks[value['@id']] = value;
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
     },
 
     remove: function(block, pos) {
@@ -582,7 +599,16 @@ var Layout = module.exports.Layout = React.createClass({
         dest.container.obj.blocks.splice(dest.target_idx, 1);
         this.cleanup();
         this.setState(this.state);
-        this.props.onChange(this.state.value);
+        this.onChange(this.state.value);
+    },
+
+    onChange: function() {
+        var value = this.state.value;
+        var blockList = Object.keys(value.blocks).map(function(blockId) {
+            return value.blocks[blockId];
+        });
+        value = _.extend({}, value, {blocks: blockList});
+        this.props.onChange(value);
     },
 
     _filter: function(objs) {

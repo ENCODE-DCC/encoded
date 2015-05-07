@@ -62,7 +62,7 @@ class ItemWithAttachment(Item):
     download_property = 'attachment'
 
     @classmethod
-    def _process_downloads(cls, parent, properties, sheets):
+    def _process_downloads(cls, properties, sheets):
         prop_name = cls.download_property
         attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
@@ -136,9 +136,9 @@ class ItemWithAttachment(Item):
         return properties, sheets
 
     @classmethod
-    def create(cls, parent, properties, sheets=None):
-        properties, sheets = cls._process_downloads(parent, properties, sheets)
-        item = super(ItemWithAttachment, cls).create(parent, properties, sheets)
+    def create(cls, registry, uuid, properties, sheets=None):
+        properties, sheets = cls._process_downloads(properties, sheets)
+        item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
         return item
 
     def update(self, properties, sheets=None):
@@ -155,8 +155,7 @@ class ItemWithAttachment(Item):
                     msg = "Expected data uri or existing uri."
                     raise ValidationFailure('body', [prop_name, 'href'], msg)
             else:
-                properties, sheets = self._process_downloads(
-                    self.__parent__, properties, sheets)
+                properties, sheets = self._process_downloads(properties, sheets)
 
         super(ItemWithAttachment, self).update(properties, sheets)
 
@@ -165,7 +164,7 @@ class ItemWithAttachment(Item):
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath
-    downloads = context.model['downloads']
+    downloads = context.propsheets['downloads']
     try:
         download_meta = downloads[prop_name]
     except KeyError:
