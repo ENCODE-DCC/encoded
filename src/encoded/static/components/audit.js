@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
-var cx = require('react/lib/cx');
 
 var editTargetMap = {
     'experiments': 'Experiment',
@@ -90,6 +89,7 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 });
 
 
+
 var AuditDetail = module.exports.AuditDetail = React.createClass({
     contextTypes: {
         auditDetailOpen: React.PropTypes.bool
@@ -115,25 +115,14 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var levelClass = 'audit-level-' + level;
 
                         return audits.map(function(audit, i) {
-                            var editLink = (this.props.forcedEditLink || (audit.path !== context['@id'])) ? audit.path : null;
-                            var editTarget;
+                            var editLink = (this.props.forcedEditLink || (audit.path !== context['@id']));
 
-                            // Get the target string from the path
-                            if (editLink) {
-                                var start = audit.path.indexOf('/') + 1;
-                                var end = audit.path.indexOf('/', start);
-                                var editTargetType = audit.path.substring(start, end);
-                                editTarget = editTargetMap[editTargetType];
-                            }
                             return (
                                 <div className={alertClass} key={i} role="alert">
                                     <i className={iconClass}></i>
                                     <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
                                     &nbsp;&mdash;&nbsp;
-                                    <strong>{audit.category}</strong>: {audit.detail}
-                                    {editLink ?
-                                        <a className="audit-link" href={editLink}>Go to {editTarget}</a>
-                                    : null}
+                                    <strong>{audit.category}</strong>: {editLink ? <DetailEmbeddedLink path={audit.path} detail={audit.detail} /> : audit.detail}
                                 </div>
                             );
                         }, this);
@@ -142,5 +131,40 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
             );
         }
         return null;
+    }
+});
+
+
+// Display details with embedded link
+// Property path: path to audited object
+// Property detail: String possibly containing embedded accession, uuid, or path
+var DetailEmbeddedLink = React.createClass({
+    render: function() {
+        var path = this.props.path;
+        var matchStr = path;
+        var detail = this.props.detail;
+
+        var linkStart = detail.indexOf(matchStr);
+        if (linkStart < 0) {
+            // The full path isn't in detail; look for partial path instead
+            var uriBits = matchStr.split('/');
+            matchStr = uriBits[uriBits.length - 2];
+            linkStart = detail.indexOf(matchStr);
+            if (linkStart < 0) {
+                return <span>{detail}</span>;
+            }
+        }
+
+        var preText = detail.slice(0, linkStart);
+        var linkText = detail.slice(linkStart, linkStart + matchStr.length);
+        var postText = detail.slice(linkStart + matchStr.length);
+        return (
+            <span>
+                {preText}
+                <a href={path}>{linkText}</a>
+                {postText}
+            </span>
+        );
+
     }
 });
