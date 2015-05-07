@@ -352,7 +352,6 @@ def search(context, request, search_type=None):
             facets.append(audit_facet)
 
     set_facets(facets, used_filters, query, principals)
-    import pdb; pdb.set_trace()
 
     # Execute the query
     es_results = es.search(body=query, index='encoded',
