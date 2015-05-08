@@ -289,6 +289,6 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "replicates.library.biosample.rnais.product_id": 1.0,
+        "biosample.rnais.product_id": 1.0,
     }
 }
