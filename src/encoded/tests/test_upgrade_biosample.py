@@ -321,4 +321,4 @@ def test_biosample_worm_synch_stage(root, registry, biosample, biosample_10, dum
     biosample_10['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
     value = migrator.upgrade('biosample', biosample_10, target_version='11', context=context)
     assert value['schema_version'] == '11'
-    assert value['worm_synchronizatiom_stage'] == 'L1 larva starved after bleaching'
+    assert value['worm_synchronization_stage'] == 'L1 larva starved after bleaching'
