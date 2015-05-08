@@ -115,14 +115,12 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
                         var levelClass = 'audit-level-' + level;
 
                         return audits.map(function(audit, i) {
-                            var editLink = (this.props.forcedEditLink || (audit.path !== context['@id']));
-
                             return (
                                 <div className={alertClass} key={i} role="alert">
                                     <i className={iconClass}></i>
                                     <strong className={levelClass}>{auditLevelName.split('_').join(' ')}</strong>
                                     &nbsp;&mdash;&nbsp;
-                                    <strong>{audit.category}</strong>: {editLink ? <DetailEmbeddedLink path={audit.path} detail={audit.detail} /> : audit.detail}
+                                    <strong>{audit.category}</strong>: <DetailEmbeddedLink detail={audit.detail} except={context['@id']} forcedEditLink={this.props.forcedEditLink} />
                                 </div>
                             );
                         }, this);
@@ -135,36 +133,40 @@ var AuditDetail = module.exports.AuditDetail = React.createClass({
 });
 
 
-// Display details with embedded link
-// Property path: path to audited object
-// Property detail: String possibly containing embedded accession, uuid, or path
+// Display details with embedded links.
+// props.detail: String possibly containing paths.
+// props.except: Path of object being reported on.
+// props.forcedEditLink: T if display path of reported object anyway.
+
 var DetailEmbeddedLink = React.createClass({
     render: function() {
-        var path = this.props.path;
-        var matchStr = path;
         var detail = this.props.detail;
 
-        var linkStart = detail.indexOf(matchStr);
-        if (linkStart < 0) {
-            // The full path isn't in detail; look for partial path instead
-            var uriBits = matchStr.split('/');
-            matchStr = uriBits[uriBits.length - 2];
-            linkStart = detail.indexOf(matchStr);
-            if (linkStart < 0) {
-                return <span>{detail}</span>;
-            }
+        // Get an array of all paths in the detail string, if any.
+        var matches = detail.match(/(\/.*?\/.*?\/)/g);
+        if (matches) {
+            // Build React object of text followed by path for all paths in detail string
+            var lastStart = 0;
+            var result = matches.map(function(match, i) {
+                var linkStart = detail.indexOf(match, lastStart);
+                var preText = detail.slice(lastStart, linkStart);
+                lastStart = linkStart + match.length;
+                var linkText = detail.slice(linkStart, lastStart);
+                if (match !== this.props.except || this.props.forcedEditLink) {
+                    return <span key={i}>{preText}<a href={linkText}>{linkText}</a></span>;
+                } else {
+                    return <span key={i}>{preText}{linkText}</span>;
+                }
+            }, this);
+
+            // Pick up any trailing text after the last path, if any
+            var postText = detail.slice(lastStart);
+            
+            // Render all text and paths, plus the trailing text
+            return <span>{result}{postText}</span>;
+        } else {
+            // No links in the detail string; just display it with no links
+            return <span>{detail}</span>;
         }
-
-        var preText = detail.slice(0, linkStart);
-        var linkText = detail.slice(linkStart, linkStart + matchStr.length);
-        var postText = detail.slice(linkStart + matchStr.length);
-        return (
-            <span>
-                {preText}
-                <a href={path}>{linkText}</a>
-                {postText}
-            </span>
-        );
-
     }
 });
