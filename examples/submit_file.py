@@ -73,12 +73,12 @@ else:
 chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 validate_map = {
     ('bam', None): ['-type=bam', chromInfo],
-    ('bed', 'unknown'): ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
+    ('bed', 'bed6'): ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
     ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
     ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
     ('bigBed', 'bedMethyl'): ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
     ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
-    ('bigBed', 'unknown'): ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+    ('bigBed', 'bed6'): ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
     ('bigWig', None): ['-type=bigWig', chromInfo],
     ('bigBed', 'broadPeak'): ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
     ('bed', 'broadPeak'): ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
