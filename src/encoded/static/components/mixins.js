@@ -540,8 +540,8 @@ module.exports.HistoryAndTriggers = {
         var fragment = '';
         var href_hash_pos = href.indexOf('#');
         if (href_hash_pos > -1) {
-            href = href.slice(0, url_hash);
-            fragment = href.slice(url_hash);
+            fragment = href.slice(href_hash_pos);
+            href = href.slice(0, href_hash_pos);
         }
 
         if (!this.historyEnabled) {

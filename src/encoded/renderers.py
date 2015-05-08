@@ -211,6 +211,13 @@ def normalize_cookie_tween_factory(handler, registry):
 
 
 @subscriber(BeforeRender)
+def set_x_request_url(event):
+    # Used by fetch polyfill and server rendering
+    request = event['request']
+    request.response.headers['X-Request-URL'] = request.url
+
+
+@subscriber(BeforeRender)
 def canonical_redirect(event):
     request = event['request']
 
@@ -277,7 +284,6 @@ def should_transform(request, response):
     if format == 'json':
         return False
 
-    response.headers['X-href'] = request.url
     request._transform_start = time.time()
     return True
 
