@@ -31,11 +31,12 @@ with open(path, 'rb') as f:
 
 data = {
     "dataset": "ENCSR000ACY",
+    "replicate": "/replicates/6e85c807-684a-46e3-b4b9-1f7990e85720/",
     "file_format": "fastq",
     "file_size": os.path.getsize(path),
     "md5sum": md5sum.hexdigest(),
     "output_type": "reads",
-    "read_length": "101",
+    "read_length": 101,
     "run_type": "single-ended",
     "platform": "ENCODE:HiSeq2000",
     "submitted_file_name": path,
