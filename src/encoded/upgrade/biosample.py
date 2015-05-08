@@ -166,4 +166,4 @@ def biosample_10_11(value, system):
     # http://redmine.encodedcc.org/issues/2905
 
     if value.get('worm_synchronization_stage') == 'starved L1 larva':
-        value['worm_synchronizatiom_stage'] = 'L1 larva starved after bleaching'
+        value['worm_synchronization_stage'] = 'L1 larva starved after bleaching'
