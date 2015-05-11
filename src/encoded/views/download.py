@@ -14,7 +14,7 @@ import io
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
     ('File accession', ['files.accession']),
-    ('File format', ['files.file_format']),
+    ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
     ('Experiment accession', ['accession']),
     ('Assay', ['assay_term_name']),
@@ -86,11 +86,11 @@ def metadata_tsv(context, request):
                         else:
                             temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
-            f_attributes = ['files.accession', 'files.file_format',
+            f_attributes = ['files.accession', 'files.file_type',
                             'files.output_type']
             for f in row['files']:
-                if 'files.file_format' in param_list:
-                    if f['file_format'] not in param_list['files.file_format']:
+                if 'files.file_type' in param_list:
+                    if f['file_type'] not in param_list['files.file_type']:
                         continue
                 f['href'] = request.host_url + f['href']
                 f_row = []
@@ -152,7 +152,7 @@ def batch_download(context, request):
 
     # adding extra params to get requied columsn
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_format']
+    param_list['field'] = ['files.href', 'files.file_type']
     param_list['limit'] = ['all']
 
     path = '/search/?%s' % urlencode(param_list, True)
@@ -162,10 +162,10 @@ def batch_download(context, request):
         search_params=request.matchdict['search_params']
     )
     files = [metadata_link]
-    if 'files.file_format' in param_list:
+    if 'files.file_type' in param_list:
         for exp in results['@graph']:
             for f in exp['files']:
-                if f['file_format'] in param_list['files.file_format']:
+                if f['file_type'] in param_list['files.file_type']:
                     files.append('{host_url}{href}'.format(
                         host_url=request.host_url,
                         href=f['href']
