@@ -445,11 +445,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
             }
         });
     }
-
-    // If no platforms found in files, get the platform from the first replicate, if it has one
-    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
-        platforms[replicates[0].platform['@id']] = replicates[0].platform;
-    }
+    var platformKeys = Object.keys(platforms);
 
     return (
         <div className = "panel-assay">
@@ -513,11 +509,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     </div>
                 : null}
 
-                {Object.keys(platforms).length ?
+                {platformKeys.length ?
                     <div data-test="platform">
                         <dt>Platform</dt>
                         <dd>
-                            {Object.keys(platforms).map(function(platformId) {
+                            {platformKeys.map(function(platformId) {
                                 return(
                                     <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                 );
@@ -595,20 +591,6 @@ var Replicate = module.exports.Replicate = function (props) {
                         : null}
                     </div>
                 : null}
-
-                {replicate.read_length ?
-                    <div data-test="runtype">
-                        <dt>Run type</dt>
-                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="readlength">
-                        <dt>Read length</dt>
-                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
-                    </div>
-                : null}
             </dl>
         </div>
     );
@@ -636,6 +618,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allFiles = {}; // All files' accessions as keys
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
+    var allContributing = {}; // List of all contributing files
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -714,6 +697,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Don't worry about files they derive from; they're not included in the graph.
     if (context.contributing_files && context.contributing_files.length) {
         context.contributing_files.forEach(function(file) {
+            allContributing[file.accession] = file;
             if (derivedFromFiles[file.accession]) {
                 allFiles[file.accession] = file;
             }
@@ -731,23 +715,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
                     allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
                         file.removed = true;
-
-                        // Remember it's removed from the derived_from file objects too
-                        if (derivedFromFiles[file.accession]) {
-                            derivedFromFiles[file.accession].removed = true;
-                        }
                     });
-                } else {
-                    // Derived-from file is in a replicate, but not seen in files array;
-                    // just remove it from derivedFromFiles.
-                    derivedFromFile.removed = true;
                 }
 
                 // Indicate that this replicate is not to be rendered
                 allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
-
-                // Mark this file as removed
-                derivedFromFile.removed = true;
             } else {
                 // Missing derived-from file not in a replicate; don't draw any graph
                 abortGraph = abortGraph || true;
@@ -767,9 +739,9 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         var file = allFiles[fileAccession];
 
         // A file derives from a file that's been removed from the graph
-        if (file.derived_from && !file.removed) {
+        if (file.derived_from && !file.removed && !(file.accession in allContributing)) {
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
-                return derivedFromFile.removed;
+                return !(derivedFromFile.accession in allFiles);
             });
         }
 

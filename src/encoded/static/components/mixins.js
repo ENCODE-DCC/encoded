@@ -42,6 +42,11 @@ var parseAndLogError = module.exports.parseAndLogError = function (cause, respon
 };
 
 
+var contentTypeIsJSON = module.exports.contentTypeIsJSON = function (content_type) {
+    return (content_type || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
+};
+
+
 module.exports.RenderLess = {
     shouldComponentUpdate: function (nextProps, nextState) {
         var key;
@@ -432,6 +437,9 @@ module.exports.HistoryAndTriggers = {
         // Skip links with a different target
         if (target.getAttribute('target')) return;
 
+        // Skip @@download links
+        if (href.indexOf('/@@download') != -1) return;
+
         // With HTML5 history supported, local navigation is passed
         // through the navigate method.
         if (this.historyEnabled) {
@@ -523,15 +531,25 @@ module.exports.HistoryAndTriggers = {
             return;
         }
 
+        // options.skipRequest only used by collection search form
+        // options.replace only used handleSubmit, handlePopState, handlePersonaLogin
         options = options || {};
         href = url.resolve(this.props.href, href);
 
+        // Strip url fragment.
+        var fragment = '';
+        var href_hash_pos = href.indexOf('#');
+        if (href_hash_pos > -1) {
+            fragment = href.slice(href_hash_pos);
+            href = href.slice(0, href_hash_pos);
+        }
+
         if (!this.historyEnabled) {
             if (options.replace) {
-                window.location.replace(href);
+                window.location.replace(href + fragment);
             } else {
-                var old_path = window.location.pathname + window.location.search;
-                window.location.assign(href);
+                var old_path = ('' + window.location).split('#')[0];
+                window.location.assign(href + fragment);
                 if (old_path == href) {
                     window.location.reload();
                 }
@@ -545,13 +563,13 @@ module.exports.HistoryAndTriggers = {
             request.abort();
         }
 
-        if (options.replace) {
-            window.history.replaceState(window.state, '', href);
-        } else {
-            window.history.pushState(window.state, '', href);
-        }
         if (options.skipRequest) {
-            this.setProps({href: href});
+            if (options.replace) {
+                window.history.replaceState(window.state, '', href + fragment);
+            } else {
+                window.history.pushState(window.state, '', href + fragment);
+            }
+            this.setProps({href: href + fragment});
             return;
         }
 
@@ -566,7 +584,31 @@ module.exports.HistoryAndTriggers = {
         });
 
         var promise = request.then(response => {
-            if (!response.ok) throw response;
+            // navigate normally to URL of unexpected non-JSON response so back button works.
+            if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
+                if (options.replace) {
+                    window.location.replace(href + fragment);
+                } else {
+                    var old_path = ('' + window.location).split('#')[0];
+                    window.location.assign(href + fragment);
+                    if (old_path == href) {
+                        window.location.reload();
+                    }
+                }
+            }
+            // The URL may have redirected
+            var response_url = response.url || href;
+            if (options.replace) {
+                window.history.replaceState(null, '', response_url + fragment);
+            } else {
+                window.history.pushState(null, '', response_url + fragment);
+            }
+            this.setProps({
+                href: response_url + fragment
+            });
+            if (!response.ok) {
+                throw response;
+            }
             return response.json();
         })
         .catch(parseAndLogError.bind(undefined, 'contextRequest'))
@@ -577,8 +619,7 @@ module.exports.HistoryAndTriggers = {
         }
 
         this.setProps({
-            contextRequest: request,
-            href: href
+            contextRequest: request
         });
         return request;
     },

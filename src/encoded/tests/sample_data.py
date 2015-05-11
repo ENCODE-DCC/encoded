@@ -148,17 +148,20 @@ AWARDS = [
         'uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
         'name': 'ENCODE3-DCC',
         'rfa': 'ENCODE3',
+        'project': 'ENCODE',
     },
     {
         'uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
         'name': 'Myers',
         'rfa': 'ENCODE3',
+        'project': 'ENCODE',
 
     },
     {
         'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
         'name': 'ENCODE2',
         'rfa': 'ENCODE2',
+        'project': 'ENCODE',
     }
 ]
 
@@ -166,10 +169,12 @@ BAD_AWARDS = [  # UUID same as one of labs
     {
         'uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
         'name': 'ENCODE3-DCC',
+        'project': 'ENCODE',
     },
     {
         'uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
         'name': 'Myers',
+        'project': 'ENCODE',
     },
 ]
 

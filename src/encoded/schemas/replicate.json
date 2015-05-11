@@ -68,12 +68,14 @@
         "paired_ended": {
             "title": "Paired-end sequencing",
             "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
+            "permission": "import_items",
             "type": "boolean"
         },
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "comment": "When submitting read length, must submit value for read length units.",
+            "permission": "import_items",
             "type": "integer"
         },
         "read_length_units": {
