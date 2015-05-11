@@ -89,6 +89,7 @@ def schema_mapping(name, schema):
         return {
             'type': 'string',
             'include_in_all': False,
+            'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
@@ -102,6 +103,7 @@ def schema_mapping(name, schema):
         return {
             'type': 'float',
             'include_in_all': False,
+            'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
@@ -115,6 +117,7 @@ def schema_mapping(name, schema):
         return {
             'type': 'long',
             'include_in_all': False,
+            'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
@@ -128,6 +131,7 @@ def schema_mapping(name, schema):
         return {
             'type': 'boolean',
             'include_in_all': False,
+            'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
@@ -441,8 +445,6 @@ def type_mapping(types, item_type, embed=True):
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        new_mapping[last]['term_vector'] = 'with_positions_offsets'
-        new_mapping[last]['store'] = True
         del new_mapping[last]['include_in_all']
 
     # Automatic boost for uuid

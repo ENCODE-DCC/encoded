@@ -37,6 +37,7 @@ class Dataset(Item):
         'files.replicate.experiment.lab',
         'files.replicate.experiment.target',
         'files.submitted_by',
+        'files.lab',
         'revoked_files',
         'revoked_files.replicate',
         'revoked_files.replicate.experiment',

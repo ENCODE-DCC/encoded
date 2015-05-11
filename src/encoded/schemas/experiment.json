@@ -108,15 +108,15 @@
             "title": "Biosample treatment",
             "type": "array"
         },
-        "files.file_format": {
+        "files.file_type": {
             "title": "Available data",
             "type": "string"
         },
-        "run_type": {
+        "files.run_type": {
             "title": "Run type",
             "type": "string"
         },
-        "replicates.read_length": {
+        "files.read_length": {
             "title": "Read length (nt)",
             "type": "string"
         },

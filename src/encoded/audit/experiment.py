@@ -69,7 +69,7 @@ def audit_experiment_replicated(value, system):
     '''
     if value['status'] in ['ready for review', 'release ready']:
         if len(value['replicates']) <= 1:
-            detail = 'Experiment {} is unreplicated, at least 2 replicates is typically expected before release'.format(value['accession'])
+            detail = 'Experiment {} is unreplicated, more than one replicate is typically expected before release'.format(value['accession'])
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
@@ -263,7 +263,7 @@ def audit_experiment_control(value, system):
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
             detail = 'Control {} is for {} but experiment is done on {}'.format(
                 control['accession'],
-                control['biosample_term_name'],
+                control.get('biosample_term_name'),
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
@@ -307,37 +307,6 @@ def audit_experiment_ChIP_control(value, system):
                 value['accession'],
                 control['accession'])
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
-
-
-@audit_checker('experiment', frame=['files','files.platform'])
-def audit_experiment_platform(value, system):
-    '''
-    Platform has moved to file.  It is checked for presence there.
-    Here we look for mismatched platforms.
-    We should likely check that the platform is valid for the assay type
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    platforms = set()
-
-    for ff in value['files']:
-        platform = ff.get('platform')
-
-        if ff['file_format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
-            continue
-
-        if platform is None:
-            continue  # This error is caught in file
-        else:
-            platforms.add(platform['@id'])
-
-    if len(platforms) > 1:
-        detail = '{} has mixed values for platform files {}'.format(
-            value['accession'],
-            repr(sorted(platforms)))
-        yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
@@ -463,7 +432,7 @@ def audit_experiment_biosample_term(value, system):
         'replicates.library.biosample',
         'replicates.library.biosample.organism',
     ],
-    condition=rfa('ENCODE3', 'FlyWormChIP'))
+    condition=rfa('ENCODE3', 'modERN'))
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
