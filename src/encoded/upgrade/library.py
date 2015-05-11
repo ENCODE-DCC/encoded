@@ -72,7 +72,7 @@ def library_3_4(value, system):
         elif value['fragmentation_method'] == 'chemical (part of Illumina TruSeq mRNA Kit)':
             value['fragmentation_method'] = 'chemical (Illumina TruSeq)'
         elif value['fragmentation_method'] == 'not applicable':
-            value['fragmentation_method'] = 'N/A'
+            value['fragmentation_method'] = 'n/a'
         elif value['fragmentation_method'] in sonication_generic:
             value['fragmentation_method'] = 'sonication (generic)'
         else:
