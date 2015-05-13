@@ -99,13 +99,13 @@ def audit_item_status(value, system):
             continue
         if linked_value['status'] == 'disabled':
             continue
-        if ( # Spcecial case: A revoked file can have a deleted replicate
-            'file' in value['@type'] &
-            value['status'] == 'revoked' &
-            schema_path == 'replicate' &
+        if (  # Special case: A revoked file can have a deleted replicate ticket #2938
+            'file' in value['@type'] and
+            value['status'] == 'revoked' and
+            'replicate' in linked_value['@type'] and
             linked_value['status'] == 'deleted'
         ):
-        continue 
+            continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
         if linked_level == 0:
             detail = '{} {} has {} subobject {}'.format(
