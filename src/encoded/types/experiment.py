@@ -190,7 +190,12 @@ class Replicate(Item):
     item_type = 'replicate'
     schema = load_schema('replicate.json')
     embedded = [
+        'antibody',
+        'experiment',
         'library',
+        'library.biosample',
+        'library.biosample.donor',
+        'library.biosample.donor.organism',
         'platform',
     ]
 

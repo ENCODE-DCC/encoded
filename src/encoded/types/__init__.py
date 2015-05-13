@@ -30,6 +30,7 @@ class Lab(Item):
     item_type = 'lab'
     schema = load_schema('lab.json')
     name_key = 'name'
+    embedded = ['awards']
 
 
 @collection(
@@ -179,8 +180,12 @@ class Platform(Item):
 class Library(Item):
     item_type = 'library'
     schema = load_schema('library.json')
-    embedded = ['biosample']
     name_key = 'accession'
+    embedded = [
+        'biosample',
+        'biosample.donor',
+        'biosample.donor.organism',
+    ]
 
 
 @collection(
