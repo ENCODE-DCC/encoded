@@ -334,8 +334,10 @@ def search(context, request, search_type=None):
         query['sort'] = get_sort_order()
         query['query']['match_all'] = {}
         del query['query']['query_string']
+        del query['highlight']
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
+        del query['highlight']
 
     # Setting filters
     used_filters = set_filters(request, query, result)
