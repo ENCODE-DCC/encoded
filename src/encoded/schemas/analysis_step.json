@@ -48,6 +48,7 @@
                      "peak calling",
                      "IDR",
                      "alignment",
+                     "replicate concordance",
                      "signal generation",
                      "quantification",
                      "transcript identification",
@@ -120,7 +121,10 @@
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks"
+                    "conserved idr thresholded peaks",
+                    "signal p-value",
+                    "fold change over control",
+                    "replicated peaks"
                 ]
             }
         },
@@ -178,7 +182,10 @@
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks"
+                    "conserved idr thresholded peaks",
+                    "signal p-value",
+                    "fold change over control",
+                    "replicated peaks"
                 ]
             }
         },
