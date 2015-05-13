@@ -281,16 +281,35 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.possible_controls.length ?
+                        {context.possible_controls && context.possible_controls.length ?
                             <div data-test="possible-controls">
                                 <dt>Controls</dt>
                                 <dd>
                                     <ul>
                                         {context.possible_controls.map(function (control) {
                                             return (
-                                                <li key={control['@id']}>
+                                                <li key={control['@id']} className="multi-comma">
                                                     <a href={control['@id']}>
                                                         {control.accession}
+                                                    </a>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </dd>
+                            </div>
+                        : null}
+
+                        {context.control_for && context.control_for.length ?
+                            <div data-test="possible-controls">
+                                <dt>Control for</dt>
+                                <dd>
+                                    <ul>
+                                        {context.control_for.map(function(experiment) {
+                                            return (
+                                                <li key={experiment['@id']} className="multi-comma">
+                                                    <a href={experiment['@id']}>
+                                                        {experiment.accession}
                                                     </a>
                                                 </li>
                                             );
