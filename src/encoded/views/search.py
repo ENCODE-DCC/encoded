@@ -324,14 +324,16 @@ def search(context, request, search_type=None):
     if not result['columns']:
         del result['columns']
 
-    # Sorting the files when search term is not specified and specify highlight
+    # Sorting the files when search term is not specified
     if search_term == '*':
         query['sort'] = get_sort_order()
         query['query']['match_all'] = {}
         del query['query']['query_string']
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-    else:
+
+    # specifying highlight if size is less than equal to 50
+    if size <= 25:
         query['highlight'] = {
             'order': 'score',
             'fields': highlights
