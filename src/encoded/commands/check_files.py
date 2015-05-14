@@ -119,7 +119,7 @@ def check_format(item, path):
         ('gff', None): None
     }
 
-    validate_args = validate_map.get(item['file_format'])
+    validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))
     if validate_args is None:
         return errors
 
