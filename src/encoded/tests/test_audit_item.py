@@ -52,3 +52,15 @@ def test_audit_item_schema_upgrade_validation_failure(testapp, organism):
     assert any(
         error['category'] == 'validation error: status' and error['name'] == 'audit_item_schema'
         for error in errors_list)
+
+
+def test_audit_item_schema_permission(testapp, file, embed_testapp):
+    # Redmine 2915
+    patch = {
+        'file_format': '2bit',
+        'status': 'deleted',
+    }
+    testapp.patch_json(file['@id'], patch)
+    res = embed_testapp.get(file['@id'] + '/@@audit-self')
+    errors_list = res.json['audit']
+    assert not any(error['name'] == 'audit_item_schema' for error in errors_list)
