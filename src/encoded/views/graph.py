@@ -17,13 +17,13 @@ def node(item_type, props):
     for name, prop in items:
         if name == 'uuid' or prop.get('calculatedProperty'):
             continue
-        label = name
+        label = escape(name)
         if 'items' in prop:
             label += ' []'
             prop = prop['items']
         if 'linkTo' in prop:
             label = '<b>' + label + '</b>'
-        yield '  <tr><td PORT={name}>{label}</td></tr>'.format(name=quoteattr(name), label=escape(label))
+        yield '  <tr><td PORT={name}>{label}</td></tr>'.format(name=quoteattr(name), label=label)
     yield '  </table>>];'
 
 

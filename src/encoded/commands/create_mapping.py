@@ -76,6 +76,11 @@ def schema_mapping(name, schema):
                     'ignore_malformed': True,
                     'include_in_all': False,
                     'copy_to': []
+                },
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                    'include_in_all': False
                 }
             }
         }
@@ -84,29 +89,56 @@ def schema_mapping(name, schema):
         return {
             'type': 'string',
             'include_in_all': False,
-            'copy_to': [],
-            'index': 'not_analyzed',
+            'store': True,
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                    'include_in_all': False
+                }
+            }
         }
 
     if type_ == 'number':
         return {
             'type': 'float',
-            'copy_to': [],
-            'include_in_all': False
+            'include_in_all': False,
+            'store': True,
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                    'include_in_all': False
+                }
+            }
         }
 
     if type_ == 'integer':
         return {
             'type': 'long',
-            'copy_to': [],
-            'include_in_all': False
+            'include_in_all': False,
+            'store': True,
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                    'include_in_all': False
+                }
+            }
         }
 
     if type_ == 'boolean':
         return {
             'type': 'boolean',
-            'copy_to': [],
-            'include_in_all': False
+            'include_in_all': False,
+            'store': True,
+            'fields': {
+                'raw': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                    'include_in_all': False
+                }
+            }
         }
 
 
@@ -124,7 +156,7 @@ def index_settings():
                 'analyzer': {
                     'default': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
                         'filter': [
                             'standard',
@@ -133,7 +165,7 @@ def index_settings():
                     },
                     'encoded_index_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
                         'filter': [
                             'standard',
@@ -144,7 +176,7 @@ def index_settings():
                     },
                     'encoded_search_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'standard',
+                        'tokenizer': 'whitespace',
                         'filter': [
                             'standard',
                             'lowercase',
@@ -180,7 +212,9 @@ def audit_mapping():
 def es_mapping(mapping):
     return {
         '_all': {
-            'analyzer': 'encoded_index_analyzer'
+            'enabled': True,
+            'index_analyzer': 'encoded_index_analyzer',
+            'search_analyzer': 'encoded_search_analyzer'
         },
         'dynamic_templates': [
             {
@@ -231,24 +265,6 @@ def es_mapping(mapping):
                 'index': 'not_analyzed'
             },
             'embedded': mapping,
-            'encoded_all_ngram': {
-                'type': 'string',
-                'include_in_all': False,
-                'boost': 1,
-                'search_analyzer': 'encoded_search_analyzer',
-                'index_analyzer': 'encoded_index_analyzer'
-            },
-            'encoded_all_standard': {
-                'type': 'string',
-                'include_in_all': False,
-                'boost': 2
-            },
-            'encoded_all_untouched': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed',
-                'boost': 3
-            },
             'object': {
                 'type': 'object',
                 'enabled': False,
@@ -427,15 +443,13 @@ def type_mapping(types, item_type, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
-
-        new_mapping[last]['boost'] = boost_values[value]
-        new_mapping[last]['copy_to'] = \
-            ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
+        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
+        new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
+        del new_mapping[last]['include_in_all']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
-        mapping['properties']['uuid']['boost'] = 1.0
-        mapping['properties']['uuid']['copy_to'] = ['encoded_all_untouched']
+        mapping['properties']['uuid']['index'] = 'not_analyzed'
     return mapping
 
 

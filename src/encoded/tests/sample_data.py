@@ -148,17 +148,20 @@ AWARDS = [
         'uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
         'name': 'ENCODE3-DCC',
         'rfa': 'ENCODE3',
+        'project': 'ENCODE',
     },
     {
         'uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
         'name': 'Myers',
         'rfa': 'ENCODE3',
+        'project': 'ENCODE',
 
     },
     {
         'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
         'name': 'ENCODE2',
         'rfa': 'ENCODE2',
+        'project': 'ENCODE',
     }
 ]
 
@@ -166,10 +169,12 @@ BAD_AWARDS = [  # UUID same as one of labs
     {
         'uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
         'name': 'ENCODE3-DCC',
+        'project': 'ENCODE',
     },
     {
         'uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
         'name': 'Myers',
+        'project': 'ENCODE',
     },
 ]
 
@@ -328,6 +333,104 @@ FILES = [
     },
 ]
 
+PUBLICATIONS = [
+    {
+        "uuid": '8312fc0c-b241-4cb2-9b01-1438910550ad',
+        "authors": "Li Q, Brown JB, Huang H, Bickel PJ",
+        "date_published": "2011 Oct 21",
+        "issue": "3",
+        "journal": "Annals of Applied Statistics",
+        "page": "1752-1779",
+        "identifiers": [
+            "doi:10.1214/11-AOAS466"
+        ],
+        "status": "published",
+        "title": "Measuring reproducibility of high-throughput experiments",
+        "volume": "5",
+        'lab': 'myers',
+        'award': 'Myers',
+    },
+    {
+        'uuid': '4c0a722c-a4f6-481f-b181-1a5330660d73',
+        "authors": "Venken KJ, Carlson JW, Schulze KL, Pan H, He Y, Spokony R, Wan KH, Koriabine M, de Jong PJ, White KP, Bellen HJ, Hoskins RA",
+        "date_published": "2009 Jun",
+        "issue": "6",
+        "journal": "Nature methods",
+        "page": "431-4",
+        "identifiers": [
+            "PMID:19465919",
+            "PMCID:PMC2784134"
+        ],
+        "status": "published",
+        "title": "Versatile P[acman] BAC libraries for transgenesis studies in Drosophila melanogaster.",
+        "volume": "6",
+        'lab': 'myers',
+        'award': 'Myers',
+    },
+    {
+        'uuid': "b42b2990-fa96-48e2-a2b1-501a1a83a068",
+        "authors": "Robertson G, Hirst M, Bainbridge M, Bilenky M, Zhao Y, Zeng T, Euskirchen G, Bernier B, Varhol R, Delaney A, Thiessen N, Griffith OL, He A, Marra M, Snyder M, Jones S",
+        "date_published": "2007 Aug",
+        "issue": "8",
+        "journal": "Nature methods",
+        "page": "651-7",
+        "identifiers": [
+            "doi:10.1038/nmeth1068",
+            "PMID:17558387"
+        ],
+        "status": "published",
+        "title": "Genome-wide profiles of STAT1 DNA association using chromatin immunoprecipitation and massively parallel sequencing.",
+        "volume": "4",
+        'lab': 'myers',
+        'award': 'Myers',
+    },
+    {
+        "uuid": "719ee795-ba05-48ab-93ea-0c07100bc92e",
+        "authors": "Hirsch HA, Iliopoulos D, Tsichlis PN, Struhl K",
+        "date_published": "2009 Oct 1",
+        "issue": "19",
+        "journal": "Cancer research",
+        "page": "7507-11",
+        "identifiers": [
+            "doi:10.1158/0008-5472.CAN-09-2994",
+            "PMID:19752085",
+            "PMCID:PMC2756324"
+        ],
+        "status": "published",
+        "title": "Metformin selectively targets cancer stem cells, and acts together with chemotherapy to block tumor growth and prolong remission.",
+        "volume": "69",
+        'lab': 'myers',
+        'award': 'Myers',
+    }
+]
+
+DOCUMENTS = [
+    {
+        'uuid': 'f7b7b690-919b-4e87-bec2-58b5bb76418b',
+        'lab': 'myers',
+        'award': 'Myers',
+        'document_type': 'growth protocol',
+    }
+]
+
+BIOSAMPLE_CHARACTERIZATIONS = [
+    {
+        'uuid': 'ccd9c90b-fe51-41ce-9885-818d261c745a',
+        'characterizes': '7c245cea-7d59-45fb-9ebe-f0454c5fe950',
+        'lab': 'myers',
+        'award': 'Myers',
+        'attachment': {'download': 'red-dot.png', 'href': RED_DOT},
+    },
+]
+
+MOUSE_DONORS = [
+    {
+        'uuid': '6d36247e-1f64-4e72-b8cb-7b6cce827635',
+        'lab': 'myers',
+        'award': 'Myers',
+        'organism': '3413218c-3d86-498b-a0a2-9a406638e786',
+    }
+]
 
 URL_COLLECTION = OrderedDict([
     ('lab', LABS),
@@ -347,6 +450,10 @@ URL_COLLECTION = OrderedDict([
     ('rnai', RNAIS),
     ('construct', CONSTRUCTS),
     ('file', FILES),
+    ('publication', PUBLICATIONS),
+    ('document', DOCUMENTS),
+    ('biosample_characterization', BIOSAMPLE_CHARACTERIZATIONS),
+    ('mouse_donor', MOUSE_DONORS),
 ])
 
 

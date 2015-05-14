@@ -14,8 +14,8 @@ def biosample(submitter, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_depleted_in(biosample):
-    item = biosample.copy()
+def biosample_depleted_in(mouse_biosample):
+    item = mouse_biosample.copy()
     item.update({
         'depleted_in_term_name': ['head'],
         'depleted_in_term_id': ["UBERON:0000033"],
@@ -29,6 +29,15 @@ def biosample_starting_amount(biosample):
     item = biosample.copy()
     item.update({
         'starting_amount': 'unknown'
+    })
+    return item
+
+
+@pytest.fixture
+def mouse_biosample(biosample, mouse):
+    item = biosample.copy()
+    item.update({
+        'organism': mouse['uuid']
     })
     return item
 
@@ -53,4 +62,14 @@ def test_biosample_starting_amount(testapp, biosample_starting_amount):
 
 def test_biosample_transfection_method(testapp, biosample):
     biosample['transfection_method'] = 'transduction'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_mouse_life_stage(testapp, mouse_biosample):
+    mouse_biosample['mouse_life_stage'] = 'adult'
+    testapp.post_json('/biosample', mouse_biosample)
+
+
+def test_biosample_mouse_life_stage_fail(testapp, biosample):
+    biosample['mouse_life_stage'] = 'adult'
     testapp.post_json('/biosample', biosample, status=422)

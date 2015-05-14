@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def biosample(submitter, lab, award, source, organism):
+def biosample_0(submitter, lab, award, source, organism):
     return {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
@@ -14,8 +14,8 @@ def biosample(submitter, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_1(biosample):
-    item = biosample.copy()
+def biosample_1(biosample_0):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '1',
         'starting_amount': '1000',
@@ -24,8 +24,8 @@ def biosample_1(biosample):
 
 
 @pytest.fixture
-def biosample_2(biosample):
-    item = biosample.copy()
+def biosample_2(biosample_0):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '2',
         'subcellular_fraction': 'nucleus',
@@ -34,8 +34,8 @@ def biosample_2(biosample):
 
 
 @pytest.fixture
-def biosample_3(biosample, biosamples):
-    item = biosample.copy()
+def biosample_3(biosample_0, biosamples):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '3',
         'derived_from': [biosamples[0]['uuid']],
@@ -46,8 +46,8 @@ def biosample_3(biosample, biosamples):
 
 
 @pytest.fixture
-def biosample_4(biosample, biosamples):
-    item = biosample.copy()
+def biosample_4(biosample_0, biosamples):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '4',
         'status': 'CURRENT',
@@ -57,8 +57,8 @@ def biosample_4(biosample, biosamples):
 
 
 @pytest.fixture
-def biosample_6(biosample, biosamples):
-    item = biosample.copy()
+def biosample_6(biosample_0, biosamples):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '5',
         'sex': 'male',
@@ -71,8 +71,8 @@ def biosample_6(biosample, biosamples):
     return item
 
 @pytest.fixture
-def biosample_7(biosample):
-    item = biosample.copy()
+def biosample_7(biosample_0):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '7',
         'worm_life_stage': 'embryonic',
@@ -81,8 +81,8 @@ def biosample_7(biosample):
 
 
 @pytest.fixture
-def biosample_8(biosample):
-    item = biosample.copy()
+def biosample_8(biosample_0):
+    item = biosample_0.copy()
     item.update({
         'schema_version': '8',
         'model_organism_age': '15.0',
@@ -92,13 +92,25 @@ def biosample_8(biosample):
 
 
 @pytest.fixture
-def biosample_9(biosample):
-    item = biosample.copy()
-    item.update({
+def biosample_9(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
         'schema_version': '9',
         'references': ["PMID:19465919"]
     })
-    return item
+    return properties
+
+
+@pytest.fixture
+def biosample_10(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'worm_synchronization_stage': 'starved L1 larva'
+    })
+    return properties
 
 
 def test_biosample_upgrade(app, biosample_1):
@@ -293,8 +305,20 @@ def test_biosample_age_pattern(app, biosample_8):
     assert value['model_organism_age'] == '15-16'
 
 
-def test_biosample_references(app, biosample_9):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_9, target_version='10')
+def test_biosample_references(root, registry, biosample,  biosample_9, publications, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('biosample', biosample_9, target_version='10', context=context)
     assert value['schema_version'] == '10'
-    assert value['references'] ==  ['4c0a722c-a4f6-481f-b181-1a5330660d73']
+    assert value['references'] == [publications[1]['uuid']]
+
+
+def test_biosample_worm_synch_stage(root, registry, biosample, biosample_10, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    biosample_10['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
+    value = migrator.upgrade('biosample', biosample_10, target_version='11', context=context)
+    assert value['schema_version'] == '11'
+    assert value['worm_synchronization_stage'] == 'L1 larva starved after bleaching'

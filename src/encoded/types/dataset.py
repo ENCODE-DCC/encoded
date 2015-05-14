@@ -37,6 +37,7 @@ class Dataset(Item):
         'files.replicate.experiment.lab',
         'files.replicate.experiment.target',
         'files.submitted_by',
+        'files.lab',
         'revoked_files',
         'revoked_files.replicate',
         'revoked_files.replicate.experiment',
@@ -54,7 +55,7 @@ class Dataset(Item):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
-         'references'
+        'references'
     ]
     audit_inherit = [
         'original_files',

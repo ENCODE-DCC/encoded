@@ -31,10 +31,14 @@ with open(path, 'rb') as f:
 
 data = {
     "dataset": "ENCSR000ACY",
+    "replicate": "/replicates/6e85c807-684a-46e3-b4b9-1f7990e85720/",
     "file_format": "fastq",
     "file_size": os.path.getsize(path),
     "md5sum": md5sum.hexdigest(),
-    "output_type": "raw data",
+    "output_type": "reads",
+    "read_length": 101,
+    "run_type": "single-ended",
+    "platform": "ENCODE:HiSeq2000",
     "submitted_file_name": path,
     "lab": my_lab,
     "award": my_award
@@ -48,14 +52,6 @@ gzip_types = [
     "CEL",
     "bam",
     "bed",
-    "bed_bed3",
-    "bed_bed6",
-    "bed_bedLogR",
-    "bed_bedMethyl",
-    "bed_bedRnaElements",
-    "bed_broadPeak",
-    "bed_narrowPeak",
-    "bed_peptideMapping",
     "csfasta",
     "csqual",
     "fasta",
@@ -76,37 +72,40 @@ else:
 
 chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 validate_map = {
-    'bam': ['-type=bam', chromInfo],
-    'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
-    'bedLogR': ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
-    'bed_bedLogR': ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
-    'bedMethyl': ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
-    'bed_bedMethyl': ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
-    'bigBed': ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
-    'bigWig': ['-type=bigWig', chromInfo],
-    'broadPeak': ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
-    'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
-    'fasta': ['-type=fasta'],
-    'fastq': ['-type=fastq'],
-    'gtf': None,
-    'idat': ['-type=idat'],
-    'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
-    'bed_narrowPeak': ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
-    'rcc': ['-type=rcc'],
-    'tar': None,
-    'tsv': None,
-    '2bit': None,
-    'csfasta': ['-type=csfasta'],
-    'csqual': ['-type=csqual'],
-    'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
-    'CEL': None,
-    'sam': None,
-    'wig': None,
-    'hdf5': None,
-    'gff': None
+    ('bam', None): ['-type=bam', chromInfo],
+    ('bed', 'bed6'): ['-type=bed3+', chromInfo],  # if this fails we will drop to bed3+
+    ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    ('bigBed', 'bedMethyl'): ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    ('bigBed', 'bed6'): ['-type=bigBed3+', chromInfo],  # if this fails we will drop to bigBed3+
+    ('bigWig', None): ['-type=bigWig', chromInfo],
+    ('bigBed', 'broadPeak'): ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    ('bed', 'broadPeak'): ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    ('fasta', None): ['-type=fasta'],
+    ('fastq', None): ['-type=fastq'],
+    ('bigBed', 'gappedPeak'): ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+    ('bed', 'gappedPeak'): ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+    ('gtf', None): None,
+    ('idat', None): ['-type=idat'],
+    ('bigBed', 'narrowPeak'): ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    ('bed', 'narrowPeak'): ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    ('rcc', None): ['-type=rcc'],
+    ('tar', None): None,
+    ('tsv', None): None,
+    ('csv', None): None,
+    ('2bit', None): None,
+    ('csfasta', None): ['-type=csfasta'],
+    ('csqual', None): ['-type=csqual'],
+    ('bigBed', 'bedRnaElements'): ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
+    ('CEL', None): None,
+    ('sam', None): None,
+    ('wig', None): None,
+    ('hdf5', None): None,
+    ('gff', None): None
 }
 
-validate_args = validate_map.get(data['file_format'])
+validate_args = validate_map.get((data['file_format'], data.get('file_format_type')))
 if validate_args is not None:
     print("Validating file.")
     try:

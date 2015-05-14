@@ -61,7 +61,11 @@ def includeme(config):
             [registry.settings['elasticsearch.server']],
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
+<<<<<<< HEAD
             timeout=30,
+=======
+            retry_on_timeout=True,
+>>>>>>> origin/master
         )
         registry[ELASTIC_SEARCH] = es
         registry[INDEXER] = Indexer(registry)
@@ -261,6 +265,7 @@ class Indexer(object):
             self.es.index(
                 index=INDEX, doc_type=doctype, body=result,
                 id=str(uuid), version=xmin, version_type='external_gte',
+                request_timeout=30,
             )
         except StatementError:
             # Can't reconnect until invalid transaction is rolled back

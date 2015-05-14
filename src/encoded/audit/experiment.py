@@ -49,12 +49,6 @@ non_seq_assays = [
     '5C',
     ]
 
-paired_end_assays = [
-    'RNA-PET',
-    'ChIA-PET',
-    'DNA-PET',
-    ]
-
 
 @audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):
@@ -65,6 +59,18 @@ def audit_experiment_release_date(value, system):
     if value['status'] == 'released' and 'date_released' not in value:
         detail = 'Experiment {} is released and requires a value in date_released'.format(value['accession'])
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
+
+
+@audit_checker('experiment', frame=['replicates'])
+def audit_experiment_replicated(value, system):
+    '''
+    Experiments in ready for review or release ready state should be replicated. If not,
+    wranglers should check with lab as to why before release.
+    '''
+    if value['status'] in ['ready for review', 'release ready']:
+        if len(value['replicates']) <= 1:
+            detail = 'Experiment {} is unreplicated, more than one replicate is typically expected before release'.format(value['accession'])
+            raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
 @audit_checker('experiment', frame='object')
@@ -257,7 +263,7 @@ def audit_experiment_control(value, system):
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
             detail = 'Control {} is for {} but experiment is done on {}'.format(
                 control['accession'],
-                control['biosample_term_name'],
+                control.get('biosample_term_name'),
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
 
@@ -301,37 +307,6 @@ def audit_experiment_ChIP_control(value, system):
                 value['accession'],
                 control['accession'])
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
-
-
-@audit_checker('experiment', frame=['files','files.platform'])
-def audit_experiment_platform(value, system):
-    '''
-    Platform has moved to file.  It is checked for presence there.
-    Here we look for mismatched platforms.
-    We should likely check that the platform is valid for the assay type
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    platforms = set()
-
-    for ff in value['files']:
-        platform = ff.get('platform')
-
-        if ff['file_format'] not in ['rcc', 'fasta', 'fastq', 'csqual', 'csfasta']:
-            continue
-
-        if platform is None:
-            continue  # This error is caught in file
-        else:
-            platforms.add(platform['@id'])
-
-    if len(platforms) > 1:
-        detail = '{} has mixed values for platform files {}'.format(
-            value['accession'],
-            repr(sorted(platforms)))
-        yield AuditFailure('mismatched platform', detail, level='WARNING')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
@@ -446,41 +421,6 @@ def audit_experiment_biosample_term(value, system):
             yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame='embedded')
-def audit_experiment_paired_end(value, system):
-    '''
-    This check should move entirely to the file level
-    If two replicates do not match, that is a warning.
-    '''
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    term_name = value.get('assay_term_name')
-
-    if (term_name in non_seq_assays) or (term_name is None):
-        return
-
-    reps_list = []
-
-    for rep in value['replicates']:
-
-        rep_paired_ended = rep.get('paired_ended')
-        if rep_paired_ended is not None:
-            reps_list.append(rep_paired_ended)
-
-        if rep_paired_ended is None:
-            detail = 'Replicate {} is missing value for paired_ended'.format(rep['uuid'])
-            yield AuditFailure('missing replicate.paired_ended', detail, level='ERROR')
-
-        if (rep_paired_ended is False) and (term_name in paired_end_assays):
-            detail = '{} experiments require paired end replicates. {}.paired_ended is False'.format(
-                term_name,
-                rep['uuid']
-                )
-            yield AuditFailure('paired end required for assay', detail, level='ERROR')
-
-
 @audit_checker(
     'experiment',
     frame=[
@@ -492,7 +432,7 @@ def audit_experiment_paired_end(value, system):
         'replicates.library.biosample',
         'replicates.library.biosample.organism',
     ],
-    condition=rfa('ENCODE3', 'FlyWormChIP'))
+    condition=rfa('ENCODE3', 'modERN'))
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 

@@ -74,7 +74,7 @@ def file1(file_exp, award, lab, file_rep, file2, testapp):
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'raw data',
+        'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released',
@@ -90,7 +90,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8c998f11b204e9800998ecf8427e',
-        'output_type': 'raw data',
+        'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
