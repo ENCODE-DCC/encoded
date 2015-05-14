@@ -114,8 +114,7 @@
         }
     },
     "boost_values": {
-        "first_name": 1.0,
-        "last_name": 1.0,
+        "title": 1.0,
         "lab": 1.0
     }
 }
