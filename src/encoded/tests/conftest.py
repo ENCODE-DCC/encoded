@@ -751,6 +751,17 @@ def publication(publications):
 
 
 @pytest.fixture
+def pipelines(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'pipeline')
+
+
+@pytest.fixture
+def pipeline(pipelines):
+    return pipelines[0]
+
+
+@pytest.fixture
 def documents(testapp, labs, awards):
     from . import sample_data
     return sample_data.load(testapp, 'document')
