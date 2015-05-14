@@ -47,7 +47,7 @@ def parse_restriction(value):
     return value
 
 
-def run(testapp, method, path, data, warm_ups, filename, sortby, stats, callers, callees):
+def run(testapp, method, path, data, warm_ups, filename, sortby, stats, callers, callees, response_body):
     method = method.lower()
     if method == 'get':
         fn = lambda: testapp.get(path)
@@ -61,6 +61,8 @@ def run(testapp, method, path, data, warm_ups, filename, sortby, stats, callers,
     res = fn()
     pr.disable()
     logger.info('Run:\n\t%s', res.headers['X-Stats'].replace('&', '\n\t'))
+    if response_body:
+        print(res.text)
     pr.create_stats()
     ps = pstats.Stats(pr).sort_stats(sortby)
     if stats:
@@ -85,6 +87,7 @@ def main():
     parser.add_argument('--caller', default=[], action='append', help="print_callers restrictions")
     parser.add_argument('--callee', default=[], action='append', help="print_callees restrictions")
     parser.add_argument('--sortby', default='time', help="profile sortby")
+    parser.add_argument('--response-body', action='store_true', help="Print response body")
     parser.add_argument('--method', default='GET', help="HTTP method")
     parser.add_argument('--data', help="json request body")
     parser.add_argument(
@@ -104,7 +107,7 @@ def main():
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
     run(testapp, args.method, args.path, args.data, args.warm_ups, args.filename, args.sortby,
-        args.stat, args.caller, args.callee)
+        args.stat, args.caller, args.callee, args.response_body)
 
 
 if __name__ == '__main__':
