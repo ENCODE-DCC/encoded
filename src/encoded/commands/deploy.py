@@ -42,7 +42,7 @@ def run(wale_s3_prefix, image_id, instance_type,
         sys.exit(1)
 
     bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=40)
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=60)
     # Don't attach instance storage so we can support auto recovery
     bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
