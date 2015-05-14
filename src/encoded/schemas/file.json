@@ -124,12 +124,27 @@
             ]
         }
     },
+    "oneOf": [
+        {
+            "required": ["accession"]
+        },
+        {
+            "required": ["external_accession"]
+        }
+    ],
     "properties": {
         "schema_version": {
             "default": "5"
         },
         "accession": {
             "accessionType": "FF"
+        },
+        "external_accession": {
+            "title": "External accession",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": "accession"
         },
         "file_format": {
             "title": "File format",

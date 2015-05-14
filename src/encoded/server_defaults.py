@@ -30,7 +30,7 @@ def includeme(config):
 
 
 @server_default
-def userid(property, subschema):
+def userid(instance, subschema):
     request = get_current_request()
     principals = effective_principals(request)
     for principal in principals:
@@ -40,18 +40,20 @@ def userid(property, subschema):
 
 
 @server_default
-def now(property, subschema):
+def now(instance, subschema):
     # jsonschema date-time format requires a timezone
     return datetime.utcnow().isoformat() + '+00:00'
 
 
 @server_default
-def uuid4(property, subschema):
+def uuid4(instance, subschema):
     return str(uuid.uuid4())
 
 
 @server_default
-def accession(property, subschema):
+def accession(instance, subschema):
+    if 'external_accession' in instance:
+        return NO_DEFAULT
     request = get_current_request()
     factory = request.registry[ACCESSION_FACTORY]
     # With 17 576 000 options
