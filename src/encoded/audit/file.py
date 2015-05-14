@@ -104,7 +104,7 @@ def audit_file_controlled_by(value, system):
 
     if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
         detail = 'Fastq file {} from {} requires controlled_by'.format(
-            value['accession'],
+            value['@id'],
             value['dataset']['assay_term_name']
             )
         raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')

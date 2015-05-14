@@ -219,7 +219,7 @@ def audit_experiment_target(value, system):
                     if prefix not in unique_antibody_target:
                         detail = '{} is not found in target for {}'.format(
                             prefix,
-                            antibody['accession']
+                            antibody['@id']
                             )
                         yield AuditFailure('mismatched tag target', detail, level='ERROR')
             else:

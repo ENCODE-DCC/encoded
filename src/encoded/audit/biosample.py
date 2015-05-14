@@ -30,7 +30,7 @@ term_mapping = {
 }
 
 
-@audit_checker('biosample', frame='object')
+audit_checker('biosample', frame='object')
 def audit_biosample_term(value, system):
     '''
     Biosample_term_id and biosample_term_name
@@ -109,7 +109,7 @@ def audit_biosample_donor(value, system):
         return
 
     if ('donor' not in value) and (not value['pooled_from']):
-        detail = 'Biosample {} requires a donor'.format(value['accession'])
+        detail = 'Biosample {} requires a donor'.format(value['@id'])
         raise AuditFailure('missing donor', detail, level='ERROR')
         return
 
@@ -177,7 +177,7 @@ def audit_biosample_depleted_term_match(value, system):
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
-            value['accession'])
+            value['@id'])
         raise AuditFailure('mismatched depleted_in_term length', detail, level='ERROR')
         return
 

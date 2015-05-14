@@ -73,7 +73,7 @@ def audit_library_RNA_size_range(value, system):
     RNAs = ['SO:0000356', 'SO:0000871']
 
     if (value['nucleic_acid_term_id'] in RNAs) and ('size_range' not in value):
-        detail = 'RNA library {} requires a value for size_range'.format(value['accession'])
+        detail = 'RNA library {} requires a value for size_range'.format(value['@id'])
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
 
