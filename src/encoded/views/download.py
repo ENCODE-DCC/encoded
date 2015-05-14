@@ -179,6 +179,6 @@ def batch_download(context, request):
                 ))
     return Response(
         content_type='text/plain',
-        body='\n'.join(files),
+        body='\r\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
