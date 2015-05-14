@@ -30,7 +30,7 @@ term_mapping = {
 }
 
 
-audit_checker('biosample', frame='object')
+@audit_checker('biosample', frame='object')
 def audit_biosample_term(value, system):
     '''
     Biosample_term_id and biosample_term_name
