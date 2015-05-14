@@ -297,7 +297,10 @@
                         "methyl CG",
                         "methyl CHG",
                         "methyl CHH",
-                        "enhancer validation"
+                        "enhancer validation",
+                        "signal p-value",
+                        "fold change over control",
+                        "replicated peaks"
                     ]
                 },
                 {
