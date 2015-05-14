@@ -52,7 +52,7 @@ class Experiment(Dataset):
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
         'replicates.library.biosample.organism',
-        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.rnais',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
@@ -61,7 +61,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
-         'references'
+        'references',
     ]
     audit_inherit = [
         'original_files',
