@@ -1,4 +1,6 @@
 from ..contentbase import (
+    AfterModified,
+    BeforeModified,
     calculated_property,
     collection,
 )
@@ -140,7 +142,7 @@ class File(Item):
         "enum": [
             "nt"
         ]
-        })
+    })
     def read_length_units(self, read_length=None):
         if read_length is not None:
             return "nt"
@@ -196,6 +198,16 @@ class File(Item):
     def qc_metrics(self, request, qc_metrics):
         return paths_filtered_by_status(request, qc_metrics)
 
+    @calculated_property(schema={
+        "title": "File type",
+        "type": "string"
+    })
+    def file_type(self, file_format, file_format_type=None):
+        if file_format_type is None:
+            return file_format
+        else:
+            return file_format + ' ' + file_format_type
+
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
         if properties.get('status') == 'uploading':
@@ -244,7 +256,12 @@ def post_upload(context, request):
     name = 'up{time:.6f}-{accession}'.format(
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
+
+    registry = request.registry
+    registry.notify(BeforeModified(context, request))
     context.update(None, {'external': creds})
+    registry.notify(AfterModified(context, request))
+
     rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',

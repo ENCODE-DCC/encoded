@@ -171,18 +171,6 @@ class Experiment(Dataset):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
     @calculated_property(schema={
-        "title": "Run type",
-        "type": "string",
-    })
-    def run_type(self, request, replicates):
-        for replicate in replicates:
-            properties = request.embed(replicate, '@@object')
-            if properties.get('status') in ('deleted', 'replaced'):
-                continue
-            if 'paired_ended' in properties:
-                return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
-
-    @calculated_property(schema={
         "title": "Replicates",
         "type": "array",
         "items": {
