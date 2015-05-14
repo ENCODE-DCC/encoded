@@ -24,7 +24,7 @@ audit_facets = [
 ]
 
 
-def get_filtered_query(term, search_fields, result_fields, highlights, principals):
+def get_filtered_query(term, search_fields, result_fields, principals):
     return {
         'query': {
             'query_string': {
@@ -43,10 +43,6 @@ def get_filtered_query(term, search_fields, result_fields, highlights, principal
                     }
                 ]
             }
-        },
-        'highlight': {
-            'order': 'score',
-            'fields': highlights
         },
         'aggs': {},
         '_source': list(result_fields),
@@ -323,21 +319,23 @@ def search(context, request, search_type=None):
     query = get_filtered_query(search_term,
                                search_fields,
                                sorted(load_columns(request, doc_types, result)),
-                               highlights,
                                principals)
 
     if not result['columns']:
         del result['columns']
 
-    # Sorting the files when search term is not specified
+    # Sorting the files when search term is not specified and specify highlight
     if search_term == '*':
         query['sort'] = get_sort_order()
         query['query']['match_all'] = {}
         del query['query']['query_string']
-        del query['highlight']
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-        del query['highlight']
+    else:
+        query['highlight'] = {
+            'order': 'score',
+            'fields': highlights
+        }
 
     # Setting filters
     used_filters = set_filters(request, query, result)
