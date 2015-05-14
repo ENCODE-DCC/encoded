@@ -61,13 +61,14 @@ class Biosample(Item):
         'characterizations.submitted_by',
         'characterizations.award',
         'characterizations.lab',
+        'rnais',
         'rnais.target.organism',
         'rnais.source',
         'rnais.documents.submitted_by',
         'rnais.documents.award',
         'rnais.documents.lab',
         'organism',
-         'references'
+        'references',
     ]
 
     @calculated_property(condition='biosample_term_id', schema={

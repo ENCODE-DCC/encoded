@@ -37,7 +37,8 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['view']),
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    # Avoid schema validation errors during audit
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
