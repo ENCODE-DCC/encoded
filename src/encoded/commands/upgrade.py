@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
+    'analysis_step',
+    'biosample',
+    'file',
     'library',
 ]
 
