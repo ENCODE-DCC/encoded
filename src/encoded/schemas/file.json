@@ -45,6 +45,11 @@
         }
     },
     "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -124,14 +129,6 @@
             ]
         }
     },
-    "oneOf": [
-        {
-            "required": ["accession"]
-        },
-        {
-            "required": ["external_accession"]
-        }
-    ],
     "properties": {
         "schema_version": {
             "default": "5"
