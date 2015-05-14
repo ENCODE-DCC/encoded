@@ -5,6 +5,7 @@ from ..contentbase import (
     collection,
     calculated_property,
 )
+from .download import ItemWithAttachment
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -72,7 +73,7 @@ class StarQcMetric(QualityMetric):
         'title': "FastQC mapping quality metrics",
         'description': 'A set of QC metrics from FastQC',
     })
-class FastqcQcMetric(QualityMetric):
+class FastqcQcMetric(QualityMetric, ItemWithAttachment):
     item_type = 'fastqc_qc_metric'
     schema = load_schema('fastqc_qc_metric.json')
 
