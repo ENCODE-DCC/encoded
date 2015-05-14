@@ -40,9 +40,9 @@ def audit_file_replicate_match(value, system):
 
     if rep_exp != file_exp:
         detail = 'File {} has a replicate {} in experiment {}'.format(
-            value['accession'],
-            value['replicate']['uuid'],
-            value['replicate']['experiment']['accession'])
+            value['@id'],
+            value['replicate']['@id'],
+            value['replicate']['experiment']['@id'])
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
@@ -60,7 +60,7 @@ def audit_file_platform(value, system):
         return
 
     if 'platform' not in value:
-        detail = 'Raw data file {} missing platform information'.format(value['accession'])
+        detail = 'Raw data file {} missing platform information'.format(value['@id'])
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
@@ -77,7 +77,7 @@ def audit_file_read_length(value, system):
         return
 
     if 'read_length' not in value:
-        detail = 'Reads file {} missing read_length'.format(value['accession'])
+        detail = 'Reads file {} missing read_length'.format(value['@id'])
         raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
 
 
@@ -117,26 +117,26 @@ def audit_file_controlled_by(value, system):
 
         if control_bs != biosample:
             detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
-                value['accession'],
-                ff['accession'],
+                value['@id'],
+                ff['@id'],
                 control_bs)
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
             return
 
         if ff['file_format'] != value['file_format']:
             detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
-                value['accession'],
+                value['@id'],
                 value['file_format'],
-                ff['accession'],
+                ff['@id'],
                 ff['file_format']
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
 
         if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
             detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
-                value['accession'],
-                ff['accession'],
-                ff['dataset']['accession']
+                value['@id'],
+                ff['@id'],
+                ff['dataset']['@id']
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
 
@@ -155,7 +155,7 @@ def audit_file_flowcells(value, system):
         return
 
     if 'flowcell_details' not in value or (value['flowcell_details'] == []):
-        detail = 'Fastq file {} is missing flowcell_details'.format(value['accession'])
+        detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
@@ -179,7 +179,7 @@ def audit_paired_with(value, system):
         paired_with = context.get_rev_links('paired_with')
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
-                value['accession'],
+                value['@id'],
                 paired_with,
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
@@ -187,7 +187,7 @@ def audit_paired_with(value, system):
 
     if 'paired_with' not in value:
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
-            value['accession'],
+            value['@id'],
             value['paired_end'])
         raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
@@ -201,7 +201,7 @@ def audit_file_size(value, system):
         return
 
     if 'file_size' not in value:
-        detail = 'File {} requires a value for file_size'.format(value['accession'])
+        detail = 'File {} requires a value for file_size'.format(value['@id'])
         raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
@@ -211,8 +211,8 @@ def audit_file_format_specifications(value, system):
     for doc in value.get('file_format_specifications', []):
         if doc['document_type'] != "file format specification":
             detail = 'File {} has document {} not of type file format specification'.format(
-                value['accession'],
-                doc['uuid']
+                value['@id'],
+                doc['@id']
                 )
             raise AuditFailure('wrong document_type', detail, level='ERROR')
 
@@ -238,6 +238,6 @@ def audit_file_output_type(value, system):
     # if value['dataset']['award']['rfa'] != 'ENCODE3':
     if value['output_type'] in undesirable_output_type:
             detail = 'File {} has output_type "{}" which is not a standard value'.format(
-                value['accession'],
+                value['@id'],
                 value['output_type'])
             raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')

@@ -52,21 +52,21 @@ def audit_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = 'Biosample {} has a New Term Request {} - {}'.format(
-            value['accession'],
+            value['@id'],
             term_id,
             term_name)
         raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
-            value['accession'],
+            value['@id'],
             term_id)
         raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = 'Biosample {} has a mismatch between biosample_term_id "{}" and biosample_term_name "{}"'.format(
-            value['accession'],
+            value['@id'],
             term_id,
             term_name,
             )
@@ -89,7 +89,7 @@ def audit_biosample_culture_date(value, system):
 
     if value['culture_harvest_date'] <= value['culture_start_date']:
         detail = 'Biosample {} has a culture_harvest_date {} which precedes the culture_start_date {}'.format(
-            value['accession'],
+            value['@id'],
             value['culture_harvest_date'],
             value['culture_start_date'])
         raise AuditFailure('invalid dates', detail, level='ERROR')
@@ -116,9 +116,9 @@ def audit_biosample_donor(value, system):
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
         detail = 'Biosample {} is organism {}, yet its donor {} is organism {}. Biosamples require a donor of the same species'.format(
-            value['accession'],
+            value['@id'],
             value['organism']['name'],
-            donor['accession'],
+            donor['@id'],
             donor['organism']['name'])
         raise AuditFailure('mismatched organism', detail, level='ERROR')
 
@@ -127,16 +127,16 @@ def audit_biosample_donor(value, system):
 
     if value['organism']['name'] != donor['mutated_gene']['organism']['name']:
         detail = 'Biosample {} is organism {}, but its donor {} mutated_gene is in {}. Donor mutated_gene should be of the same species as the donor and biosample'.format(
-            value['accession'],
+            value['@id'],
             value['organism']['name'],
-            donor['accession'],
+            donor['@id'],
             donor['mutated_gene']['organism']['name'])
         raise AuditFailure('mismatched mutated_gene organism', detail, level='ERROR')
 
     for i in donor['mutated_gene']['investigated_as']:
         if i in ['histone modification', 'tag', 'control', 'recombinant protein', 'nucleotide modification', 'other post-translational modification']:
             detail = 'Donor {} has an invalid mutated_gene {}. Donor mutated_genes should not be tags, controls, recombinant proteins or modifications'.format(
-                donor['accession'],
+                donor['@id'],
                 donor['mutated_gene']['name'])
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
 
@@ -156,7 +156,7 @@ def audit_biosample_subcellular_term_match(value, system):
     expected_name = term_mapping[value['subcellular_fraction_term_name']]
     if expected_name != (value['subcellular_fraction_term_id']):
         detail = 'Biosample {} has a mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
-            value['accession'],
+            value['@id'],
             value['subcellular_fraction_term_name'],
             value['subcellular_fraction_term_id'])
         raise AuditFailure('mismatched subcellular_fraction_term', detail, level='ERROR')
@@ -184,7 +184,7 @@ def audit_biosample_depleted_term_match(value, system):
     for i, dep_term in enumerate(value['depleted_in_term_name']):
         if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
             detail = 'Biosample {} has a mismatch between {} and {}'.format(
-                value['accession'],
+                value['@id'],
                 dep_term,
                 value['depleted_in_term_id'][i])
             raise AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
@@ -200,9 +200,9 @@ def audit_biosample_transfection_type(value, system):
         return
 
     if (value['rnais']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['accession'])
+        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['@id'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
     if (value['constructs']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['accession'])
+        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')

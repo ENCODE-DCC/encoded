@@ -28,7 +28,7 @@ def audit_library_nucleic_acid(value, system):
     expected = moleculeDict[value['nucleic_acid_term_name']]
     if expected != value['nucleic_acid_term_id']:
         detail = 'Library {} has nucleic_acid_term_name "{}" and nucleic_acid_term_id "{}". However {} is {}'.format(
-            value['accession'],
+            value['@id'],
             value['nucleic_acid_term_name'],
             value['nucleic_acid_term_id'],
             value['nucleic_acid_term_id'],
@@ -55,7 +55,7 @@ def audit_library_documents(value, system):
     for method in list_of_methods:
         if value.get(method) == "see document" and value['documents'] == []:
             detail = 'Library {} method specifies "see document" yet has no document'.format(
-                value['accession']
+                value['@id']
                 )
             raise AuditFailure('missing documents', detail, level='WARNING')
 
@@ -94,13 +94,13 @@ def audit_library_depleted_in(value, system):
 
     if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
         detail = 'Library {} has depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
-            value['accession'])
+            value['@id'])
         yield AuditFailure('depleted_in length mismatch', detail, level='ERROR')
 
     for i, dep_term in enumerate(value['depleted_in_term_id']):
         if dep_term == value['nucleic_acid_term_id']:
             detail = 'Library {} of type {} cannot be depleted in {}'.format(
-                value['accession'],
+                value['@id'],
                 value['nucleic_acid_term_id'],
                 value['depleted_in_term_id'][i])
             yield AuditFailure('invalid depleted_in_term_id', detail, level='ERROR')
@@ -108,7 +108,7 @@ def audit_library_depleted_in(value, system):
         expected = moleculeDict[value['depleted_in_term_name'][i]]
         if expected != value['depleted_in_term_id'][i]:
             detail = 'Library {} has mismatch between {} - {}'.format(
-                value['accession'],
+                value['@id'],
                 value['depleted_in_term_name'][i],
                 value['depleted_in_term_id'][i])
             yield AuditFailure('mismatched depleted_in_term', detail, level='ERROR')
