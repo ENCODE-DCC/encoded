@@ -7,6 +7,7 @@ from ..contentbase import (
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 
 
@@ -35,7 +36,7 @@ class Pipeline(Item):
 
 @collection(
     name='analysis-steps',
-        unique_key='analysis_step:name',
+    unique_key='analysis_step:name',
     properties={
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps',
@@ -62,8 +63,36 @@ class AnalysisStepRun(Item):
     schema = load_schema('analysis_step_run.json')
     embedded = [
         'analysis_step',
-        'workflow_run'
+        'workflow_run',
+        'qc_metrics',
+        'output_files'
     ]
+    rev = {
+        'qc_metrics': ('quality_metric', 'step_run'),
+        'output_files': ('file', 'step_run')
+    }
+
+    @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.step_run",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
+
+    @calculated_property(schema={
+        "title": "Output Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkFrom": "file.step_run",
+        },
+    })
+    def output_files(self, request, output_files):
+        return paths_filtered_by_status(request, output_files)
 
 
 @collection(

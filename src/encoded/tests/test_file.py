@@ -84,6 +84,13 @@ def fastq_pair_2_paired_with(fastq_pair_2, fastq_pair_1):
     return item
 
 
+@pytest.fixture
+def external_accession(fastq_pair_1):
+    item = fastq_pair_1.copy()
+    item['external_accession'] = 'EXTERNAL'
+    return item
+
+
 def test_file_post_fastq_pair_1_paired_with(testapp, fastq_pair_1_paired_with):
     testapp.post_json('/file', fastq_pair_1_paired_with, status=422)
 
@@ -116,3 +123,10 @@ def test_file_paired_with_back_calculated(testapp, fastq_pair_1, fastq_pair_2_pa
     location2 = res.json['@graph'][0]['@id']
     res = testapp.get(location1)
     assert res.json['paired_with'] == location2
+
+
+def test_file_external_accession(testapp, external_accession):
+    res = testapp.post_json('/file', external_accession, status=201)
+    item = testapp.get(res.location).json
+    assert 'accession' not in item
+    assert item['@id'] == '/files/EXTERNAL/'

@@ -45,6 +45,11 @@
         }
     },
     "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -130,6 +135,13 @@
         },
         "accession": {
             "accessionType": "FF"
+        },
+        "external_accession": {
+            "title": "External accession",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": "accession"
         },
         "file_format": {
             "title": "File format",
@@ -296,6 +308,8 @@
                         "minus strand signal of unique reads",
                         "plus strand signal of unique reads",
                         "signal of unique reads",
+                        "signal p-value",
+                        "fold change over control",
                         
                         "exon quantifications",
                         "gene quantifications",
@@ -309,6 +323,7 @@
                         "hotspots",
                         "long range chromatin interactions",
                         "peaks",
+                        "replicated peaks",
                         "RNA-binding protein associated mRNAs",           
                         "splice junctions",
                         "transcription start sites",
@@ -564,6 +579,8 @@
         "minus strand signal of unique reads": "signal",
         "plus strand signal of unique reads": "signal",
         "signal of unique reads": "signal",
+        "signal p-value": "signal",
+        "fold change over control": "signal",
         "minus strand signal": "signal",
         "plus strand signal": "signal",
         "signal": "signal",
@@ -588,6 +605,7 @@
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
         "peaks": "annotation",
+        "replicated peaks": "annotation",
         "RNA-binding protein associated mRNAs": "annotation",
         "splice junctions": "annotation",
         "copy number variation": "annotation",

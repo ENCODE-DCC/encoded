@@ -36,6 +36,9 @@ class Experiment(Dataset):
         'files.analysis_step',
         'files.analysis_step.software_versions',
         'files.analysis_step.software_versions.software',
+        'files.qc_metrics',
+        'files.qc_metrics.step_run',
+        'files.qc_metrics.step_run.analysis_step',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
@@ -52,7 +55,7 @@ class Experiment(Dataset):
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
         'replicates.library.biosample.organism',
-        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.rnais',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
@@ -61,7 +64,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
-         'references'
+        'references',
     ]
     audit_inherit = [
         'original_files',
@@ -190,7 +193,12 @@ class Replicate(Item):
     item_type = 'replicate'
     schema = load_schema('replicate.json')
     embedded = [
+        'antibody',
+        'experiment',
         'library',
+        'library.biosample',
+        'library.biosample.donor',
+        'library.biosample.donor.organism',
         'platform',
     ]
 
