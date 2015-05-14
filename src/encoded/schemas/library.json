@@ -293,5 +293,15 @@
             "title": "Nucleic Acid Term Name",
             "type": "string"
         }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "aliases": 1.0,
+        "biosample.accession": 1.0,
+        "biosample.alternate_accessions": 1.0,
+        "biosample.aliases": 1.0,
+        "biosample.donor.accession": 1.0,
+        "biosample.donor.organism.name": 1.0
     }
 }
