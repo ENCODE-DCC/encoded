@@ -646,7 +646,6 @@ var AuditMixin = audit.AuditMixin;
                     return false;
                 }
             });
-            terms = field === 'files.file_type' ? _(terms).sortBy('key') : terms;
             var moreTerms = terms.slice(5);
             var TermComponent = field === 'type' ? TypeTerm : Term;
             var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
