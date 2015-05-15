@@ -1,11 +1,10 @@
-from ..contentbase import (
+from contentbase import (
     AfterModified,
     BeforeModified,
     calculated_property,
     collection,
 )
-from ..embedding import embed
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
     schema_validator,
 )
@@ -77,7 +76,7 @@ def external_creds(bucket, key, name):
     })
 class File(Item):
     item_type = 'file'
-    schema = load_schema('file.json')
+    schema = load_schema('encoded:schemas/file.json')
     name_key = 'accession'
 
     rev = {
@@ -277,7 +276,7 @@ def post_upload(context, request):
     context.update(None, {'external': creds})
     registry.notify(AfterModified(context, request))
 
-    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
+    rendered = request.embed('/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],

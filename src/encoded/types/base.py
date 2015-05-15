@@ -8,7 +8,7 @@ from pyramid.security import (
 )
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import traverse
-from .. import contentbase
+import contentbase
 from ..schema_formats import is_accession
 
 

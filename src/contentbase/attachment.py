@@ -13,14 +13,18 @@ from uuid import (
     UUID,
     uuid4,
 )
-from ..contentbase import Item
-from ..storage import (
+from contentbase import Item
+from .storage import (
     Blob,
     DBSession,
 )
-from ..validation import ValidationFailure
+from .validation import ValidationFailure
 import magic
 import mimetypes
+
+
+def includeme(config):
+    config.scan(__name__)
 
 
 def parse_data_uri(uri):

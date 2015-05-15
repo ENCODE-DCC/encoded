@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 import re
 from pyramid.traversal import find_root

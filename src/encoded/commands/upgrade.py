@@ -42,7 +42,7 @@ def internal_app(configfile, app_name=None, username=None):
 
 
 def run(testapp, collections):
-    from ..storage import DBSession
+    from contentbase.storage import DBSession
     with AlternateScope(DBSession) as scope:
         if not collections:
             collections = DEFAULT_COLLECTIONS
