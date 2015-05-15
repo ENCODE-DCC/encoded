@@ -391,3 +391,9 @@ def file_4_5(value, system):
 
         if value.get('paired_end') in ['1', '2']:
             value['run_type'] = 'paired-ended'
+
+    # Backfill content_md5sum #2683
+    if 'content_md5sum' not in value:
+        md5sum_content_md5sum = system['registry'].get('backfill_2683', {})
+        if value['md5sum'] in md5sum_content_md5sum:
+            value['content_md5sum'] = md5sum_content_md5sum[value['md5sum']]
