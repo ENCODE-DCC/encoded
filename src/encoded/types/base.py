@@ -7,7 +7,8 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.threadlocal import get_current_request
-from .. import contentbase
+from pyramid.traversal import traverse
+import contentbase
 from ..schema_formats import is_accession
 
 
@@ -37,7 +38,8 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['view']),
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    # Avoid schema validation errors during audit
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
@@ -51,12 +53,12 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
     if include is not None:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') in include
+            if traverse(request.root, path)['context'].__json__(request).get('status') in include
         ]
     else:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') not in exclude
+            if traverse(request.root, path)['context'].__json__(request).get('status') not in exclude
         ]
 
 

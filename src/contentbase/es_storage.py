@@ -139,7 +139,7 @@ class PickStorage(object):
 class ElasticSearchStorage(object):
     writeable = False
 
-    def __init__(self, es, index='encoded'):
+    def __init__(self, es, index):
         self.es = es
         self.index = index
 

@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 from pyramid.traversal import find_root
 
 
@@ -253,6 +253,8 @@ def file_4_5(value, system):
         'PctSignal': 'percentage normalized signal',
         'SumSignal': 'summed densities signal',
         'WaveSignal': 'wavelet-smoothed signal',
+        'signal p-value': 'signal p-value',
+        'fold change over control': 'fold change over control',
 
         'enrichment': 'enrichment',
         'exon quantifications': 'exon quantifications',
@@ -294,6 +296,7 @@ def file_4_5(value, system):
         'methyl CHG': 'methylation state at CHG',
         'methyl CHH': 'methylation state at CHH',
         'peaks': 'peaks',
+        'replicated peaks': 'replicated peaks',
         'RbpAssocRna': 'RNA-binding protein associated mRNAs',
         'splice junctions': 'splice junctions',
         'Transfrags': 'transcribed fragments',

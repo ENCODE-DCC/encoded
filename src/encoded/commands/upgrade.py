@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
+    'analysis_step',
+    'biosample',
+    'file',
     'library',
     'workflow_run',
 ]
@@ -40,7 +43,7 @@ def internal_app(configfile, app_name=None, username=None):
 
 
 def run(testapp, collections):
-    from ..storage import DBSession
+    from contentbase.storage import DBSession
     with AlternateScope(DBSession) as scope:
         if not collections:
             collections = DEFAULT_COLLECTIONS

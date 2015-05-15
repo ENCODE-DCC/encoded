@@ -8,8 +8,8 @@ To load the initial data:
 """
 from pyramid.paster import get_app
 from elasticsearch import RequestError
-from ..contentbase import TYPES
-from ..indexing import ELASTIC_SEARCH
+from contentbase import TYPES
+from contentbase.indexing import ELASTIC_SEARCH
 import collections
 import json
 import logging
@@ -454,7 +454,7 @@ def type_mapping(types, item_type, embed=True):
 
 
 def run(app, collections=None, dry_run=False):
-    index = 'encoded'
+    index = app.registry.settings['contentbase.elasticsearch.index']
     registry = app.registry
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]

@@ -1,8 +1,7 @@
 from collections import OrderedDict
 from pyramid.view import view_config
 from pyramid.response import Response
-from ..embedding import embed
-from ..contentbase import simple_path_ids
+from contentbase import simple_path_ids
 from urllib.parse import (
     parse_qs,
     urlencode,
@@ -10,6 +9,13 @@ from urllib.parse import (
 
 import csv
 import io
+
+
+def includeme(config):
+    config.add_route('batch_download', '/batch_download/{search_params}')
+    config.add_route('metadata', '/metadata/{search_params}/{tsv}')
+    config.scan(__name__)
+
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
@@ -67,7 +73,7 @@ def metadata_tsv(context, request):
             file_attributes = file_attributes + _tsv_mapping[prop]
     param_list['limit'] = ['all']
     path = '/search/?%s' % urlencode(param_list, True)
-    results = embed(request, path, as_user=True)
+    results = request.embed(path, as_user=True)
     rows = []
     for row in results['@graph']:
         if row['files']:
@@ -109,7 +115,7 @@ def metadata_tsv(context, request):
                         for l in simple_path_ids(f, prop[6:]):
                             libraries.append(l)
                         if len(libraries):
-                            library = embed(request, libraries[0])
+                            library = request.embed(libraries[0])
                             value = library.get('paired_ended', '')
                             if isinstance(value, bool):
                                 if not value:
@@ -156,7 +162,7 @@ def batch_download(context, request):
     param_list['limit'] = ['all']
 
     path = '/search/?%s' % urlencode(param_list, True)
-    results = embed(request, path, as_user=True)
+    results = request.embed(path, as_user=True)
     metadata_link = '{host_url}/metadata/{search_params}/metadata.tsv'.format(
         host_url=request.host_url,
         search_params=request.matchdict['search_params']
@@ -179,6 +185,6 @@ def batch_download(context, request):
                 ))
     return Response(
         content_type='text/plain',
-        body='\n'.join(files),
+        body='\r\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
