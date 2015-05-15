@@ -18,6 +18,7 @@ def includeme(config):
     config.include('.json_renderer')
     config.include('.validation')
     config.include('.predicates')
+    config.include('.invalidation')
     config.include('.indexing')
     config.include('.es_storage')
     config.include('.upgrader')
