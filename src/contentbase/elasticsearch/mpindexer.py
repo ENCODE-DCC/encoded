@@ -12,8 +12,8 @@ import atexit
 import logging
 import time
 import transaction
-from .eventpool import EventPool
-from .indexing import (
+from ..eventpool import EventPool
+from .indexer import (
     INDEXER,
     Indexer,
 )
@@ -41,7 +41,7 @@ def initializer(app_factory, settings):
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     # There should not be any existing connections.
-    from .storage import DBSession
+    from contentbase.storage import DBSession
     assert not DBSession.registry.has()
     global app
     atexit.register(clear_snapshot)
@@ -50,7 +50,7 @@ def initializer(app_factory, settings):
 
 
 def set_snapshot(xmin, snapshot_id):
-    from .storage import DBSession
+    from contentbase.storage import DBSession
     global current_xmin_snapshot_id
     if current_xmin_snapshot_id == (xmin, snapshot_id):
         return

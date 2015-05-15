@@ -1,47 +1,20 @@
+from contentbase.util import get_root_request
 from elasticsearch.helpers import scan
-from itertools import chain
-from pyramid.httpexceptions import (
-    HTTPForbidden,
-)
-from pyramid.threadlocal import (
-    get_current_request,
-    manager as threadlocal_manager,
-)
-from pyramid.view import (
-    view_config,
-)
-from zope.interface import (
-    Interface,
-    alsoProvides,
+from pyramid.threadlocal import get_current_request
+from zope.interface import alsoProvides
+from .interfaces import (
+    ELASTIC_SEARCH,
+    ICachedItem,
 )
 
 
 def includeme(config):
-    config.scan(__name__)
-    config.add_request_method(datastore, 'datastore', reify=True)
-
-
-def datastore(request):
-    if request.__parent__ is not None:
-        return request.__parent__.datastore
-    datastore = 'database'
-    if request.params.get('frame') == 'edit':
-        return datastore
-    if request.method in ('HEAD', 'GET'):
-        datastore = request.params.get('datastore') or \
-            request.headers.get('X-Datastore') or \
-            request.registry.settings.get('collection_datastore', 'elasticsearch')
-    return datastore
-
-
-def get_root_request():
-    if threadlocal_manager.stack:
-        return threadlocal_manager.stack[0]['request']
-
-
-class ICachedItem(Interface):
-    """ Marker for cached Item
-    """
+    from contentbase import STORAGE
+    registry = config.registry
+    es = registry[ELASTIC_SEARCH]
+    es_index = registry.settings['contentbase.elasticsearch.index']
+    wrapped_storage = registry[STORAGE]
+    registry[STORAGE] = PickStorage(ElasticSearchStorage(es, es_index), wrapped_storage)
 
 
 class CachedModel(object):
@@ -195,46 +168,3 @@ class ElasticSearchStorage(object):
             'filter': {'term': {'item_type': item_type}} if item_type else {'match_all': {}},
         }
         return self.es.count(index=self.index, body=query)
-
-
-@view_config(context=ICachedItem, request_method='GET', name='embedded')
-def cached_view_embedded(context, request):
-    source = context.model.source
-    allowed = set(source['principals_allowed']['view'])
-    if allowed.isdisjoint(request.effective_principals):
-        raise HTTPForbidden()
-    return source['embedded']
-
-
-@view_config(context=ICachedItem, request_method='GET', name='object')
-def cached_view_object(context, request):
-    source = context.model.source
-    allowed = set(source['principals_allowed']['view'])
-    if allowed.isdisjoint(request.effective_principals):
-        raise HTTPForbidden()
-    return source['object']
-
-
-@view_config(context=ICachedItem, request_method='GET', name='audit')
-def cached_view_audit(context, request):
-    source = context.model.source
-    allowed = set(source['principals_allowed']['audit'])
-    if allowed.isdisjoint(request.effective_principals):
-        raise HTTPForbidden()
-    return {
-        '@id': source['object']['@id'],
-        'audit': source['audit'],
-    }
-
-
-@view_config(context=ICachedItem, request_method='GET', name='audit-self')
-def cached_view_audit_self(context, request):
-    source = context.model.source
-    allowed = set(source['principals_allowed']['audit'])
-    if allowed.isdisjoint(request.effective_principals):
-        raise HTTPForbidden()
-    path = source['object']['@id']
-    return {
-        '@id': path,
-        'audit': [a for a in chain(*source['audit'].values()) if a['path'] == path],
-    }

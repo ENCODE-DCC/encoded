@@ -1,26 +1,20 @@
-from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import (
     ConflictError,
     NotFoundError,
 )
-from elasticsearch.connection import Urllib3HttpConnection
-from elasticsearch.serializer import SerializationError
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
-from .json_renderer import json_renderer
-from .stats import ElasticsearchConnectionMixin
-from .storage import (
+from contentbase.storage import (
     DBSession,
     TransactionRecord,
 )
+from .interfaces import ELASTIC_SEARCH
 import datetime
-import json
 import logging
 import pytz
 
 
 log = logging.getLogger(__name__)
-ELASTIC_SEARCH = 'elasticsearch'
 INDEXER = 'indexer'
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
@@ -29,43 +23,7 @@ def includeme(config):
     config.add_route('index', '/index')
     config.scan(__name__)
     registry = config.registry
-
-    if 'elasticsearch.server' in registry.settings:
-        es = Elasticsearch(
-            [registry.settings['elasticsearch.server']],
-            serializer=PyramidJSONSerializer(json_renderer),
-            connection_class=TimedUrllib3HttpConnection,
-            retry_on_timeout=True,
-        )
-        registry[ELASTIC_SEARCH] = es
-        registry[INDEXER] = Indexer(registry)
-
-
-class PyramidJSONSerializer(object):
-    mimetype = 'application/json'
-
-    def __init__(self, renderer):
-        self.renderer = renderer
-
-    def loads(self, s):
-        try:
-            return json.loads(s)
-        except (ValueError, TypeError) as e:
-            raise SerializationError(s, e)
-
-    def dumps(self, data):
-        # don't serialize strings
-        if isinstance(data, (type(''), type(u''))):
-            return data
-
-        try:
-            return self.renderer.dumps(data)
-        except (ValueError, TypeError) as e:
-            raise SerializationError(data, e)
-
-
-class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnection):
-    pass
+    registry[INDEXER] = Indexer(registry)
 
 
 @view_config(route_name='index', request_method='POST', permission="index")

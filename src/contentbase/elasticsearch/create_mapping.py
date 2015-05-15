@@ -6,10 +6,11 @@ To load the initial data:
     %(prog)s production.ini
 
 """
+from past.builtins import basestring
 from pyramid.paster import get_app
 from elasticsearch import RequestError
 from contentbase import TYPES
-from contentbase.indexing import ELASTIC_SEARCH
+from .interfaces import ELASTIC_SEARCH
 import collections
 import json
 import logging

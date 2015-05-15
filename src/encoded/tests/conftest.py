@@ -150,7 +150,7 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from contentbase.indexing import ELASTIC_SEARCH
+    from contentbase.elasticsearch import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
 
 

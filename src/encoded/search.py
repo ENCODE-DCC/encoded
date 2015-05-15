@@ -5,7 +5,7 @@ from contentbase import (
     TYPES,
     collection_view_listing_db,
 )
-from contentbase.indexing import ELASTIC_SEARCH
+from contentbase.elasticsearch import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict

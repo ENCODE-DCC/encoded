@@ -68,10 +68,11 @@ setup(
     },
     entry_points='''
         [console_scripts]
+        create-mapping = contentbase.elasticsearch.create_mapping:main
+
         add-date-created = encoded.commands.add_date_created:main
         check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
-        create-mapping = encoded.commands.create_mapping:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
