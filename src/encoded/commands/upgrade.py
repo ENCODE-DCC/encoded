@@ -57,7 +57,7 @@ def run(testapp, collections):
                 count += 1
                 with scope.change():
                     try:
-                        testapp.patch_json('/%s' % uuid, {})
+                        testapp.patch_json('/%s?render=uuid' % uuid, {})
                     except Exception:
                         logger.exception('Upgrade failed for: /%s/%s', collection_name, uuid)
                         errors += 1
