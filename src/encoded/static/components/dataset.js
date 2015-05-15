@@ -6,6 +6,7 @@ var moment = require('moment');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
+var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
@@ -15,6 +16,9 @@ var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -28,6 +32,7 @@ var Panel = function (props) {
 };
 
 var Dataset = module.exports.Dataset = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -55,8 +60,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <AuditIndicators context={context} key="experiment-audit" />
+                        </div>
                     </div>
                 </header>
+                <AuditDetail context={context} key="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
@@ -152,7 +161,6 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
         );
     }
 });
-
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {

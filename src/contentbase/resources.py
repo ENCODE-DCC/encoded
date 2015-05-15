@@ -70,26 +70,14 @@ _marker = object()
 
 logger = logging.getLogger(__name__)
 
-from .es_storage import (
-    ElasticSearchStorage,
-    PickStorage,
-)
-
 
 def includeme(config):
     registry = config.registry
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
-    types = registry[TYPES] = TypesTool(registry)
-    from .indexing import ELASTIC_SEARCH
-    es = registry.get(ELASTIC_SEARCH)
-    if es is None or registry.settings.get('indexer'):
-        storage = RDBStorage()
-    else:
-        es_index = registry.settings['contentbase.elasticsearch.index']
-        storage = PickStorage(ElasticSearchStorage(es, es_index), RDBStorage())
-    registry[STORAGE] = storage
-    registry[CONNECTION] = Connection(registry, types=types, storage=storage)
+    registry[TYPES] = TypesTool(registry)
+    registry[STORAGE] = RDBStorage()
+    registry[CONNECTION] = Connection(registry)
     config.set_root_factory(root_factory)
 
 
@@ -349,12 +337,18 @@ class TypesTool(object):
 class Connection(object):
     ''' Intermediates between the storage and the rest of the system
     '''
-    def __init__(self, registry, types, storage):
+    def __init__(self, registry):
         self.registry = registry
-        self.types = types
-        self.storage = storage
         self.item_cache = ManagerLRUCache('contentbase.connection.item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('contentbase.connection.key_cache', 1000)
+
+    @reify
+    def storage(self):
+        return self.registry[STORAGE]
+
+    @reify
+    def types(self):
+        return self.registry[TYPES]
 
     def get_by_uuid(self, uuid, default=None):
         if isinstance(uuid, basestring):
@@ -1121,7 +1115,6 @@ def item_view_raw(context, request):
 @view_config(context=Item, permission='edit', request_method='GET',
              name='edit', decorator=etag_tid)
 def item_view_edit(context, request):
-    assert request.datastore == 'database'
     conn = request.registry[CONNECTION]
     properties = item_links(context, request)
     schema_rev_links = context.type_info.schema_rev_links

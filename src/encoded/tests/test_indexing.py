@@ -48,7 +48,7 @@ def app(app_settings):
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    from encoded.commands import create_mapping
+    from contentbase.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")

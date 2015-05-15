@@ -6,8 +6,13 @@ var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
 var FileInput = require('./inputs').FileInput;
+var audit = require('./audit');
 var _ = require('underscore');
+
 var cx = require('react/lib/cx');
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
@@ -35,6 +40,7 @@ var Fallback = module.exports.Fallback = React.createClass({
 
 
 var Item = module.exports.Item = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -50,10 +56,16 @@ var Item = module.exports.Item = React.createClass({
                     <div className="col-sm-12">
                         <h2>{title}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <AuditIndicators context={context} key="biosample-audit" />
+                        </div>
                     </div>
                 </header>
-                <div className="row">
-                    {context.description ? <p className="description">{context.description}</p> : null}
+                <AuditDetail context={context} key="biosample-audit" />
+                <div className="row item-row">
+                    <div className="col-sm-12">
+                        {context.description ? <p className="description">{context.description}</p> : null}
+                    </div>
                     <Panel {...this.props} />
                 </div>
             </div>
@@ -75,8 +87,8 @@ var Panel = module.exports.Panel = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel');
         return (
-            <section className={itemClass}>
-                <div className="container">
+            <section className="col-sm-12">
+                <div className={itemClass}>
                     <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>

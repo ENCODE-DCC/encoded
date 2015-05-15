@@ -38,7 +38,7 @@ def audit_item_schema(value, system):
         path = list(error.path)
         if path:
             category += ': ' + '/'.join(path)
-        detail = 'Object {} has schema error {}'.format(value['uuid'], error.message)
+        detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
         yield AuditFailure(category, detail, level='DCC_ACTION')
 
 

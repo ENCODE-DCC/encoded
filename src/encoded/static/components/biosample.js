@@ -106,7 +106,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} id="biosample-audit" />
+                <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">
