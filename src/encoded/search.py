@@ -13,6 +13,7 @@ from collections import OrderedDict
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('suggest', '/suggest{slash:/?}')
     config.scan(__name__)
 
 
