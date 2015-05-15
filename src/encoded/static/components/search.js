@@ -80,7 +80,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -234,7 +234,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -333,7 +333,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -438,7 +438,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -473,7 +473,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -506,7 +506,7 @@ var AuditMixin = audit.AuditMixin;
                                 : <em> None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -534,7 +534,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }

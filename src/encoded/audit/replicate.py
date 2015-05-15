@@ -15,7 +15,7 @@ def audit_rep_extra_items(value, system):
 
         if item in value:
             detail = 'Replicate {} has a item {}'.format(
-                value['uuid'],
+                value['@id'],
                 value[item]  # ['name']
                 )
             error_message = 'replicate with {}'.format(item)
@@ -41,7 +41,7 @@ def audit_status_replicate(value, system):
         #  If any of the three cases exist, there is an error
         detail = '{} replicate {} is in {} experiment'.format(
             rep_status,
-            value['uuid'],
+            value['@id'],
             exp_status
             )
         raise AuditFailure('mismatched status', detail, level='DCC_ACTION')

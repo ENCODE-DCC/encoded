@@ -119,8 +119,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             // Collect depleted_in
             if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
                 depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
-            }
 
+            }
             // Collect mutated genes
             if (biosample.donor && biosample.donor.mutated_gene) {
                 mutatedGenes[biosample.donor.mutated_gene.label] = true;
@@ -194,7 +194,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} id="experiment-audit" />
+                <AuditDetail context={context} id="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
