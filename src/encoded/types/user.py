@@ -8,16 +8,15 @@ from pyramid.security import (
     effective_principals,
 )
 from .base import Item
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     Root,
     calculated_property,
     item_view_object,
     collection,
 )
-from ..embedding import embed
 
 
 @collection(
@@ -38,7 +37,7 @@ from ..embedding import embed
     ])
 class User(Item):
     item_type = 'user'
-    schema = load_schema('user.json')
+    schema = load_schema('encoded:schemas/user.json')
 
     @calculated_property(schema={
         "title": "Title",
@@ -82,4 +81,4 @@ def current_user(request):
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
     path = request.resource_path(collection, userid, '@@details')
-    return embed(request, path, as_user=True)
+    return request.embed(path, as_user=True)

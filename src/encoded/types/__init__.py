@@ -1,17 +1,14 @@
-from ..contentbase import (
+from contentbase.attachment import ItemWithAttachment
+from contentbase.schema_utils import (
+    load_schema,
+)
+from contentbase import (
     calculated_property,
     collection,
-)
-from ..schema_utils import (
-    load_schema,
 )
 from .base import (
     Item,
     paths_filtered_by_status,
-)
-from .download import ItemWithAttachment
-from pyramid.traversal import (
-    find_root,
 )
 
 
@@ -28,7 +25,7 @@ def includeme(config):
     })
 class Lab(Item):
     item_type = 'lab'
-    schema = load_schema('lab.json')
+    schema = load_schema('encoded:schemas/lab.json')
     name_key = 'name'
     embedded = ['awards']
 
@@ -42,7 +39,7 @@ class Lab(Item):
     })
 class Award(Item):
     item_type = 'award'
-    schema = load_schema('award.json')
+    schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
 
 
@@ -55,7 +52,7 @@ class Award(Item):
     })
 class Organism(Item):
     item_type = 'organism'
-    schema = load_schema('organism.json')
+    schema = load_schema('encoded:schemas/organism.json')
     name_key = 'name'
 
 
@@ -68,7 +65,7 @@ class Organism(Item):
     })
 class Source(Item):
     item_type = 'source'
-    schema = load_schema('source.json')
+    schema = load_schema('encoded:schemas/source.json')
     name_key = 'name'
 
 
@@ -80,7 +77,7 @@ class Source(Item):
     })
 class Treatment(Item):
     item_type = 'treatment'
-    schema = load_schema('treatment.json')
+    schema = load_schema('encoded:schemas/treatment.json')
     # XXX 'treatment_name' as key?
 
 
@@ -92,7 +89,7 @@ class Treatment(Item):
     })
 class Construct(Item):
     item_type = 'construct'
-    schema = load_schema('construct.json')
+    schema = load_schema('encoded:schemas/construct.json')
     # XXX 'vector_name' as key?
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -120,7 +117,7 @@ class Construct(Item):
     })
 class Talen(Item):
     item_type = 'talen'
-    schema = load_schema('talen.json')
+    schema = load_schema('encoded:schemas/talen.json')
     name_key = 'name'
     rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -147,7 +144,7 @@ class Talen(Item):
     })
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
-    schema = load_schema('document.json')
+    schema = load_schema('encoded:schemas/document.json')
     embedded = ['lab', 'award', 'submitted_by']
 
 
@@ -160,7 +157,7 @@ class Document(ItemWithAttachment, Item):
     })
 class Platform(Item):
     item_type = 'platform'
-    schema = load_schema('platform.json')
+    schema = load_schema('encoded:schemas/platform.json')
     name_key = 'term_id'
 
     @calculated_property(schema={
@@ -179,7 +176,7 @@ class Platform(Item):
     })
 class Library(Item):
     item_type = 'library'
-    schema = load_schema('library.json')
+    schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     embedded = [
         'biosample',
@@ -196,7 +193,7 @@ class Library(Item):
     })
 class RNAi(Item):
     item_type = 'rnai'
-    schema = load_schema('rnai.json')
+    schema = load_schema('encoded:schemas/rnai.json')
     embedded = ['source', 'documents', 'target']
     rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
@@ -223,7 +220,7 @@ class RNAi(Item):
     })
 class Publication(Item):
     item_type = 'publication'
-    schema = load_schema('publication.json')
+    schema = load_schema('encoded:schemas/publication.json')
     embedded = ['datasets']
 
     def unique_keys(self, properties):
@@ -249,7 +246,7 @@ class Publication(Item):
     })
 class Software(Item):
     item_type = 'software'
-    schema = load_schema('software.json')
+    schema = load_schema('encoded:schemas/software.json')
     name_key = 'name'
     embedded = [
         'references',
@@ -279,5 +276,5 @@ class Software(Item):
     })
 class SoftwareVersion(Item):
     item_type = 'software_version'
-    schema = load_schema('software_version.json')
+    schema = load_schema('encoded:schemas/software_version.json')
     embedded = ['software', 'software.references']

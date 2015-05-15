@@ -1,24 +1,33 @@
 from future.standard_library import install_aliases
 install_aliases()
 import base64
+import codecs
 import json
 import os
-import sys
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
     import subprocess
 from pyramid.config import Configurator
+from pyramid.path import (
+    AssetResolver,
+    caller_package,
+)
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
-from .storage import (
+from contentbase.storage import (
     Base,
     DBSession,
 )
-PY2 = sys.version_info.major == 2
 STATIC_MAX_AGE = 0
+
+
+def json_asset(spec, **kw):
+    utf8 = codecs.getreader("utf-8")
+    asset = AssetResolver(caller_package()).resolve(spec)
+    return json.load(utf8(asset.stream()), **kw)
 
 
 def static_resources(config):
@@ -44,7 +53,7 @@ def static_resources(config):
 
 
 def configure_engine(settings, test_setup=False):
-    from .renderers import json_renderer
+    from contentbase.json_renderer import json_renderer
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
         # Already setup by test fixture
@@ -151,32 +160,11 @@ def main(global_config, **local_config):
     """
     settings = global_config
     settings.update(local_config)
-    config = Configurator(settings=settings)
 
-    config.include(session)
-    config.include('pyramid_tm')
-    configure_engine(settings)
-
-    # Render an HTML page to browsers and a JSON document for API clients
-    config.include('.calculated')
-    config.include('.embedding')
-    config.include('.renderers')
-    config.include('.authentication')
-    config.include('.validation')
-    config.include('.predicates')
-    config.include('.indexing')
-    config.include('.es_storage')
-    config.include('.contentbase')
-    config.include('.server_defaults')
-    config.include('.types')
-    config.include('.views')
-    config.include('.migrator')
-    config.include('.auditor')
-
-    if asbool(settings.get('indexer')) and not PY2:
-        config.include('.mp_indexing')
-
-    settings = config.registry.settings
+    settings['contentbase.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['contentbase.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
+    settings['contentbase.jsonld.terms_prefix'] = 'encode'
+    settings['contentbase.elasticsearch.index'] = 'encoded'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
@@ -184,10 +172,29 @@ def main(global_config, **local_config):
         settings['persona.audiences'] += '\nhttp://%s' % hostname
         settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
-    config.include('.persona')
-    config.include('pyramid_multiauth')
+    config = Configurator(settings=settings)
+    config.registry['app_factory'] = main  # used by mp_indexer
+
+    config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
     from pyramid_localroles import LocalRolesAuthorizationPolicy
+    # Override default authz policy set by pyramid_multiauth
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
+    config.include(session)
+    config.include('.persona')
+
+    configure_engine(settings)
+    config.include('contentbase')
+    config.commit()  # commit so search can override listing
+
+    # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.renderers')
+    config.include('.authentication')
+    config.include('.server_defaults')
+    config.include('.types')
+    config.include('.root')
+    config.include('.batch_download')
+    config.include('.visualization')
+    config.include('.search')
 
     config.include(static_resources)
     config.include(load_ontology)

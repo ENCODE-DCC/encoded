@@ -4,7 +4,13 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from subprocess import Popen, PIPE
 from xml.sax.saxutils import quoteattr, escape
-from ..contentbase import TYPES
+from contentbase import TYPES
+
+
+def includeme(config):
+    config.add_route('graph_dot', '/profiles/graph.dot')
+    config.add_route('graph_svg', '/profiles/graph.svg')
+    config.scan(__name__)
 
 
 def node(item_type, props):

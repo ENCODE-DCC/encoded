@@ -17,7 +17,6 @@ from pyramid.settings import (
 from pyramid.view import (
     view_config,
 )
-from .embedding import embed
 
 _marker = object()
 
@@ -112,7 +111,7 @@ def login(request):
         request.session['user_properties'] = {}
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()
-    request.session['user_properties'] = embed(request, '/current-user', as_user=userid)
+    request.session['user_properties'] = request.embed('/current-user', as_user=userid)
     request.response.headerlist.extend(remember(request, 'mailto.' + userid))
     return request.session
 
@@ -145,5 +144,5 @@ def session(request):
         namespace, userid = login.split('.', 1)
     if namespace != 'mailto':
         return request.session
-    request.session['user_properties'] = embed(request, '/current-user', as_user=userid)
+    request.session['user_properties'] = request.embed('/current-user', as_user=userid)
     return request.session

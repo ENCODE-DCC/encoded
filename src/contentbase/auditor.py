@@ -7,7 +7,6 @@ We also need to perform higher order checking between linked objects.
 from past.builtins import basestring
 import logging
 import venusian
-from .embedding import embed
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +92,7 @@ class Auditor(object):
                 uri = '%s@@%s' % (path, frame)
             else:
                 uri = '%s@@expand?expand=%s' % (path, '&expand='.join(frame))
-            value = embed(request, uri)
+            value = request.embed(uri)
 
             if condition is not None:
                 try:

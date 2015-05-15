@@ -9,11 +9,7 @@ from string import (
 import random
 import uuid
 
-SERVER_DEFAULTS = {}
-
-
-def server_default(func):
-    SERVER_DEFAULTS[func.__name__] = func
+from contentbase.schema_utils import server_default
 
 
 ACCESSION_FACTORY = __name__ + ':accession_factory'

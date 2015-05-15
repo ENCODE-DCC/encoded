@@ -25,6 +25,7 @@ DEFAULT_COLLECTIONS = [
     'biosample',
     'file',
     'library',
+    'workflow_run',
 ]
 
 
@@ -42,7 +43,7 @@ def internal_app(configfile, app_name=None, username=None):
 
 
 def run(testapp, collections):
-    from ..storage import DBSession
+    from contentbase.storage import DBSession
     with AlternateScope(DBSession) as scope:
         if not collections:
             collections = DEFAULT_COLLECTIONS
@@ -56,7 +57,7 @@ def run(testapp, collections):
                 count += 1
                 with scope.change():
                     try:
-                        testapp.patch_json('/%s' % uuid, {})
+                        testapp.patch_json('/%s?render=uuid' % uuid, {})
                     except Exception:
                         logger.exception('Upgrade failed for: /%s/%s', collection_name, uuid)
                         errors += 1

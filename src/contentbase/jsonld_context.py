@@ -1,19 +1,23 @@
 from past.builtins import basestring
-from pkg_resources import resource_stream
 from pyramid.events import (
     ApplicationCreated,
     subscriber,
 )
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
-import codecs
-import json
+from urllib.parse import urlparse
 
-utf8 = codecs.getreader("utf-8")
 
-jsonld_base = 'https://www.encodeproject.org/terms/'
-prefix = 'encode:'
-term_path = '/terms/'
+def includeme(config):
+    settings = config.registry.settings
+    jsonld_base = settings.setdefault('contentbase.jsonld.terms_namespace', '/terms/')
+    settings.setdefault('contentbase.jsonld.terms_prefix', 'term')
+    term_path = urlparse(jsonld_base).path
+
+    config.add_route('jsonld_context', term_path)
+    config.add_route('jsonld_context_no_slash', term_path.rstrip('/'))
+    config.add_route('jsonld_term', term_path + '{term}')
+    config.scan(__name__)
 
 
 def aslist(value):
@@ -25,9 +29,14 @@ def aslist(value):
 @subscriber(ApplicationCreated)
 def make_jsonld_context(event):
     app = event.app
+    registry = app.registry
     root = app.root_factory(app)
+    jsonld_base = registry.settings['contentbase.jsonld.terms_namespace']
+    prefix = registry.settings['contentbase.jsonld.terms_prefix']
+    term_path = urlparse(jsonld_base).path
+
     context = {
-        'encode': jsonld_base,
+        prefix: jsonld_base,
         '@base': jsonld_base,
         'dc': 'http://purl.org/dc/terms/',
         'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -60,9 +69,9 @@ def make_jsonld_context(event):
         'rdfs:seeAlso': {
             '@type': '@id',
         },
-        'portal': prefix + 'portal',
-        'search': prefix + 'search',
-        'collection': prefix + 'collection',
+        'portal': prefix + ':portal',
+        'search': prefix + ':search',
+        'collection': prefix + ':collection',
     }
 
     for name, collection in root.by_item_type.items():
@@ -72,7 +81,7 @@ def make_jsonld_context(event):
         context.update(context_from_schema(
             schema, prefix, collection.item_type, collection.type_info.base_types))
 
-    namespaces = json.load(utf8(resource_stream(__name__, '../schemas/namespaces.json')))
+    namespaces = registry.settings.get('contentbase.jsonld.namespaces', {})
     context.update(namespaces)
 
     ontology = {
@@ -90,7 +99,7 @@ def make_jsonld_context(event):
 
     # These are broken definitions
     defines['BrokenPropertyOrClass'] = {
-        '@id': 'encoded:BrokenPropertyOrClass',
+        '@id': prefix + ':BrokenPropertyOrClass',
         'owl:unionOf': [
             'rdf:Property',
             'rdfs:Class',
@@ -116,7 +125,7 @@ def make_jsonld_context(event):
             continue
         schema = collection.type_info.schema
         iter_defs = ontology_from_schema(
-            schema, prefix, collection.item_type, collection.type_info.base_types)
+            schema, prefix, term_path, collection.item_type, collection.type_info.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):
@@ -140,7 +149,7 @@ def make_jsonld_context(event):
                     set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
 
             if existing['@type'] != definition['@type']:
-                existing['@type'] = 'encoded:BrokenPropertyOrClass'
+                existing['@type'] = prefix + ':BrokenPropertyOrClass'
 
             for prop in MERGED_TYPES:
                 if prop not in definition:
@@ -164,14 +173,14 @@ def make_jsonld_context(event):
                         'owl:unionOf': sorted(classes),
                     }
 
-    app.registry['encoded.jsonld_context'] = ontology
+    app.registry['contentbase.jsonld.context'] = ontology
 
 
 def context_from_schema(schema, prefix, item_type, base_types):
     jsonld_context = {}
 
     for type_name in base_types + [item_type, item_type + '_collection']:
-        jsonld_context[type_name] = prefix + type_name
+        jsonld_context[type_name] = '%s:%s' % (prefix, type_name)
 
     for name, subschema in schema.get('properties', {}).items():
         if '@id' in subschema and subschema['@id'] is None:
@@ -183,7 +192,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
         if '@reverse' in prop_ld:
             continue
         if '@id' not in prop_ld:
-            prop_ld['@id'] = prefix + name
+            prop_ld['@id'] = '%s:%s' % (prefix, type_name)
 
         subschema.get('items', subschema)
         if '@type' in prop_ld:
@@ -209,7 +218,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
     return jsonld_context
 
 
-def ontology_from_schema(schema, prefix, item_type, base_types):
+def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
     yield {
         '@id': term_path + item_type,
         '@type': 'rdfs:Class',
@@ -270,12 +279,12 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
 @view_config(route_name='jsonld_context_no_slash', request_method='GET')
 @view_config(route_name='jsonld_context', request_method='GET')
 def jsonld_context(context, request):
-    return request.registry['encoded.jsonld_context']
+    return request.registry['contentbase.jsonld.context']
 
 
 @view_config(route_name='jsonld_term', request_method='GET')
 def jsonld_term(context, request):
-    ontology = request.registry['encoded.jsonld_context']
+    ontology = request.registry['contentbase.jsonld.context']
     term = request.matchdict['term']
     try:
         return ontology['defines'][term]

@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "pipeline": {
             "title": "Pipeline",
@@ -39,32 +39,20 @@
                 "linkTo": "file"
             }
         },
-        "dx_workflow_id": {
-            "title": "DNA Nexus workflow id",
-            "description": "Workflow Identifier in the DNA Nexus system",
-            "type": "string"
-        },
         "dx_analysis_id": {
             "title": "DNA Nexus workflow id",
             "description": "Analysis (actual run) in the DNA Nexus system",
             "type": "string"
         },
-        "dx_workflow_json": {
-            "title": "DNA Nexus workflow json",
-            "description": "dxapp.json file for the submitted workflow",
-            "type": "object",
-            "properties": {},
-            "additionalProperties": true
-        },
         "started_running": {
             "title": "Start time",
-            "description": "When the workflow was started",
+            "description": "When the analysis started",
             "type": "string",
             "format": "date-time"
         },
         "stopped_running": {
             "title": "Finish time",
-            "description": "When the workflow ended",
+            "description": "When the analysis ended",
             "type": "string",
             "format": "date-time"
         },

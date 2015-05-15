@@ -47,17 +47,16 @@ current_xmin_snapshot_id = None
 app = None
 
 
-def initializer(settings):
+def initializer(app_factory, settings):
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     # There should not be any existing connections.
     from .storage import DBSession
     assert not DBSession.registry.has()
-    from . import main
     global app
     atexit.register(clear_snapshot)
-    app = main(settings, indexer_worker=True, create_tables=False)
+    app = app_factory(settings, indexer_worker=True, create_tables=False)
     signal.signal(signal.SIGALRM, clear_snapshot)
 
 
@@ -147,7 +146,7 @@ class MPIndexer(Indexer):
         self.pool = EventLoopPool(
             processes=processes,
             initializer=initializer,
-            initargs=(registry.settings,),
+            initargs=(registry['app_factory'], registry.settings,),
             context=get_context('forkserver'),
         )
         super(MPIndexer, self).__init__(registry)

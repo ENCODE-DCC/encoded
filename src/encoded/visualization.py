@@ -1,13 +1,19 @@
 from pyramid.response import Response
 from pyramid.view import view_config
-from ..contentbase import Item
-from ..embedding import embed
+from contentbase import Item
 from collections import OrderedDict
 import cgi
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
+
+
+def includeme(config):
+    config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
+    config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
+    config.scan(__name__)
+
 
 TAB = '\t'
 NEWLINE = '\n'
@@ -221,9 +227,9 @@ def generate_html(context, request):
     embedded = {}
     if url_ret[0] == request.url:
         item = request.root.__getitem__((request.url.split('/')[-1])[:-5])
-        embedded = embed(request, request.resource_path(item))
+        embedded = request.embed(request.resource_path(item))
     else:
-        embedded = embed(request, request.resource_path(context))
+        embedded = request.embed(request.resource_path(context))
     link = request.host_url + '/experiments/' + embedded['accession']
     files_json = embedded.get('files', None)
     data_accession = '<a href={link}>{accession}<a></p>' \
@@ -270,7 +276,7 @@ def generate_batch_hubs(context, request):
         if 'files.file_format' in param_list:
             params['files.file_format'] = param_list['files.file_format']
             path = '/search/?%s' % urlencode(params, True)
-            for result in embed(request, path, as_user=True)['@graph']:
+            for result in request.embed(path, as_user=True)['@graph']:
                 if 'files' in result:
                     for f in result['files']:
                         if f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES:
@@ -278,7 +284,7 @@ def generate_batch_hubs(context, request):
                         break
         else:
             path = '/search/?%s' % urlencode(params, True)
-            results = embed(request, path, as_user=True)['@graph']
+            results = request.embed(path, as_user=True)['@graph']
         trackdb = ''
         for i, experiment in enumerate(results):
             if i < 5:
@@ -293,7 +299,7 @@ def generate_batch_hubs(context, request):
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
         path = '/search/?%s' % urlencode(param_list, True)
-        results = embed(request, path, as_user=True)
+        results = request.embed(path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:
             for assembly in param_list.get('assembly'):
@@ -318,7 +324,7 @@ def hub(context, request):
     ''' Creates trackhub on fly for a given experiment '''
 
     url_ret = (request.url).split('@@hub')
-    embedded = embed(request, request.resource_path(context))
+    embedded = request.embed(request.resource_path(context))
 
     assemblies = ''
     if 'assembly' in embedded:
@@ -343,3 +349,10 @@ def hub(context, request):
     else:
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
         return Response(generate_html(context, request) + data_policy, content_type='text/html')
+
+
+@view_config(route_name='batch_hub')
+@view_config(route_name='batch_hub:trackdb')
+def batch_hub(context, request):
+    ''' View for batch track hubs '''
+    return Response(generate_batch_hubs(context, request), content_type='text/plain')

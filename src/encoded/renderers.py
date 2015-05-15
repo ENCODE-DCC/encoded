@@ -12,7 +12,6 @@ from pyramid.httpexceptions import (
 from pyramid.security import forget
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
-    get_current_request,
     manager,
 )
 from pyramid.traversal import (
@@ -20,97 +19,27 @@ from pyramid.traversal import (
     _join_path_tuple,
 )
 
-from .validation import CSRFTokenError
+from contentbase.validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
-import json
 import logging
 import os
 import psutil
-import pyramid.renderers
 import time
-import uuid
 
 
 log = logging.getLogger(__name__)
 
 
 def includeme(config):
-    config.add_renderer(None, json_renderer)
-    config.add_renderer('null_renderer', NullRenderer)
-    config.add_tween('.renderers.fix_request_method_tween_factory', under=pyramid.tweens.INGRESS)
     config.add_tween(
-        '.stats.stats_tween_factory', under='.renderers.fix_request_method_tween_factory')
+        '.renderers.fix_request_method_tween_factory',
+        under='contentbase.stats.stats_tween_factory')
     config.add_tween(
-        '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
+        '.renderers.normalize_cookie_tween_factory',
+        under='.renderers.fix_request_method_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
     config.scan(__name__)
-
-
-class JSON(pyramid.renderers.JSON):
-    '''Provide easier access to the configured serializer
-    '''
-    def dumps(self, value):
-        request = get_current_request()
-        default = self._make_default(request)
-        return json.dumps(value, default=default, **self.kw)
-
-
-class BinaryFromJSON:
-    def __init__(self, app_iter):
-        self.app_iter = app_iter
-
-    def __len__(self):
-        return len(self.app_iter)
-
-    def __iter__(self):
-        for s in self.app_iter:
-            yield s.encode('utf-8')
-
-
-class JSONResult(object):
-    def __init__(self):
-        self.app_iter = []
-        self.write = self.app_iter.append
-
-    @classmethod
-    def serializer(cls, value, **kw):
-        fp = cls()
-        json.dump(value, fp, **kw)
-        if str is bytes:
-            return fp.app_iter
-        else:
-            return BinaryFromJSON(fp.app_iter)
-
-
-json_renderer = JSON(serializer=JSONResult.serializer)
-
-
-def uuid_adapter(obj, request):
-    return str(obj)
-
-
-def listy_adapter(obj, request):
-    return list(obj)
-
-
-json_renderer.add_adapter(uuid.UUID, uuid_adapter)
-json_renderer.add_adapter(set, listy_adapter)
-json_renderer.add_adapter(frozenset, listy_adapter)
-
-
-class NullRenderer:
-    '''Sets result value directly as response.
-    '''
-    def __init__(self, info):
-        pass
-
-    def __call__(self, value, system):
-        request = system.get('request')
-        if request is None:
-            return value
-        request.response = value
-        return None
 
 
 def fix_request_method_tween_factory(handler, registry):
