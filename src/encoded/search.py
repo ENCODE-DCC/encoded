@@ -1,10 +1,20 @@
 import re
 from pyramid.view import view_config
-from ..contentbase import TYPES
-from ..indexing import ELASTIC_SEARCH
+from contentbase import (
+    Collection,
+    TYPES,
+    collection_view_listing_db,
+)
+from contentbase.indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
+
+
+def includeme(config):
+    config.add_route('search', '/search{slash:/?}')
+    config.scan(__name__)
+
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
@@ -214,7 +224,7 @@ def set_filters(request, query, result):
             query_terms = used_filters[field] = []
 
         if field.endswith('!'):
-            #Setting not filter instead of terms filter
+            # Setting not filter instead of terms filter
             query_filters.append({
                 'not': {
                     'terms': {
@@ -335,6 +345,7 @@ def search(context, request, search_type=None):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['contentbase.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
     # handling limit
@@ -451,7 +462,8 @@ def search(context, request, search_type=None):
 
     set_facets(facets, used_filters, query, principals, peak_files_uuids)
 
-    es_results = es.search(body=query, index='encoded',
+    # Execute the query
+    es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, size=size)
 
     # Loading facets in to the results
@@ -494,6 +506,23 @@ def search(context, request, search_type=None):
     # Adding total
     result['total'] = es_results['hits']['total']
     result['notification'] = 'Success' if result['total'] else 'No results found'
+    return result
+
+
+@view_config(context=Collection, permission='list', request_method='GET',
+             name='listing')
+def collection_view_listing_es(context, request):
+    # Switch to change summary page loading options
+    if request.datastore != 'elasticsearch':
+        return collection_view_listing_db(context, request)
+
+    result = search(context, request, context.item_type)
+
+    if len(result['@graph']) < result['total']:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
     return result
 
 

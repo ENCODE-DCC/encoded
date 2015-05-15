@@ -86,7 +86,8 @@ def includeme(config):
     if es is None or registry.settings.get('indexer'):
         storage = RDBStorage()
     else:
-        storage = PickStorage(ElasticSearchStorage(es), RDBStorage())
+        es_index = registry.settings['contentbase.elasticsearch.index']
+        storage = PickStorage(ElasticSearchStorage(es, es_index), RDBStorage())
     registry[STORAGE] = storage
     registry[CONNECTION] = Connection(registry, types=types, storage=storage)
     config.set_root_factory(root_factory)
@@ -352,8 +353,8 @@ class Connection(object):
         self.registry = registry
         self.types = types
         self.storage = storage
-        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
-        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+        self.item_cache = ManagerLRUCache('contentbase.connection.item_cache', 1000)
+        self.unique_key_cache = ManagerLRUCache('contentbase.connection.key_cache', 1000)
 
     def get_by_uuid(self, uuid, default=None):
         if isinstance(uuid, basestring):
@@ -713,7 +714,9 @@ def if_match_tid(view_callable):
     return wrapped
 
 
-def load_db(context, request):
+@view_config(context=Collection, permission='list', request_method='GET',
+             name='listing')
+def collection_view_listing_db(context, request):
     result = {}
 
     frame = request.params.get('frame', 'columns')
@@ -741,18 +744,6 @@ def load_db(context, request):
     ]
 
     if limit is not None and len(result['@graph']) == limit:
-        params = [(k, v) for k, v in request.params.items() if k != 'limit']
-        params.append(('limit', 'all'))
-        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
-
-    return result
-
-
-def load_es(context, request):
-    from .views.search import search
-    result = search(context, request, context.item_type)
-
-    if len(result['@graph']) < result['total']:
         params = [(k, v) for k, v in request.params.items() if k != 'limit']
         params.append(('limit', 'all'))
         result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
@@ -792,12 +783,7 @@ def collection_list(context, request):
         properties['default_page'] = embed(
             request, '/pages/%s/@@page' % context.__name__, as_user=True)
 
-    # Switch to change summary page loading options: load_db, load_es
-    if request.datastore == 'elasticsearch':
-        result = load_es(context, request)
-    else:
-        result = load_db(context, request)
-
+    result = request.embed(path, '@@listing?' + request.query_string, as_user=True)
     result.update(properties)
     return result
 
@@ -1326,3 +1312,19 @@ def item_index_data(context, request):
     }
 
     return document
+
+
+@view_config(context=Root, request_method='GET')
+def home(context, request):
+    result = context.__json__(request)
+    result.update({
+        '@id': request.resource_path(context),
+        '@type': ['portal'],
+    })
+
+    try:
+        result['default_page'] = request.embed('/pages/homepage/@@page', as_user=True)
+    except KeyError:
+        pass
+
+    return result

@@ -14,7 +14,7 @@ For the development.ini you must supply the paster app name:
 """
 import logging
 import transaction
-from ..storage import (
+from contentbase.storage import (
     DBSession,
     update_keys,
     update_rels,

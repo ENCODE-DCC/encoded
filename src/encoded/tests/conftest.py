@@ -150,7 +150,7 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from ..indexing import ELASTIC_SEARCH
+    from contentbase.indexing import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
 
 
@@ -320,11 +320,11 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.yield_fixture(scope='session')
 def connection(request, engine_url):
     from encoded import configure_engine
-    from encoded.storage import Base, DBSession
+    from contentbase.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
     # ``server`` thread must be in same scope
@@ -355,7 +355,7 @@ def external_tx(request, connection):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     # # The database should be empty unless a data fixture was loaded
-    # from encoded.storage import Base
+    # from contentbase.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
     return tx
@@ -429,7 +429,7 @@ def session(transaction):
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     return DBSession()
 
 
@@ -441,7 +441,7 @@ def check_constraints(request, connection):
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -528,7 +528,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 @fixture
 def no_deps(request, connection):
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     from sqlalchemy import event
 
     session = DBSession()

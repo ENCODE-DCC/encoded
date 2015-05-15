@@ -1,13 +1,11 @@
-from ..schema_utils import (
-    load_schema,
-)
-from ..contentbase import (
+from contentbase import (
     collection,
     calculated_property,
 )
+from contentbase.attachment import ItemWithAttachment
+from contentbase.schema_utils import load_schema
 from .base import (
     Item,
-    paths_filtered_by_status,
 )
 
 
@@ -20,11 +18,12 @@ class QualityMetric(Item):
     name='mad-cc-lrna-metrics',
     properties={
         'title': "lRNA Replicate Concordance Metrics",
-        'description': 'A set of QC metrics comparing two quantificiations from (long) RNA-seq replicates',
+        'description': 'A set of QC metrics comparing two quantificiations '
+                       'from (long) RNA-seq replicates',
     })
 class MadCCLrnaMetric(QualityMetric):
     item_type = 'mad_cc_lrna_qc_metric'
-    schema = load_schema('mad_cc_lrna_qc_metric.json')
+    schema = load_schema('encoded:schemas/mad_cc_lrna_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -51,7 +50,7 @@ class MadCCLrnaMetric(QualityMetric):
     })
 class StarQcMetric(QualityMetric):
     item_type = 'star_qc_metric'
-    schema = load_schema('star_qc_metric.json')
+    schema = load_schema('encoded:schemas/star_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -72,9 +71,9 @@ class StarQcMetric(QualityMetric):
         'title': "FastQC mapping quality metrics",
         'description': 'A set of QC metrics from FastQC',
     })
-class FastqcQcMetric(QualityMetric):
+class FastqcQcMetric(QualityMetric, ItemWithAttachment):
     item_type = 'fastqc_qc_metric'
-    schema = load_schema('fastqc_qc_metric.json')
+    schema = load_schema('encoded:schemas/fastqc_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -97,7 +96,7 @@ class FastqcQcMetric(QualityMetric):
     })
 class BismarkQcMetric(QualityMetric):
     item_type = 'bismark_qc_metric'
-    schema = load_schema('bismark_qc_metric.json')
+    schema = load_schema('encoded:schemas/bismark_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -120,7 +119,7 @@ class BismarkQcMetric(QualityMetric):
     })
 class Encode2ChipSeqQcMetric(QualityMetric):
     item_type = 'encode2_chipseq_qc_metric'
-    schema = load_schema('encode2_chipseq_qc_metric.json')
+    schema = load_schema('encoded:schemas/encode2_chipseq_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -143,7 +142,7 @@ class Encode2ChipSeqQcMetric(QualityMetric):
     })
 class ChipSeqFilterQcMetric(QualityMetric):
     item_type = 'chipseq_filter_qc_metric'
-    schema = load_schema('chipseq_filter_qc_metric.json')
+    schema = load_schema('encoded:schemas/chipseq_filter_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",
@@ -166,7 +165,7 @@ class ChipSeqFilterQcMetric(QualityMetric):
     })
 class FlagstatsQcMetric(QualityMetric):
     item_type = 'flagstats_qc_metric'
-    schema = load_schema('flagstats_qc_metric.json')
+    schema = load_schema('encoded:schemas/flagstats_qc_metric.json')
 
     @calculated_property(schema={
         "title": "Applies to",

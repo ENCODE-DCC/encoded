@@ -1,4 +1,4 @@
-from ..auditor import (
+from contentbase.auditor import (
     AuditFailure,
     audit_checker,
 )

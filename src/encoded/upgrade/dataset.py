@@ -1,6 +1,6 @@
 from pyramid.traversal import find_root
 from uuid import UUID
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 import re
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 

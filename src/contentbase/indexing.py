@@ -13,14 +13,14 @@ from pyramid.traversal import resource_path
 from elasticsearch.connection import Urllib3HttpConnection
 from elasticsearch.serializer import SerializationError
 from pyramid.view import view_config
-from .contentbase import (
+from contentbase import (
     AfterModified,
     BeforeModified,
     Created,
     simple_path_ids,
 )
 from sqlalchemy.exc import StatementError
-from .renderers import json_renderer
+from .json_renderer import json_renderer
 from .stats import ElasticsearchConnectionMixin
 from .storage import (
     DBSession,
@@ -43,7 +43,6 @@ from urllib.parse import (
 
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = 'elasticsearch'
-INDEX = 'encoded'
 INDEXER = 'indexer'
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
@@ -97,6 +96,7 @@ class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnec
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
+    INDEX = request.registry.settings['contentbase.elasticsearch.index']
     # Setting request.datastore here only works because routed views are not traversed.
     request.datastore = 'database'
     record = request.json.get('record', False)
@@ -239,6 +239,7 @@ def all_uuids(root, types=None):
 class Indexer(object):
     def __init__(self, registry):
         self.es = registry[ELASTIC_SEARCH]
+        self.index = registry.settings['contentbase.elasticsearch.index']
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
         i = -1
@@ -260,7 +261,7 @@ class Indexer(object):
         doctype = result['object']['@type'][0]
         try:
             self.es.index(
-                index=INDEX, doc_type=doctype, body=result,
+                index=self.index, doc_type=doctype, body=result,
                 id=str(uuid), version=xmin, version_type='external_gte',
                 request_timeout=30,
             )
@@ -339,7 +340,7 @@ def es_update_data(event):
     if renamed:
         response.headers['X-Renamed'] = ','.join(renamed)
 
-    record = data.get('_encoded_transaction_record')
+    record = data.get('_contentbase_transaction_record')
     if record is None:
         return
 

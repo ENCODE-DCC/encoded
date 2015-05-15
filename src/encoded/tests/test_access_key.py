@@ -148,7 +148,7 @@ def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key, f
 
 def test_access_key_uses_edw_hash(app, access_key):
     from encoded.edw_hash import EDWHash
-    from encoded.contentbase import LOCATION_ROOT
+    from contentbase import LOCATION_ROOT
     root = app.registry[LOCATION_ROOT]
     obj = root.by_item_type['access_key'][access_key['access_key_id']]
     pwhash = obj.properties['secret_access_key_hash']

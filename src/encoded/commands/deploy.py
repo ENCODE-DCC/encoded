@@ -110,7 +110,8 @@ def main():
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20150325")
     parser.add_argument(
         '--instance-type', default='t2.medium',
-        help="specify 'm3.large' for faster indexing.")
+        help="specify 'c4.2xlarge' for faster indexing (you should switch to a smaller "
+             "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     args = parser.parse_args()
 

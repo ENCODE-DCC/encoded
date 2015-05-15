@@ -1,4 +1,4 @@
-from .contentbase import LOCATION_ROOT
+from contentbase import LOCATION_ROOT
 
 
 def groupfinder(login, request):

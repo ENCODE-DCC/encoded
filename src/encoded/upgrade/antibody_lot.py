@@ -1,5 +1,5 @@
-from ..contentbase import CONNECTION
-from ..migrator import upgrade_step
+from contentbase import CONNECTION
+from contentbase.upgrader import upgrade_step
 from .shared import ENCODE2_AWARDS
 from pyramid.traversal import find_root
 
