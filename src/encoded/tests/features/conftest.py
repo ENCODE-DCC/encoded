@@ -13,7 +13,7 @@ def __init__(self, *args, **kw):
 WebDriver.__init__ = __init__
 
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .. import test_indexing

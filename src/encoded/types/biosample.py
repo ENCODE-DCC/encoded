@@ -1,7 +1,7 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
 )
@@ -20,7 +20,7 @@ from .base import (
     })
 class Biosample(Item):
     item_type = 'biosample'
-    schema = load_schema('biosample.json')
+    schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
     rev = {
         'characterizations': ('biosample_characterization', 'characterizes'),

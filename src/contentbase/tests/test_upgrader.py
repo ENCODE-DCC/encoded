@@ -1,5 +1,6 @@
 import pytest
 
+
 def step1(value, system):
     value['step1'] = True
     return value
@@ -17,7 +18,7 @@ def finalizer(value, system, version):
 
 @pytest.fixture
 def schema_migrator():
-    from ..migrator import SchemaMigrator
+    from contentbase.upgrader import SchemaMigrator
     schema_migrator = SchemaMigrator('test', '3')
     schema_migrator.add_upgrade_step(step1, dest='2')
     schema_migrator.add_upgrade_step(step2, source='2', dest='3')
@@ -39,12 +40,12 @@ def test_finalizer(schema_migrator):
 def test_declarative_config():
     from pyramid.config import Configurator
     config = Configurator()
-    config.include('..migrator')
-    config.include('.testing_migrator')
+    config.include('contentbase.upgrader')
+    config.include('.testing_upgrader')
     config.commit()
 
     migrator = config.registry['migrator']
-    value = migrator.upgrade('testing_migrator', {}, '')
+    value = migrator.upgrade('testing_upgrader', {}, '')
     assert value['step1']
     assert value['step2']
     assert value['schema_version'] == '3'

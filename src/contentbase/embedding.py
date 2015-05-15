@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 
 def includeme(config):
     config.scan(__name__)
+    config.add_renderer('null_renderer', NullRenderer)
     config.add_request_method(embed, 'embed')
     config.add_request_method(lambda request: set(), '_embedded_uuids', reify=True)
     config.add_request_method(lambda request: set(), '_linked_uuids', reify=True)
@@ -103,3 +104,17 @@ def expand_path(request, obj, path):
         if not isinstance(value, dict):
             value = obj[name] = request.embed(value, '@@object')
         expand_path(request, value, remaining)
+
+
+class NullRenderer:
+    '''Sets result value directly as response.
+    '''
+    def __init__(self, info):
+        pass
+
+    def __call__(self, value, system):
+        request = system.get('request')
+        if request is None:
+            return value
+        request.response = value
+        return None

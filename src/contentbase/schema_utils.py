@@ -1,8 +1,12 @@
-from pkg_resources import resource_stream
+from pyramid.path import (
+    AssetResolver,
+    caller_package,
+)
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 import json
+import codecs
 import collections
 import copy
 from jsonschema import (
@@ -13,21 +17,17 @@ from jsonschema import (
 from jsonschema.exceptions import ValidationError
 from uuid import UUID
 
-import codecs
-import posixpath
 
-from .server_defaults import SERVER_DEFAULTS
-
-utf8 = codecs.getreader("utf-8")
+SERVER_DEFAULTS = {}
 
 
-def local_handler(uri):
-    base, filename = posixpath.split(uri)
-    if base != '/profiles':
-        raise KeyError(uri)
-    schema = json.load(utf8(resource_stream(__name__, 'schemas/' + filename)),
-                       object_pairs_hook=collections.OrderedDict)
-    return schema
+def server_default(func):
+    SERVER_DEFAULTS[func.__name__] = func
+
+
+class NoRemoteResolver(RefResolver):
+    def resolve_remote(self, uri):
+        raise ValueError('Resolution disallowed for: %s' % uri)
 
 
 def mixinProperties(schema, resolver):
@@ -64,7 +64,7 @@ def mixinProperties(schema, resolver):
 
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
-    from .contentbase import Item
+    from contentbase import Item
 
     if not validator.is_type(instance, "string"):
         return
@@ -128,7 +128,7 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from .contentbase import Item, TYPES
+    from contentbase import Item, TYPES
 
     linkType, linkProp = linkFrom.split('.')
     if validator.is_type(instance, "string"):
@@ -245,10 +245,13 @@ format_checker = FormatChecker()
 def load_schema(filename):
     if isinstance(filename, dict):
         schema = filename
+        resolver = NoRemoteResolver.from_schema(schema)
     else:
-        schema = json.load(utf8(resource_stream(__name__, 'schemas/' + filename)),
+        utf8 = codecs.getreader("utf-8")
+        asset = AssetResolver(caller_package()).resolve(filename)
+        schema = json.load(utf8(asset.stream()),
                            object_pairs_hook=collections.OrderedDict)
-    resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
+        resolver = RefResolver('file://' + asset.abspath(), schema)
     schema = mixinProperties(schema, resolver)
 
     # SchemaValidator is not thread safe for now
@@ -257,7 +260,7 @@ def load_schema(filename):
 
 
 def validate(schema, data, current=None):
-    resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
+    resolver = NoRemoteResolver.from_schema(schema)
     sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
     validated, errors = sv.serialize(data)
 
