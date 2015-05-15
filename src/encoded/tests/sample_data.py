@@ -404,6 +404,13 @@ PUBLICATIONS = [
     }
 ]
 
+PIPELINES = [
+    {
+        'uuid': '4079755c-af30-44de-9545-e744f000f534',
+        'title': 'mysterious-pipeline',
+    }
+]
+
 DOCUMENTS = [
     {
         'uuid': 'f7b7b690-919b-4e87-bec2-58b5bb76418b',
@@ -451,6 +458,7 @@ URL_COLLECTION = OrderedDict([
     ('construct', CONSTRUCTS),
     ('file', FILES),
     ('publication', PUBLICATIONS),
+    ('pipeline', PIPELINES),
     ('document', DOCUMENTS),
     ('biosample_characterization', BIOSAMPLE_CHARACTERIZATIONS),
     ('mouse_donor', MOUSE_DONORS),

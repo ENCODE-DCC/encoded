@@ -25,6 +25,7 @@ DEFAULT_COLLECTIONS = [
     'biosample',
     'file',
     'library',
+    'workflow_run',
 ]
 
 
