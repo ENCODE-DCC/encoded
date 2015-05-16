@@ -6,7 +6,7 @@ Change log for file.json
 Schema version 5
 ----------------
 
-* "run_type" was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.
+* "run_type" was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.::
 
         "run_type": {
             "title": "Run type for sequencing files",
@@ -19,7 +19,7 @@ Schema version 5
             ]
         },
 
-* "read_length" was migrated this field from replicate.read_length.  It will be required for fastq files.
+* "read_length" was migrated this field from replicate.read_length.  It will be required for fastq files.::
 
         "read_length": {
             "title": "Read length",
@@ -29,7 +29,7 @@ Schema version 5
 
 * "read_length_units" was added as a calculated field.  It will no longer be submitted.
 
-* "platform" was migrated this field from replicate.read_length.  It will be required for fastq files.
+* "platform" was migrated this field from replicate.read_length.  It will be required for fastq files.::
 
         "platform": {
             "title": "Platform",
@@ -39,21 +39,21 @@ Schema version 5
             "linkTo": "platform"
         },
 
-* "file_format" enum was restricted to general formats for example bed not bed_narrowpeak
+* "file_format" enum was restricted to general formats for example bed not bed_narrowpeak::
     
-        {
-                'bed_bedLogR': 'bed',
-                'bed_bedMethyl': 'bed',
-                'bed_broadPeak': 'bed',
-                'bed_gappedPeak': 'bed',
-                'bed_narrowPeak': 'bed',
-                'bed_bedRnaElements': 'bed',
-                'bedLogR': 'bigBed',
-                'bedMethyl': 'bigBed',
-                'broadPeak': 'bigBed',
-                'narrowPeak': 'bigBed',
-                'gappedPeak': 'bigBed',
-                'bedRnaElements': 'bigBed'
+        mapping = {
+            'bed_bedLogR': 'bed',
+            'bed_bedMethyl': 'bed',
+            'bed_broadPeak': 'bed',
+            'bed_gappedPeak': 'bed',
+            'bed_narrowPeak': 'bed',
+            'bed_bedRnaElements': 'bed',
+            'bedLogR': 'bigBed',
+            'bedMethyl': 'bigBed',
+            'broadPeak': 'bigBed',
+            'narrowPeak': 'bigBed',
+            'gappedPeak': 'bigBed',
+            'bedRnaElements': 'bigBed'
         }
 
         "current_enum": [
@@ -77,7 +77,7 @@ Schema version 5
         ]
 
 
-* "file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]
+* "file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]::
 
         "enum": [
             "bed6",
@@ -93,13 +93,12 @@ Schema version 5
         ]
 
         "comment": "Historical file formats, not valid for new submissions.",
-
         "enum": [
             "unknown",
             "bedRnaElements"
         ]
 
-* "file_format_specifications" was added as a way to add description or autosql to the file object
+* "file_format_specifications" was added as a way to add description or autosql to the file object::
 
         "file_format_specifications": {
             "title": "File format specifications documents",
@@ -112,7 +111,7 @@ Schema version 5
                     }
         },
              
-* "output_category" added as a calculated field.  The files are now given one of these categories.
+* "output_category" added as a calculated field.  The files are now given one of these categories.::
 
        [
        "raw data",
@@ -125,7 +124,7 @@ Schema version 5
        ]
 
 
-* "output_type" enum was changed dramatically to more specifically describe what the file contents are.  The maping here is simplistic.  For further details in how we re-classified please look at src/encoded/upgrade/file.py
+* "output_type" enum was changed dramatically to more specifically describe what the file contents are.  The maping here is simplistic.  (For further details in how we re-classified please look at src/encoded/upgrade/file.py.)::
 
     output_mapping = {
         'idat green file': 'idat green channel',
@@ -223,7 +222,7 @@ Schema version 5
     }
 
 
-* "md5sum_content" was added.  The DCC will calculate this field. The goal is to make this unique.
+* "md5sum_content" was added.  The DCC will calculate this field. The goal is to make this unique.::
 
     "content_md5sum": {
             "title": "Content MD5sum",

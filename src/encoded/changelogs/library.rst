@@ -8,7 +8,7 @@ Schema version 4
 
 * "paired_ended" was removed
 
-* "fragmentation_method" was converted into an enum
+* "fragmentation_method" was converted into an enum::
 
     "enum": [
         "chemical (generic)",
@@ -33,7 +33,7 @@ Schema version 4
 Schema version 3
 ----------------
 
-* "spikeins_used" was added with an audit for RNA libraries missing this field
+* "spikeins_used" was added with an audit for RNA libraries missing this field::
 
    "spikeins_used": {
         "title": "Spike-ins datasets used",
@@ -49,7 +49,7 @@ Schema version 3
         }
     },
 
-*  "nucleic_acid_starting_quantity_units" enum was added to.
+*  "nucleic_acid_starting_quantity_units" enum was added to::
 
     "enum": [
         "cells",
@@ -60,7 +60,7 @@ Schema version 3
         "mg"
     ]
 
-* "status" enum was brought in line with other accessioned objects
+* "status" enum was brought in line with other accessioned objects::
 
     "enum": [
         "in progress",

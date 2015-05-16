@@ -20,7 +20,7 @@ Schema version 4
 Schema version 3
 ----------------
 
-* "status" was brought in line with the standard status for unaccessioned objects
+* "status" was brought in line with the standard status for unaccessioned objects::
 
     "enum" : [
         "in progress",
