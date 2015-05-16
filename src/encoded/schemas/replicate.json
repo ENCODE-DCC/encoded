@@ -127,5 +127,6 @@
         "antibody.lot_id_alias": 1.0,
         "antibody.product_id": 1.0,
         "antibody.aliases": 1.0
-    }
+    },
+    "change_log": "https://github.com/ENCODE-DCC/encoded/tree/master/src/encoded/changelogs/replicate.rst"
 }

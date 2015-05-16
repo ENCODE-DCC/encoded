@@ -91,5 +91,6 @@
         "name": 1.0,
         "title": 1.0,
         "project": 1.0
-    }
+    },
+    "change_log": "https://github.com/ENCODE-DCC/encoded/tree/master/src/encoded/changelogs/award.rst"
 }
