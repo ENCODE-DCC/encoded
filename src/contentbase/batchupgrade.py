@@ -14,9 +14,10 @@ from contentbase.storage import (
     update_keys,
     update_rels,
 )
-from pyramid.traversal import resource_path
+from multiprocessing import get_context
+from multiprocessing.pool import Pool
 from pyramid.view import view_config
-from pprint import pformat
+from pyramid.traversal import find_resource
 
 EPILOG = __doc__
 logger = logging.getLogger(__name__)
@@ -102,32 +103,36 @@ def batch_upgrade(request):
     batch = request.json['batch']
     root = request.root
     session = DBSession()
-    results = {}
+    results = []
     for uuid in batch:
-        item = root[uuid]
-        path = resource_path(item)
-        item_type = item.item_type
+        item_type = None
         update = False
         error = False
         sp = session.begin_nested()
         try:
+            item = find_resource(root, uuid)
+            item_type = item.item_type
             update, errors = update_item(item)
         except Exception:
-            logger.exception('Error updating: %s', path)
+            logger.exception('Error updating: /%s/%s', item_type, uuid)
             sp.rollback()
             error = True
         else:
             if errors:
-                logger.error('Validation failure: %s\n%s', path, pformat(errors))
+                errortext = [
+                    '%s: %s' % ('/'.join(error.path) or '<root>', error.message)
+                    for error in errors]
+                logger.error(
+                    'Validation failure: /%s/%s\n%s', item_type, uuid, '\n'.join(errortext))
                 sp.rollback()
                 error = True
             else:
                 sp.commit()
-        results[uuid] = (item_type, path, update, error)
-    return results
+        results.append((item_type, uuid, update, error))
+    return {'results': results}
 
 
-def run(config_uri, app_name=None, username=None, types=None, batch_size=1000, processes=None):
+def run(config_uri, app_name=None, username=None, types=None, batch_size=500, processes=None):
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('contentbase').setLevel(logging.DEBUG)
 
@@ -137,9 +142,7 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=1000, p
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))
 
-    from multiprocessing import get_context
-    from .eventpool import EventPool
-    pool = EventPool(
+    pool = Pool(
         processes=processes,
         initializer=initializer,
         initargs=(config_uri, app_name, username),
@@ -148,20 +151,16 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=1000, p
 
     all_results = []
 
-    def callback(args):
-        success, result, orig_args = args
-        if success:
-            results = list(result.values())
-            errors = sum(error for item_type, path, update, error in results)
-            updated = sum(update for item_type, path, update, error in results)
-            logger.info('Batch: Updated %d of %d (errors %d)' %
-                        (updated, len(results), errors))
-            all_results.extend(results)
-        else:
-            logger.error(result)
-
     tasks = batched(uuids, batch_size)
-    pool.run_tasks(worker, tasks, callback=callback)
+
+    all_results = []
+    for result in pool.imap_unordered(worker, tasks, chunksize=1):
+        results = result['results']
+        errors = sum(error for item_type, path, update, error in results)
+        updated = sum(update for item_type, path, update, error in results)
+        logger.info('Batch: Updated %d of %d (errors %d)' %
+                    (updated, len(results), errors))
+        all_results.extend(results)
 
     for item_type, results in itertools.groupby(sorted(all_results), lambda x: x[0]):
         results = list(results)
@@ -180,7 +179,7 @@ def main():
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('--item-type', dest='types', action='append')
-    parser.add_argument('--batch-size', type=int, default=1000)
+    parser.add_argument('--batch-size', type=int, default=500)
     parser.add_argument('--processes', type=int)
     parser.add_argument('--username')
     args = parser.parse_args()
