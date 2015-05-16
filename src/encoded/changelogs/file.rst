@@ -39,14 +39,14 @@ Schema version 5
             "linkTo": "platform"
         },
 
-* "file_format" enum was restricted to general formats for example bed not bed_narrowpeak
+"file_format" enum was restricted to general formats for example bed not bed_narrowpeak
     
     {
         'bed_bedLogR': 'bed',
         'bed_bedMethyl': 'bed',
         'bed_broadPeak': 'bed',
         'bed_gappedPeak': 'bed',
-        'bed_narrowPeak': 'bed',,
+        'bed_narrowPeak': 'bed',
         'bed_bedRnaElements': 'bed',
         'bedLogR': 'bigBed',
         'bedMethyl': 'bigBed',
@@ -55,7 +55,6 @@ Schema version 5
         'gappedPeak': 'bigBed',
         'bedRnaElements': 'bigBed'
     }
-
 
     "current_enum": [
         "bam",
@@ -77,7 +76,8 @@ Schema version 5
         "wig"
     ]
 
-* "file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]
+
+"file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]
 
         "enum": [
             "bed6",
