@@ -88,9 +88,9 @@ def update_item(context):
             del properties['schema_version']
         schema = context.type_info.schema
         properties['uuid'] = str(context.uuid)
-        propertes, errors = validate(schema, properties, properties)
+        validated, errors = validate(schema, properties, properties)
         # Do not send modification events to skip indexing
-        context.update(properties)
+        context.update(validated)
         update = True
     return update, errors
 
