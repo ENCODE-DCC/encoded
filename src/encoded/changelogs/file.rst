@@ -41,7 +41,7 @@ Schema version 5
 
 * "file_format" enum was restricted to general formats for example bed not bed_narrowpeak
     
-    upgrade_dictionary = {
+    {
         'bed_bedLogR': 'bed',
         'bed_bedMethyl': 'bed',
         'bed_broadPeak': 'bed',
