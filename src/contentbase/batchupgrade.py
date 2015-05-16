@@ -150,19 +150,19 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
     )
 
     all_results = []
+    try:
+        for result in pool.imap_unordered(worker, batched(uuids, batch_size), chunksize=1):
+            results = result['results']
+            errors = sum(error for item_type, path, update, error in results)
+            updated = sum(update for item_type, path, update, error in results)
+            logger.info('Batch: Updated %d of %d (errors %d)' %
+                        (updated, len(results), errors))
+            all_results.extend(results)
+    finally:
+        pool.terminate()
+        pool.join()
 
-    tasks = batched(uuids, batch_size)
-
-    all_results = []
-    for result in pool.imap_unordered(worker, tasks, chunksize=1):
-        results = result['results']
-        errors = sum(error for item_type, path, update, error in results)
-        updated = sum(update for item_type, path, update, error in results)
-        logger.info('Batch: Updated %d of %d (errors %d)' %
-                    (updated, len(results), errors))
-        all_results.extend(results)
-
-    for item_type, results in itertools.groupby(sorted(all_results), lambda x: x[0]):
+    for item_type, results in itertools.groupby(sorted(all_results), lambda x: x[0] or ''):
         results = list(results)
         errors = sum(error for item_type, path, update, error in results)
         updated = sum(update for item_type, path, update, error in results)
