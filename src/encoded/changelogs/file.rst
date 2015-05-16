@@ -39,45 +39,45 @@ Schema version 5
             "linkTo": "platform"
         },
 
-"file_format" enum was restricted to general formats for example bed not bed_narrowpeak
+* "file_format" enum was restricted to general formats for example bed not bed_narrowpeak
     
-    {
-        'bed_bedLogR': 'bed',
-        'bed_bedMethyl': 'bed',
-        'bed_broadPeak': 'bed',
-        'bed_gappedPeak': 'bed',
-        'bed_narrowPeak': 'bed',
-        'bed_bedRnaElements': 'bed',
-        'bedLogR': 'bigBed',
-        'bedMethyl': 'bigBed',
-        'broadPeak': 'bigBed',
-        'narrowPeak': 'bigBed',
-        'gappedPeak': 'bigBed',
-        'bedRnaElements': 'bigBed'
-    }
+        {
+                'bed_bedLogR': 'bed',
+                'bed_bedMethyl': 'bed',
+                'bed_broadPeak': 'bed',
+                'bed_gappedPeak': 'bed',
+                'bed_narrowPeak': 'bed',
+                'bed_bedRnaElements': 'bed',
+                'bedLogR': 'bigBed',
+                'bedMethyl': 'bigBed',
+                'broadPeak': 'bigBed',
+                'narrowPeak': 'bigBed',
+                'gappedPeak': 'bigBed',
+                'bedRnaElements': 'bigBed'
+        }
 
-    "current_enum": [
-        "bam",
-        "bed",
-        "bigBed",
-        "bigWig",
-        "fasta",
-        "fastq",
-        "gff",
-        "gtf",
-        "hdf5",
-        "idat",
-        "rcc",
-        "CEL",
-        "tsv",
-        "csv",
-        "sam",
-        "tar",
-        "wig"
-    ]
+        "current_enum": [
+                "bam",
+                "bed",
+                "bigBed",
+                "bigWig",
+                "fasta",
+                "fastq",
+                "gff",
+                "gtf",
+                "hdf5",
+                "idat",
+                "rcc",
+                "CEL",
+                "tsv",
+                "csv",
+                "sam",
+                "tar",
+                "wig"
+        ]
 
 
-"file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]
+* "file_format_type" was added and will be required when file_format is ["bed", "bigBed", "gff"]
 
         "enum": [
             "bed6",
