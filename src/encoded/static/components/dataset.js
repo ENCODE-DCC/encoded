@@ -286,6 +286,13 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.run_type ? -1 : (b.run_type ? 1 : 0);
                 }
                 break;
+            case 'assembly':
+                if (a.assembly && b.assembly) {
+                    diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
+                } else {
+                    diff = a.assembly ? -1 : (b.assembly ? 1 : 0);
+                }
+                break;
             case 'date_created':
                 if (a.date_created && b.date_created) {
                     diff = Date.parse(a.date_created) - Date.parse(b.date_created);
@@ -452,7 +459,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                 </tr>
                             </thead>
