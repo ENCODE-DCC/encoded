@@ -7,6 +7,7 @@ from contentbase.resources import *  # noqa
 def includeme(config):
     config.include('pyramid_tm')
     config.include('.stats')
+    config.include('.batchupgrade')
     config.include('.calculated')
     config.include('.embedding')
     config.include('.json_renderer')

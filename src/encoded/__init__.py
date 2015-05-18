@@ -118,13 +118,10 @@ def load_workbook(app, workbook_filename, docsdir, test=False):
     load_all(testapp, workbook_filename, docsdir, test=test)
 
 
-def load_ontology(config):
-    settings = config.registry.settings
-    path = settings.get('ontology_path')
+def json_from_path(path, default=None):
     if path is None:
-        config.registry['ontology'] = {}
-        return
-    config.registry['ontology'] = json.load(open(path))
+        return default
+    return json.load(open(path))
 
 
 def session(config):
@@ -200,7 +197,9 @@ def main(global_config, **local_config):
         config.include('.search')
 
     config.include(static_resources)
-    config.include(load_ontology)
+
+    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
+    config.registry['backfill_2683'] = json_from_path(settings.get('backfill_2683_path'), {})
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
