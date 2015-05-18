@@ -372,6 +372,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
             run_type: 'tcell-sort',
+            assembly: 'tcell-sort',
             read_length: 'tcell-sort',
             date_created: 'tcell-sort'
         };
@@ -408,6 +409,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.run_type ? file.run_type : null}</td>
                         <td>{file.paired_end}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
+                        <td>{file.assembly}</td>
                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                     </tr>
                 );
@@ -450,6 +452,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                 </tr>
                             </thead>
