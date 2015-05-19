@@ -539,9 +539,11 @@
     "output_type_output_category": {
         "idat green channel": "raw data",
         "idat red channel": "raw data",
+        "intensity values": "raw data",
         "reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
+        "reporter code counts": "raw data",
 
         "alignments": "alignment",
         "transcriptome alignments": "alignment",
@@ -605,6 +607,7 @@
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
         "predicted transcription start sites": "annotation",
+        "transcription start sites": "annotation",
                 
         "genome index": "reference",
         "genome reference": "reference",
