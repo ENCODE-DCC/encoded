@@ -844,14 +844,16 @@ var AuditMixin = audit.AuditMixin;
 
             // See if a specific result type was requested ('type=x')
             // Satisfied iff exactly one type is in the search
-            var specificFilter;
-            filters.forEach(function(filter) {
-                if (filter.field === 'type') {
-                    specificFilter = specificFilter ? '' : filter.term;
+            if (results.length) {
+                var specificFilter;
+                filters.forEach(function(filter) {
+                    if (filter.field === 'type') {
+                        specificFilter = specificFilter ? '' : filter.term;
+                    }
+                });
+                if (typeof specificFilter === 'string' && specificFilter.length) {
+                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
                 }
-            });
-            if (typeof specificFilter === 'string' && specificFilter.length) {
-                label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
             }
 
             return (
