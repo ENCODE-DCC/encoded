@@ -69,25 +69,6 @@
                 }
             ]
         },
-        "run_type": {
-            "oneOf": [
-                {
-                   "required": ["paired_end"],
-                    "properties": {
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "run_type": {
-                            "enum": ["single-ended","unknown"]
-                        }
-                    }
-                }
-            ]
-        },
         "paired_with": {
             "required": ["paired_end"],
             "properties": {
@@ -330,7 +311,7 @@
                         "predicted enhancers",
                         "predicted forebrain enhancers",
                         "predicted heart enhancers",
-                        "predicted wholebrain enhancers",
+                        "predicted whole brain enhancers",
                         
                         "genome reference",
                         "genome index",
