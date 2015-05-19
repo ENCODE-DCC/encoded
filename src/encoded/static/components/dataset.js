@@ -395,8 +395,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             date_created: 'tcell-sort'
         };
 
-        var colCountRaw = Object.keys(cellClassRaw).length + 1; // Add the number of non-sortable columns
-        var colCountProc = Object.keys(cellClassProc).length + 1;
+        var colCountRaw = Object.keys(cellClassRaw).length + (encodevers == "3" ? 1 : 0);
+        var colCountProc = Object.keys(cellClassProc).length +  + (encodevers == "3" ? 1 : 0);
         cellClassRaw[this.state.col.raw] = this.state.reversed.raw ? 'tcell-desc' : 'tcell-asc';
         cellClassProc[this.state.col.proc] = this.state.reversed.proc ? 'tcell-desc' : 'tcell-asc';
         var files = _(this.props.items).groupBy(function(file) {
