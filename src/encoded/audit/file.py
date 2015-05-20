@@ -241,3 +241,24 @@ def audit_file_output_type(value, system):
                 value['@id'],
                 value['output_type'])
             raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
+
+
+@audit_checker('file', frame='object')
+def audit_file_paired_ended_run_type(value, system):
+    '''
+    Audit to catch those files that were upgraded to have run_type = paired ended
+    resulting from its migration out of replicate but lack the paired_end property
+    to specify which read it is
+    '''
+
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
+        return
+
+    if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
+        return
+
+    if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
+        if 'paired_end' not in value:
+            detail = 'File {} has a paired-ended run_type but is missing its paired_end value'.format(
+                value['@id'])
+            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
