@@ -189,7 +189,9 @@
                         "bedRnaElements",
                         "peptideMapping",
                         "modPepMap",
-                        "pepMap"
+                        "pepMap",
+                        "shortFrags",
+                        "bedExonScore"
                     ]
                 }
            ]
