@@ -62,6 +62,17 @@ def dataset_3(root, dataset):
     return properties
 
 
+@pytest.fixture
+def dataset_5(root, dataset):
+    item = root.get_by_uuid(dataset['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '5',
+        'references' : [ "doi:10.1214/11-AOAS466"]
+    })
+    return properties
+
+
 def test_experiment_upgrade(root, registry, experiment, experiment_1, files, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(experiment['uuid'])
@@ -178,3 +189,12 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     value = migrator.upgrade('experiment', experiment_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['status'] == 'submitted'
+
+
+def test_dataset_upgrade_references(root, registry, dataset, dataset_5, publications, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(dataset['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('dataset', dataset_5, target_version='6', context=context)
+    assert value['schema_version'] == '6'
+    assert value['references'] == [publications[0]['uuid']]

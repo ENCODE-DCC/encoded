@@ -42,13 +42,15 @@ def run(fp, url, username, password):
         if r.json()['status'] != 'uploading':
             print('skipped %s: status %r is not "uploading"' % (item['@id'], r.json()['status']))
             continue
+        data = {
+            'status': 'in progress',
+            'file_size': result['file_size'],
+        }
+        if 'content_md5sum' in result:
+            data['content_md5sum'] = result['content_md5sum']
         r = requests.patch(
             item_url,
-            data=json.dumps({
-                'status': 'in progress',
-                'file_size': result['file_size'],
-                'content_md5sum': result['content_md5sum']
-            }),
+            data=json.dumps(data),
             auth=(username, password),
             headers=HEADERS,
         )

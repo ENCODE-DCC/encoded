@@ -1,8 +1,8 @@
 from pyramid.traversal import find_root
 from uuid import UUID
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 import re
-from .shared import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 
 @upgrade_step('experiment', '', '2')
@@ -83,3 +83,21 @@ def experiment_4_5(value, system):
     # http://redmine.encodedcc.org/issues/1393
     if value.get('biosample_type') == 'primary cell line':
         value['biosample_type'] = 'primary cell'
+
+
+@upgrade_step('experiment', '5', '6')
+@upgrade_step('dataset', '5', '6')
+def experiment_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
+    if 'references' in value:
+        new_references = []
+        for ref in value['references']:
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
+        value['references'] = new_references

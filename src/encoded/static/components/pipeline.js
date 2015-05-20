@@ -43,14 +43,21 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
     assembleGraph: function() {
         var jsonGraph;
+        var analysis_steps = this.props.context.analysis_steps;
 
         // Only produce a graph if there's at least one analysis step
-        if (this.props.context.analysis_steps) {
+        if (analysis_steps && analysis_steps.length) {
+            // Make an object with all step UUIDs in the pipeline
+            var allSteps = {};
+            analysis_steps.forEach(function(step) {
+                allSteps[step.uuid] = step;
+            });
+
             // Create an empty graph architecture
             jsonGraph = new JsonGraph(this.props.context.accession);
 
             // Add files and their steps as nodes to the graph
-            this.props.context.analysis_steps.forEach(function(step) {
+            analysis_steps.forEach(function(step) {
                 var stepId = step['@id'];
 
                 // Make an array of step types
@@ -65,26 +72,30 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        jsonGraph.addEdge(parent['@id'], stepId);
+                        if (parent.uuid in allSteps) {
+                            jsonGraph.addEdge(parent['@id'], stepId);
+                        }
                     });
                 }
             }, this);
 
             // If any analysis step parents haven't been seen yet,
             // add them to the graph too
-            this.props.context.analysis_steps.forEach(function(step) {
-                if (step.parents) {
+            analysis_steps.forEach(function(step) {
+                if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        var stepId = parent['@id'];
-                        if (!jsonGraph.getNode(stepId)) {
-                            // Make an array of step types
-                            var stepTypesList = parent.analysis_step_types.map(function(type) {
-                                return type;
-                            });
+                        if (parent.uuid in allSteps) {
+                            var stepId = parent['@id'];
+                            if (!jsonGraph.getNode(stepId)) {
+                                // Make an array of step types
+                                var stepTypesList = parent.analysis_step_types.map(function(type) {
+                                    return type;
+                                });
 
-                            // Assemble a single analysis step node.
-                            jsonGraph.addNode(stepId, stepTypesList.join(', '),
-                                {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
+                                // Assemble a single analysis step node.
+                                jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
+                            }
                         }
                     }, this);
                 }
@@ -141,7 +152,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} id="biosample-audit" />
+                <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="title">
@@ -246,6 +257,11 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                         <dd>{selectedStep.analysis_step_types.join(', ')}</dd>
                     </div>
 
+                    <div data-test="steptype">
+                        <dt>Step name</dt>
+                        <dd>{selectedStep.name}</dd>
+                    </div>
+
                     {selectedStep.input_file_types && selectedStep.input_file_types.length ?
                         <div data-test="inputtypes">
                             <dt>Input file types</dt>
@@ -256,7 +272,14 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                     {selectedStep.output_file_types && selectedStep.output_file_types.length ?
                         <div data-test="outputtypes">
                             <dt>Output file types</dt>
-                            <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                            <dd>{selectedStep.output_file_types.map(function(type, i) {
+                                return (
+                                    <span>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {type}
+                                    </span>
+                                );
+                            })}</dd>
                         </div>
                     : null}
 
@@ -322,7 +345,7 @@ var Listing = React.createClass({
                         </a>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

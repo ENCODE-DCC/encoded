@@ -10,6 +10,7 @@ var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var image = require('./image');
+var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
@@ -19,6 +20,7 @@ var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
+var PubReferenceList = reference.PubReferenceList;
 
 
 var Panel = function (props) {
@@ -104,7 +106,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} id="biosample-audit" />
+                <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">
@@ -222,6 +224,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{aliasList}</dd>
+                            </div>
+                        : null}
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
 
@@ -962,12 +973,6 @@ var Document = module.exports.Document = React.createClass({
                                 </div>
                             : null}
 
-                            {context.references && context.references.length ?
-                                <div data-test="references">
-                                    <dt>References</dt>
-                                    <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
-                                </div>
-                            : null}
                         </dl>
                     </div>
 

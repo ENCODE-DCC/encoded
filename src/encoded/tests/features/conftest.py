@@ -13,7 +13,7 @@ def __init__(self, *args, **kw):
 WebDriver.__init__ = __init__
 
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .. import test_indexing
@@ -23,7 +23,7 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
     from .. import test_indexing
-    from encoded.commands import create_mapping
+    from contentbase.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
         create_mapping.run(app)
         yield app

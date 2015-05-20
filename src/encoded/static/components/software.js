@@ -1,79 +1,25 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var dbxref = require('./dbxref');
 var search = require('./search');
 var pipeline = require('./pipeline');
 var fetched = require('./fetched');
+var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
-var Citation = require('./publication').Citation;
+var audit = require('./audit');
 var _ = require('underscore');
 
-var DbxrefList = dbxref.DbxrefList;
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
-
-// Count the total number of references in all the publications passed
-// in the pubs array parameter.
-function refCount(pubs) {
-    var total = 0;
-    if (pubs) {
-        pubs.forEach(function(pub) {
-            total += pub.references ? pub.references.length : 0;
-        });
-    }
-    return total;
-}
-
-
-// Display all references in the array of publications in the 'pubs' property.
-var References = React.createClass({
-    render: function() {
-        return (
-            <div>
-                {this.props.pubs ?
-                    <div>
-                        {this.props.pubs.map(function(pub) {
-                            return (
-                                <div className="multi-dd">
-                                    <div>
-                                        {pub.authors ? pub.authors + '. ' : ''}
-                                        {pub.title + ' '}
-                                        <Citation context={pub} />
-                                    </div>
-                                    {pub.references && pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
-                                </div>
-                            );
-                        })}
-                    </div>
-                : null}
-            </div>
-        );
-    }
-});
-
-
-// Display all PMID/PMCID references in the array of publications in the 'pubs' property.
-var PubReferences = React.createClass({
-    render: function() {
-        // Collect all publications' references into one array
-        // and remove duplicates
-        var allRefs = [];
-        this.props.pubs.forEach(function(pub) {
-            allRefs = allRefs.concat(pub.references);
-        });
-        allRefs = _.uniq(allRefs);
-
-        if (allRefs) {
-            return <DbxrefList values={allRefs} className={this.props.listClass} />;
-        } else {
-            return <span></span>;
-        }
-    }
-});
+var PubReferenceList = reference.PubReferenceList;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Software = module.exports.Software = React.createClass({
+    mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -88,8 +34,10 @@ var Software = module.exports.Software = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
+                        <AuditIndicators audits={context.audit} id="publication-audit" />
                     </div>
                 </header>
+                <AuditDetail context={context} id="publication-audit" />
 
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -122,8 +70,10 @@ var Software = module.exports.Software = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>References</dt>
-                                <dd><References pubs={context.references} /></dd>
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
                             </div>
                         : null}
                     </dl>
@@ -195,38 +145,34 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
-        var context = this.props.context;
-        return (<li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Software</p>
-                            {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
-                        </div>
-                        <div className="accession">
-                            <a href={context['@id']}>{context.title}</a>
-                            {context.source_url ? <span className="accession-note"> &mdash; <a href={context.source_url}>source</a></span> : ''}
-                        </div>
+        var result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Software</p>
+                        {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
+                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a>
+                        {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
                     </div>
                     <div className="data-row">
-                        <div>{context.description}</div>
-
-                        {context.software_type && context.software_type.length ?
+                        <div>{result.description}</div>
+                        {result.software_type && result.software_type.length ?
                             <div>
                                 <strong>Software type: </strong>
-                                {context.software_type.join(", ")}
+                                {result.software_type.join(", ")}
                             </div>
                         : null}
 
-                        {refCount(context.references) ?
-                            <div>
-                                <strong>Publication: </strong>
-                                <PubReferences pubs={context.references} listClass="list-reference" />
-                            </div>
-                        : null}
                     </div>
+                </div>
+                <AuditDetail context={result} id={result['@id']} forcedEditLink />
             </li>
         );
     }

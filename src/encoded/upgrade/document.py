@@ -1,6 +1,9 @@
 from past.builtins import basestring
-from ..migrator import upgrade_step
-from .shared import ENCODE2_AWARDS
+from contentbase.upgrader import upgrade_step
+from .shared import ENCODE2_AWARDS, REFERENCES_UUID
+from pyramid.traversal import find_root
+from uuid import UUID
+import re
 
 
 def fix_reference(value):
@@ -30,3 +33,20 @@ def document_2_3(value, system):
                 value['status'] = 'released'
             elif value['award'] not in ENCODE2_AWARDS:
                 value['status'] = 'in progress'
+
+
+@upgrade_step('document', '3', '4')
+def document_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/2591
+    context = system['context']
+    root = find_root(context)
+    publications = root['publications']
+    if 'references' in value:
+        new_references = []
+        for ref in value['references']:
+            if re.match('doi', ref):
+                new_references.append(REFERENCES_UUID[ref])
+            else:
+                item = publications[ref]
+                new_references.append(str(item.uuid))
+        value['references'] = new_references

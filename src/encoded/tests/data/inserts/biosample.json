@@ -45,8 +45,8 @@
         "note": "(PMID: 4357757)",
         "organism": "human",
         "references": [
-            "PMID:23000965",
-            "PMID:16395128"
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "passage_number": 5,
         "product_id": "HTB-22",
@@ -623,7 +623,7 @@
         "lab": "kevin-white",
         "organism": "celegans",
         "source": "kevin-white",
-        "worm_synchronization_stage": "starved L1 larva",
+        "worm_synchronization_stage": "L1 larva starved after bleaching",
         "post_synchronization_time": "3",
         "post_synchronization_time_units": "hour",
         "submitted_by": "eni.lectus@nullam.sed",

@@ -2,6 +2,7 @@
 var React = require('react');
 var fetched = require('../fetched');
 var globals = require('../globals');
+var noarg_memoize = require('../../libs/noarg-memoize');
 var ObjectPicker = require('../inputs').ObjectPicker;
 
 
@@ -40,12 +41,12 @@ var FetchedItemBlockView = React.createClass({
 globals.blocks.register({
     label: 'item block',
     icon: 'icon icon-paperclip',
-    schema: function() {
+    schema: noarg_memoize(function() {
         var ReactForms = require('react-forms');
         return ReactForms.schema.Mapping({}, {
             item: ReactForms.schema.Scalar({label: 'Item', input: <ObjectPicker />}),
             className: ReactForms.schema.Scalar({label: 'CSS Class'}),
         });
-    },
+    }),
     view: FetchedItemBlockView
 }, 'itemblock');

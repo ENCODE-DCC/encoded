@@ -1,14 +1,14 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
 )
 from .base import (
     Item,
 )
-from .download import ItemWithAttachment
+from contentbase.attachment import ItemWithAttachment
 
 
 class Characterization(ItemWithAttachment, Item):
@@ -24,7 +24,7 @@ class Characterization(ItemWithAttachment, Item):
     })
 class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
-    schema = load_schema('construct_characterization.json')
+    schema = load_schema('encoded:schemas/construct_characterization.json')
 
 
 @collection(
@@ -35,7 +35,7 @@ class ConstructCharacterization(Characterization):
     })
 class RNAiCharacterization(Characterization):
     item_type = 'rnai_characterization'
-    schema = load_schema('rnai_characterization.json')
+    schema = load_schema('encoded:schemas/rnai_characterization.json')
 
 
 @collection(
@@ -46,7 +46,7 @@ class RNAiCharacterization(Characterization):
     })
 class DonorCharacterization(Characterization):
     item_type = 'donor_characterization'
-    schema = load_schema('donor_characterization.json')
+    schema = load_schema('encoded:schemas/donor_characterization.json')
 
 
 @collection(
@@ -57,7 +57,7 @@ class DonorCharacterization(Characterization):
     })
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
-    schema = load_schema('biosample_characterization.json')
+    schema = load_schema('encoded:schemas/biosample_characterization.json')
 
 
 @collection(
@@ -68,7 +68,7 @@ class BiosampleCharacterization(Characterization):
     })
 class AntibodyCharacterization(Characterization):
     item_type = 'antibody_characterization'
-    schema = load_schema('antibody_characterization.json')
+    schema = load_schema('encoded:schemas/antibody_characterization.json')
     embedded = [
         'submitted_by',
         'lab',

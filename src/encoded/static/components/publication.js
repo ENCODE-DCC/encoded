@@ -3,24 +3,32 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var audit = require('./audit');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Publication = module.exports.Panel = React.createClass({
+    mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         return (
             <div className={itemClass}>
                 <h2>{context.title}</h2>
+                <AuditIndicators audits={context.audit} id="publication-audit" />
+                <AuditDetail context={context} id="publication-audit" />
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     <Citation {...this.props} />
                 </div>
 
-                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.references && context.references.length) ?
+                {context.abstract || context.data_used || (context.datasets && context.datasets.length) || (context.identifiers && context.identifiers.length) ?
                     <div className="view-detail panel">
                         <Abstract {...this.props} />
                     </div>
@@ -92,10 +100,10 @@ var Abstract = React.createClass({
                     </div>
                 : null}
 
-                {context.references && context.references.length ?
+                {context.identifiers && context.identifiers.length ?
                     <div data-test="references">
                         <dt>References</dt>
-                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                        <dd><DbxrefList values={context.identifiers} className="multi-value" /></dd>
                     </div>
                 : null}
            </dl>
@@ -197,7 +205,7 @@ var SupplementaryDataListing = React.createClass({
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
         var result = this.props.context;
         var columns = this.props.columns;
@@ -206,24 +214,28 @@ var Listing = React.createClass({
 
         return (
             <li>
-                {this.renderActions()}
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Publication</p>
-                    <p className="type meta-status">{' ' + result.status}</p>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Publication</p>
+                        <p className="type meta-status">{' ' + result.status}</p>
+                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                    </div>
+                    <div className="accession"><a href={result['@id']}>{result.title}</a></div>
+                    <div className="data-row">
+                        {authors ? <p className="list-author">{authors}.</p> : null}
+                        <p className="list-citation"><Citation {...this.props} /></p>
+                        {result.identifiers && result.identifiers.length ? <DbxrefList values={result.identifiers} className="list-reference" /> : '' }
+                        {result.supplementary_data && result.supplementary_data.length ?
+                            <div>
+                                {result.supplementary_data.map(function(data, i) {
+                                    return <SupplementaryDataListing data={data} columns={columns} id={result['@id']} key={i} />;
+                                })}
+                            </div>
+                        : null}
+                    </div>
                 </div>
-                <div className="accession"><a href={result['@id']}>{result.title}</a></div>
-                <div className="data-row">
-                    {authors ? <p className="list-author">{authors}.</p> : null}
-                    <p className="list-citation"><Citation {...this.props} /></p>
-                    {result.references && result.references.length ? <DbxrefList values={result.references} className="list-reference" /> : '' }
-                    {result.supplementary_data && result.supplementary_data.length ?
-                        <div>
-                            {result.supplementary_data.map(function(data, i) {
-                                return <SupplementaryDataListing data={data} columns={columns} id={result['@id']} key={i} />;
-                            })}
-                        </div>
-                    : null}
-                </div>
+                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

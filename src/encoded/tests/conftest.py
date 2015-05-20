@@ -150,7 +150,7 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from ..indexing import ELASTIC_SEARCH
+    from contentbase.elasticsearch import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
 
 
@@ -254,6 +254,16 @@ def indexer_testapp(app, external_tx):
     return TestApp(app, environ)
 
 
+@pytest.fixture
+def embed_testapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'EMBED',
+    }
+    return TestApp(app, environ)
+
+
 @fixture(scope='session')
 def server_host_port():
     from webtest.http import get_free_port
@@ -310,11 +320,11 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.yield_fixture(scope='session')
 def connection(request, engine_url):
     from encoded import configure_engine
-    from encoded.storage import Base, DBSession
+    from contentbase.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
     # ``server`` thread must be in same scope
@@ -345,7 +355,7 @@ def external_tx(request, connection):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     # # The database should be empty unless a data fixture was loaded
-    # from encoded.storage import Base
+    # from contentbase.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
     return tx
@@ -419,7 +429,7 @@ def session(transaction):
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     return DBSession()
 
 
@@ -431,7 +441,7 @@ def check_constraints(request, connection):
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -518,7 +528,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 @fixture
 def no_deps(request, connection):
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     from sqlalchemy import event
 
     session = DBSession()
@@ -594,6 +604,11 @@ def organisms(testapp):
 @pytest.fixture
 def human(organisms):
     return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def mouse(organisms):
+    return [o for o in organisms if o['name'] == 'mouse'][0]
 
 
 @pytest.fixture
@@ -732,6 +747,61 @@ def datasets(testapp, labs, awards):
 @pytest.fixture
 def dataset(datasets):
     return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
+
+
+@pytest.fixture
+def publications(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'publication')
+
+
+@pytest.fixture
+def publication(publications):
+    return publications[0]
+
+
+@pytest.fixture
+def pipelines(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'pipeline')
+
+
+@pytest.fixture
+def pipeline(pipelines):
+    return pipelines[0]
+
+
+@pytest.fixture
+def documents(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'document')
+
+
+@pytest.fixture
+def document(documents):
+    return documents[0]
+
+
+@pytest.fixture
+def biosample_characterizations(testapp, awards, labs, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample_characterization')
+
+
+@pytest.fixture
+def biosample_characterization(biosample_characterizations):
+    return biosample_characterizations[0]
+
+
+@pytest.fixture
+def mouse_donors(testapp, awards, labs, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'mouse_donor')
+
+
+@pytest.fixture
+def mouse_donor(mouse_donors):
+    return mouse_donors[0]
 
 
 @pytest.mark.fixture_cost(10)
