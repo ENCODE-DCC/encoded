@@ -272,7 +272,14 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
                     {selectedStep.output_file_types && selectedStep.output_file_types.length ?
                         <div data-test="outputtypes">
                             <dt>Output file types</dt>
-                            <dd>{selectedStep.output_file_types.join(', ')}</dd>
+                            <dd>{selectedStep.output_file_types.map(function(type, i) {
+                                return (
+                                    <span>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {type}
+                                    </span>
+                                );
+                            })}</dd>
                         </div>
                     : null}
 
