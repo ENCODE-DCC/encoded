@@ -38,16 +38,17 @@ install:
 before_script:
   - >
     if test -n "$BROWSER"; then
-      CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
-      CONNECT_DOWNLOAD=Sauce_Connect.zip
+      CONNECT_URL=https://saucelabs.com/downloads/sc-4.3.8-linux.tar.gz
+      CONNECT_DOWNLOAD=sc.tar.gz
       SC_READYFILE=sauce-connect-ready-$RANDOM
       SC_LOGFILE=$HOME/sauce-connect.log
       curl $CONNECT_URL > $CONNECT_DOWNLOAD
-      unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
-      java -jar Sauce-Connect.jar --readyfile $SC_READYFILE \
+      mkdir sc
+      tar -zxf $CONNECT_DOWNLOAD --strip 1 --directory sc
+      sc/bin/sc --readyfile $SC_READYFILE \
         --logfile $SC_LOGFILE \
         --tunnel-identifier $TRAVIS_JOB_NUMBER \
-        $SAUCE_USERNAME $SAUCE_ACCESS_KEY > /dev/null &
+        --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY > /dev/null &
       while [ ! -f $SC_READYFILE ]; do sleep .5; done
     fi
 script:
