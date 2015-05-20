@@ -304,5 +304,5 @@
         "biosample.donor.accession": 1.0,
         "biosample.donor.organism.name": 1.0
     },
-    "change_log": "/profiles/changelogs/library.text"
+    "changelog": "/profiles/changelogs/library.md"
 }

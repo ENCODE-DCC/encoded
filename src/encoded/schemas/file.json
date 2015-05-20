@@ -659,5 +659,5 @@
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },
-    "change_log": "/profiles/changelogs/file.rst"
+    "changelog": "/profiles/changelogs/file.md"
 }
