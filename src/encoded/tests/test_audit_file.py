@@ -169,7 +169,7 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     assert any(error['category'] == 'mismatched replicate' for error in errors_list)
 
 
-def test_audit_file_paired_ended_run_type(testapp, file2, file_rep2):
+def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
     testapp.patch_json(file_rep2['@id'], {'paired_ended': True})
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234})
     res = testapp.get(file2['@id'] + '@@index-data')
@@ -178,3 +178,14 @@ def test_audit_file_paired_ended_run_type(testapp, file2, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_end' for error in errors_list)
+
+
+def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
+    testapp.patch_json(file_rep2['@id'], {'paired_ended': False})
+    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234, 'paired_end': 1})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing mate pair' for error in errors_list)

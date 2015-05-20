@@ -222,7 +222,8 @@ def audit_file_paired_ended_run_type(value, system):
     '''
     Audit to catch those files that were upgraded to have run_type = paired ended
     resulting from its migration out of replicate but lack the paired_end property
-    to specify which read it is
+    to specify which read it is. This audit will also catch the case where run_type
+    = paired-ended but there is no paired_end = 2 due to registeration error.
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
@@ -236,3 +237,8 @@ def audit_file_paired_ended_run_type(value, system):
             detail = 'File {} has a paired-ended run_type but is missing its paired_end value'.format(
                 value['@id'])
             raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+
+        if (value['paired_end'] == 1) and 'paired_with' not in value:
+            detail = 'File {} has a paired-ended run_type but is missing a paired_end=2 mate'.format(
+                value['@id'])
+            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')    
