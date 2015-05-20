@@ -225,12 +225,6 @@ def file_4_5(value, system):
         value['file_format_type'] = 'modPepMap'
     elif value['output_type'] in ['pepMapGcFt', 'pepMapGcUnFt']:
         value['file_format_type'] = 'pepMap'
-    elif (
-        value['output_type'] in ['HMM', 'splice junctions']
-        and value['file_format'] == 'bed'
-        and value['file_format_type'] == 'unknown'
-    ):
-        value['file_format_type'] = 'bed9'
 
     #  http://redmine.encodedcc.org/issues/2565
     output_mapping = {
@@ -394,15 +388,6 @@ def file_4_5(value, system):
         and value['file_format_type'] == 'unknown'
     ):
         value['file_format_type'] = 'bedRnaElements'
-
-    # find the peptideMappings
-    if (
-        value['output_type'] == ['raw signal']
-        and value['file_format'] == 'bigBed'
-        and value['file_format_type'] == 'unknown'
-    ):
-        value['file_format_type'] = 'peptideMapping'
-        value['output_type'] = 'unfiltered peptide quantification'
 
     #  Get the replicate information
     if value.get('file_format') in ['fastq', 'fasta', 'csfasta']:
