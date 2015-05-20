@@ -210,7 +210,7 @@ def test_audit_experiment_target(testapp, base_experiment):
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'biological_replicate_number': 3})
     testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
