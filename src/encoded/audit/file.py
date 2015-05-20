@@ -218,32 +218,6 @@ def audit_file_format_specifications(value, system):
 
 
 @audit_checker('file', frame='object')
-def audit_file_output_type(value, system):
-    '''
-    The differing RFA's will have differing acceptable output_types
-    '''
-
-    if value.get('status') in ['deleted']:
-        return
-
-    undesirable_output_type = [
-        'validation',
-        'sequence alignability',
-        'sequence uniqueness',
-        'predicted forebrain enhancers',
-        'predicted heart enhancers',
-        'predicted wholebrain enhancers',
-        ]
-
-    # if value['dataset']['award']['rfa'] != 'ENCODE3':
-    if value['output_type'] in undesirable_output_type:
-            detail = 'File {} has output_type "{}" which is not a standard value'.format(
-                value['@id'],
-                value['output_type'])
-            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
-
-
-@audit_checker('file', frame='object')
 def audit_file_paired_ended_run_type(value, system):
     '''
     Audit to catch those files that were upgraded to have run_type = paired ended
