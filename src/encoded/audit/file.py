@@ -218,37 +218,12 @@ def audit_file_format_specifications(value, system):
 
 
 @audit_checker('file', frame='object')
-def audit_file_output_type(value, system):
-    '''
-    The differing RFA's will have differing acceptable output_types
-    '''
-
-    if value.get('status') in ['deleted']:
-        return
-
-    undesirable_output_type = [
-        'validation',
-        'sequence alignability',
-        'sequence uniqueness',
-        'predicted forebrain enhancers',
-        'predicted heart enhancers',
-        'predicted wholebrain enhancers',
-        ]
-
-    # if value['dataset']['award']['rfa'] != 'ENCODE3':
-    if value['output_type'] in undesirable_output_type:
-            detail = 'File {} has output_type "{}" which is not a standard value'.format(
-                value['@id'],
-                value['output_type'])
-            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
-
-
-@audit_checker('file', frame='object')
 def audit_file_paired_ended_run_type(value, system):
     '''
     Audit to catch those files that were upgraded to have run_type = paired ended
     resulting from its migration out of replicate but lack the paired_end property
-    to specify which read it is
+    to specify which read it is. This audit will also catch the case where run_type
+    = paired-ended but there is no paired_end = 2 due to registeration error.
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
@@ -262,3 +237,8 @@ def audit_file_paired_ended_run_type(value, system):
             detail = 'File {} has a paired-ended run_type but is missing its paired_end value'.format(
                 value['@id'])
             raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+
+        if (value['paired_end'] == 1) and 'paired_with' not in value:
+            detail = 'File {} has a paired-ended run_type but is missing a paired_end=2 mate'.format(
+                value['@id'])
+            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')    
