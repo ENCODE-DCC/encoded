@@ -659,5 +659,5 @@
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },
-    "change_log": "https://github.com/ENCODE-DCC/encoded/tree/master/src/encoded/changelogs/file.rst"
+    "change_log": "/profiles/changelogs/file.rst"
 }
