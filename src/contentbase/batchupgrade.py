@@ -14,8 +14,6 @@ from contentbase.storage import (
     update_keys,
     update_rels,
 )
-from multiprocessing import get_context
-from multiprocessing.pool import Pool
 from pyramid.view import view_config
 from pyramid.traversal import find_resource
 
@@ -133,6 +131,10 @@ def batch_upgrade(request):
 
 
 def run(config_uri, app_name=None, username=None, types=None, batch_size=500, processes=None):
+    # multiprocessing.get_context is Python 3 only.
+    from multiprocessing import get_context
+    from multiprocessing.pool import Pool
+
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('contentbase').setLevel(logging.DEBUG)
 
