@@ -50,6 +50,9 @@
                 "required": ["accession"]
             }
         },
+        "external_accession_url": {
+            "required": ["external_accession"]
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -123,6 +126,13 @@
             "type": "string",
             "permission": "import_items",
             "uniqueKey": "accession"
+        },
+        "external_accession_url": {
+            "title": "External accession url",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "format": "uri",
+            "permission": "import_items"
         },
         "file_format": {
             "title": "File format",
