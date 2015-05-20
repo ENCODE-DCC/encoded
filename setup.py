@@ -68,6 +68,7 @@ setup(
     },
     entry_points='''
         [console_scripts]
+        batchupgrade = contentbase.batchupgrade:main
         create-mapping = contentbase.elasticsearch.create_mapping:main
 
         add-date-created = encoded.commands.add_date_created:main
@@ -85,8 +86,6 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
-        update-keys-links = encoded.commands.update_keys_links:main
-        upgrade = encoded.commands.upgrade:main
 
         [paste.app_factory]
         main = encoded:main

@@ -334,6 +334,10 @@ class TypesTool(object):
         return self.types[name]
 
 
+class UnknownItemTypeError(Exception):
+    pass
+
+
 class Connection(object):
     ''' Intermediates between the storage and the rest of the system
     '''
@@ -368,7 +372,11 @@ class Connection(object):
         if model is None:
             return default
 
-        Item = self.types[model.item_type].factory
+        try:
+            Item = self.types[model.item_type].factory
+        except KeyError:
+            raise UnknownItemTypeError(model.item_type)
+
         item = Item(self.registry, model)
         model.used_for(item)
         self.item_cache[uuid] = item
@@ -391,7 +399,11 @@ class Connection(object):
         if cached is not None:
             return cached
 
-        Item = self.types[model.item_type].factory
+        try:
+            Item = self.types[model.item_type].factory
+        except KeyError:
+            raise UnknownItemTypeError(model.item_type)
+
         item = Item(self.registry, model)
         model.used_for(item)
         self.item_cache[uuid] = item

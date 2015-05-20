@@ -33,6 +33,10 @@ _tsv_mapping = OrderedDict([
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
     ('Biosample phase', ['replicates.library.biosample.phase']),
+    ('Biosample synchronization stage', ['replicates.library.biosample.fly_synchronization_stage',
+                                         'replicates.library.biosample.worm_synchronization_stage',
+                                         'replicates.library.biosample.post_synchronization_time',
+                                         'replicates.library.biosample.post_synchronization_time_units']),
     ('Experiment target', ['target.name']),
     ('Antibody accession', ['replicates.antibody.accession']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
@@ -42,7 +46,7 @@ _tsv_mapping = OrderedDict([
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
-    ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration']),
+    ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Read length', ['files.replicate.read_length']),
     ('Run type', ['files.replicate.library']),
     ('Library fragmentation method', ['files.replicate.library']),
@@ -70,7 +74,7 @@ def metadata_tsv(context, request):
         header.append(prop)
         param_list['field'] = param_list['field'] + _tsv_mapping[prop]
         if _tsv_mapping[prop][0].startswith('files'):
-            file_attributes = file_attributes + _tsv_mapping[prop]
+            file_attributes = file_attributes + [_tsv_mapping[prop][0]]
     param_list['limit'] = ['all']
     path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)
@@ -138,8 +142,8 @@ def metadata_tsv(context, request):
                     for value in simple_path_ids(f, path):
                         temp.append(str(value))
                     if prop == 'files.replicate.rbns_protein_concentration':
-                        if len(temp):
-                            temp[0] = temp[0] + ' ' + f['replicate'].get('rbns_protein_concentration_units', '')
+                        if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
+                            temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
                     data_row.append(', '.join(list(set(temp))))
                 rows.append(data_row)
     fout = io.StringIO()

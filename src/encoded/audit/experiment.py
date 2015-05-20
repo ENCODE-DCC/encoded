@@ -67,9 +67,19 @@ def audit_experiment_replicated(value, system):
     Experiments in ready for review or release ready state should be replicated. If not,
     wranglers should check with lab as to why before release.
     '''
-    if value['status'] in ['ready for review', 'release ready']:
-        if len(value['replicates']) <= 1:
-            detail = 'Experiment {} is unreplicated, more than one replicate is typically expected before release'.format(value['@id'])
+    if value['status'] not in ['released', 'release ready', 'ready for review']:
+        return
+
+    num_bio_reps = set()
+    for rep in value['replicates']:
+        num_bio_reps.add(rep['biological_replicate_number'])
+
+    if len(num_bio_reps) <= 1:
+        if value['status'] in ['released']:
+            detail = 'Experiment {} has only one biological replicate and is released. Check for proper annotation of this state in the metadata'.format(value['@id'])
+            raise AuditFailure('unreplicated experiment', detail, level='DCC_ACTION')
+        if value['status'] in ['ready for review', 'release ready']:
+            detail = 'Experiment {} has only one biological replicate, more than one is typically expected before release'.format(value['@id'])
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 

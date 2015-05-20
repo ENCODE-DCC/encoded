@@ -239,8 +239,8 @@ def file_4_5(value, system):
         'multi-read plus signal': 'plus strand signal of multi-mapped reads',
         'multi-read signal': 'signal of multi-mapped reads',
         'multi-read normalized signal': 'normalized signal of multi-mapped reads',
-        'raw minus signal': 'raw minus signal',
-        'raw plus signal': 'raw plus signal',
+        'raw minus signal': 'raw minus strand signal',
+        'raw plus signal': 'raw plus strand signal',
         'raw signal': 'raw signal',
         'raw normalized signal': 'raw normalized signal',
         'unique minus signal': 'minus strand signal of unique reads',
@@ -276,10 +276,10 @@ def file_4_5(value, system):
         'TranscriptGencV10': 'transcript quantifications',
         'TranscriptGencV3c': 'transcript quantifications',
         'TranscriptGencV7': 'transcript quantifications',
-        'mPepMapGcFt': 'filtered modified peptide quantifications',
-        'mPepMapGcUnFt': 'unfiltered modified peptide quantifications',
-        'pepMapGcFt': 'filtered peptide quantifications',
-        'pepMapGcUnFt': 'unfiltered peptide quantifications',
+        'mPepMapGcFt': 'filtered modified peptide quantification',
+        'mPepMapGcUnFt': 'unfiltered modified peptide quantification',
+        'pepMapGcFt': 'filtered peptide quantification',
+        'pepMapGcUnFt': 'unfiltered peptide quantification',
 
         'clusters': 'clusters',
         'CNV': 'copy number variation',
@@ -389,5 +389,11 @@ def file_4_5(value, system):
             if 'run_type' not in value:
                 value['run_type'] = run_type_dict[replicate.get('paired_ended')]
 
-        if value.get('paired_end') in ['1', '2']:
+        if value.get('paired_end') in ['2']:
             value['run_type'] = 'paired-ended'
+
+    # Backfill content_md5sum #2683
+    if 'content_md5sum' not in value:
+        md5sum_content_md5sum = system['registry'].get('backfill_2683', {})
+        if value['md5sum'] in md5sum_content_md5sum:
+            value['content_md5sum'] = md5sum_content_md5sum[value['md5sum']]
