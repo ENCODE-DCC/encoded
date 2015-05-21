@@ -84,7 +84,7 @@ Adding a new schema
 
 
 4. In the **types** directory add a collection class for the object to define the rendering of the object. 
-Refer to object-lifecycle.rst_ to understand object rendering. Example of basic collection definition for treatments::
+Refer to [object-lifecycle.rst] to understand object rendering. Example of basic collection definition for treatments::
 
     
             @collection(
@@ -151,5 +151,5 @@ This new object is an array of example objects that can succesfully POST against
 
 [JSONSchema]: http://json-schema.org/
 [JSON-LD]:  http://json-ld.org/
-[overview.rs]: docs/overview.rst
-[object-lifecycle.rst]: docs/object-lifecycle.rst
+[overview.rst]: ../../../docs/overview.rst
+[object-lifecycle.rst]: ../../../docs/object-lifecycle.rst
