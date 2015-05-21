@@ -232,7 +232,7 @@ class File(Item):
                 date=date, file_extension=file_extension, uuid=uuid, **properties)
             name = 'up{time:.6f}-{accession_or_external}'.format(
                 accession_or_external=accession_or_external,
-                time=time.time(), **properties)  # max 32 chars
+                time=time.time(), **properties)[:32]  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
         return super(File, cls).create(registry, uuid, properties, sheets)
