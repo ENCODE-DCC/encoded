@@ -304,5 +304,6 @@
         "biosample.aliases": 1.0,
         "biosample.donor.accession": 1.0,
         "biosample.donor.organism.name": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/library.md"
 }

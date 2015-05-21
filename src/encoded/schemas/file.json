@@ -169,10 +169,12 @@
                     "enum": [
                         "bed6",
                         "bed9",
+                        "bed12",
                         "bedGraph",
                         "bedLogR",
                         "bedMethyl",
                         "broadPeak",
+                        "enhancerAssay",
                         "gappedPeak",
                         "gff2",
                         "gff3",
@@ -184,7 +186,12 @@
                     "permission": "import_items",
                     "enum": [
                         "unknown",
-                        "bedRnaElements"
+                        "bedRnaElements",
+                        "peptideMapping",
+                        "modPepMap",
+                        "pepMap",
+                        "shortFrags",
+                        "bedExonScore"
                     ]
                 }
            ]
@@ -643,19 +650,5 @@
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },
-    "change_log": [ {
-        "version": "5",
-        "changes":{
-            "run_type": "migrated this field from replicate paired_ended",
-            "read_length": "migrated this field from replicate read_length",
-            "read_length_units": "added as a calculated field",
-            "file_format_specifications": "added this field",
-            "file_format_type": "added this field",
-            "file_format": "changed this enum",
-            "output_category": "added as a calculated field",
-            "output_type": "changed this enum",
-            "md5sum_content": "added this DCC provided field"
-        }
-    }
-    ]
+    "changelog": "/profiles/changelogs/file.md"
 }

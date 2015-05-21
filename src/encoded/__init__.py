@@ -52,6 +52,11 @@ def static_resources(config):
     config.add_view(favicon, route_name='favicon.ico')
 
 
+def changelogs(config):
+    config.add_static_view(
+        'profiles/changelogs', 'schemas/changelogs', cache_max_age=STATIC_MAX_AGE)
+
+
 def configure_engine(settings, test_setup=False):
     from contentbase.json_renderer import json_renderer
     engine_url = settings.get('sqlalchemy.url')
@@ -197,6 +202,7 @@ def main(global_config, **local_config):
         config.include('.search')
 
     config.include(static_resources)
+    config.include(changelogs)
 
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
     config.registry['backfill_2683'] = json_from_path(settings.get('backfill_2683_path'), {})

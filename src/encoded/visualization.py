@@ -57,12 +57,14 @@ def get_parent_track(accession, label, visibility):
 def get_track(f, label, parent):
     '''Returns tracks for each file'''
 
-    file_format = 'bigWig 1.000000 3291154.000000'
+    file_format = 'bigWig'
     sub_group = 'view=SIG'
 
     if f['file_format'] in BIGBED_FILE_TYPES:
-        file_format = 'bigBed'
         sub_group = 'view=PK'
+        file_format = 'bigBed 6 +'
+        if f['file_format_type'] == 'gappedPeak':
+            file_format = 'bigBed 12 +'
 
     label = label + ' - {accession} {format} {output}'.format(
         accession=f['accession'],
@@ -78,7 +80,7 @@ def get_track(f, label, parent):
 
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('visibility', 'pack'),
+        ('visibility', 'dense'),
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
@@ -101,9 +103,9 @@ def get_peak_view(accession, view):
     track_name = view + 'View'
     view_data = OrderedDict([
         ('autoScale', 'on'),
-        ('type', 'bigBed'),
+        ('type', 'bigBed 6 +'),
         ('viewUi', 'on'),
-        ('visibility', 'pack'),
+        ('visibility', 'dense'),
         ('view', 'PK'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -121,7 +123,7 @@ def get_signal_view(accession, view):
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
         ('viewUi', 'on'),
-        ('visibility', 'pack'),
+        ('visibility', 'dense'),
         ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
