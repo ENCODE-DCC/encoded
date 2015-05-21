@@ -389,7 +389,7 @@ def file_4_5(value, system):
             if 'run_type' not in value:
                 value['run_type'] = run_type_dict[replicate.get('paired_ended')]
 
-        if value.get('paired_end') in ['1', '2']:
+        if value.get('paired_end') in ['2']:
             value['run_type'] = 'paired-ended'
 
     # Backfill content_md5sum #2683

@@ -257,6 +257,9 @@ var jsonSchemaToFormSchema = function(attrs) {
     } else if (p.type == 'array') {
         props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
+    } else if (p.type == 'boolean') {
+        props.type = 'bool';
+        return ReactForms.schema.Scalar(props);
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
