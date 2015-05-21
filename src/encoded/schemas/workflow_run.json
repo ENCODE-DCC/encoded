@@ -68,5 +68,6 @@
                 "virtual"
             ]
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/workflow_run.md"
 }

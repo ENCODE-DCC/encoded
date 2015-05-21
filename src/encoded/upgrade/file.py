@@ -218,7 +218,13 @@ def file_4_5(value, system):
         value['file_format'] = 'bed'
     elif current in ['gff']:
         value['file_format_type'] = 'unknown'
-        #all gffs todate were in gff3, but we wouldn't know without wranglers checking
+        # all gffs todate were in gff3, but we wouldn't know without wranglers checking
+
+    # classify the peptide stuff
+    if value['output_type'] in ['mPepMapGcFt', 'mPepMapGcUnFt']:
+        value['file_format_type'] = 'modPepMap'
+    elif value['output_type'] in ['pepMapGcFt', 'pepMapGcUnFt']:
+        value['file_format_type'] = 'pepMap'
 
     #  http://redmine.encodedcc.org/issues/2565
     output_mapping = {
@@ -369,6 +375,20 @@ def file_4_5(value, system):
 
     value['output_type'] = output_mapping[old_output_type]
 
+    #  label the lost bedRnaElements files #2940
+    bedRnaElements_files = [
+        'transcript quantifications',
+        'gene quantifications',
+        'exon quantifications'
+        ]
+    if (
+        value['output_type'] in bedRnaElements_files
+        and value['status'] in ['deleted', 'replaced']
+        and value['file_format'] == 'bigBed'
+        and value['file_format_type'] == 'unknown'
+    ):
+        value['file_format_type'] = 'bedRnaElements'
+
     #  Get the replicate information
     if value.get('file_format') in ['fastq', 'fasta', 'csfasta']:
         context = system['context']
@@ -389,7 +409,7 @@ def file_4_5(value, system):
             if 'run_type' not in value:
                 value['run_type'] = run_type_dict[replicate.get('paired_ended')]
 
-        if value.get('paired_end') in ['1', '2']:
+        if value.get('paired_end') in ['2']:
             value['run_type'] = 'paired-ended'
 
     # Backfill content_md5sum #2683

@@ -152,9 +152,6 @@ def set_filters(request, query, result):
         else:
             query_field = 'embedded.' + field + '.raw'
 
-        if field not in used_filters:
-            query_terms = used_filters[field] = []
-
         if field.endswith('!'):
             # Setting not filter instead of terms filter
             query_filters.append({
@@ -165,11 +162,25 @@ def set_filters(request, query, result):
                 }
             })
         else:
-            query_filters.append({
-                'terms': {
-                    query_field: query_terms,
-                }
-            })
+            if field not in used_filters:
+                query_terms = used_filters[field] = []
+                query_filters.append({
+                    'terms': {
+                        query_field: query_terms,
+                    }
+                })
+            else:
+                query_filters.remove({
+                    'terms': {
+                        query_field: used_filters[field]
+                    }
+                })
+                used_filters[field].append(term)
+                query_filters.append({
+                    'terms': {
+                        query_field: used_filters[field]
+                    }
+                })
         used_filters[field].append(term)
     return used_filters
 
@@ -342,9 +353,8 @@ def search(context, request, search_type=None):
         del query['query']['query_string']
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-
-    # specifying highlight if size is less than equal to 50
-    if size <= 25:
+    elif size <= 25:
+        # highlight only when search type, search term and size are specified
         query['highlight'] = {
             'order': 'score',
             'fields': highlights
