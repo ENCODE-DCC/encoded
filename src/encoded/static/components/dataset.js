@@ -375,12 +375,13 @@ var FileTable = module.exports.FileTable = React.createClass({
         var cellClassRaw = {
             accession: 'tcell-sort',
             file_type: 'tcell-sort',
-            paired_end: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
-            run_type: 'tcell-sort',
-            assembly: 'tcell-sort',
             read_length: 'tcell-sort',
+            run_type: 'tcell-sort',
+            paired_end: 'tcell-sort',
+            assembly: 'tcell-sort',
+            title: 'tcell-sort',
             date_created: 'tcell-sort'
         };
         var cellClassProc = {
@@ -396,7 +397,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         };
 
         var colCountRaw = Object.keys(cellClassRaw).length + (encodevers == "3" ? 1 : 0);
-        var colCountProc = Object.keys(cellClassProc).length +  + (encodevers == "3" ? 1 : 0);
+        var colCountProc = Object.keys(cellClassProc).length + (encodevers == "3" ? 1 : 0);
         cellClassRaw[this.state.col.raw] = this.state.reversed.raw ? 'tcell-desc' : 'tcell-asc';
         cellClassProc[this.state.col.proc] = this.state.reversed.proc ? 'tcell-desc' : 'tcell-asc';
         var files = _(this.props.items).groupBy(function(file) {
@@ -414,10 +415,11 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.file_type}</td>
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
-                        <td>{file.run_type ? file.run_type : null}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
+                        <td>{file.run_type ? file.run_type : null}</td>
                         <td>{file.paired_end}</td>
                         <td>{file.assembly}</td>
+                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                         {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                     </tr>
@@ -458,10 +460,11 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Lab<i className={cellClassRaw.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                     {encodevers == "3" ? <th>Validation status</th> : null}
                                 </tr>
