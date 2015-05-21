@@ -153,14 +153,32 @@ def set_filters(request, query, result):
             query_field = 'embedded.' + field + '.raw'
 
         if field.endswith('!'):
-            # Setting not filter instead of terms filter
-            query_filters.append({
-                'not': {
-                    'terms': {
-                        'embedded.' + field[:-1] + '.raw': [term],
+            if field not in used_filters:
+                # Setting not filter instead of terms filter
+                query_filters.append({
+                    'not': {
+                        'terms': {
+                            'embedded.' + field[:-1] + '.raw': [term],
+                        }
                     }
-                }
-            })
+                })
+                query_terms = used_filters[field] = []
+            else:
+                query_filters.remove({
+                    'not': {
+                        'terms': {
+                            'embedded.' + field[:-1] + '.raw': used_filters[field]
+                        }
+                    }
+                })
+                used_filters[field].append(term)
+                query_filters.append({
+                    'not': {
+                        'terms': {
+                            'embedded.' + field[:-1] + '.raw': used_filters[field]
+                        }
+                    }
+                })
         else:
             if field not in used_filters:
                 query_terms = used_filters[field] = []
