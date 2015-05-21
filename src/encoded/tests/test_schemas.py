@@ -43,3 +43,13 @@ def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
     res = testapp.post_json('/pages/', {'name': 'biosamples', 'title': 'Biosamples'})
     uuid = res.json['@graph'][0]['@id']
     testapp.post_json('/pages/', {'parent': uuid, 'name': 'test', 'title': 'Test'}, status=422)
+
+
+def test_changelogs(testapp, registry):
+    from contentbase import TYPES
+    for name, typeinfo in registry[TYPES].types.items():
+        changelog = typeinfo.schema.get('changelog')
+        if changelog is not None:
+            res = testapp.get(changelog)
+            assert res.status_int == 200, changelog
+            assert res.content_type == 'text/markdown'
