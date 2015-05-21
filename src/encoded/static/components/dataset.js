@@ -381,6 +381,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             run_type: 'tcell-sort',
             paired_end: 'tcell-sort',
             assembly: 'tcell-sort',
+            title: 'tcell-sort',
             date_created: 'tcell-sort'
         };
         var cellClassProc = {
@@ -418,6 +419,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.run_type ? file.run_type : null}</td>
                         <td>{file.paired_end}</td>
                         <td>{file.assembly}</td>
+                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                         {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                     </tr>
@@ -462,6 +464,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Lab<i className={cellClassRaw.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                     {encodevers == "3" ? <th>Validation status</th> : null}
                                 </tr>
