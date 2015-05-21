@@ -68,7 +68,7 @@ def get_track(f, label, parent):
 
     label = label + ' - {accession} {format} {output}'.format(
         accession=f['accession'],
-        format=f['file_format'],
+        format=f['file_format_type'],
         output=f['output_type']
     )
 
