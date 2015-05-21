@@ -1,16 +1,16 @@
-from ..contentbase import (
+from contentbase import (
     AfterModified,
     BeforeModified,
     calculated_property,
     collection,
 )
-from ..embedding import embed
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
     schema_validator,
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -19,6 +19,7 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
+from pyramid.traversal import traverse
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -75,11 +76,12 @@ def external_creds(bucket, key, name):
     })
 class File(Item):
     item_type = 'file'
-    schema = load_schema('file.json')
+    schema = load_schema('encoded:schemas/file.json')
     name_key = 'accession'
 
     rev = {
         'paired_with': ('file', 'paired_with'),
+        'qc_metrics': ('quality_metric', 'files'),
     }
 
     embedded = [
@@ -93,7 +95,8 @@ class File(Item):
         'pipeline',
         'analysis_step',
         'analysis_step.software_versions',
-        'analysis_step.software_versions.software'
+        'analysis_step.software_versions.software',
+        'qc_metrics.step_run.analysis_step',
     ]
 
     @property
@@ -158,11 +161,16 @@ class File(Item):
         "type": "string",
         "linkTo": "pipeline"
     })
-    def pipeline(self, request, step_run=None):
-        if step_run is not None:
-            workflow = request.embed(step_run, '@@object').get('workflow_run')
-            if workflow:
-                return request.embed(workflow, '@@object').get('pipeline')
+    def pipeline(self, root, request, step_run=None):
+        if step_run is None:
+            return
+        workflow_uuid = traverse(root, step_run)['context'].__json__(request).get('workflow_run')
+        if workflow_uuid is None:
+            return
+        pipeline_uuid = root[workflow_uuid].__json__(request).get('pipeline')
+        if pipeline_uuid is None:
+            return
+        return request.resource_path(root[pipeline_uuid])
 
     @calculated_property(schema={
         "title": "Analysis Step",
@@ -187,6 +195,17 @@ class File(Item):
     })
     def output_category(self, output_type):
         return self.schema['output_type_output_category'].get(output_type)
+
+    @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.analysis_step_run",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
 
     @calculated_property(schema={
         "title": "File type",
@@ -257,7 +276,7 @@ def post_upload(context, request):
     context.update(None, {'external': creds})
     registry.notify(AfterModified(context, request))
 
-    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
+    rendered = request.embed('/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],

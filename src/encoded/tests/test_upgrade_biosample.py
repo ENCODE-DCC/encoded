@@ -250,8 +250,8 @@ def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
 
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
-    from encoded.schema_utils import load_schema
-    schema = load_schema('biosample.json')
+    from contentbase.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
 
@@ -271,8 +271,8 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
 
 
 def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
-    from encoded.schema_utils import load_schema
-    schema = load_schema('biosample.json')
+    from contentbase.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/biosample.json')
     biosample_1['starting_amount'] = 'Unknown'
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location

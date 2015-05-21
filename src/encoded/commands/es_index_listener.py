@@ -6,7 +6,7 @@ Example.
 """
 
 from webtest import TestApp
-from ..storage import DBSession
+from contentbase.storage import DBSession
 
 import atexit
 import datetime
@@ -64,7 +64,8 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     recovery, = cursor.fetchone()
                     if not recovery:
                         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
-                        cursor.execute("""LISTEN "encoded.transaction";""")
+                        cursor.execute("""LISTEN "contentbase.transaction";""")
+                        cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
                         log.debug("Listener connected")
                         listening = True
 

@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 from .shared import ENCODE2_AWARDS
 
 
@@ -75,5 +75,7 @@ def library_3_4(value, system):
             value['fragmentation_method'] = 'n/a'
         elif value['fragmentation_method'] in sonication_generic:
             value['fragmentation_method'] = 'sonication (generic)'
+        elif value['fragmentation_method'] == 'Microtip Sonicator':
+            value['fragmentation_method'] = 'sonication (generic microtip)'
         else:
             value['fragmentation_method'] = 'see document'

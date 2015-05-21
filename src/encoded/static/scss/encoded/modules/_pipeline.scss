@@ -1,22 +1,29 @@
 $pipeline-node-types:
     (file, #FFF5BA),
-    (analysis-step, #D3E9FF);
+    (analysis-step, #D3E9FF),
+    (qc-metric, #f0e0f8);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
-    g.pipeline-node-#{$node-type} {
+    .pipeline-node-#{$node-type} {
         font-size: 14px;
         font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: bold;
         fill: $color;
 
+        > rect, > circle {
+            stroke: #a0a0a0;
+            stroke-width: 1.5px;
+        }
+
         &.active {
             fill: desaturate(darken($color, 20%), 30%);
 
-            rect, ellipse {
+            > rect, > circle {
                 stroke: #606060;
                 stroke-width: 3px;
             }
+
             line {
                 stroke: #606060;
                 stroke-width: 1px;
@@ -45,11 +52,6 @@ g.label {
 }
 
 g.node {
-    rect, ellipse {
-        stroke: #a0a0a0;
-        stroke-width: 1.5px;
-    }
-
     &.contributing {
         stroke-dasharray: 4,2; 
     }
@@ -57,6 +59,14 @@ g.node {
     line {
         stroke: #a0a0a0;
         stroke-width: .5px;
+    }
+}
+
+g.subnodes {
+    text {
+        font-size: 10px;
+        font-weight: bold;
+        pointer-events: none;
     }
 }
 

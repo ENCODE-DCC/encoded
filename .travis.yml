@@ -33,29 +33,32 @@ before_install:
   - elasticsearch -v
 install:
   - npm config set python /usr/bin/python2.7
-  - python bootstrap.py -v 2.3.1 --setuptools-version 14.3
+  - python bootstrap.py -v 2.3.1 --setuptools-version 15.2
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >
     if test -n "$BROWSER"; then
-      CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
-      CONNECT_DOWNLOAD=Sauce_Connect.zip
+      CONNECT_URL=https://saucelabs.com/downloads/sc-4.3.8-linux.tar.gz
+      CONNECT_DOWNLOAD=sc.tar.gz
       SC_READYFILE=sauce-connect-ready-$RANDOM
       SC_LOGFILE=$HOME/sauce-connect.log
+      SC_PIDFILE=$HOME/sauce-connect.pid
       curl $CONNECT_URL > $CONNECT_DOWNLOAD
-      unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
-      java -jar Sauce-Connect.jar --readyfile $SC_READYFILE \
+      mkdir sc
+      tar -zxf $CONNECT_DOWNLOAD --strip 1 --directory sc
+      sc/bin/sc --readyfile $SC_READYFILE \
         --logfile $SC_LOGFILE \
+        --pidfile $SC_PIDFILE \
         --tunnel-identifier $TRAVIS_JOB_NUMBER \
-        $SAUCE_USERNAME $SAUCE_ACCESS_KEY > /dev/null &
-      while [ ! -f $SC_READYFILE ]; do sleep .5; done
+        --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY > /dev/null &
+      while test -f "$SC_PIDFILE" && test ! -f "$SC_READYFILE"; do sleep .5; done
     fi
 script:
   - if test -z "$BROWSER"; then npm test; fi
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
-      bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short \
+      test -f "$SC_PIDFILE" && bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short \
         --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
@@ -65,10 +68,11 @@ script:
     fi
 after_script:
   - >
-    if test -n "$BROWSER"; then
+    if test -f "$SC_PIDFILE"; then
       SAUCE_JOB_ID=`grep -m 1 /session/ "$HOME/sauce-connect.log" | cut -d / -f 7`
       SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
       curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}" \
         "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID" > /dev/null
       echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
+      kill $(cat "$SC_PIDFILE")
     fi

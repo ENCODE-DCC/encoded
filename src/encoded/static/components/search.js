@@ -80,7 +80,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -234,7 +234,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -333,7 +333,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -438,7 +438,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -473,7 +473,7 @@ var AuditMixin = audit.AuditMixin;
                             <strong>{columns['award.project']['title']}</strong>: {result.award.project}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -506,7 +506,7 @@ var AuditMixin = audit.AuditMixin;
                                 : <em> None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -534,7 +534,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -830,6 +830,7 @@ var AuditMixin = audit.AuditMixin;
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
+            var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
             _.each(facets, function(facet) {
@@ -841,6 +842,20 @@ var AuditMixin = audit.AuditMixin;
                 }
             }.bind(this));
 
+            // See if a specific result type was requested ('type=x')
+            // Satisfied iff exactly one type is in the search
+            if (results.length) {
+                var specificFilter;
+                filters.forEach(function(filter) {
+                    if (filter.field === 'type') {
+                        specificFilter = specificFilter ? '' : filter.term;
+                    }
+                });
+                if (typeof specificFilter === 'string' && specificFilter.length) {
+                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
+                }
+            }
+
             return (
                     <div>
                         <div className="row">
@@ -851,7 +866,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total}
+                                        Showing {results.length} of {total} {label}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
