@@ -169,10 +169,12 @@
                     "enum": [
                         "bed6",
                         "bed9",
+                        "bed12",
                         "bedGraph",
                         "bedLogR",
                         "bedMethyl",
                         "broadPeak",
+                        "enhancerAssay",
                         "gappedPeak",
                         "gff2",
                         "gff3",
@@ -184,7 +186,12 @@
                     "permission": "import_items",
                     "enum": [
                         "unknown",
-                        "bedRnaElements"
+                        "bedRnaElements",
+                        "peptideMapping",
+                        "modPepMap",
+                        "pepMap",
+                        "shortFrags",
+                        "bedExonScore"
                     ]
                 }
            ]
