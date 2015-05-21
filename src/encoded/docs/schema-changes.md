@@ -1,20 +1,18 @@
 Making changes to encoded schemas
 =========================
 
-
-
 This document describes how to make changes to the JSON schemas ([JSONSchema], [JSON-LD]) and source code that describes the encoded metadata model.  For overview of code organization see [overview.rst].
 
 Guide to where to edit Source Code
 ----------------
 
-* *src* directory - contains all the python and javascript code for front and backends
-    * *audit* - python instructions for checking metadata stored in the schema
-    * *schemas* - JSON schemas ([JSONSchema], [JSON-LD]) describing allowed types and values for all metadata objects
-    * *tests* - Unit and integration tests
-    * *types* -  business logic for dispatching URLs and producing the correct JSON
-    * *upgrade* - python instructions for upgrading old objects stored to the latest 
-    * *loadxl.py* - python script that defines the schema objects to load
+* **src** directory - contains all the python and javascript code for front and backends
+    * **audit** - python instructions for checking metadata stored in the schema
+    * **schemas** - JSON schemas ([JSONSchema], [JSON-LD]) describing allowed types and values for all metadata objects
+    * **tests** - Unit and integration tests
+    * **types** -  business logic for dispatching URLs and producing the correct JSON
+    * **upgrade** - python instructions for upgrading old objects stored to the latest 
+    * **loadxl.py** - python script that defines the schema objects to load
 
 
 -----
@@ -147,9 +145,10 @@ This new object is an array of example objects that can succesfully POST against
                     "uuid": "0137a084-57af-4f69-b756-d6a920393fde"
                 }
 
-
+8. If applicable you may want to add audits on the metadata. Please refer to [making_audits]
 
 [JSONSchema]: http://json-schema.org/
 [JSON-LD]:  http://json-ld.org/
 [overview.rst]: ../../../docs/overview.rst
 [object-lifecycle.rst]: ../../../docs/object-lifecycle.rst
+[making_audits]: making_audits.md
