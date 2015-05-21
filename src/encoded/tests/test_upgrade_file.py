@@ -100,8 +100,14 @@ def test_file_upgrade4(root, registry, file_4, file, threadlocals, dummy_request
     migrator = registry['migrator']
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('file', file_4, target_version='5', context=context)
+    content_md5sum = '0123456789abcdef0123456789abcdef'
+    fake_registry = {
+        'backfill_2683': {file['md5sum']: content_md5sum},
+    }
+    value = migrator.upgrade(
+        'file', file_4, target_version='5', context=context, registry=fake_registry)
     assert value['schema_version'] == '5'
     assert value['file_format'] == 'bed'
     assert value['file_format_type'] == 'bedMethyl'
     assert value['output_type'] == 'base overlap signal'
+    assert value['content_md5sum'] == content_md5sum

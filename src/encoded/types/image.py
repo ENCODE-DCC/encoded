@@ -1,13 +1,13 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     collection,
 )
 from .base import (
     Item,
 )
-from .download import ItemWithAttachment
+from contentbase.attachment import ItemWithAttachment
 
 
 @collection(
@@ -19,7 +19,7 @@ from .download import ItemWithAttachment
     })
 class Image(ItemWithAttachment, Item):
     item_type = 'image'
-    schema = load_schema('image.json')
+    schema = load_schema('encoded:schemas/image.json')
     schema['properties']['attachment']['properties']['type']['enum'] = [
         'image/png',
         'image/jpeg',

@@ -6,6 +6,7 @@ var moment = require('moment');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
+var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
@@ -15,6 +16,9 @@ var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -28,6 +32,7 @@ var Panel = function (props) {
 };
 
 var Dataset = module.exports.Dataset = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -55,8 +60,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <AuditIndicators context={context} key="experiment-audit" />
+                        </div>
                     </div>
                 </header>
+                <AuditDetail context={context} key="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
@@ -152,7 +161,6 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
         );
     }
 });
-
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
@@ -278,6 +286,13 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.run_type ? -1 : (b.run_type ? 1 : 0);
                 }
                 break;
+            case 'assembly':
+                if (a.assembly && b.assembly) {
+                    diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
+                } else {
+                    diff = a.assembly ? -1 : (b.assembly ? 1 : 0);
+                }
+                break;
             case 'date_created':
                 if (a.date_created && b.date_created) {
                     diff = Date.parse(a.date_created) - Date.parse(b.date_created);
@@ -364,6 +379,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
             run_type: 'tcell-sort',
+            assembly: 'tcell-sort',
             read_length: 'tcell-sort',
             date_created: 'tcell-sort'
         };
@@ -379,7 +395,8 @@ var FileTable = module.exports.FileTable = React.createClass({
             date_created: 'tcell-sort'
         };
 
-        var colCount = 100;
+        var colCountRaw = Object.keys(cellClassRaw).length + (encodevers == "3" ? 1 : 0);
+        var colCountProc = Object.keys(cellClassProc).length +  + (encodevers == "3" ? 1 : 0);
         cellClassRaw[this.state.col.raw] = this.state.reversed.raw ? 'tcell-desc' : 'tcell-asc';
         cellClassProc[this.state.col.proc] = this.state.reversed.proc ? 'tcell-desc' : 'tcell-asc';
         var files = _(this.props.items).groupBy(function(file) {
@@ -398,9 +415,11 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
-                        <td>{file.paired_end}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
+                        <td>{file.paired_end}</td>
+                        <td>{file.assembly}</td>
                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                        {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                     </tr>
                 );
             });
@@ -433,16 +452,18 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <div className="table-responsive">
                         <table className="table table-responsive table-striped">
                             <thead>
-                                <tr className="table-section"><th colSpan={colCount}>Raw data</th></tr>
+                                <tr className="table-section"><th colSpan={colCountRaw}>Raw data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
+                                    {encodevers == "3" ? <th>Validation status</th> : null}
                                 </tr>
                             </thead>
                             <tbody>
@@ -450,7 +471,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={colCount}></td>
+                                    <td colSpan={colCountRaw}></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -461,7 +482,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <div className="table-responsive">
                         <table className="table table-striped">
                             <thead>
-                                <tr className="table-section"><th colSpan={colCount}>Processed data</th></tr>
+                                <tr className="table-section"><th colSpan={colCountProc}>Processed data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
@@ -480,7 +501,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colSpan={colCount}></td>
+                                    <td colSpan={colCountProc}></td>
                                 </tr>
                             </tfoot>
                         </table>

@@ -1,10 +1,11 @@
 $pipeline-node-types:
     (file, #FFF5BA),
-    (analysis-step, #D3E9FF);
+    (analysis-step, #D3E9FF),
+    (qc-metric, #f0e0f8);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
-    g.pipeline-node-#{$node-type} {
+    .pipeline-node-#{$node-type} {
         fill: $color;
 
         &.active {

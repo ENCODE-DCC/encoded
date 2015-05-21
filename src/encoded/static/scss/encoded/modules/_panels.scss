@@ -10,6 +10,11 @@
     overflow: visible;
 }
 
+.item-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .panel-full {
     @extend .panel;
     padding: 0;

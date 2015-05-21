@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 
 
 @upgrade_step('access_key', '', '2')

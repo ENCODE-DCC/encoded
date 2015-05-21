@@ -1,6 +1,6 @@
 from pyramid.interfaces import PHASE2_CONFIG
-from ..contentbase import LOCATION_ROOT
-from ..migrator import default_upgrade_finalizer
+from contentbase import LOCATION_ROOT
+from contentbase.upgrader import default_upgrade_finalizer
 
 LATE = 10
 
