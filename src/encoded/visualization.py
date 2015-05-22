@@ -67,7 +67,7 @@ def get_track(f, label, parent):
             file_format = 'bigBed 12 +'
 
     label = label + ' - {title} {format} {output}'.format(
-        accession=f['title'],
+        title=f['title'],
         format=f['file_format_type'],
         output=f['output_type']
     )
