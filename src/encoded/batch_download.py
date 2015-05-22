@@ -19,7 +19,7 @@ def includeme(config):
 
 # includes concatenated properties
 _tsv_mapping = OrderedDict([
-    ('File accession', ['files.accession']),
+    ('File accession', ['files.title']),
     ('File format', ['files.file_type']),
     ('Output type', ['files.output_type']),
     ('Experiment accession', ['accession']),
@@ -99,7 +99,7 @@ def metadata_tsv(context, request):
                         else:
                             temp = c_value
                     exp_data_row.append(', '.join(list(set(temp))))
-            f_attributes = ['files.accession', 'files.file_type',
+            f_attributes = ['files.title', 'files.file_type',
                             'files.output_type']
             for f in row['files']:
                 if 'files.file_type' in param_list:
