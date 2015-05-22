@@ -47,13 +47,13 @@ _tsv_mapping = OrderedDict([
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
-    ('Read length', ['files.replicate.read_length']),
-    ('Run type', ['files.replicate.library']),
     ('Library fragmentation method', ['files.replicate.library']),
     ('Library size range', ['files.replicate.library']),
     ('Biosample Age', ['files.replicate.library']),
     ('Biological replicate', ['files.replicate.biological_replicate_number']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
+    ('Read length', ['files.read_length']),
+    ('Run type', ['files.run_type']),
     ('Size', ['files.file_size']),
     ('Lab', ['files.lab.title']),
     ('md5sum', ['files.md5sum']),
@@ -120,13 +120,6 @@ def metadata_tsv(context, request):
                             libraries.append(l)
                         if len(libraries):
                             library = request.embed(libraries[0])
-                            value = library.get('paired_ended', '')
-                            if isinstance(value, bool):
-                                if not value:
-                                    value = 'single-ended'
-                                else:
-                                    value = 'paired-ended'
-                            data_row.append(value)
                             data_row.append(library.get('fragmentation_method', ''))
                             data_row.append(library.get('size_range', ''))
                             if 'biosample' in library:
@@ -135,7 +128,7 @@ def metadata_tsv(context, request):
                                 data_row.append('')
                             continue
                         else:
-                            data_row = data_row + [''] * 4
+                            data_row = data_row + [''] * 3
                             continue
                     path = prop[6:]
                     temp = []
