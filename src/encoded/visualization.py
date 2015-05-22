@@ -25,7 +25,8 @@ BIGBED_FILE_TYPES = ['bigBed']
 FILE_QUERY = {
     'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
     'limit': ['all'],
-    'frame': ['embedded']
+    'frame': ['embedded'],
+    'status': ['released']
 }
 
 
