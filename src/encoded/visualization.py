@@ -66,8 +66,8 @@ def get_track(f, label, parent):
         if f['file_format_type'] == 'gappedPeak':
             file_format = 'bigBed 12 +'
 
-    label = label + ' - {accession} {format} {output}'.format(
-        accession=f['accession'],
+    label = label + ' - {title} {format} {output}'.format(
+        accession=f['title'],
         format=f['file_format_type'],
         output=f['output_type']
     )
@@ -82,11 +82,11 @@ def get_track(f, label, parent):
         ('subGroups', sub_group),
         ('visibility', 'dense'),
         ('longLabel', label + ' ' + replicate_number),
-        ('shortLabel', f['accession']),
+        ('shortLabel', f['title']),
         ('parent', parent + ' on'),
         ('bigDataUrl', '{href}?proxy=true'.format(**f)),
         ('type', file_format),
-        ('track', f['accession']),
+        ('track', f['title']),
     ])
 
     if parent == '':
@@ -245,7 +245,7 @@ def generate_html(context, request):
             if 'replicate' in f:
                 replicate_number = str(f['replicate']['biological_replicate_number'])
             data_files = data_files + \
-                '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
+                '<tr><td>{title}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
                 .format(replicate_number=replicate_number, request=request, **f)
 
     file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
