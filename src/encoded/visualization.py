@@ -246,10 +246,10 @@ def generate_html(context, request):
             if 'replicate' in f:
                 replicate_number = str(f['replicate']['biological_replicate_number'])
             data_files = data_files + \
-                '<tr><td>{title}</td><td>{file_format_type}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
+                '<tr><td>{title}</td><td>{file_type}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
                 .format(replicate_number=replicate_number, request=request, **f)
 
-    file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
+    file_table = '<table><tr><th>Accession</th><th>File type</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
         .format(files=data_files)
     header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
         data_accession
