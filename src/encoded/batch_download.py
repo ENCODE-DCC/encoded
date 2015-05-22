@@ -90,7 +90,10 @@ def metadata_tsv(context, request):
                         for value in simple_path_ids(row, c):
                             if str(value) not in c_value:
                                 c_value.append(str(value))
-                        if len(temp):
+                        if c == 'replicates.library.biosample.post_synchronization_time' and len(temp):
+                            if len(c_value):
+                                temp[0] = temp[0] + ' + ' + c_value[0]
+                        elif len(temp):
                             if len(c_value):
                                 temp = [x + ' ' + c_value[0] for x in temp]
                         else:
