@@ -63,12 +63,12 @@ def get_track(f, label, parent):
     if f['file_format'] in BIGBED_FILE_TYPES:
         sub_group = 'view=PK'
         file_format = 'bigBed 6 +'
-        if f['file_format_type'] == 'gappedPeak':
+        if f.get('file_format_type') == 'gappedPeak':
             file_format = 'bigBed 12 +'
 
     label = label + ' - {title} {format} {output}'.format(
         title=f['title'],
-        format=f['file_format_type'],
+        format=f.get('file_format_type', ''),
         output=f['output_type']
     )
 
