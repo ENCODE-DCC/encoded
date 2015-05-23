@@ -110,6 +110,8 @@ def update_object_in_snapshot(args):
 # Running in main process
 
 class MPIndexer(Indexer):
+    chunksize = 32
+
     def __init__(self, registry, processes=None):
         super(MPIndexer, self).__init__(registry)
         self.processes = processes
@@ -129,7 +131,8 @@ class MPIndexer(Indexer):
         tasks = [(uuid, xmin, snapshot_id) for uuid in uuids]
         i = -1
         try:
-            for i, path in enumerate(self.pool.imap_unordered(update_object_in_snapshot, tasks)):
+            for i, path in enumerate(self.pool.imap_unordered(
+                    update_object_in_snapshot, tasks, self.chunksize)):
                 if (i + 1) % 50 == 0:
                     log.info('Indexing %s %d', path, i + 1)
         except:
