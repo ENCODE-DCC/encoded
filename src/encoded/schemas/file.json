@@ -522,6 +522,10 @@
         }
     },
     "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
         "accession": {
             "title": "Accession",
             "type": "string"

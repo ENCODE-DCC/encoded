@@ -437,7 +437,13 @@ def type_mapping(types, item_type, embed=True):
 
             m = m['properties'][p]
 
-    boost_values = schema.get('boost_values', ())
+    boost_values = schema.get('boost_values', None)
+    if boost_values is None:
+        boost_values = {
+            prop_name: 1.0
+            for prop_name in ['@id', 'title']
+            if prop_name in mapping['properties']
+        }
     for value in boost_values:
         props = value.split('.')
         last = props.pop()
