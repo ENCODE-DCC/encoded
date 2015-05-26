@@ -271,6 +271,8 @@ def generate_batch_hubs(context, request):
             return generate_html(context, request) + data_policy
 
         assembly = str(request.matchdict['assembly'])
+        if 'status' in param_list:
+            del FILE_QUERY['status']
         params = dict(param_list, **FILE_QUERY)
         results = []
         params['assembly'] = [assembly]
