@@ -99,17 +99,17 @@ Refer to [object-lifecycle.rst] to understand object rendering. Example of basic
 
 5. Within in a class add in  *embedding*, *reverse links*, and *calculated properties* as necessary.
 
-    * *Embedding* - specifying the properties embeded in the object when specifying ```frame=object```, for construct we have::
+    * *Embedding* - specifying the properties embeded in the object when specifying ```frame=object```, for construct we have:
 
                 embedded = ['target']
 
-    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for construct we have::
+    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for construct we have:
     
                 rev = {
                     'characterizations': ('construct_characterization', 'characterizes'),
                 }
 
-    * *Calculated properties* - dynamically calculated before rendering of an object, for platforms we calculate the title::
+    * *Calculated properties* - dynamically calculated before rendering of an object, for platforms we calculate the title:
 
                 @calculated_property(schema={
                     "title": "Title",
