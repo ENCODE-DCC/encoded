@@ -65,9 +65,16 @@ def configure_engine(settings, test_setup=False):
         return None
     engine_opts = {}
     if engine_url.startswith('postgresql'):
+        if settings.get('indexer_worker'):
+            application_name = 'indexer_worker'
+        elif settings.get('indexer'):
+            application_name = 'indexer'
+        else:
+            application_name = 'app'
         engine_opts = dict(
             isolation_level='REPEATABLE READ',
             json_serializer=json_renderer.dumps,
+            connect_args={'application_name': application_name}
         )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':

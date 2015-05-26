@@ -1,8 +1,7 @@
 from contextlib import contextmanager
-from elasticsearch.exceptions import (
-    ConflictError,
-)
 from multiprocessing import get_context
+from multiprocessing.pool import Pool
+from pyramid.decorator import reify
 from pyramid.request import apply_request_extensions
 from pyramid.threadlocal import (
     get_current_request,
@@ -12,7 +11,6 @@ import atexit
 import logging
 import time
 import transaction
-from ..eventpool import EventPool
 from .indexer import (
     INDEXER,
     Indexer,
@@ -111,43 +109,39 @@ def update_object_in_snapshot(args):
 
 # Running in main process
 
-def handle_results(request, value_holder):
-    value_holder[0] = i = 0
-    while True:
-        success, value, orig_args = yield
-        uuid, xmin, snapshot_id = orig_args[0]
-        if success:
-            path = value
-        else:
-            path = uuid
-            if isinstance(value, ConflictError):
-                log.warning('Conflict indexing %s at version %d: %r', uuid, xmin, value)
-            else:
-                log.warning('Error indexing %s: %r', uuid, value)
-        if (i + 1) % 50 == 0:
-            log.info('Indexing %s %d', path, i + 1)
-        i += 1
-        value_holder[0] = i
-
-
 class MPIndexer(Indexer):
+    chunksize = 32
+
     def __init__(self, registry, processes=None):
-        self.pool = EventPool(
-            processes=processes,
+        super(MPIndexer, self).__init__(registry)
+        self.processes = processes
+        self.initargs = (registry['app_factory'], registry.settings,)
+
+    @reify
+    def pool(self):
+        return Pool(
+            processes=self.processes,
             initializer=initializer,
-            initargs=(registry['app_factory'], registry.settings,),
+            initargs=self.initargs,
             context=get_context('forkserver'),
         )
-        super(MPIndexer, self).__init__(registry)
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
-        tasks = ((uuid, xmin, snapshot_id) for uuid in uuids)
-        value_holder = [0]
-        result_handler = handle_results(request, value_holder)
-        next(result_handler)
-        self.pool.run_tasks(update_object_in_snapshot, tasks, callback=result_handler.send)
-        result_handler.close()
-        return value_holder[0]
+        # Ensure that we iterate over uuids in this thread not the pool task handler.
+        tasks = [(uuid, xmin, snapshot_id) for uuid in uuids]
+        i = -1
+        try:
+            for i, path in enumerate(self.pool.imap_unordered(
+                    update_object_in_snapshot, tasks, self.chunksize)):
+                if (i + 1) % 50 == 0:
+                    log.info('Indexing %s %d', path, i + 1)
+        except:
+            self.shutdown()
+            raise
+        return i + 1
 
     def shutdown(self):
-        self.pool._terminate()
+        if 'pool' in self.__dict__:
+            self.pool.terminate()
+            self.pool.join()
+            del self.pool
