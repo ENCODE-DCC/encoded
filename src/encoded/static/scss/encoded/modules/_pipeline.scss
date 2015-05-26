@@ -5,7 +5,7 @@ $pipeline-node-types:
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
-    .pipeline-node-#{$node-type} {
+    g.pipeline-node-#{$node-type} {
         fill: $color;
 
         &.active {
