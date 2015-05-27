@@ -87,18 +87,45 @@ def schema_mapping(name, schema):
         }
 
     if type_ == 'string':
-        return {
-            'type': 'string',
-            'include_in_all': False,
-            'store': True,
-            'fields': {
-                'raw': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+        if 'format' in schema and schema['format'] in ['date-time', 'date']:
+            return {
+                'type': 'date',
+                'include_in_all': False,
+                'store': True,
+                'fields': {
+                    'raw': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                        'include_in_all': False
+                    }
                 }
             }
-        }
+        elif 'anyOf' in schema and schema['anyOf'] == [{'format': 'date-time'}, {'format': 'date'}]:
+            return {
+                'type': 'date',
+                'include_in_all': False,
+                'store': True,
+                'fields': {
+                    'raw': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                        'include_in_all': False
+                    }
+                }
+            }
+        else:
+            return {
+                'type': 'string',
+                'include_in_all': False,
+                'store': True,
+                'fields': {
+                    'raw': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                        'include_in_all': False
+                    }
+                }
+            }
 
     if type_ == 'number':
         return {
