@@ -413,7 +413,8 @@ def search(context, request, search_type=None):
                 else:
                     new_term = temp[0] + ' embedded.' + temp[1] + ':' + term
         query['query']['query_string'] = {
-            'query': new_term
+            'query': new_term,
+            'default_operator': 'AND'
         }
 
     # Execute the query
