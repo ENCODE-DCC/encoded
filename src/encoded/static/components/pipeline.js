@@ -136,7 +136,15 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
         // Build node graph of the files and analysis steps with this experiment
         this.jsonGraph = this.assembleGraph();
-        var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
+
+        // Find the selected step, if any
+        var selectedStep;
+        if (this.state.infoNodeId) {
+            var selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
+            if (selectedNode) {
+                selectedStep = selectedNode.metadata.ref;
+            }
+        }
 
         return (
             <div className={itemClass}>
@@ -193,16 +201,21 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         <h3>Pipeline schematic</h3>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
                             <div className="graph-node-info">
-                                {meta ? <div className="selected-step">{meta}</div> : null}
-                                {context.analysis_steps.map(function(step) {
-                                    if (step['@id'] != this.state.infoNodeId) {
-                                        return (
-                                            <div className="step-info">
-                                                <AnalysisStep step={step} />
-                                            </div>
-                                        );
-                                    }
-                                }, this)}
+                                {selectedStep ?
+                                    <div className="step-info">
+                                        <AnalysisStep step={selectedStep} />
+                                    </div>
+                                :
+                                    <div>
+                                        {context.analysis_steps.map(function(step) {
+                                            return (
+                                                <div className="step-info">
+                                                    <AnalysisStep step={step} />
+                                                </div>
+                                            );
+                                        }, this)}
+                                    </div>
+                                }
                             </div>
                         </Graph>
                     </div>
