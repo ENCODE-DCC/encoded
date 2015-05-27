@@ -119,8 +119,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             // Collect depleted_in
             if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
                 depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
-            }
 
+            }
             // Collect mutated genes
             if (biosample.donor && biosample.donor.mutated_gene) {
                 mutatedGenes[biosample.donor.mutated_gene.label] = true;
@@ -194,7 +194,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} id="experiment-audit" />
+                <AuditDetail context={context} id="experiment-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="assay">
@@ -438,11 +438,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
             }
         });
     }
-
-    // If no platforms found in files, get the platform from the first replicate, if it has one
-    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
-        platforms[replicates[0].platform['@id']] = replicates[0].platform;
-    }
+    var platformKeys = Object.keys(platforms);
 
     return (
         <div className = "panel-assay">
@@ -506,11 +502,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                     </div>
                 : null}
 
-                {Object.keys(platforms).length ?
+                {platformKeys.length ?
                     <div data-test="platform">
                         <dt>Platform</dt>
                         <dd>
-                            {Object.keys(platforms).map(function(platformId) {
+                            {platformKeys.map(function(platformId) {
                                 return(
                                     <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
                                 );
@@ -575,7 +571,7 @@ var Replicate = module.exports.Replicate = function (props) {
                         <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
                     </div>
                 : null}
-                
+
                 {biosample ?
                     <div data-test="biosample">
                         <dt>Biosample</dt>
@@ -586,20 +582,6 @@ var Replicate = module.exports.Replicate = function (props) {
                                 </a>{' '}-{' '}{biosample.biosample_term_name}
                             </dd>
                         : null}
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="runtype">
-                        <dt>Run type</dt>
-                        <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
-                    </div>
-                : null}
-
-                {replicate.read_length ?
-                    <div data-test="readlength">
-                        <dt>Read length</dt>
-                        <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd>
                     </div>
                 : null}
             </dl>
@@ -614,14 +596,32 @@ var Replicate = module.exports.Replicate = function (props) {
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files) {
 
     // Calculate a step ID from a file's derived_from array
-    function _derivedAccessions(file) {
+    function _derivedFileIds(file) {
         if (file.derived_from) {
             return file.derived_from.map(function(derived) {
-                return derived.accession;
+                return derived['@id'];
             }).sort().join();
         } else {
             return '';
         }
+    }
+
+    function _qcFileIds(metric) {
+        if (metric.files) {
+            return metric.files.map(function(file) {
+                return file['@id'];
+            }).sort().join();
+        } else {
+            return '';
+        }
+    }
+
+    function _genFileId(file) {
+        return 'file:' + file['@id'];
+    }
+
+    function _genStepId(file) {
+        return 'step:' + derivedFileIds(file) + file.analysis_step['@id']
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
@@ -629,12 +629,23 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allFiles = {}; // All files' accessions as keys
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
+    var allMetricsInfo = []; // List of all QC metrics found attached to files
+    var allContributing = {}; // List of all contributing files
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
-    var abortAccession; // Accession of file that caused abort
-    var derivedAccessions = _.memoize(_derivedAccessions, function(file) {
-        return file.accession;
+    var abortFileId; // @id of file that caused abort
+    var derivedFileIds = _.memoize(_derivedFileIds, function(file) {
+        return file['@id'];
+    });
+    var qcFileIds = _.memoize(_qcFileIds, function(metric) {
+        return metric['@id'];
+    });
+    var genStepId = _.memoize(_genStepId, function(file) {
+        return file['@id'];
+    });
+    var genFileId = _.memoize(_genFileId, function(file) {
+        return file['@id'];
     });
 
     // Collect derived_from files, used replicates, and used pipelines
@@ -642,7 +653,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Build an object keyed with all files that other files derive from
         if (file.derived_from) {
             file.derived_from.forEach(function(derived_from) {
-                derivedFromFiles[derived_from.accession] = derived_from;
+                derivedFromFiles[derived_from['@id']] = derived_from;
             });
         }
 
@@ -651,7 +662,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         if (file.replicate) {
             if (!allReplicates[file.replicate.biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
-                allReplicates[file.replicate.biological_replicate_number] = [];   
+                allReplicates[file.replicate.biological_replicate_number] = [];
             }
             allReplicates[file.replicate.biological_replicate_number].push(file);
         }
@@ -667,7 +678,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         stepExists = stepExists || !!file.analysis_step;
 
         // Build a list of all files in the graph, including contributed files, for convenience
-        allFiles[file.accession] = file;
+        allFiles[file['@id']] = file;
 
         // Keep track of whether files exist outside replicates
         fileOutsideReplicate = fileOutsideReplicate || !!file.replicate;
@@ -684,11 +695,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
     files.forEach(function(file) {
-        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file.accession];
+        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
 
         // If the file's removed, remember it's removed from the derived_From file objects too
-        if (file.removed && derivedFromFiles[file.accession]) {
-            derivedFromFiles[file.accession].removed = true;
+        if (file.removed && derivedFromFiles[file['@id']]) {
+            derivedFromFiles[file['@id']].removed = true;
         }
     });
 
@@ -707,62 +718,51 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Don't worry about files they derive from; they're not included in the graph.
     if (context.contributing_files && context.contributing_files.length) {
         context.contributing_files.forEach(function(file) {
-            if (derivedFromFiles[file.accession]) {
-                allFiles[file.accession] = file;
+            allContributing[file['@id']] = file;
+            if (derivedFromFiles[file['@id']]) {
+                allFiles[file['@id']] = file;
             }
         });
     }
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
-    Object.keys(derivedFromFiles).forEach(function(derivedFromAccession) {
-        if (!(derivedFromAccession in allFiles)) {
+    Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
+        if (!(derivedFromFileId in allFiles)) {
             // A file others derive from doesn't exist; check if it's in a replicate or not
             // Note the derived_from file object exists even if it doesn't exist in given files array.
-            var derivedFromFile = derivedFromFiles[derivedFromAccession];
+            var derivedFromFile = derivedFromFiles[derivedFromFileId];
             if (derivedFromFile.replicate) {
                 // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
                 if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
                     allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
                         file.removed = true;
-
-                        // Remember it's removed from the derived_from file objects too
-                        if (derivedFromFiles[file.accession]) {
-                            derivedFromFiles[file.accession].removed = true;
-                        }
                     });
-                } else {
-                    // Derived-from file is in a replicate, but not seen in files array;
-                    // just remove it from derivedFromFiles.
-                    derivedFromFile.removed = true;
                 }
 
                 // Indicate that this replicate is not to be rendered
                 allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
-
-                // Mark this file as removed
-                derivedFromFile.removed = true;
             } else {
                 // Missing derived-from file not in a replicate; don't draw any graph
                 abortGraph = abortGraph || true;
-                abortAccession = derivedFromAccession;
+                abortFileId = derivedFromFileId;
             }
         } // else the derived_from file is in files array; normal case
     });
 
     // Don't draw anything if a file others derive from outside a replicate doesn't exist
     if (abortGraph) {
-        console.warn('No graph: derived_from file outside replicate missing [' + abortAccession + ']');
+        console.warn('No graph: derived_from file outside replicate missing [' + abortFileId + ']');
         return null;
     }
 
     // Check for other conditions in which to abort graph drawing
-    Object.keys(allFiles).forEach(function(fileAccession) {
-        var file = allFiles[fileAccession];
+    Object.keys(allFiles).forEach(function(fileId) {
+        var file = allFiles[fileId];
 
         // A file derives from a file that's been removed from the graph
-        if (file.derived_from && !file.removed) {
+        if (file.derived_from && !file.removed && !(file['@id'] in allContributing)) {
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
-                return derivedFromFile.removed;
+                return !(derivedFromFile['@id'] in allFiles);
             });
         }
 
@@ -772,12 +772,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }));
 
         if (abortGraph) {
-            abortAccession = fileAccession;
+            abortFileId = fileId;
         }
     });
 
     if (abortGraph) {
-        console.warn('No graph: other condition [' + abortAccession + ']');
+        console.warn('No graph: other condition [' + abortFileId + ']');
         return null;
     }
 
@@ -787,13 +787,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Create nodes for the replicates
     Object.keys(allReplicates).forEach(function(replicateNum) {
         if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
-            jsonGraph.addNode('rep:' + replicateNum, 'Replicate ' + replicateNum,
-                {
-                    cssClass: 'pipeline-replicate',
-                    type: 'rep',
-                    shape: 'rect',
-                    cornerRadius: 0
-                });
+            jsonGraph.addNode('rep:' + replicateNum, 'Replicate ' + replicateNum, {
+                cssClass: 'pipeline-replicate',
+                type: 'rep',
+                shape: 'rect',
+                cornerRadius: 0
+            });
         }
     });
 
@@ -806,30 +805,38 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var label;
             var pipelineInfo;
             var error;
-            var fileId = 'file:' + file.accession;
+            var fileId = 'file:' + file['@id'];
             var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
+            var metricsInfo;
+
+            // Add QC metrics info from the file to the list to generate the nodes later
+            if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
+                metricsInfo = file.qc_metrics.map(function(metric) {
+                    var qcId = 'qc:' + metric.uuid;
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+                });
+            }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                {
-                    cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
-                    type: 'file',
-                    shape: 'rect',
-                    cornerRadius: 16,
-                    parentNode: replicateNode,
-                    ref: file
-                });
+            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
+                cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
+                type: 'file',
+                shape: 'rect',
+                cornerRadius: 16,
+                parentNode: replicateNode,
+                ref: file
+            }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
             if (file.analysis_step) {
                 // Make an ID and label for the step
-                stepId = 'step:' + derivedAccessions(file) + file.analysis_step['@id'];
+                stepId = 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
                 label = file.analysis_step.analysis_step_types;
                 pipelineInfo = allPipelines[file.analysis_step['@id']];
                 error = false;
-            } else if (derivedAccessions(file)) {
+            } else if (derivedFileIds(file)) {
                 // File derives from others, but no analysis step; make dummy step
-                stepId = 'error:' + derivedAccessions(file);
+                stepId = 'error:' + derivedFileIds(file);
                 label = 'Software unknown';
                 pipelineInfo = null;
                 error = true;
@@ -841,24 +848,23 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             if (stepId) {
                 // Add the step to the graph only if we haven't for this derived-from set already
                 if (!jsonGraph.getNode(stepId)) {
-                    jsonGraph.addNode(stepId, label,
-                        {
-                            cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
-                            type: 'step',
-                            shape: 'rect',
-                            cornerRadius: 4,
-                            parentNode: replicateNode,
-                            ref: file.analysis_step,
-                            pipeline: pipelineInfo,
-                            fileAccession: file.accession
-                        });
+                    jsonGraph.addNode(stepId, label, {
+                        cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
+                        type: 'step',
+                        shape: 'rect',
+                        cornerRadius: 4,
+                        parentNode: replicateNode,
+                        ref: file.analysis_step,
+                        pipeline: pipelineInfo,
+                        fileId: file['@id']
+                    });
                 }
 
                 // Connect the file to the step, and the step to the derived_from files
                 jsonGraph.addEdge(stepId, fileId);
                 file.derived_from.forEach(function(derived) {
-                    if (!jsonGraph.getEdge('file:' + derived.accession, stepId)) {
-                        jsonGraph.addEdge('file:' + derived.accession, stepId);                        
+                    if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
+                        jsonGraph.addEdge('file:' + derived['@id'], stepId);
                     }
                 });
             }
@@ -868,18 +874,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Add contributing files to the graph
     if (context.contributing_files && context.contributing_files.length) {
         context.contributing_files.forEach(function(file) {
-            var fileId = 'file:' + file.accession;
+            var fileId = 'file:' + file['@id'];
 
             // Assemble a single file node; can have file and step nodes in this graph
-            jsonGraph.addNode(fileId, file.accession + ' (' + file.output_type + ')',
-                {
-                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                    type: 'file',
-                    shape: 'rect',
-                    cornerRadius: 16,
-                    ref: file,
-                    contributing: true
-                });
+            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
+                cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                type: 'file',
+                shape: 'rect',
+                cornerRadius: 16,
+                ref: file,
+                contributing: true
+            });
         }, this);
     }
 
@@ -903,9 +908,18 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Find data matching selected node, if any
         if (infoNodeId) {
-            var node = jsonGraph.getNode(infoNodeId);
-            if (node) {
-                meta = globals.graph_detail.lookup(node)(node);
+            if (infoNodeId.indexOf('qc:') === -1) {
+                // Not a QC subnode; render normally
+                var node = jsonGraph.getNode(infoNodeId);
+                if (node) {
+                    meta = globals.graph_detail.lookup(node)(node);
+                }
+            } else {
+                // QC subnode
+                var subnode = jsonGraph.getSubnode(infoNodeId);
+                if (subnode) {
+                    meta = QcDetailsView(subnode);
+                }
             }
         }
 
@@ -913,8 +927,8 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     // Handle a click in a graph node
-    handleNodeClick: function(e, nodeId) {
-        e.stopPropagation(); e.preventDefault();
+    handleNodeClick: function(nodeId) {
+        console.log(nodeId);
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
@@ -960,7 +974,7 @@ var FileDetailView = function(node) {
             var accessionEnd = selectedFile.dataset.indexOf('/', accessionStart) - accessionStart;
             contributingAccession = selectedFile.dataset.substr(accessionStart, accessionEnd);
         }
-        var dateString = !!selectedFile.date_created && moment(selectedFile.date_created).format('YYYY-MM-DD');
+        var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
             <dl className="key-value">
                 {selectedFile.file_format ?
@@ -1063,3 +1077,28 @@ var FileDetailView = function(node) {
 };
 
 globals.graph_detail.register(FileDetailView, 'file');
+
+
+var QcDetailsView = function(metrics) {
+    var reserved = {'uuid': true, 'assay_term_name': true, 'level': true, 'status': true, 'date_created': true};
+
+    if (metrics) {
+        return (
+            <dl className="key-value">
+                {Object.keys(metrics.ref).map(function(key) {
+                    if (typeof metrics.ref[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
+                        return(
+                            <div>
+                                <dt>{key}</dt>
+                                <dd>{metrics.ref[key]}</dd>
+                            </div>
+                        );
+                    }
+                    return null;
+                })}
+            </dl>
+        );
+    } else {
+        return null;
+    }
+};

@@ -38,9 +38,9 @@
   },
   "dependencies": {
     "brace": "^0.3.0",
-    "cookie-cutter": "^0.1.1",
+    "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
-    "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#master",
+    "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
     "domready": "^0.3.0",
     "es5-shim": "^4.0.3",
     "es6-promise": "^2.0.1",

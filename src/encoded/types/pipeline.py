@@ -1,12 +1,13 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     collection,
     calculated_property,
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 
 
@@ -18,7 +19,7 @@ from .base import (
     })
 class Pipeline(Item):
     item_type = 'pipeline'
-    schema = load_schema('pipeline.json')
+    schema = load_schema('encoded:schemas/pipeline.json')
     name_key = 'accession'
     embedded = [
         'documents',
@@ -35,14 +36,14 @@ class Pipeline(Item):
 
 @collection(
     name='analysis-steps',
-        unique_key='analysis_step:name',
+    unique_key='analysis_step:name',
     properties={
         'title': 'Analysis steps',
         'description': 'Listing of Analysis Steps',
     })
 class AnalysisStep(Item):
     item_type = 'analysis_step'
-    schema = load_schema('analysis_step.json')
+    schema = load_schema('encoded:schemas/analysis_step.json')
     name_key = 'name'
     embedded = [
         'software_versions',
@@ -59,11 +60,39 @@ class AnalysisStep(Item):
     })
 class AnalysisStepRun(Item):
     item_type = 'analysis_step_run'
-    schema = load_schema('analysis_step_run.json')
+    schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step',
-        'workflow_run'
+        'workflow_run',
+        'qc_metrics',
+        'output_files'
     ]
+    rev = {
+        'qc_metrics': ('quality_metric', 'step_run'),
+        'output_files': ('file', 'step_run')
+    }
+
+    @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.step_run",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
+
+    @calculated_property(schema={
+        "title": "Output Files",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkFrom": "file.step_run",
+        },
+    })
+    def output_files(self, request, output_files):
+        return paths_filtered_by_status(request, output_files)
 
 
 @collection(
@@ -74,7 +103,7 @@ class AnalysisStepRun(Item):
     })
 class WorkflowRun(Item):
     item_type = 'workflow_run'
-    schema = load_schema('workflow_run.json')
+    schema = load_schema('encoded:schemas/workflow_run.json')
     embedded = [
         'pipeline'
     ]
@@ -88,4 +117,4 @@ class WorkflowRun(Item):
     })
 class QualityMetric(Item):
     item_type = 'quality_metric'
-    schema = load_schema('quality_metric.json')
+    schema = load_schema('encoded:schemas/quality_metric.json')

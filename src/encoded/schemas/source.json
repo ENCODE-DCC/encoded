@@ -41,5 +41,9 @@
             "type": "string",
             "format": "uri"
         }
+    },
+    "boost_values": {
+        "name": 1.0,
+        "title": 1.0
     }
  }

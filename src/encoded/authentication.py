@@ -8,7 +8,7 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from .contentbase import LOCATION_ROOT
+from contentbase import LOCATION_ROOT
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 

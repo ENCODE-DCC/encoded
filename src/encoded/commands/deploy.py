@@ -42,7 +42,7 @@ def run(wale_s3_prefix, image_id, instance_type,
         sys.exit(1)
 
     bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=40)
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=60)
     # Don't attach instance storage so we can support auto recovery
     bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
@@ -106,11 +106,12 @@ def main():
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
     parser.add_argument(
-        '--image-id', default='ami-3d50120d',
-        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20140927")
+        '--image-id', default='ami-5189a661',
+        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20150325")
     parser.add_argument(
         '--instance-type', default='t2.medium',
-        help="specify 'm3.large' for faster indexing.")
+        help="specify 'c4.2xlarge' for faster indexing (you should switch to a smaller "
+             "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     args = parser.parse_args()
 

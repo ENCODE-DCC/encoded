@@ -74,7 +74,7 @@ def file1(file_exp, award, lab, file_rep, file2, testapp):
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'raw data',
+        'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released',
@@ -90,7 +90,22 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
         'md5sum': '100d8c998f11b204e9800998ecf8427e',
-        'output_type': 'raw data',
+        'output_type': 'reads',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'released'
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file4(file_exp2, award, lab, file_rep2, testapp):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'replicate': file_rep2['uuid'],
+        'file_format': 'fastq',
+        'md5sum': '100d8c998f00b204e9800998ecf8427e',
+        'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'released'
@@ -132,7 +147,7 @@ def test_audit_file_missing_controlled_by(testapp, file3):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file_size' for error in errors_list)
+    assert any(error['category'] == 'missing controlled_by' for error in errors_list)
 
 
 def test_audit_file_mismatched_controlled_by(testapp, file1):
@@ -141,7 +156,7 @@ def test_audit_file_mismatched_controlled_by(testapp, file1):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file_size' for error in errors_list)
+    assert any(error['category'] == 'mismatched controlled_by' for error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -152,3 +167,25 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched replicate' for error in errors_list)
+
+
+def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
+    testapp.patch_json(file_rep2['@id'], {'paired_ended': True})
+    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing paired_end' for error in errors_list)
+
+
+def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
+    testapp.patch_json(file_rep2['@id'], {'paired_ended': False})
+    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234, 'paired_end': 1})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing mate pair' for error in errors_list)
