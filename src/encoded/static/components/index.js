@@ -29,5 +29,6 @@ require('./testing');
 require('./edit');
 require('./inputs');
 require('./blocks');
+require('./region_search')
 
 module.exports = require('./app');

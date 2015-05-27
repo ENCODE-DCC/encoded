@@ -13,7 +13,6 @@ from collections import OrderedDict
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
-    config.add_route('suggest', '/suggest{slash:/?}')
     config.scan(__name__)
 
 
@@ -552,33 +551,4 @@ def collection_view_listing_es(context, request):
         params.append(('limit', 'all'))
         result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
 
-    return result
-
-
-@view_config(route_name='suggest', request_method='GET', permission='search')
-def suggest(context, request, search_type=None):
-    text = ''
-    result = {
-        '@id': '/suggest/' + ('?q=' + text),
-        '@type': ['suggest'],
-        'title': 'Suggest',
-        '@graph': [],
-    }
-    if 'q' in request.params:
-        text = request.params.get('q', '')
-    else:
-        return []
-    es = request.registry[ELASTIC_SEARCH]
-    query = {
-        "suggester": {
-            "text": text,
-            "completion": {
-                "field": "name_suggest",
-                "size": 10
-            }
-        }
-    }
-    results = es.suggest(index='annotations', body=query)
-    result['@id'] = '/suggest/' + ('?q=' + text)
-    result['@graph'] = results['suggester'][0]['options']
     return result

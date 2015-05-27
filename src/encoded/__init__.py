@@ -207,6 +207,7 @@ def main(global_config, **local_config):
     if 'elasticsearch.server' in config.registry.settings:
         config.include('contentbase.elasticsearch')
         config.include('.search')
+        config.include('.region_search')
 
     config.include(static_resources)
     config.include(changelogs)
