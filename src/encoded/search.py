@@ -309,7 +309,9 @@ def search(context, request, search_type=None):
 
     search_term = request.params.get('searchTerm', '*')
     if search_term != '*':
-        search_term = sanitize_search_string(search_term.strip())
+        search_term = search_term.strip()
+        if not search_term.startswith('(') and not search_term.endswith(')'):
+            search_term = sanitize_search_string(search_term.strip())
         search_term_array = search_term.split()
         if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
             del search_term_array[-1]
@@ -393,6 +395,26 @@ def search(context, request, search_type=None):
             facets.append(audit_facet)
 
     set_facets(facets, used_filters, query, principals)
+
+    if search_term.startswith('(') and search_term.endswith(')'):
+        del query['query']['query_string']
+        search_term = search_term[1:-1]
+        new_term = ''
+        s_terms = search_term.split(':')
+        for count, term in enumerate(s_terms):
+            if count == 0:
+                new_term = 'embedded.' + term
+            elif count == 1:
+                new_term = new_term + ':' + term
+            else:
+                temp = new_term.rsplit(' ', 1)
+                if 'embedded' in temp[1]:
+                    new_term = new_term + ':' + term
+                else:
+                    new_term = temp[0] + ' embedded.' + temp[1] + ':' + term
+        query['query']['query_string'] = {
+            'query': new_term
+        }
 
     # Execute the query
     es_results = es.search(body=query, index=es_index,
