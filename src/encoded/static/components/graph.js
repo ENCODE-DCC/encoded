@@ -117,7 +117,7 @@ class JsonGraph {
         return undefined;
     }
 
-};
+}
 
 module.exports.JsonGraph = JsonGraph;
 

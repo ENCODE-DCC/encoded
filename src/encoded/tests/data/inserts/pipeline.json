@@ -4,6 +4,7 @@
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
         "name": "dna-methylation-pipeline-qc",
+        "description": "I'm fascinated by the idea that genetics is digital. A gene is a long sequence of coded letters, like computer information. Modern biology is becoming very much a branch of information technology.",
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -13,7 +14,12 @@
         "analysis_steps": [
             "4c4042c6-27b0-42c5-b608-9061005e32ab"
         ],
-        "status": "released"
+        "status": "released",
+        "documents": [
+            "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
+            "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
+        ],
+        "version": 2
     },
     {
         "accession": "ENCPL000MEG",
