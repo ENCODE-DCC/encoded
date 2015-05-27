@@ -252,7 +252,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
 
                     {step.input_file_types && step.input_file_types.length ?
                         <div data-test="inputtypes">
-                            <dt>Input file format</dt>
+                            <dt>Input file types</dt>
                             <dd>{step.input_file_types.join(', ')}</dd>
                         </div>
                     : null}
