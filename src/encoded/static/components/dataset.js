@@ -311,8 +311,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         var diff;
 
         switch (this.state.col.proc) {
-            case 'accession':
-                diff = a.accession > b.accession ? 1 : -1;
+            case 'title':
+                diff = a.title > b.title ? 1 : -1;
                 break;
             case 'file_type':
                 diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
@@ -350,7 +350,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     diff = a.genome_annotation ? -1 : (b.genome_annotation ? 1 : 0);
                 }
                 break;
-            case 'title':
+            case 'lab':
                 diff = a.lab.title > b.lab.title ? 1 : (a.lab.title === b.lab.title ? 0 : -1);
                 break;
             case 'date_created':
@@ -373,7 +373,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         var rowsProc = {};
         var encodevers = this.props.encodevers;
         var cellClassRaw = {
-            accession: 'tcell-sort',
+            title: 'tcell-sort',
             file_type: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
@@ -381,18 +381,18 @@ var FileTable = module.exports.FileTable = React.createClass({
             run_type: 'tcell-sort',
             paired_end: 'tcell-sort',
             assembly: 'tcell-sort',
-            title: 'tcell-sort',
+            lab: 'tcell-sort',
             date_created: 'tcell-sort'
         };
         var cellClassProc = {
-            accession: 'tcell-sort',
+            title: 'tcell-sort',
             file_type: 'tcell-sort',
             output_type: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
             assembly: 'tcell-sort',
             annotation: 'tcell-sort',
-            title: 'tcell-sort',
+            lab: 'tcell-sort',
             date_created: 'tcell-sort'
         };
 
@@ -408,7 +408,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 rowsRaw[file['@id']] = (
                     <tr>
                         <td>
-                            {file.accession}<br />
+                            {file.title}<br />
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
@@ -431,7 +431,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 rowsProc[file['@id']] = (
                     <tr>
                         <td>
-                            {file.accession}<br />
+                            {file.title}<br />
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
@@ -456,7 +456,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <thead>
                                 <tr className="table-section"><th colSpan={colCountRaw}>Raw data</th></tr>
                                 <tr>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'accession')}>Accession<i className={cellClassRaw.accession}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Accession<i className={cellClassRaw.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
@@ -464,7 +464,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'paired_end')}>Paired end<i className={cellClassRaw.paired_end}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'assembly')}>Mapping assembly<i className={cellClassRaw.assembly}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Lab<i className={cellClassRaw.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'lab')}>Lab<i className={cellClassRaw.lab}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'date_created')}>Date added<i className={cellClassRaw.date_created}></i></th>
                                     {encodevers == "3" ? <th>Validation status</th> : null}
                                 </tr>
@@ -487,14 +487,14 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <thead>
                                 <tr className="table-section"><th colSpan={colCountProc}>Processed data</th></tr>
                                 <tr>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'accession')}>Accession<i className={cellClassProc.accession}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate<i className={cellClassProc.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'tech_replicate')}>Technical replicate<i className={cellClassProc.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Lab<i className={cellClassProc.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'lab')}>Lab<i className={cellClassProc.lab}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'date_created')}>Date added<i className={cellClassProc.date_created}></i></th>
                                     {encodevers == "3" ? <th>Validation status</th> : null}
                                 </tr>
