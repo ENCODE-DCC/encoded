@@ -164,7 +164,12 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
         pool.terminate()
         pool.join()
 
-    for item_type, results in itertools.groupby(sorted(all_results), lambda x: x[0] or ''):
+    def result_item_type(result):
+        # Ensure we always return a string
+        return result[0] or ''
+
+    for item_type, results in itertools.groupby(
+            sorted(all_results, key=result_item_type), key=result_item_type):
         results = list(results)
         errors = sum(error for item_type, path, update, error in results)
         updated = sum(update for item_type, path, update, error in results)

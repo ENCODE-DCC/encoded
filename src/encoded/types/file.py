@@ -119,6 +119,13 @@ class File(Item):
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
         return keys
 
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, accession=None, external_accession=None):
+        return accession or external_accession
+
     # Don't specify schema as this just overwrites the existing value
     @calculated_property(
         condition=lambda paired_end=None: paired_end == '1')
@@ -232,7 +239,7 @@ class File(Item):
                 date=date, file_extension=file_extension, uuid=uuid, **properties)
             name = 'up{time:.6f}-{accession_or_external}'.format(
                 accession_or_external=accession_or_external,
-                time=time.time(), **properties)  # max 32 chars
+                time=time.time(), **properties)[:32]  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
         return super(File, cls).create(registry, uuid, properties, sheets)

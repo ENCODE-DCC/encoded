@@ -5,7 +5,7 @@ $pipeline-node-types:
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
-    .pipeline-node-#{$node-type} {
+    g.pipeline-node-#{$node-type} {
         fill: $color;
 
         &.active {
@@ -55,6 +55,14 @@ g.node {
     line {
         stroke: #a0a0a0;
         stroke-width: .5px;
+    }
+}
+
+g.subnodes {
+    text {
+        font-size: 10px;
+        font-weight: bold;
+        pointer-events: none;
     }
 }
 
