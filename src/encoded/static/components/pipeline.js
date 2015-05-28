@@ -294,7 +294,14 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {step.qa_stats_generated && step.qa_stats_generated.length ?
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
-                            <dd>{step.qa_stats_generated.join(', ')}</dd>
+                            <dd>{step.qa_stats_generated.map(function(stat, i) {
+                                return (
+                                    <span>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {stat}
+                                    </span>
+                                );
+                            })}</dd>
                         </div>
                     : null}
 
@@ -305,7 +312,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                 {step.software_versions.map(function(version, i) {
                                     var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                     return (
-                                        <a href={version.software['@id']} key={i} className="software-version">
+                                        <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
                                             <span className="software">{version.software.name}</span>
                                             {version.version ?
                                                 <span className="version">{versionNum}</span>
