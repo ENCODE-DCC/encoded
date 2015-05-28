@@ -29,8 +29,8 @@ var Software = module.exports.Software = React.createClass({
 
         // See if there’s a version number to highlight
         var highlightVersion;
-        var queryParsed = url.parse(this.props.href, true).query;
-        if (Object.keys(queryParsed).length) {
+        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
+        if (queryParsed && Object.keys(queryParsed).length) {
             // Find the first 'version' query string item, if any
             var versionKey = _(Object.keys(queryParsed)).find(function(key) {
                 return key === 'version';
