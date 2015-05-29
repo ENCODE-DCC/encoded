@@ -101,6 +101,10 @@
             "title": "Pipeline status",
             "type": "string"
         },
+        "version": {
+            "title": "Version",
+            "type": "integer"
+        },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
@@ -124,7 +128,11 @@
             "type": "string"
         },
         "assay_term_name": {
-            "title": "Assay Type",
+            "title": "Assay type",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
             "type": "string"
         },
         "status": {
