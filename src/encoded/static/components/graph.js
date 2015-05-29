@@ -318,10 +318,10 @@ var Graph = module.exports.Graph = React.createClass({
         img.onload = function() {
             // Make a new memory-based canvas and draw the image into it.
             var canvas = document.createElement('canvas');
-            canvas.width = img.width * 2;
-            canvas.height = img.height * 2;
+            canvas.width = img.width;
+            canvas.height = img.height;
             var context = canvas.getContext('2d');
-            context.drawImage(img, 0, 0, img.width * 2, img.height * 2);
+            context.drawImage(img, 0, 0, img.width, img.height);
 
             // Make the image download by making a fake <a> and pretending to click it.
             var a = document.createElement('a');
