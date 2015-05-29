@@ -1,7 +1,11 @@
 from pyramid.view import view_config
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from pyramid.security import effective_principals
-from urllib.parse import urlencode
+from .search import (
+    load_columns,
+    load_results
+)
+from collections import OrderedDict
 
 _ASSEMBLY_MAPPER = {
     'GRCh38': 'hg20',
@@ -13,6 +17,8 @@ _ASSEMBLY_MAPPER = {
     'WBcel235': 'WBcel235'
 }
 
+fields = ['accession', 'files.accession']
+
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
@@ -20,7 +26,33 @@ def includeme(config):
     config.scan(__name__)
 
 
-def get_query(start, end):
+def get_filtered_query(principals, file_uuids, result_fields):
+    return {
+        'query': {
+            'filtered': {
+                'filter': {
+                    'and': {
+                        'filters': [
+                            {
+                                'terms': {
+                                    'principals_allowed.view': principals
+                                }
+                            },
+                            {
+                                'terms': {
+                                    'embedded.files.uuid': file_uuids
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        '_source': list(result_fields),
+    }
+
+
+def get_peak_query(start, end):
     """
     return peak query
     """
@@ -62,14 +94,15 @@ def region_search(context, request):
     result = {
         '@id': '/region-search/' + ('?' + request.query_string if request.query_string else ''),
         '@type': ['region-search'],
-        'title': 'By search',
+        'title': 'Search by region',
         'facets': [],
         '@graph': [],
+        'columns': OrderedDict(),
         'notification': '',
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    term = request.params.get('regionid', '*')
+    term = request.params.get('region', '*')
     annotation = request.params.get('annotation', '*')
     assembly = request.params.get('assembly', '*')
     if assembly == '*':
@@ -83,14 +116,20 @@ def region_search(context, request):
         elif len(positions) == 2:
             start = positions[0]
             end = positions[1]
-        results = es.search(body=get_query(start, end), index=chromosome,
-                            doc_type=assembly, size=99999)
+        peak_results = es.search(body=get_peak_query(start, end), index=chromosome,
+                                 doc_type=assembly, size=99999)
         file_uuids = []
-        for hit in results['hits']['hits']:
+        for hit in peak_results['hits']['hits']:
             if hit['fields']['uuid'] not in file_uuids:
                 file_uuids.append(hit['fields']['uuid'][0])
         file_uuids = list(set(file_uuids))
-        import pdb; pdb.set_trace()
+        result_fields = load_columns(request, ['experiment'], result)
+        es_results = es.search(body=get_filtered_query(principals, file_uuids, result_fields),
+                               index='encoded', doc_type='experiment', size=99999)
+        load_results(request, es_results, result)
+        result['notification'] = 'No results found'
+        if len(result['@graph']):
+            result['notification'] = 'Success'
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'
