@@ -168,6 +168,10 @@
         "analysis_steps.software_versions.software.@id": {
             "title": "ID",
             "type": "string"
+        },
+        "analysis_steps.software_versions.software.references.published_by": {
+            "title": "Created by",
+            "type": "string"
         }
     },
     "boost_values": {

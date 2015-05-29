@@ -370,6 +370,24 @@ var Listing = React.createClass({
     mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
         var result = this.props.context;
+        var publishedBy = [];
+        var swTitle = [];
+
+        // Collect up an array of published-by and software titles for all steps in this pipeline
+        if (result.analysis_steps && result.analysis_steps.length) {
+            result.analysis_steps.forEach(function(step) {
+                step.software_versions.forEach(function(version) {
+                    swTitle.push(version.software.title);
+                    if (version.software.references && version.software.references.length) {
+                        version.software.references.forEach(function(reference) {
+                            publishedBy.push.apply(publishedBy, reference.published_by); // add published_by array to publishedBy array
+                        });
+                    }
+                });
+            });
+        }
+        publishedBy = _.uniq(publishedBy);
+        swTitle = _.uniq(swTitle);
 
         return (
             <li>
@@ -393,15 +411,12 @@ var Listing = React.createClass({
                             <div><strong>Version: </strong>{result.version}</div>
                         : null}
 
-                        {result.analysis_steps && result.analysis_steps.length ?
-                            <div>
-                                <strong>Software: </strong>
-                                {result.analysis_steps.map(function(step) {
-                                    return step.software_versions.map(function(version) {
-                                        return version.software.title;
-                                    }).join(', ');
-                                }).join(', ')}
-                            </div>
+                        {swTitle.length ?
+                            <div><strong>Software: </strong>{swTitle.join(', ')}</div>
+                        : null}
+
+                        {publishedBy.length ?
+                            <div><strong>Created by: </strong>{publishedBy.join(', ')}</div>
                         : null}
                     </div>
                 </div>
