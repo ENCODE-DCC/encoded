@@ -16,7 +16,8 @@ var portal = {
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
             {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'},
+            {id: 'region-search', title: 'Search by region', url: '/region-search'}
         ]},
         {id: 'methods', title: 'Methods', children: [
             {id: 'datastandards', title: 'Data standards', url: '/data-standards'},

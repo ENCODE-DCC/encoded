@@ -11,15 +11,12 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
-var fetched = require('./fetched');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
-var FetchedData = fetched.FetchedData;
-var Param = fetched.Param;
 
     // Should really be singular...
     var types = {
@@ -762,135 +759,6 @@ var Param = fetched.Param;
         }
     });
 
-    var AutocompleteBox = React.createClass({
-        render: function() {
-            var terms = this.props.auto['@graph']; // List of matching terms from server
-            var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
-
-            if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
-                return (
-                    <ul className="adv-search-autocomplete">
-                        {terms.map(function(term) {
-                            var matchStart, matchEnd;
-                            var preText, matchText, postText;
-
-                            // Boldface matching part of term
-                            matchStart = term.text.toLowerCase().indexOf(userTerm);
-                            if (matchStart >= 0) {
-                                matchEnd = matchStart + userTerm.length;
-                                preText = term.text.substring(0, matchStart);
-                                matchText = term.text.substring(matchStart, matchEnd);
-                                postText = term.text.substring(matchEnd);
-                            } else {
-                                preText = term.text;
-                            }
-                            return <li key={term.payload.id} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, term.payload.id, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
-                        }, this)}
-                    </ul>
-                );
-            } else {
-                return null;
-            }
-        }
-    });
-
-    var AdvSearch = React.createClass({
-        getInitialState: function() {
-            return {
-                disclosed: false,
-                searchTerm: '',
-                terms: {}
-            };
-        },
-
-        contextTypes: {
-            autocompleteTermChosen: React.PropTypes.bool,
-            onAutocompleteChosenChange: React.PropTypes.func,
-            onAutocompleteFocusChange: React.PropTypes.func,
-            autocompleteHidden: React.PropTypes.bool,
-            onAutocompleteHiddenChange: React.PropTypes.func
-        },
-
-        handleDiscloseClick: function(e) {
-            this.setState({disclosed: !this.state.disclosed});
-        },
-
-        handleChange: function(e) {
-            this.newSearchTerm = e.target.value;
-            this.context.onAutocompleteHiddenChange(false);
-            this.context.onAutocompleteChosenChange(false);
-            // Now let the timer update the search terms state when it gets around to it.
-        },
-
-        handleAutocompleteClick: function(term, id, name) {
-            var newTerms = {};
-            var inputNode = this.refs.regionid.getDOMNode();
-
-            inputNode.value = this.newSearchTerm = term;
-            newTerms[name] = id;
-            this.setState({terms: newTerms});
-            this.context.onAutocompleteHiddenChange(true);
-            this.context.onAutocompleteChosenChange(true);
-            inputNode.focus();
-            // Now let the timer update the terms state when it gets around to it.
-        },
-
-        handleFocus: function(focused) {
-            this.context.onAutocompleteFocusChange(focused);
-        },
-
-        componentDidMount: function() {
-            // Use timer to limit to one request per second
-            this.timer = setInterval(this.tick, 1000);
-        },
-
-        componentWillUnmount: function() {
-            clearInterval(this.timer);
-        },
-
-        tick: function() {
-            if (!this.context.autocompleteHidden && (this.newSearchTerm !== this.state.searchTerm)) {
-                this.setState({searchTerm: this.newSearchTerm});
-            }
-        },
-
-        render: function() {
-            var btnClass = 'btn btn-disclose' + (this.state.disclosed ? ' active' : '');
-            var discloseClass = 'icon icon-disclose ' + (this.state.disclosed ? 'icon-caret-down' : 'icon-caret-right');
-
-            return (
-                <div className="adv-search-form">
-                    <button id="tab1" className={btnClass} aria-controls="panel1" onClick={this.handleDiscloseClick}><i className={discloseClass}></i>&nbsp;Peak search</button>
-                    {this.state.disclosed ?
-                        <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
-                            <div className="row">
-                                <div className="form-group col-md-8">
-                                    <input type="hidden" name="type" value="experiment" />
-                                    {Object.keys(this.state.terms).map(function(key) {
-                                        return <input type="hidden" name={key} value={this.state.terms[key]} />;
-                                    }, this)}
-                                    <label>GeneID or &ldquo;chr#-start-end&rdquo;</label>
-                                    <input ref="regionid" type="text" className="form-control" onChange={this.handleChange}
-                                        onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)} />
-                                    {this.state.searchTerm ?
-                                        <FetchedData loadingComplete={true}>
-                                            <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                            <AutocompleteBox name="regionid" userTerm={this.state.searchTerm} hide={this.context.autocompleteHidden} handleClick={this.handleAutocompleteClick} />
-                                        </FetchedData>
-                                    : null}
-                                </div>
-                                <div className="form-group col-md-2">
-                                    <label htmlFor="spacing">&nbsp;</label>
-                                    <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" disabled={!this.context.autocompleteTermChosen} />
-                                </div>
-                            </div>
-                        </form>
-                    : null}
-                </div>
-            );
-        }
-    });
-
     var BatchDownload = search.BatchDownload = React.createClass({
         mixins: [OverlayMixin],
 
@@ -996,7 +864,6 @@ var Param = fetched.Param;
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                                <AdvSearch />
                                 {context['notification'] === 'Success' ?
                                     <h4>
                                         Showing {results.length} of {total} {label}

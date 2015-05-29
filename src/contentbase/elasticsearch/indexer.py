@@ -277,17 +277,18 @@ def file_index(request):
         'status': ['released'],
         'assay_term_name': ['ChIP-seq', 'DNase-seq'],
         'replicates.library.biosample.donor.organism.scientific_name': ['Homo sapiens'],
-        'field': ['assay_term_name', 'files.href', 'files.assembly', 'files.uuid',
-                  'files.output_type', 'files.file_format'],
+        'field': ['files.href', 'files.assembly', 'files.uuid',
+                  'files.output_type', 'files.file_format_type',
+                  'files.file_format', 'assay_term_name'],
         'limit': ['all']
     }
     path = '/search/?%s' % urlencode(params, True)
     for properties in embed(request, path, as_user=True)['@graph']:
         for f in properties['files']:
             # This is totally hack to restrict number of files indexed.
-            if properties['assay_term_name'] == 'ChIP-seq' and \
-                    f['output_type'] == 'UniformlyProcessedPeakCalls':
+            if f['file_format'] == 'bed':
+                if properties['assay_term_name'] == 'ChIP-seq' and \
+                        f['output_type'] == 'optimal idr thresholded peaks':
                     get_file(es, f)
-            elif properties['assay_term_name'] == 'DNase-seq' and \
-                    f['file_format'] == 'bed_narrowPeak':
+                elif 'file_format_type' in f and f['file_format_type'] == 'narrowPeak':
                     get_file(es, f)

@@ -18,16 +18,6 @@ def includeme(config):
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
-_ASSEMBLY_MAPPER = {
-    'GRCh38': 'hg20',
-    'GRCh37': 'hg19',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
-
 hgConnect = ''.join([
     'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
     '?hgHub_do_redirect=on',
@@ -71,64 +61,6 @@ def get_filtered_query(term, search_fields, result_fields, principals):
 
 def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
-
-
-def search_peaks(request):
-    """
-    return file uuids which have the snp or interval found in given region
-    """
-    es = request.registry[ELASTIC_SEARCH]
-    annotation = request.params.get('regionid', None).lower()
-    try:
-        record = es.get(index='annotations', doc_type='default', id=annotation)
-    except:
-        notification = 'Invalid entry'
-        return ([], notification)
-    else:
-        file_ids = []
-        for annotation in record['_source']['annotations']:
-            chromosome = 'chr' + annotation['chromosome']
-            start = annotation['start']
-            end = annotation['end']
-            assembly = _ASSEMBLY_MAPPER[annotation['assembly_name']]
-            if chromosome == '' or start == '':
-                notification = 'Invalid entry'
-                return (file_ids, notification)
-            else:
-                query = {
-                    'query': {
-                        'filtered': {
-                            'filter': {
-                                'and': {
-                                    'filters': [
-                                        {
-                                            'range': {
-                                                'start': {
-                                                    'lte': end,
-                                                }
-                                            }
-                                        },
-                                        {
-                                            'range': {
-                                                'end': {
-                                                    'gte': start,
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    '_cache': True
-                                }
-                            }
-                        }
-                    },
-                    'fields': ['uuid']
-                }
-                results = es.search(body=query, index=chromosome,
-                                    doc_type=assembly, size=9999999)
-                for hit in results['hits']['hits']:
-                    if hit['fields']['uuid'] not in file_ids:
-                        file_ids.append(hit['fields']['uuid'][0])
-        return (list(set(file_ids)), 'success')
 
 
 def get_sort_order():
@@ -271,7 +203,7 @@ def set_filters(request, query, result):
     return used_filters
 
 
-def set_facets(facets, used_filters, query, principals, file_uuids):
+def set_facets(facets, used_filters, query, principals):
     """
     Sets facets in the query using filters
     """
@@ -313,18 +245,6 @@ def set_facets(facets, used_filters, query, principals, file_uuids):
                 },
             },
         }
-
-        # Handling region search using filters
-        if len(file_uuids):
-            o_terms = query['aggs'][agg_name]['filter']['bool']['must']
-            n_terms = {'terms': {
-                'embedded.files.uuid': file_uuids
-            }}
-            query['aggs'][agg_name]['filter'] = {
-                'bool': {
-                    'must': o_terms + [n_terms]
-                }
-            }
 
 
 def load_results(request, es_results, result):
@@ -418,8 +338,9 @@ def search(context, request, search_type=None):
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
-            doc_types = ['antibody_lot', 'biosample', 'experiment', 'target',
-                         'dataset', 'page', 'publication', 'software']
+            doc_types = ['antibody_lot', 'biosample',
+                         'experiment', 'target', 'dataset', 'page', 'publication',
+                         'software']
     else:
         for item_type in doc_types:
             qs = urlencode([
@@ -459,23 +380,6 @@ def search(context, request, search_type=None):
 
     # Setting filters
     used_filters = set_filters(request, query, result)
-    query_filters = query['filter']['and']['filters']
-
-    peak_files_uuids = []
-    if 'regionid' in request.params:
-        peak_files_uuids, notification = search_peaks(request)
-        if not len(peak_files_uuids):
-            if notification is 'success':
-                result['notification'] = 'No results found for region entered'
-            else:
-                result['notification'] = 'Invalid region search term.'
-            return result
-        else:
-            query_filters.append({
-                'terms': {
-                    'embedded.files.uuid': peak_files_uuids
-                }
-            })
 
     # Adding facets to the query
     facets = [
@@ -488,7 +392,7 @@ def search(context, request, search_type=None):
         for audit_facet in audit_facets:
             facets.append(audit_facet)
 
-    set_facets(facets, used_filters, query, principals, peak_files_uuids)
+    set_facets(facets, used_filters, query, principals)
 
     # Execute the query
     es_results = es.search(body=query, index=es_index,
