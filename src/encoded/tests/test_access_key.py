@@ -122,6 +122,12 @@ def test_access_key_disable(anontestapp, access_key):
     anontestapp.get('/@@testing-user', headers=headers, status=401)
 
 
+def test_access_key_delete_disable_login(anontestapp, testapp, access_key):
+    testapp.patch_json(access_key['location'], {'status': 'deleted'})
+    headers = {'Authorization': access_key['auth_header']}
+    anontestapp.get('/@@testing-user', headers=headers, status=401)
+
+
 def test_access_key_user_disable_login(anontestapp, no_login_access_key):
     access_key = no_login_access_key
     headers = {'Authorization': access_key['auth_header']}
