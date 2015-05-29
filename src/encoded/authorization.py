@@ -56,4 +56,6 @@ def groupfinder(login, request):
         principals.append('group.submitter')
     groups = user_properties.get('groups', [])
     principals.extend('group.%s' % group for group in groups)
+    viewing_groups = user_properties.get('viewing_groups', [])
+    principals.extend('viewing_group.%s' % group for group in viewing_groups)
     return principals
