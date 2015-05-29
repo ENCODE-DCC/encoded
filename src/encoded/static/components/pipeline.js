@@ -370,7 +370,7 @@ var Listing = React.createClass({
     mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
         var result = this.props.context;
-        var columns = this.props.columns;
+
         return (
             <li>
                 <div className="clearfix">
@@ -386,22 +386,16 @@ var Listing = React.createClass({
                     </div>
                     <div className="data-row">
                         {result.assay_term_name ?
-                            <div>
-                                <strong>{columns.assay_term_name.title + ': '}</strong>
-                                {result.assay_term_name}
-                            </div>
+                            <div><strong>Assay: </strong>{result.assay_term_name}</div>
                         : null}
 
                         {result.version ?
-                            <div>
-                                <strong>{columns.version.title + ': '}</strong>
-                                {result.version}
-                            </div>
+                            <div><strong>Version: </strong>{result.version}</div>
                         : null}
 
                         {result.analysis_steps && result.analysis_steps.length ?
                             <div>
-                                <strong>{columns['analysis_steps.software_versions.software.title'] + ': '}</strong>
+                                <strong>Software: </strong>
                                 {result.analysis_steps.map(function(step) {
                                     return step.software_versions.map(function(version) {
                                         return version.software.title;
