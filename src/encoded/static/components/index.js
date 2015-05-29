@@ -30,5 +30,6 @@ require('./edit');
 require('./inputs');
 require('./blocks');
 require('./region_search')
+require('./browser')
 
 module.exports = require('./app');

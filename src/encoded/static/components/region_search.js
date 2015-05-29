@@ -2,7 +2,9 @@
 var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
+var browser = require('./browser');
 var url = require('url')
+var GenomeBrowser = browser.GenomeBrowser;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 
@@ -124,6 +126,13 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
           <div>
             <h3>Search ENCODE data by region</h3>
             <SearchForm {...this.props} />
+            <div className="panel data-display">
+                <GenomeBrowser
+                    genome="http://www.derkholm.net:8080/das/hg18comp/"
+                    genes="http://www.derkholm.net:8080/das/hsa_54_36p/"
+                    repeats="http://www.derkholm.net:8080/das/hsa_54_36p/"
+                    medip="http://www.derkholm.net:8080/das/medipseq_reads" />
+            </div>
           </div>
         );
     }
