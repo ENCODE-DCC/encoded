@@ -117,7 +117,7 @@ class JsonGraph {
         return undefined;
     }
 
-};
+}
 
 module.exports.JsonGraph = JsonGraph;
 
@@ -312,7 +312,6 @@ var Graph = module.exports.Graph = React.createClass({
         var svgXml = '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
             serializer.serializeToString(svgNode);
         var img = new Image();
-        img.crossOrigin = 'anonymous';
         img.src = 'data:image/svg+xml;base64,' + window.btoa(svgXml);
 
         // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>

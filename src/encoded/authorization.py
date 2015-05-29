@@ -30,6 +30,10 @@ def groupfinder(login, request):
             access_key = access_keys[localname]
         except KeyError:
             return None
+
+        if access_key.properties.get('status') in ('deleted', 'disabled'):
+            return None
+
         userid = access_key.properties['user']
         user = root.by_item_type['user'][userid]
 
