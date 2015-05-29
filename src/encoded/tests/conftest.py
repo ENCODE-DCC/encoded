@@ -574,6 +574,28 @@ def submitter(users, lab):
 
 
 @pytest.fixture
+def viewing_group_member(testapp, award):
+    item = {
+        'first_name': 'Viewing',
+        'last_name': 'Group',
+        'email': 'viewing_group_member@example.org',
+        'viewing_groups': [award['viewing_group']]
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def remc_member(testapp):
+    item = {
+        'first_name': 'REMC',
+        'last_name': 'Member',
+        'email': 'remc_member@example.org',
+        'viewing_groups': ['REMC']
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
 def awards(testapp):
     from . import sample_data
     return sample_data.load(testapp, 'award')

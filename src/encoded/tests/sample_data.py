@@ -155,7 +155,7 @@ AWARDS = [
         'name': 'Myers',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
-
+        'viewing_group': 'ENCODE',
     },
     {
         'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
@@ -232,6 +232,7 @@ USERS = [
         'last_name': 'Pauli-Behn',
         'email': 'paulibehn@hudsonalpha.org',
         'submits_for': ['b635b4ed-dba3-4672-ace9-11d76a8d03af'],
+        'viewing_groups': ['ENCODE'],
     },
     {
         'uuid': '2aaf75d9-4273-4bd8-9fd1-217e3d0af7cc',
