@@ -2,7 +2,7 @@
     {
         "_test": "pooled biosample",
         "accession": "ENCBS356AAA",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "biosample_term_id": "UBERON:0000006",
         "biosample_term_name": "islet of Langerhans",
         "biosample_type": "tissue",
@@ -30,7 +30,7 @@
         "aliases": [
             "richard-myers:MCF-7 rep 3"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7 cell",
         "biosample_type": "immortalized cell line",
@@ -63,7 +63,7 @@
         "aliases": [
             "richard-myers:MCF-7 rep 4"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7 cell",
         "biosample_type": "immortalized cell line",
@@ -114,7 +114,7 @@
     {
         "_test": "ENCODE2 dbxref with special characters",
         "accession": "ENCBS026ENC",
-        "award": "RC2HG005654",
+        "award": "ENCODE2-Mouse",
         "biosample_term_id": "NTR:0000031",
         "biosample_term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
         "biosample_type": "primary cell",
@@ -163,7 +163,7 @@
     },
     {
         "accession": "ENCBS044ENC",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample_term_id": "EFO:0005233",
         "biosample_term_name": "CH12.LX cell",
         "biosample_type": "immortalized cell line",
@@ -265,7 +265,7 @@
         "alternate_accessions": [
             "ENCBS238AAA"
         ],
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7",
         "biosample_type": "immortalized cell line",
@@ -292,7 +292,7 @@
     {
         "_test": "treatment construct and refers to same document with multiple types",
         "accession": "ENCBS107ENC",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7",
         "biosample_type": "immortalized cell line",
@@ -320,7 +320,7 @@
     },
     {
         "accession": "ENCBS124ENC",
-        "award": "RC2HG005573",
+        "award": "ENCODE2-Mouse",
         "biosample_term_id": "EFO:0001098",
         "biosample_term_name": "C2C12",
         "biosample_type": "immortalized cell line",
@@ -341,7 +341,7 @@
     {
         "_test": "mouse derived from",
         "accession": "ENCBS128ENC",
-        "award": "RC2HG005573",
+        "award": "ENCODE2-Mouse",
         "biosample_term_id": "NTR:0000022",
         "biosample_term_name": "myocyte",
         "biosample_type": "in vitro differentiated cells",
@@ -362,7 +362,7 @@
     },
     {
         "accession": "ENCBS175ENC",
-        "award": "RC2HG005654",
+        "award": "ENCODE2-Mouse",
         "biosample_term_id": "CL:0002322",
         "biosample_term_name": "embryonic stem cell",
         "biosample_type": "stem cell",
@@ -385,7 +385,7 @@
     {
         "_test": "has phase",
         "accession": "ENCBS181AAA",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "biosample_term_id": "EFO:0002783",
         "biosample_term_name": "GM06990",
         "biosample_type": "immortalized cell line",
@@ -408,7 +408,7 @@
     },
     {
         "accession": "ENCBS417ENC",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "biosample_term_id": "CL:1000350",
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
         "biosample_type": "primary cell",
@@ -434,7 +434,7 @@
         "aliases": [
             "thomas-gingeras:088N"
         ],
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "biosample_term_id": "NTR:0000002",
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
@@ -454,7 +454,7 @@
     },
     {
         "accession": "ENCBS492ENC",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "biosample_term_id": "UBERON:0000006",
         "biosample_term_name": "islet of Langerhans",
         "biosample_type": "tissue",
@@ -469,7 +469,7 @@
     },
     {
         "accession": "ENCBS493ENC",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "biosample_term_id": "UBERON:0000006",
         "biosample_term_name": "islet of Langerhans",
         "biosample_type": "tissue",
@@ -488,7 +488,7 @@
         "aliases": [
             "thomas-gingeras:140WC"
         ],
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "biosample_term_id": "CL:0002539",
         "biosample_term_name": "aortic smooth muscle cell",
         "biosample_type": "primary cell",
@@ -517,7 +517,7 @@
         "aliases": [
             "thomas-gingeras:097WC"
         ],
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "biosample_term_id": "UBERON:0000948",
         "biosample_term_name": "heart",
         "biosample_type": "tissue",
@@ -635,7 +635,7 @@
         "aliases": [
             "ENCODE:H9-cells"
         ],
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "biosample_term_id": "NTR:0000838",
         "biosample_term_name": "H9-hESC",
         "biosample_type": "stem cell",

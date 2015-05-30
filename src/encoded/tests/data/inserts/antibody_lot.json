@@ -3,7 +3,7 @@
         "_test": "untagged target and unknown lot",
         "accession": "ENCAB000AFU",
         "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:E2F1"
@@ -45,7 +45,7 @@
         "alternate_accessions": [
             "ENCAB000ATG"
         ],
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:H3K4me3"
@@ -99,7 +99,7 @@
             "ENCAB000AOV"
         ],
         "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
-        "award": "U54HG004570",
+        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:H3K9ac"
@@ -166,7 +166,7 @@
             "j-michael-cherry:Control"
         ],
         "antigen_description": "Anti-mouse",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "dbxrefs": [
             "UCSC-ENCODE-cv:IgG-Yale"
         ],
@@ -185,7 +185,7 @@
         "accession": "ENCAB000ASV",
         "antigen_description": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus.",
         "antigen_sequence": "CYPYDVPDYASL",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:HA-E2F1"
@@ -239,7 +239,7 @@
         "_test": "ENCODE2 dbxref with special characters",
         "accession": "ENCAB000AFR",
         "antigen_description": "Epitope mapping at the N-terminus of CTCF of human origin.",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "clonality": "polyclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:CTCF_(SC-5916)"
@@ -259,7 +259,7 @@
     {
         "_test": "has lot aliases",
         "accession": "ENCAB000ALM",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:TAF1"
@@ -324,7 +324,7 @@
     {
         "accession": "ENCAB000AFX",
         "antigen_description": "Raised against a.a. 1-300 mapping at the N-terminus of EBF of human origin.",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "clonality": "monoclonal",
         "dbxrefs": [
             "UCSC-ENCODE-cv:EBF1_(SC-137065)"
