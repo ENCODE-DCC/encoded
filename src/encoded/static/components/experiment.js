@@ -351,7 +351,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                {context.visualize_ucsc && context.status == "released" ?
+                {context.assembly[0] == 'hg19' || context.assembly[0] == 'mm10' ?
                     <div className="panel data-display">
                         <GenomeBrowser files={context.files} assembly={context.assembly} />
                     </div>
