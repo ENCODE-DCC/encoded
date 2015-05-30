@@ -6,7 +6,7 @@ from contentbase import (
     collection,
 )
 from .base import (
-    Item,
+    SharedItem,
     paths_filtered_by_status,
 )
 
@@ -17,7 +17,7 @@ from .base import (
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
     })
-class AntibodyLot(Item):
+class AntibodyLot(SharedItem):
     item_type = 'antibody_lot'
     schema = load_schema('encoded:schemas/antibody_lot.json')
     name_key = 'accession'

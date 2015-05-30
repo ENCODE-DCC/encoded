@@ -30,6 +30,16 @@ def submitter_testapp(submitter, app, external_tx, zsa_savepoints):
 
 
 @pytest.fixture
+def viewing_group_member_testapp(viewing_group_member, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, viewing_group_member['uuid'])
+
+
+@pytest.fixture
+def remc_member_testapp(remc_member, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, remc_member['uuid'])
+
+
+@pytest.fixture
 def indexer_testapp(app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, 'INDEXER')
 
@@ -103,3 +113,15 @@ def test_users_view_basic_indexer(submitter, indexer_testapp):
 
 def test_users_list_denied_authenticated(authenticated_testapp):
     authenticated_testapp.get('/users/', status=403)
+
+
+def test_viewing_group_member_view(viewing_group_member_testapp, experiment):
+    viewing_group_member_testapp.get(experiment['@id'], status=200)
+
+
+def test_remc_member_view_disallowed(remc_member_testapp, experiment):
+    remc_member_testapp.get(experiment['@id'], status=403)
+
+
+def test_remc_member_view_shared(remc_member_testapp, mouse_donor):
+    remc_member_testapp.get(mouse_donor['@id'], status=200)
