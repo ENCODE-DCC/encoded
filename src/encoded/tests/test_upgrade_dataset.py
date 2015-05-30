@@ -2,14 +2,14 @@ import pytest
 
 
 @pytest.fixture
-def experiment_1(root, experiment, files):
+def experiment_1(root, experiment, file, file_dataset):
     item = root.get_by_uuid(experiment['uuid'])
     properties = item.properties.copy()
-    assert root.get_by_uuid(files[0]['uuid']).properties['dataset'] == str(item.uuid)
-    assert root.get_by_uuid(files[1]['uuid']).properties['dataset'] != str(item.uuid)
+    assert root.get_by_uuid(file['uuid']).properties['dataset'] == str(item.uuid)
+    assert root.get_by_uuid(file_dataset['uuid']).properties['dataset'] != str(item.uuid)
     properties.update({
         'schema_version': '1',
-        'files': [files[0]['uuid'], files[1]['uuid']]
+        'files': [file['uuid'], file_dataset['uuid']]
     })
     del properties['related_files']
     return properties
@@ -63,24 +63,24 @@ def dataset_3(root, dataset):
 
 
 @pytest.fixture
-def dataset_5(root, dataset):
+def dataset_5(root, dataset, publication):
     item = root.get_by_uuid(dataset['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '5',
-        'references' : [ "doi:10.1214/11-AOAS466"]
+        'references': [publication['identifiers'][0]],
     })
     return properties
 
 
-def test_experiment_upgrade(root, registry, experiment, experiment_1, files, threadlocals, dummy_request):
+def test_experiment_upgrade(root, registry, experiment, experiment_1, file_dataset, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('experiment', experiment_1, target_version='2', context=context)
     assert value['schema_version'] == '2'
     assert 'files' not in value
-    assert value['related_files'] == [files[1]['uuid']]
+    assert value['related_files'] == [file_dataset['uuid']]
 
 
 def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, threadlocals, dummy_request):
@@ -191,10 +191,10 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_references(root, registry, dataset, dataset_5, publications, threadlocals, dummy_request):
+def test_dataset_upgrade_references(root, registry, dataset, dataset_5, publication, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_5, target_version='6', context=context)
     assert value['schema_version'] == '6'
-    assert value['references'] == [publications[0]['uuid']]
+    assert value['references'] == [publication['uuid']]

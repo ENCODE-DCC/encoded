@@ -187,8 +187,8 @@ def test_collection_actions_filtered_by_permission(workbook, testapp, anontestap
     assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
 
-def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
-    location = sources[0]['@id']
+def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, source):
+    location = source['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
@@ -228,21 +228,19 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_user_effective_principals(users, anontestapp, execute_counter):
-    email = users[0]['email']
+def test_user_effective_principals(submitter, lab, anontestapp, execute_counter):
+    email = submitter['email']
     with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user',
-                              extra_environ={'REMOTE_USER': str(email)})
+                              extra_environ={'REMOTE_USER': email})
     assert sorted(res.json['effective_principals']) == [
-        'group.admin',
-        'group.programmer',
         'group.submitter',
-        'lab.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'lab.%s' % lab['uuid'],
         'remoteuser.%s' % email,
-        'submits_for.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'submits_for.%s' % lab['uuid'],
         'system.Authenticated',
         'system.Everyone',
-        'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+        'userid.%s' % submitter['uuid'],
     ]
 
 
