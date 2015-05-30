@@ -34,18 +34,22 @@ def indexer_testapp(app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, 'INDEXER')
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_wrangler_post_non_lab_collection(wrangler_testapp, item_type):
-    from . import sample_data
-    sample_data.load(wrangler_testapp, item_type)
+def test_wrangler_post_non_lab_collection(wrangler_testapp):
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return wrangler_testapp.post_json('/organism', item, status=201)
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_submitter_post_non_lab_collection(submitter_testapp, item_type):
-    from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[item_type][0].copy()
-    del item['uuid']
-    submitter_testapp.post_json('/' + item_type, item, status=403)
+def test_submitter_post_non_lab_collection(submitter_testapp):
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return submitter_testapp.post_json('/organism', item, status=403)
 
 
 def test_submitter_post_update_experiment(submitter_testapp, lab, award):

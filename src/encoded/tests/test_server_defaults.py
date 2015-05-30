@@ -1,15 +1,16 @@
 from pytest import fixture
 
-def test_server_defaults(users, anontestapp):
-    email = users[0]['email']
-    extra_environ={'REMOTE_USER': str(email)}
+
+def test_server_defaults(admin, anontestapp):
+    email = admin['email']
+    extra_environ = {'REMOTE_USER': email}
     res = anontestapp.post_json(
         '/testing_server_default', {}, status=201,
         extra_environ=extra_environ,
     )
     item = res.json['@graph'][0]
     assert item['now'].startswith('2')
-    assert item['user'] == users[0]['@id']
+    assert item['user'] == admin['@id']
     assert item['accession'].startswith('ENCAB')
 
     anontestapp.patch_json(
@@ -37,9 +38,9 @@ def test_accession_anontestapp(request, test_accession_app, external_tx, zsa_sav
     return TestApp(test_accession_app, environ)
 
 
-def test_test_accession_server_defaults(users, test_accession_anontestapp):
-    email = users[0]['email']
-    extra_environ={'REMOTE_USER': str(email)}
+def test_test_accession_server_defaults(admin, test_accession_anontestapp):
+    email = admin['email']
+    extra_environ = {'REMOTE_USER': email}
     res = test_accession_anontestapp.post_json(
         '/testing_server_default', {}, status=201,
         extra_environ=extra_environ,
