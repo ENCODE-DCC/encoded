@@ -586,6 +586,7 @@ def submitter(testapp, lab, award):
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
+        'viewing_groups': [award['viewing_group']],
     }
     return testapp.post_json('/user', item).json['@graph'][0]
 
@@ -618,6 +619,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -630,6 +632,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
