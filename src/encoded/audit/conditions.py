@@ -1,19 +1,7 @@
-import functools
+from functools import lru_cache
 
 
-def memoize(obj):
-    # Replace with functools.lru_cache() for Python 3.2+
-    cache = obj.cache = {}
-
-    @functools.wraps(obj)
-    def memoizer(*args, **kwargs):
-        if args not in cache:
-            cache[args] = obj(*args, **kwargs)
-        return cache[args]
-    return memoizer
-
-
-@memoize
+@lru_cache()
 def rfa(*rfa_names):
     """ award.rfa auditor condition factory
     """
@@ -26,7 +14,7 @@ def rfa(*rfa_names):
     return rfa_condition
 
 
-@memoize
+@lru_cache()
 def _award_rfa(award_uuid, root):
     award = root.get_by_uuid(award_uuid)
     return award.upgrade_properties().get('rfa')
