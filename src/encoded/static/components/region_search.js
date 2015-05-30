@@ -126,13 +126,6 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
           <div>
             <h3>Search ENCODE data by region</h3>
             <SearchForm {...this.props} />
-            <div className="panel data-display">
-                <GenomeBrowser
-                    genome="http://www.derkholm.net:8080/das/hg18comp/"
-                    genes="http://www.derkholm.net:8080/das/hsa_54_36p/"
-                    repeats="http://www.derkholm.net:8080/das/hsa_54_36p/"
-                    medip="http://www.derkholm.net:8080/das/medipseq_reads" />
-            </div>
           </div>
         );
     }
