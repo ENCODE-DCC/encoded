@@ -4,7 +4,7 @@
             "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis"
         ],
         "attachment": "8121902.2P.pdf",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
         "document_type": "certificate of analysis",
         "lab": "thomas-gingeras",
@@ -28,7 +28,7 @@
             "encode:bedMethyl.as" 
         ],
         "attachment": "bedMethyl.txt",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "document_type": "file format specification",
         "lab": "richard-myers",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -39,7 +39,7 @@
             "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
-        "award": "RC2HG005573",
+        "award": "ENCODE2-Mouse",
         "document_type": "differentiation protocol",
         "lab": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -50,7 +50,7 @@
             "ENCODE:C2C12_Wold_growth_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
-        "award": "RC2HG005573",
+        "award": "ENCODE2-Mouse",
         "document_type": "growth protocol",
         "lab": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -88,7 +88,7 @@
             "ENCODE:EPC_Stam_protocol"
         ],
         "attachment": "EPC_Stam_protocol.pdf",
-        "award": "RC2HG005654",
+        "award": "ENCODE2-Mouse",
         "description": "Isolation of mouse fetal liver cell subsets",
         "document_type": "cell isolation protocol",
         "lab": "john-stamatoyannopoulos",
@@ -100,7 +100,7 @@
             "ENCODE:Heart_STL003_excision_protocol"
         ],
         "attachment": "Heart_STL003_excision_protocol.txt",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "description": "Heart_STL003 excision protocol",
         "document_type": "excision protocol",
         "lab": "thomas-gingeras",
@@ -112,7 +112,7 @@
             "ENCODE:Myers_Methyl450_protocol"
         ],
         "attachment": "human.wgEncodeHaibMethyl450.txt",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2. Isolation of mouse fetal liver cell subsets. Heart_STL003 general protocol.",
         "document_type": "general protocol",
         "lab": "richard-myers",
@@ -135,7 +135,7 @@
             "ENCODE:Heart_STL003_general_protocol"
         ],
         "attachment": "LID48879.pdf",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "description": "Heart_STL003 general protocol",
         "document_type": "general protocol",
         "lab": "thomas-gingeras",
@@ -147,7 +147,7 @@
             "ENCODE:MCF-7_Crawford_growth_protocol"
         ],
         "attachment": "MCF-7_Crawford_protocol.pdf",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "description": "MCF-7 Cell Culture and +/- estrogen treatment",
         "document_type": "growth protocol",
         "lab": "gregory-crawford",
@@ -159,7 +159,7 @@
             "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
         "document_type": "growth protocol",
         "lab": "peggy-farnham",
@@ -171,7 +171,7 @@
             "ENCODE:MCF-7_Farnham_treatment_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
         "document_type": "treatment protocol",
         "lab": "peggy-farnham",
@@ -183,7 +183,7 @@
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "attachment": "mouse.wgEncodeSydhHist.txt",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
         "document_type": "general protocol",
         "lab": "michael-snyder",
@@ -202,7 +202,7 @@
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "document_type": "general protocol",
         "lab": "richard-myers",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -213,7 +213,7 @@
             "ENCODE:PanIsletD_Crawford_protocol"
         ],
         "attachment": "PanIsletD_Crawford_protocol.pdf",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "document_type": "other",
         "lab": "gregory-crawford",
         "submitted_by": "metus.donec@nisl.montes",
@@ -224,7 +224,7 @@
             "ENCODE:SAEC_Stam_protocol"
         ],
         "attachment": "SAEC_Stam_protocol.pdf",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "document_type": "growth protocol",
         "lab": "john-stamatoyannopoulos",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -235,7 +235,7 @@
             "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "attachment": "SID38242.pdf",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "description": "PromoCell Normal Human Aortic Smooth Muscle Cells general protocol",
         "document_type": "general protocol",
         "lab": "thomas-gingeras",
@@ -304,7 +304,7 @@
             "ENCODE:Stam_15_protocols"
         ],
         "attachment": "Stam_15_protocols.pdf",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "document_type": "growth protocol",
         "lab": "john-stamatoyannopoulos",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -315,7 +315,7 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations"
         ],
         "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
-        "award": "U54HG004557",
+        "award": "ENCODE2",
         "document_type": "other",
         "lab": "thomas-gingeras",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -326,7 +326,7 @@
             "ENCODE:ZhBTc4_Stam_protocol"
         ],
         "attachment": "ZhBTc4_Stam_protocol.pdf",
-        "award": "RC2HG005654",
+        "award": "ENCODE2-Mouse",
         "document_type": "growth protocol",
         "lab": "john-stamatoyannopoulos",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -337,7 +337,7 @@
             "gregory-crawford:pLKO1"
         ],
         "attachment": "pLKO1_vector.png",
-        "award": "U54HG004563",
+        "award": "ENCODE2",
         "document_type": "construct image",
         "lab": "gregory-crawford",
         "submitted_by": "metus.donec@nisl.montes",
