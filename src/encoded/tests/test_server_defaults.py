@@ -3,7 +3,7 @@ from pytest import fixture
 
 def test_server_defaults(admin, anontestapp):
     email = admin['email']
-    extra_environ = {'REMOTE_USER': email}
+    extra_environ = {'REMOTE_USER': str(email)}
     res = anontestapp.post_json(
         '/testing_server_default', {}, status=201,
         extra_environ=extra_environ,
@@ -40,7 +40,7 @@ def test_accession_anontestapp(request, test_accession_app, external_tx, zsa_sav
 
 def test_test_accession_server_defaults(admin, test_accession_anontestapp):
     email = admin['email']
-    extra_environ = {'REMOTE_USER': email}
+    extra_environ = {'REMOTE_USER': str(email)}
     res = test_accession_anontestapp.post_json(
         '/testing_server_default', {}, status=201,
         extra_environ=extra_environ,

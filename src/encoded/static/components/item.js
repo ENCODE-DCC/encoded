@@ -169,7 +169,7 @@ var FetchedFieldset = React.createClass({
         var preview, fieldset;
 
         if (this.state.url) {
-            var previewUrl = '/search?mode=picker&@id=' + this.state.url;
+            var previewUrl = this.state.url;
             preview = (
                 <fetched.FetchedData>
                     <fetched.Param name="data" url={previewUrl} />

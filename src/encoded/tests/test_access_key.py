@@ -91,7 +91,7 @@ def test_access_key_principals(anontestapp, execute_counter, access_key, submitt
 
 def test_access_key_reset(anontestapp, access_key, submitter):
     headers = {'Authorization': auth_header(access_key)}
-    extra_environ = {'REMOTE_USER': submitter['email']}
+    extra_environ = {'REMOTE_USER': str(submitter['email'])}  # Must be native string for Python 2.7
     res = anontestapp.post_json(
         access_key['@id'] + '@@reset-secret', {}, extra_environ=extra_environ)
     new_headers = {
@@ -104,7 +104,7 @@ def test_access_key_reset(anontestapp, access_key, submitter):
 
 def test_access_key_disable(anontestapp, access_key, submitter):
     headers = {'Authorization': auth_header(access_key)}
-    extra_environ = {'REMOTE_USER': submitter['email']}
+    extra_environ = {'REMOTE_USER': str(submitter['email'])}
     anontestapp.post_json(
         access_key['@id'] + '@@disable-secret', {}, extra_environ=extra_environ)
     anontestapp.get('/@@testing-user', headers=headers, status=401)
