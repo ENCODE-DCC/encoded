@@ -259,7 +259,7 @@ def test_user_effective_principals(submitter, lab, anontestapp, execute_counter)
     email = submitter['email']
     with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user',
-                              extra_environ={'REMOTE_USER': email})
+                              extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'group.submitter',
         'lab.%s' % lab['uuid'],
