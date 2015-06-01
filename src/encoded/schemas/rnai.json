@@ -72,5 +72,7 @@
             "description": "Genomic sequence targeted by the RNA.",
             "type": "string"
         }
-    }
+    },
+    "boost_values": {
+        "target": 1.0}
 }
