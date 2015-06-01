@@ -64,12 +64,13 @@ class RDBStorage(object):
         else:
             return key.resource
 
-    def get_rev_links(self, model, item_type, rel):
-        return [
-            link.source_rid
-            for link in model.revs
-            if (link.source.item_type, link.rel) == (item_type, rel)
-        ]
+    def get_rev_links(self, model, rel, *item_types):
+        if item_types:
+            return [
+                link.source_rid for link in model.revs
+                if link.rel == rel and link.source.item_type in item_types]
+        else:
+            return [link.source_rid for link in model.revs if link.rel == rel]
 
     def __iter__(self, item_type=None):
         session = DBSession()
