@@ -62,7 +62,7 @@ def test_replicate_upgrade(root, registry, replicate, replicate_1, library, thre
     dummy_request.context = context
     value = migrator.upgrade('replicate', replicate_1, target_version='3', context=context)
     assert value['schema_version'] == '3'
-    assert value['status'] == 'released'
+    assert value['status'] == library['status']
     assert 'paired_ended' not in value
 
 
@@ -74,7 +74,7 @@ def test_replicate_upgrade_read_length(root, registry, replicate, replicate_1, l
     replicate_1['read_length_units'] = 'nt'
     value = migrator.upgrade('replicate', replicate_1, target_version='3', context=context)
     assert value['schema_version'] == '3'
-    assert value['status'] == 'released'
+    assert value['status'] == library['status']
     assert value['paired_ended'] == False
 
 

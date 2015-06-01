@@ -13,15 +13,8 @@ def test_load_schema(schema):
     assert load_schema('encoded:schemas/%s' % schema)
 
 
-def test_linkTo_saves_uuid(testapp, users):
-    from .sample_data import URL_COLLECTION
-    lab = URL_COLLECTION['lab'][0]
-    user = URL_COLLECTION['user'][0]
-    assert user['submits_for'] == ['cherry']
-
-    from contentbase import LOCATION_ROOT
-    root = testapp.app.registry[LOCATION_ROOT]
-    item = root['users'][user['uuid']]
+def test_linkTo_saves_uuid(root, submitter, lab):
+    item = root['users'][submitter['uuid']]
     assert item.properties['submits_for'] == [lab['uuid']]
 
 
