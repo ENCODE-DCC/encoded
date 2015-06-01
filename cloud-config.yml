@@ -183,6 +183,10 @@ write_files:
   content: |
     ES_HEAP_SIZE=4g
 
+- path: /etc/elasticsearch/elasticsearch.yml
+  content: |
+    index.indexing.slowlog.threshold.index.warn: 10s
+
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
