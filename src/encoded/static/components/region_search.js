@@ -147,7 +147,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                           })}
                       </ul>
                   </div>
-              : null}
+              : h4>{notification}</h4>}
           </div>
         );
     }
