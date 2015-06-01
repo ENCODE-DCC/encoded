@@ -104,7 +104,11 @@ def update_object_in_snapshot(args):
     with snapshot(xmin, snapshot_id):
         request = get_current_request()
         indexer = request.registry[INDEXER]
-        return indexer.update_object(request, uuid, xmin)
+        try:
+            return indexer.update_object(request, uuid, xmin)
+        except Exception:
+            clear_snapshot()
+            return False, True, uuid
 
 
 # Running in main process
@@ -129,16 +133,25 @@ class MPIndexer(Indexer):
     def update_objects(self, request, uuids, xmin, snapshot_id):
         # Ensure that we iterate over uuids in this thread not the pool task handler.
         tasks = [(uuid, xmin, snapshot_id) for uuid in uuids]
-        i = -1
+        i = 0
+        retryable = []
+        terminal = []
         try:
-            for i, path in enumerate(self.pool.imap_unordered(
-                    update_object_in_snapshot, tasks, self.chunksize)):
-                if (i + 1) % 50 == 0:
-                    log.info('Indexing %s %d', path, i + 1)
+            for success, retry, result in self.pool.imap_unordered(
+                    update_object_in_snapshot, tasks, self.chunksize):
+                i += 1
+                if success:
+                    if i % 1000 == 0:
+                        log.info('Indexing %s %d', result, i)
+                if retry:
+                    retryable.append(result)
+                else:
+                    terminal.append(result)
+
         except:
             self.shutdown()
             raise
-        return i + 1
+        return i, retryable, terminal
 
     def shutdown(self):
         if 'pool' in self.__dict__:

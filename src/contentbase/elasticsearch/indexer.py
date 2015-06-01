@@ -59,6 +59,7 @@ def index(request):
 
     first_txn = None
     last_xmin = None
+    retryable = ()
     if 'last_xmin' in request.json:
         last_xmin = request.json['last_xmin']
     else:
@@ -68,6 +69,7 @@ def index(request):
             pass
         else:
             last_xmin = status['_source']['xmin']
+            retryable = status['_source'].get('retryable', ())
 
     result = {
         'xmin': xmin,
@@ -125,7 +127,7 @@ def index(request):
             invalidated = all_uuids(request.root)
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
-            invalidated = referencing | updated
+            invalidated = referencing | updated | set(retryable)
             result.update(
                 max_xid=max_xid,
                 renamed=renamed,
@@ -137,7 +139,8 @@ def index(request):
             )
 
     if not dry_run:
-        result['indexed'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
+        result['indexed'], result['retryable'], result['terminal'] = \
+            indexer.update_objects(request, invalidated, xmin, snapshot_id)
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
@@ -174,21 +177,36 @@ class Indexer(object):
         self.index = registry.settings['contentbase.elasticsearch.index']
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
-        i = -1
-        for i, uuid in enumerate(uuids):
-            path = self.update_object(request, uuid, xmin)
+        i = 0
+        retryable = []
+        terminal = []
+        for uuid in uuids:
+            i += 1
+            try:
+                success, retry, result = self.update_object(request, uuid, xmin)
+            except StatementError:
+                # Can't reconnect until invalid transaction is rolled back
+                raise
+            if success:
+                if i % 1000 == 0:
+                    log.info('Indexing %s %d', result, i)
+            if retry:
+                retryable.append(result)
+            else:
+                terminal.append(result)
 
-            if (i + 1) % 50 == 0:
-                log.info('Indexing %s %d', path, i + 1)
-
-        return i + 1
+        return i, retryable, terminal
 
     def update_object(self, request, uuid, xmin):
         try:
             result = request.embed('/%s/@@index-data' % uuid, as_user='INDEXER')
+        except StatementError:
+            # Can't reconnect until invalid transaction is rolled back
+            raise
         except Exception:
+            # Assumed to be a terminal failure
             log.warning('Error indexing %s', uuid, exc_info=True)
-            return uuid
+            return False, False, uuid
 
         doctype = result['object']['@type'][0]
         try:
@@ -197,14 +215,12 @@ class Indexer(object):
                 id=str(uuid), version=xmin, version_type='external_gte',
                 request_timeout=30,
             )
-        except StatementError:
-            # Can't reconnect until invalid transaction is rolled back
-            raise
         except ConflictError:
             log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
         except Exception:
-            log.warning('Error indexing %s', uuid, exc_info=True)
-        return result['object']['@id']
+            log.warning('Error indexing to elasticsearch %s', uuid, exc_info=True)
+            return False, True, uuid
+        return True, False, result['object']['@id']
 
     def shutdown(self):
         pass
