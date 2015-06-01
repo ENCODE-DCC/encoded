@@ -137,17 +137,17 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var columns = context['columns'];
         return (
           <div>
-            <h3>Search ENCODE data by region</h3>
-            <SearchForm {...this.props} />
-            <div className="panel data-display main-panel">
-                <ul className="nav result-table" id="result-table">
-                    {results.length ?
-                        results.map(function (result) {
-                            return Listing({context:result, columns: columns, key: result['@id']});
-                        })
-                    : null}
-                </ul>
-            </div>
+              <h3>Search ENCODE data by region</h3>
+              <SearchForm {...this.props} />
+              {results.length ?
+                  <div className="panel data-display main-panel">
+                      <ul className="nav result-table" id="result-table">
+                          {results.map(function (result) {
+                              return Listing({context:result, columns: columns, key: result['@id']});
+                          })}
+                      </ul>
+                  </div>
+              : null}
           </div>
         );
     }
