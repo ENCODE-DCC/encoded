@@ -3,10 +3,21 @@ var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var browser = require('./browser');
-var url = require('url')
+var url = require('url');
 var GenomeBrowser = browser.GenomeBrowser;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
+
+var Listing = module.exports.Listing = function (props) {
+    // XXX not all panels have the same markup
+    var context;
+    if (props['@id']) {
+        context = props;
+        props = {context: context,  key: context['@id']};
+    }
+    var ListingView = globals.listing_views.lookup(props.context);
+    return <ListingView {...props} />;
+};
 
 var AutocompleteBox = React.createClass({
     render: function() {
@@ -122,10 +133,21 @@ var SearchForm = React.createClass({
 var RegionSearch = module.exports.RegionSearch = React.createClass({
     render: function() {
         var context = this.props.context;
+        var results = context['@graph'];
+        var columns = context['columns'];
         return (
           <div>
             <h3>Search ENCODE data by region</h3>
             <SearchForm {...this.props} />
+            <div className="panel data-display main-panel">
+                <ul className="nav result-table" id="result-table">
+                    {results.length ?
+                        results.map(function (result) {
+                            return Listing({context:result, columns: columns, key: result['@id']});
+                        })
+                    : null}
+                </ul>
+            </div>
           </div>
         );
     }

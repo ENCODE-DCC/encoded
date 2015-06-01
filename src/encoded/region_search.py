@@ -17,7 +17,13 @@ _ASSEMBLY_MAPPER = {
     'WBcel235': 'WBcel235'
 }
 
-fields = ['accession', 'files.accession']
+_REGION_FIELDS = [
+    'embedded.files.uuid',
+    'embedded.files.accession',
+    'embedded.files.href',
+    'embedded.files.file_format',
+    'embedded.files.assembly'
+]
 
 
 def includeme(config):
@@ -72,7 +78,7 @@ def get_peak_query(start, end):
                             {
                                 'range': {
                                     'end': {
-                                        'gte': end,
+                                        'gte': start,
                                     }
                                 }
                             }
@@ -124,12 +130,17 @@ def region_search(context, request):
                 file_uuids.append(hit['fields']['uuid'][0])
         file_uuids = list(set(file_uuids))
         result_fields = load_columns(request, ['experiment'], result)
+        result_fields = result_fields.union(_REGION_FIELDS)
         es_results = es.search(body=get_filtered_query(principals, file_uuids, result_fields),
                                index='encoded', doc_type='experiment', size=99999)
         load_results(request, es_results, result)
         result['notification'] = 'No results found'
         if len(result['@graph']):
             result['notification'] = 'Success'
+            for item in result['@graph']:
+                for f in item['files']:
+                    if f['uuid'] in file_uuids:
+                        f['highlight'] = True
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'
