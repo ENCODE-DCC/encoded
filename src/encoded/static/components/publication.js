@@ -164,8 +164,6 @@ var SupplementaryDataListing = React.createClass({
 
     render: function() {
         var data = this.props.data;
-        var columns = this.props.columns;
-
         var summary = data.data_summary;
         var excerpt = (summary && (summary.length > 100) ? globals.truncateString(summary, 100) : undefined);
 
@@ -175,20 +173,20 @@ var SupplementaryDataListing = React.createClass({
         return (
             <div className="list-supplementary" key={this.props.key}>
                 {data.supplementary_data_type ?
-                    <span><strong>{columns['supplementary_data.supplementary_data_type']['title']}</strong>: {data.supplementary_data_type}<br /></span>
+                    <div><strong>Available supplemental data: </strong>{data.supplementary_data_type}</div>
                 : null}
 
                 {data.file_format ?
-                    <span><strong>{columns['supplementary_data.file_format']['title']}</strong>: {data.file_format}<br /></span>
+                    <div><strong>File format: </strong>{data.file_format}</div>
                 : null}
 
                 {data.url ?
-                    <span><strong>{columns['supplementary_data.url']['title']}</strong>: <a href={data.url}>{data.url}</a><br /></span>
+                    <div><strong>URL: </strong><a href={data.url}>{data.url}</a></div>
                 : null}
 
                 {summary ?
                     <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
-                        <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {excerpt ?
+                        <strong>Data summary: </strong>{excerpt ?
                             <span>
                                 {this.state.excerptExpanded ? summary : excerpt}
                                 <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
@@ -208,7 +206,6 @@ var Listing = React.createClass({
     mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
         var result = this.props.context;
-        var columns = this.props.columns;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
         var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : result.authors;
 
@@ -229,7 +226,7 @@ var Listing = React.createClass({
                         {result.supplementary_data && result.supplementary_data.length ?
                             <div>
                                 {result.supplementary_data.map(function(data, i) {
-                                    return <SupplementaryDataListing data={data} columns={columns} id={result['@id']} key={i} />;
+                                    return <SupplementaryDataListing data={data} id={result['@id']} key={i} />;
                                 })}
                             </div>
                         : null}

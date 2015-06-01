@@ -43,8 +43,8 @@
         "address1": "Department of Cellular and Molecular Medicine",
         "address2": "9500 Gilman Drive, Room 231",
         "awards": [
-            "R01HG003991",
-            "U01ES017166",
+            "ENCODE2-Mouse",
+            "ENCODE2",
             "U54HG006997"
         ],
         "city": "La Jolla",
@@ -65,7 +65,7 @@
         "address2": "185 Cambridge St.",
         "awards": [
             "U01ES017155",
-            "U54HG004570",
+            "ENCODE2",
             "U54HG006991"
         ],
         "city": "Boston",
@@ -179,7 +179,7 @@
         "address1": "CIEMAS, 2363B",
         "address2": "101 Science Dr., Box 3382",
         "awards": [
-            "U54HG004563"
+            "ENCODE2"
         ],
         "city": "Durham",
         "country": "USA",
@@ -236,7 +236,7 @@
         "address1": "Department of Biochemistry & Molecular Pharmacology",
         "address2": "364 Plantation Street, LRB-509",
         "awards": [
-            "R01HG003143",
+            "ENCODE2",
             "U54HG007010"
         ],
         "city": "Worcester",
@@ -296,9 +296,9 @@
         "address1": "Department of Genome Sciences and Medicine",
         "address2": "3720 15th Ave. NE, Foege Bldg. Rm. S310",
         "awards": [
-            "RC2HG005654",
+            "ENCODE2-Mouse",
             "U54HG007010",
-            "U01ES017156"
+            "ENCODE2"
         ],
         "city": "Seattle",
         "country": "USA",
@@ -358,8 +358,8 @@
         "address1": "Department of Genetics",
         "address2": "300 Pasteur Drive; MC5120",
         "awards": [
-            "RC2HG005602",
-            "U54HG004558",
+            "ENCODE2-Mouse",
+            "ENCODE2",
             "U54HG006996"
         ],
         "city": "Stanford",
@@ -399,7 +399,7 @@
     {
         "address1": "601 Genome Way",
         "awards": [
-            "U54HG004576",
+            "ENCODE2",
             "U54HG006998"
         ],
         "city": "Huntsville",
@@ -451,7 +451,7 @@
     {
         "address1": "304 Wartik Laboratory",
         "awards": [
-            "RC2HG005573",
+            "ENCODE2-Mouse",
             "U54HG006998"
         ],
         "city": "University Park",
@@ -491,7 +491,7 @@
     {
         "address1": "500 Sunnyside Blvd",
         "awards": [
-            "U54HG004557",
+            "ENCODE2",
             "U54HG007004"
         ],
         "city": "Woodbury",
@@ -549,7 +549,7 @@
         "address1": "Baskin School of Engineering",
         "address2": "1156 High St.; Mail Stop CBSE/ITI",
         "awards": [
-            "U41HG004568",
+            "ENCODE2",
             "U41HG006992"
         ],
         "city": "Santa Cruz",
@@ -590,7 +590,6 @@
         "address1": "Department of Genome Sciences",
         "address2": "3720 15th Ave NE, Foege S-350D, Box 355065",
         "awards": [
-            "U01HG004263",
             "U41HG007355"
         ],
         "city": "Seattle",

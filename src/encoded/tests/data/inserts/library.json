@@ -4,7 +4,7 @@
         "aliases": [
             "richard-myers:SL14572"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS000AAA",
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
@@ -27,7 +27,7 @@
         "aliases": [
             "richard-myers:SL16339"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS001AAA",
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
@@ -206,7 +206,7 @@
     },
     {
         "accession": "ENCLB072ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
@@ -222,7 +222,7 @@
     },
     {
         "accession": "ENCLB304ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
@@ -238,7 +238,7 @@
     },
     {
         "accession": "ENCLB071ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
@@ -274,7 +274,7 @@
     },
     {
         "accession": "ENCLB163ZZZ",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
@@ -290,7 +290,7 @@
     {
         "_test": "test -new",
         "accession": "ENCLB158ZZZ",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
@@ -324,7 +324,7 @@
     },
     {
         "accession": "ENCLB723GTS",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "depleted_in_term_id": [],
         "depleted_in_term_name": [],
@@ -338,7 +338,7 @@
     },
     {
         "accession": "ENCLB209APR",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_id": "SO:0000352",
@@ -350,7 +350,7 @@
     },
     {
         "accession": "ENCLB209APS",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_id": "SO:0000352",

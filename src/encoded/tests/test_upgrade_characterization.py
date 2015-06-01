@@ -141,16 +141,14 @@ def antibody_characterization_3(antibody_characterization):
 
 
 @pytest.fixture
-def biosample_characterization_4(root, biosample_characterization):
+def biosample_characterization_4(root, biosample_characterization, publication):
     item = root.get_by_uuid(biosample_characterization['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '4',
-        'references': ["PMID:17558387", "PMID:19752085"]
+        'references': [publication['identifiers'][0]],
     })
     return properties
-
-
 
 
 def test_antibody_characterization_upgrade(app, antibody_characterization_1):
@@ -253,13 +251,13 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
 
 
-def test_biosample_characterization_upgrade_references(root, registry, biosample_characterization, biosample_characterization_4, publications, threadlocals, dummy_request):
+def test_biosample_characterization_upgrade_references(root, registry, biosample_characterization, biosample_characterization_4, publication, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(biosample_characterization['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('biosample_characterization', biosample_characterization_4, target_version='5', context=context)
     assert value['schema_version'] == '5'
-    assert value['references'] == [publications[2]['uuid'], publications[3]['uuid']]
+    assert value['references'] == [publication['uuid']]
 
 
 def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_characterization_1):

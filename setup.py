@@ -39,6 +39,7 @@ requires = [
 
 if sys.version_info.major == 2:
     requires.extend([
+        'backports.functools_lru_cache',
         'subprocess32',
     ])
 

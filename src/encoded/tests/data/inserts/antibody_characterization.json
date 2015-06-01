@@ -215,7 +215,7 @@
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-13",
@@ -229,7 +229,7 @@
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "primary_characterization_method": "immunoprecipitation",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2012-07-20",
@@ -242,7 +242,7 @@
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "caption": "ChIPseq was performed in Hela cells stably transfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
@@ -257,7 +257,7 @@
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "caption": "An IP western was performed using GM12878, HeLa and K562 nuclear extract. For each extract, lane 1 is nuclear extract, lane 2 is the immunoprecipitated sample, and lane 3 is the sample immunoprecipitated with a control rabbit IgG. Due to the extremely low level of E2F1 in most cells, it is hard to detect by western prior to IP. However, for all three cell types, the E2F1 antibody immunoprecipitated one major band of the right size that was not precipiated by a control rabbit IgG.",
         "primary_characterization_method": "immunoprecipitation",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
@@ -299,7 +299,7 @@
     },
     {
         "attachment": "human_H3K4me3_validation_Bernstein.pdf",
-        "award": "U54HG004570",
+        "award": "ENCODE2",
         "caption": "Suitably modified peptides modeled on histone tails were obtained from Abcam.Each peptide is added to Bio-Dot apparatus at 0.01 and 0.1 ug / 50uL total volume (BioRad) Let sit on rocker 60 minutes. Pull through with vacuum, wash once with 100uL TBS and twice with 200uL TBSTw. Remove membrane from Bio-Dot and transfer to 10mL Pierce SuperBlock in tray.Place on rocker for 30 minutes. Dump off SuperBlock.",
         "secondary_characterization_method": "dot blot assay",
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
@@ -314,7 +314,7 @@
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
-        "award": "U54HG004570",
+        "award": "ENCODE2",
         "caption": "Antibody was validated by analysis of ChIP-Seq data comparing tracks derived using the antibody in ChIPs performed on different cell types.",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
@@ -329,7 +329,7 @@
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
-        "award": "U54HG004570",
+        "award": "ENCODE2",
         "caption": "Specificity of the antibody to its target protein was validated by western blot",
         "primary_characterization_method": "immunoblot",
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
@@ -354,7 +354,7 @@
     },
     {
         "attachment": "human_TAF1_validation_Myers.pdf",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "caption": "Western blot protocol: Whole cell lysate was immunoprecipitated using primary antibody, and the IP fraction was loaded on a 12% acrylamide gel and separated with a Bio-Rad PROTEAN II xi system. After separation, the samples were transferred to a nitrocellulose membrane with an Invitrogen iBlot system.  Blotting with primary (same as that used for IP) and secondary HRP-conjugated antibodies was performed on an Invitrogen BenchPro 4100 system. Visualization was achieved using SuperSignal West Femto solution (Thermo Scientific).   Results: Band of expected size visualized, representing strongest signal in the lane.  Figure legend: IP-western with sc-735 in whole cell lysates (WCL) of K562, GM12878, HepG2, and HeLa; PM=protein marker. TAF1 band is indicated.",
         "primary_characterization_method": "immunoprecipitation",
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
@@ -404,7 +404,7 @@
     },
     {
         "attachment": "human_TAF1_validation_Myers.pdf",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "caption": "IP followed by mass spectrometry: Briefly, K562 whole cell lysates were immunoprecipitated using primary antibody, and the IP fraction was loaded on a 12% acrylamide gel and separated with a Bio-Rad PROTEAN II xi system. Gel was stained with Coomassie Blue in order to visualize marker bands. A gel fragment corresponding to the band indicated above in the western blot image was excised and sent to the University of Alabama at Birmingham Cancer Center Mass Spectrometry/Proteomics Shared Facility. There the sample was run on an LTQ XL Linear Ion Trap Mass Spectrometer by LC-ESI-MS/MS. Peptides were identified using SEQUEST tandem mass spectra analysis, with probability based matching at p < 0.05.   As per ENCODE data standards, all SEQUEST results are attached (ENCODE_HAIB_TAF1_03172011_MassSpec.pdf), including common contaminants. Target protein is listed as hit 5a.",
         "secondary_characterization_method": "immunoprecipitation followed by mass spectrometry",
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
@@ -419,7 +419,7 @@
     },
     {
         "attachment": "mouse_H3K4me3_07-473_validation_Hardison.pdf",
-        "award": "RC2HG005573",
+        "award": "ENCODE2-Mouse",
         "secondary_characterization_method": "dot blot assay",
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-16",
