@@ -839,6 +839,68 @@ def pipeline(testapp):
 
 
 @pytest.fixture
+def workflow_run(testapp, pipeline):
+    item = {
+        'pipeline': pipeline['@id'],
+        'status': 'finished',
+    }
+    return testapp.post_json('/workflow_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software(testapp, award, lab):
+    item = {
+        "name": "fastqc",
+        "title": "FastQC",
+        "description": "A quality control tool for high throughput sequence data.",
+        "award": award['@id'],
+        "lab": lab['@id'],
+    }
+    return testapp.post_json('/software', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software_version(testapp, software):
+    item = {
+        'version': 'v0.11.2',
+        'software': software['@id'],
+    }
+    return testapp.post_json('/software_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step(testapp, software_version):
+    item = {
+        'name': 'fastqc',
+        'title': 'fastqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run(testapp, analysis_step, workflow_run):
+    item = {
+        'analysis_step': analysis_step['@id'],
+        'status': 'finished',
+        'workflow_run': workflow_run['@id'],
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def quality_metric(testapp, analysis_step_run):
+    item = {
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
 def document(testapp, lab, award):
     item = {
         'award': award['@id'],

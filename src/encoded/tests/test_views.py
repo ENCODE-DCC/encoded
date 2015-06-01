@@ -126,6 +126,8 @@ def _test_antibody_approval_creation(testapp):
 
 
 def test_load_sample_data(
+        analysis_step,
+        analysis_step_run,
         antibody_characterization,
         antibody_lot,
         award,
@@ -142,11 +144,15 @@ def test_load_sample_data(
         organism,
         pipeline,
         publication,
+        quality_metric,
         replicate,
         rnai,
+        software,
+        software_version,
         source,
         submitter,
         target,
+        workflow_run,
         ):
     assert True, 'Fixtures have loaded sample data'
 
