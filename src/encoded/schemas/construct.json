@@ -219,5 +219,7 @@
            "type": "string",
            "pattern": "^-[0-9]+$"
        }
-    }
+    },
+    "boost_values": {
+        "target": 1.0}
 }
