@@ -46,6 +46,104 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
+@audit_checker(
+    'file',
+    frame=['replicate', 'dataset', 'replicate.library'],
+    condition=rfa('ENCODE2', 'ENCODE2-Mouse')
+)
+def audit_file_UW(value, system):
+    '''
+    A file should have an alias.
+    Its replicate should have a library with a related alias
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value['file_type'] != 'fastq':
+        return
+
+    if 'replicate' not in value:
+        detail = 'UW File {} has no replicate'.format(
+            value['@id']
+        )
+        yield AuditFailure('missing replicate', detail, level='ERROR')
+
+    if 'flowcell_details' not in value or value['flowcell_details'] == []:
+        detail = 'UW File {} has no flowcell_details'.format(
+            value['@id']
+        )
+        yield AuditFailure('missing flowcell_details', detail, level='ERROR')
+
+    if 'aliases' not in value:
+        detail = 'UW File {} has no aliases'.format(
+            value['@id'],
+        )
+        raise AuditFailure('missing alias', detail, level='ERROR')
+
+    DS = None
+    for alias in value['aliases']:
+        if 'DS' in alias:
+            if DS is None:
+                splits = alias.split("-")
+                DS = splits[0]
+            else:
+                detail = 'UW File {} has multiple DS aliases {}'.format(
+                    value['@id'],
+                    value['aliases']
+                )
+                raise AuditFailure('multiple aliases', detail, level='ERROR')
+
+    if DS is None:
+            detail = 'UW File {} has no DS aliases {}'.format(
+                value['@id'],
+                value['aliases']
+            )
+            raise AuditFailure('missing alias', detail, level='ERROR')
+
+    # Check for library DS id
+    lib = value['replicate'].get('library')
+    if lib is None:
+            detail = 'UW File {} has replicate {} with no library'.format(
+                value['@id'],
+                value['replicate']['@id']
+            )
+            raise AuditFailure('missing libary', detail, level='ERROR')
+    if 'aliases' not in lib:
+            detail = 'UW library {} has no aliases'.format(
+                value['replicate']['library']['@id']
+            )
+            raise AuditFailure('missing library alias', detail, level='ERROR')
+
+    lib_DS = None
+    for alias in value['aliases']:
+        if 'DS' in alias:
+            if lib_DS is None:
+                splits = alias.split(":")
+                lib_DS = splits[1]
+            else:
+                detail = 'UW library {} has multiple DS aliases {}'.format(
+                    value['replicate']['library']['@id'],
+                    value['aliases']
+                )
+                raise AuditFailure('multiple library aliases', detail, level='ERROR')
+    if DS is None:
+        detail = 'UW library {} has no DS aliases {}'.format(
+            value['replicate']['library']['@id'],
+            value['replicate']['library']['aliases']
+        )
+        raise AuditFailure('missing library alias', detail, level='ERROR')
+
+    if DS != lib_DS:
+        detail = 'UW file {} has DS: {} and library {} has DS: {}'.format(
+            value['@id'],
+            DS,
+            value['replicate']['library']['@id'],
+            lib_DS
+        )
+        raise AuditFailure('conflicting UW DS_IDs', detail, level='ERROR')
+
+
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_platform(value, system):
     '''
