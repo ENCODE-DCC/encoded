@@ -108,17 +108,6 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
             dbapi_connection.commit()
 
 
-def load_sample_data(app):
-    from .tests.sample_data import load_sample
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'IMPORT',
-    }
-    testapp = TestApp(app, environ)
-    load_sample(testapp)
-
-
 def load_workbook(app, workbook_filename, docsdir, test=False):
     from .loadxl import load_all
     from webtest import TestApp
@@ -225,11 +214,7 @@ def main(global_config, **local_config):
 
     app = config.make_wsgi_app()
 
-    if asbool(settings.get('load_sample_data', False)):
-        load_sample_data(app)
-
     workbook_filename = settings.get('load_workbook', '')
-
     load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
     if docsdir is not None:

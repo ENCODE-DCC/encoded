@@ -32,7 +32,7 @@ def run(wale_s3_prefix, image_id, instance_type,
 
     conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
 
-    domain = 'production' if profile_name == 'production' else 'demo'
+    domain = 'production' if profile_name == 'production' else 'instance'
 
     if any(name == i.tags.get('Name')
            for reservation in conn.get_all_instances()
@@ -72,7 +72,9 @@ def run(wale_s3_prefix, image_id, instance_type,
         'commit': commit,
         'started_by': username,
     })
-    print('%s.%s.encodedcc.org' % (name, domain))
+    print('ssh %s.%s.encodedcc.org' % (name, domain))
+    if domain == 'instance':
+        print('https://%s.demo.encodedcc.org' % name)
 
     sys.stdout.write(instance.state)
     while instance.state == 'pending':

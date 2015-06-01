@@ -24,7 +24,7 @@
     }, 
     {
         "antibody": "ENCAB000AFR", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "characterizations": [
             "15579824-74dc-4b5c-88bd-cd7fadee0df7", 
             "4f9900f8-468b-48bc-98da-a1330ac4355f"
@@ -36,7 +36,7 @@
     }, 
     {
         "antibody": "ENCAB000AFU", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "lab": "w-james-kent", 
         "status": "eligible for new data", 
         "target": "E2F1-human", 
@@ -44,7 +44,7 @@
     }, 
     {
         "antibody": "ENCAB000ALM", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "characterizations": [
             "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65", 
             "c105221e-2c2f-449d-9942-4f4b5f2f36fe"
@@ -56,7 +56,7 @@
     }, 
     {
         "antibody": "ENCAB000ANK", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "characterizations": [
             "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3", 
             "05a22a07-ab5c-42ad-bf93-801f03b017f7"
@@ -81,7 +81,7 @@
     }, 
     {
         "antibody": "ENCAB000ANU", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "characterizations": [
             "77b39794-eca3-4799-bac7-27a71a74313f"
         ], 
@@ -92,7 +92,7 @@
     }, 
     {
         "antibody": "ENCAB000AOF", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "lab": "w-james-kent", 
         "status": "eligible for new data", 
         "target": "Control-human", 
@@ -100,7 +100,7 @@
     }, 
     {
         "antibody": "ENCAB000AOF", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "lab": "w-james-kent", 
         "status": "eligible for new data", 
         "target": "Control-mouse", 
@@ -116,7 +116,7 @@
     }, 
     {
         "antibody": "ENCAB000ASV", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "characterizations": [
             "e430c823-f95e-4b34-beca-41c07cf10376", 
             "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a"
@@ -139,7 +139,7 @@
     }, 
     {
         "antibody": "ENCAB000AUU", 
-        "award": "U41HG004568", 
+        "award": "ENCODE2", 
         "lab": "w-james-kent", 
         "status": "awaiting lab characterization", 
         "target": "H3K4me3-mouse", 

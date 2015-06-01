@@ -2,7 +2,7 @@
     {
         "_test": "fake dataset",
         "accession": "ENCSR999BLA",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "dataset_type": "composite",
         "description": "Testing dataset",
         "lab": "richard-myers",
@@ -13,7 +13,7 @@
     {
         "_test": "spikes",
         "accession": "ENCSR156CIL",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "spike-ins",
         "description": "RNA Working Group Spike-ins Dataset",
         "lab": "john-stamatoyannopoulos",
@@ -24,7 +24,7 @@
     {
         "_test": "spikes2",
         "accession": "ENCSR013YHQ",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "spike-ins",
         "description": "RNA Working Group Spike-ins Dataset 2",
         "lab": "barbara-wold",
@@ -35,7 +35,7 @@
     {
         "_test": "ec3 dataset",
         "accession": "ENCSR000AJW",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "project",
         "description": "RNA Working Group Evaluation Dataset",
         "lab": "john-stamatoyannopoulos",
@@ -46,7 +46,7 @@
     {
         "_test": "reference file dataset ",
         "accession": "ENCSR001REF",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "project",
         "description": "Dataset for Reference Files (including Genomes)",
         "lab": "j-michael-cherry",
@@ -60,7 +60,7 @@
         "aliases": [
             "random-key:FakeyName"
         ],
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "composite",
         "dbxrefs": [
         "UCSC-GB-hg19:wgEncodeUwAffyExonArray"
@@ -89,7 +89,7 @@
     {
         "_test": "patch file",
         "accession": "ENCSR825ZJX",
-        "award": "U54HG004592",
+        "award": "ENCODE2",
         "dataset_type": "composite",
         "dbxrefs": [
             "UCSC-ENCODE-hg19:wgEncodeEH002546",
