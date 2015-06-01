@@ -93,8 +93,8 @@ class PickStorage(object):
                 return self.write.get_by_unique_key(unique_key, name)
         return model
 
-    def get_rev_links(self, model, item_type, rel):
-        return self.storage().get_rev_links(model, item_type, rel)
+    def get_rev_links(self, model, rel, *item_types):
+        return self.storage().get_rev_links(model, rel, *item_types)
 
     def __iter__(self, item_type=None):
         return self.storage().__iter__(item_type)
@@ -139,15 +139,16 @@ class ElasticSearchStorage(object):
         }
         return self._one(query)
 
-    def get_rev_links(self, model, item_type, rel):
+    def get_rev_links(self, model, rel, *item_types):
+        filter_ = {'term': {'links.' + rel: str(model.uuid)}}
+        if item_types:
+            filter_ = {'and': [
+                filter_,
+                {'terms': {'item_type': item_types}},
+            ]}
         query = {
             'fields': ['uuid'],
-            'filter': {
-                'and': [
-                    {'term': {'links.' + rel: str(model.uuid)}},
-                    {'term': {'item_type': item_type}},
-                ],
-            },
+            'filter': filter_,
             'version': True,
         }
         data = self.es.search(index=self.index, body=query)
