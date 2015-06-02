@@ -99,7 +99,7 @@ module.exports.GenomeBrowser = React.createClass({
                   browser.viewStart = 15964755;
                   browser.viewEnd = 15965655;
                   browser.cookieKey = 'drosophila';
-                  browser.coordSystem = {speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: R5};
+                  browser.coordSystem = {speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5};
                   browser.sources = [
                       {
                           name: 'Genome',
