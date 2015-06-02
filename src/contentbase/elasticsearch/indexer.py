@@ -294,5 +294,7 @@ def file_index(request):
                 if properties['assay_term_name'] == 'ChIP-seq' and \
                         f['output_type'] == 'optimal idr thresholded peaks':
                     get_file(es, f)
-                elif 'file_format_type' in f and f['file_format_type'] == 'narrowPeak':
+                elif properties['assay_term_name'] == 'DNase-seq' and \
+                        'file_format_type' in f and \
+                        f['file_format_type'] == 'narrowPeak':
                     get_file(es, f)
