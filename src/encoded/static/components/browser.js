@@ -96,8 +96,8 @@ module.exports.GenomeBrowser = React.createClass({
                 ];
             } else if(assembly[0] == 'dm3') {
                   browser.chr = '3L';
-                  browser.viewStart = 15964755;
-                  browser.viewEnd = 15965655;
+                  browser.viewStart = 15940000;
+                  browser.viewEnd = 15985000;
                   browser.cookieKey = 'drosophila';
                   browser.coordSystem = {speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5};
                   browser.sources = [
