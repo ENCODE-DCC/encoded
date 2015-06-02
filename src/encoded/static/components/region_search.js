@@ -147,21 +147,22 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
               <SearchForm {...this.props} />
               {results.length ?
                 <div className="panel data-display main-panel">
-                  <TabbedArea defaultActiveKey={1} animation={false}>
-                      <TabPane eventKey={1} tab='List view'>
-                          <ul className="nav result-table" id="result-table">
-                              {results.map(function (result) {
-                                  return Listing({context:result, columns: columns, key: result['@id']});
-                              })}
-                          </ul>
-                      </TabPane>
-                      <TabPane eventKey={2} tab='Browser view'>
-                          {results.map(function(result){
-                                files.push.apply(files, result['files'])
-                          })}
-                          <GenomeBrowser files={files} assembly={assembly} />
-                      </TabPane>
-                  </TabbedArea>
+                    <h4>Showing {results.length} of {context.total}<>
+                    <TabbedArea defaultActiveKey={1} animation={false}>
+                        <TabPane eventKey={1} tab='List view'>
+                            <ul className="nav result-table" id="result-table">
+                                {results.map(function (result) {
+                                    return Listing({context:result, columns: columns, key: result['@id']});
+                                })}
+                            </ul>
+                        </TabPane>
+                        <TabPane eventKey={2} tab='Browser view'>
+                            {results.map(function(result){
+                                  files.push.apply(files, result['files'])
+                            })}
+                            <GenomeBrowser files={files} assembly={assembly} />
+                        </TabPane>
+                    </TabbedArea>
                   </div>
               :<h4>{notification}</h4>}
           </div>

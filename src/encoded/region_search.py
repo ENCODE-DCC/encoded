@@ -23,7 +23,8 @@ _REGION_FIELDS = [
     'embedded.files.href',
     'embedded.files.file_format',
     'embedded.files.assembly',
-    'embedded.files.output_type'
+    'embedded.files.output_type',
+    'embedded.files.derived_from.uuid'
 ]
 
 
@@ -143,12 +144,20 @@ def region_search(context, request):
         load_results(request, es_results, result)
         result['notification'] = 'No results found'
         if len(result['@graph']):
+            new_results = []
+            result['total'] = es_results['hits']['total']
             result['notification'] = 'Success'
             for item in result['@graph']:
                 item['highlight'] = []
+                new_files = []
                 for f in item['files']:
-                    if f['uuid'] in file_uuids:
-                        item['highlight'].append(f['accession'])
+                    if f['derived_from']['uuid'] in file_uuids:
+                        new_files.append(f)
+                        item['highlight'].append(f['derived_from']['uuid'])
+                item['files'] = new_files
+                if len(item['files']):
+                    new_results.append(item)
+            result['@graph'] = new_results
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'
