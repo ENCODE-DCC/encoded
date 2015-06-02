@@ -137,12 +137,12 @@ def region_search(context, request):
             set_facets(_FACETS, used_filters, query, principals)
             es_results = es.search(
                 body=query,
-                index='encoded', doc_type='experiment', size=25
+                index='encoded', doc_type='experiment', size=10
             )
             load_results(request, es_results, result)
             load_facets(es_results, _FACETS, result)
             if len(result['@graph']):
-                new_results = []
+                '''new_results = []
                 for item in result['@graph']:
                     item['highlight'] = []
                     new_files = []
@@ -159,10 +159,10 @@ def region_search(context, request):
                     item['files'] = new_files
                     if len(item['files']) > 0:
                         new_results.append(item)
-                if len(new_results) > 0:
-                    result['total'] = es_results['hits']['total']
-                    result['notification'] = 'Success'
-                result['@graph'] = new_results
+                if len(new_results) > 0:'''
+                result['total'] = es_results['hits']['total']
+                result['notification'] = 'Success'
+                #result['@graph'] = new_results
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'

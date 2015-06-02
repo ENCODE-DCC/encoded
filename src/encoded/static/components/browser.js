@@ -8,6 +8,10 @@ module.exports.GenomeBrowser = React.createClass({
             var Dalliance = require('dalliance').browser;
             var browser = new Dalliance({
                 maxHeight: 1000,
+                noPersist: true,
+                noPersistView: true,
+                noTrackAdder: true,
+                noHelp: true,
                 chr:          '22',
                 viewStart:    29890000,
                 viewEnd:      30050000,

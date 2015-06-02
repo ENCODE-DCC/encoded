@@ -6,21 +6,15 @@ var browser = require('./browser');
 var TabbedArea = require('react-bootstrap').TabbedArea;
 var TabPane = require('react-bootstrap').TabPane;
 var url = require('url');
+var search = require('./search');
 
+var FacetList = search.FacetList;
+var Facet = search.Facet;
+var TextFilter = search.TextFilter;
+var Listing = search.Listing;
 var GenomeBrowser = browser.GenomeBrowser;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
-
-var Listing = module.exports.Listing = function (props) {
-    // XXX not all panels have the same markup
-    var context;
-    if (props['@id']) {
-        context = props;
-        props = {context: context,  key: context['@id']};
-    }
-    var ListingView = globals.listing_views.lookup(props.context);
-    return <ListingView {...props} />;
-};
 
 var AutocompleteBox = React.createClass({
     render: function() {
@@ -134,6 +128,12 @@ var SearchForm = React.createClass({
 });
 
 var RegionSearch = module.exports.RegionSearch = React.createClass({
+    onFilter: function(e) {
+        var search = e.currentTarget.getAttribute('href');
+        this.props.onChange(search);
+        e.stopPropagation();
+        e.preventDefault();
+    },
     render: function() {
         var context = this.props.context;
         var results = context['@graph'];
@@ -143,28 +143,39 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var files = [];
         var id = url.parse(this.props.href, true);
         var region = id.query['region'] || '';
+        var searchBase = url.parse(this.props.href).search || '';
+        var filters = context['filters'];
+        var facets = context['facets'];
         return (
           <div>
               <h3>Search ENCODE data by region</h3>
               <SearchForm {...this.props} />
               {results.length ?
-                <div className="panel data-display main-panel">
-                    <h4>Showing {results.length} of {context.total}</h4>
-                    <TabbedArea defaultActiveKey={1} animation={false}>
-                        <TabPane eventKey={1} tab='List view'>
-                            <ul className="nav result-table" id="result-table">
-                                {results.map(function (result) {
-                                    return Listing({context:result, columns: columns, key: result['@id']});
-                                })}
-                            </ul>
-                        </TabPane>
-                        <TabPane eventKey={2} tab='Browser view'>
-                            {results.map(function(result){
-                                  files.push.apply(files, result['files'])
-                            })}
-                            <GenomeBrowser region={region} files={files} assembly={assembly} />
-                        </TabPane>
-                    </TabbedArea>
+                  <div className="panel data-display main-panel">
+                      <div className="row">
+                          <div className="col-sm-5 col-md-4 col-lg-3">
+                              <FacetList {...this.props} facets={facets} filters={filters}
+                                  searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                          </div>
+                          <div className="col-sm-7 col-md-8 col-lg-9 search-list">
+                              <h4>Showing {results.length} of {context.total}</h4>
+                              <TabbedArea defaultActiveKey={1} animation={false}>
+                                  <TabPane eventKey={1} tab='List view'>
+                                      <ul className="nav result-table" id="result-table">
+                                          {results.map(function (result) {
+                                              return Listing({context:result, columns: columns, key: result['@id']});
+                                          })}
+                                      </ul>
+                                  </TabPane>
+                                  <TabPane eventKey={2} tab='Browser view'>
+                                      {results.map(function(result){
+                                            files.push.apply(files, result['files'])
+                                      })}
+                                      <GenomeBrowser region={region} files={files} assembly={assembly} />
+                                  </TabPane>
+                              </TabbedArea>
+                          </div>
+                      </div>
                   </div>
               :<h4>{notification}</h4>}
           </div>

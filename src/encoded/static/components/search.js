@@ -881,6 +881,7 @@ var AuditMixin = audit.AuditMixin;
             var facetdisplay = context.facets.some(function(facet) {
                 return facet.total > 0;
             });
+            console.log(searchBase);
             return (
                 <div>
                     {context['total'] ?
