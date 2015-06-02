@@ -88,7 +88,7 @@ module.exports.GenomeBrowser = React.createClass({
                 browser.sources = [
                     {
                         name: 'Genome',
-                        uri:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
+                        twoBitURI:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
                         desc: 'Mouse reference genome build NCBIm37',
                         tier_type: 'sequence',
                         provides_entrypoints: true
@@ -103,7 +103,7 @@ module.exports.GenomeBrowser = React.createClass({
                   browser.sources = [
                       {
                           name: 'Genome',
-                          uri:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
+                          twoBitURI:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
                           desc: 'D. melanogaster reference genome build BDGP R5',
                           tier_type: 'sequence',
                           provides_entrypoints: true
