@@ -22,7 +22,8 @@ _REGION_FIELDS = [
     'embedded.files.accession',
     'embedded.files.href',
     'embedded.files.file_format',
-    'embedded.files.assembly'
+    'embedded.files.assembly',
+    'embedded.files.output_type'
 ]
 
 
@@ -122,8 +123,12 @@ def region_search(context, request):
         elif len(positions) == 2:
             start = positions[0]
             end = positions[1]
-        peak_results = es.search(body=get_peak_query(start, end), index=chromosome,
-                                 doc_type=assembly, size=99999)
+        try:
+            peak_results = es.search(body=get_peak_query(start, end), index=chromosome,
+                                     doc_type=assembly, size=99999)
+        except:
+            result['notification'] = 'Please enter valid coordinates'
+            return result
         file_uuids = []
         for hit in peak_results['hits']['hits']:
             if hit['fields']['uuid'] not in file_uuids:
@@ -131,16 +136,19 @@ def region_search(context, request):
         file_uuids = list(set(file_uuids))
         result_fields = load_columns(request, ['experiment'], result)
         result_fields = result_fields.union(_REGION_FIELDS)
-        es_results = es.search(body=get_filtered_query(principals, file_uuids, result_fields),
-                               index='encoded', doc_type='experiment', size=99999)
+        es_results = es.search(
+            body=get_filtered_query(principals, file_uuids, result_fields),
+            index='encoded', doc_type='experiment', size=25
+        )
         load_results(request, es_results, result)
         result['notification'] = 'No results found'
         if len(result['@graph']):
             result['notification'] = 'Success'
             for item in result['@graph']:
+                item['highlight'] = []
                 for f in item['files']:
                     if f['uuid'] in file_uuids:
-                        f['highlight'] = True
+                        item['highlight'].append(f['accession'])
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'

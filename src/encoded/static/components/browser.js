@@ -29,23 +29,23 @@ module.exports.GenomeBrowser = React.createClass({
                 browser.sources = [
                     {
                         name: 'Genome',
-                        twoBitURI: 'https://www.biodalliance.org/datasets/hg19.2bit',
+                        twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/hg19.2bit',
                         tier_type: 'sequence',
                         provides_entrypoints: true,
                         pinned: true
                     },
                     {
                         name: 'GENCODE',
-                        bwgURI: 'https://www.biodalliance.org/datasets/gencode.bb',
-                        stylesheet_uri: 'http://www.biodalliance.org/stylesheets/gencode.xml',
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.xml',
                         collapseSuperGroups: true,
-                        trixURI: 'https://www.biodalliance.org/datasets/geneIndex.ix'
+                        trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/geneIndex.ix'
                     },
                     {
                         name: 'Repeats',
                         desc: 'Repeat annotation from RepeatMasker',
-                        bwgURI: 'https://www.biodalliance.org/datasets/repeats.bb',
-                        stylesheet_uri: 'https://www.biodalliance.org/stylesheets/bb-repeats.xml',
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/repeats.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/bb-repeats.xml',
                         forceReduction: -1
                     }
                 ];
@@ -59,7 +59,7 @@ module.exports.GenomeBrowser = React.createClass({
                 browser.sources = [
                     {
                         name: 'Genome',
-                        twoBitURI:  'https://www.biodalliance.org/datasets/GRCm38/mm10.2bit',
+                        twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/mm10.2bit',
                         desc: 'Mouse reference genome build GRCm38',
                         tier_type: 'sequence',
                         provides_entrypoints: true
@@ -67,16 +67,16 @@ module.exports.GenomeBrowser = React.createClass({
                     {
                         name: 'Genes',
                         desc: 'Gene structures from GENCODE M2',
-                        bwgURI: 'https://www.biodalliance.org/datasets/GRCm38/gencodeM2.bb',
-                        stylesheet_uri: 'https://www.biodalliance.org/stylesheets/gencode.xml',
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.xml',
                         collapseSuperGroups: true,
-                        trixURI: 'https://www.biodalliance.org/datasets/GRCm38/gencodeM2.ix'
+                        trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.ix'
                     },
                     {
                         name: 'Repeats',
                         desc: 'Repeat annotation from UCSC',
-                        bwgURI: 'https://www.biodalliance.org/datasets/GRCm38/repeats.bb',
-                        stylesheet_uri: 'https://www.biodalliance.org/stylesheets/bb-repeats2.xml'
+                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats.bb',
+                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2.xml'
                     }
                 ];
             } else if(assembly[0] == 'mm9') {
@@ -88,31 +88,35 @@ module.exports.GenomeBrowser = React.createClass({
                 browser.sources = [
                     {
                         name: 'Genome',
-                        uri:  'https://www.derkholm.net:9080/das/mm9comp/',
+                        uri:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
                         desc: 'Mouse reference genome build NCBIm37',
                         tier_type: 'sequence',
-                        provides_entrypoints: true},
-                    {
-                        name: 'Genes',
-                        desc: 'Gene structures from Ensembl 58',
-                        uri:  'https://www.derkholm.net:8080/das/mmu_58_37k/',
-                        collapseSuperGroups: true,
-                        provides_karyotype: true,
-                        provides_search: true
-                    },
-                    {
-                        name: 'Repeats',
-                        desc: 'Repeat annotation from Ensembl 58',
-                        uri: 'https://www.derkholm.net:8080/das/mmu_58_37k/',
-                        stylesheet_uri: 'https://www.derkholm.net/dalliance-test/stylesheets/mouse-repeats.xml'
+                        provides_entrypoints: true
                     }
                 ];
+            } else if(assembly[0] == 'dm3') {
+                  browser.chr = '3L';
+                  browser.viewStart = 15964755;
+                  browser.viewEnd = 15965655;
+                  browser.cookieKey = 'drosophila';
+                  browser.coordSystem = {speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: R5};
+                  browser.sources = [
+                      {
+                          name: 'Genome',
+                          uri:  'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
+                          desc: 'D. melanogaster reference genome build BDGP R5',
+                          tier_type: 'sequence',
+                          provides_entrypoints: true
+                      }
+                  ];
+
             }
             files.forEach(function (file) {
                 if(file.file_format == 'bigWig') {
                     browser.sources.push({
-                        name: file.accession,
-                        bwgURI: file.href + '?proxy=true',
+                        name: file.output_type,
+                        desc: file.accession,
+                        bwgURI: 'https://www.encodeproject.org' + file.href,
                         style: [
                             {
                                 type: 'default',
@@ -127,8 +131,9 @@ module.exports.GenomeBrowser = React.createClass({
                 }
                 else if(file.file_format == 'bigBed') {
                     browser.sources.push({
-                        name: file.accession,
-                        bwgURI: file.href + '?proxy=true',
+                        name: file.output_type,
+                        desc: file.accession,
+                        bwgURI: 'https://www.encodeproject.org' + file.href,
                         style: [
                             {
                                 style: {

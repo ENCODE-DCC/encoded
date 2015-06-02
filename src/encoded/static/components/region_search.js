@@ -3,7 +3,10 @@ var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var browser = require('./browser');
+var TabbedArea = require('react-bootstrap').TabbedArea;
+var TabPane = require('react-bootstrap').TabPane;
 var url = require('url');
+
 var GenomeBrowser = browser.GenomeBrowser;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -135,17 +138,30 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var context = this.props.context;
         var results = context['@graph'];
         var columns = context['columns'];
+        var notification = context['notification'];
+        var assembly = ['hg19'];
+        var files = [];
         return (
           <div>
               <h3>Search ENCODE data by region</h3>
               <SearchForm {...this.props} />
               {results.length ?
-                  <div className="panel data-display main-panel">
-                      <ul className="nav result-table" id="result-table">
-                          {results.map(function (result) {
-                              return Listing({context:result, columns: columns, key: result['@id']});
+                <div className="panel data-display main-panel">
+                  <TabbedArea defaultActiveKey={1} animation={false}>
+                      <TabPane eventKey={1} tab='List view'>
+                          <ul className="nav result-table" id="result-table">
+                              {results.map(function (result) {
+                                  return Listing({context:result, columns: columns, key: result['@id']});
+                              })}
+                          </ul>
+                      </TabPane>
+                      <TabPane eventKey={2} tab='Browser view'>
+                          {results.map(function(result){
+                                files.push.apply(files, result['files'])
                           })}
-                      </ul>
+                          <GenomeBrowser files={files} assembly={assembly} />
+                      </TabPane>
+                  </TabbedArea>
                   </div>
               :<h4>{notification}</h4>}
           </div>
