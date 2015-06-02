@@ -141,6 +141,8 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var notification = context['notification'];
         var assembly = ['hg19'];
         var files = [];
+        var id = url.parse(this.props.href, true);
+        var region = id.query['region'] || '';
         return (
           <div>
               <h3>Search ENCODE data by region</h3>
@@ -160,7 +162,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                             {results.map(function(result){
                                   files.push.apply(files, result['files'])
                             })}
-                            <GenomeBrowser files={files} assembly={assembly} />
+                            <GenomeBrowser region={region} files={files} assembly={assembly} />
                         </TabPane>
                     </TabbedArea>
                   </div>

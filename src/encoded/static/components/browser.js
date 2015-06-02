@@ -27,6 +27,19 @@ module.exports.GenomeBrowser = React.createClass({
             browser.sources = [];
             var assembly = this.props.assembly;
             if(assembly[0] == 'hg19') {
+                if(this.props.region){
+                    var region = this.props.region;
+                    var reg = region.split(':');
+                    browser.chr = reg[0].substring(3, reg[0].length);
+                    var positions = reg[1].split('-');
+                    if(positions.length > 1) {
+                      browser.viewStart = parseInt(positions[0]);
+                      browser.viewEnd = parseInt(positions[1]);
+                    } else {
+                      browser.viewStart = parseInt(positions[0]);
+                      browser.viewEnd = parseInt(positions[0]);
+                    }
+                }
                 browser.sources = [
                     {
                         name: 'Genome',
