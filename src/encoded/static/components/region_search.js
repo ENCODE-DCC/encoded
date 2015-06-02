@@ -147,7 +147,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
               <SearchForm {...this.props} />
               {results.length ?
                 <div className="panel data-display main-panel">
-                    <h4>Showing {results.length} of {context.total}<>
+                    <h4>Showing {results.length} of {context.total}</h4>
                     <TabbedArea defaultActiveKey={1} animation={false}>
                         <TabPane eventKey={1} tab='List view'>
                             <ul className="nav result-table" id="result-table">

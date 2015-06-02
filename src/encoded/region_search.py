@@ -145,18 +145,20 @@ def region_search(context, request):
         result['notification'] = 'No results found'
         if len(result['@graph']):
             new_results = []
-            result['total'] = es_results['hits']['total']
-            result['notification'] = 'Success'
             for item in result['@graph']:
                 item['highlight'] = []
                 new_files = []
                 for f in item['files']:
-                    if f['derived_from']['uuid'] in file_uuids:
-                        new_files.append(f)
-                        item['highlight'].append(f['derived_from']['uuid'])
+                    if 'derived_from' in f:
+                        if f['derived_from']['uuid'] in file_uuids:
+                            new_files.append(f)
+                            item['highlight'].append(f['derived_from']['uuid'])
                 item['files'] = new_files
-                if len(item['files']):
+                if len(item['files']) > 0:
                     new_results.append(item)
+            if len(new_results) > 0:
+                result['total'] = es_results['hits']['total']
+                result['notification'] = 'Success'
             result['@graph'] = new_results
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
