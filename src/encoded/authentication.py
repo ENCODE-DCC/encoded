@@ -8,7 +8,7 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from .contentbase import LOCATION_ROOT
+from contentbase import LOCATION_ROOT
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 
@@ -111,9 +111,7 @@ def basic_auth_check(username, password, request):
     #if new_hash:
     #    replace_user_hash(user, new_hash)
 
-    principals = ['userid.' + properties['user']]
-
-    return principals
+    return []
 
 
 def generate_user():

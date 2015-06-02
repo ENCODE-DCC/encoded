@@ -9,7 +9,7 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
@@ -27,7 +27,7 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
 
     DBSession.remove()
     DBSession.configure(bind=None)
@@ -48,7 +48,7 @@ def app(app_settings):
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    from encoded.commands import create_mapping
+    from contentbase.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
@@ -62,7 +62,7 @@ def external_tx():
 
 @pytest.yield_fixture
 def dbapi_conn(app):
-    from encoded.storage import DBSession
+    from contentbase.storage import DBSession
     connection = DBSession.bind.pool.unique_connection()
     connection.detach()
     conn = connection.connection
@@ -74,7 +74,7 @@ def dbapi_conn(app):
 @pytest.yield_fixture
 def listening_conn(dbapi_conn):
     cursor = dbapi_conn.cursor()
-    cursor.execute("""LISTEN "encoded.transaction";""")
+    cursor.execute("""LISTEN "contentbase.transaction";""")
     yield dbapi_conn
     cursor.close()
 
@@ -123,5 +123,5 @@ def test_listening(testapp, listening_conn):
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
-    assert notify.channel == 'encoded.transaction'
+    assert notify.channel == 'contentbase.transaction'
     assert int(notify.payload) > 0

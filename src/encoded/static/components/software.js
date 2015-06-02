@@ -6,14 +6,20 @@ var pipeline = require('./pipeline');
 var fetched = require('./fetched');
 var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
+var audit = require('./audit');
 var _ = require('underscore');
 
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
 var PubReferenceList = reference.PubReferenceList;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Software = module.exports.Software = React.createClass({
+    mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -28,8 +34,10 @@ var Software = module.exports.Software = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
+                        <AuditIndicators audits={context.audit} id="publication-audit" />
                     </div>
                 </header>
+                <AuditDetail context={context} id="publication-audit" />
 
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -137,32 +145,34 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
-        var context = this.props.context;
-        return (<li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Software</p>
-                            {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
-                        </div>
-                        <div className="accession">
-                            <a href={context['@id']}>{context.title}</a>
-                            {context.source_url ? <span className="accession-note"> &mdash; <a href={context.source_url}>source</a></span> : ''}
-                        </div>
+        var result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Software</p>
+                        {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
+                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a>
+                        {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
                     </div>
                     <div className="data-row">
-                        <div>{context.description}</div>
-
-                        {context.software_type && context.software_type.length ?
+                        <div>{result.description}</div>
+                        {result.software_type && result.software_type.length ?
                             <div>
                                 <strong>Software type: </strong>
-                                {context.software_type.join(", ")}
+                                {result.software_type.join(", ")}
                             </div>
                         : null}
 
                     </div>
+                </div>
+                <AuditDetail context={result} id={result['@id']} forcedEditLink />
             </li>
         );
     }

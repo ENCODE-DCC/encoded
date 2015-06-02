@@ -36,7 +36,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python3.4 bootstrap.py -v 2.3.1 --setuptools-version 14.3
+    $ python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
     $ bin/buildout
 
 If you see a clang error like this::

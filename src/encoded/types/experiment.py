@@ -1,8 +1,8 @@
 from pyramid.traversal import find_root
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
 )
@@ -24,7 +24,7 @@ import datetime
     })
 class Experiment(Dataset):
     item_type = 'experiment'
-    schema = load_schema('experiment.json')
+    schema = load_schema('encoded:schemas/experiment.json')
     base_types = [Dataset.item_type] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.lab',
@@ -55,7 +55,7 @@ class Experiment(Dataset):
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
         'replicates.library.biosample.organism',
-        'replicates.library.biosample.treatments',
+        'replicates.library.biosample.rnais',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
@@ -64,7 +64,7 @@ class Experiment(Dataset):
         'replicates.platform',
         'possible_controls',
         'target.organism',
-        'references'
+        'references',
     ]
     audit_inherit = [
         'original_files',
@@ -171,18 +171,6 @@ class Experiment(Dataset):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
     @calculated_property(schema={
-        "title": "Run type",
-        "type": "string",
-    })
-    def run_type(self, request, replicates):
-        for replicate in replicates:
-            properties = request.embed(replicate, '@@object')
-            if properties.get('status') in ('deleted', 'replaced'):
-                continue
-            if 'paired_ended' in properties:
-                return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
-
-    @calculated_property(schema={
         "title": "Replicates",
         "type": "array",
         "items": {
@@ -203,9 +191,14 @@ class Experiment(Dataset):
     })
 class Replicate(Item):
     item_type = 'replicate'
-    schema = load_schema('replicate.json')
+    schema = load_schema('encoded:schemas/replicate.json')
     embedded = [
+        'antibody',
+        'experiment',
         'library',
+        'library.biosample',
+        'library.biosample.donor',
+        'library.biosample.donor.organism',
         'platform',
     ]
 

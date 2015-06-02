@@ -14,7 +14,7 @@ module.exports.BrowserFeat = {
             })();
             this.feat.todataurlpng = (function() {
                 var canvas = document.createElement('canvas');
-                return !!canvas && canvas.toDataURL('image/png').indexOf('data:image/png') === 0;
+                return !!(canvas && canvas.toDataURL && canvas.toDataURL('image/png').indexOf('data:image/png') === 0);
             })();
 
             // UA checks; should be retired as soon as possible

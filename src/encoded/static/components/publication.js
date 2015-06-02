@@ -3,18 +3,26 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var audit = require('./audit');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Publication = module.exports.Panel = React.createClass({
+    mixins: [AuditMixin],
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         return (
             <div className={itemClass}>
                 <h2>{context.title}</h2>
+                <AuditIndicators audits={context.audit} id="publication-audit" />
+                <AuditDetail context={context} id="publication-audit" />
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     <Citation {...this.props} />
@@ -156,8 +164,6 @@ var SupplementaryDataListing = React.createClass({
 
     render: function() {
         var data = this.props.data;
-        var columns = this.props.columns;
-
         var summary = data.data_summary;
         var excerpt = (summary && (summary.length > 100) ? globals.truncateString(summary, 100) : undefined);
 
@@ -167,20 +173,20 @@ var SupplementaryDataListing = React.createClass({
         return (
             <div className="list-supplementary" key={this.props.key}>
                 {data.supplementary_data_type ?
-                    <span><strong>{columns['supplementary_data.supplementary_data_type']['title']}</strong>: {data.supplementary_data_type}<br /></span>
+                    <div><strong>Available supplemental data: </strong>{data.supplementary_data_type}</div>
                 : null}
 
                 {data.file_format ?
-                    <span><strong>{columns['supplementary_data.file_format']['title']}</strong>: {data.file_format}<br /></span>
+                    <div><strong>File format: </strong>{data.file_format}</div>
                 : null}
 
                 {data.url ?
-                    <span><strong>{columns['supplementary_data.url']['title']}</strong>: <a href={data.url}>{data.url}</a><br /></span>
+                    <div><strong>URL: </strong><a href={data.url}>{data.url}</a></div>
                 : null}
 
                 {summary ?
                     <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
-                        <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {excerpt ?
+                        <strong>Data summary: </strong>{excerpt ?
                             <span>
                                 {this.state.excerptExpanded ? summary : excerpt}
                                 <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
@@ -197,33 +203,36 @@ var SupplementaryDataListing = React.createClass({
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
         var result = this.props.context;
-        var columns = this.props.columns;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
         var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : result.authors;
 
         return (
             <li>
-                {this.renderActions()}
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Publication</p>
-                    <p className="type meta-status">{' ' + result.status}</p>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Publication</p>
+                        <p className="type meta-status">{' ' + result.status}</p>
+                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                    </div>
+                    <div className="accession"><a href={result['@id']}>{result.title}</a></div>
+                    <div className="data-row">
+                        {authors ? <p className="list-author">{authors}.</p> : null}
+                        <p className="list-citation"><Citation {...this.props} /></p>
+                        {result.identifiers && result.identifiers.length ? <DbxrefList values={result.identifiers} className="list-reference" /> : '' }
+                        {result.supplementary_data && result.supplementary_data.length ?
+                            <div>
+                                {result.supplementary_data.map(function(data, i) {
+                                    return <SupplementaryDataListing data={data} id={result['@id']} key={i} />;
+                                })}
+                            </div>
+                        : null}
+                    </div>
                 </div>
-                <div className="accession"><a href={result['@id']}>{result.title}</a></div>
-                <div className="data-row">
-                    {authors ? <p className="list-author">{authors}.</p> : null}
-                    <p className="list-citation"><Citation {...this.props} /></p>
-                    {result.identifiers && result.identifiers.length ? <DbxrefList values={result.identifiers} className="list-reference" /> : '' }
-                    {result.supplementary_data && result.supplementary_data.length ?
-                        <div>
-                            {result.supplementary_data.map(function(data, i) {
-                                return <SupplementaryDataListing data={data} columns={columns} id={result['@id']} key={i} />;
-                            })}
-                        </div>
-                    : null}
-                </div>
+                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

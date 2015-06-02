@@ -34,7 +34,7 @@ var SearchBlockEdit = React.createClass({
 
 var ItemPreview = module.exports.ItemPreview = React.createClass({
     render: function() {
-        var context = this.props.data['@graph'][0];
+        var context = this.props.data;
         if (context === undefined) return null;
         var Listing = globals.listing_views.lookup(context);
         return (
@@ -64,7 +64,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     render: function() {
         var url = this.props.value;
-        var previewUrl = '/search/?mode=picker&@id=' + encodeURIComponent(url);
+        var previewUrl = url;
         var searchUrl = '/search/' + this.state.search;
         var actions = [
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>

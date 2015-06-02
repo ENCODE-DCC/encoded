@@ -12,10 +12,10 @@ from ..authentication import (
     generate_user,
     CRYPT_CONTEXT,
 )
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     collection_add,
     item_edit,
     collection,
@@ -41,7 +41,7 @@ from ..contentbase import (
     ])
 class AccessKey(Item):
     item_type = 'access_key'
-    schema = load_schema('access_key.json')
+    schema = load_schema('encoded:schemas/access_key.json')
     name_key = 'access_key_id'
 
     def __ac_local_roles__(self):

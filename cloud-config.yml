@@ -119,7 +119,7 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
-- sudo -u encoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 14.3
+- sudo -u encoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
@@ -141,8 +141,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -u encoded bin/update-keys-links production.ini --app-name app
--   sudo -u encoded bin/upgrade production.ini --app-name app
+-   sudo -u encoded bin/batchupgrade production.ini --app-name app
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -182,7 +181,7 @@ write_files:
 
 - path: /etc/default/elasticsearch
   content: |
-    ES_HEAP_SIZE=2g
+    ES_HEAP_SIZE=4g
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
@@ -196,7 +195,7 @@ write_files:
 
 - path: /etc/postgresql/9.3/main/demo.conf
   content: |
-    archive_command = '/bin/true'
+    archive_mode = off
 
 - path: /etc/postgresql/9.3/main/master.conf
   content: |

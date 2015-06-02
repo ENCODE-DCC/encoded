@@ -9,25 +9,18 @@ SCHEMA_FILES = [
 
 @pytest.mark.parametrize('schema', SCHEMA_FILES)
 def test_load_schema(schema):
-    from encoded.schema_utils import load_schema
-    assert load_schema(schema)
+    from contentbase.schema_utils import load_schema
+    assert load_schema('encoded:schemas/%s' % schema)
 
 
-def test_linkTo_saves_uuid(testapp, users):
-    from .sample_data import URL_COLLECTION
-    lab = URL_COLLECTION['lab'][0]
-    user = URL_COLLECTION['user'][0]
-    assert user['submits_for'] == ['cherry']
-
-    from ..contentbase import LOCATION_ROOT
-    root = testapp.app.registry[LOCATION_ROOT]
-    item = root['users'][user['uuid']]
+def test_linkTo_saves_uuid(root, submitter, lab):
+    item = root['users'][submitter['uuid']]
     assert item.properties['submits_for'] == [lab['uuid']]
 
 
 def test_mixinProperties():
-    from ..schema_utils import load_schema
-    schema = load_schema('access_key.json')
+    from contentbase.schema_utils import load_schema
+    schema = load_schema('encoded:schemas/access_key.json')
     assert schema['properties']['uuid']['type'] == 'string'
 
 
@@ -43,3 +36,13 @@ def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
     res = testapp.post_json('/pages/', {'name': 'biosamples', 'title': 'Biosamples'})
     uuid = res.json['@graph'][0]['@id']
     testapp.post_json('/pages/', {'parent': uuid, 'name': 'test', 'title': 'Test'}, status=422)
+
+
+def test_changelogs(testapp, registry):
+    from contentbase import TYPES
+    for name, typeinfo in registry[TYPES].types.items():
+        changelog = typeinfo.schema.get('changelog')
+        if changelog is not None:
+            res = testapp.get(changelog)
+            assert res.status_int == 200, changelog
+            assert res.content_type == 'text/markdown'
