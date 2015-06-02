@@ -5,7 +5,6 @@ var $script = require('scriptjs');
 module.exports.GenomeBrowser = React.createClass({
     componentDidMount: function () {
         $script('dalliance', function() {
-            var encode = 'https://www.encodeproject.org';
             var Dalliance = require('dalliance').browser;
             var browser = new Dalliance({
                 chr:          '22',
@@ -113,7 +112,7 @@ module.exports.GenomeBrowser = React.createClass({
                 if(file.file_format == 'bigWig') {
                     browser.sources.push({
                         name: file.accession,
-                        bwgURI: encode + file.href,
+                        bwgURI: file.href + '?proxy=true',
                         style: [
                             {
                                 type: 'default',
@@ -129,7 +128,7 @@ module.exports.GenomeBrowser = React.createClass({
                 else if(file.file_format == 'bigBed') {
                     browser.sources.push({
                         name: file.accession,
-                        bwgURI: encode + file.href,
+                        bwgURI: file.href + '?proxy=true',
                         style: [
                             {
                                 style: {
