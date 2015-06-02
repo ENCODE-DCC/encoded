@@ -4,19 +4,15 @@ from mimetypes import guess_type
 from PIL import Image
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.response import Response
+from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
     quote,
     unquote,
 )
-from uuid import (
-    UUID,
-    uuid4,
-)
-from contentbase import Item
-from .storage import (
-    Blob,
-    DBSession,
+from contentbase import (
+    BLOBS,
+    Item,
 )
 from .validation import ValidationFailure
 import magic
@@ -66,7 +62,7 @@ class ItemWithAttachment(Item):
     download_property = 'attachment'
 
     @classmethod
-    def _process_downloads(cls, properties, sheets):
+    def _process_downloads(cls, registry, properties, sheets):
         prop_name = cls.download_property
         attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
@@ -129,11 +125,8 @@ class ItemWithAttachment(Item):
                 im.verify()
                 attachment['width'], attachment['height'] = im.size
 
-            blob_id = uuid4()
-            download_meta['blob_id'] = str(blob_id)
-            session = DBSession()
-            blob = Blob(blob_id=blob_id, data=data)
-            session.add(blob)
+            download_meta['blob_id'] = registry[BLOBS].storeBlob(data)
+
             attachment['href'] = '@@download/%s/%s' % (
                 prop_name, quote(filename))
 
@@ -141,7 +134,7 @@ class ItemWithAttachment(Item):
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
-        properties, sheets = cls._process_downloads(properties, sheets)
+        properties, sheets = cls._process_downloads(registry, properties, sheets)
         item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
         return item
 
@@ -159,7 +152,8 @@ class ItemWithAttachment(Item):
                     msg = "Expected data uri or existing uri."
                     raise ValidationFailure('body', [prop_name, 'href'], msg)
             else:
-                properties, sheets = self._process_downloads(properties, sheets)
+                registry = find_root(self).registry
+                properties, sheets = self._process_downloads(registry, properties, sheets)
 
         super(ItemWithAttachment, self).update(properties, sheets)
 
@@ -177,18 +171,15 @@ def download(context, request):
     if download_meta['download'] != filename:
         raise HTTPNotFound(filename)
 
-    blob_id = UUID(download_meta['blob_id'])
-
     mimetype, content_encoding = guess_type(filename, strict=False)
     if mimetype is None:
         mimetype = 'application/octet-stream'
 
-    session = DBSession()
-    blob = session.query(Blob).get(blob_id)
+    blob = request.registry[BLOBS].getBlob(download_meta['blob_id'])
 
     headers = {
         'Content-Type': mimetype,
     }
 
-    response = Response(body=blob.data, headers=headers)
+    response = Response(body=blob, headers=headers)
     return response

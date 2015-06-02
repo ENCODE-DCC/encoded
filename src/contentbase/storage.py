@@ -223,6 +223,23 @@ class UUID(types.TypeDecorator):
             return uuid.UUID(value)
 
 
+class RDBBlobStorage(object):
+    def storeBlob(self, data, blob_id=None):
+        if blob_id is None:
+            blob_id = uuid.uuid4()
+        session = DBSession()
+        blob = Blob(blob_id=blob_id, data=data)
+        session.add(blob)
+        return str(blob_id)
+
+    def getBlob(self, blob_id):
+        if isinstance(blob_id, str):
+            blob_id = uuid.UUID(blob_id)
+        session = DBSession()
+        blob = session.query(Blob).get(blob_id)
+        return blob.data
+
+
 class JSON(types.TypeDecorator):
     """Represents an immutable structure as a json-encoded string.
     """
