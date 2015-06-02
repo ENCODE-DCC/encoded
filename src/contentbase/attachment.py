@@ -61,84 +61,78 @@ class ItemWithAttachment(Item):
     """
     download_property = 'attachment'
 
-    @classmethod
-    def _process_downloads(cls, registry, properties, sheets):
-        prop_name = cls.download_property
-        attachment = properties.get(prop_name, {})
-        href = attachment.get('href', None)
-        if href is not None:
-            if not href.startswith('data:'):
-                msg = "Expected data URI."
-                raise ValidationFailure('body', [prop_name, 'href'], msg)
+    def _process_downloads(self, properties, sheets):
+        prop_name = self.download_property
+        attachment = properties[prop_name]
+        href = attachment['href']
 
-            properties = properties.copy()
-            properties[prop_name] = attachment = attachment.copy()
+        if not href.startswith('data:'):
+            msg = "Expected data URI."
+            raise ValidationFailure('body', [prop_name, 'href'], msg)
 
-            if sheets is None:
-                sheets = {}
-            else:
-                sheets = sheets.copy()
-            sheets['downloads'] = downloads = {}
-            download_meta = downloads[prop_name] = {}
+        properties = properties.copy()
+        properties[prop_name] = attachment = attachment.copy()
 
-            try:
-                mime_type_declared, charset, data = parse_data_uri(href)
-            except (ValueError, TypeError):
-                msg = 'Could not parse data URI.'
-                raise ValidationFailure('body', [prop_name, 'href'], msg)
-            if charset is not None:
-                download_meta['charset'] = charset
-            # Make sure the mimetype appears to be what the client says it is
-            mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
-            if mime_type_declared and not mimetypes_are_equal(
-                    mime_type_declared, mime_type_detected):
-                msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
-                raise ValidationFailure('body', [prop_name, 'href'], msg)
-            mime_type = mime_type_declared or mime_type_detected
-            attachment['type'] = mime_type
-            if mime_type is not None:
-                download_meta['type'] = mime_type
+        if sheets is None:
+            sheets = {}
+        else:
+            sheets = sheets.copy()
+        sheets['downloads'] = downloads = {}
+        download_meta = downloads[prop_name] = {}
 
-            # Make sure mimetype is not disallowed
-            try:
-                allowed_types = cls.schema['properties'][prop_name]['properties']['type']['enum']
-            except KeyError:
-                pass
-            else:
-                if mime_type not in allowed_types:
-                    raise ValidationFailure(
-                        'body', [prop_name, 'href'], 'Mimetype is not allowed.')
+        try:
+            mime_type_declared, charset, data = parse_data_uri(href)
+        except (ValueError, TypeError):
+            msg = 'Could not parse data URI.'
+            raise ValidationFailure('body', [prop_name, 'href'], msg)
+        if charset is not None:
+            download_meta['charset'] = charset
+        # Make sure the mimetype appears to be what the client says it is
+        mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
+        if mime_type_declared and not mimetypes_are_equal(
+                mime_type_declared, mime_type_detected):
+            msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
+            raise ValidationFailure('body', [prop_name, 'href'], msg)
+        mime_type = mime_type_declared or mime_type_detected
+        attachment['type'] = mime_type
+        if mime_type is not None:
+            download_meta['type'] = mime_type
 
-            # Make sure the file extensions matches the mimetype
-            download_meta['download'] = filename = attachment['download']
-            mime_type_from_filename, _ = mimetypes.guess_type(filename)
-            if not mimetypes_are_equal(mime_type, mime_type_from_filename):
+        # Make sure mimetype is not disallowed
+        try:
+            allowed_types = self.schema['properties'][prop_name]['properties']['type']['enum']
+        except KeyError:
+            pass
+        else:
+            if mime_type not in allowed_types:
                 raise ValidationFailure(
-                    'body', [prop_name, 'href'],
-                    'Wrong file extension for %s mimetype.' % mime_type)
+                    'body', [prop_name, 'href'], 'Mimetype is not allowed.')
 
-            # Validate images and store height/width
-            major, minor = mime_type.split('/')
-            if major == 'image' and minor in ('png', 'jpeg', 'gif', 'tiff'):
-                stream = BytesIO(data)
-                im = Image.open(stream)
-                im.verify()
-                attachment['width'], attachment['height'] = im.size
+        # Make sure the file extensions matches the mimetype
+        download_meta['download'] = filename = attachment['download']
+        mime_type_from_filename, _ = mimetypes.guess_type(filename)
+        if not mimetypes_are_equal(mime_type, mime_type_from_filename):
+            raise ValidationFailure(
+                'body', [prop_name, 'href'],
+                'Wrong file extension for %s mimetype.' % mime_type)
 
-            download_meta['blob_id'] = registry[BLOBS].storeBlob(data)
+        # Validate images and store height/width
+        major, minor = mime_type.split('/')
+        if major == 'image' and minor in ('png', 'jpeg', 'gif', 'tiff'):
+            stream = BytesIO(data)
+            im = Image.open(stream)
+            im.verify()
+            attachment['width'], attachment['height'] = im.size
 
-            attachment['href'] = '@@download/%s/%s' % (
-                prop_name, quote(filename))
+        registry = find_root(self).registry
+        download_meta['blob_id'] = registry[BLOBS].storeBlob(data)
+
+        attachment['href'] = '@@download/%s/%s' % (
+            prop_name, quote(filename))
 
         return properties, sheets
 
-    @classmethod
-    def create(cls, registry, uuid, properties, sheets=None):
-        properties, sheets = cls._process_downloads(registry, properties, sheets)
-        item = super(ItemWithAttachment, cls).create(registry, uuid, properties, sheets)
-        return item
-
-    def update(self, properties, sheets=None):
+    def _update(self, properties, sheets=None):
         prop_name = self.download_property
         attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
@@ -152,10 +146,9 @@ class ItemWithAttachment(Item):
                     msg = "Expected data uri or existing uri."
                     raise ValidationFailure('body', [prop_name, 'href'], msg)
             else:
-                registry = find_root(self).registry
-                properties, sheets = self._process_downloads(registry, properties, sheets)
+                properties, sheets = self._process_downloads(properties, sheets)
 
-        super(ItemWithAttachment, self).update(properties, sheets)
+        super(ItemWithAttachment, self)._update(properties, sheets)
 
 
 @view_config(name='download', context=ItemWithAttachment, request_method='GET',
