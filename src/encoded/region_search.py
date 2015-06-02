@@ -3,7 +3,11 @@ from contentbase.elasticsearch import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
     load_columns,
-    load_results
+    load_results,
+    set_filters,
+    set_facets,
+    get_filtered_query,
+    load_facets
 )
 from collections import OrderedDict
 
@@ -27,37 +31,18 @@ _REGION_FIELDS = [
     'embedded.files.derived_from.uuid'
 ]
 
+_FACETS = [
+    ('assay_term_name', {'title': 'Assay'}),
+    ('biosample_term_name', {'title': 'Biosample term'}),
+    ('target.label', {'title': 'Target'}),
+    ('Organism', {'title': 'replicates.library.biosample.donor.organism.scientific_name'})
+]
+
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
     config.add_route('suggest', '/suggest{slash:/?}')
     config.scan(__name__)
-
-
-def get_filtered_query(principals, file_uuids, result_fields):
-    return {
-        'query': {
-            'filtered': {
-                'filter': {
-                    'and': {
-                        'filters': [
-                            {
-                                'terms': {
-                                    'principals_allowed.view': principals
-                                }
-                            },
-                            {
-                                'terms': {
-                                    'embedded.files.uuid': file_uuids
-                                }
-                            }
-                        ]
-                    }
-                }
-            }
-        },
-        '_source': list(result_fields),
-    }
 
 
 def get_peak_query(start, end):
@@ -107,6 +92,7 @@ def region_search(context, request):
         '@graph': [],
         'columns': OrderedDict(),
         'notification': '',
+        'filters': []
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
@@ -137,29 +123,46 @@ def region_search(context, request):
         file_uuids = list(set(file_uuids))
         result_fields = load_columns(request, ['experiment'], result)
         result_fields = result_fields.union(_REGION_FIELDS)
-        es_results = es.search(
-            body=get_filtered_query(principals, file_uuids, result_fields),
-            index='encoded', doc_type='experiment', size=25
-        )
-        load_results(request, es_results, result)
         result['notification'] = 'No results found'
-        if len(result['@graph']):
-            new_results = []
-            for item in result['@graph']:
-                item['highlight'] = []
-                new_files = []
-                for f in item['files']:
-                    if 'derived_from' in f:
-                        if f['derived_from']['uuid'] in file_uuids:
-                            new_files.append(f)
-                            item['highlight'].append(f['derived_from']['uuid'])
-                item['files'] = new_files
-                if len(item['files']) > 0:
-                    new_results.append(item)
-            if len(new_results) > 0:
-                result['total'] = es_results['hits']['total']
-                result['notification'] = 'Success'
-            result['@graph'] = new_results
+        if len(file_uuids):
+            query = get_filtered_query('', [], result_fields, principals)
+            del query['query']
+            query['filter']['and']['filters'].append({
+                'terms': {
+                    'embedded.files.uuid': file_uuids
+                }
+            })
+            used_filters = set_filters(request, query, result)
+            used_filters['files.uuid'] = file_uuids
+            set_facets(_FACETS, used_filters, query, principals)
+            es_results = es.search(
+                body=query,
+                index='encoded', doc_type='experiment', size=25
+            )
+            load_results(request, es_results, result)
+            load_facets(es_results, _FACETS, result)
+            if len(result['@graph']):
+                new_results = []
+                for item in result['@graph']:
+                    item['highlight'] = []
+                    new_files = []
+                    for f in item['files']:
+                        if 'derived_from' in f:
+                            derived_files = []
+                            for derived_file in f['derived_from']:
+                                if derived_file['uuid'] in file_uuids:
+                                    derived_files.append(derived_file)
+                                    item['highlight'].append(derived_file['uuid'])
+                            if len(derived_files):
+                                f['derived_from'] = derived_files
+                                new_files.append(f)
+                    item['files'] = new_files
+                    if len(item['files']) > 0:
+                        new_results.append(item)
+                if len(new_results) > 0:
+                    result['total'] = es_results['hits']['total']
+                    result['notification'] = 'Success'
+                result['@graph'] = new_results
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'

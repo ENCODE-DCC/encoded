@@ -117,7 +117,7 @@ var SearchForm = React.createClass({
             <div className="adv-search-form">
                 <form role="form" autoComplete="off" aria-labeledby="tab1">
                     <div className="form-group col-md-4">
-                        <input type="hidden" name="assembly" value="hg19" />
+                        <input type="hidden" name="genome" value="hg19" />
                         {Object.keys(this.state.terms).map(function(key) {
                             return <input type="hidden" name={key} value={this.state.terms[key]} />;
                         }, this)}
