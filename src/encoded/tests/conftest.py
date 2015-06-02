@@ -585,6 +585,29 @@ def submitter(testapp, lab, award):
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def viewing_group_member(testapp, award):
+    item = {
+        'first_name': 'Viewing',
+        'last_name': 'Group',
+        'email': 'viewing_group_member@example.org',
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def remc_member(testapp):
+    item = {
+        'first_name': 'REMC',
+        'last_name': 'Member',
+        'email': 'remc_member@example.org',
+        'viewing_groups': ['REMC'],
     }
     return testapp.post_json('/user', item).json['@graph'][0]
 
@@ -595,6 +618,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -607,6 +631,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 

@@ -274,6 +274,7 @@ def test_user_effective_principals(submitter, lab, anontestapp, execute_counter)
         'system.Authenticated',
         'system.Everyone',
         'userid.%s' % submitter['uuid'],
+        'viewing_group.ENCODE',
     ]
 
 
