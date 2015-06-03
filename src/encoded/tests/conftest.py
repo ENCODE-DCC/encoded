@@ -59,9 +59,11 @@ def engine_url(request):
 
 
 @fixture(scope='session')
-def app_settings(request, server_host_port, connection):
+def app_settings(request, server_host_port, connection, DBSession):
+    from contentbase import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings[DBSESSION] = DBSession
     return settings
 
 
@@ -135,7 +137,7 @@ def dummy_request(root, registry, app):
 
 
 @fixture(scope='session')
-def app(zsa_savepoints, check_constraints, app_settings):
+def app(app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -319,33 +321,42 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request, engine_url):
+def connection(engine_url):
     from encoded import configure_engine
-    from contentbase.storage import Base, DBSession
-    from sqlalchemy.orm.scoping import ScopedRegistry
-
-    # ``server`` thread must be in same scope
-    if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
+    from contentbase.storage import Base
 
     engine_settings = {
         'sqlalchemy.url': engine_url,
     }
 
-    engine = configure_engine(engine_settings, test_setup=True)
+    engine = configure_engine(engine_settings)
     connection = engine.connect()
     tx = connection.begin()
     try:
         Base.metadata.create_all(bind=connection)
-        session = DBSession(scope=None, bind=connection)
-        DBSession.registry.set(session)
         yield connection
     finally:
         tx.rollback()
         connection.close()
         engine.dispose()
+
+
+@pytest.fixture(scope='session')
+def _DBSession(connection):
+    import contentbase.storage
+    import zope.sqlalchemy
+    from sqlalchemy import orm
+    # ``server`` thread must be in same scope
+    DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
+    zope.sqlalchemy.register(DBSession)
+    contentbase.storage.register(DBSession)
+    return DBSession
+
+
+@pytest.fixture(scope='session')
+def DBSession(_DBSession, zsa_savepoints, check_constraints):
+    return _DBSession
 
 
 @fixture
@@ -423,24 +434,22 @@ def zsa_savepoints(request, connection):
 
 
 @fixture
-def session(transaction):
+def session(transaction, DBSession):
     """ Returns a setup session
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from contentbase.storage import DBSession
     return DBSession()
 
 
 @fixture(scope='session')
-def check_constraints(request, connection):
+def check_constraints(request, connection, _DBSession):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from contentbase.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -461,7 +470,7 @@ def check_constraints(request, connection):
             @transaction.addBeforeCommitHook
             def set_constraints():
                 self.state = 'checking'
-                session = DBSession()
+                session = _DBSession()
                 session.flush()
                 sp = self.connection.begin_nested()
                 try:
@@ -526,8 +535,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 
 @fixture
-def no_deps(request, connection):
-    from contentbase.storage import DBSession
+def no_deps(request, connection, DBSession):
     from sqlalchemy import event
 
     session = DBSession()
@@ -585,6 +593,29 @@ def submitter(testapp, lab, award):
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def viewing_group_member(testapp, award):
+    item = {
+        'first_name': 'Viewing',
+        'last_name': 'Group',
+        'email': 'viewing_group_member@example.org',
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def remc_member(testapp):
+    item = {
+        'first_name': 'REMC',
+        'last_name': 'Member',
+        'email': 'remc_member@example.org',
+        'viewing_groups': ['REMC'],
     }
     return testapp.post_json('/user', item).json['@graph'][0]
 
@@ -595,6 +626,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -607,6 +639,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -836,6 +869,68 @@ def pipeline(testapp):
         'title': "Test pipeline",
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def workflow_run(testapp, pipeline):
+    item = {
+        'pipeline': pipeline['@id'],
+        'status': 'finished',
+    }
+    return testapp.post_json('/workflow_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software(testapp, award, lab):
+    item = {
+        "name": "fastqc",
+        "title": "FastQC",
+        "description": "A quality control tool for high throughput sequence data.",
+        "award": award['@id'],
+        "lab": lab['@id'],
+    }
+    return testapp.post_json('/software', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software_version(testapp, software):
+    item = {
+        'version': 'v0.11.2',
+        'software': software['@id'],
+    }
+    return testapp.post_json('/software_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step(testapp, software_version):
+    item = {
+        'name': 'fastqc',
+        'title': 'fastqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run(testapp, analysis_step, workflow_run):
+    item = {
+        'analysis_step': analysis_step['@id'],
+        'status': 'finished',
+        'workflow_run': workflow_run['@id'],
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def quality_metric(testapp, analysis_step_run):
+    item = {
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
