@@ -6,6 +6,7 @@ from contentbase import (
     calculated_property,
     collection,
 )
+from pyramid.traversal import find_root
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -278,3 +279,10 @@ class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('encoded:schemas/software_version.json')
     embedded = ['software', 'software.references']
+
+    def __ac_local_roles__(self):
+        # Use lab/award from parent software object for access control.
+        properties = self.upgrade_properties()
+        root = find_root(self)
+        software = root.get_by_uuid(properties['software'])
+        return software.__ac_local_roles__()

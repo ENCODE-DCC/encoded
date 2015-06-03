@@ -25,10 +25,7 @@ from .json_renderer import json_renderer
 import json
 import transaction
 import uuid
-import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker())
-zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
 bakery = baked.bakery()
@@ -48,15 +45,26 @@ baked_query_unique_key = bakery(
 class RDBStorage(object):
     batchsize = 1000
 
+    def __init__(self, DBSession):
+        self.DBSession = DBSession
+
+    @property
+    def write(self):
+        return self
+
+    @property
+    def read(self):
+        return self
+
     def get_by_uuid(self, rid, default=None):
-        session = DBSession()
+        session = self.DBSession()
         model = baked_query_resource(session).get(uuid.UUID(rid))
         if model is None:
             return default
         return model
 
     def get_by_unique_key(self, unique_key, name, default=None):
-        session = DBSession()
+        session = self.DBSession()
         try:
             key = baked_query_unique_key(session).params(name=unique_key, value=name).one()
         except NoResultFound:
@@ -64,15 +72,16 @@ class RDBStorage(object):
         else:
             return key.resource
 
-    def get_rev_links(self, model, item_type, rel):
-        return [
-            link.source_rid
-            for link in model.revs
-            if (link.source.item_type, link.rel) == (item_type, rel)
-        ]
+    def get_rev_links(self, model, rel, *item_types):
+        if item_types:
+            return [
+                link.source_rid for link in model.revs
+                if link.rel == rel and link.source.item_type in item_types]
+        else:
+            return [link.source_rid for link in model.revs if link.rel == rel]
 
     def __iter__(self, item_type=None):
-        session = DBSession()
+        session = self.DBSession()
         query = session.query(Resource.rid)
 
         if item_type is not None:
@@ -84,7 +93,7 @@ class RDBStorage(object):
             yield rid
 
     def __len__(self, item_type=None):
-        session = DBSession()
+        session = self.DBSession()
         query = session.query(Resource.rid)
         if item_type is not None:
             query = query.filter(
@@ -96,15 +105,15 @@ class RDBStorage(object):
         return Resource(item_type, rid=rid)
 
     def update(self, model, properties=None, sheets=None, unique_keys=None, links=None):
-        session = DBSession()
+        session = self.DBSession()
         sp = session.begin_nested()
         try:
             session.add(model)
-            update_properties(model, properties, sheets)
+            self._update_properties(model, properties, sheets)
             if links is not None:
-                update_rels(model, links)
+                self._update_rels(model, links)
             if unique_keys is not None:
-                keys_add, keys_remove = update_keys(model, unique_keys)
+                keys_add, keys_remove = self._update_keys(model, unique_keys)
             sp.commit()
         except (IntegrityError, FlushError):
             sp.rollback()
@@ -114,79 +123,71 @@ class RDBStorage(object):
         # Try again more carefully
         try:
             session.add(model)
-            update_properties(model, properties, sheets)
+            self._update_properties(model, properties, sheets)
             if links is not None:
-                update_rels(model, links)
+                self._update_rels(model, links)
             session.flush()
         except (IntegrityError, FlushError):
             msg = 'UUID conflict'
             raise HTTPConflict(msg)
         assert unique_keys is not None
-        conflicts = check_duplicate_keys(model, keys_add)
+        conflicts = [pk for pk in keys_add if session.query(Key).get(pk) is not None]
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
 
+    def _update_properties(self, model, properties, sheets=None):
+        if properties is not None:
+            model.propsheets[''] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                model.propsheets[key] = value
 
-def update_properties(model, properties, sheets=None):
-    if properties is not None:
-        model.propsheets[''] = properties
-    if sheets is not None:
-        for key, value in sheets.items():
-            model.propsheets[key] = value
+    def _update_keys(self, model, unique_keys):
+        keys_set = {(k, v) for k, values in unique_keys.items() for v in values}
 
+        existing = {
+            (key.name, key.value)
+            for key in model.unique_keys
+        }
 
-def update_keys(model, unique_keys):
-    keys_set = {(k, v) for k, values in unique_keys.items() for v in values}
+        to_remove = existing - keys_set
+        to_add = keys_set - existing
 
-    existing = {
-        (key.name, key.value)
-        for key in model.unique_keys
-    }
+        session = self.DBSession()
+        for pk in to_remove:
+            key = session.query(Key).get(pk)
+            session.delete(key)
 
-    to_remove = existing - keys_set
-    to_add = keys_set - existing
+        for name, value in to_add:
+            key = Key(rid=model.rid, name=name, value=value)
+            session.add(key)
 
-    session = DBSession()
-    for pk in to_remove:
-        key = session.query(Key).get(pk)
-        session.delete(key)
+        return to_add, to_remove
 
-    for name, value in to_add:
-        key = Key(rid=model.rid, name=name, value=value)
-        session.add(key)
+    def _update_rels(self, model, links):
+        session = self.DBSession()
+        source = model.rid
 
-    return to_add, to_remove
+        rels = {(k, uuid.UUID(target)) for k, targets in links.items() for target in targets}
 
+        existing = {
+            (link.rel, link.target_rid)
+            for link in model.rels
+        }
 
-def check_duplicate_keys(model, keys):
-    session = DBSession()
-    return [pk for pk in keys if session.query(Key).get(pk) is not None]
+        to_remove = existing - rels
+        to_add = rels - existing
 
+        for rel, target in to_remove:
+            link = session.query(Link).get((source, rel, target))
+            session.delete(link)
 
-def update_rels(model, links):
-    session = DBSession()
-    source = model.rid
+        for rel, target in to_add:
+            link = Link(source_rid=source, rel=rel, target_rid=target)
+            session.add(link)
 
-    rels = {(k, uuid.UUID(target)) for k, targets in links.items() for target in targets}
-
-    existing = {
-        (link.rel, link.target_rid)
-        for link in model.rels
-    }
-
-    to_remove = existing - rels
-    to_add = rels - existing
-
-    for rel, target in to_remove:
-        link = session.query(Link).get((source, rel, target))
-        session.delete(link)
-
-    for rel, target in to_add:
-        link = Link(source_rid=source, rel=rel, target_rid=target)
-        session.add(link)
-
-    return to_add, to_remove
+        return to_add, to_remove
 
 
 class UUID(types.TypeDecorator):
@@ -220,6 +221,26 @@ class UUID(types.TypeDecorator):
             return value
         else:
             return uuid.UUID(value)
+
+
+class RDBBlobStorage(object):
+    def __init__(self, DBSession):
+        self.DBSession = DBSession
+
+    def storeBlob(self, data, blob_id=None):
+        if blob_id is None:
+            blob_id = uuid.uuid4()
+        session = self.DBSession()
+        blob = Blob(blob_id=blob_id, data=data)
+        session.add(blob)
+        return str(blob_id)
+
+    def getBlob(self, blob_id):
+        if isinstance(blob_id, str):
+            blob_id = uuid.UUID(blob_id)
+        session = self.DBSession()
+        blob = session.query(Blob).get(blob_id)
+        return blob.data
 
 
 class JSON(types.TypeDecorator):
@@ -457,7 +478,12 @@ def set_tid(mapper, connection, target):
     target.tid = data['tid']
 
 
-@event.listens_for(DBSession, 'before_flush')
+def register(DBSession):
+    event.listen(DBSession, 'before_flush', add_transaction_record)
+    event.listen(DBSession, 'before_commit', record_transaction_data)
+    event.listen(DBSession, 'after_begin', set_transaction_isolation_level)
+
+
 def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
@@ -476,7 +502,6 @@ def add_transaction_record(session, flush_context, instances):
     session.add(record)
 
 
-@event.listens_for(DBSession, 'before_commit')
 def record_transaction_data(session):
     txn = transaction.get()
     data = txn._extension
@@ -505,7 +530,6 @@ _set_transaction_snapshot = text(
 )
 
 
-@event.listens_for(DBSession, 'after_begin')
 def set_transaction_isolation_level(session, sqla_txn, connection):
     ''' Set appropriate transaction isolation level.
 
