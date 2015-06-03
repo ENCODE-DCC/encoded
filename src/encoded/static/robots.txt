@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /*?*limit=all
-Disallow: /files/*download
-Disallow: /cgi-bin/
