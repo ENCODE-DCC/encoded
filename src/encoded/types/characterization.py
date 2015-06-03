@@ -7,6 +7,7 @@ from contentbase import (
 )
 from .base import (
     Item,
+    SharedItem,
 )
 from contentbase.attachment import ItemWithAttachment
 
@@ -66,7 +67,7 @@ class BiosampleCharacterization(Characterization):
         'title': 'Antibody characterizations',
         'description': 'Listing of antibody characterization documents',
     })
-class AntibodyCharacterization(Characterization):
+class AntibodyCharacterization(Characterization, SharedItem):
     item_type = 'antibody_characterization'
     schema = load_schema('encoded:schemas/antibody_characterization.json')
     embedded = [

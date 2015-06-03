@@ -585,6 +585,29 @@ def submitter(testapp, lab, award):
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def viewing_group_member(testapp, award):
+    item = {
+        'first_name': 'Viewing',
+        'last_name': 'Group',
+        'email': 'viewing_group_member@example.org',
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
+
+
+@pytest.fixture
+def remc_member(testapp):
+    item = {
+        'first_name': 'REMC',
+        'last_name': 'Member',
+        'email': 'remc_member@example.org',
+        'viewing_groups': ['REMC'],
     }
     return testapp.post_json('/user', item).json['@graph'][0]
 
@@ -595,6 +618,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -607,6 +631,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -836,6 +861,68 @@ def pipeline(testapp):
         'title': "Test pipeline",
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+
+@pytest.fixture
+def workflow_run(testapp, pipeline):
+    item = {
+        'pipeline': pipeline['@id'],
+        'status': 'finished',
+    }
+    return testapp.post_json('/workflow_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software(testapp, award, lab):
+    item = {
+        "name": "fastqc",
+        "title": "FastQC",
+        "description": "A quality control tool for high throughput sequence data.",
+        "award": award['@id'],
+        "lab": lab['@id'],
+    }
+    return testapp.post_json('/software', item).json['@graph'][0]
+
+
+@pytest.fixture
+def software_version(testapp, software):
+    item = {
+        'version': 'v0.11.2',
+        'software': software['@id'],
+    }
+    return testapp.post_json('/software_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step(testapp, software_version):
+    item = {
+        'name': 'fastqc',
+        'title': 'fastqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run(testapp, analysis_step, workflow_run):
+    item = {
+        'analysis_step': analysis_step['@id'],
+        'status': 'finished',
+        'workflow_run': workflow_run['@id'],
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def quality_metric(testapp, analysis_step_run):
+    item = {
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
