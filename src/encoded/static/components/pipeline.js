@@ -205,17 +205,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                     <div className="step-info">
                                         <AnalysisStep step={selectedStep} />
                                     </div>
-                                :
-                                    <div>
-                                        {context.analysis_steps.map(function(step) {
-                                            return (
-                                                <div className="step-info">
-                                                    <AnalysisStep step={step} />
-                                                </div>
-                                            );
-                                        }, this)}
-                                    </div>
-                                }
+                                : null}
                             </div>
                         </Graph>
                     </div>
@@ -265,14 +255,14 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
 
                     {step.input_file_types && step.input_file_types.length ?
                         <div data-test="inputtypes">
-                            <dt>Input file types</dt>
+                            <dt>Input</dt>
                             <dd>{step.input_file_types.join(', ')}</dd>
                         </div>
                     : null}
 
                     {step.output_file_types && step.output_file_types.length ?
                         <div data-test="outputtypes">
-                            <dt>Output file types</dt>
+                            <dt>Output</dt>
                             <dd>{step.output_file_types.map(function(type, i) {
                                 return (
                                     <span>

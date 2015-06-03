@@ -889,7 +889,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     return jsonGraph;
-}
+};
 
 // analysis steps.
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
