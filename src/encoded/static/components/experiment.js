@@ -386,6 +386,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
+                <QcTestView context={context} />
+
             </div>
         );
     }
@@ -889,7 +891,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     return jsonGraph;
-}
+};
 
 // analysis steps.
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
@@ -1102,3 +1104,20 @@ var QcDetailsView = function(metrics) {
         return null;
     }
 };
+
+
+var QcTestView = React.createClass({
+    render: function() {
+        var files = this.props.context.files;
+
+        return (
+            <div className="panel data-display">
+                {_(files).filter(function(file) {
+                    return !!file.derived_from;
+                }).map(function(file) {
+                    return <p>{file.accession} - {file.step_run && file.step_run.qc_metrics ? file.step_run.qc_metrics : null}</p>;
+                })}
+            </div>
+        );
+    }
+});
