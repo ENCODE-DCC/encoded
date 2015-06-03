@@ -215,11 +215,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <dd>{context.lab.title}</dd>
                         </div>
 
-                        <div data-test="grant">
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
-                        </div>
-
                         {context.award.pi && context.award.pi.lab ?
                             <div data-test="awardpi">
                                 <dt>Award PI</dt>
