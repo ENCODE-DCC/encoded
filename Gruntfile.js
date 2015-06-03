@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     var path = require('path');
 
     function compressPath(p) {
-        var src = 'src/encoded/static/';
+        var src = 'src/clincoded/static/';
         p = path.relative(__dirname, p);
         if (p.slice(0, src.length) == src) {
             return '../' + p.slice(src.length);
@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
             brace: {
-                dest: './src/encoded/static/build/brace.js',
+                dest: './src/clincoded/static/build/brace.js',
                 require: [
                     'brace',
                     'brace/mode/json',
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
                 ],
             },
             dagre: {
-                dest: './src/encoded/static/build/dagre.js',
+                dest: './src/clincoded/static/build/dagre.js',
                 require: [
                     'dagre-d3',
                     'd3',
@@ -44,16 +44,16 @@ module.exports = function(grunt) {
                 plugin: [
                     ['minifyify', {
                         map: 'dagre.js.map',
-                        output: './src/encoded/static/build/dagre.js.map',
+                        output: './src/clincoded/static/build/dagre.js.map',
                         compressPath: compressPath,
                         uglify: {mangle: process.env.NODE_ENV == 'production'},
                     }],
                 ],
             },
             inline: {
-                dest: './src/encoded/static/build/inline.js',
+                dest: './src/clincoded/static/build/inline.js',
                 src: [
-                    './src/encoded/static/inline.js',
+                    './src/clincoded/static/inline.js',
                 ],
                 require: [
                     'scriptjs',
@@ -67,19 +67,19 @@ module.exports = function(grunt) {
                 plugin: [
                     ['minifyify', {
                         map: '/static/build/inline.js.map',
-                        output: './src/encoded/static/build/inline.js.map',
+                        output: './src/clincoded/static/build/inline.js.map',
                         compressPath: compressPath,
                         uglify: {mangle: process.env.NODE_ENV == 'production'},
                     }],
                 ],
             },
             browser: {
-                dest: './src/encoded/static/build/bundle.js',
+                dest: './src/clincoded/static/build/bundle.js',
                 src: [
-                    './src/encoded/static/libs/compat.js', // The shims should execute first
-                    './src/encoded/static/libs/sticky_header.js',
-                    './src/encoded/static/libs/respond.js',
-                    './src/encoded/static/browser.js',
+                    './src/clincoded/static/libs/compat.js', // The shims should execute first
+                    './src/clincoded/static/libs/sticky_header.js',
+                    './src/clincoded/static/libs/respond.js',
+                    './src/clincoded/static/browser.js',
                 ],
                 external: [
                     'brace',
@@ -98,15 +98,15 @@ module.exports = function(grunt) {
                 plugin: [
                     ['minifyify', {
                         map: 'bundle.js.map',
-                        output: './src/encoded/static/build/bundle.js.map',
+                        output: './src/clincoded/static/build/bundle.js.map',
                         compressPath: compressPath,
                         uglify: {mangle: process.env.NODE_ENV == 'production'},
                     }],
                 ],
             },
             server: {
-                dest: './src/encoded/static/build/renderer.js',
-                src: ['./src/encoded/static/server.js'],
+                dest: './src/clincoded/static/build/renderer.js',
+                src: ['./src/clincoded/static/server.js'],
                 options: {
                     builtins: false,
                     detectGlobals: false,
@@ -119,7 +119,7 @@ module.exports = function(grunt) {
                 plugin: [
                     ['minifyify', {map:
                         'renderer.js.map',
-                        output: './src/encoded/static/build/renderer.js.map',
+                        output: './src/clincoded/static/build/renderer.js.map',
                         compressPath: compressPath,
                         uglify: {mangle: process.env.NODE_ENV == 'production'},
                     }],
@@ -146,7 +146,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: 'node_modules/node-ckeditor',
                 src: 'ckeditor/**',
-                dest: 'src/encoded/static/build/',
+                dest: 'src/clincoded/static/build/',
             }
         },
     });
