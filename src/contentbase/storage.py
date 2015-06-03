@@ -25,10 +25,7 @@ from .json_renderer import json_renderer
 import json
 import transaction
 import uuid
-import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker())
-zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
 bakery = baked.bakery()
@@ -46,8 +43,10 @@ baked_query_unique_key = bakery(
 
 
 class RDBStorage(object):
-    DBSession = DBSession
     batchsize = 1000
+
+    def __init__(self, DBSession):
+        self.DBSession = DBSession
 
     @property
     def write(self):
@@ -225,7 +224,8 @@ class UUID(types.TypeDecorator):
 
 
 class RDBBlobStorage(object):
-    DBSession = DBSession
+    def __init__(self, DBSession):
+        self.DBSession = DBSession
 
     def storeBlob(self, data, blob_id=None):
         if blob_id is None:
@@ -478,7 +478,12 @@ def set_tid(mapper, connection, target):
     target.tid = data['tid']
 
 
-@event.listens_for(DBSession, 'before_flush')
+def register(DBSession):
+    event.listen(DBSession, 'before_flush', add_transaction_record)
+    event.listen(DBSession, 'before_commit', record_transaction_data)
+    event.listen(DBSession, 'after_begin', set_transaction_isolation_level)
+
+
 def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
@@ -497,7 +502,6 @@ def add_transaction_record(session, flush_context, instances):
     session.add(record)
 
 
-@event.listens_for(DBSession, 'before_commit')
 def record_transaction_data(session):
     txn = transaction.get()
     data = txn._extension
@@ -526,7 +530,6 @@ _set_transaction_snapshot = text(
 )
 
 
-@event.listens_for(DBSession, 'after_begin')
 def set_transaction_isolation_level(session, sqla_txn, connection):
     ''' Set appropriate transaction isolation level.
 

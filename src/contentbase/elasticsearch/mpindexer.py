@@ -1,4 +1,4 @@
-from contentbase import STORAGE
+from contentbase import DBSESSION
 from contextlib import contextmanager
 from multiprocessing import get_context
 from multiprocessing.pool import Pool
@@ -57,7 +57,7 @@ def set_snapshot(xmin, snapshot_id):
         txn.doom()
         if snapshot_id is not None:
             txn.setExtendedInfo('snapshot_id', snapshot_id)
-        session = app.registry[STORAGE].write.DBSession()
+        session = app.registry[DBSESSION]()
         connection = session.connection()
         db_xmin = connection.execute(
             "SELECT txid_snapshot_xmin(txid_current_snapshot());").scalar()

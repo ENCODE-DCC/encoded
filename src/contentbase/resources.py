@@ -67,6 +67,7 @@ ROOT = LOCATION_ROOT = 'root'
 TYPES = 'types'
 CONNECTION = 'connection'
 COLLECTIONS = 'collections'
+DBSESSION = 'dbsession'
 STORAGE = 'storage'
 BLOBS = 'blobs'
 
@@ -80,8 +81,8 @@ def includeme(config):
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
     registry[TYPES] = TypesTool(registry)
-    registry[STORAGE] = RDBStorage()
-    registry[BLOBS] = RDBBlobStorage()
+    registry[STORAGE] = RDBStorage(registry[DBSESSION])
+    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
     registry[CONNECTION] = Connection(registry)
     config.set_root_factory(root_factory)
 
