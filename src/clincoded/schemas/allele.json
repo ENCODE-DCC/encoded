@@ -1,0 +1,70 @@
+{
+    "title": "Allele",
+    "description": "Schema for submitting a human genetic varient.",
+    "id": "/profiles/allele.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["label", "investigated_as"],
+    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "3"
+        },
+        "dbxref": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources (e.g. ClinVar, dbVar).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
+                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
+                "type":  "string"
+            }
+        },
+        "type": {
+            "title": "Type",
+            "description": "Type of variant",
+            "type": "string",
+            "enum": [
+                "polymorphism",
+                "insertion",
+                "deletion"
+            ]
+        },
+        "label": {
+            "title": "Descriptive name of allele",
+            "description": "Common name for the target including post-translational modifications, if any.",
+            "type": "string",
+            "format": "target_label"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "proposed",
+            "enum": [
+                "proposed",
+                "current",
+                "deleted",
+                "replaced"
+            ]
+        }
+    },
+    "columns": {
+        "label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "dbxref": {
+            "title": "External resources",
+            "type": "array"
+        }
+    }
+}

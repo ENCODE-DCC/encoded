@@ -1,0 +1,718 @@
+$indicator-eligible:    #00e500;
+$indicator-pending:     #33aaff;
+$indicator-noteligible: #cc0700;
+$indicator-awaiting:    #ebe310;
+$indicator-notreviewed: #1475c9;
+$indicator-notpursued:  #d0d0d0;
+
+$document-figure-width: 130px;
+$document-figure-height: 130px;
+$characterization-figure-width: 200px;
+$characterization-figure-height: 200px;
+
+
+
+/* clear first in row in ie 8 or lower */
+.multi-columns-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .first-in-row {
+        clear: left;
+    }
+}
+
+
+/* clear the first in row for any block that has the class "multi-columns-row" */
+@media (min-width: $screen-sm-min) {
+    .multi-columns-row {
+        .col-lg-1:nth-child(12n+1),
+        .col-lg-2:nth-child(6n+1),
+        .col-lg-3:nth-child(4n+1),
+        .col-lg-4:nth-child(3n+1),
+        .col-lg-6:nth-child(2n+1),
+        .col-md-1:nth-child(12n+1),
+        .col-md-2:nth-child(6n+1),
+        .col-md-3:nth-child(4n+1),
+        .col-md-4:nth-child(3n+1),
+        .col-md-6:nth-child(2n+1){
+            clear: none;
+        }
+        .col-sm-1:nth-child(12n+1),
+        .col-sm-2:nth-child(6n+1),
+        .col-sm-3:nth-child(4n+1),
+        .col-sm-4:nth-child(3n+1),
+        .col-sm-6:nth-child(2n+1){
+            clear: left;
+        }
+    }
+}
+@media (min-width: $screen-md-min) {
+    .multi-columns-row {
+        .col-lg-1:nth-child(12n+1),
+        .col-lg-2:nth-child(6n+1),
+        .col-lg-3:nth-child(4n+1),
+        .col-lg-4:nth-child(3n+1),
+        .col-lg-6:nth-child(2n+1),
+        .col-sm-1:nth-child(12n+1),
+        .col-sm-2:nth-child(6n+1),
+        .col-sm-3:nth-child(4n+1),
+        .col-sm-4:nth-child(3n+1),
+        .col-sm-6:nth-child(2n+1){
+            clear: none;
+        }
+        .col-md-1:nth-child(12n+1),
+        .col-md-2:nth-child(6n+1),
+        .col-md-3:nth-child(4n+1),
+        .col-md-4:nth-child(3n+1),
+        .col-md-6:nth-child(2n+1){
+            clear: left;
+        }
+    }
+}
+@media (min-width: $screen-lg-min) {
+    .multi-columns-row {
+        .col-md-1:nth-child(12n+1),
+        .col-md-2:nth-child(6n+1),
+        .col-md-3:nth-child(4n+1),
+        .col-md-4:nth-child(3n+1),
+        .col-md-6:nth-child(2n+1),
+        .col-sm-1:nth-child(12n+1),
+        .col-sm-2:nth-child(6n+1),
+        .col-sm-3:nth-child(4n+1),
+        .col-sm-4:nth-child(3n+1),
+        .col-sm-6:nth-child(2n+1){
+            clear: none;
+        }
+        .col-lg-1:nth-child(12n+1),
+        .col-lg-2:nth-child(6n+1),
+        .col-lg-3:nth-child(4n+1),
+        .col-lg-4:nth-child(3n+1),
+        .col-lg-6:nth-child(2n+1){
+            clear: left;
+        }
+    }
+}
+
+
+.type-document.view-detail {
+    padding: 0;
+
+    figure {
+        margin: 14px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    figcaption {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+    }
+}
+
+
+.type-characterization.view-detail {
+    @extend .type-document.view-detail;
+
+    header {
+        margin: 0 15px;
+
+        h3 {
+            margin-bottom: 0;
+        }
+    }
+}
+
+
+.document-title {
+    padding: 5px;
+    background-color: #fff;
+    color: #333;
+    border-bottom: 1px solid #c0c0c0;
+    font-weight: bold;
+    text-align: left;
+    font-size: 14px;
+}
+
+
+.characterization-title {
+    @extend .document-title;
+    padding: 10px;
+}
+
+
+@mixin status-colors($bg, $text) {
+    figure {
+        background-color: $bg;
+    }
+
+    figcaption {
+        color: $text;
+    }
+}
+
+
+.type-characterization.view-detail.status-compliant {
+    @include status-colors($state-success-bg, $state-success-text);
+}
+
+.type-characterization.view-detail.status-not-compliant,
+.type-document.view-detail.status-deleted {
+    @include status-colors($state-danger-bg, $state-danger-text);
+}
+
+.type-characterization.view-detail.status-pending-dcc-review {
+    @include status-colors($state-info-bg, $state-info-text);
+}
+
+.type-characterization.view-detail.status-in-progress,
+.type-characterization.view-detail.status-not-submitted-for-review-by-lab,
+.type-characterization.view-detail.status-not-reviewed,
+.type-document.view-detail.status-none {
+    @include status-colors($bg: #f7f7f9, $text: #333);
+}
+
+.type-characterization.view-detail.type-antibody_characterization {
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+
+    h4 {
+        margin: 0;
+        padding: 5px 20px 8px;
+        background-color: desaturate(lighten(#0a253d,30%),30%);
+        color: #fff;
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .row {
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+
+    .panel-footer {
+        padding: 0;
+    }
+}
+
+.characterization-img {
+    @include img-responsive();
+    max-height: 360px;
+}
+
+.characterization-meta-data, .document-meta-data {
+    margin: 0;
+    padding: 10px;
+
+    .label {
+        display: inline-block;
+    }
+}
+
+
+.characterization-status {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 1.5em;
+
+    %status-pos {
+        top: -5px;
+        position: relative;
+    }
+
+    .compliant {
+        @extend %status-pos;
+        color: $state-success-text;
+    }
+
+    .pending-dcc-review { 
+        /* use with icon-tasks or maybe icon-inbox */
+        @extend %status-pos;
+        color: $state-info-text;
+    }
+
+    .not-compliant,
+    .not-reviewed {  /* use with icon-thumbs-down */
+        @extend %status-pos;
+        color: $state-danger-text;
+    }
+
+    .in-progress, {  /* use with icon-thumbs-down */
+        @extend %status-pos;
+        color: #f89406;
+    }
+}
+
+.characterization-status-labels {
+    display: block;
+    font-weight: bold;
+    font-size: 20px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        margin-right: 5px;
+
+        .status-list li {
+            height: 28px;
+        }
+    }
+}
+
+
+.label {
+    display: table-cell;
+    position: relative;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.3);
+    text-align: left;
+    padding: .3em .5em .4em;
+    font-size: 0.8em;
+    background-color: $gray-light;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+    }
+}
+
+.status-list {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+        width: auto;
+    }
+
+    li {
+        display: table-cell;
+        @include border-radius(0);
+        vertical-align: bottom;
+        border-left: 1px solid #606060;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline-block;
+        }
+
+        &:first-child {
+            @include border-top-left-radius(4px);
+            @include border-bottom-left-radius(4px);
+            border-left: none;
+        }
+
+        &:last-child {
+            @include border-top-right-radius(4px);
+            @include border-bottom-right-radius(4px);
+        }
+    }
+}
+
+.status-list-title {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline;
+        font-size: 16px;
+    }
+}
+
+@each $item in label, badge {
+    // ELIGIBLE FOR NEW DATA (green)
+    .#{$item}.status-eligible-for-new-data        { background-color: $brand-success; }
+    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($brand-success, 10%); }
+    // PENDING DCC REVIEW (blue)
+    .#{$item}.status-pending-dcc-review      { background-color: $brand-info; }
+    .#{$item}.status-pending-dcc-review[href] { background-color: darken($brand-info, 10%); }
+    // NOT ELIGIBLE FOR NEW DATA (red)
+    .#{$item}.status-not-eligible-for-new-data          { background-color: $brand-danger; }
+    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($brand-danger, 10%); }
+    // AWAITING LAB CHARACTERIZATION (yellow)
+    .#{$item}.status-awaiting-lab-characterization      { background-color: $brand-warning; }
+    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($brand-warning, 10%); }
+    // COMPLIANT (green)
+    .#{$item}.status-compliant          { background-color: $brand-success; }
+    .#{$item}.status-compliant[href]    { background-color: darken($brand-success, 10%); }
+    // NOT COMPLIANT (red)
+    .#{$item}.status-not-compliant          { background-color: $brand-danger; }
+    .#{$item}.status-not-compliant[href]    { background-color: darken($brand-danger, 10%); }
+    // NOT REVIEWED (red)
+    .#{$item}.status-not-reviewed         { background-color: #a0a0a0; }
+    .#{$item}.status-not-reviewed[href]    { background-color: darken(#a0a0a0, 10%); }
+
+    // Experiment (Dataset) and Biosample states
+    // IN PROGRESS (blue)
+    .#{$item}.status-in-progress        { background-color: $brand-info; }
+    .#{$item}.status-in-progress[href]   { background-color: darken($brand-info, 10%); }
+    // STARTED (blue)
+    .#{$item}.status-started        { background-color: $brand-info; }
+    .#{$item}.status-started[href]   { background-color: darken($brand-info, 10%); }
+    // VERIFIED (blue)
+    .#{$item}.status-verified        { background-color: $brand-info; }
+    .#{$item}.status-verified[href]   { background-color: darken($brand-info, 10%); }
+    // SUBMITTED (blue)
+    .#{$item}.status-submitted        { background-color: $brand-info; }
+    .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
+    // PROPOSED (blue)
+    .#{$item}.status-proposed        { background-color: $brand-info; }
+    .#{$item}.status-proposed[href]   { background-color: darken($brand-info, 10%); }
+    // RELEASE READY (blue)
+    .#{$item}.status-release-ready        { background-color: $brand-info; }
+    .#{$item}.status-release-ready[href]   { background-color: darken($brand-info, 10%); }
+    // RELEASED (green)
+    .#{$item}.status-released        { background-color: $brand-success; }
+    .#{$item}.status-released[href]   { background-color: darken($brand-success, 10%); }
+    // DELETED (orange)
+    .#{$item}.status-deleted        { background-color: $brand-warning; }
+    .#{$item}.status-deleted[href]   { background-color: darken($brand-warning, 10%); }
+    // REVOKED (red)
+    .#{$item}.status-revoked        { background-color: $brand-danger; }
+    .#{$item}.status-revoked[href]   { background-color: darken($brand-danger, 10%); }
+
+    // Validation Statuses
+    // PENDING (orange)
+    .#{$item}.status-pending        { background-color: $brand-warning; }
+    .#{$item}.status-pending[href]   { background-color: darken($brand-warning, 10%); }
+    // FAILED (red)
+    .#{$item}.status-fail        { background-color: $brand-danger; }
+    .#{$item}.status-fail[href]   { background-color: darken($brand-danger, 10%); }
+    // PASSED (green)
+    .#{$item}.status-pass        { background-color: $brand-success; }
+    .#{$item}.status-pass[href]   { background-color: darken($brand-success, 10%); }
+
+    /* (gray) is the default if no class given */
+}
+
+// Status indicator glyph colors
+.indicator.status-eligible-for-new-data { color: $indicator-eligible; }
+.indicator.status-pending-dcc-review { color: $indicator-pending; }
+.indicator.status-not-eligible-for-new-data { color: $indicator-noteligible; }
+.indicator.status-awaiting-lab-characterization { color: $indicator-awaiting; }
+.indicator.status-not-pursued { color: $indicator-notpursued; }
+.indicator.status-not-reviewed { color: $indicator-notreviewed; }
+
+%file-icon {
+    @include img-responsive();
+    @include text-hide;
+    width: 100px;
+    height: 100px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+}
+
+.file-pdf {
+    @extend %file-icon;
+    background-image: url(/static/img/file-pdf.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file-pdf.png);
+    }
+}
+
+.file-generic {
+    @extend %file-icon;
+    background-image: url(/static/img/file.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file.png);
+    }
+}
+
+.file-missing {
+    @extend %file-icon;
+    background-image: url(/static/img/file-broken.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file-broken.png);
+    }
+}
+
+.status-indicators {
+    white-space: nowrap;
+}
+
+.tooltip {
+    position: absolute;
+    visibility: hidden;
+    top: 20px;
+    left: 15px;
+    padding: 2px 5px;
+    z-index: 100;
+    border: 1px solid #fff;
+    background-color: desaturate(lighten(#0a253d,30%),30%);
+    @include box-shadow(0 2px 4px 0 rgba(0,0,0,0.3));
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 13px;
+    @include border-radius(4px);
+
+    span:last-child {
+        font-weight: normal;
+    }
+
+    &.tooltipopen {
+        visibility: visible;
+    }
+}
+
+.tooltip-trigger {
+    position: relative;
+    margin-left: 5px;
+    font-size: 16px;
+    cursor: default;
+}
+
+
+.facet-term-key {
+    margin-right: 5px;
+    font-size: 15px;
+}
+
+
+@mixin type-panel($figure-width, $figure-height) {
+    margin-top: 0;
+
+    &.view-detail {
+        padding: 0;
+
+        figure {
+            position: relative;
+            display: table;
+            float: none;
+            width: 100%;
+            height: $figure-height;
+            margin: 0;
+            padding: 0;
+            border-left: 1px solid #e8e8e8;
+            background-color: #f0f0f0;
+            @include background-image(linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%));
+            background-image: -ms-linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%);
+
+            @media screen and (min-width: $screen-sm-min) {
+                width: $figure-width;
+                float: right;
+                margin: 0 0 0 5px;
+            }
+
+            .attachment > a, div.file-missing {
+                display: block;
+                width: $figure-width;
+                height: auto;
+                margin: 0 auto;
+                text-align: center;
+                vertical-align: middle;
+
+                &.file-pdf,
+                &.file-generic,
+                &.file-missing {
+                    height: $figure-height;
+                }
+
+                img {
+                    display: inline-block;
+                    max-height: $figure-height;
+                    max-width: $figure-width;
+                    height: auto;
+                    width: auto;
+                }
+            }
+        }
+
+        h3 {
+            line-height: normal;
+        }
+    }
+}
+
+
+.attachment {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
+.characterization-badge {
+    position: absolute;
+    left: 50%;
+    bottom: 5px;
+    margin-left: -(($characterization-figure-width - 10) / 2);
+    width: $characterization-figure-width - 10;
+
+    @media screen and (min-width: $screen-sm-min) {
+        left: 5px;
+        margin-left: 0;
+    }
+
+    .label {
+        width: 100%;
+        padding: 8px 0;
+        text-align: center;
+        font-size: 12px;
+    }
+}
+
+
+.dl-link {
+    word-break: break-all;
+}
+
+.type-document {
+    @include type-panel($document-figure-width, $document-figure-height);
+
+    .panel-body {
+        padding: 0;
+    }
+}
+
+.type-characterization {
+    @include type-panel($document-figure-width, $document-figure-height);
+
+    .panel-body {
+        padding: 0;
+    }
+}
+
+.type-characterization.type-antibody_characterization {
+    @include type-panel($characterization-figure-width, $characterization-figure-height);
+}
+
+@mixin panel-header($figure-height) {
+    height: auto;
+    border-bottom: 1px solid #e8e8e8;
+    overflow: hidden;
+
+    @media screen and (min-width: $screen-sm-min) {
+        height: $figure-height;
+    }
+}
+
+.document-header {
+    @include panel-header($document-figure-height);
+}
+
+.characterization-header {
+    @include panel-header($characterization-figure-height);
+
+    &.panel-body {
+        padding: 0;
+    }
+}
+
+%panel-intro {
+    padding: 5px;
+
+    h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    p {
+        margin: 2px 0 0 0;
+        font-size: 14px;
+        word-wrap: break-word;
+    }
+}
+
+.document-intro {
+    @extend %panel-intro;
+}
+
+.characterization-intro {
+    @extend %panel-intro;
+    padding: 10px;
+}
+
+.dl-bar {
+    height: 32px;
+    padding: 0 10px 0 10px;
+    line-height: 32px;
+    border-bottom: 1px solid #e8e8e8;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+.key-value-trigger {
+    display: block;
+    width: 100%;
+    margin: 0;
+    background-color: $mainThemeColor;
+    text-align: center;
+    @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
+    background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
+    border-top: 1px solid #808080 !important;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    padding: 0 10px;
+    line-height: 32px;
+    color: #333333;
+
+    &:hover {
+        @include background-image(linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%));
+        background-image: -ms-linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
+    }
+
+    &:focus {
+        outline: none;
+        @include box-shadow(0 0 3px 2px #94bfe7 inset);
+    }
+
+    &.panel-footer {
+        padding: 0;
+    }
+}
+
+
+
+
+.document-slider {
+    display: none;
+    margin: 0;
+    padding: 10px 5px 0;
+    border-bottom: 1px solid #e8e8e8;
+
+    &.active {
+        display: block;
+    }
+
+    > div {
+        margin-top: 10px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+}
+
+
+.characterization-slider {
+    display: none;
+
+    &.active {
+        display: block;
+    }
+}
+
+.characterization-slider-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    @include background-image(linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.3) 100%));
+
+    &.active {
+        display: none;
+    }
+}
+
+.status-line {
+    vertical-align: top;
+}

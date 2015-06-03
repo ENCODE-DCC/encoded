@@ -1,0 +1,96 @@
+{
+    "title": "Grant",
+    "id": "/profiles/award.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "required": [ "name", "project"],
+    "identifyingProperties": ["uuid", "name", "title"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "type": "object",
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "title": {
+            "rdfs:subPropertyOf": "dc:title",
+            "title": "Name",
+            "description": "The grant name from the NIH database, if applicable.",
+            "type": "string"
+        },
+        "name": {
+            "title": "Number",
+            "description": "The official grant number from the NIH database, if applicable",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\-]+$",
+            "uniqueKey": true
+       },
+        "description": {
+            "rdfs:subPropertyOf": "dc:description",
+            "title": "Description",
+            "type": "string"
+        },
+        "start_date": {
+            "title": "Start date",
+            "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
+        },
+        "end_date": {
+            "title": "End date",
+             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
+        },
+        "url": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "URL",
+            "description": "An external resource with additional information about the grant.",
+            "type": "string",
+            "format": "uri"
+        },
+        "pi": {
+            "title": "P.I.",
+            "description": "Principle Investigator of the grant.",
+            "comment": "See user.json for available identifiers.",
+            "type": "string",
+            "linkTo": "user"
+        },
+        "rfa": {
+            "title": "Phase",
+            "description": "The name of the bioproject phase.",
+            "type": "string"
+        },
+        "project": {
+            "title": "BioProject",
+            "description": "The collection of biological data related to a single initiative, originating from a consortium.",
+            "type": "string"
+        },
+        "viewing_group": {
+            "title": "View access group",
+            "description": "The group that determines which set of data the user has permission to view.",
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "REMC"
+            ]
+        }
+    },
+    "boost_values": {
+        "name": 1.0,
+        "title": 1.0,
+        "project": 1.0
+    },
+    "changelog": "/profiles/changelogs/award.md"
+}

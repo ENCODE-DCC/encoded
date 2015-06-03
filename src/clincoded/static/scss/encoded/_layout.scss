@@ -1,0 +1,97 @@
+#layout {
+	height: auto !important;
+    margin: 0 auto -$footerHeight;
+    min-height: 100%;
+}
+
+.homepage-main-box {
+	min-height: 400px;
+	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+}
+
+.project-info {
+	h1,h2,h3,h4 {
+		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
+	}
+    margin-bottom: 20px;
+	display: block;
+	font-size: 1.3em;
+}
+
+.text-panel {
+    margin-top: 20px;
+}
+
+/* *********************************************************
+		FOOTER
+********************************************************** */
+
+.page-footer {
+	color: rgb(255, 255, 255);
+	background-color: #a4afb8; // for IE8
+	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
+	//height: $footerHeight;
+	@include text-shadow(0 1px rgba(0, 0, 0, 0.3));
+	//line-height: 0;
+	text-align: center;
+	overflow: hidden;
+	a { 
+		color: rgb(255, 255, 255); 
+		font-weight: bold;
+	}
+	ul {
+	    list-style: none;
+	    list-style-position: outside;
+	    padding: 0;
+	}
+}
+
+.footer-links {
+    margin: 15px 0;
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: right;
+
+        li:last-child {
+            padding-right: 0;
+        }
+    }
+
+    a {
+        display: block;
+        margin: 0 0 8px;
+        padding: 10px 15px;
+        background-color: darken($footerBackground, 0.1%);
+        @include border-radius(3px);
+    }
+    a:hover { 
+        text-decoration: none; 
+        background-color: darken($footerBackground, 6%);   
+    }
+    a:active {
+        background-color: darken($footerBackground, 15%);
+    }
+}
+
+.footer-logos {
+    margin: 10px 0;
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: left;
+    }
+
+    li {
+        margin: 0 0 15px;
+    }
+}
+
+
+.copy-notice {
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: right;
+    }
+}
