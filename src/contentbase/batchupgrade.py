@@ -9,11 +9,7 @@ Example:
 import logging
 import transaction
 from copy import deepcopy
-from contentbase.storage import (
-    DBSession,
-    update_keys,
-    update_rels,
-)
+from contentbase import STORAGE
 from pyramid.view import view_config
 from pyramid.traversal import find_resource
 
@@ -62,7 +58,7 @@ def worker(batch):
     return res.json
 
 
-def update_item(context):
+def update_item(storage, context):
     target_version = context.type_info.schema_version
     current_version = context.properties.get('schema_version', '')
     update = False
@@ -71,10 +67,10 @@ def update_item(context):
     if target_version is None or current_version == target_version:
         unique_keys = context.unique_keys(properties)
         links = context.links(properties)
-        keys_add, keys_remove = update_keys(context.model, unique_keys)
+        keys_add, keys_remove = storage._update_keys(context.model, unique_keys)
         if keys_add or keys_remove:
             update = True
-        rels_add, rels_remove = update_rels(context.model, links)
+        rels_add, rels_remove = storage._update_rels(context.model, links)
         if rels_add or rels_remove:
             update = True
     else:
@@ -100,7 +96,8 @@ def batch_upgrade(request):
     transaction.get().setExtendedInfo('upgrade', True)
     batch = request.json['batch']
     root = request.root
-    session = DBSession()
+    storage = request.registry[STORAGE].write
+    session = storage.DBSession()
     results = []
     for uuid in batch:
         item_type = None
@@ -110,7 +107,7 @@ def batch_upgrade(request):
         try:
             item = find_resource(root, uuid)
             item_type = item.item_type
-            update, errors = update_item(item)
+            update, errors = update_item(storage, item)
         except Exception:
             logger.exception('Error updating: /%s/%s', item_type, uuid)
             sp.rollback()
