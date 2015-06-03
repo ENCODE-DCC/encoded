@@ -1,3 +1,4 @@
+from contentbase import DBSESSION
 from contextlib import contextmanager
 from multiprocessing import get_context
 from multiprocessing.pool import Pool
@@ -38,9 +39,6 @@ def initializer(app_factory, settings):
     import signal
     signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-    # There should not be any existing connections.
-    from contentbase.storage import DBSession
-    assert not DBSession.registry.has()
     global app
     atexit.register(clear_snapshot)
     app = app_factory(settings, indexer_worker=True, create_tables=False)
@@ -48,7 +46,6 @@ def initializer(app_factory, settings):
 
 
 def set_snapshot(xmin, snapshot_id):
-    from contentbase.storage import DBSession
     global current_xmin_snapshot_id
     if current_xmin_snapshot_id == (xmin, snapshot_id):
         return
@@ -60,7 +57,7 @@ def set_snapshot(xmin, snapshot_id):
         txn.doom()
         if snapshot_id is not None:
             txn.setExtendedInfo('snapshot_id', snapshot_id)
-        session = DBSession()
+        session = app.registry[DBSESSION]()
         connection = session.connection()
         db_xmin = connection.execute(
             "SELECT txid_snapshot_xmin(txid_current_snapshot());").scalar()

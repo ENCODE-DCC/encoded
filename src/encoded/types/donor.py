@@ -5,6 +5,7 @@ from contentbase import (
     calculated_property,
     collection,
 )
+from pyramid.security import Authenticated
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -45,7 +46,7 @@ class MouseDonor(Donor):
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
-        return {}
+        return {Authenticated: 'role.viewing_group_member'}
 
 
 @collection(

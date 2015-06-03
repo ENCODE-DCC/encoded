@@ -10,12 +10,14 @@ def groupfinder(login, request):
     root = request.registry[LOCATION_ROOT]
 
     if namespace == 'remoteuser':
-        if localname in ['TEST', 'IMPORT', 'UPGRADE']:
+        if localname in ['EMBED', 'INDEXER']:
+            return []
+        elif localname in ['TEST', 'IMPORT', 'UPGRADE']:
             return ['group.admin']
         elif localname in ['TEST_SUBMITTER']:
             return ['group.submitter']
-        elif localname in ['TEST_AUTHENTICATED', 'EMBED', 'INDEXER']:
-            return []
+        elif localname in ['TEST_AUTHENTICATED']:
+            return ['viewing_group.ENCODE']
 
     if namespace in ('mailto', 'remoteuser', 'persona'):
         users = root.by_item_type['user']
@@ -56,4 +58,6 @@ def groupfinder(login, request):
         principals.append('group.submitter')
     groups = user_properties.get('groups', [])
     principals.extend('group.%s' % group for group in groups)
+    viewing_groups = user_properties.get('viewing_groups', [])
+    principals.extend('viewing_group.%s' % group for group in viewing_groups)
     return principals

@@ -6,7 +6,7 @@ from contentbase import (
     collection,
 )
 from .base import (
-    Item,
+    SharedItem,
 )
 from pyramid.traversal import (
     find_root,
@@ -20,7 +20,7 @@ from pyramid.traversal import (
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
     })
-class Target(Item):
+class Target(SharedItem):
     item_type = 'target'
     schema = load_schema('encoded:schemas/target.json')
     embedded = ['organism']
