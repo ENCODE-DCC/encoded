@@ -11,6 +11,7 @@ module.exports.GenomeBrowser = React.createClass({
                 noPersist: true,
                 noPersistView: true,
                 noTrackAdder: true,
+                maxWorkers: 4,
                 noHelp: true,
                 chr:          '22',
                 viewStart:    29890000,
@@ -37,11 +38,19 @@ module.exports.GenomeBrowser = React.createClass({
                     browser.chr = reg[0].substring(3, reg[0].length);
                     var positions = reg[1].split('-');
                     if(positions.length > 1) {
-                      browser.viewStart = parseInt(positions[0]);
-                      browser.viewEnd = parseInt(positions[1]);
+                        if (parseInt(positions[0]) > 500) {
+                            browser.viewStart = parseInt(positions[0]) - 500;
+                        } else {
+                          browser.viewStart = 1;
+                        }
+                        browser.viewEnd = parseInt(positions[1]) + 500;
                     } else {
-                      browser.viewStart = parseInt(positions[0]);
-                      browser.viewEnd = parseInt(positions[0]);
+                      if (parseInt(positions[0]) > 500) {
+                          browser.viewStart = parseInt(positions[0]) - 500;
+                      } else {
+                        browser.viewStart = 1;
+                      }
+                      browser.viewEnd = parseInt(positions[0]) + 500;
                     }
                 }
                 browser.sources = [
