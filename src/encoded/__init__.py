@@ -201,7 +201,6 @@ def main(global_config, **local_config):
     config.include(changelogs)
 
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
-    config.registry['backfill_2683'] = json_from_path(settings.get('backfill_2683_path'), {})
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
