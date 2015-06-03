@@ -51,7 +51,10 @@ from .embedding import (
     expand_path,
 )
 from .schema_utils import validate_request
-from .storage import RDBStorage
+from .storage import (
+    RDBBlobStorage,
+    RDBStorage,
+)
 from collections import (
     defaultdict,
 )
@@ -64,7 +67,9 @@ ROOT = LOCATION_ROOT = 'root'
 TYPES = 'types'
 CONNECTION = 'connection'
 COLLECTIONS = 'collections'
+DBSESSION = 'dbsession'
 STORAGE = 'storage'
+BLOBS = 'blobs'
 
 _marker = object()
 
@@ -76,7 +81,8 @@ def includeme(config):
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
     registry[TYPES] = TypesTool(registry)
-    registry[STORAGE] = RDBStorage()
+    registry[STORAGE] = RDBStorage(registry[DBSESSION])
+    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
     registry[CONNECTION] = Connection(registry)
     config.set_root_factory(root_factory)
 

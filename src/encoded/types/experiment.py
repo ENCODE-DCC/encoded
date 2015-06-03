@@ -44,6 +44,7 @@ class Experiment(Dataset):
         'contributing_files.analysis_step',
         'contributing_files.analysis_step.software_versions',
         'contributing_files.analysis_step.software_versions.software',
+        'award.pi.lab',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',
