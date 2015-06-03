@@ -386,8 +386,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
-                <QcTestView context={context} />
-
             </div>
         );
     }
@@ -608,14 +606,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     }
 
-    function _qcFileIds(metric) {
-        if (metric.files) {
-            return metric.files.map(function(file) {
-                return file['@id'];
-            }).sort().join();
-        } else {
-            return '';
-        }
+    function _genQcId(metric, file) {
+        return 'qc:' + metric['@id'] + file['@id'];
     }
 
     function _genFileId(file) {
@@ -623,7 +615,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     function _genStepId(file) {
-        return 'step:' + derivedFileIds(file) + file.analysis_step['@id']
+        return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
@@ -633,6 +625,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var allContributing = {}; // List of all contributing files
+    var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -640,8 +633,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var derivedFileIds = _.memoize(_derivedFileIds, function(file) {
         return file['@id'];
     });
-    var qcFileIds = _.memoize(_qcFileIds, function(metric) {
-        return metric['@id'];
+    var genQcId = _.memoize(_genQcId, function(metric, file) {
+        return metric['@id'] + file['@id'];
     });
     var genStepId = _.memoize(_genStepId, function(file) {
         return file['@id'];
@@ -652,11 +645,29 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Collect derived_from files, used replicates, and used pipelines
     files.forEach(function(file) {
-        // Build an object keyed with all files that other files derive from
+        // Build an object keyed with all files that other files derive from, and collect QC info if any
         if (file.derived_from) {
             file.derived_from.forEach(function(derived_from) {
                 derivedFromFiles[derived_from['@id']] = derived_from;
             });
+
+            // File is derived; collect any QC info that applies to this file
+            if (file.step_run && file.step_run.qc_metrics) {
+                var matchingQc = [];
+
+                // Search file's step_run's qc_metrics array to find one with an applies_to field referring to this file.
+                file.step_run.qc_metrics.forEach(function(metric) {
+                    var matchingFile = _(metric.applies_to).find(function(appliesFile) {
+                        return file['@id'] === appliesFile;
+                    });
+                    if (matchingFile) {
+                        matchingQc.push(metric);
+                    }
+                });
+                if (matchingQc.length) {
+                    fileQcMetrics[file['@id']] = matchingQc;
+                }
+            }
         }
 
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
@@ -812,9 +823,9 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
-                metricsInfo = file.qc_metrics.map(function(metric) {
-                    var qcId = 'qc:' + metric.uuid;
+            if (fileQcMetrics[file['@id']] && fileQcMetrics[file['@id']].length && file.analysis_step) {
+                metricsInfo = fileQcMetrics[file['@id']].map(function(metric) {
+                    var qcId = genQcId(metric, file);
                     return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
                 });
             }
@@ -930,7 +941,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
-        console.log(nodeId);
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
@@ -1082,13 +1092,13 @@ globals.graph_detail.register(FileDetailView, 'file');
 
 
 var QcDetailsView = function(metrics) {
-    var reserved = {'uuid': true, 'assay_term_name': true, 'level': true, 'status': true, 'date_created': true};
+    var reserved = ['uuid', 'assay_term_name', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
     if (metrics) {
         return (
             <dl className="key-value-flex">
                 {Object.keys(metrics.ref).map(function(key) {
-                    if (typeof metrics.ref[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
+                    if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
                         return(
                             <div>
                                 <dt>{key}</dt>
@@ -1104,20 +1114,3 @@ var QcDetailsView = function(metrics) {
         return null;
     }
 };
-
-
-var QcTestView = React.createClass({
-    render: function() {
-        var files = this.props.context.files;
-
-        return (
-            <div className="panel data-display">
-                {_(files).filter(function(file) {
-                    return !!file.derived_from;
-                }).map(function(file) {
-                    return <p>{file.accession} - {file.step_run && file.step_run.qc_metrics ? file.step_run.qc_metrics : null}</p>;
-                })}
-            </div>
-        );
-    }
-});
