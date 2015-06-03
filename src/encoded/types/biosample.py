@@ -43,6 +43,7 @@ class Biosample(Item):
         'submitted_by',
         'lab',
         'award',
+        'award.pi.lab',
         'source',
         'treatments.protocols.submitted_by',
         'treatments.protocols.lab',
