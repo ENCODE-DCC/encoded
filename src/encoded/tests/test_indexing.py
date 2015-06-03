@@ -9,7 +9,6 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
@@ -27,11 +26,6 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
-    from encoded.storage import DBSession
-
-    DBSession.remove()
-    DBSession.configure(bind=None)
-
     from encoded import main
     app = main({}, **app_settings)
 
@@ -40,15 +34,21 @@ def app(app_settings):
     # Shutdown multiprocessing pool to close db conns.
     app.registry['indexer'].shutdown()
 
+    from contentbase import DBSESSION
+    DBSession = app.registry[DBSESSION]
     # Dispose connections so postgres can tear down.
     DBSession.bind.pool.dispose()
-    DBSession.remove()
-    DBSession.configure(bind=None)
+
+
+@pytest.fixture(scope='session')
+def DBSession(app):
+    from contentbase import DBSESSION
+    return app.registry[DBSESSION]
 
 
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
-    from encoded.commands import create_mapping
+    from contentbase.elasticsearch import create_mapping
     create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
@@ -61,8 +61,7 @@ def external_tx():
 
 
 @pytest.yield_fixture
-def dbapi_conn(app):
-    from encoded.storage import DBSession
+def dbapi_conn(DBSession):
     connection = DBSession.bind.pool.unique_connection()
     connection.detach()
     conn = connection.connection
@@ -74,7 +73,7 @@ def dbapi_conn(app):
 @pytest.yield_fixture
 def listening_conn(dbapi_conn):
     cursor = dbapi_conn.cursor()
-    cursor.execute("""LISTEN "encoded.transaction";""")
+    cursor.execute("""LISTEN "contentbase.transaction";""")
     yield dbapi_conn
     cursor.close()
 
@@ -123,5 +122,5 @@ def test_listening(testapp, listening_conn):
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
-    assert notify.channel == 'encoded.transaction'
+    assert notify.channel == 'contentbase.transaction'
     assert int(notify.payload) > 0

@@ -45,6 +45,11 @@
         }
     },
     "dependencies": {
+        "external_accession": {
+            "not": {
+                "required": ["accession"]
+            }
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -59,25 +64,6 @@
                     "properties": {
                         "paired_end": {
                             "enum": ["1"]
-                        }
-                    }
-                }
-            ]
-        },
-        "run_type": {
-            "oneOf": [
-                {
-                   "required": ["paired_end"],
-                    "properties": {
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "run_type": {
-                            "enum": ["single-ended","unknown"]
                         }
                     }
                 }
@@ -131,6 +117,13 @@
         "accession": {
             "accessionType": "FF"
         },
+        "external_accession": {
+            "title": "External accession",
+            "comment": "Only admins are allowed to set or update this value.",
+            "type": "string",
+            "permission": "import_items",
+            "uniqueKey": "accession"
+        },
         "file_format": {
             "title": "File format",
             "type": "string",
@@ -153,7 +146,8 @@
                         "csv",
                         "sam",
                         "tar",
-                        "wig"
+                        "wig",
+                        "bedpe"
                     ]
                 },
                 {
@@ -174,12 +168,15 @@
             "oneOf": [
                 {
                     "enum": [
+                        "bed3",
                         "bed6",
                         "bed9",
+                        "bed12",
                         "bedGraph",
                         "bedLogR",
                         "bedMethyl",
                         "broadPeak",
+                        "enhancerAssay",
                         "gappedPeak",
                         "gff2",
                         "gff3",
@@ -191,7 +188,14 @@
                     "permission": "import_items",
                     "enum": [
                         "unknown",
-                        "bedRnaElements"
+                        "bedRnaElements",
+                        "peptideMapping",
+                        "modPepMap",
+                        "pepMap",
+                        "shortFrags",
+                        "bedExonScore",
+                        "openChromCombinedPeaks",
+                        "mango"
                     ]
                 }
            ]
@@ -296,6 +300,8 @@
                         "minus strand signal of unique reads",
                         "plus strand signal of unique reads",
                         "signal of unique reads",
+                        "signal p-value",
+                        "fold change over control",
                         
                         "exon quantifications",
                         "gene quantifications",
@@ -309,13 +315,14 @@
                         "hotspots",
                         "long range chromatin interactions",
                         "peaks",
+                        "replicated peaks",
                         "RNA-binding protein associated mRNAs",           
                         "splice junctions",
                         "transcription start sites",
                         "predicted enhancers",
                         "predicted forebrain enhancers",
                         "predicted heart enhancers",
-                        "predicted wholebrain enhancers",
+                        "predicted whole brain enhancers",
                         
                         "genome reference",
                         "genome index",
@@ -519,6 +526,10 @@
         }
     },
     "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
         "accession": {
             "title": "Accession",
             "type": "string"
@@ -543,9 +554,11 @@
     "output_type_output_category": {
         "idat green channel": "raw data",
         "idat red channel": "raw data",
+        "intensity values": "raw data",
         "reads": "raw data",
         "rejected reads": "raw data",
         "raw data": "raw data",
+        "reporter code counts": "raw data",
 
         "alignments": "alignment",
         "transcriptome alignments": "alignment",
@@ -564,6 +577,8 @@
         "minus strand signal of unique reads": "signal",
         "plus strand signal of unique reads": "signal",
         "signal of unique reads": "signal",
+        "signal p-value": "signal",
+        "fold change over control": "signal",
         "minus strand signal": "signal",
         "plus strand signal": "signal",
         "signal": "signal",
@@ -588,6 +603,7 @@
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
         "peaks": "annotation",
+        "replicated peaks": "annotation",
         "RNA-binding protein associated mRNAs": "annotation",
         "splice junctions": "annotation",
         "copy number variation": "annotation",
@@ -606,6 +622,7 @@
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
         "predicted transcription start sites": "annotation",
+        "transcription start sites": "annotation",
                 
         "genome index": "reference",
         "genome reference": "reference",
@@ -641,19 +658,5 @@
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },
-    "change_log": [ {
-        "version": "5",
-        "changes":{
-            "run_type": "migrated this field from replicate paired_ended",
-            "read_length": "migrated this field from replicate read_length",
-            "read_length_units": "added as a calculated field",
-            "file_format_specifications": "added this field",
-            "file_format_type": "added this field",
-            "file_format": "changed this enum",
-            "output_category": "added as a calculated field",
-            "output_type": "changed this enum",
-            "md5sum_content": "added this DCC provided field"
-        }
-    }
-    ]
+    "changelog": "/profiles/changelogs/file.md"
 }

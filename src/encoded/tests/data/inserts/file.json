@@ -498,7 +498,7 @@
         "md5sum": "ecff397bffc54f01319eb41c6194379b",
         "output_type": "alignments",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
-        "status": "in progress",
+        "status": "released",
         "step_run": "e2c67389-1e84-4506-8ddc-03b566ce4995",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "replicate2.bam",
@@ -942,7 +942,7 @@
     {
         "accession": "ENCFF000VWO",
         "assembly": "hg19",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "dataset": "ENCSR000EYX",
         "file_format": "bam",
         "file_size": 462139262,
@@ -958,7 +958,7 @@
     {
         "accession": "ENCFF000VUQ",
         "assembly": "hg19",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "dataset": "ENCSR000DZQ",
         "file_format": "bam",
         "file_size": 456470369,
@@ -974,7 +974,7 @@
     {
         "accession": "ENCFF000VUS",
         "assembly": "hg19",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "dataset": "ENCSR000ACY",
         "file_format": "bam",
         "file_size": 473944988,

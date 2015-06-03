@@ -2,13 +2,13 @@ from pyramid.security import (
     Allow,
 )
 from pyramid.view import view_config
-from ..contentbase import (
+from contentbase import (
     Item,
     calculated_property,
     collection,
 )
 from ..types.base import paths_filtered_by_status
-from ..types.download import ItemWithAttachment
+from contentbase.attachment import ItemWithAttachment
 
 
 def includeme(config):

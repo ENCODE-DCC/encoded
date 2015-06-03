@@ -1,7 +1,7 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
     item_view_page,
@@ -29,7 +29,7 @@ def file_is_revoked(request, path):
     })
 class Dataset(Item):
     item_type = 'dataset'
-    schema = load_schema('dataset.json')
+    schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
         'files',
         'files.replicate',
@@ -55,7 +55,7 @@ class Dataset(Item):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
-         'references'
+        'references'
     ]
     audit_inherit = [
         'original_files',

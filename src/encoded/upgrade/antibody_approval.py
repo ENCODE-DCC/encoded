@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 
 
 @upgrade_step('antibody_approval', '', '2')

@@ -28,7 +28,6 @@ _app_settings = {
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
-    'load_sample_data': False,
     'testing': True,
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
@@ -60,9 +59,11 @@ def engine_url(request):
 
 
 @fixture(scope='session')
-def app_settings(request, server_host_port, connection):
+def app_settings(request, server_host_port, connection, DBSession):
+    from contentbase import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings[DBSESSION] = DBSession
     return settings
 
 
@@ -136,7 +137,7 @@ def dummy_request(root, registry, app):
 
 
 @fixture(scope='session')
-def app(zsa_savepoints, check_constraints, app_settings):
+def app(app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -150,7 +151,7 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from ..indexing import ELASTIC_SEARCH
+    from contentbase.elasticsearch import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
 
 
@@ -254,6 +255,16 @@ def indexer_testapp(app, external_tx):
     return TestApp(app, environ)
 
 
+@pytest.fixture
+def embed_testapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'EMBED',
+    }
+    return TestApp(app, environ)
+
+
 @fixture(scope='session')
 def server_host_port():
     from webtest.http import get_free_port
@@ -310,33 +321,42 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request, engine_url):
+def connection(engine_url):
     from encoded import configure_engine
-    from encoded.storage import Base, DBSession
-    from sqlalchemy.orm.scoping import ScopedRegistry
-
-    # ``server`` thread must be in same scope
-    if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
+    from contentbase.storage import Base
 
     engine_settings = {
         'sqlalchemy.url': engine_url,
     }
 
-    engine = configure_engine(engine_settings, test_setup=True)
+    engine = configure_engine(engine_settings)
     connection = engine.connect()
     tx = connection.begin()
     try:
         Base.metadata.create_all(bind=connection)
-        session = DBSession(scope=None, bind=connection)
-        DBSession.registry.set(session)
         yield connection
     finally:
         tx.rollback()
         connection.close()
         engine.dispose()
+
+
+@pytest.fixture(scope='session')
+def _DBSession(connection):
+    import contentbase.storage
+    import zope.sqlalchemy
+    from sqlalchemy import orm
+    # ``server`` thread must be in same scope
+    DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
+    zope.sqlalchemy.register(DBSession)
+    contentbase.storage.register(DBSession)
+    return DBSession
+
+
+@pytest.fixture(scope='session')
+def DBSession(_DBSession, zsa_savepoints, check_constraints):
+    return _DBSession
 
 
 @fixture
@@ -345,7 +365,7 @@ def external_tx(request, connection):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     # # The database should be empty unless a data fixture was loaded
-    # from encoded.storage import Base
+    # from contentbase.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
     return tx
@@ -414,24 +434,22 @@ def zsa_savepoints(request, connection):
 
 
 @fixture
-def session(transaction):
+def session(transaction, DBSession):
     """ Returns a setup session
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from encoded.storage import DBSession
     return DBSession()
 
 
 @fixture(scope='session')
-def check_constraints(request, connection):
+def check_constraints(request, connection, _DBSession):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from encoded.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -452,7 +470,7 @@ def check_constraints(request, connection):
             @transaction.addBeforeCommitHook
             def set_constraints():
                 self.state = 'checking'
-                session = DBSession()
+                session = _DBSession()
                 session.flush()
                 sp = self.connection.begin_nested()
                 try:
@@ -517,8 +535,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 
 @fixture
-def no_deps(request, connection):
-    from encoded.storage import DBSession
+def no_deps(request, connection, DBSession):
     from sqlalchemy import event
 
     session = DBSession()
@@ -537,68 +554,126 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def labs(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'lab')
+def lab(testapp):
+    item = {
+        'name': 'encode-lab',
+        'title': 'ENCODE lab',
+    }
+    return testapp.post_json('/lab', item).json['@graph'][0]
+
+
+@fixture
+def admin(testapp):
+    item = {
+        'first_name': 'Test',
+        'last_name': 'Admin',
+        'email': 'admin@example.org',
+        'groups': ['admin'],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
 
 
 @pytest.fixture
-def lab(labs):
-    return [l for l in labs if l['name'] == 'myers'][0]
+def wrangler(testapp):
+    item = {
+        # antibody_characterization reviewed_by has linkEnum
+        'uuid': '4c23ec32-c7c8-4ac0-affb-04befcc881d4',
+        'first_name': 'Wrangler',
+        'last_name': 'Admin',
+        'email': 'wrangler@example.org',
+        'groups': ['admin'],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
 
 
 @pytest.fixture
-def users(testapp, labs):
-    from . import sample_data
-    return sample_data.load(testapp, 'user')
+def submitter(testapp, lab, award):
+    item = {
+        'first_name': 'ENCODE',
+        'last_name': 'Submitter',
+        'email': 'encode_submitter@example.org',
+        'submits_for': [lab['@id']],
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
 
 
 @pytest.fixture
-def wrangler(users):
-    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+def viewing_group_member(testapp, award):
+    item = {
+        'first_name': 'Viewing',
+        'last_name': 'Group',
+        'email': 'viewing_group_member@example.org',
+        'viewing_groups': [award['viewing_group']],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
 
 
 @pytest.fixture
-def submitter(users, lab):
-    return [u for u in users if lab['@id'] in u['submits_for']][0]
+def remc_member(testapp):
+    item = {
+        'first_name': 'REMC',
+        'last_name': 'Member',
+        'email': 'remc_member@example.org',
+        'viewing_groups': ['REMC'],
+    }
+    return testapp.post_json('/user', item).json['@graph'][0]
 
 
 @pytest.fixture
-def awards(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'award')
+def award(testapp):
+    item = {
+        'name': 'encode3-award',
+        'rfa': 'ENCODE3',
+        'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
 
 
 @pytest.fixture
-def award(awards):
-    return [a for a in awards if a['name'] == 'Myers'][0]
+def encode2_award(testapp):
+    item = {
+        # upgrade/shared.py ENCODE2_AWARDS
+        'uuid': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
+        'name': 'encode2-award',
+        'rfa': 'ENCODE2',
+        'project': 'ENCODE',
+        'viewing_group': 'ENCODE',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
 
 
 @pytest.fixture
-def sources(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'source')
+def source(testapp):
+    item = {
+        'name': 'sigma',
+        'title': 'Sigma-Aldrich',
+        'url': 'http://www.sigmaaldrich.com',
+    }
+    return testapp.post_json('/source', item).json['@graph'][0]
 
 
 @pytest.fixture
-def source(sources):
-    return [s for s in sources if s['name'] == 'sigma'][0]
+def human(testapp):
+    item = {
+        'uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return testapp.post_json('/organism', item).json['@graph'][0]
 
 
 @pytest.fixture
-def organisms(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'organism')
-
-
-@pytest.fixture
-def human(organisms):
-    return [o for o in organisms if o['name'] == 'human'][0]
-
-
-@pytest.fixture
-def mouse(organisms):
-    return [o for o in organisms if o['name'] == 'mouse'][0]
+def mouse(testapp):
+    item = {
+        'uuid': '3413218c-3d86-498b-a0a2-9a406638e786',
+        'name': 'mouse',
+        'scientific_name': 'Mus musculus',
+        'taxon_id': '10090',
+    }
+    return testapp.post_json('/organism', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -607,180 +682,286 @@ def organism(human):
 
 
 @pytest.fixture
-def biosamples(testapp, labs, awards, sources, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'biosample')
+def biosample(testapp, source, lab, award, organism):
+    item = {
+        'biosample_term_id': 'UBERON:349829',
+        'biosample_type': 'tissue',
+        'source': source['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': organism['@id'],
+    }
+    return testapp.post_json('/biosample', item).json['@graph'][0]
 
 
 @pytest.fixture
-def biosample(biosamples):
-    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
+def library(testapp, lab, award, biosample):
+    item = {
+        'nucleic_acid_term_id': 'SO:0000352',
+        'nucleic_acid_term_name': 'DNA',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'biosample': biosample['@id'],
+    }
+    return testapp.post_json('/library', item).json['@graph'][0]
 
 
 @pytest.fixture
-def libraries(testapp, labs, awards, biosamples):
-    from . import sample_data
-    return sample_data.load(testapp, 'library')
+def experiment(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+    }
+    return testapp.post_json('/experiment', item).json['@graph'][0]
 
 
 @pytest.fixture
-def library(libraries):
-    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
+def replicate(testapp, experiment, library):
+    item = {
+        'experiment': experiment['@id'],
+        'library': library['@id'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
+    }
+    return testapp.post_json('/replicate', item).json['@graph'][0]
 
 
 @pytest.fixture
-def experiments(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'experiment')
+def file(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fasta',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def experiment(experiments):
-    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
+def file_dataset(testapp, lab, award, dataset):
+    item = {
+        'dataset': dataset['@id'],
+        'file_format': 'fasta',
+        'md5sum': '3f9ae164abb55a93bcd891b192d86164',
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def replicates(testapp, experiments, libraries):
-    from . import sample_data
-    return sample_data.load(testapp, 'replicate')
+def antibody_lot(testapp, lab, award, source, mouse, target):
+    item = {
+        'product_id': 'WH0000468M1',
+        'lot_id': 'CB191-2B3',
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'host_organism': mouse['@id'],
+        'targets': [target['@id']],
+    }
+    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
 
 
 @pytest.fixture
-def replicate(replicates):
-    return replicates[0]
+def target(testapp, organism):
+    item = {
+        'label': 'ATF4',
+        'organism': organism['@id'],
+        'investigated_as': ['transcription factor'],
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
+RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+9TXL0Y4OHwAAAABJRU5ErkJggg=="""
 
 
 @pytest.fixture
-def files(testapp, experiments):
-    from . import sample_data
-    return sample_data.load(testapp, 'file')
+def attachment():
+    return {'download': 'red-dot.png', 'href': RED_DOT}
 
 
 @pytest.fixture
-def file(files):
-    return [f for f in files if f['accession'] == 'ENCFF000TST'][0]
+def antibody_characterization(testapp, award, lab, target, antibody_lot, attachment):
+    item = {
+        'characterizes': antibody_lot['@id'],
+        'target': target['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+        'secondary_characterization_method': 'dot blot assay',
+    }
+    return testapp.post_json('/antibody_characterization', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_lots(testapp, labs, awards, sources, organisms, targets):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_lot')
+def antibody_approval(testapp, award, lab, target, antibody_lot, antibody_characterization):
+    item = {
+        'antibody': antibody_lot['@id'],
+        'characterizations': [antibody_characterization['@id']],
+        'target': target['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'status': 'pending dcc review',
+    }
+    return testapp.post_json('/antibody_approval', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_lot(antibody_lots):
-    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
+def rnai(testapp, lab, award, target):
+    item = {
+        'target': target['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'rnai_sequence': 'TATATGGGGAA',
+        'rnai_type': 'shRNA',
+    }
+    return testapp.post_json('/rnai', item).json['@graph'][0]
 
 
 @pytest.fixture
-def targets(testapp, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'target')
+def construct(testapp, lab, award, target, source):
+    item = {
+        'target': target['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'source': source['@id'],
+        'construct_type': 'fusion protein',
+        'tags': [],
+    }
+    return testapp.post_json('/construct', item).json['@graph'][0]
 
 
 @pytest.fixture
-def target(targets):
-    return [t for t in targets if t['label'] == 'ATF4'][0]
+def dataset(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'dataset_type': 'composite',
+    }
+    return testapp.post_json('/dataset', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_characterizations(testapp, awards, labs, targets, antibody_lots):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_characterization')
+def publication(testapp, lab, award):
+    item = {
+        # upgrade/shared.py has a REFERENCES_UUID mapping.
+        'uuid': '8312fc0c-b241-4cb2-9b01-1438910550ad',
+        'title': "Test publication",
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'identifiers': ["doi:10.1214/11-AOAS466"],
+    }
+    print('submit publication')
+    return testapp.post_json('/publication', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_characterization(antibody_characterizations):
-    return [ac for ac in antibody_characterizations if ac['lab'] == 'myers'][0]
+def pipeline(testapp):
+    item = {
+        'title': "Test pipeline",
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_characterizations):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_approval')
+def workflow_run(testapp, pipeline):
+    item = {
+        'pipeline': pipeline['@id'],
+        'status': 'finished',
+    }
+    return testapp.post_json('/workflow_run', item).json['@graph'][0]
 
 
 @pytest.fixture
-def antibody_approval(antibody_approvals):
-    return [
-        aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
+def software(testapp, award, lab):
+    item = {
+        "name": "fastqc",
+        "title": "FastQC",
+        "description": "A quality control tool for high throughput sequence data.",
+        "award": award['@id'],
+        "lab": lab['@id'],
+    }
+    return testapp.post_json('/software', item).json['@graph'][0]
 
 
 @pytest.fixture
-def rnais(testapp, labs, awards, targets):
-    from . import sample_data
-    return sample_data.load(testapp, 'rnai')
+def software_version(testapp, software):
+    item = {
+        'version': 'v0.11.2',
+        'software': software['@id'],
+    }
+    return testapp.post_json('/software_version', item).json['@graph'][0]
 
 
 @pytest.fixture
-def rnai(rnais):
-    return [r for r in rnais if r['rnai_type'] == 'shRNA'][0]
+def analysis_step(testapp, software_version):
+    item = {
+        'name': 'fastqc',
+        'title': 'fastqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
 
 @pytest.fixture
-def constructs(testapp, labs, awards, targets, sources):
-    from . import sample_data
-    return sample_data.load(testapp, 'construct')
+def analysis_step_run(testapp, analysis_step, workflow_run):
+    item = {
+        'analysis_step': analysis_step['@id'],
+        'status': 'finished',
+        'workflow_run': workflow_run['@id'],
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 
 
 @pytest.fixture
-def construct(constructs):
-    return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
+def quality_metric(testapp, analysis_step_run):
+    item = {
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
-def datasets(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'dataset')
+def document(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'document_type': 'growth protocol',
+    }
+    return testapp.post_json('/document', item).json['@graph'][0]
 
 
 @pytest.fixture
-def dataset(datasets):
-    return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
+def biosample_characterization(testapp, award, lab, biosample, attachment):
+    item = {
+        'characterizes': biosample['@id'],
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'attachment': attachment,
+    }
+    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
 
 
 @pytest.fixture
-def publications(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'publication')
-
-
-@pytest.fixture
-def publication(publications):
-    return publications[0]
-
-
-@pytest.fixture
-def documents(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'document')
-
-
-@pytest.fixture
-def document(documents):
-    return documents[0]
-
-
-@pytest.fixture
-def biosample_characterizations(testapp, awards, labs, biosamples):
-    from . import sample_data
-    return sample_data.load(testapp, 'biosample_characterization')
-
-
-@pytest.fixture
-def biosample_characterization(biosample_characterizations):
-    return biosample_characterizations[0]
-
-
-@pytest.fixture
-def mouse_donors(testapp, awards, labs, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'mouse_donor')
-
-
-@pytest.fixture
-def mouse_donor(mouse_donors):
-    return mouse_donors[0]
+def mouse_donor(testapp, award, lab, mouse):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'organism': mouse['@id'],
+    }
+    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
 
 
 @pytest.mark.fixture_cost(10)

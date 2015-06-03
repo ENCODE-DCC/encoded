@@ -1,10 +1,11 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
 )
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
 )
+from pyramid.security import Authenticated
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -41,11 +42,11 @@ class Donor(Item):
     })
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
-    schema = load_schema('mouse_donor.json')
+    schema = load_schema('encoded:schemas/mouse_donor.json')
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
-        return {}
+        return {Authenticated: 'role.viewing_group_member'}
 
 
 @collection(
@@ -56,7 +57,7 @@ class MouseDonor(Donor):
     })
 class FlyDonor(Donor):
     item_type = 'fly_donor'
-    schema = load_schema('fly_donor.json')
+    schema = load_schema('encoded:schemas/fly_donor.json')
     embedded = ['organism', 'constructs', 'constructs.target']
 
 
@@ -68,7 +69,7 @@ class FlyDonor(Donor):
     })
 class WormDonor(Donor):
     item_type = 'worm_donor'
-    schema = load_schema('worm_donor.json')
+    schema = load_schema('encoded:schemas/worm_donor.json')
     embedded = ['organism', 'constructs', 'constructs.target']
 
 
@@ -80,4 +81,4 @@ class WormDonor(Donor):
     })
 class HumanDonor(Donor):
     item_type = 'human_donor'
-    schema = load_schema('human_donor.json')
+    schema = load_schema('encoded:schemas/human_donor.json')

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -7,8 +8,18 @@ from pyramid.security import (
     Everyone,
 )
 from pyramid.threadlocal import get_current_request
-from .. import contentbase
+from pyramid.traversal import (
+    find_root,
+    traverse,
+)
+import contentbase
 from ..schema_formats import is_accession
+
+
+@lru_cache()
+def _award_viewing_group(award_uuid, root):
+    award = root.get_by_uuid(award_uuid)
+    return award.upgrade_properties().get('viewing_group')
 
 
 ALLOW_EVERYONE_VIEW = [
@@ -19,12 +30,12 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
-ALLOW_AUTHENTICATED_VIEW = [
-    (Allow, Authenticated, 'view'),
+ALLOW_VIEWING_GROUP_VIEW = [
+    (Allow, 'role.viewing_group_member', 'view'),
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
-    (Allow, Authenticated, 'view'),
+    (Allow, 'role.viewing_group_member', 'view'),
     (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
 ]
@@ -37,7 +48,8 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['view']),
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    # Avoid schema validation errors during audit
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
@@ -51,12 +63,12 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
     if include is not None:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') in include
+            if traverse(request.root, path)['context'].__json__(request).get('status') in include
         ]
     else:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') not in exclude
+            if traverse(request.root, path)['context'].__json__(request).get('status') not in exclude
         ]
 
 
@@ -116,7 +128,7 @@ class Item(contentbase.Item):
         'not pursued': ALLOW_CURRENT,
 
         # dataset / experiment
-        'release ready': ALLOW_AUTHENTICATED_VIEW,
+        'release ready': ALLOW_VIEWING_GROUP_VIEW,
         'revoked': ALLOW_CURRENT,
 
         # publication
@@ -144,6 +156,11 @@ class Item(contentbase.Item):
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
+        if 'award' in properties:
+            viewing_group = _award_viewing_group(properties['award'], find_root(self))
+            if viewing_group is not None:
+                viewing_group_members = 'viewing_group.%s' % viewing_group
+                roles[viewing_group_members] = 'role.viewing_group_member'
         return roles
 
     def unique_keys(self, properties):
@@ -154,6 +171,19 @@ class Item(contentbase.Item):
         if properties.get('status') != 'replaced' and 'accession' in properties:
             keys['accession'].append(properties['accession'])
         return keys
+
+
+class SharedItem(Item):
+    ''' An Item visible to all authenticated users while "proposed" or "in progress".
+    '''
+    def __ac_local_roles__(self):
+        roles = {}
+        properties = self.upgrade_properties().copy()
+        if 'lab' in properties:
+            lab_submitters = 'submits_for.%s' % properties['lab']
+            roles[lab_submitters] = 'role.lab_submitter'
+        roles[Authenticated] = 'role.viewing_group_member'
+        return roles
 
 
 def contextless_has_permission(permission):

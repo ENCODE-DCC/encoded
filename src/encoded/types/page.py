@@ -1,8 +1,8 @@
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
     VALIDATOR_REGISTRY,
 )
-from ..contentbase import (
+from contentbase import (
     COLLECTIONS,
     CONNECTION,
     ROOT,
@@ -32,7 +32,7 @@ from pyramid.view import view_config
     })
 class Page(Item):
     item_type = 'page'
-    schema = load_schema('page.json')
+    schema = load_schema('encoded:schemas/page.json')
     name_key = 'name'
     STATUS_ACL = {
         'in progress': [],

@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase.upgrader import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from past.builtins import long
 import re
@@ -159,3 +159,11 @@ def biosample_9_10(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('biosample', '10', '11')
+def biosample_10_11(value, system):
+    # http://redmine.encodedcc.org/issues/2905
+
+    if value.get('worm_synchronization_stage') == 'starved L1 larva':
+        value['worm_synchronization_stage'] = 'L1 larva starved after bleaching'

@@ -1,16 +1,16 @@
-from ..contentbase import (
+from contentbase import (
     AfterModified,
     BeforeModified,
     calculated_property,
     collection,
 )
-from ..embedding import embed
-from ..schema_utils import (
+from contentbase.schema_utils import (
     load_schema,
     schema_validator,
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -19,6 +19,7 @@ from pyramid.httpexceptions import (
 )
 from pyramid.response import Response
 from pyramid.settings import asbool
+from pyramid.traversal import traverse
 from pyramid.view import view_config
 from urllib.parse import (
     parse_qs,
@@ -75,11 +76,12 @@ def external_creds(bucket, key, name):
     })
 class File(Item):
     item_type = 'file'
-    schema = load_schema('file.json')
+    schema = load_schema('encoded:schemas/file.json')
     name_key = 'accession'
 
     rev = {
         'paired_with': ('file', 'paired_with'),
+        'qc_metrics': ('quality_metric', 'files'),
     }
 
     embedded = [
@@ -93,8 +95,18 @@ class File(Item):
         'pipeline',
         'analysis_step',
         'analysis_step.software_versions',
-        'analysis_step.software_versions.software'
+        'analysis_step.software_versions.software',
+        'qc_metrics.step_run.analysis_step',
     ]
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties()
+        if 'external_accession' in properties:
+            return properties['external_accession']
+        if properties.get('status') == 'replaced':
+            return self.uuid
+        return properties.get(self.name_key, None) or self.uuid
 
     def unique_keys(self, properties):
         keys = super(File, self).unique_keys(properties)
@@ -106,6 +118,13 @@ class File(Item):
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
         return keys
+
+    @calculated_property(schema={
+        "title": "Title",
+        "type": "string",
+    })
+    def title(self, accession=None, external_accession=None):
+        return accession or external_accession
 
     # Don't specify schema as this just overwrites the existing value
     @calculated_property(
@@ -121,7 +140,8 @@ class File(Item):
         "title": "Download URL",
         "type": "string",
     })
-    def href(self, request, accession, file_format):
+    def href(self, request, file_format, accession=None, external_accession=None):
+        accession = accession or external_accession
         file_extension = self.schema['file_format_file_extension'][file_format]
         filename = '{}{}'.format(accession, file_extension)
         return request.resource_path(self, '@@download', filename)
@@ -148,11 +168,16 @@ class File(Item):
         "type": "string",
         "linkTo": "pipeline"
     })
-    def pipeline(self, request, step_run=None):
-        if step_run is not None:
-            workflow = request.embed(step_run, '@@object').get('workflow_run')
-            if workflow:
-                return request.embed(workflow, '@@object').get('pipeline')
+    def pipeline(self, root, request, step_run=None):
+        if step_run is None:
+            return
+        workflow_uuid = traverse(root, step_run)['context'].__json__(request).get('workflow_run')
+        if workflow_uuid is None:
+            return
+        pipeline_uuid = root[workflow_uuid].__json__(request).get('pipeline')
+        if pipeline_uuid is None:
+            return
+        return request.resource_path(root[pipeline_uuid])
 
     @calculated_property(schema={
         "title": "Analysis Step",
@@ -179,6 +204,17 @@ class File(Item):
         return self.schema['output_type_output_category'].get(output_type)
 
     @calculated_property(schema={
+        "title": "QC Metric",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "quality_metric.analysis_step_run",
+        },
+    })
+    def qc_metrics(self, request, qc_metrics):
+        return paths_filtered_by_status(request, qc_metrics)
+
+    @calculated_property(schema={
         "title": "File type",
         "type": "string"
     })
@@ -197,10 +233,13 @@ class File(Item):
             mapping = cls.schema['file_format_file_extension']
             file_extension = mapping[properties['file_format']]
             date = properties['date_created'].split('T')[0].replace('-', '/')
-            key = '{date}/{uuid}/{accession}{file_extension}'.format(
+            accession_or_external = properties.get('accession') or properties['external_accession']
+            key = '{date}/{uuid}/{accession_or_external}{file_extension}'.format(
+                accession_or_external=accession_or_external,
                 date=date, file_extension=file_extension, uuid=uuid, **properties)
-            name = 'up{time:.6f}-{accession}'.format(
-                time=time.time(), **properties)  # max 32 chars
+            name = 'up{time:.6f}-{accession_or_external}'.format(
+                accession_or_external=accession_or_external,
+                time=time.time(), **properties)[:32]  # max 32 chars
 
             sheets['external'] = external_creds(bucket, key, name)
         return super(File, cls).create(registry, uuid, properties, sheets)
@@ -233,7 +272,9 @@ def post_upload(context, request):
 
     bucket = external['bucket']
     key = external['key']
-    name = 'up{time:.6f}-{accession}'.format(
+    accession_or_external = properties.get('accession') or properties['external_accession']
+    name = 'up{time:.6f}-{accession_or_external}'.format(
+        accession_or_external=accession_or_external,
         time=time.time(), **properties)  # max 32 chars
     creds = external_creds(bucket, key, name)
 
@@ -242,7 +283,7 @@ def post_upload(context, request):
     context.update(None, {'external': creds})
     registry.notify(AfterModified(context, request))
 
-    rendered = embed(request, '/%s/@@object' % context.uuid, as_user=True)
+    rendered = request.embed('/%s/@@object' % context.uuid, as_user=True)
     result = {
         'status': 'success',
         '@type': ['result'],
@@ -257,7 +298,8 @@ def download(context, request):
     properties = context.upgrade_properties()
     mapping = context.schema['file_format_file_extension']
     file_extension = mapping[properties['file_format']]
-    filename = properties['accession'] + file_extension
+    accession_or_external = properties.get('accession') or properties['external_accession']
+    filename = accession_or_external + file_extension
     if request.subpath:
         _filename, = request.subpath
         if filename != _filename:
