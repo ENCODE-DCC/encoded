@@ -4,7 +4,7 @@
     "id": "/profiles/allele.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "investigated_as"],
+    "required": ["label", "type", "sequence"],
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -39,6 +39,24 @@
                 "deletion"
             ]
         },
+        "sequence": {
+            "title": "Sequence",
+            "description": "DNA sequence of the variant bases (-) for deletion",
+            "type": "string",
+            "format": "DNAsequence"
+        },
+        "conditions": {
+            "title": "Conditions",
+            "description": "Conditions and diseases asssociated with this allele",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Alleles",
+                "description": "Known alleles of this variant",
+                "type":  "string",
+                "linkTo": "allele"
+            }
+        },
         "label": {
             "title": "Descriptive name of allele",
             "description": "Common name for the target including post-translational modifications, if any.",
@@ -55,16 +73,6 @@
                 "deleted",
                 "replaced"
             ]
-        }
-    },
-    "columns": {
-        "label": {
-            "title": "Target",
-            "type": "string"
-        },
-        "dbxref": {
-            "title": "External resources",
-            "type": "array"
         }
     }
 }

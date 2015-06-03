@@ -1,11 +1,11 @@
 {
-    "title": "Variant",
-    "description": "Schema for submitting a human genetic varient.",
-    "id": "/profiles/variant.json",
+    "title": "Phenotype",
+    "description": "Schema for submitting a human phenotype.",
+    "id": "/profiles/phenotype.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "investigated_as"],
-    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
+    "required": ["label", "phenotype_term_name"],
+    "identifyingProperties": ["uuid", "label", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -15,32 +15,27 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "1"
         },
-        "dbxref": {
-            "title": "External identifiers",
-            "description": "Unique identifiers from external resources (e.g. ClinVar, dbVar).",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
-                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
-                "type":  "string"
-            }
-        },
-        "chromosomal_coordinates": {
-            "title": "Gene ",
-            "description": "HGNC or MGI identifier for the target.",
-            "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
+        "phenotype_term_id": {
+            "@type": "@id",
+            "title": "Ontology ID",
+            "description": "Ontology identifier describing phenotype.",
+            "comment": "NTR is a new term request identifier provided by the DCC.",
             "type": "string",
-            "format": "gene_name"
+            "pattern": "^(HPO):[0-9]{2,8}$"
+        },
+        "phenotype_term_name": {
+            "@id": null,
+            "title": "Ontology term",
+            "description": "Ontology term describing condition or disease.",
+            "type":  "string"
         },
         "label": {
-            "title": "Descriptive name of variant",
-            "description": "Common name for the target including post-translational modifications, if any.",
+            "title": "Descriptive name of condition or disease",
+            "description": "Common name for the condition or disease",
             "type": "string",
-            "format": "target_label"
+            "format": "condition_label"
         },
         "status": {
             "title": "Status",
@@ -52,16 +47,6 @@
                 "deleted",
                 "replaced"
             ]
-        }
-    },
-    "columns": {
-        "label": {
-            "title": "Target",
-            "type": "string"
-        },
-        "dbxref": {
-            "title": "External resources",
-            "type": "array"
         }
     }
 }
