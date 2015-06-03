@@ -4,8 +4,8 @@ from elasticsearch.exceptions import (
 )
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
+from contentbase import STORAGE
 from contentbase.storage import (
-    DBSession,
     TransactionRecord,
 )
 from .interfaces import ELASTIC_SEARCH
@@ -37,7 +37,7 @@ def index(request):
     es = request.registry[ELASTIC_SEARCH]
     indexer = request.registry[INDEXER]
 
-    session = DBSession()
+    session = request.registry[STORAGE].write.DBSession()
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     if recovery:
