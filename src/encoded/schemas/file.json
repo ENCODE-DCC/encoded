@@ -267,6 +267,26 @@
                     "barcode": {
                         "title": "Barcode",
                         "type": "string"
+                    },
+                    "barcode_in_read": {
+                        "title": "Barcode in read",
+                        "description": "The read the barcode is located on.",
+                        "type": "string",
+                        "enum": [
+                            "1",
+                            "2"
+                        ]
+                    },
+                    "barcode_position": {
+                         "title": "Barcode position",
+                         "description": "The 1-based start position of the barcode in 5->3 orientation.",
+                         "type": "integer"
+                    },
+                    "chunk": {
+                        "title": "Chunk",
+                        "description": "The file chunk label as assigned by Illumina software when splitting up a fastq into specified chunk sizes.",
+                        "comment": "This label is used to re-assemble the chunks into the original file in the correct order.",
+                        "type": "string"
                     }
                 }
             }
