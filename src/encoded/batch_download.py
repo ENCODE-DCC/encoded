@@ -47,9 +47,9 @@ _tsv_mapping = OrderedDict([
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
-    ('Library fragmentation method', ['files.replicate.library']),
-    ('Library size range', ['files.replicate.library']),
-    ('Biosample Age', ['files.replicate.library']),
+    ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
+    ('Library size range', ['files.replicate.library.size_range']),
+    ('Biosample Age', ['files.replicate.library.biosample.age_display']),
     ('Biological replicate', ['files.replicate.biological_replicate_number']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Read length', ['files.read_length']),
@@ -113,29 +113,9 @@ def metadata_tsv(context, request):
                 for attr in f_attributes:
                     f_row.append(f[attr[6:]])
                 data_row = f_row + exp_data_row
-                internal_prop = True
                 for prop in file_attributes:
                     if prop in f_attributes:
                         continue
-                    if prop == 'files.replicate.library':
-                        if not internal_prop:
-                            continue
-                        internal_prop = False
-                        libraries = []
-                        for l in simple_path_ids(f, prop[6:]):
-                            libraries.append(l)
-                        if len(libraries):
-                            library = request.embed(libraries[0])
-                            data_row.append(library.get('fragmentation_method', ''))
-                            data_row.append(library.get('size_range', ''))
-                            if 'biosample' in library:
-                                data_row.append(library['biosample'].get('age_display', ''))
-                            else:
-                                data_row.append('')
-                            continue
-                        else:
-                            data_row = data_row + [''] * 3
-                            continue
                     path = prop[6:]
                     temp = []
                     for value in simple_path_ids(f, path):
@@ -143,6 +123,11 @@ def metadata_tsv(context, request):
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
+                    if prop == 'files.paired_with':
+                        # chopping of path to just accession
+                        if len(temp):
+                            new_values = [t[7:-1] for t in temp]
+                            temp = new_values
                     data_row.append(', '.join(list(set(temp))))
                 rows.append(data_row)
     fout = io.StringIO()
@@ -188,6 +173,6 @@ def batch_download(context, request):
                 ))
     return Response(
         content_type='text/plain',
-        body='\r\n'.join(files),
+        body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
