@@ -25,6 +25,7 @@ var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
+var ExperimentTable = dataset.ExperimentTable;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -172,6 +173,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -300,25 +303,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.control_for && context.control_for.length ?
-                            <div data-test="possible-controls">
-                                <dt>Control for</dt>
-                                <dd>
-                                    <ul>
-                                        {context.control_for.map(function(experiment) {
-                                            return (
-                                                <li key={experiment['@id']} className="multi-comma">
-                                                    <a href={experiment['@id']}>
-                                                        {experiment.accession}
-                                                    </a>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </dd>
-                            </div>
-                        : null}
-
                         {context.description ?
                             <div data-test="description">
                                 <dt>Description</dt>
@@ -412,12 +396,36 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
+                {context.control_for && context.control_for.length ?
+                    <ControllingExperiments {...this.props} url={experiments_url} />
+                : null}
+
             </div>
         );
     }
 });
 
 globals.content_views.register(Experiment, 'experiment');
+
+
+var ControllingExperiments = React.createClass({
+    render: function () {
+        var context = this.props.context;
+
+        return (
+            <div>
+                <span className="pull-right">
+                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
+                </span>
+
+                <div>
+                    <h3>Experiments with {context.accession} as a control:</h3>
+                    <ExperimentTable {...this.props} items={context.control_for} limit={5} total={context.control_for.length} />
+                </div>
+            </div>
+        );
+    }
+});
 
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
@@ -647,7 +655,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     function _genStepId(file) {
-        return 'step:' + derivedFileIds(file) + file.analysis_step['@id']
+        return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js

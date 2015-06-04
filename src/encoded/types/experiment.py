@@ -40,6 +40,7 @@ class Experiment(Dataset):
         'files.qc_metrics',
         'files.qc_metrics.step_run',
         'files.qc_metrics.step_run.analysis_step',
+        'control_for',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
