@@ -6,6 +6,11 @@ import pkg_resources
 import pytest
 from pytest import fixture
 
+pytest_plugins = [
+    'encoded.tests.datafixtures',
+    'encoded.tests.layers',
+]
+
 _app_settings = {
     'collection_datastore': 'database',
     'item_datastore': 'database',
@@ -59,9 +64,11 @@ def engine_url(request):
 
 
 @fixture(scope='session')
-def app_settings(request, server_host_port, connection):
+def app_settings(request, server_host_port, connection, DBSession):
+    from contentbase import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings[DBSESSION] = DBSession
     return settings
 
 
@@ -135,7 +142,7 @@ def dummy_request(root, registry, app):
 
 
 @fixture(scope='session')
-def app(zsa_savepoints, check_constraints, app_settings):
+def app(app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -319,33 +326,42 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request, engine_url):
+def connection(engine_url):
     from encoded import configure_engine
-    from contentbase.storage import Base, DBSession
-    from sqlalchemy.orm.scoping import ScopedRegistry
-
-    # ``server`` thread must be in same scope
-    if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
+    from contentbase.storage import Base
 
     engine_settings = {
         'sqlalchemy.url': engine_url,
     }
 
-    engine = configure_engine(engine_settings, test_setup=True)
+    engine = configure_engine(engine_settings)
     connection = engine.connect()
     tx = connection.begin()
     try:
         Base.metadata.create_all(bind=connection)
-        session = DBSession(scope=None, bind=connection)
-        DBSession.registry.set(session)
         yield connection
     finally:
         tx.rollback()
         connection.close()
         engine.dispose()
+
+
+@pytest.fixture(scope='session')
+def _DBSession(connection):
+    import contentbase.storage
+    import zope.sqlalchemy
+    from sqlalchemy import orm
+    # ``server`` thread must be in same scope
+    DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
+    zope.sqlalchemy.register(DBSession)
+    contentbase.storage.register(DBSession)
+    return DBSession
+
+
+@pytest.fixture(scope='session')
+def DBSession(_DBSession, zsa_savepoints, check_constraints):
+    return _DBSession
 
 
 @fixture
@@ -423,24 +439,22 @@ def zsa_savepoints(request, connection):
 
 
 @fixture
-def session(transaction):
+def session(transaction, DBSession):
     """ Returns a setup session
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from contentbase.storage import DBSession
     return DBSession()
 
 
 @fixture(scope='session')
-def check_constraints(request, connection):
+def check_constraints(request, connection, _DBSession):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from contentbase.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -461,7 +475,7 @@ def check_constraints(request, connection):
             @transaction.addBeforeCommitHook
             def set_constraints():
                 self.state = 'checking'
-                session = DBSession()
+                session = _DBSession()
                 session.flush()
                 sp = self.connection.begin_nested()
                 try:
@@ -526,8 +540,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 
 @fixture
-def no_deps(request, connection):
-    from contentbase.storage import DBSession
+def no_deps(request, connection, DBSession):
     from sqlalchemy import event
 
     session = DBSession()
@@ -543,417 +556,6 @@ def no_deps(request, connection):
     @request.addfinalizer
     def remove():
         event.remove(session, 'before_flush', check_dependencies)
-
-
-@pytest.fixture
-def lab(testapp):
-    item = {
-        'name': 'encode-lab',
-        'title': 'ENCODE lab',
-    }
-    return testapp.post_json('/lab', item).json['@graph'][0]
-
-
-@fixture
-def admin(testapp):
-    item = {
-        'first_name': 'Test',
-        'last_name': 'Admin',
-        'email': 'admin@example.org',
-        'groups': ['admin'],
-    }
-    return testapp.post_json('/user', item).json['@graph'][0]
-
-
-@pytest.fixture
-def wrangler(testapp):
-    item = {
-        # antibody_characterization reviewed_by has linkEnum
-        'uuid': '4c23ec32-c7c8-4ac0-affb-04befcc881d4',
-        'first_name': 'Wrangler',
-        'last_name': 'Admin',
-        'email': 'wrangler@example.org',
-        'groups': ['admin'],
-    }
-    return testapp.post_json('/user', item).json['@graph'][0]
-
-
-@pytest.fixture
-def submitter(testapp, lab, award):
-    item = {
-        'first_name': 'ENCODE',
-        'last_name': 'Submitter',
-        'email': 'encode_submitter@example.org',
-        'submits_for': [lab['@id']],
-        'viewing_groups': [award['viewing_group']],
-    }
-    return testapp.post_json('/user', item).json['@graph'][0]
-
-
-@pytest.fixture
-def viewing_group_member(testapp, award):
-    item = {
-        'first_name': 'Viewing',
-        'last_name': 'Group',
-        'email': 'viewing_group_member@example.org',
-        'viewing_groups': [award['viewing_group']],
-    }
-    return testapp.post_json('/user', item).json['@graph'][0]
-
-
-@pytest.fixture
-def remc_member(testapp):
-    item = {
-        'first_name': 'REMC',
-        'last_name': 'Member',
-        'email': 'remc_member@example.org',
-        'viewing_groups': ['REMC'],
-    }
-    return testapp.post_json('/user', item).json['@graph'][0]
-
-
-@pytest.fixture
-def award(testapp):
-    item = {
-        'name': 'encode3-award',
-        'rfa': 'ENCODE3',
-        'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
-    }
-    return testapp.post_json('/award', item).json['@graph'][0]
-
-
-@pytest.fixture
-def encode2_award(testapp):
-    item = {
-        # upgrade/shared.py ENCODE2_AWARDS
-        'uuid': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
-        'name': 'encode2-award',
-        'rfa': 'ENCODE2',
-        'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
-    }
-    return testapp.post_json('/award', item).json['@graph'][0]
-
-
-@pytest.fixture
-def source(testapp):
-    item = {
-        'name': 'sigma',
-        'title': 'Sigma-Aldrich',
-        'url': 'http://www.sigmaaldrich.com',
-    }
-    return testapp.post_json('/source', item).json['@graph'][0]
-
-
-@pytest.fixture
-def human(testapp):
-    item = {
-        'uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
-        'name': 'human',
-        'scientific_name': 'Homo sapiens',
-        'taxon_id': '9606',
-    }
-    return testapp.post_json('/organism', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse(testapp):
-    item = {
-        'uuid': '3413218c-3d86-498b-a0a2-9a406638e786',
-        'name': 'mouse',
-        'scientific_name': 'Mus musculus',
-        'taxon_id': '10090',
-    }
-    return testapp.post_json('/organism', item).json['@graph'][0]
-
-
-@pytest.fixture
-def organism(human):
-    return human
-
-
-@pytest.fixture
-def biosample(testapp, source, lab, award, organism):
-    item = {
-        'biosample_term_id': 'UBERON:349829',
-        'biosample_type': 'tissue',
-        'source': source['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'organism': organism['@id'],
-    }
-    return testapp.post_json('/biosample', item).json['@graph'][0]
-
-
-@pytest.fixture
-def library(testapp, lab, award, biosample):
-    item = {
-        'nucleic_acid_term_id': 'SO:0000352',
-        'nucleic_acid_term_name': 'DNA',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'biosample': biosample['@id'],
-    }
-    return testapp.post_json('/library', item).json['@graph'][0]
-
-
-@pytest.fixture
-def experiment(testapp, lab, award):
-    item = {
-        'lab': lab['@id'],
-        'award': award['@id'],
-    }
-    return testapp.post_json('/experiment', item).json['@graph'][0]
-
-
-@pytest.fixture
-def replicate(testapp, experiment, library):
-    item = {
-        'experiment': experiment['@id'],
-        'library': library['@id'],
-        'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-    }
-    return testapp.post_json('/replicate', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file(testapp, lab, award, experiment):
-    item = {
-        'dataset': experiment['@id'],
-        'file_format': 'fasta',
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'raw data',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def file_dataset(testapp, lab, award, dataset):
-    item = {
-        'dataset': dataset['@id'],
-        'file_format': 'fasta',
-        'md5sum': '3f9ae164abb55a93bcd891b192d86164',
-        'output_type': 'raw data',
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'status': 'in progress',  # avoid s3 upload codepath
-    }
-    return testapp.post_json('/file', item).json['@graph'][0]
-
-
-@pytest.fixture
-def antibody_lot(testapp, lab, award, source, mouse, target):
-    item = {
-        'product_id': 'WH0000468M1',
-        'lot_id': 'CB191-2B3',
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'host_organism': mouse['@id'],
-        'targets': [target['@id']],
-    }
-    return testapp.post_json('/antibody_lot', item).json['@graph'][0]
-
-
-@pytest.fixture
-def target(testapp, organism):
-    item = {
-        'label': 'ATF4',
-        'organism': organism['@id'],
-        'investigated_as': ['transcription factor'],
-    }
-    return testapp.post_json('/target', item).json['@graph'][0]
-
-
-RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
-AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-9TXL0Y4OHwAAAABJRU5ErkJggg=="""
-
-
-@pytest.fixture
-def attachment():
-    return {'download': 'red-dot.png', 'href': RED_DOT}
-
-
-@pytest.fixture
-def antibody_characterization(testapp, award, lab, target, antibody_lot, attachment):
-    item = {
-        'characterizes': antibody_lot['@id'],
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-        'secondary_characterization_method': 'dot blot assay',
-    }
-    return testapp.post_json('/antibody_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def antibody_approval(testapp, award, lab, target, antibody_lot, antibody_characterization):
-    item = {
-        'antibody': antibody_lot['@id'],
-        'characterizations': [antibody_characterization['@id']],
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'status': 'pending dcc review',
-    }
-    return testapp.post_json('/antibody_approval', item).json['@graph'][0]
-
-
-@pytest.fixture
-def rnai(testapp, lab, award, target):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'rnai_sequence': 'TATATGGGGAA',
-        'rnai_type': 'shRNA',
-    }
-    return testapp.post_json('/rnai', item).json['@graph'][0]
-
-
-@pytest.fixture
-def construct(testapp, lab, award, target, source):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'construct_type': 'fusion protein',
-        'tags': [],
-    }
-    return testapp.post_json('/construct', item).json['@graph'][0]
-
-
-@pytest.fixture
-def dataset(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'dataset_type': 'composite',
-    }
-    return testapp.post_json('/dataset', item).json['@graph'][0]
-
-
-@pytest.fixture
-def publication(testapp, lab, award):
-    item = {
-        # upgrade/shared.py has a REFERENCES_UUID mapping.
-        'uuid': '8312fc0c-b241-4cb2-9b01-1438910550ad',
-        'title': "Test publication",
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'identifiers': ["doi:10.1214/11-AOAS466"],
-    }
-    print('submit publication')
-    return testapp.post_json('/publication', item).json['@graph'][0]
-
-
-@pytest.fixture
-def pipeline(testapp):
-    item = {
-        'title': "Test pipeline",
-    }
-    return testapp.post_json('/pipeline', item).json['@graph'][0]
-
-
-@pytest.fixture
-def workflow_run(testapp, pipeline):
-    item = {
-        'pipeline': pipeline['@id'],
-        'status': 'finished',
-    }
-    return testapp.post_json('/workflow_run', item).json['@graph'][0]
-
-
-@pytest.fixture
-def software(testapp, award, lab):
-    item = {
-        "name": "fastqc",
-        "title": "FastQC",
-        "description": "A quality control tool for high throughput sequence data.",
-        "award": award['@id'],
-        "lab": lab['@id'],
-    }
-    return testapp.post_json('/software', item).json['@graph'][0]
-
-
-@pytest.fixture
-def software_version(testapp, software):
-    item = {
-        'version': 'v0.11.2',
-        'software': software['@id'],
-    }
-    return testapp.post_json('/software_version', item).json['@graph'][0]
-
-
-@pytest.fixture
-def analysis_step(testapp, software_version):
-    item = {
-        'name': 'fastqc',
-        'title': 'fastqc',
-        'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation'],
-        'software_versions': [
-            software_version['@id'],
-        ],
-    }
-    return testapp.post_json('/analysis_step', item).json['@graph'][0]
-
-
-@pytest.fixture
-def analysis_step_run(testapp, analysis_step, workflow_run):
-    item = {
-        'analysis_step': analysis_step['@id'],
-        'status': 'finished',
-        'workflow_run': workflow_run['@id'],
-    }
-    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
-
-
-@pytest.fixture
-def quality_metric(testapp, analysis_step_run):
-    item = {
-        'step_run': analysis_step_run['@id'],
-    }
-    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
-
-
-@pytest.fixture
-def document(testapp, lab, award):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'document_type': 'growth protocol',
-    }
-    return testapp.post_json('/document', item).json['@graph'][0]
-
-
-@pytest.fixture
-def biosample_characterization(testapp, award, lab, biosample, attachment):
-    item = {
-        'characterizes': biosample['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'attachment': attachment,
-    }
-    return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
-
-
-@pytest.fixture
-def mouse_donor(testapp, award, lab, mouse):
-    item = {
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'organism': mouse['@id'],
-    }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
 
 
 @pytest.mark.fixture_cost(10)

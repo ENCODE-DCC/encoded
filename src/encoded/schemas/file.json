@@ -146,7 +146,8 @@
                         "csv",
                         "sam",
                         "tar",
-                        "wig"
+                        "wig",
+                        "bedpe"
                     ]
                 },
                 {
@@ -167,6 +168,7 @@
             "oneOf": [
                 {
                     "enum": [
+                        "bed3",
                         "bed6",
                         "bed9",
                         "bed12",
@@ -191,7 +193,9 @@
                         "modPepMap",
                         "pepMap",
                         "shortFrags",
-                        "bedExonScore"
+                        "bedExonScore",
+                        "openChromCombinedPeaks",
+                        "mango"
                     ]
                 }
            ]
