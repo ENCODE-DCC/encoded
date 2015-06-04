@@ -15,10 +15,8 @@ import pytz
 import urllib3
 import io
 import gzip
-import pandas as pd
-import numpy as np
+import csv
 from ..embedding import embed
-from elasticsearch import helpers
 from urllib.parse import (
     urlencode,
 )
@@ -221,6 +219,12 @@ class Indexer(object):
         pass
 
 
+def tsvreader(file):
+    reader = csv.reader(file, delimiter='\t')
+    for row in reader:
+        yield row
+
+
 def get_file(es, properties):
     url = 'https://www.encodedcc.org' + properties['href']
     print("Indexing file - " + url)
@@ -230,45 +234,27 @@ def get_file(es, properties):
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
-    f = gzip.GzipFile(fileobj=comp, mode='rb')
-    del comp
     r.release_conn()
-    try:
-        file_data = pd.read_csv(f, delimiter='\t', header=None, chunksize=10000)
-    except:
-        print('There is a problem with file - ' + properties['accession'])
-    else:
-        for new_frame in file_data:
-            # dropping useless columns
-            if len(new_frame.columns) == 10:
-                new_frame = new_frame.drop([3, 4, 5, 6, 7, 8, 9], 1)
-            elif len(new_frame.columns) == 9:
-                new_frame = new_frame.drop([3, 4, 5, 6, 7, 8], 1)
-            else:
-                print(properties['uuid'])
-                continue
-            new_frame.columns = ['chromosome', 'start', 'end']
-            new_frame[['start', 'end']] = new_frame[['start', 'end']].astype(int)
-            new_frame = new_frame[~np.isnan(new_frame['start'])]
-            new_frame = new_frame[~np.isnan(new_frame['end'])]
-            new_frame['start'] = new_frame['start'] + 1
-            new_frame['end'] = new_frame['end'] + 1
-            new_frame['uuid'] = properties['uuid']
-            gp_chr = dict(list(new_frame.groupby('chromosome')))
-            for g in gp_chr:
-                chr_data = gp_chr[g]
-                try:
-                    es.create(index=g.lower())
-                except:
-                    pass
-                records = chr_data.where(pd.notnull(chr_data), None).T.to_dict()
-                list_records = [records[it] for it in records]
-                helpers.bulk(
-                    es,
-                    list_records,
-                    index=g.lower(),
-                    doc_type=properties['assembly']
-                )
+    file_data = {}
+    with gzip.open(comp, mode="rt") as file:
+        for row in tsvreader(file):
+            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+            if isinstance(start, int) and isinstance(end, int):
+                if chrom in file_data:
+                    file_data[chrom] = file_data[chrom] + list(range(start, end))
+                else:
+                    file_data[chrom] = list(range(start, end))
+    for key in file_data:
+        doc = {
+            'uuid': properties['uuid'],
+            'coordinates': list(set(file_data[key]))
+        }
+        try:
+            es.create(index=key)
+        except:
+            pass
+        es.index(index=key, doc_type=properties['assembly'],
+                 body=doc, id=properties['uuid'])
 
 
 @view_config(route_name='file_index', request_method='POST', permission="index")

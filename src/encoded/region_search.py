@@ -57,14 +57,14 @@ def get_peak_query(start, end):
                         'filters': [
                             {
                                 'range': {
-                                    'start': {
+                                    'coordinates': {
                                         'lte': end,
                                     }
                                 }
                             },
                             {
                                 'range': {
-                                    'end': {
+                                    'coordinates': {
                                         'gte': start,
                                     }
                                 }
