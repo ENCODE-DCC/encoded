@@ -31,6 +31,18 @@
             "description": "Ontology term describing condition or disease.",
             "type":  "string"
         },
+        "conditions": {
+            "title": "Conditions",
+            "description": "Conditions associated with this phenotype",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Conditions",
+                "description": "Conditions associated with this phenotype",
+                "type":  "string",
+                "linkTo": "condition"
+            }
+        },
         "label": {
             "title": "Descriptive name of condition or disease",
             "description": "Common name for the condition or disease",
