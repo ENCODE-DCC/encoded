@@ -37,7 +37,15 @@ def get_mapping():
                     'index': 'not_analyzed'
                 },
                 'positions': {
-                    'type': 'long'
+                    'type': 'nested',
+                    'properties': {
+                        'start': {
+                            'type': 'long'
+                        },
+                        'end': {
+                            'type': 'long'
+                        }
+                    }
                 }
             }
         }
@@ -54,16 +62,19 @@ def get_file(es, properties):
     comp.write(r.data)
     comp.seek(0)
     r.release_conn()
-    file_data = defaultdict(set)
+    file_data = dict()
     with gzip.open(comp, mode="rt") as file:
         for row in tsvreader(file):
             chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
             if isinstance(start, int) and isinstance(end, int):
-                    file_data[chrom].update(range(start, end + 1))
+                if chrom in file_data:
+                    file_data[chrom].append({'start': start + 1, 'end': end + 1})
+                else:
+                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
     for key in file_data:
         doc = {
             'uuid': properties['uuid'],
-            'positions': list(set(file_data[key]))
+            'positions': file_data[key]
         }
         if not es.indices.exists(key):
             es.indices.create(index=key)

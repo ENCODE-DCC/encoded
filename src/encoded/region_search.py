@@ -53,29 +53,33 @@ def get_peak_query(start, end):
         'query': {
             'filtered': {
                 'filter': {
-                    'and': {
-                        'filters': [
-                            {
-                                'range': {
-                                    'coordinates': {
-                                        'lte': end,
+                    'nested': {
+                        'path': 'positions',
+                        'filter': {
+                            'bool': {
+                                'must': [
+                                    {
+                                        'range': {
+                                            'positions.start': {
+                                                'lte': end,
+                                            }
+                                        }
+                                    },
+                                    {
+                                        'range': {
+                                            'positions.end': {
+                                                'gte': start,
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            {
-                                'range': {
-                                    'coordinates': {
-                                        'gte': start,
-                                    }
-                                }
+                                ]
                             }
-                        ],
-                        '_cache': True
+                        }
                     }
-                }
+                },
+                '_cache': True,
             }
-        },
-        'fields': ['uuid']
+        }
     }
 
 
@@ -113,13 +117,13 @@ def region_search(context, request):
         try:
             peak_results = es.search(body=get_peak_query(start, end), index=chromosome,
                                      doc_type=assembly, size=99999)
-        except:
+        except Exception as e:
             result['notification'] = 'Please enter valid coordinates'
             return result
         file_uuids = []
         for hit in peak_results['hits']['hits']:
-            if hit['fields']['uuid'] not in file_uuids:
-                file_uuids.append(hit['fields']['uuid'][0])
+            if hit['_id']not in file_uuids:
+                file_uuids.append(hit['_id'])
         file_uuids = list(set(file_uuids))
         result_fields = load_columns(request, ['experiment'], result)
         result_fields = result_fields.union(_REGION_FIELDS)
@@ -142,11 +146,15 @@ def region_search(context, request):
             load_results(request, es_results, result)
             load_facets(es_results, _FACETS, result)
             if len(result['@graph']):
-                '''new_results = []
+                new_results = []
                 for item in result['@graph']:
                     item['highlight'] = []
                     new_files = []
                     for f in item['files']:
+                        if 'file_format' in f and f['file_format'] == 'bigBed':
+                            new_files.append(f)
+                        '''
+                        #TODO This part of the code will be enabled once we have derived_from relationships
                         if 'derived_from' in f:
                             derived_files = []
                             for derived_file in f['derived_from']:
@@ -155,14 +163,14 @@ def region_search(context, request):
                                     item['highlight'].append(derived_file['uuid'])
                             if len(derived_files):
                                 f['derived_from'] = derived_files
-                                new_files.append(f)
+                                new_files.append(f)'''
                     item['files'] = new_files
                     if len(item['files']) > 0:
                         new_results.append(item)
-                if len(new_results) > 0:'''
-                result['total'] = es_results['hits']['total']
-                result['notification'] = 'Success'
-                #result['@graph'] = new_results
+                if len(new_results) > 0:
+                    result['total'] = es_results['hits']['total']
+                    result['notification'] = 'Success'
+                result['@graph'] = new_results
     elif annotation != '*':
         # got to handle gene names, IDs and other annotations here
         result['notification'] = 'Annotations are not yet handled'
