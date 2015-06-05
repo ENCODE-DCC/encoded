@@ -26,8 +26,15 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
                 "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
-                "type":  "string"
+                "type":  "string",
+                "pattern": "(.+):(.+)"
             }
+        },
+        "variant": {
+            "title": "Variant",
+            "description": "Variant for this allele",
+            "type":  "string",
+            "linkTo": "variant"
         },
         "type": {
             "title": "Type",
@@ -45,23 +52,11 @@
             "type": "string",
             "format": "DNAsequence"
         },
-        "conditions": {
-            "title": "Conditions",
-            "description": "Conditions and diseases asssociated with this allele",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Alleles",
-                "description": "Known alleles of this variant",
-                "type":  "string",
-                "linkTo": "allele"
-            }
-        },
         "label": {
             "title": "Descriptive name of allele",
-            "description": "Common name for the target including post-translational modifications, if any.",
+            "description": "Common name for the allele.",
             "type": "string",
-            "format": "target_label"
+            "format": "allele_label"
         },
         "status": {
             "title": "Status",

@@ -17,13 +17,13 @@
         "schema_version": {
             "default": "1"
         },
-        "conditiona_term_id": {
+        "condition_term_id": {
             "@type": "@id",
             "title": "Ontology ID",
             "description": "Ontology identifier describing condition or disease.",
-            "comment": "NTR is a new term request identifier provided by the DCC.",
+            "comment": "NTR is a new term request identifier provided by ClinGen",
             "type": "string",
-            "pattern": "^(DO|ORPHANET|MONARCH):[0-9]{2,8}$"
+            "pattern": "^(NTR|DO|ORPHANET|MONARCH):[0-9]{2,8}$"
         },
         "condition_term_name": {
             "@id": null,
@@ -31,16 +31,16 @@
             "description": "Ontology term describing condition or disease.",
             "type":  "string"
         },
-        "phenotypes": {
-            "title": "Phenotypes",
-            "description": "Phenotypes associated with this condition",
+        "alleles": {
+            "title": "Alleles",
+            "description": "Alleles associated with this condition",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Phenotypes",
-                "description": "Phenotypes associated with this condition",
+                "title": "Alleles",
+                "description": "Alleles associated with this condition",
                 "type":  "string",
-                "linkTo": "phenotype"
+                "linkTo": "allele"
             }
         },
         "label": {
