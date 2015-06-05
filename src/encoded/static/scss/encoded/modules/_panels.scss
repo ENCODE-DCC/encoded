@@ -6,7 +6,7 @@
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin-top: 10px;
     margin-bottom: 20px;
-    padding: 15px 30px;
+    padding: 15px 20px;
     overflow: visible;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .panel-insert {
-    padding: 15px 30px;
+    padding: 15px 20px;
 }
 
 .panel-blue {
@@ -121,7 +121,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     .icon {
         position: relative;
         top: 3px;
-        font-size: 20px;
+        @include font-size(1.4);
         margin-right: 5px;
 
         @media screen and (min-width: $screen-sm-min) {

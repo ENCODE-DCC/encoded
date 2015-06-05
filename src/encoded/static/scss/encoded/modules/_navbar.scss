@@ -8,7 +8,7 @@
     .navbar-brand {
         margin-left: -15px;
         color: #fff;
-        font-size: floor($font-size-base * 1.4);
+        @include font-size(1.4);
         font-weight: 200;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 
@@ -64,12 +64,12 @@
     p {
         margin: 0;
         width: 90%;
-        font-size: 14px;
+        @include font-size(0.85);
 
         @media screen and (min-width: $screen-md-min) {
             width: 100%;
             text-align: center;
-            font-size: 16px;
+            @include font-size(1);
         }
     }
 }
@@ -82,7 +82,7 @@
     top: 50%;
     right: 5px;
     margin-top: -13px;
-    font-size: 16px;
+    @include font-size(1.2);
     line-height: 23px !important;
     color: #fff;
     vertical-align: top;
@@ -120,7 +120,7 @@
         &>li {
             &>a {
                 padding: 2px 30px 2px 20px;
-                font-size: floor($font-size-base * 1.1);
+                @include font-size(1.1);
                 font-weight: 300;
                 color: #444 !important;
                 border-top: 1px solid transparent;

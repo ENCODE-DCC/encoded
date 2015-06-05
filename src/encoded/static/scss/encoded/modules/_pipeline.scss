@@ -6,24 +6,15 @@ $pipeline-node-types:
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
     g.pipeline-node-#{$node-type} {
-        font-size: 14px;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-weight: bold;
         fill: $color;
-
-        > rect, > circle {
-            stroke: #a0a0a0;
-            stroke-width: 1.5px;
-        }
 
         &.active {
             fill: desaturate(darken($color, 20%), 30%);
 
-            > rect, > circle {
+            rect, ellipse {
                 stroke: #606060;
                 stroke-width: 3px;
             }
-
             line {
                 stroke: #606060;
                 stroke-width: 1px;
@@ -45,13 +36,18 @@ $pipeline-node-types:
 }
 
 g.label {
-    font-size: 12px;
+    font-size: $font-size-base * 0.85; // Don't use rems; maintain size on mobile
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-weight: bold;
     fill: #000;
 }
 
 g.node {
+    rect, ellipse {
+        stroke: #a0a0a0;
+        stroke-width: 1.5px;
+    }
+
     &.contributing {
         stroke-dasharray: 4,2; 
     }
@@ -77,7 +73,7 @@ g.cluster {
     }
 
     tspan {
-        font-size: 14px;
+        @include font-size(1);
     }
 }
 
