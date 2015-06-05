@@ -34,7 +34,7 @@ def static_resources(config):
     from pkg_resources import resource_filename
     import mimetypes
     mimetypes.init()
-    mimetypes.init([resource_filename('encoded', 'static/mime.types')])
+    mimetypes.init([resource_filename('clincoded', 'static/mime.types')])
     config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
     config.add_static_view('profiles', 'schemas', cache_max_age=STATIC_MAX_AGE)
 
@@ -159,10 +159,10 @@ def main(global_config, **local_config):
     settings = global_config
     settings.update(local_config)
 
-    settings['contentbase.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['contentbase.jsonld.namespaces'] = json_asset('clincoded:schemas/namespaces.json')
     settings['contentbase.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
     settings['contentbase.jsonld.terms_prefix'] = 'encode'
-    settings['contentbase.elasticsearch.index'] = 'encoded'
+    settings['contentbase.elasticsearch.index'] = 'clincoded'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()

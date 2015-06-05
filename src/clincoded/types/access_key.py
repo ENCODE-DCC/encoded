@@ -41,7 +41,7 @@ from contentbase import (
     ])
 class AccessKey(Item):
     item_type = 'access_key'
-    schema = load_schema('encoded:schemas/access_key.json')
+    schema = load_schema('clincoded:schemas/access_key.json')
     name_key = 'access_key_id'
 
     def __ac_local_roles__(self):

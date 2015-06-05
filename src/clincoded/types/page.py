@@ -32,7 +32,7 @@ from pyramid.view import view_config
     })
 class Page(Item):
     item_type = 'page'
-    schema = load_schema('encoded:schemas/page.json')
+    schema = load_schema('clincoded:schemas/page.json')
     name_key = 'name'
     STATUS_ACL = {
         'in progress': [],

@@ -54,7 +54,7 @@ def main():
     logging.basicConfig()
     app = get_app(args.config_uri, args.app_name)
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('clincoded').setLevel(logging.DEBUG)
 
     files_processed = json.load(args.files_processed)
     good_files = {v['uuid']: v for v in files_processed

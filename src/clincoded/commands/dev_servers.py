@@ -30,14 +30,14 @@ def main():
     parser.add_argument('--clear', action="store_true", help="Clear existing data")
     parser.add_argument('--init', action="store_true", help="Init database")
     parser.add_argument('--load', action="store_true", help="Load test set")
-    parser.add_argument('--datadir', default='/tmp/encoded', help="path to datadir")
+    parser.add_argument('--datadir', default='/tmp/clincoded', help="path to datadir")
     args = parser.parse_args()
 
     logging.basicConfig()
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('clincoded').setLevel(logging.DEBUG)
 
-    from encoded.tests import elasticsearch_fixture, postgresql_fixture
+    from clincoded.tests import elasticsearch_fixture, postgresql_fixture
     from contentbase.elasticsearch import create_mapping
     datadir = os.path.abspath(args.datadir)
     pgdata = os.path.join(datadir, 'pgdata')
@@ -78,10 +78,10 @@ def main():
         }
         testapp = TestApp(app, environ)
 
-        from encoded.loadxl import load_all
+        from clincoded.loadxl import load_all
         from pkg_resources import resource_filename
-        inserts = resource_filename('encoded', 'tests/data/inserts/')
-        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        inserts = resource_filename('clincoded', 'tests/data/inserts/')
+        docsdir = [resource_filename('clincoded', 'tests/data/documents/')]
         load_all(testapp, inserts, docsdir)
 
     print('Started. ^C to exit.')

@@ -26,7 +26,7 @@ module.exports = function(grunt) {
                 plugin: [
                     ['minifyify', {
                         map: 'brace.js.map',
-                        output: './src/encoded/static/build/brace.js.map',
+                        output: './src/clincoded/static/build/brace.js.map',
                         compressPath: compressPath,
                         uglify: {mangle: process.env.NODE_ENV == 'production'},
                     }],

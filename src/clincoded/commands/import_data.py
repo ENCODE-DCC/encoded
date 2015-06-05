@@ -116,7 +116,7 @@ def main():
         testapp = internal_app(args.url, args.app_name, args.username)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.INFO)
+    logging.getLogger('clincoded').setLevel(logging.INFO)
     logging.getLogger('wsgi').setLevel(logging.WARNING)
 
     if args.method:

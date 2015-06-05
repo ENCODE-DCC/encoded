@@ -37,7 +37,7 @@ from contentbase import (
     ])
 class User(Item):
     item_type = 'user'
-    schema = load_schema('encoded:schemas/user.json')
+    schema = load_schema('clincoded:schemas/user.json')
 
     @calculated_property(schema={
         "title": "Title",
@@ -72,7 +72,7 @@ def user_basic_view(context, request):
 
 @view_config(context=Root, name='current-user', request_method='GET')
 def current_user(request):
-    request.environ['encoded.canonical_redirect'] = False
+    request.environ['clincoded.canonical_redirect'] = False
     for principal in effective_principals(request):
         if principal.startswith('userid.'):
             break

@@ -104,7 +104,7 @@ def main():
     testapp = internal_app(args.config_uri, args.app_name, args.username, args.accept_json)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('clincoded').setLevel(logging.DEBUG)
 
     run(testapp, args.method, args.path, args.data, args.warm_ups, args.filename, args.sortby,
         args.stat, args.caller, args.callee, args.response_body)

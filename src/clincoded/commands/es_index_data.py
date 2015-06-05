@@ -2,7 +2,7 @@ from pyramid.paster import get_app
 import logging
 from webtest import TestApp
 
-index = 'encoded'
+index = 'clincoded'
 
 EPILOG = __doc__
 
@@ -39,7 +39,7 @@ def main():
     app = get_app(args.config_uri, args.app_name)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('clincoded').setLevel(logging.DEBUG)
     return run(app, args.item_type, args.record)
 
 

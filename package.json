@@ -1,5 +1,5 @@
 {
-  "name": "encoded",
+  "name": "clincoded",
   "version": "0.0.0",
   "description": "jquery, domready held back.",
   "scripts": {
@@ -9,9 +9,9 @@
   "author": "",
   "license": "MIT",
   "files": [],
-  "repository": "ENCODE-DCC/encoded",
+  "repository": "ClinGen/clincoded",
   "jest": {
-    "rootDir": "src/encoded/static",
+    "rootDir": "src/clincoded/static",
     "scriptPreprocessor": "../../../jest/preprocessor.js",
     "setupEnvScriptFile": "../../../jest/environment.js",
     "unmockedModulePathPatterns": [

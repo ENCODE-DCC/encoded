@@ -26,7 +26,7 @@ def includeme(config):
     })
 class Lab(Item):
     item_type = 'lab'
-    schema = load_schema('encoded:schemas/lab.json')
+    schema = load_schema('clincoded:schemas/lab.json')
     name_key = 'name'
     embedded = ['awards']
 
@@ -40,7 +40,7 @@ class Lab(Item):
     })
 class Award(Item):
     item_type = 'award'
-    schema = load_schema('encoded:schemas/award.json')
+    schema = load_schema('clincoded:schemas/award.json')
     name_key = 'name'
 
 
@@ -53,7 +53,7 @@ class Award(Item):
     })
 class Organism(Item):
     item_type = 'organism'
-    schema = load_schema('encoded:schemas/organism.json')
+    schema = load_schema('clincoded:schemas/organism.json')
     name_key = 'name'
 
 
@@ -66,7 +66,7 @@ class Organism(Item):
     })
 class Source(Item):
     item_type = 'source'
-    schema = load_schema('encoded:schemas/source.json')
+    schema = load_schema('clincoded:schemas/source.json')
     name_key = 'name'
 
 
@@ -78,7 +78,7 @@ class Source(Item):
     })
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
-    schema = load_schema('encoded:schemas/document.json')
+    schema = load_schema('clincoded:schemas/document.json')
     embedded = ['lab', 'award', 'submitted_by']
 
 
@@ -91,7 +91,7 @@ class Document(ItemWithAttachment, Item):
     })
 class Publication(Item):
     item_type = 'publication'
-    schema = load_schema('encoded:schemas/publication.json')
+    schema = load_schema('clincoded:schemas/publication.json')
     embedded = ['datasets']
 
     def unique_keys(self, properties):
@@ -117,7 +117,7 @@ class Publication(Item):
     })
 class Software(Item):
     item_type = 'software'
-    schema = load_schema('encoded:schemas/software.json')
+    schema = load_schema('clincoded:schemas/software.json')
     name_key = 'name'
     embedded = [
         'references',
@@ -147,7 +147,7 @@ class Software(Item):
     })
 class SoftwareVersion(Item):
     item_type = 'software_version'
-    schema = load_schema('encoded:schemas/software_version.json')
+    schema = load_schema('clincoded:schemas/software_version.json')
     embedded = ['software', 'software.references']
 
     def __ac_local_roles__(self):

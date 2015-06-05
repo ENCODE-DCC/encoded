@@ -158,7 +158,7 @@ def canonical_redirect(event):
         return
     if request.response.status_int != 200:
         return
-    if not request.environ.get('encoded.canonical_redirect', True):
+    if not request.environ.get('clincoded.canonical_redirect', True):
         return
     if request.path_info == '/':
         return

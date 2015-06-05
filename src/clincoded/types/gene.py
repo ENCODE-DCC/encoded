@@ -22,7 +22,7 @@ from pyramid.traversal import (
     })
 class Gene(SharedItem):
     item_type = 'gene'
-    schema = load_schema('encoded:schemas/gene.json')
+    schema = load_schema('clincoded:schemas/gene.json')
     embedded = ['organism']
 
     def unique_keys(self, properties):
