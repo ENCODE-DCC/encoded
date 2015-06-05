@@ -107,6 +107,9 @@ def region_search(context, request):
         assembly = 'hg19'
     if term != '*' and assembly != '*':
         terms = term.split(':')
+        if len(terms) < 2:
+            result['notification'] = 'Please enter valid coordinates'
+            return result
         chromosome = terms[0]
         positions = terms[1].split('-')
         if len(positions) > 0 and len(positions) == 1:
