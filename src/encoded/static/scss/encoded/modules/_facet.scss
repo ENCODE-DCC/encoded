@@ -29,8 +29,8 @@
     margin-bottom: 1px;
     border-radius: 5px;
     position: relative;
-    font-size: 0.9em;
-    line-height: 14px;
+    @include font-size(0.9);
+    line-height: 1;
 
     i {
         line-height: 14px;
@@ -43,11 +43,7 @@
 
 .facet-list a#selected {
     color: #fff;
-}
-
-.facet-list a#selected:hover{
     text-decoration: none;
-    font-size: 1em;
     font-weight: normal;
 }
 
@@ -73,13 +69,13 @@
 .facet-list button.btn.collapsed:before {
     content:'+ See more...' ;
     text-decoration: none;
-    font-size: small;
+    @include font-size(0.85);
 }
 
 .facet-list button.btn:before {
     content:'- See fewer';
     text-decoration: none;
-    font-size: small;
+    @include font-size(0.85);
 }
 
 .facet-list label {
@@ -88,7 +84,7 @@
 
 .accession {
     position: relative;
-    font-size: 1.3em;
+    @include font-size(1.2);
     font-weight: bold;
     z-index: 0;
 
@@ -100,16 +96,16 @@
 }
 
 .accession-note {
-    font-size: 0.9em;
+    @include font-size(0.9);
     font-weight: normal;
 
     a[href^="http"]:after {
-        font-size: 0.9em;
+        @include font-size(0.9);
     }
 }
 
 .type {
-    font-size: 0.9em;
+    @include font-size(0.9);
     font-weight: normal;
     color: #808080;
 }
@@ -134,7 +130,7 @@
                 padding: 0;
                 border: none;
                 background-color: transparent;
-                font-size: 18px;
+                @include font-size(1.3);
             }
         }
     }
@@ -142,7 +138,7 @@
 
 .meta-title {
     margin-bottom: 7px !important;
-    font-size: 1.2em;
+    @include font-size(1.1);
     color: #606060 !important;
 }
 
@@ -196,13 +192,13 @@ div.meta-status {
         margin-top: 10px;
         border-bottom: 1px solid #E8E8E8;
         margin-bottom: 10px;
-        font-size: 0.9em;
+        @include font-size(0.9);
 
         &:first {
             margin-top: 0px;
             border-bottom: 1px solid #ccc;
             margin-bottom: 10px;
-            font-size: 0.9em;
+            @include font-size(0.9);
         }
 
     }
@@ -239,18 +235,18 @@ span.bar {
 
 .list-author {
     margin: 0;
-    font-size: floor($font-size-base * 1.1);
+    @include font-size(1.1);
 }
 
 .list-citation {
     margin: 0;
-    font-size: floor($font-size-base * 0.95);;
+    @include font-size(0.9);
 }
 
 .list-reference {
     display: inline;
     margin: 0 !important;
-    font-size: floor($font-size-base * 0.95);;
+    @include font-size(0.9);
 }
 
 .list-supplementary {
