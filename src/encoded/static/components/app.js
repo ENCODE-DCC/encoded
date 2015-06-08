@@ -21,6 +21,7 @@ var portal = {
         {id: 'methods', title: 'Methods', children: [
             {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
             {id: 'softwaretools', title: 'Software tools', url: '/software'},
+            {id: 'pipelines', title: 'Pipelines', url: '/pipelines'},
             {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
         ]},
         {id: 'about', title: 'About ENCODE', children: [
