@@ -63,7 +63,6 @@ class Experiment(Dataset):
         'replicates.library.biosample.treatments',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'possible_controls',
         'target.organism',
         'references',
@@ -95,7 +94,6 @@ class Experiment(Dataset):
         'replicates.library.biosample.pooled_from',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'target.organism',
     ]
     rev = Dataset.rev.copy()
@@ -201,7 +199,6 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
-        'platform',
     ]
 
     def unique_keys(self, properties):

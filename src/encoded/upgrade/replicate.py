@@ -29,3 +29,21 @@ def replicate_3_4(value, system):
             else:
                 value['notes'] = details
         del value['flowcell_details']
+
+
+@upgrade_step('replicate', '4', '5')
+def replicate_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/2955
+
+    details = {}
+
+    for item in ['read_length', 'platform', 'read_length_units', 'paired_ended']:
+        if value[item] is not None:
+            details[item] = value[item]
+        if item in value:
+            del value[item]
+
+    if 'notes' in value:
+        value['notes'] = value['notes'] + " " + repr(details)
+    else:
+        value['notes'] = repr(details)
