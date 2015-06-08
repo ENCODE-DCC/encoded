@@ -17,10 +17,6 @@ from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
-from contentbase.storage import (
-    Base,
-    DBSession,
-)
 STATIC_MAX_AGE = 0
 
 
@@ -57,12 +53,9 @@ def changelogs(config):
         'profiles/changelogs', 'schemas/changelogs', cache_max_age=STATIC_MAX_AGE)
 
 
-def configure_engine(settings, test_setup=False):
+def configure_engine(settings):
     from contentbase.json_renderer import json_renderer
-    engine_url = settings.get('sqlalchemy.url')
-    if not engine_url:
-        # Already setup by test fixture
-        return None
+    engine_url = settings['sqlalchemy.url']
     engine_opts = {}
     if engine_url.startswith('postgresql'):
         if settings.get('indexer_worker'):
@@ -82,11 +75,6 @@ def configure_engine(settings, test_setup=False):
         if timeout:
             timeout = int(timeout) * 1000
             set_postgresql_statement_timeout(engine, timeout)
-    if test_setup:
-        return engine
-    if asbool(settings.get('create_tables', False)):
-        Base.metadata.create_all(engine)
-    DBSession.configure(bind=engine)
     return engine
 
 
@@ -108,15 +96,26 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
             dbapi_connection.commit()
 
 
-def load_sample_data(app):
-    from .tests.sample_data import load_sample
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'IMPORT',
-    }
-    testapp = TestApp(app, environ)
-    load_sample(testapp)
+def configure_dbsession(config):
+    from contentbase import DBSESSION
+    settings = config.registry.settings
+    DBSession = settings.pop(DBSESSION, None)
+    if DBSession is None:
+        engine = configure_engine(settings)
+
+        if asbool(settings.get('create_tables', False)):
+            from contentbase.storage import Base
+            Base.metadata.create_all(engine)
+
+        import contentbase.storage
+        import zope.sqlalchemy
+        from sqlalchemy import orm
+
+        DBSession = orm.scoped_session(orm.sessionmaker(bind=engine))
+        zope.sqlalchemy.register(DBSession)
+        contentbase.storage.register(DBSession)
+
+    config.registry[DBSESSION] = DBSession
 
 
 def load_workbook(app, workbook_filename, docsdir, test=False):
@@ -191,7 +190,7 @@ def main(global_config, **local_config):
     config.include(session)
     config.include('.persona')
 
-    configure_engine(settings)
+    config.include(configure_dbsession)
     config.include('contentbase')
     config.commit()  # commit so search can override listing
 
@@ -212,7 +211,6 @@ def main(global_config, **local_config):
     config.include(changelogs)
 
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
-    config.registry['backfill_2683'] = json_from_path(settings.get('backfill_2683_path'), {})
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
@@ -224,11 +222,7 @@ def main(global_config, **local_config):
 
     app = config.make_wsgi_app()
 
-    if asbool(settings.get('load_sample_data', False)):
-        load_sample_data(app)
-
     workbook_filename = settings.get('load_workbook', '')
-
     load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
     if docsdir is not None:

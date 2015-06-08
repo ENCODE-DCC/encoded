@@ -53,7 +53,9 @@
                      "quantification",
                      "transcript identification",
                      "transcriptome assembly",
-                     "variant annotation"
+                     "variant annotation",
+                     "read trimming",
+                     "interaction calling"
                  ]
              }
         },

@@ -51,7 +51,10 @@ from .embedding import (
     expand_path,
 )
 from .schema_utils import validate_request
-from .storage import RDBStorage
+from .storage import (
+    RDBBlobStorage,
+    RDBStorage,
+)
 from collections import (
     defaultdict,
 )
@@ -64,7 +67,9 @@ ROOT = LOCATION_ROOT = 'root'
 TYPES = 'types'
 CONNECTION = 'connection'
 COLLECTIONS = 'collections'
+DBSESSION = 'dbsession'
 STORAGE = 'storage'
+BLOBS = 'blobs'
 
 _marker = object()
 
@@ -76,7 +81,8 @@ def includeme(config):
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
     registry[TYPES] = TypesTool(registry)
-    registry[STORAGE] = RDBStorage()
+    registry[STORAGE] = RDBStorage(registry[DBSESSION])
+    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
     registry[CONNECTION] = Connection(registry)
     config.set_root_factory(root_factory)
 
@@ -233,11 +239,23 @@ def extract_schema_links(schema):
             yield (key,)
 
 
-class TypeInfo(object):
-    def __init__(self, registry, item_type, factory):
+class AbstractTypeInfo(object):
+    def __init__(self, registry, item_type):
         self.types = registry[TYPES]
-        self.calculated_properties = registry['calculated_properties']
         self.item_type = item_type
+
+    @reify
+    def subtypes(self):
+        return [
+            k for k, v in self.types.types.items()
+            if self.item_type in ([v.item_type] + v.base_types)
+        ]
+
+
+class TypeInfo(AbstractTypeInfo):
+    def __init__(self, registry, item_type, factory):
+        super(TypeInfo, self).__init__(registry, item_type)
+        self.calculated_properties = registry['calculated_properties']
         self.factory = factory
         self.base_types = factory.base_types
         self.embedded = factory.embedded
@@ -298,19 +316,6 @@ class TypeInfo(object):
         return revs
 
 
-class AbstractTypeInfo(object):
-    def __init__(self, registry, item_type):
-        self.types = registry[TYPES]
-        self.item_type = item_type
-
-    @reify
-    def subtypes(self):
-        return [
-            k for k, v in self.types.types.items()
-            if self.item_type in ([v.item_type] + v.base_types)
-        ]
-
-
 class TypesTool(object):
     def __init__(self, registry):
         self.registry = registry
@@ -319,7 +324,8 @@ class TypesTool(object):
         self.type_back_rev = {}
 
     def register(self, item_type, factory):
-        self.types[item_type] = ti = TypeInfo(self.registry, item_type, factory)
+        ti = TypeInfo(self.registry, item_type, factory)
+        self.types[item_type] = self.abstract[item_type] = ti
         for base in ti.base_types:
             if base not in self.abstract:
                 self.abstract[base] = AbstractTypeInfo(self.registry, base)
@@ -409,8 +415,8 @@ class Connection(object):
         self.item_cache[uuid] = item
         return item
 
-    def get_rev_links(self, model, item_type, rel):
-        return self.storage.get_rev_links(model, item_type, rel)
+    def get_rev_links(self, model, rel, *item_types):
+        return self.storage.get_rev_links(model, rel, *item_types)
 
     def __iter__(self, item_type=None):
         for uuid in self.storage.__iter__(item_type):
@@ -597,7 +603,8 @@ class Item(object):
 
     def get_rev_links(self, name):
         item_type, rel = self.rev[name]
-        return self.registry[CONNECTION].get_rev_links(self.model, item_type, rel)
+        item_types = self.registry[TYPES].abstract[item_type].subtypes
+        return self.registry[CONNECTION].get_rev_links(self.model, rel, *item_types)
 
     def unique_keys(self, properties):
         return {

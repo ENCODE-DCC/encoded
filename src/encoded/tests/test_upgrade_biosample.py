@@ -34,30 +34,30 @@ def biosample_2(biosample_0):
 
 
 @pytest.fixture
-def biosample_3(biosample_0, biosamples):
+def biosample_3(biosample_0, biosample):
     item = biosample_0.copy()
     item.update({
         'schema_version': '3',
-        'derived_from': [biosamples[0]['uuid']],
-        'part_of': [biosamples[0]['uuid']],
+        'derived_from': [biosample['uuid']],
+        'part_of': [biosample['uuid']],
         'encode2_dbxrefs': ['Liver'],
     })
     return item
 
 
 @pytest.fixture
-def biosample_4(biosample_0, biosamples):
+def biosample_4(biosample_0, encode2_award):
     item = biosample_0.copy()
     item.update({
         'schema_version': '4',
         'status': 'CURRENT',
-        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+        'award': encode2_award['uuid'],
     })
     return item
 
 
 @pytest.fixture
-def biosample_6(biosample_0, biosamples):
+def biosample_6(biosample_0):
     item = biosample_0.copy()
     item.update({
         'schema_version': '5',
@@ -69,6 +69,7 @@ def biosample_6(biosample_0, biosamples):
 
     })
     return item
+
 
 @pytest.fixture
 def biosample_7(biosample_0):
@@ -92,12 +93,12 @@ def biosample_8(biosample_0):
 
 
 @pytest.fixture
-def biosample_9(root, biosample):
+def biosample_9(root, biosample, publication):
     item = root.get_by_uuid(biosample['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '9',
-        'references': ["PMID:19465919"]
+        'references': [publication['identifiers'][0]],
     })
     return properties
 
@@ -171,15 +172,15 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     assert 'subcellular_fraction' not in value
 
 
-def test_biosample_upgrade_array_to_string(app, biosample_3, biosample, biosamples):
+def test_biosample_upgrade_array_to_string(app, biosample_3, biosample):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
-    assert value['part_of'] == biosamples[0]['uuid']
-    assert value['derived_from'] == biosamples[0]['uuid']
+    assert value['part_of'] == biosample['uuid']
+    assert value['derived_from'] == biosample['uuid']
 
 
-def test_biosample_upgrade_empty_array(app, biosample_3, biosample, biosamples):
+def test_biosample_upgrade_empty_array(app, biosample_3, biosample):
     biosample_3['derived_from'] = []
     biosample_3['part_of'] = []
     migrator = app.registry['migrator']
@@ -297,7 +298,7 @@ def test_biosample_age_pattern(app, biosample_8):
     assert value['model_organism_age'] == '15'
 
 
-def test_biosample_age_pattern(app, biosample_8):
+def test_biosample_age_pattern2(app, biosample_8):
     biosample_8['model_organism_age'] = '15.0-16.0'
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_8, target_version='9')
@@ -305,13 +306,13 @@ def test_biosample_age_pattern(app, biosample_8):
     assert value['model_organism_age'] == '15-16'
 
 
-def test_biosample_references(root, registry, biosample,  biosample_9, publications, threadlocals, dummy_request):
+def test_biosample_references(root, registry, biosample,  biosample_9, publication, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('biosample', biosample_9, target_version='10', context=context)
     assert value['schema_version'] == '10'
-    assert value['references'] == [publications[1]['uuid']]
+    assert value['references'] == [publication['uuid']]
 
 
 def test_biosample_worm_synch_stage(root, registry, biosample, biosample_10, dummy_request):

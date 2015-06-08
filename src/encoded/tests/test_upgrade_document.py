@@ -2,9 +2,9 @@ import pytest
 
 
 @pytest.fixture
-def document_0():
+def document_0(publication):
     return {
-        'references': ["PMID:17558387", "PMID:19752085"]
+        'references': [publication['identifiers'][0]],
     }
 
 
@@ -29,22 +29,21 @@ def document_1(document_base):
 
 
 @pytest.fixture
-def document_3(root, document):
+def document_3(root, document, publication):
     item = root.get_by_uuid(document['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '3',
-        'references': ["PMID:17558387", "PMID:19752085"]
+        'references': [publication['identifiers'][0]],
     })
     return properties
 
 
-
-def test_document_0_upgrade(registry, document_0):
+def test_document_0_upgrade(registry, document_0, publication):
     migrator = registry['migrator']
     value = migrator.upgrade('document', document_0, target_version='2')
     assert value['schema_version'] == '2'
-    assert value['references'] == ["PMID:17558387", "PMID:19752085"]
+    assert value['references'] == [publication['identifiers'][0]]
 
 
 def test_document_upgrade_status(registry, document_1):
@@ -70,10 +69,10 @@ def test_document_upgrade_status_deleted(registry, document_1):
     assert value['status'] == 'deleted'
 
 
-def test_document_upgrade_references(root, registry, document, document_3, publications, threadlocals, dummy_request):
+def test_document_upgrade_references(root, registry, document, document_3, publication, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(document['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('document', document_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
-    assert value['references'] == [publications[2]['uuid'], publications[3]['uuid']]
+    assert value['references'] == [publication['uuid']]

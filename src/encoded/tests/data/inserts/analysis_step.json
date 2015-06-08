@@ -296,9 +296,14 @@
         "uuid": "4c4042c6-27b0-42c5-b608-9061005e32ab",
         "name": "wgbs_lambda_qc",
         "title": "Bismark Lambda QC",
+        "aliases": ["ALIAS:ONE", "ALIAS:TWO"],
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
         "parents": ["36a667fe-e98c-402d-babf-88a9d39df5ff"],
+        "documents": [
+            "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
+            "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
+        ],
         "qa_stats_generated":  [
             "lambda Sequences analysed in total",
             "lambda Mapping efficiency",

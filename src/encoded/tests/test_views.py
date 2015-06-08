@@ -125,10 +125,36 @@ def _test_antibody_approval_creation(testapp):
     assert len(res.json['@graph']) == 1
 
 
-def test_load_sample_data(testapp):
-    from . import sample_data
-    for item_type in sample_data.URL_COLLECTION:
-        sample_data.load(testapp, item_type)
+def test_load_sample_data(
+        analysis_step,
+        analysis_step_run,
+        antibody_characterization,
+        antibody_lot,
+        award,
+        biosample,
+        biosample_characterization,
+        construct,
+        dataset,
+        document,
+        experiment,
+        file,
+        lab,
+        library,
+        mouse_donor,
+        organism,
+        pipeline,
+        publication,
+        quality_metric,
+        replicate,
+        rnai,
+        software,
+        software_version,
+        source,
+        submitter,
+        target,
+        workflow_run,
+        ):
+    assert True, 'Fixtures have loaded sample data'
 
 
 @pytest.mark.slow
@@ -146,18 +172,19 @@ def test_collection_limit(workbook, testapp):
     assert len(res.json['@graph']) == 2
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_collection_post(testapp, item_type):
-    from . import sample_data
-    sample_data.load(testapp, item_type)
+def test_collection_post(testapp):
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return testapp.post_json('/organism', item, status=201)
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_collection_post_bad_json(testapp, item_type):
-    collection = [{'foo': 'bar'}]
-    for item in collection:
-        res = testapp.post_json('/' + item_type, item, status=422)
-        assert res.json['errors']
+def test_collection_post_bad_json(testapp):
+    item = {'foo': 'bar'}
+    res = testapp.post_json('/organism', item, status=422)
+    assert res.json['errors']
 
 
 def test_collection_post_malformed_json(testapp):
@@ -187,8 +214,8 @@ def test_collection_actions_filtered_by_permission(workbook, testapp, anontestap
     assert not any(action for action in res.json.get('actions', []) if action['name'] == 'add')
 
 
-def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
-    location = sources[0]['@id']
+def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, source):
+    location = source['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
@@ -197,52 +224,57 @@ def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sou
     assert not any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_collection_put(testapp, item_type, execute_counter):
-    from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[item_type]
-    initial = collection[0].copy()
-    res = testapp.post_json('/' + item_type, initial, status=201)
-    item_url = res.json['@graph'][0]['@id']
-    uuid = initial['uuid']
+def test_collection_put(testapp, execute_counter):
+    initial = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    item_url = testapp.post_json('/organism', initial).location
 
     with execute_counter.expect(1):
-        res = testapp.get(item_url).json
+        item = testapp.get(item_url).json
 
     for key in initial:
-        assert res[key] == initial[key]
+        assert item[key] == initial[key]
 
-    update = collection[1].copy()
-    del update['uuid']
+    update = {
+        'name': 'mouse',
+        'scientific_name': 'Mus musculus',
+        'taxon_id': '10090',
+    }
     testapp.put_json(item_url, update, status=200)
 
-    res = testapp.get('/' + uuid).follow().json
+    res = testapp.get('/' + item['uuid']).follow().json
 
     for key in update:
         assert res[key] == update[key]
 
 
-def test_post_duplicate_uuid(testapp):
-    from .sample_data import BAD_LABS
-    testapp.post_json('/labs/', BAD_LABS[0], status=201)
-    testapp.post_json('/labs/', BAD_LABS[1], status=409)
+def test_post_duplicate_uuid(testapp, mouse):
+    item = {
+        'uuid': mouse['uuid'],
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    testapp.post_json('/organism', item, status=409)
 
 
-def test_user_effective_principals(users, anontestapp, execute_counter):
-    email = users[0]['email']
+def test_user_effective_principals(submitter, lab, anontestapp, execute_counter):
+    email = submitter['email']
     with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user',
                               extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
-        'group.admin',
-        'group.programmer',
         'group.submitter',
-        'lab.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'lab.%s' % lab['uuid'],
         'remoteuser.%s' % email,
-        'submits_for.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'submits_for.%s' % lab['uuid'],
         'system.Authenticated',
         'system.Everyone',
-        'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+        'userid.%s' % submitter['uuid'],
+        'viewing_group.ENCODE',
     ]
 
 

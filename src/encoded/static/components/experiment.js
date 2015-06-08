@@ -312,6 +312,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <dd>{context.lab.title}</dd>
                         </div>
 
+                        {context.award.pi && context.award.pi.lab ?
+                            <div data-test="awardpi">
+                                <dt>Award PI</dt>
+                                <dd>{context.award.pi.lab.title}</dd>
+                            </div>
+                        : null}
+
                         <div data-test="project">
                             <dt>Project</dt>
                             <dd>{context.award.project}</dd>
@@ -889,7 +896,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     return jsonGraph;
-}
+};
 
 // analysis steps.
 var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
