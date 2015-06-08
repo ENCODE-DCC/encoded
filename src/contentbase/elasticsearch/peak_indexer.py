@@ -6,7 +6,6 @@ from ..embedding import embed
 from urllib.parse import (
     urlencode,
 )
-from collections import defaultdict
 from pyramid.view import view_config
 from .interfaces import ELASTIC_SEARCH
 
