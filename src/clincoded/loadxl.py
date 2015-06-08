@@ -15,7 +15,6 @@ ORDER = [
     'lab',
     'organism',
     'source',
-    'target',
     'variant',
     'allele',
     'condition',

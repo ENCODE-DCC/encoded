@@ -34,46 +34,6 @@ class Donor(Item):
 
 
 @collection(
-    name='mouse-donors',
-    acl=[],
-    properties={
-        'title': 'Mouse donors',
-        'description': 'Listing Biosample Donors',
-    })
-class MouseDonor(Donor):
-    item_type = 'mouse_donor'
-    schema = load_schema('clincoded:schemas/mouse_donor.json')
-
-    def __ac_local_roles__(self):
-        # Disallow lab submitter edits
-        return {Authenticated: 'role.viewing_group_member'}
-
-
-@collection(
-    name='fly-donors',
-    properties={
-        'title': 'Fly donors',
-        'description': 'Listing Biosample Donors',
-    })
-class FlyDonor(Donor):
-    item_type = 'fly_donor'
-    schema = load_schema('clincoded:schemas/fly_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
-
-
-@collection(
-    name='worm-donors',
-    properties={
-        'title': 'Worm donors',
-        'description': 'Listing Biosample Donors',
-    })
-class WormDonor(Donor):
-    item_type = 'worm_donor'
-    schema = load_schema('clincoded:schemas/worm_donor.json')
-    embedded = ['organism', 'constructs', 'constructs.target']
-
-
-@collection(
     name='human-donors',
     properties={
         'title': 'Human donors',
