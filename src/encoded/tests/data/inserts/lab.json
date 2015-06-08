@@ -607,24 +607,17 @@
         "uuid": "44324de6-c057-451f-a8f1-1d9a6cb2762c"
     },
     {
-        "address1": "",
+        "address1": "DNA Nexus",
         "awards": [
-            "/awards/U41HG006992/",
-            "/awards/U41HG007000/"
+            "/awards/U41HG006992/"
         ],
-        "city": "",
         "country": "USA",
-        "fax": "",
-        "institute_label": "",
-        "institute_name": "",
         "name": "encode-processing-pipeline",
-        "phone1": "",
-        "phone2": "",
-        "pi": "/users/8b1f8780-b5d6-4fb7-a5a2-ddcec9054288/",
-        "postal_code": "",
-        "schema_version": "2",
-        "state": "",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "pi": "uskuf.shyec@doton.danona",
         "status": "current",
-        "title": "ENCODE Processing Pipeline"
-}
+        "title": "ENCODE Processing Pipeline",
+        "uuid": "44324de6-c057-451f-a8f1-1d9a6cb9875d"
+    }
 ]
