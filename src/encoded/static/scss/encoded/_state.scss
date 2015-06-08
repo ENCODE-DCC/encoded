@@ -7,14 +7,6 @@
     }
 }
 
-// fix footer width for small screens + content margin fix
-@media (max-width: 767px) {
-    footer {
-        //margin-left: -20px;
-        //margin-right: -20px;
-        //padding: 0 5px;
-    }
-}
 // make footer look good on larger screens
 // and activate sticky footer
 @media (min-width: $screen-sm) {
