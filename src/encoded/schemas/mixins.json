@@ -153,8 +153,8 @@
             "type": "string",
             "linkTo": "award"
         }
-     },
-     "attachment": {
+    },
+    "attachment": {
         "attachment": {
             "title": "Document file metadata",
             "type": "object",
