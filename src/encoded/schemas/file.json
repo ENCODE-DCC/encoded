@@ -650,6 +650,10 @@
                 
         "genome index": "reference",
         "genome reference": "reference",
+        "female genome reference": "reference",
+        "female genome index": "reference",
+        "male genome reference": "reference",
+        "male genome index": "reference",
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
