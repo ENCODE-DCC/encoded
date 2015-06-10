@@ -782,9 +782,8 @@
         "organism.taxon_id": 1.0,
         "references.title": 1.0,
         "rnais.product_id": 1.0,
-        "rnais.target.name": 1.0,
         "rnais.target.label": 1.0,
         "rnais.target.aliases": 1.0,
-        "construct.target.name":1.0
+        "construct.target.label":1.0
     }
 }
