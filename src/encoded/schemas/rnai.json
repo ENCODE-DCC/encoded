@@ -76,7 +76,6 @@
     "boost_values": {
         "target.label": 1,
         "target.dbxref": 1,
-        "target.name":1,
         "target.aliases": 1
     }
 }
