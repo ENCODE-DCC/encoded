@@ -346,6 +346,10 @@
                         
                         "genome reference",
                         "genome index",
+                        "female genome reference",
+                        "female genome index",
+                        "male genome reference",
+                        "male genome index",
                         "spike-in sequence",
 
                         "enhancer validation"
