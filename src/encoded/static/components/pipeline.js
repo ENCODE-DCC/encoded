@@ -188,6 +188,18 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             </div>
                         : null}
 
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
+                        {context.award.pi && context.award.pi.lab ?
+                            <div data-test="awardpi">
+                                <dt>Award PI</dt>
+                                <dd>{context.award.pi.lab.title}</dd>
+                            </div>
+                        : null}
+
                         {context.description ?
                             <div data-test="description">
                                 <dt>Description</dt>
