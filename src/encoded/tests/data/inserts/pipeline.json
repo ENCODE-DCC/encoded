@@ -1,3 +1,4 @@
+
 [
      {
         "accession": "ENCPL001MQC",
@@ -13,6 +14,8 @@
         "analysis_steps": [
             "4c4042c6-27b0-42c5-b608-9061005e32ab"
         ],
+        "lab": "joe-ecker",
+        "award": "U54HG006997",
         "status": "released"
     },
     {
@@ -29,6 +32,8 @@
         "analysis_steps": [
             "a25381ab-1740-42f7-8d5a-20bb2a2b9549"
         ],
+        "lab": "joe-ecker",
+        "award": "U54HG006997",
         "status": "released"
     },
     {
@@ -47,6 +52,8 @@
             "36a667fe-e98c-402d-babf-88a9d39df5ff",
             "aa598eaa-eda4-4fb3-b313-072f95de58a4"
         ],
+        "lab": "joe-ecker",
+        "award": "U54HG006997",
         "status": "released"
     },
     {
@@ -56,6 +63,8 @@
         "name": "long-rna-seq-pipeline-pe",
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
+        "award": "U54HG007004",
+        "lab": "thomas-gingeras",
         "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
         "end_points": [
             "7505ced9-3584-4146-84a1-7c5695cb8cf4",
@@ -89,6 +98,8 @@
         ],
         "status": "released",
         "title": "Graveley RNA-seq Analysis",
+        "lab": "brenton-graveley",
+        "award": "U54HG007005",
         "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
     },
     {
@@ -108,6 +119,8 @@
             "roderic-guigo:GeneQuantificationPipeline"
         ],
         "status": "released",
+        "award": "U54HG007004",
+        "lab": "thomas-gingeras",
         "title": "Gene Quantification Pipeline",
         "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66"
     },
@@ -129,6 +142,8 @@
         ],
         "status": "released",
         "title": "ENCODE2 ChIP-seq pipeline",
+        "award": "U54HG007004",
+        "lab": "thomas-gingeras",
         "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
     },
     {
@@ -146,6 +161,8 @@
              "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
         ],
         "status": "released",
+        "lab": "brenton-graveley",
+        "award": "U54HG007005",
         "title": "iCLIP-seq Analysis Pipeline",
         "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"
     },
@@ -158,6 +175,8 @@
             "9c0120e0-a594-11e4-bcd8-0800200c9a66"
         ],
         "status": "released",
+        "lab": "brenton-graveley",
+        "award": "U54HG007005",
         "title": "ENCODE File Validation",
         "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
     }
