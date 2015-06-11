@@ -4,7 +4,7 @@
     "id": "/profiles/pipeline.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["title"],
+    "required": ["title","lab","award"],
     "identifyingProperties": ["uuid", "aliases", "accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/accession"},
         { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/accessioned_status"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/assay"}
