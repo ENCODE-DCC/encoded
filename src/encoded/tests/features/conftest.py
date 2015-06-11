@@ -1,5 +1,10 @@
 import pytest
 
+pytest_plugins = [
+    'encoded.tests.features.browsersteps',
+    'encoded.tests.features.customsteps',
+]
+
 
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
