@@ -102,16 +102,8 @@
             "title": "Pipeline status",
             "type": "string"
         },
-        "version": {
-            "title": "Version",
-            "type": "integer"
-        },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
-            "type": "array"
-        },
-        "analysis_steps.software_versions.software.references.published_by": {
-            "title": "Created by",
             "type": "array"
         }
     },

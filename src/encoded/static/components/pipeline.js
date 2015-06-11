@@ -409,16 +409,8 @@ var Listing = React.createClass({
                             <div><strong>Assay: </strong>{result.assay_term_name}</div>
                         : null}
 
-                        {result.version ?
-                            <div><strong>Version: </strong>{result.version}</div>
-                        : null}
-
                         {swTitle.length ?
                             <div><strong>Software: </strong>{swTitle.join(', ')}</div>
-                        : null}
-
-                        {publishedBy.length ?
-                            <div><strong>Created by: </strong>{publishedBy.join(', ')}</div>
                         : null}
                     </div>
                 </div>
