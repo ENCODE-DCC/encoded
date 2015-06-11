@@ -70,6 +70,19 @@ def splinter_window_size():
     return (1024, 768)
 
 
+@pytest.fixture(scope='session')
+def browser(session_browser):
+    return session_browser
+
+
+@pytest.yield_fixture(scope='session')
+def admin_user(browser, base_url):
+    browser.visit(base_url)  # need to be on domain to set cookie
+    browser.cookies.add({'REMOTE_USER': 'TEST'})
+    yield
+    browser.cookies.delete('REMOTE_USER')
+
+
 # https://github.com/pytest-dev/pytest-bdd/issues/117
 
 
