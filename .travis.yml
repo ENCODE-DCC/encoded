@@ -59,12 +59,14 @@ script:
   - >
     if test -n "$BROWSER"; then
       test -f "$SC_PIDFILE" && bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short \
-        --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
+        --splinter-implicit-wait 10 \
+        --splinter-webdriver remote \
+        --splinter-remote-url url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
         --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
-        --browser-arg-int wait_time 10 \
-        --browser "$BROWSER"
+        --browser-arg screenResolution "1366x768" \
+        --browser-arg browser "$BROWSER"
     fi
 after_script:
   - >
