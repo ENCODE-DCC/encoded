@@ -62,3 +62,36 @@ def splinter_browser_load_condition():
 @pytest.fixture(scope='session')
 def splinter_driver_kwargs(request):
     return dict(request.config.option.browser_args or ())
+
+
+# https://github.com/pytest-dev/pytest-bdd/issues/117
+
+
+def write_line(request, when, line):
+    """Write line instantly."""
+    terminal = request.config.pluginmanager.getplugin('terminalreporter')
+    if terminal.verbosity <= 0:
+        return
+    capman = request.config.pluginmanager.getplugin('capturemanager')
+    out, err = capman.suspendcapture()
+    try:
+        request.node.add_report_section(when, 'out', out)
+        request.node.add_report_section(when, 'err', err)
+        terminal.write_line(line)
+    finally:
+        capman.resumecapture()
+
+
+@pytest.mark.trylast
+def pytest_bdd_before_scenario(request, feature, scenario):
+    write_line(request, 'setup', u'Scenario: {scenario.name}'.format(scenario=scenario))
+
+
+@pytest.mark.trylast
+def pytest_bdd_step_error(request, feature, scenario, step, step_func, step_func_args, exception):
+    write_line(request, 'call', u'Step: {step.name} FAILED'.format(step=step))
+
+
+@pytest.mark.trylast
+def pytest_bdd_after_step(request, feature, scenario, step, step_func, step_func_args):
+    write_line(request, 'call', u'Step: {step.name} PASSED'.format(step=step))
