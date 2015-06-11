@@ -1,7 +1,11 @@
 import pytest
 from pytest_bdd import scenarios
 
-pytestmark = pytest.mark.usefixtures('workbook')
+pytestmark = [
+    pytest.mark.bdd,
+    pytest.mark.usefixtures('workbook'),
+]
+
 
 scenarios(
     'forms.feature',

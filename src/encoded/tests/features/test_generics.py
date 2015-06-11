@@ -6,7 +6,10 @@ from pytest_bdd import (
 )
 from . import browsersteps
 
-pytestmark = pytest.mark.usefixtures('workbook')
+pytestmark = [
+    pytest.mark.bdd,
+    pytest.mark.usefixtures('workbook'),
+]
 
 scenarios('generics.feature')
 
