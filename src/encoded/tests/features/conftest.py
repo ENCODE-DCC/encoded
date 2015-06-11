@@ -21,9 +21,7 @@ def app(app_settings):
         yield app
 
 
-# Though this is expensive, set up first within browser tests to avoid remote
-# browser timeout
-@pytest.mark.fixture_cost(-1)
+@pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(app):
     from webtest import TestApp
@@ -70,8 +68,9 @@ def splinter_window_size():
     return (1024, 768)
 
 
+# Depend on workbook fixture here to avoid remote browser timeouts.
 @pytest.fixture(scope='session')
-def browser(session_browser):
+def browser(session_browser, workbook):
     return session_browser
 
 
