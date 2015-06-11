@@ -64,6 +64,12 @@ def splinter_driver_kwargs(request):
     return dict(request.config.option.browser_args or ())
 
 
+@pytest.fixture(scope='session')
+def splinter_window_size():
+    # Sauce Labs seems to only support 1024x768.
+    return (1024, 768)
+
+
 # https://github.com/pytest-dev/pytest-bdd/issues/117
 
 

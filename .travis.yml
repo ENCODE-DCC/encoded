@@ -65,7 +65,6 @@ script:
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
         --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
-        --browser-arg screenResolution "1366x768" \
         --browser-arg browser "$BROWSER"
     fi
 after_script:
