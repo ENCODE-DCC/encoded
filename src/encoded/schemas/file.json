@@ -331,6 +331,7 @@
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "enrichment",
+                        "replication timing profile",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -623,6 +624,7 @@
         "unfiltered modified peptide quantification": "quantification",
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
+        "replication timing profile": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
