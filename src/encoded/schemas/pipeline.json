@@ -12,7 +12,6 @@
         { "$ref": "mixins.json#/uuid"},
         { "$ref": "mixins.json#/accession"},
         { "$ref": "mixins.json#/aliases"},
-        { "$ref": "mixins.json#/accessioned_status"},
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/submitted"},
@@ -31,6 +30,17 @@
         },
         "accession": {
             "accessionType": "PL"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum": [
+                "in progress",
+                "deleted",
+                "archived",
+                "active"
+            ]
         },
         "title": {
             "title": "Title",

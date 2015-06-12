@@ -16,7 +16,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "released"
+        "status": "active"
     },
     {
         "accession": "ENCPL000MEG",
@@ -34,7 +34,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "released"
+        "status": "active"
     },
     {
         "accession": "ENCPL002BIS",
@@ -54,7 +54,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "released"
+        "status": "active"
     },
     {
         "accession": "ENCPL003RNA",
@@ -80,7 +80,7 @@
             "7505ced9-3584-4146-84a1-7c5695cb8cf4",
             "b9d7eea7-8546-41f4-80e3-0fbee31fba8b"
         ],
-        "status": "released"
+        "status": "active"
     },
     {
         "accession": "ENCPL001GRV",
@@ -96,7 +96,7 @@
         "documents": [
             "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
         ],
-        "status": "released",
+        "status": "active",
         "title": "Graveley RNA-seq Analysis",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
@@ -118,7 +118,7 @@
         "documents": [
             "roderic-guigo:GeneQuantificationPipeline"
         ],
-        "status": "released",
+        "status": "active",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "title": "Gene Quantification Pipeline",
@@ -140,7 +140,7 @@
             "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram",
             "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
         ],
-        "status": "released",
+        "status": "active",
         "title": "ENCODE2 ChIP-seq pipeline",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
@@ -160,7 +160,7 @@
         "documents": [
              "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
         ],
-        "status": "released",
+        "status": "active",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "iCLIP-seq Analysis Pipeline",
@@ -174,7 +174,7 @@
         "analysis_steps": [
             "9c0120e0-a594-11e4-bcd8-0800200c9a66"
         ],
-        "status": "released",
+        "status": "active",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
