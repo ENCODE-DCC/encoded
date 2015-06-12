@@ -289,7 +289,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {node && node.metadata.pipeline ?
                         <div data-test="pipeline">
                             <dt>Pipeline</dt>
-                            <dd>{node.metadata.pipeline.title}</dd>
+                            <dd><a href={node.metadata.pipeline['@id']}>{node.metadata.pipeline.title}</a></dd>
                         </div>
                     : null}
 
