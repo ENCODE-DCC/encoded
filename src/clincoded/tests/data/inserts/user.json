@@ -1074,5 +1074,65 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "9e889180-9db1-11e4-bd06-0800200c9a66"
+    },
+    {
+        "email": "kdalton@stanford.edu",
+        "first_name": "Karen",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Dalton",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "870b7c6d-76f2-4c19-8393-e2f1398cfd99"
+    },
+    {
+        "email": "kgliu@stanford.edu",
+        "first_name": "Kang",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Liu",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "e49d01a5-51f7-4a32-ba0e-b2a71684e4aa"
+    },
+    {
+        "email": "tsneddon@stanford.edu",
+        "first_name": "Tam",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Senior Biocuration Scientist",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Sneddon",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "d84302eb-ce02-49c2-9ec0-dac58f490bdf"
+    },
+    {
+        "email": "selinad@stanford.edu",
+        "first_name": "Selina",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Senior Biocuration Scientist",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Dwight",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "04442cec-6ab7-40d0-af26-1e5fefd535eb"
     }
 ]

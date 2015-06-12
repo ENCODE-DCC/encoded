@@ -27,7 +27,8 @@ class Gene(SharedItem):
 
     def unique_keys(self, properties):
         keys = super(Gene, self).unique_keys(properties)
-        keys.setdefault('gene:name', []).append(self._name(properties))
+        # keys.setdefault('gene:name', []).append(self._name(properties))
+        keys.setdefault('gene_name', []).append(self._name(properties))
         return keys
 
     @calculated_property(schema={
