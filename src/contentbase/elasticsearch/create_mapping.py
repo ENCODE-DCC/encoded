@@ -164,7 +164,7 @@ def index_settings():
                             'lowercase',
                         ]
                     },
-                    'encoded_index_analyzer': {
+                    'clincoded_index_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'whitespace',
                         'char_filter': 'html_strip',
@@ -175,7 +175,7 @@ def index_settings():
                             'substring'
                         ]
                     },
-                    'encoded_search_analyzer': {
+                    'clincoded_search_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'whitespace',
                         'filter': [
@@ -214,8 +214,8 @@ def es_mapping(mapping):
     return {
         '_all': {
             'enabled': True,
-            'index_analyzer': 'encoded_index_analyzer',
-            'search_analyzer': 'encoded_search_analyzer'
+            'index_analyzer': 'clincoded_index_analyzer',
+            'search_analyzer': 'clincoded_search_analyzer'
         },
         'dynamic_templates': [
             {
@@ -450,8 +450,8 @@ def type_mapping(types, item_type, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
-        new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
-        new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
+        new_mapping[last]['index_analyzer'] = 'clincoded_index_analyzer'
+        new_mapping[last]['search_analyzer'] = 'clincoded_search_analyzer'
         del new_mapping[last]['include_in_all']
 
     # Automatic boost for uuid

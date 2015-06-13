@@ -68,7 +68,9 @@ def main():
 
     if args.init:
         app = get_app(args.config_uri, args.app_name)
-        create_mapping.run(app)
+        # NOTE: temporarily suppressed mapping used by elastic which
+        #       was blocking start-up sequence in create_mapping.py
+        # create_mapping.run(app)
 
     if args.load:
         from webtest import TestApp

@@ -36,7 +36,7 @@
             "type": "string",
             "linkTo": "organism"
         },
-        "name": {
+        "gene_name": {
             "title": "Name",
             "description": "HGNC or MGI identifier for the gene.",
             "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
