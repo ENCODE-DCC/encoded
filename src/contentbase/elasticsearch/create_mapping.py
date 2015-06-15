@@ -86,7 +86,7 @@ def schema_mapping(name, schema):
             }
         }
 
-    if type_ == 'string':
+    if type_ in ['string', 'boolean']:
         return {
             'type': 'string',
             'include_in_all': False,
@@ -117,20 +117,6 @@ def schema_mapping(name, schema):
     if type_ == 'integer':
         return {
             'type': 'long',
-            'include_in_all': False,
-            'store': True,
-            'fields': {
-                'raw': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
-                }
-            }
-        }
-
-    if type_ == 'boolean':
-        return {
-            'type': 'boolean',
             'include_in_all': False,
             'store': True,
             'fields': {
@@ -452,7 +438,7 @@ def type_mapping(types, item_type, embed=True):
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        del new_mapping[last]['include_in_all']
+        new_mapping[last].pop('include_in_all', None)
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:

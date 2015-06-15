@@ -4,7 +4,7 @@
     "id": "/profiles/pipeline.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["title"],
+    "required": ["title","lab","award"],
     "identifyingProperties": ["uuid", "aliases", "accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/accession"},
         { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/accessioned_status"},
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/assay"}
@@ -101,6 +102,10 @@
             "title": "Pipeline status",
             "type": "string"
         },
+        "version": {
+            "title": "Version",
+            "type": "integer"
+        },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
@@ -124,7 +129,11 @@
             "type": "string"
         },
         "assay_term_name": {
-            "title": "Assay Type",
+            "title": "Assay type",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
             "type": "string"
         },
         "status": {
@@ -159,6 +168,10 @@
         },
         "analysis_steps.software_versions.software.@id": {
             "title": "ID",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.references.published_by": {
+            "title": "Created by",
             "type": "string"
         }
     },
