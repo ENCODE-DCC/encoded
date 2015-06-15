@@ -48,15 +48,6 @@ def base_url(_server):
 
 
 @pytest.fixture(scope='session')
-def splinter_browser_load_condition():
-
-    def condition(browser):
-        return browser.is_element_not_present_by_css(".communicating")
-
-    return condition
-
-
-@pytest.fixture(scope='session')
 def splinter_driver_kwargs(request):
     return dict(request.config.option.browser_args or ())
 
