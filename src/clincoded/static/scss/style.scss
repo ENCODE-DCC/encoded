@@ -1,22 +1,3 @@
-// Override Bootstrap default variables:
-
-$screen-md:                                 960px;
-$border-radius-base:                        3px;
-$border-radius-large:                       4px;
-$border-radius-small:                       2px;
-$input-border-radius:                       3px;
-$grid-float-breakpoint:                     $screen-md;
-$navbar-height:                             40px;
-$navbar-inverse-link-active-bg:             #4E7294;//darken($navbar-inverse-bg, 10%)
-$navbar-inverse-toggle-hover-bg:            #19334b;
-$navbar-inverse-toggle-border-color:        #19334b;
-$headings-font-weight:                      bold;
-$grid-gutter-width:                         20px;
-
-$brand-warning: #E59545;
-$brand-success: #4C994C;
-$brand-danger: #B24342;
-$brand-info: #4F689E;
 
 // Core variables and mixins
 @import "bootstrap/variables";
@@ -64,45 +45,14 @@ $brand-info: #4F689E;
 //@import "bootstrap/popovers";
 //@import "bootstrap/carousel";
 
-// ENCODED
-// Compass
-@import "compass/css3/text-shadow";
-@import "compass/css3/box-shadow";
-@import "compass/css3/border-radius";
-//@import "compass/css3/transition";
-@import "compass/css3/images";
-@import "compass/typography/text/force-wrap";
+// All of compass for now
+@import "compass";
 
-// Font Awesome
-@import "fontawesome/font-awesome";
-
-// react-forms bootstrap theme
-@import "react-forms/index";
-
-// ENCODE Project styles & mixins
-@import "clincoded/mixins-custom";
-// SMACSS-based architecture (http://smacss.com/)
+// Clincoded styles
+@import "clincoded/variables";
 @import "clincoded/base";
-@import "clincoded/layout"; 
-@import "clincoded/modules/breadcrumbs",
-        "clincoded/modules/forms",
-        "clincoded/modules/key-value-display",
-        "clincoded/modules/lightbox",
-        "clincoded/modules/lists",
-        "clincoded/modules/loading-spinner",
-        "clincoded/modules/modals",
-        "clincoded/modules/navbar",
-        "clincoded/modules/panels",
-        "clincoded/modules/signin-box",
-        "clincoded/modules/tables",
-        "clincoded/modules/facet",
-        "clincoded/modules/characterizations",
-        "clincoded/modules/audits",
-        "clincoded/modules/pipeline",
-        "clincoded/modules/blocks",
-        "clincoded/modules/layout-editor";
-@import "clincoded/state";
-@import "clincoded/theme"; 
+@import "clincoded/modules/navbar";
+@import "clincoded/modules/curator";
 
 // Utility classes - Bootstrap 3, keep last
 @import "bootstrap/utilities";

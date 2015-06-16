@@ -32,24 +32,6 @@ module.exports = function(grunt) {
                     }],
                 ],
             },
-            dagre: {
-                dest: './src/clincoded/static/build/dagre.js',
-                require: [
-                    'dagre-d3',
-                    'd3',
-                ],
-                options: {
-                    debug: true,
-                },
-                plugin: [
-                    ['minifyify', {
-                        map: 'dagre.js.map',
-                        output: './src/clincoded/static/build/dagre.js.map',
-                        compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
-                    }],
-                ],
-            },
             inline: {
                 dest: './src/clincoded/static/build/inline.js',
                 src: [
@@ -85,8 +67,6 @@ module.exports = function(grunt) {
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
-                    'dagre-d3',
-                    'd3',
                     'scriptjs',
                     'google-analytics',
                 ],
@@ -129,8 +109,6 @@ module.exports = function(grunt) {
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
-                    'dagre-d3',
-                    'd3',
                     'source-map-support',
                 ],
                 ignore: [

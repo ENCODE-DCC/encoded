@@ -18,7 +18,7 @@ if (!window.TEST_RUNNER) domready(function ready() {
     BrowserFeat.setHtmlFeatClass();
     var props = App.getRenderedProps(document);
     var server_stats = require('querystring').parse(window.stats_cookie);
-    App.recordServerStats(server_stats, 'html');
+//    App.recordServerStats(server_stats, 'html');
 
     var app = React.render(<App {...props} />, document);
 
