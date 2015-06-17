@@ -1,19 +1,18 @@
 'use strict';
 var React = require('react');
-var jQuery = require('jquery');
-var bootstrap = require('bootstrap');
-//var navbar = require('./navbar');
-var $ = jQuery;
+var globals = require('./globals');
+var navbar = require('./navbar');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var url = require('url');
 
-//var Navbar = navbar.Navbar;
+var Navbar = navbar.Navbar;
 
 var routes = {
     'curator': require('./curator').Curator
 };
 
 
+// Site information, including navigation
 var portal = {
     portal_title: 'ClinGen',
     global_sections: [
@@ -25,11 +24,49 @@ var portal = {
 };
 
 
+// Renders HTML common to all pages.
 var App = module.exports = React.createClass({
+    getInitialState: function() {
+        return {
+            errors: [],
+            portal: portal
+        };
+    },
+
     render: function() {
         var content;
         var context = this.props.context;
         var href_url = url.parse(this.props.href);
+        var hash = href_url.hash || '';
+        var name;
+        var context_actions = [];
+        if (hash.slice(0, 2) === '#!') {
+            name = hash.slice(2);
+        }
+
+        var key = context && context['@id'];
+        if (context) {
+            Array.prototype.push.apply(context_actions, context.actions || []);
+            if (!name && context.default_page) {
+                context = context.default_page;
+                var actions = context.actions || [];
+                for (var i = 0; i < actions.length; i++) {
+                    var action = actions[i];
+                    if (action.href[0] == '#') {
+                        action.href = context['@id'] + action.href;
+                    }
+                    context_actions.push(action);
+                }
+            }
+
+            var ContentView = globals.content_views.lookup(context, name);
+            content = <ContentView {...this.props} context={context}
+                loadingComplete={this.state.loadingComplete} session={this.state.session}
+                portal={this.state.portal} navigate={this.navigate} />;
+        }
+        var errors = this.state.errors.map(function (error) {
+            return <div className="alert alert-error"></div>;
+        });
 
         var canonical = this.props.href;
         if (context.canonical_uri) {
@@ -58,6 +95,7 @@ var App = module.exports = React.createClass({
                     }}></script>
                     <div>
                         <Header />
+                        {content}
                     </div>
                 </body>
             </html>
@@ -65,6 +103,7 @@ var App = module.exports = React.createClass({
     },
 
     statics: {
+        // Get data to display from page <script> tag
         getRenderedProps: function (document) {
             var props = {};
             // Ensure the initial render is exactly the same
@@ -85,10 +124,12 @@ var App = module.exports = React.createClass({
 });
 
 
+// Render the common page header.
 var Header = React.createClass({
     render: function() {
         return (
             <header className="site-header">
+                <Navbar portal={portal} />
             </header>
         );
     }

@@ -1,7 +1,11 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
-var pmid_items = null;
+var globals = require('./globals');
+
+// Temporary hard-coded data to display
+var pmid_items = require('./testdata').pmid_items;
+
 
 // Curator page content
 var Curator = module.exports.Curator = React.createClass({
@@ -71,6 +75,8 @@ var Curator = module.exports.Curator = React.createClass({
         );
     }
 });
+
+globals.cg_template.register(Curator, 'curator');
 
 
 // Curation data header for Gene:Disease

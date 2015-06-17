@@ -94,25 +94,9 @@
         }
     },
     {
-        "name": "images",
-        "title": "Images",
+        "name": "curator",
+        "title": "Curator",
         "status": "released",
-        "uuid": "61edd6b2-bfdb-4db1-b950-8845ac37f65c",
-        "layout": {
-            "rows": [
-                {
-                    "cols": [
-                        {"blocks": ["#block1"]}
-                    ]
-                }
-            ],
-            "blocks": [
-                {
-                    "@id": "#block1",
-                    "@type": "richtextblock",
-                    "body": "<h1>Image Collection Landing Page</h1>"
-                }
-            ]
-        }
+        "uuid": "61edd6b2-bfdb-4db1-b950-8845ac37f65c"
     }
 ]

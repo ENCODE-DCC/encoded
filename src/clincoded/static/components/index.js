@@ -17,6 +17,7 @@ require('./navbar');
 require('./statuslabel');
 require('./search');
 require('./publication');
+require('./curator');
 require('./testing');
 require('./edit');
 require('./inputs');
