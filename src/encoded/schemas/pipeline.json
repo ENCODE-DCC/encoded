@@ -115,6 +115,10 @@
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
+        },
+        "lab.title": {
+            "title": "Developed by",
+            "type": "string"
         }
     },
     "columns": {
