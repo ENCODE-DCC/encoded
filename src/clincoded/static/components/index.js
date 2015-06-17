@@ -9,7 +9,6 @@ require('./errors');
 require('./gene');
 require('./footer');
 require('./globals');
-require('./graph');
 require('./home');
 require('./item');
 require('./page');

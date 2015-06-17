@@ -2,7 +2,6 @@
 var React = require('react');
 var fetched = require('./fetched');
 var globals = require('./globals');
-var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
 var FileInput = require('./inputs').FileInput;
@@ -233,9 +232,6 @@ var jsonSchemaToFormSchema = function(attrs) {
     if (p.type == 'object') {
         if (p.formInput == 'file') {
             props.input = <FileInput />;
-            return ReactForms.schema.Scalar(props);
-        } else if (p.formInput == 'layout') {
-            props.input = <Layout editable={true} />;
             return ReactForms.schema.Scalar(props);
         } else {
             props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} />;

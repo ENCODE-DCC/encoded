@@ -1,8 +1,6 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
-var Modal = require('react-bootstrap/lib/Modal');
-var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
@@ -708,53 +706,6 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    var BatchDownload = search.BatchDownload = React.createClass({
-        mixins: [OverlayMixin],
-
-        getInitialState: function () {
-            return {
-              isModalOpen: false
-            };
-          },
-
-          handleToggle: function () {
-            this.setState({
-              isModalOpen: !this.state.isModalOpen
-            });
-          },
-
-          render: function () {
-            return (
-                <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Download</a>
-            );
-          },
-
-          renderOverlay: function () {
-            var link = this.props.context['batch_download'];
-            if (!this.state.isModalOpen) {
-              return <span/>;
-            }
-            return (
-                <Modal title="Using batch download" onRequestHide={this.handleToggle}>
-                  <div className="modal-body">
-                    <p>Click the "Download" button below to download a "files.txt" file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                    The first line of the file will always be the URL to download the metadata file. <br />
-                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-
-                    <p>The "files.txt" file can be copied to any server.<br />
-                    The following command using cURL can be used to download all the files in the list:</p><br />
-                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-                  </div>
-                  <div className="modal-footer">
-                        <a className="btn btn-info btn-sm" onClick={this.handleToggle}>Close</a>
-                        <a data-bypass="true" target="_self" private-browsing="true" className="btn btn-info btn-sm"
-                            href={link}>{'Download'}</a>
-                  </div>
-                </Modal>
-              );
-          }
-    });
-
     var ResultTable = search.ResultTable = React.createClass({
 
         getDefaultProps: function() {
@@ -833,12 +784,6 @@ var AuditMixin = audit.AuditMixin;
                                                 : null}
                                             </span>
                                         }
-
-                                        {context['batch_download'] ?
-                                            <span className="pull-right">
-                                                <BatchDownload context={context} />&nbsp;
-                                            </span>
-                                        : null}
 
                                         {context['batch_hub'] ?
                                             <span className="pull-right">
