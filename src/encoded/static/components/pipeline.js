@@ -59,14 +59,30 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             // Add files and their steps as nodes to the graph
             analysis_steps.forEach(function(step) {
                 var stepId = step['@id'];
+                var swVersionList = [];
+                var label;
 
                 // Make an array of step types
                 var stepTypesList = step.analysis_step_types.map(function(type) {
                     return type;
                 });
 
+                // Collect software version titles
+                if (step.software_versions && step.software_versions.length) {
+                    swVersionList = step.software_versions.map(function(version) {
+                        return version.software.title;
+                    });
+                }
+
+                // Build the node label; both step types and sw version titles if available
+                if (swVersionList.length) {
+                    label = [step.analysis_step_types.join(', '), swVersionList.join(', ')];
+                } else {
+                    label = step.analysis_step_types.join(', ');
+                }
+
                 // Assemble a single analysis step node.
-                jsonGraph.addNode(stepId, step.name,
+                jsonGraph.addNode(stepId, label,
                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: step});
 
                 // If the node has parents, render the edges to those parents
@@ -86,14 +102,26 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     step.parents.forEach(function(parent) {
                         if (parent.uuid in allSteps) {
                             var stepId = parent['@id'];
+                            var swVersionList = [];
+                            var label;
+
                             if (!jsonGraph.getNode(stepId)) {
-                                // Make an array of step types
-                                var stepTypesList = parent.analysis_step_types.map(function(type) {
-                                    return type;
-                                });
+                                // Collect software version titles
+                                if (parent.software_versions && parent.software_versions.length) {
+                                    swVersionList = parent.software_versions.map(function(version) {
+                                        return version.software.title;
+                                    });
+                                }
+
+                                // Build the node label; both step types and sw version titles if available
+                                if (swVersionList.length) {
+                                    label = [parent.analysis_step_types.join(', '), swVersionList.join(', ')];
+                                } else {
+                                    label = parent.analysis_step_types.join(', ');
+                                }
 
                                 // Assemble a single analysis step node.
-                                jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                                jsonGraph.addNode(stepId, label,
                                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
                             }
                         }
