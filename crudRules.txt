@@ -1,0 +1,17 @@
+CRUD Action Rules (v 0.5):
+
+1. Registied users are separated as 3 levels with different authorities: 
+  1.1. Community curator (lest authority),
+  1.2. ClinGen curator,
+  1.3. ClinGen Expert curator (most authority)
+2. Gene:Disease:Mode (GDM) pair can be created by any level.
+3. New GDM can be created with or without evidence.
+4. New annotation can be added by any level of curator to an existing GDM.
+5. In one annotation, data must be entered by the same curator.
+6. Existing annotation can be edited only by curator who added the annotation.
+7. Delete will not function at any saved data.
+8. Assessment and variant can be added to an annotation by any curator.
+9. Summary and Provisional  Classification can be added by any curator.
+10. Summary and Provision Classification can be added only to a GDM with annotation(s).
+11. Draft Classification can be added by ClinGen Expert curator and ClinGen curator, but not by Community curator.
+12. Final Classification can be added only by ClinGen Expert curator.
