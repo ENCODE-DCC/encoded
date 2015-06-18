@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "name": {
             "title": "Name",
@@ -115,6 +115,10 @@
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
+        },
+        "lab.title": {
+            "title": "Developed by",
+            "type": "string"
         }
     },
     "columns": {
