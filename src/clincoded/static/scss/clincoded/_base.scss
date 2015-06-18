@@ -1,4 +1,4 @@
-html {
+html, body {
     font-size: 18px;
 
     @media screen and (min-width: $screen-sm-min) {
@@ -8,7 +8,6 @@ html {
 
 body {
     font-family: 'Helvetica Neue', 'Lato', Helvetica, sans-serif;
-    font-size: 1rem;
 }
 
 p {
