@@ -113,7 +113,7 @@
             "type": "string"
         },
         "title": {
-            "title": "Title",
+            "title": "Pipeline groups",
             "type": "string"
         },
         "analysis_steps.software_versions.software.title": {
