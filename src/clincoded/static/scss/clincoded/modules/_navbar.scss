@@ -69,3 +69,19 @@
         }
     }
 }
+
+.session-temp {
+    position: absolute;
+    padding: 2px 5px;
+    background-color: $color-trim;
+    color: #000;
+    top: 0;
+    right: 10px;
+    z-index: 100;
+
+    a {
+        font-weight: bold;
+        color: #000;
+        text-decoration: none;
+    }
+}
