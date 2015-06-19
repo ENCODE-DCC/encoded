@@ -190,29 +190,22 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
-                        {context.accession ?
-                            <div data-test="accession">
-                                <dt>Accession</dt>
-                                <dd>{context.accession}</dd>
-                            </div>
-                        : null}
-
                         <div data-test="title">
                             <dt>Title</dt>
                             <dd>{context.source_url ? <a href={context.source_url}>{context.title}</a> : context.title}</dd>
                         </div>
 
-                        {context.version ?
-                            <div data-test="version">
-                                <dt>Version</dt>
-                                <dd>{context.version}</dd>
-                            </div>
-                        : null}
-
                         {context.assay_term_name ?
                             <div data-test="assay">
                                 <dt>Assay</dt>
                                 <dd>{context.assay_term_name}</dd>
+                            </div>
+                        : null}
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
                             </div>
                         : null}
 
@@ -225,13 +218,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <div data-test="awardpi">
                                 <dt>Award PI</dt>
                                 <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
                             </div>
                         : null}
                     </dl>
