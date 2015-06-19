@@ -117,6 +117,7 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
+                    "candidate regulatory elements",
                     "genome reference",
                     "genome index",
                     "female genome reference",
@@ -128,7 +129,7 @@
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks",
+                    "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks"
@@ -183,6 +184,7 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
+                    "candidate regulatory elements",
                     "genome reference",
                     "genome index",
                     "female genome reference",
@@ -194,7 +196,7 @@
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks",
+                    "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
                     "replicated peaks"
