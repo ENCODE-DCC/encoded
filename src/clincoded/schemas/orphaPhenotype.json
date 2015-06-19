@@ -1,0 +1,89 @@
+{
+    "title": "Orphanet Phenotypes",
+    "description": "Schema for storing and using Orphanet data.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["orphaNumber", "phenotypeName"],
+    "identifyingProperties": ["uuid", "orphaNumber"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "orphaNumber": {
+            "title": "Unique ID of Orphanet data",
+            "description": "Digital Orphanet ID.",
+            "type": "string",
+            "pattern": "^[0-9]{1,6}$",
+            "uniqueKey": "orphaPhenotype:orphaNumber"
+        },
+        "phenotypeName": {
+            "title": "Unique full name of Orphanet phenotype.",
+            "description": "Ontology term describing Orphanet phenotype.",
+            "type":  "string",
+            "uniqueKey": "orphaPhenotype:orphaNumber"
+        },
+        "type": {
+            "title": "Type.",
+            "description": "Type of Orphanet phenotype.",
+            "type": "string",
+            "enum": [
+                "Disease",
+                "Malformation syndrome",
+                "Clinical subtype",
+                "Group of phenomes",
+                "Particular clinical situation in a disease or syndrome",
+                "Morphological anomaly",
+                "Etiological subtype",
+                "Clinical syndrome",
+                "No type",
+                "Histopathological subtype",
+                "Biological anomaly"
+            ]
+        },
+        "omimIds": {
+            "title": "OMIM ID",
+            "description": "OMIM identifier to Orphanet disease",
+            "type": "array",
+            "default": "",
+            "pattern": "^[0-9]{6}$"
+        },
+        "synonyms": {
+            "title": "Synonyms",
+            "description": "Synonym name(s) of Orphanet diseases.",
+            "type": "array",
+            "default": ""
+        },
+        "active": {
+            "description": "boolean switch to set if the phenotype avaliable for curation.",
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "columns": {
+        "orphaNumber": {
+            "title": "ORPHA Number",
+            "type": "string"
+        },
+        "phenotypeName": {
+            "title": "Disease Name",
+            "type": "string"
+        },
+        "type": {
+            "title": "Type",
+            "type": "string"
+        },
+        "synonyms": {
+            "title": "Synonym(s)",
+            "type": "string"
+        },
+        "omimIds": {
+            "title": "OMIM ID(s)",
+            "type": "string"
+        }
+    }
+}

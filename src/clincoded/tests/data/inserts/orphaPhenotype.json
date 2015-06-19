@@ -1,0 +1,196 @@
+[
+    {
+        "uuid": "78867c7a-16a6-11e5-8007-60f81dc5b05a",
+        "phenotypeName": "Achondroplasia",
+        "orphaNumber": "15",
+        "synonyms": [],
+        "active": true,
+        "omimIds": [
+            "100800"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788aaf99-16a6-11e5-8661-60f81dc5b05a",
+        "phenotypeName": "Fanconi anemia",
+        "orphaNumber": "84",
+        "synonyms": [
+            "Fanconi pancytopenia"
+        ],
+        "active": true,
+        "omimIds": [
+            "609054",
+            "610832",
+            "613390",
+            "613951",
+            "614082",
+            "614083",
+            "614087",
+            "615272",
+            "227645",
+            "227646",
+            "227650",
+            "300514",
+            "600901",
+            "603467",
+            "609053"
+        ],
+        "type": "Malformation syndrome"
+    },
+    {
+        "uuid": "788ae1de-16a6-11e5-b341-60f81dc5b05a",
+        "phenotypeName": "Nephroblastoma",
+        "orphaNumber": "654",
+        "synonyms": [
+            "Renal embryonic tumor",
+            "Wilms tumor"
+        ],
+        "active": true,
+        "omimIds": [
+            "194070",
+            "194071",
+            "194090",
+            "601363",
+            "601583"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788aee73-16a6-11e5-8505-60f81dc5b05a",
+        "phenotypeName": "Severe combined immunodeficiency",
+        "orphaNumber": "183660",
+        "synonyms": [
+            "SCID"
+        ],
+        "active": true,
+        "omimIds": [],
+        "type": "Group of phenomes"
+    },
+    {
+        "uuid": "788c3bb0-16a6-11e5-8618-60f81dc5b05a",
+        "phenotypeName": "X-linked non-syndromic intellectual disability",
+        "orphaNumber": "777",
+        "synonyms": [
+            "X-linked non-specific intellectual disability"
+        ],
+        "active": true,
+        "omimIds": [
+            "300046",
+            "300047",
+            "300062",
+            "300114",
+            "300115",
+            "300143",
+            "300210",
+            "300271",
+            "300324",
+            "300355",
+            "300372",
+            "300387",
+            "300419",
+            "300428",
+            "300433",
+            "300436",
+            "300454",
+            "300498",
+            "300504",
+            "300505",
+            "300518",
+            "300551",
+            "300558",
+            "300705",
+            "300716",
+            "300802",
+            "300803",
+            "300844",
+            "300848",
+            "300849",
+            "300850",
+            "300851",
+            "300852",
+            "300919",
+            "300928",
+            "309530",
+            "309549"
+        ],
+        "type": "Etiological subtype"
+    },
+    {
+        "uuid": "788cd05e-16a6-11e5-97c0-60f81dc5b05a",
+        "phenotypeName": "Congenital muscular dystrophy with intellectual disability",
+        "orphaNumber": "370968",
+        "synonyms": [
+            "CMD with intellectual disability",
+            "CMD-MR"
+        ],
+        "active": true,
+        "omimIds": [
+            "606612",
+            "608840",
+            "613155",
+            "613156",
+            "615351"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788d04b5-16a6-11e5-bc96-60f81dc5b05a",
+        "phenotypeName": "Aneurysm - osteoarthritis syndrome",
+        "orphaNumber": "284984",
+        "synonyms": [
+            "AOS"
+        ],
+        "active": true,
+        "omimIds": [
+            "613795"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788d45ab-16a6-11e5-9042-60f81dc5b05a",
+        "phenotypeName": "Familial exudative vitreoretinopathy",
+        "orphaNumber": "891",
+        "synonyms": [
+            "Criswick-Schepens syndrome",
+            "FEVR"
+        ],
+        "active": true,
+        "omimIds": [
+            "133780",
+            "305390",
+            "601813",
+            "605750",
+            "613310"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788d967d-16a6-11e5-acfb-60f81dc5b05a",
+        "phenotypeName": "Pleuropulmonary blastoma",
+        "orphaNumber": "64742",
+        "synonyms": [],
+        "active": true,
+        "omimIds": [
+            "601200"
+        ],
+        "type": "Disease"
+    },
+    {
+        "uuid": "788e024f-16a6-11e5-a0b5-60f81dc5b05a",
+        "phenotypeName": "Milroy disease",
+        "orphaNumber": "79452",
+        "synonyms": [
+            "Hereditary lymphedema type I",
+            "Nonne-Milroy lymphedema"
+        ],
+        "active": true,
+        "omimIds": [
+            "153100",
+            "247440",
+            "611944",
+            "613480",
+            "615907"
+        ],
+        "type": "Disease"
+    }
+]

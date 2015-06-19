@@ -1,0 +1,527 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"allele_fre",
+				"allele_freq_count"
+			],
+			[
+				"dot_top",
+				"dot_top_margin"
+			],
+			[
+				"fade",
+				"fadeToggle	.fadeToggle()"
+			],
+			[
+				"clingen_logo",
+				"clingen_logo_img"
+			],
+			[
+				"An",
+				"AnalysisID"
+			],
+			[
+				"overflo",
+				"overflow_box"
+			],
+			[
+				"hgvs",
+				"hgvs_lower"
+			],
+			[
+				"dbs",
+				"dbsnpid"
+			],
+			[
+				"variant",
+				"variantData"
+			],
+			[
+				"curation",
+				"curation_all_tab"
+			],
+			[
+				"background",
+				"background-color"
+			],
+			[
+				"margin",
+				"margin-left"
+			],
+			[
+				"Lierature",
+				"LiteratureSearch"
+			],
+			[
+				"the_",
+				"the_assessment"
+			],
+			[
+				"ClinVar",
+				"ClinVarID"
+			],
+			[
+				"dbSPN",
+				"dbSNPID"
+			],
+			[
+				"Func",
+				"FunctionalData"
+			],
+			[
+				"Functinoal",
+				"Functionaldataanalysis"
+			],
+			[
+				"Functionaldata",
+				"Functionaldataanalysis"
+			],
+			[
+				"index",
+				"indexOf"
+			],
+			[
+				"dbSNP",
+				"dbSNPID"
+			],
+			[
+				"assessment",
+				"assessmentform"
+			],
+			[
+				"Casegroup",
+				"Casegroupstudy"
+			],
+			[
+				"Ass",
+				"Assessment"
+			],
+			[
+				"CaseS",
+				"CaseStudyID"
+			],
+			[
+				"Case",
+				"CaseStudyID"
+			],
+			[
+				"CaseGroup",
+				"CaseGroupName"
+			],
+			[
+				"Liter",
+				"LiteratureSearch"
+			],
+			[
+				"toS",
+				"toString()	String"
+			],
+			[
+				"ordo",
+				"ordoid"
+			],
+			[
+				"Literature",
+				"LiteratureSearch"
+			],
+			[
+				"border",
+				"border-collapse"
+			],
+			[
+				"Sy",
+				"Synonym"
+			],
+			[
+				"Ac",
+				"Active"
+			],
+			[
+				"set",
+				"settoken"
+			],
+			[
+				"padd",
+				"padding"
+			],
+			[
+				"font",
+				"font"
+			],
+			[
+				"text",
+				"text-align"
+			],
+			[
+				"lower",
+				"lowerItem"
+			],
+			[
+				"getEle",
+				"getElementById(${0:id})	Element"
+			],
+			[
+				"getEl",
+				"getElementById(${0:id})	Element"
+			],
+			[
+				"align",
+				"text-align"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/JavaScript & Coffeescript Build Systems/xJs.sublime-build",
+					""
+				],
+				[
+					"Packages/JavaScript & Coffeescript Build Systems/xJs.sublime-build",
+					"Compile"
+				],
+				[
+					"Packages/JavaScript & Coffeescript Build Systems/xJs.sublime-build",
+					"Harmony"
+				]
+			],
+			[
+				"Packages/JavaScript & Coffeescript Build Systems/xJs.sublime-build",
+				"Compile"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 347.0,
+		"last_filter": "Package Control: ",
+		"selected_items":
+		[
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 476.0
+	},
+	"console":
+	{
+		"height": 153.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2deb499853c4371624f5a07e27c334aa' + 'bf8c4e67d14fb0525ba4f89698a6d7e1'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"import urllib.request,os; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); open(os.path.join(ipp, pf), 'wb').write(urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ','%20')).read())"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/get_disease.py",
+		"/Users/kangliu/Downloads/clinvar_xml0.8.model.json",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/get_gene.py",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/get_variant_clinvar.py",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/get_rcv_clinvar.py",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/get_variant_clinvar38.py",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/scv_count.py",
+		"/Users/kangliu/encoded/bootstrap.py",
+		"/Users/kangliu/Spindle/public/javascripts/curation_basic_tabs_View.js",
+		"/Users/kangliu/Spindle/views/curation_all_tab.jade",
+		"/Users/kangliu/Spindle/views/tab_includes/functional_addnew_included.jade",
+		"/Users/kangliu/Spindle/routes/observations.js",
+		"/Users/kangliu/Spindle/public/javascripts/variant_all_View.js",
+		"/Users/kangliu/Spindle/routes/diseases.js",
+		"/Users/kangliu/Spindle/routes/curations.js",
+		"/Users/kangliu/Spindle/views/tab_includes/literature_all.jade",
+		"/Users/kangliu/Spindle/routes/genes.js",
+		"/Users/kangliu/Spindle/private/js/settoken.js",
+		"/Users/kangliu/Spindle/views/tab_includes/literature_included.jade",
+		"/Users/kangliu/Spindle/routes/literature.js",
+		"/Users/kangliu/Spindle/views/tab_includes/article_present_included.jade",
+		"/Users/kangliu/Spindle/public/javascripts/curationsView.js",
+		"/Users/kangliu/Spindle/public/javascripts/changepwd.js",
+		"/Users/kangliu/Spindle/public/stylesheets/style.css",
+		"/Users/kangliu/Spindle/private/js/token.js",
+		"/Users/kangliu/Spindle/private/js/key_data.js",
+		"/Users/kangliu/Spindle/private/js/getClientIP.js",
+		"/Users/kangliu/Spindle/private/data/databaseSchema.txt",
+		"/Users/kangliu/Spindle/private/data/cookie_life.json",
+		"/Users/kangliu/Spindle/bin/www",
+		"/Users/kangliu/Spindle/app.js",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/saveCurator.py",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/multi_allele_count_clinvar.py",
+		"/Users/kangliu/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/Users/kangliu/Library/Application Support/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/Users/kangliu/Spindle/views/variant_all.jade",
+		"/Users/kangliu/Spindle/public/javascripts/variant_statistic.js",
+		"/Users/kangliu/Spindle/public/javascripts/variant_statistic_old.js",
+		"/Users/kangliu/Spindle/views/index.html",
+		"/Users/kangliu/Spindle/routes/variants.js",
+		"/Users/kangliu/Spindle/public/javascripts/variant_all_View_old.js",
+		"/Users/kangliu/Spindle/views/variant_all_old.jade",
+		"/Users/kangliu/Spindle/views/genes.jade",
+		"/Users/kangliu/Spindle/public/javascripts/layoutView.js",
+		"/Users/kangliu/Spindle/views/layout.jade",
+		"/Users/kangliu/Spindle/public/javascripts/logoutView.js",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/ClinVar_test.xml",
+		"/Users/kangliu/Spindle/routes/functionaldataanalysis.js",
+		"/Users/kangliu/Documents/tryjava.js",
+		"/Users/kangliu/Documents/tryjavatry.js",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/db_data_test.py",
+		"/Users/kangliu/Spindle/views/diseases.jade",
+		"/Users/kangliu/Spindle/public/javascripts/genesView.js",
+		"/Users/kangliu/Spindle/views/curations_basic.jade",
+		"/Users/kangliu/Spindle/views/tab_includes/variant_add_edit_included.jade",
+		"/Users/kangliu/Spindle/views/tab_includes/functional_all_included.jade",
+		"/Users/kangliu/Spindle/routes/casegroupstudy.js",
+		"/Users/kangliu/Downloads/variant_add_edit_included.jade",
+		"/Users/kangliu/Spindle/views/logout.jade",
+		"/Users/kangliu/Spindle/views/spindle.jade",
+		"/Users/kangliu/Spindle/routes/index.js",
+		"/Users/kangliu/Spindle/views/variant.jade",
+		"/Users/kangliu/Spindle/routes/curators.js",
+		"/Users/kangliu/Spindle/views/curators.jade",
+		"/Users/kangliu/Spindle/private/js/db_find.js",
+		"/Users/kangliu/Spindle/public/javascripts/formtolink.js",
+		"/Users/kangliu/Spindle/views/functionaldata_analysis.jade",
+		"/Users/kangliu/Spindle/views/tab_includes/functional_edit_included.jade",
+		"/Users/kangliu/Spindle/views/segregation_variant.jade",
+		"/Users/kangliu/Spindle/views/tab_includes/history_included.jade",
+		"/Users/kangliu/Spindle/views/functionaldata.jade",
+		"/Users/kangliu/Spindle/views/index.jade",
+		"/Users/kangliu/Spindle/views/functional_addnew_included.jade",
+		"/Users/kangliu/Spindle/views/functionaldata_addnew.jade",
+		"/Users/kangliu/Spindle/views/curation_all_tab_vertical.jade",
+		"/Users/kangliu/Spindle/views/literature.jade",
+		"/Users/kangliu/Spindle/views/curation_history.jade",
+		"/Users/kangliu/Spindle/views/casegroup_group.jade",
+		"/Users/kangliu/Spindle/views/segregation_variant_addnew.jade",
+		"/Users/kangliu/Spindle/views/segregation.jade",
+		"/Users/kangliu/Spindle/views/segregation_addnew.jade",
+		"/Users/kangliu/Spindle/package.json",
+		"/Users/kangliu/Spindle/v02-23-2013BAVA/views/segregation.jade",
+		"/Users/kangliu/Spindle/views/observations.jade",
+		"/Users/kangliu/Spindle/views/observation_general.jade",
+		"/Users/kangliu/Spindle/public/javascripts/diseasesView.js",
+		"/Users/kangliu/Spindle/views/casegroup.jade",
+		"/Users/kangliu/Spindle/views/method.jade",
+		"/Users/kangliu/Spindle/views/groupsearch.jade",
+		"/Users/kangliu/Spindle/public/javascripts/literatureView.js",
+		"/Users/kangliu/Spindle/v02-13-2015BAVA/views/segregation.jade",
+		"/Users/kangliu/Spindle/style.css",
+		"/Users/kangliu/Spindle/routes/casegroupstudy_old.js",
+		"/Users/kangliu/Spindle/views/curations.jade",
+		"/Users/kangliu/Spindle/public/javascripts/spindleView.js",
+		"/Users/kangliu/Spindle/public/javascripts/curatorsView.js",
+		"/Users/kangliu/Spindle/public/javascripts/loginView.js",
+		"/Users/kangliu/Spindle/public/javascripts/observationsView.js",
+		"/Users/kangliu/Spindle/views/note.jade",
+		"/Users/kangliu/Spindle/views/assessment.jade",
+		"/Users/kangliu/Spindle/To-Do.txt",
+		"/Users/kangliu/Spindle/routes/casecontrolstudy.js",
+		"/Users/kangliu/Spindle/views/addgroup_casegroup.jade",
+		"/Users/kangliu/Library/Application Support/Sublime Text 3/Packages/User/JavascriptBeautify.sublime-settings",
+		"/Users/kangliu/Spindle/private/js/cookie_life.js",
+		"/Users/kangliu/Spindle/public/javascripts/diseaseView.js",
+		"/Users/kangliu/Spindle/public/stylesheets/changepssword.html",
+		"/Users/kangliu/Spindle/public/javascripts/diseaseDisplay.js",
+		"/Users/kangliu/Documents/Spindle/Pre-CurationData/disease.xml",
+		"/Users/kangliu/Spindle/routes/logout.js",
+		"/Users/kangliu/.Trash/users.js",
+		"/Users/kangliu/Spindle/routes/users.js",
+		"/Users/kangliu/Documents/Spindle1.0/Pre-Curation Data/saveCurator.py",
+		"/Users/kangliu/Documents/token.js",
+		"/Users/kangliu/Downloads/get_disease.py"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"()\n",
+			"statiscic_link",
+			"bold",
+			"radia",
+			"VariantID",
+			"variant_all_count_box",
+			"functionaldata_content",
+			"AnalysisID",
+			"fint",
+			"Vaiant",
+			"Group ID",
+			"vid",
+			"0",
+			"redirect",
+			"dbSNPID",
+			"ORDOUD",
+			"Cutators",
+			".Contribution",
+			"\"Contribution\"",
+			"Gruop",
+			"newgroup",
+			"pid",
+			":\n",
+			"=\"\")",
+			"\")\n",
+			"Literature",
+			"Literaturesearch",
+			"Method",
+			"studyid",
+			"exist && ",
+			"casegroupstudy[0]",
+			"casegroupstudy",
+			"Mothed",
+			"Casestudy",
+			"created",
+			"htmlobj",
+			"alert"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"matching_all_count_box",
+			"Segregation",
+			"n",
+			"",
+			"casegroupstudy[studyid]",
+			"casegroupstudy[0]",
+			"Method",
+			"Casegroupstudy",
+			"data"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 25.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 29.0
+	},
+	"pinned_build_system": "",
+	"project": "phenotype.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 50.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
