@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
+var mixins = require('./mixins');
 var navbar = require('./navbar');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var url = require('url');
@@ -26,6 +27,12 @@ var portal = {
 
 // Renders HTML common to all pages.
 var App = module.exports = React.createClass({
+    mixins: [mixins.Persona, mixins.HistoryAndTriggers],
+    triggers: {
+        login: 'triggerLogin',
+        logout: 'triggerLogout',
+    },
+
     getInitialState: function() {
         return {
             errors: [],
@@ -94,7 +101,7 @@ var App = module.exports = React.createClass({
                         __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.props.context)) + '\n\n'
                     }}></script>
                     <div>
-                        <Header />
+                        <Header session={this.state.session} />
                         {content}
                     </div>
                 </body>
@@ -127,8 +134,25 @@ var App = module.exports = React.createClass({
 // Render the common page header.
 var Header = React.createClass({
     render: function() {
+        var session = this.props.session;
+        var sessionRender;
+
+        if (!(session && session['auth.userid'])) {
+            sessionRender = (
+                <a data-trigger="login" href="#">Sign in</a>
+            );
+        } else {
+            var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
+            sessionRender = (
+                <a data-trigger="logout" href="#">{'Sign Out ' + fullname}</a>
+            );
+        }
+
         return (
             <header className="site-header">
+                <div className="session-temp">
+                    {sessionRender}
+                </div>
                 <Navbar portal={portal} />
             </header>
         );

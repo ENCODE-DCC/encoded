@@ -27,6 +27,7 @@ p {
 }
 
 .site-header {
+    position: relative;
     border-top: 6px solid $color-trim;
     border-bottom: 2px solid $color-trim;
     background: white;
