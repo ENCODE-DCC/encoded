@@ -189,7 +189,7 @@ def check_file(item):
             'uploaded %d does not match item %d' % (key.size, item['file_size'])
 
     result = {
-        "accession": item['accession'],
+        "@id": item['@id'],
         "path": path,
         "file_size": key.size,
     }
@@ -257,7 +257,7 @@ def run(output, url, username, password, encValData, bucket, mirror):
     for item, result, errors in imap(check_file, files):
         output.write(json.dumps([item, result, errors]) + '\n')
         if errors:
-            sys.stderr.write(json.dumps([item['accession'], errors]) + '\n')
+            sys.stderr.write(json.dumps([item['@id'], errors]) + '\n')
 
 
 def main():

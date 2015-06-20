@@ -27,7 +27,7 @@ def run(fp, url, username, password):
     for line in fp.readlines():
         item, result, errors = json.loads(line)
         if errors:
-            print('skipped %s: %s' % (item['accession'], errors))
+            print('skipped %s: %s' % (item['@id'], errors))
             continue
         item_url = urljoin(url, item['@id'])
         r = requests.get(
