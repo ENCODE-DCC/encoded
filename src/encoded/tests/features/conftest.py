@@ -72,6 +72,11 @@ def admin_user(browser, base_url):
     browser.cookies.delete('REMOTE_USER')
 
 
+@pytest.fixture
+def pytestbdd_strict_gherkin():
+    return False
+
+
 # https://github.com/pytest-dev/pytest-bdd/issues/117
 
 
