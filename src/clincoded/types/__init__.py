@@ -18,11 +18,11 @@ def includeme(config):
 
 ### new collection added for orphaPhenotype.json, 06/19/2015
 @collection(
-    name='phenotypes',
+    name='diseases',
     unique_key='orphaPhenotype:orphaNumber',
     properties={
-        'title': 'Orphanet Phenotypes',
-        'description': 'List of Orphanet phenotypes',
+        'title': 'Orphanet Terms',
+        'description': 'List of Orphanet terms',
     })
 class OrphaPhenotype(Item):
     item_type = 'orphaPhenotype'

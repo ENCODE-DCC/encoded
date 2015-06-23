@@ -70,7 +70,7 @@
             "type": "string"
         },
         "phenotypeName": {
-            "title": "Disease Name",
+            "title": "Term",
             "type": "string"
         },
         "type": {
