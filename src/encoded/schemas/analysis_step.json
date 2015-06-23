@@ -132,7 +132,8 @@
                     "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
-                    "replicated peaks"
+                    "replicated peaks",
+                    "bed"
                 ]
             }
         },
@@ -199,7 +200,8 @@
                     "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
-                    "replicated peaks"
+                    "replicated peaks",
+                    "bigBed"
                 ]
             }
         },
