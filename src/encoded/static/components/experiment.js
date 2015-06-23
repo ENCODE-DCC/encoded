@@ -987,7 +987,7 @@ var FileDetailView = function(node) {
                 {selectedFile.file_format ?
                     <div data-test="format">
                         <dt>Format</dt>
-                        <dd>{selectedFile.file_format}</dd>
+                        <dd>{selectedFile.file_type}</dd>
                     </div>
                 : null}
 
