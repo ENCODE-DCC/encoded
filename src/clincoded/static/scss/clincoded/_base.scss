@@ -1,59 +1,39 @@
-/* Variables */
-$mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
+html, body {
+    font-size: 18px;
 
-$footerHeight: 				80px;
-$footerTopBorderHeight:		0px;
-$footerBackground:          rgba(10,37,61,0.3) !default;
-$footerBackgroundHighlight: #294b6a !default;
-
-$tableHeadFootBackgroundColor: #f5f5f5;
-
-/* BASE STYLES */
-/* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
-
-body { background: $mainThemeColor; }
-
-.float-wrap { overflow: hidden; }
-
-[hidden] { display: none !important; }
-
-#slot-application, #application {
-	height: 100%;
-}
-
-hr { clear: both; }
-
-figure {
-	img { max-width: 100%; height: auto; }
-	margin-bottom: 1em;
-}
-
-.sentence-case-block {
-    display: inline-block;
-
-    &::first-letter,
-    &:first-letter {
-        text-transform: uppercase;
+    @media screen and (min-width: $screen-sm-min) {
+        font-size: 14px;
     }
 }
 
-.sentence-case::first-letter { text-transform: uppercase; }
-.sentence-case:first-letter { text-transform: uppercase; } // older browser support
-
-.repl-acc {
-    margin: -5px 0 15px;
-    font-size: 14px;
-    font-weight: normal;
-    color: #808080;
+body {
+    font-family: 'Helvetica Neue', 'Lato', Helvetica, sans-serif;
 }
 
-*, *:after, *:before {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+p {
+    line-height: 1.6;
 }
 
-.browser-error {
-    margin: 10px;
-    text-align: center;
+.btn {
+    @include border-radius(2px);
+    border: none;
+    font-size: 1rem;
+    border: none;
+    background-color: $color-btn;
+
+    &:hover {
+        background-color: $color-btn-hover !important;
+    }
+}
+
+.site-header {
+    position: relative;
+    border-top: 6px solid $color-trim;
+    border-bottom: 2px solid $color-trim;
+    background: white;
+ 
+    @media screen and (min-width: $screen-sm-min) {
+        background: url(/static/img/header-bg.jpg) center center no-repeat;
+        background-size: cover;
+    }
 }

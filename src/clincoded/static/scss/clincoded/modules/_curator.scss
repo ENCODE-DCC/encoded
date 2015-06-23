@@ -1,0 +1,135 @@
+.curation-content {
+    margin-top: 10px;
+}
+
+.curr-pmid-overview {
+    margin-top: 20px;
+}
+
+.pmid-doi-btns {
+    margin: 10px 0;
+
+    .btn {
+        margin-right: 10px;
+    }
+}
+
+.pmid-overview-abstract {
+    margin: 30px 0;
+}
+
+.curation-data {
+    dl {
+        margin: 0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.curation-data-gene {
+    margin-bottom: 2px;
+}
+
+.curation-data-disease,
+.curation-data-gene {
+    padding: 10px;
+    background-color: $color-neutral-bg;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin-bottom: -99999px;
+        padding-bottom: 99999px;
+    }
+}
+
+.equal-height {
+    overflow: hidden; 
+}
+
+@media screen and (min-width: $screen-sm-min) {
+    .gutter-exc:not(:last-child),
+    .gutter-exc:not(:first-child) {
+        padding-right: 1px;
+        padding-left: 1px;
+    }
+
+    .gutter-exc:first-child {
+        padding-left: $grid-gutter-width / 2;
+
+    }
+
+    .gutter-exc:last-child {
+        padding-right: $grid-gutter-width / 2;
+
+    }
+}
+
+.pmid-selection-trigger {
+    background-color: $color-neutral-bg;
+}
+
+.pmid-selection-curr-id {
+    position: relative;
+    margin-left: 10px;
+    top: 2px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.pmid-selection-trigger {
+    padding: 5px;
+}
+
+.pmid-selection-selected {
+    float: none;
+
+    @media screen and (min-width: $screen-sm-min) {
+        float: left;
+    }
+}
+
+.btn-add-new-pmid {
+    display: block;
+    margin-top: 2px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        float: right;
+        margin-top: 0;
+    }
+}
+
+.pmid-selection-list {
+    max-height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #e0e0e0;
+}
+
+.pmid-selection-list-item {
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $color-hover;
+    }
+
+    &:first-child {
+        border-top: none;
+    }
+}
+
+.pmid-selection-list-pmid {
+    font-weight: bold;
+}
+
+.nav-add-evidence {
+    background-color: $color-neutral-bg !important;
+    text-align: center;
+    padding: 10px;
+
+    h5 {
+        margin-top: 0;
+        font-weight: bold;
+    }
+}

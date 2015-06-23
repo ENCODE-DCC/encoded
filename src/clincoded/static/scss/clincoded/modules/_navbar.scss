@@ -1,149 +1,87 @@
-/* NavBar */
-.navbar-inverse {
+.navbar {
+    margin: 0;
+    background-color: transparent;
     border: none;
-    border-bottom: 0px solid #4e7294;
-    background: #0a253d;
-    @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+}
 
-    .navbar-brand {
-        margin-left: -15px;
-        color: #fff;
-        font-size: floor($font-size-base * 1.4);
-        font-weight: 200;
-        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+.navbar-brand {
+    @extend .navbar-brand;
+    padding: 0;
+    width: 172px;
+    height: 72px;
+    background: url(/static/img/clingen-logo-sm.svg) 0 0 no-repeat;
 
-        &:hover {
-            @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
-        }
-    }
-
-    .nav > li > a {
-        color: #fff;   
-        &:focus,
-        &:hover {
-            background-color: #2f4961;
-        }
-
-        /* Disabled sign-in link */
-        &[disabled] {
-            color: $gray-light;
-
-            &:focus,
-            &:hover {
-                background-color: transparent;
-                color: $gray-light;
-                cursor: default;
-            }
-        }
+    @media screen and (min-width: $screen-sm-min) {
+        padding: 0;
+        height: 134px;
+        background: url(/static/img/clingen-logo.svg) 0 0 no-repeat;
     }
 }
 
-
-.navbar-fixed-top {
-    position: static;
-
-    @media (min-width: $screen-md-min) {
-        position: fixed;
-    }
-}
-
-
-.navbar-toggle {
-    margin-right: 0;
-}
-
-
-.test-warning {
+.navbar-main {
     position: relative;
-    padding: 5px 0 7px;
-    color: #fff;
-    background-color: $brand-danger;
-    @include background-image(linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%));
-    background-image: -ms-linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
 
-    p {
-        margin: 0;
-        width: 90%;
-        font-size: 14px;
-
-        @media screen and (min-width: $screen-md-min) {
-            width: 100%;
-            text-align: center;
-            font-size: 16px;
-        }
+    .container {
+        position: relative;
+        z-index: 10;
     }
 }
 
-
-.test-warning-close {
+.navbar-main-bg {
     position: absolute;
-    width: 23px;
-    height: 22px;
-    top: 50%;
-    right: 5px;
-    margin-top: -13px;
-    font-size: 16px;
-    line-height: 23px !important;
-    color: #fff;
-    vertical-align: top;
-    cursor: pointer;
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    background-color: rgba(255,255,255,0.8);
+    z-index: 0;
+}
+
+.nav-main {
+    @media screen and (min-width: $screen-sm-min) {
+        position: absolute;
+        bottom: 0;
+        right: $grid-gutter-width;
+        font-size: 1.1rem;
+        font-weight: 300;
+    }
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #000;
 
     &:hover {
-        color: #fff;
-        text-decoration: none;
-    }
-
-    @media screen and (min-width: $screen-md-min) {
-        position: static;
-        display: inline;
-        margin-top: 0;
-        margin-left: 10px;
+        background-color: white;
     }
 }
 
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: transparent;
+}
 
-.dropdown-menu {
-    &>li {
-        &>a {
-            padding: 5px 20px;
-            color: #fff !important;
+.navbar-default {
+    .navbar-toggle {
+        border: none;
+        margin: 16px 0 0 0;
+
+        .icon-bar {
+            background-color: $color-link;
+            height: 4px;
         }
     }
+}
 
-    @media screen and (min-width: $grid-float-breakpoint) {
-        left: -1px;
-        margin-top: -1px !important;
-        padding: 10px 0;
-        background-color: #fff;
-        @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
+.session-temp {
+    position: absolute;
+    padding: 2px 5px;
+    background-color: $color-trim;
+    color: #000;
+    top: 0;
+    right: 10px;
+    z-index: 100;
 
-        &>li {
-            &>a {
-                padding: 2px 30px 2px 20px;
-                font-size: floor($font-size-base * 1.1);
-                font-weight: 300;
-                color: #444 !important;
-                border-top: 1px solid transparent;
-                border-bottom: 1px solid transparent;
-                letter-spacing: 1px;
-
-                &:hover,&:active {
-                    border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                    background-color: $navbar-inverse-link-active-bg;
-                    color: $navbar-inverse-link-active-color !important;
-                }
-            }
-
-            &:last-child {
-                &>a {
-                    border-radius: 0 0 3px 3px;
-                }
-            }
-        }
-
-        .navbar-right & {
-            right: -1px;
-        }
+    a {
+        font-weight: bold;
+        color: #000;
+        text-decoration: none;
     }
 }
