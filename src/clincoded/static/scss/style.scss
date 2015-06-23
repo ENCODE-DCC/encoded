@@ -48,11 +48,15 @@
 // All of compass for now
 @import "compass";
 
+// Glyph icons
+@import "fontawesome/font-awesome";
+
 // Clincoded styles
 @import "clincoded/variables";
 @import "clincoded/base";
 @import "clincoded/modules/navbar";
 @import "clincoded/modules/curator";
+@import "clincoded/modules/table";
 
 // Utility classes - Bootstrap 3, keep last
 @import "bootstrap/utilities";

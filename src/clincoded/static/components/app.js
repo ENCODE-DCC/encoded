@@ -2,11 +2,15 @@
 var React = require('react');
 var globals = require('./globals');
 var mixins = require('./mixins');
-var navbar = require('./navbar');
+var navigation = require('./navigation');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var url = require('url');
 
-var Navbar = navbar.Navbar;
+var NavbarMixin = navigation.NavbarMixin;
+var Navbar = navigation.Navbar;
+var Nav = navigation.Nav;
+var NavItem = navigation.NavItem;
+
 
 var routes = {
     'curator': require('./curator').Curator
@@ -16,11 +20,13 @@ var routes = {
 // Site information, including navigation
 var portal = {
     portal_title: 'ClinGen',
-    global_sections: [
-        {id: 'curator', title: 'Curator', url: '/curator'},
-        {id: 'menu2', title: 'Menu 2', url: '/menu2'},
-        {id: 'menu3', title: 'Menu 3', url: '/menu3'},
-        {id: 'menu4', title: 'Menu 4', url: '/menu4'}
+    navMain: [
+        {id: 'dashboard', title: 'Dashboard', url: '/dashboard'},
+        {id: 'curator', title: 'Curation Central', url: '/curation-central'}
+    ],
+    navUser: [
+        {id: 'account', title: 'Account', url: '/account'},
+        {id: 'loginout', title: 'Login'}
     ]
 };
 
@@ -28,6 +34,7 @@ var portal = {
 // Renders HTML common to all pages.
 var App = module.exports = React.createClass({
     mixins: [mixins.Persona, mixins.HistoryAndTriggers],
+
     triggers: {
         login: 'triggerLogin',
         logout: 'triggerLogout',
@@ -134,27 +141,69 @@ var App = module.exports = React.createClass({
 // Render the common page header.
 var Header = React.createClass({
     render: function() {
-        var session = this.props.session;
-        var sessionRender;
-
-        if (!(session && session['auth.userid'])) {
-            sessionRender = (
-                <a data-trigger="login" href="#">Sign in</a>
-            );
-        } else {
-            var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
-            sessionRender = (
-                <a data-trigger="logout" href="#">{'Sign Out ' + fullname}</a>
-            );
-        }
-
         return (
             <header className="site-header">
-                <div className="session-temp">
-                    {sessionRender}
-                </div>
-                <Navbar portal={portal} />
+                <NavbarMain portal={portal} session={this.props.session} />
             </header>
+        );
+    }
+});
+
+
+var NavbarMain = React.createClass({
+    mixins: [NavbarMixin],
+
+    propTypes: {
+        portal: React.PropTypes.object.isRequired
+    },
+
+    render: function() {
+        return (
+            <div>
+                <div className="navbar-main-bg"></div>
+                <div className="container">
+                    <NavbarUser portal={this.props.portal} session={this.props.session} />
+                    <Navbar styles='navbar-main' brand='ClinGen' brandStyles='portal-brand'>
+                        <Nav styles='navbar-right nav-main' collapse>
+                            {this.props.portal.navMain.map(function(menu) {
+                                return <NavItem key={menu.id} href={menu.url}>{menu.title}</NavItem>;
+                            })}
+                        </Nav>
+                    </Navbar>
+                </div>
+            </div>
+        );
+    }
+});
+
+
+var NavbarUser = React.createClass({
+    render: function() {
+        var session = this.props.session;
+
+        return (
+            <Nav navbarStyles='navbar-user' styles='navbar-right nav-user'>
+                {this.props.portal.navUser.map(function(menu) {
+                    if (menu.url) {
+                        // Normal menu item
+                        return <NavItem key={menu.id} href={menu.url}>{menu.title}</NavItem>;
+                    } else {
+                        // Trigger menu item; set <a> data attribute to login or logout
+                        var attrs = {};
+
+                        // Item with trigger; e.g. login/logout
+                        if (!(session && session['auth.userid'])) {
+                            // Logged out; render signin trigger
+                            attrs['data-trigger'] = 'login';
+                            return <NavItem {...attrs} key={menu.id}>{menu.title}</NavItem>;
+                        } else {
+                            var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
+                            attrs['data-trigger'] = 'logout';
+                            return <NavItem {...attrs} key={menu.id}>{'Logout ' + fullname}</NavItem>;
+                        }
+                    }
+                })}
+            </Nav>
         );
     }
 });

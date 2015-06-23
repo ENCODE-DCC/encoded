@@ -13,7 +13,7 @@ require('./home');
 require('./item');
 require('./page');
 require('./mixins');
-require('./navbar');
+require('./navigation');
 require('./statuslabel');
 require('./search');
 require('./publication');
@@ -21,6 +21,5 @@ require('./curator');
 require('./testing');
 require('./edit');
 require('./inputs');
-require('./blocks');
 
 module.exports = require('./app');

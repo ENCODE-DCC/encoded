@@ -6,6 +6,7 @@
 
 .navbar-brand {
     @extend .navbar-brand;
+    @extend .text-hide;
     padding: 0;
     width: 172px;
     height: 72px;
@@ -40,7 +41,7 @@
     @media screen and (min-width: $screen-sm-min) {
         position: absolute;
         bottom: 0;
-        right: $grid-gutter-width;
+        right: $grid-gutter-width / 2;
         font-size: 1.1rem;
         font-weight: 300;
     }
@@ -70,18 +71,49 @@
     }
 }
 
-.session-temp {
-    position: absolute;
-    padding: 2px 5px;
-    background-color: $color-trim;
-    color: #000;
-    top: 0;
-    right: 10px;
-    z-index: 100;
+.navbar-user {
+    display: table;
+    width: 100%;
 
-    a {
-        font-weight: bold;
-        color: #000;
-        text-decoration: none;
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+        position: absolute;
+        top: 0;
+        right: 30px;
+        width: auto;
+        z-index: 100;
+    }
+}
+
+.nav-user {
+    display: table-row;
+
+    li {
+        display: table-cell;
+        text-align: center;
+        padding: 1px 0 0 1px;
+
+        a, a:focus {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            color: #fff;
+            background-color: $color-trim;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: none;
+                background-color: darken($color-trim, 10%);
+            }
+        }
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: block;
+            padding-top: 0;
+        }
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+        float: none;
     }
 }
