@@ -1,7 +1,10 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var modal = require('../libs/bootstrap/modal');
 var globals = require('./globals');
+
+var Modal = modal.Modal;
 
 // Temporary hard-coded data to display
 var pmid_items = require('./testdata').pmid_items;
@@ -156,7 +159,9 @@ var PmidSelectionList = React.createClass({
         return (
             <div>
                 <div className="pmid-selection-add">
-                    <button className="btn btn-primary">Add New PMID(s)</button>
+                    <Modal title='Modal Title' btnOk='Submit' btnCancel='Cancel'>
+                        <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal />}>Add New PMID(s)</button>
+                    </Modal>
                 </div>
                 <div className="pmid-selection-list">
                     {items.map(function(item) {
@@ -176,6 +181,22 @@ var PmidSelectionList = React.createClass({
         );
     }
 });
+
+
+var AddPmidModal = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <div className="modal-body">
+                    <h4>Text in a modal</h4>
+                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
+                    <h4>Tooltips in a modal</h4>
+                </div>
+            </div>
+        );
+    }
+});
+
 
 // Displays the PM item summary, with authors, title, citation, and DOI
 var PmidSummary = React.createClass({

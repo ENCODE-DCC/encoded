@@ -34,8 +34,10 @@ input[type=search] {
 
 .btn {
     @include border-radius(2px);
-    border: none;
     font-size: 1rem;
+}
+
+.btn-primary {
     border: none;
     background-color: $color-btn;
 

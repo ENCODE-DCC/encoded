@@ -13,7 +13,6 @@ require('./home');
 require('./item');
 require('./page');
 require('./mixins');
-require('./navigation');
 require('./statuslabel');
 require('./search');
 require('./publication');

@@ -2,7 +2,7 @@
 var React = require('react');
 var globals = require('./globals');
 var mixins = require('./mixins');
-var navigation = require('./navigation');
+var navigation = require('../libs/bootstrap/navigation');
 var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var url = require('url');
 
