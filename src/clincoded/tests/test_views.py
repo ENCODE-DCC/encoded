@@ -9,7 +9,7 @@ def _type_length():
     import json
     utf8 = codecs.getreader("utf-8")
     return {
-        name: len(json.load(utf8(resource_stream('encoded', 'tests/data/inserts/%s.json' % name))))
+        name: len(json.load(utf8(resource_stream('clincoded', 'tests/data/inserts/%s.json' % name))))
         for name in ORDER
     }
 

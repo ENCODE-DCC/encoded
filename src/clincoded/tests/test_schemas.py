@@ -2,7 +2,7 @@ import pytest
 from pkg_resources import resource_listdir
 
 SCHEMA_FILES = [
-    f for f in resource_listdir('encoded', 'schemas')
+    f for f in resource_listdir('clincoded', 'schemas')
     if f.endswith('.json')
 ]
 
@@ -10,7 +10,7 @@ SCHEMA_FILES = [
 @pytest.mark.parametrize('schema', SCHEMA_FILES)
 def test_load_schema(schema):
     from contentbase.schema_utils import load_schema
-    assert load_schema('encoded:schemas/%s' % schema)
+    assert load_schema('clincoded:schemas/%s' % schema)
 
 
 def test_linkTo_saves_uuid(root, submitter, lab):
@@ -20,7 +20,7 @@ def test_linkTo_saves_uuid(root, submitter, lab):
 
 def test_mixinProperties():
     from contentbase.schema_utils import load_schema
-    schema = load_schema('encoded:schemas/access_key.json')
+    schema = load_schema('clincoded:schemas/access_key.json')
     assert schema['properties']['uuid']['type'] == 'string'
 
 

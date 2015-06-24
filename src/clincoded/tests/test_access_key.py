@@ -27,7 +27,7 @@ def access_key(testapp, submitter):
 @pytest.fixture
 def no_login_submitter(testapp, lab, award):
     item = {
-        'first_name': 'ENCODE',
+        'first_name': 'ClinGen',
         'last_name': 'Submitter',
         'email': 'no_login_submitter@example.org',
         'submits_for': [lab['@id']],
@@ -85,7 +85,7 @@ def test_access_key_principals(anontestapp, execute_counter, access_key, submitt
         'system.Authenticated',
         'system.Everyone',
         'userid.%s' % submitter['uuid'],
-        'viewing_group.ENCODE',
+        'viewing_group.ClinGen',
     ]
 
 
@@ -140,7 +140,7 @@ def test_access_key_view_hides_secret_access_key_hash(testapp, access_key, frame
 
 
 def test_access_key_uses_edw_hash(app, access_key):
-    from encoded.edw_hash import EDWHash
+    from clincoded.edw_hash import EDWHash
     from contentbase import LOCATION_ROOT
     root = app.registry[LOCATION_ROOT]
     obj = root.by_item_type['access_key'][access_key['access_key_id']]

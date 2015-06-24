@@ -15,7 +15,7 @@ describe("Server rendering", function () {
     var home = {
         "@id": "/",
         "@type": ["portal"],
-        "portal_title": "ENCODE",
+        "portal_title": "ClinGen",
         "title": "Home"
     };
 
