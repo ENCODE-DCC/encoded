@@ -2,9 +2,11 @@
 var React = require('react');
 var _ = require('underscore');
 var modal = require('../libs/bootstrap/modal');
+var form = require('../libs/bootstrap/form');
 var globals = require('./globals');
 
 var Modal = modal.Modal;
+var Input = form.Input;
 
 // Temporary hard-coded data to display
 var pmid_items = require('./testdata').pmid_items;
@@ -159,7 +161,7 @@ var PmidSelectionList = React.createClass({
         return (
             <div>
                 <div className="pmid-selection-add">
-                    <Modal title='Modal Title' btnOk='Submit' btnCancel='Cancel'>
+                    <Modal title='Add New PMID(s)' btnOk='Submit' btnCancel='Cancel'>
                         <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal />}>Add New PMID(s)</button>
                     </Modal>
                 </div>
@@ -188,9 +190,8 @@ var AddPmidModal = React.createClass({
         return (
             <div>
                 <div className="modal-body">
-                    <h4>Text in a modal</h4>
-                    <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
-                    <h4>Tooltips in a modal</h4>
+                    <p>Enter a PMID ID</p>
+                    <Input type="text" id="pmid-input" ref="pmid-input" label="PMID to search" />
                 </div>
             </div>
         );
