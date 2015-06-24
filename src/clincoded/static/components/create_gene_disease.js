@@ -1,9 +1,12 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
+var fetched = require('./fetched');
 var form = require('../libs/bootstrap/form');
 
 var Input = form.Input;
+var FetchedItems = fetched.FetchedItems;
+
 
 var hpoValues = [
     {value: 'hp-0000006', text: 'Autosomal dominant inheritance'},
@@ -26,6 +29,10 @@ var hpoValues = [
 
 
 var CreateGeneDisease = React.createClass({
+    setData: function(items) {
+        console.log(items);
+    },
+
     render: function() {
         return (
             <div className="container">
@@ -43,6 +50,7 @@ var CreateGeneDisease = React.createClass({
                         <button className="btn btn-primary pull-right">Submit</button>
                     </div>
                 </form>
+                <FetchedItems {...this.props} url="/diseases" setData={this.setData} Component={DiseaseRx} />
             </div>
         );
     }
@@ -66,5 +74,12 @@ var LabelOrphanetId = React.createClass({
 var LabelOmimId = React.createClass({
     render: function() {
         return <span>Enter <a href="http://www.omim.org/" target="_blank" title="Online Mendelian Inheritance in Man home page in a new tab">OMIM</a> phenotype ID</span>;
+    }
+});
+
+var DiseaseRx = React.createClass({
+    render: function() {
+        this.props.setData(this.props.items);
+        return null;
     }
 });

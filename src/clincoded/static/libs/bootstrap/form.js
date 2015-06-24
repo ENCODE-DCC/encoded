@@ -2,6 +2,8 @@
 var React = require('react');
 
 
+// Handles most form inputs, like text fields and dropdowns. The different Bootstrap styles of
+// inputs can be handled through the labelClassName, groupClassName, and wrapperClassName properties.
 var Input = module.exports.Input = React.createClass({
     propTypes: {
         type: React.PropTypes.string.isRequired, // Type of input
