@@ -17,6 +17,7 @@ require('./statuslabel');
 require('./search');
 require('./publication');
 require('./curator');
+require('./create_gene_disease');
 require('./testing');
 require('./edit');
 require('./inputs');

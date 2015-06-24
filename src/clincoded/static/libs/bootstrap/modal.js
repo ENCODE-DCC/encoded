@@ -30,14 +30,20 @@ var Modal = module.exports.Modal = React.createClass({
 
     handleClick: function(name, e) {
         this.setState({modal: name, visible: true});
+        document.body.classList.add('modal-open');
     },
 
     handleBtnOk: function() {
-        this.setState({visible: false});
+        this.closeModal();
     },
 
     handleBtnCancel: function() {
+        this.closeModal();
+    },
+
+    closeModal: function() {
         this.setState({visible: false});
+        document.body.classList.remove('modal-open');
     },
 
     render: function() {

@@ -17,7 +17,7 @@ var CuratorPage = module.exports.CuratorPage = React.createClass({
         var context = this.props.context;
 
         var CuratorPageView = globals.curator_page.lookup(context, context.name);
-        var content = <CuratorPageView context={this.props.context} />;
+        var content = <CuratorPageView {...this.props} />;
         return (
             <div>
                 {content}

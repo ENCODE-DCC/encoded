@@ -22,6 +22,7 @@ var portal = {
     portal_title: 'ClinGen',
     navMain: [
         {id: 'dashboard', title: 'Dashboard', url: '/dashboard'},
+        {id: 'create-gene-disease', title: 'Create Gene-Disease', url: '/create-gene-disease'},
         {id: 'curator', title: 'Curation Central', url: '/curation-central'}
     ],
     navUser: [

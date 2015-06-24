@@ -1,3 +1,18 @@
 .form-control {
     @include border-radius(2px);
 }
+
+.form-std {
+    background-color: #f0f0f0;
+    border: 1px solid #c0c0c0;
+    padding: 20px 30px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        padding: 40px 50px 20px;
+    }
+}
+
+.form-create-gene-disease {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
