@@ -6,21 +6,21 @@ var form = require('../libs/bootstrap/form');
 var Input = form.Input;
 
 var hpoValues = [
-    {value: 'hp-0000006', text: 'Autosomal dominant inheritance (HP:0000006)'},
-    {value: 'hp-0012275', text: 'Autosomal dominant inheritance with maternal imprinting (HP:0012275)'},
-    {value: 'hp-0012274', text: 'Autosomal dominant inheritance with paternal imprinting (HP:0012274)'},
-    {value: 'hp-0000007', text: 'Autosomal recessive inheritance (HP:0000007)'},
+    {value: 'hp-0000006', text: 'Autosomal dominant inheritance'},
+    {value: 'hp-0012275', text: 'Autosomal dominant inheritance with maternal imprinting'},
+    {value: 'hp-0012274', text: 'Autosomal dominant inheritance with paternal imprinting'},
+    {value: 'hp-0000007', text: 'Autosomal recessive inheritance'},
     {value: 'autosomal-unknown', text: 'Autosomal unknown'},
     {value: 'codominant', text: 'Codominant'},
-    {value: 'hp-0003743', text: 'Genetic anticipation (HP:0003743)'},
-    {value: 'hp-0001427', text: 'Mitochondrial inheritance (HP:0001427)'},
-    {value: 'hp-0001470', text: 'Sex-limited autosomal dominant (HP:0001470)'},
-    {value: 'hp-0001428', text: 'Somatic mutation (HP:0001428)'},
-    {value: 'hp-0003745', text: 'Sporadic (HP:0003745)'},
-    {value: 'hp-0001423', text: 'X-linked dominant inheritance (HP:0001423)'},
-    {value: 'hp-0001417', text: 'X-linked inheritance (HP:0001417)'},
-    {value: 'hp-0001419', text: 'X-linked recessive inheritance (HP:0001419)'},
-    {value: 'hp-0001450', text: 'Y-linked inheritance (HP:0001450)'},
+    {value: 'hp-0003743', text: 'Genetic anticipation'},
+    {value: 'hp-0001427', text: 'Mitochondrial inheritance'},
+    {value: 'hp-0001470', text: 'Sex-limited autosomal dominant'},
+    {value: 'hp-0001428', text: 'Somatic mutation'},
+    {value: 'hp-0003745', text: 'Sporadic'},
+    {value: 'hp-0001423', text: 'X-linked dominant inheritance'},
+    {value: 'hp-0001417', text: 'X-linked inheritance'},
+    {value: 'hp-0001419', text: 'X-linked recessive inheritance'},
+    {value: 'hp-0001450', text: 'Y-linked inheritance'},
     {value: 'other', text: 'Other'}
 ];
 
