@@ -27,6 +27,8 @@ ORDER = [
     'software_version',
     'image',
     'page',
+    'orphaPhenotype',
+    'curator_page',
 ]
 
 ##############################################################################

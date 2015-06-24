@@ -10,8 +10,8 @@ var Navbar = module.exports.Navbar = React.createClass({
         this.setState({mobileMenuOpen: !this.state.mobileMenuOpen});
     },
 
-	render: function() {
-		return (
+    render: function() {
+        return (
             <nav className="navbar navbar-default navbar-main">
                 <div className="navbar-main-bg"></div>
                 <div className="container">
@@ -29,8 +29,8 @@ var Navbar = module.exports.Navbar = React.createClass({
                     </div>
                 </div>
             </nav>
-		);
-	}
+        );
+    }
 });
 
 

@@ -68,6 +68,9 @@ class EncodedRoot(Root):
         resource = self.connection.get_by_unique_key('page:location', name)
         if resource is not None:
             return resource
+        resource = self.connection.get_by_unique_key('curator_page:location', name)
+        if resource is not None:
+            return resource
         if is_accession(name):
             resource = self.connection.get_by_unique_key('accession', name)
             if resource is not None:

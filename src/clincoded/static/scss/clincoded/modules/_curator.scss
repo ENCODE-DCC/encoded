@@ -3,7 +3,6 @@
 }
 
 .curr-pmid-overview {
-    margin-top: 20px;
 }
 
 .pmid-doi-btns {
@@ -84,7 +83,7 @@
 .pmid-selection-selected {
     float: none;
 
-    @media screen and (min-width: $screen-sm-min) {
+    @media screen and (min-width: $screen-md-min) {
         float: left;
     }
 }
@@ -93,16 +92,33 @@
     display: block;
     margin-top: 2px;
 
-    @media screen and (min-width: $screen-sm-min) {
+    @media screen and (min-width: $screen-md-min) {
         float: right;
         margin-top: 0;
     }
 }
 
+.pmid-selection-add {
+    padding: 5px;
+    border-top: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    border-left: 1px solid #e0e0e0;
+    background-color: $color-neutral-bg;
+
+    button {
+        width: 100%;
+    }
+}
+
 .pmid-selection-list {
-    max-height: 300px;
+    margin-bottom: 50px;
+    max-height: 250px;
     overflow-y: scroll;
     border: 1px solid #e0e0e0;
+
+    @media screen and (min-width: $screen-md-min) {
+        max-height: 500px;
+    }
 }
 
 .pmid-selection-list-item {
@@ -114,8 +130,8 @@
         background-color: $color-hover;
     }
 
-    &:first-child {
-        border-top: none;
+    &.curr-pmid {
+        background-color: $color-selected;
     }
 }
 
@@ -131,5 +147,18 @@
     h5 {
         margin-top: 0;
         font-weight: bold;
+    }
+
+    li {
+        .btn {
+            text-align: left;
+        }
+    }
+
+    .icon {
+        position: relative;
+        top: 1px;
+        margin-right: 5px;
+        font-size: 1.4rem;
     }
 }

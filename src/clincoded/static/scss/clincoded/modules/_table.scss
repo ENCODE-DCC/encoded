@@ -1,0 +1,78 @@
+.table-meta {
+    background-color: $color-trim;
+    color: #fff;
+}
+
+.table-count {
+    line-height: $input-height-base;
+}
+
+.table-summary {
+    padding: 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        padding: 10px 0;
+    }
+}
+
+.table-filter {
+    @media screen and (min-width: $screen-sm-min) {
+        text-align: right;
+
+        label {
+            margin-right: 10px;
+        }
+    }
+
+    input {
+        position: relative;
+    }
+}
+
+.table-filter-input {
+    position: relative;
+}
+
+.clear-input-icon {
+    position: absolute;
+    cursor: pointer;
+    top: 38px;
+    right: 5px;
+    color: #a0a0a0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        top: 10px;
+    }
+}
+
+.col-headers {
+    background-color: lighten($color-trim, 40%);
+
+    th {
+        position: relative;
+        padding-right: 20px !important;
+        cursor: pointer;
+    }
+}
+
+%tcell-template {
+    @extend .icon;
+    position: absolute;
+    right: 5px;
+    bottom: 7px;
+}
+
+.tcell-sort {
+    @extend %tcell-template;
+    @extend .icon-sort;
+}
+
+.tcell-asc {
+    @extend %tcell-template;
+    @extend .icon-sort-asc;
+}
+
+.tcell-desc {
+    @extend %tcell-template;
+    @extend .icon-sort-desc;
+}
