@@ -42,6 +42,7 @@ def includeme(config):
     config.add_route('login', 'login')
     config.add_route('logout', 'logout')
     config.add_route('session', 'session')
+    config.add_route('impersonate-user', 'impersonate-user')
 
 
 class LoginDenied(HTTPForbidden):
@@ -145,4 +146,16 @@ def session(request):
     if namespace != 'mailto':
         return request.session
     request.session['user_properties'] = request.embed('/current-user', as_user=userid)
+    return request.session
+
+
+@view_config(route_name='impersonate-user', request_method='GET',
+             permission='impersonate')
+def impersonate_user(request):
+    """As an admin, impersonate a different user."""
+    request.session.get_csrf_token()
+    userid = request.params['userid']
+    request.session['user_properties'] = request.embed('/current-user', as_user=userid)
+    request.session['disable_persona'] = True
+    request.response.headerlist.extend(remember(request, 'mailto.' + userid))
     return request.session

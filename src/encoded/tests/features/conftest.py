@@ -72,6 +72,13 @@ def admin_user(browser, base_url):
     browser.cookies.delete('REMOTE_USER')
 
 
+@pytest.yield_fixture(scope='session')
+def submitter_user(browser, base_url, admin_user):
+    browser.visit(base_url + '/impersonate-user?userid=massa.porta@varius.mauris')
+    yield
+    browser.visit(base_url + '/logout')
+
+
 @pytest.fixture
 def pytestbdd_strict_gherkin():
     return False

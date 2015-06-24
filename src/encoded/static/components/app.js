@@ -43,6 +43,7 @@ var portal = {
 
 
 var user_actions = [
+    {id: 'profile', title: 'Profile', trigger: 'profile'},
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
@@ -67,6 +68,7 @@ var App = React.createClass({
     mixins: [mixins.Persona, mixins.HistoryAndTriggers],
     triggers: {
         login: 'triggerLogin',
+        profile: 'triggerProfile',
         logout: 'triggerLogout',
     },
 
@@ -113,6 +115,10 @@ var App = React.createClass({
             e.preventDefault();
             this.handleDropdownChange(undefined);
         }
+    },
+
+    triggerProfile: function() {
+        this.navigate(this.state.session.user_properties['@id']);
     },
 
     // Once the app component is mounted, bind keydowns to handleKey function

@@ -185,6 +185,8 @@ var Form = module.exports.Form = React.createClass({
                     schemaErrors.push(error.description);
                 }
             });
+        } else if (data.title) {
+            schemaErrors.push(data.title);
         }
 
         // convert to format expected by react-forms

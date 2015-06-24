@@ -7,7 +7,10 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
-from .base import Item
+from .base import (
+    Item,
+    paths_filtered_by_status,
+)
 from contentbase import (
     Root,
     calculated_property,
@@ -16,6 +19,7 @@ from contentbase import (
 )
 from contentbase.calculated import calculate_properties
 from contentbase.resource_views import item_view_object
+from contentbase.util import expand_path
 
 
 @collection(
@@ -37,6 +41,13 @@ from contentbase.resource_views import item_view_object
 class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
+    rev = {
+        'access_keys': ('access_key', 'user'),
+    }
+    embedded = (
+        'lab',
+        'access_keys',
+    )
 
     @calculated_property(schema={
         "title": "Title",
@@ -49,6 +60,17 @@ class User(Item):
         owner = 'userid.%s' % self.uuid
         return {owner: 'role.owner'}
 
+    @calculated_property(schema={
+        "title": "Access Keys",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "access_key.user",
+        },
+    })
+    def access_keys(self, request, access_keys):
+        return paths_filtered_by_status(request, access_keys)
+
 
 @view_config(context=User, permission='view', request_method='GET', name='page')
 def user_page_view(context, request):
@@ -57,6 +79,8 @@ def user_page_view(context, request):
     else:
         item_path = request.resource_path(context)
         properties = request.embed(item_path, '@@object')
+    for path in context.embedded:
+        expand_path(request, properties, path)
     calculated = calculate_properties(context, request, properties, category='page')
     properties.update(calculated)
     return properties
