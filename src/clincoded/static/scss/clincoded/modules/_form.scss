@@ -16,3 +16,19 @@
     margin-top: 50px;
     margin-bottom: 50px;
 }
+
+.form-error {
+    color: red;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=search] {
+    &.error {
+        border: 1px solid red;
+        background-color: #f0d8d0;
+    }
+}
