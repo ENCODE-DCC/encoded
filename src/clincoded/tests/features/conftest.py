@@ -25,7 +25,7 @@ def app(app_settings):
     from .. import test_indexing
     from contentbase.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
-        create_mapping.run(app)
+        # create_mapping.run(app)
         yield app
 
 
