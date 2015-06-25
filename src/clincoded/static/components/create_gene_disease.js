@@ -33,24 +33,27 @@ var CreateGeneDisease = React.createClass({
         console.log(items);
     },
 
+    submitForm: function() {
+        console.log(this.refs);
+    },
+
     render: function() {
         return (
             <div className="container">
                 <h1>{this.props.context.title}</h1>
-                <form className="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
+                <form onSubmit={this.submitForm} className="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
                     <div className="row">
-                        <Input type="text" id="hgnc-gene" label={<LabelHgncGene />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
-                        <Input type="text" id="orphanet-id" label={<LabelOrphanetId />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
-                        <Input type="text" id="omim-id" label={<LabelOmimId />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
+                        <Input type="text" id="hgnc-gene" ref="hgncgene" label={<LabelHgncGene />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
+                        <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
+                        <Input type="text" id="omim-id" ref="omimid" label={<LabelOmimId />} labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
                         <Input type="select" id="hpo" label="Mode of Inheritance" labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" >
                             {hpoValues.map(function(v, i) {
                                 return <option key={v.value} value={v.value}>{v.text}</option>;
                             })}
                         </Input>
-                        <button className="btn btn-primary pull-right">Submit</button>
+                        <Input type="submit" id="submit" submitHandler={this.submitForm} />
                     </div>
                 </form>
-                <FetchedItems {...this.props} url="/diseases" setData={this.setData} Component={DiseaseRx} />
             </div>
         );
     }

@@ -8,7 +8,6 @@ var Input = module.exports.Input = React.createClass({
     propTypes: {
         type: React.PropTypes.string.isRequired, // Type of input
         id: React.PropTypes.string.isRequired, // Unique ID of input
-        ref: React.PropTypes.string, // To access this input from JS
         label: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.object
@@ -17,6 +16,10 @@ var Input = module.exports.Input = React.createClass({
         groupClassName: React.PropTypes.string, // CSS classes to add to control groups (label/input wrapper div)
         wrapperClassName: React.PropTypes.string, // CSS classes to add to wrapper div around inputs
         value: React.PropTypes.string // Value to pre-fill input with
+    },
+
+    getValue: function() {
+        return React.findDOMNode(this.refs.input).value;
     },
 
     render: function() {
@@ -30,7 +33,7 @@ var Input = module.exports.Input = React.createClass({
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}>{this.props.label}</label> : null}
                         <div className={this.props.wrapperClassName}>
-                            <input className="form-control" type={this.props.type} id={this.props.id} ref={this.props.ref} value={this.props.value} />
+                            <input className="form-control" type={this.props.type} id={this.props.id} ref="input" value={this.props.value} />
                         </div>
                     </div>
                 );
@@ -44,6 +47,17 @@ var Input = module.exports.Input = React.createClass({
                             <select className="form-control">
                                 {this.props.children}
                             </select>
+                        </div>
+                    </div>
+                );
+                break;
+
+            case 'submit':
+                var title = this.props.value ? this.props.value : 'Submit';
+                input = (
+                    <div className={this.props.groupClassName}>
+                        <div className={this.props.wrapperClassName}>
+                            <input className="btn btn-primary" type={this.props.type} value={title} />
                         </div>
                     </div>
                 );
