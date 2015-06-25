@@ -34,8 +34,8 @@ var CreateGeneDisease = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    setData: function(items) {
-        console.log(items);
+    validateForm: function() {
+        return true;
     },
 
     getInitialState: function() {
@@ -43,39 +43,45 @@ var CreateGeneDisease = React.createClass({
     },
 
     submitForm: function(e) {
+        var formdata = {};
+
         e.preventDefault(); // Don't run through HTML submit handler
 
         // Get values from form
-        var hgncgene = this.refs.hgncgene.getValue();
-        var orphanetid = this.refs.orphanetid.getValue();
-        var omimid = this.refs.omimid.getValue();
-        var hpo = this.refs.hpo.getSelectedOption();
-
-        // Verify orphanet ID exists in DB
-        var url = '/diseases/' + orphanetid;
-        var request = this.context.fetch(url, {
-            headers: {'Accept': 'application/json'}
-        });
-        request.then(function(response) {
-            if (!response.ok) { 
-                throw response;
-            }
-            return response.json();
-        })
-        .catch(function() {
-            parseAndLogError.bind(undefined, 'fetchedRequest');
-            this.setState({formErrors: {'orphanet-id': 'Orphanet ID not found'}});
-        }.bind(this))
-        .then(this.receive);
+        formdata.hgncgene = this.refs.hgncgene.getValue();
+        formdata.orphanetid = this.refs.orphanetid.getValue();
+        formdata.omimid = this.refs.omimid.getValue();
+        formdata.hpo = this.refs.hpo.getSelectedOption();
+        if (this.validateForm()) {
+            // Verify orphanet ID exists in DB
+            var url = '/diseases/' + formdata.orphanetid;
+            var request = this.context.fetch(url, {
+                headers: {'Accept': 'application/json'}
+            });
+            request.then(function(response) {
+                if (!response.ok) { 
+                    throw response;
+                }
+                return response.json();
+            })
+            .catch(function() {
+                parseAndLogError.bind(undefined, 'fetchedRequest');
+                this.setState({formErrors: {'orphanet-id': 'Orphanet ID not found'}});
+            }.bind(this))
+            .then(this.receive);
+        }
     },
 
+    // Receive data from JSON request.
     receive: function(data) {
-        var result = {};
-        result['name'] = data;
         console.log('data: %o', data);
-        this.context.navigate('/curation-central');
+        if (data) {
+            this.context.navigate('/curation-central');
+        }
     },
 
+    // Clear error state from an input with 'id' as its Input id.
+    // This is called by Input components when their contents change.
     clearError: function(id) {
         var error = {};
         error[id] = '';
@@ -88,18 +94,21 @@ var CreateGeneDisease = React.createClass({
                 <h1>{this.props.context.title}</h1>
                 <form onSubmit={this.submitForm} className="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
                     <div className="row">
-                        <Input type="text" id="hgnc-gene" ref="hgncgene" label={<LabelHgncGene />} error={this.state.formErrors['hgnc-gene']} clearError={this.clearError.bind(null, 'hgnc-gene')}
-                            labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
-                        <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />} error={this.state.formErrors['orphanet-id']} clearError={this.clearError.bind(null, 'orphanet-id')}
-                            labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
-                        <Input type="text" id="omim-id" ref="omimid" label={<LabelOmimId />} error={this.state.formErrors['omim-id']} clearError={this.clearError.bind(null, 'omim-id')}
-                            labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" />
-                        <Input type="select" id="hpo" ref="hpo" label="Mode of Inheritance" labelClassName="col-sm-4 control-label" wrapperClassName="col-sm-8" groupClassName="form-group" >
+                        <Input type="text" id="hgnc-gene" ref="hgncgene" label={<LabelHgncGene />}
+                            error={this.state.formErrors['hgnc-gene']} clearError={this.clearError.bind(null, 'hgnc-gene')}
+                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
+                        <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />}
+                            error={this.state.formErrors['orphanet-id']} clearError={this.clearError.bind(null, 'orphanet-id')}
+                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
+                        <Input type="select" id="hpo" ref="hpo" label="Mode of Inheritance" labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" >
                             {hpoValues.map(function(v, i) {
                                 return <option key={v.value} value={v.value}>{v.text}</option>;
                             })}
                         </Input>
-                        <Input type="submit" id="submit" />
+                        <Input type="text" id="omim-id" ref="omimid" label={<LabelOmimId />}
+                            error={this.state.formErrors['omim-id']} clearError={this.clearError.bind(null, 'omim-id')}
+                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
+                        <Input type="submit" wrapperClassName="pull-right" id="submit" />
                     </div>
                 </form>
             </div>
@@ -110,6 +119,7 @@ var CreateGeneDisease = React.createClass({
 globals.curator_page.register(CreateGeneDisease, 'curator_page', 'create-gene-disease');
 
 
+// HTML labels for inputs follow.
 var LabelHgncGene = React.createClass({
     render: function() {
         return <span>Enter <a href="http://www.genenames.org" target="_blank" title="HGNC home page in a new tab">HGNC</a> gene symbol</span>;

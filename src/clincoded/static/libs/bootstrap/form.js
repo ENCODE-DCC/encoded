@@ -64,6 +64,7 @@ var Input = module.exports.Input = React.createClass({
                             <select className="form-control" ref="input">
                                 {this.props.children}
                             </select>
+                            <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                         </div>
                     </div>
                 );
