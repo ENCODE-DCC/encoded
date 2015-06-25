@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting the specific calculation of an quality metrics",
-    "id": "/profiles/mad_cc_lrna_qc_metric.json",
+    "id": "/profiles/bismark_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run"],
@@ -12,7 +12,8 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/aliases"}
    ],
     "properties": {
         "schema_version": {
