@@ -3,7 +3,28 @@ import pytest
 
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
-    from ..loadxl import ORDER
+    #from ..loadxl import ORDER
+    ORDER = [
+        'user',
+        'award',
+        'lab',
+        'organism',
+        'source',
+        # 'variant',
+        # 'allele',
+        # 'condition',
+        # 'phenotype',
+        # 'gene',
+        'publication',
+        'document',
+        # 'human_donor',
+        'software',
+        'software_version',
+        'image',
+        'page',
+        'orphaPhenotype',
+        'curator_page',
+    ]
     from pkg_resources import resource_stream
     import codecs
     import json
@@ -109,52 +130,52 @@ def test_json_basic_auth(anonhtmltestapp):
     assert res.content_type == 'application/json'
 
 
-def _test_antibody_approval_creation(testapp):
-    from urllib.parse import urlparse
-    new_antibody = {'foo': 'bar'}
-    res = testapp.post_json('/antibodies/', new_antibody, status=201)
-    assert res.location
-    assert '/profiles/result' in res.json['@type']['profile']
-    assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
-    res = testapp.get(res.location, status=200)
-    assert '/profiles/antibody_approval' in res.json['@type']
-    data = res.json
-    for key in new_antibody:
-        assert data[key] == new_antibody[key]
-    res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['@graph']) == 1
+# def _test_antibody_approval_creation(testapp):
+#     from urllib.parse import urlparse
+#     new_antibody = {'foo': 'bar'}
+#     res = testapp.post_json('/antibodies/', new_antibody, status=201)
+#     assert res.location
+#     assert '/profiles/result' in res.json['@type']['profile']
+#     assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
+#     res = testapp.get(res.location, status=200)
+#     assert '/profiles/antibody_approval' in res.json['@type']
+#     data = res.json
+#     for key in new_antibody:
+#         assert data[key] == new_antibody[key]
+#     res = testapp.get('/antibodies/', status=200)
+#     assert len(res.json['@graph']) == 1
 
 
-def test_load_sample_data(
-        analysis_step,
-        analysis_step_run,
-        antibody_characterization,
-        antibody_lot,
-        award,
-        biosample,
-        biosample_characterization,
-        construct,
-        dataset,
-        document,
-        experiment,
-        file,
-        lab,
-        library,
-        mouse_donor,
-        organism,
-        pipeline,
-        publication,
-        quality_metric,
-        replicate,
-        rnai,
-        software,
-        software_version,
-        source,
-        submitter,
-        target,
-        workflow_run,
-        ):
-    assert True, 'Fixtures have loaded sample data'
+# def test_load_sample_data(
+#         analysis_step,
+#         analysis_step_run,
+#         antibody_characterization,
+#         antibody_lot,
+#         award,
+#         biosample,
+#         biosample_characterization,
+#         construct,
+#         dataset,
+#         document,
+#         experiment,
+#         file,
+#         lab,
+#         library,
+#         mouse_donor,
+#         organism,
+#         pipeline,
+#         publication,
+#         quality_metric,
+#         replicate,
+#         rnai,
+#         software,
+#         software_version,
+#         source,
+#         submitter,
+#         target,
+#         workflow_run,
+#         ):
+#     assert True, 'Fixtures have loaded sample data'
 
 
 @pytest.mark.slow
@@ -166,10 +187,10 @@ def test_load_workbook(workbook, testapp, item_type, length):
     assert len(res.json['@graph']) == length
 
 
-@pytest.mark.slow
-def test_collection_limit(workbook, testapp):
-    res = testapp.get('/antibodies/?limit=2', status=200)
-    assert len(res.json['@graph']) == 2
+# @pytest.mark.slow
+# def test_collection_limit(workbook, testapp):
+#     res = testapp.get('/antibodies/?limit=2', status=200)
+#     assert len(res.json['@graph']) == 2
 
 
 def test_collection_post(testapp):
@@ -261,21 +282,21 @@ def test_post_duplicate_uuid(testapp, mouse):
     testapp.post_json('/organism', item, status=409)
 
 
-def test_user_effective_principals(submitter, lab, anontestapp, execute_counter):
-    email = submitter['email']
-    with execute_counter.expect(1):
-        res = anontestapp.get('/@@testing-user',
-                              extra_environ={'REMOTE_USER': str(email)})
-    assert sorted(res.json['effective_principals']) == [
-        'group.submitter',
-        'lab.%s' % lab['uuid'],
-        'remoteuser.%s' % email,
-        'submits_for.%s' % lab['uuid'],
-        'system.Authenticated',
-        'system.Everyone',
-        'userid.%s' % submitter['uuid'],
-        'viewing_group.ENCODE',
-    ]
+# def test_user_effective_principals(submitter, lab, anontestapp, execute_counter):
+#     email = submitter['email']
+#     with execute_counter.expect(1):
+#         res = anontestapp.get('/@@testing-user',
+#                               extra_environ={'REMOTE_USER': str(email)})
+#     assert sorted(res.json['effective_principals']) == [
+#         'group.submitter',
+#         'lab.%s' % lab['uuid'],
+#         'remoteuser.%s' % email,
+#         'submits_for.%s' % lab['uuid'],
+#         'system.Authenticated',
+#         'system.Everyone',
+#         'userid.%s' % submitter['uuid'],
+#         'viewing_group.ENCODE',
+#     ]
 
 
 def test_page_toplevel(workbook, anontestapp):
@@ -309,11 +330,11 @@ def test_page_collection_default(workbook, anontestapp):
     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
-def test_antibody_redirect(testapp, antibody_approval):
-    res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
-    assert 'antibody' in res.json
-    res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
-    assert res.json['@type'] == ['antibody_lot', 'item']
+# def test_antibody_redirect(testapp, antibody_approval):
+#     res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
+#     assert 'antibody' in res.json
+#     res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
+#     assert res.json['@type'] == ['antibody_lot', 'item']
 
 
 def test_jsonld_context(testapp):

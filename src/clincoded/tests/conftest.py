@@ -855,21 +855,21 @@ def publication(testapp, lab, award):
     return testapp.post_json('/publication', item).json['@graph'][0]
 
 
-@pytest.fixture
-def pipeline(testapp):
-    item = {
-        'title': "Test pipeline",
-    }
-    return testapp.post_json('/pipeline', item).json['@graph'][0]
+# @pytest.fixture
+# def pipeline(testapp):
+#     item = {
+#         'title': "Test pipeline",
+#     }
+#     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-@pytest.fixture
-def workflow_run(testapp, pipeline):
-    item = {
-        'pipeline': pipeline['@id'],
-        'status': 'finished',
-    }
-    return testapp.post_json('/workflow_run', item).json['@graph'][0]
+# @pytest.fixture
+# def workflow_run(testapp, pipeline):
+#     item = {
+#         'pipeline': pipeline['@id'],
+#         'status': 'finished',
+#     }
+#     return testapp.post_json('/workflow_run', item).json['@graph'][0]
 
 
 @pytest.fixture
