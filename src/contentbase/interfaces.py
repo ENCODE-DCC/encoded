@@ -1,4 +1,5 @@
 # Tool names
+AUDITOR = 'auditor'
 BLOBS = 'blobs'
 CALCULATED_PROPERTIES = 'calculated_properties'
 COLLECTIONS = 'collections'

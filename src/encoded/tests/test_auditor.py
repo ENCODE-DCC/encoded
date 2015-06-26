@@ -82,13 +82,14 @@ def test_audit_conditions(auditor_conditions, dummy_request):
 
 
 def test_declarative_config(dummy_request):
+    from contentbase.interfaces import AUDITOR
     from pyramid.config import Configurator
     config = Configurator()
     config.include('contentbase.auditor')
     config.include('.testing_auditor')
     config.commit()
 
-    auditor = config.registry['auditor']
+    auditor = config.registry[AUDITOR]
     value = {'condition1': True}
     dummy_request._embed['/foo/@@embedded'] = value
     error, = auditor.audit(request=dummy_request, path='/foo/', types='testing_auditor')

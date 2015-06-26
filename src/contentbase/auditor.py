@@ -7,12 +7,13 @@ We also need to perform higher order checking between linked objects.
 from past.builtins import basestring
 import logging
 import venusian
+from .interfaces import AUDITOR
 
 logger = logging.getLogger(__name__)
 
 
 def includeme(config):
-    config.registry['auditor'] = Auditor()
+    config.registry[AUDITOR] = Auditor()
     config.add_directive('add_audit_checker', add_audit_checker)
     config.add_request_method(audit, 'audit')
 
@@ -140,7 +141,7 @@ class Auditor(object):
 
 # Imperative configuration
 def add_audit_checker(config, checker, item_type, condition=None, frame='embedded'):
-    auditor = config.registry['auditor']
+    auditor = config.registry[AUDITOR]
     config.action(None, auditor.add_audit_checker,
                   (checker, item_type, condition, frame))
 
@@ -155,14 +156,14 @@ def audit_checker(item_type, condition=None, frame='embedded'):
             scanner.config.add_audit_checker(
                 checker, item_type, condition, frame)
 
-        venusian.attach(checker, callback, category='auditor')
+        venusian.attach(checker, callback, category=AUDITOR)
         return checker
 
     return decorate
 
 
 def audit(request, types=None, path=None, context=None, **kw):
-    auditor = request.registry['auditor']
+    auditor = request.registry[AUDITOR]
     if path is None:
         path = request.path
     if context is None:
