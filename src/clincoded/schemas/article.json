@@ -46,7 +46,8 @@
         "abstract": {
             "title": "Abstract",
             "descripton": "Abstract of article",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "url": {
             "title": "URL",
