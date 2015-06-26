@@ -52,7 +52,10 @@ var CreateGeneDisease = React.createClass({
             this.setFormErrors('orphanet-id', 'Required');
             valid = false;
         } else {
-            valid = this.formdata.orphanetid.match(/^ORPHA[0-9]{1,6}$/);
+            valid = this.formdata.orphanetid.match(/^ORPHA[0-9]{1,6}$/i);
+            if (!valid) {
+                this.setFormErrors('orphanet-id', 'Use the form ORPHAxxxx');
+            }
         }
         return valid;
     },
@@ -69,9 +72,10 @@ var CreateGeneDisease = React.createClass({
         this.formdata.omimid = this.refs.omimid.getValue();
         this.formdata.hpo = this.refs.hpo.getSelectedOption();
         if (this.validateForm()) {
-            var orphaId = this.formdata.orphanetid.match(/^ORPHA([0-9]{1,6})$/);
+            var orphaId = this.formdata.orphanetid.match(/^ORPHA([0-9]{1,6})$/i)[1];
+
             // Verify orphanet ID exists in DB
-            var url = '/diseases/' + this.formdata.orphanetid;
+            var url = '/diseases/' + orphaId;
             var request = this.context.fetch(url, {
                 headers: {'Accept': 'application/json'}
             });
