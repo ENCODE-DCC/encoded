@@ -12,7 +12,6 @@
             "JTK4",
             "CD333"
         ],
-        "nameSynonyms": [],
         "previousSymbols": [
             "ACH"
         ],
@@ -41,8 +40,6 @@
             "RAD51L2",
             "FANCO"
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
         "previousNames": [
             "RAD51 (S. cerevisiae) homolog C",
             "RAD51 homolog C (S. cerevisiae)"
@@ -109,7 +106,6 @@
         "nameSynonyms": [
             "MADH3"
         ],
-        "previousSymbols": [],
         "previousNames": [
             "MAD, mothers against decapentaplegic homolog 3 (Drosophila)",
             "SMAD, mothers against DPP homolog 3 (Drosophila)"
@@ -137,8 +133,6 @@
             "AT2",
             "MRX88"
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
         "previousNames": [
             "angiotensin receptor 2"
         ],
@@ -160,9 +154,6 @@
         "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/916",
         "name": "CD3e molecule, epsilon (CD3-TCR complex)",
         "hgncStatus": "Approved",
-        "synonyms": [],
-        "nameSynonyms": [],
-        "previousSymbols": [],
         "previousNames": [
             "CD3e antigen, epsilon polypeptide (TiT3 complex)"
         ],
@@ -185,7 +176,6 @@
         "synonyms": [
             "FAAP250"
         ],
-        "nameSynonyms": [],
         "previousSymbols": [
             "KIAA1596"
         ],
@@ -215,15 +205,11 @@
             "FLJ11005",
             "PNG1"
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
-        "previousNames": [],
         "chromosome": "3p23",
         "locusType": "gene with protein product",
         "omimids": [
             "610661"
         ],
-        "pmids": [],
         "uuid": "b728ee7a-1c34-11e5-9874-60f81dc5b05a"
     },
     {
@@ -245,8 +231,6 @@
             "protein phosphatase 1, regulatory subunit 53",
             "Fanconi anemia, complementation group S"
         ],
-        "previousSymbols": [],
-        "previousNames": [],
         "chromosome": "17q21.31",
         "locusType": "gene with protein product",
         "omimids": [
@@ -299,8 +283,6 @@
         "synonyms": [
 
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
         "previousNames": [
             "MDM2 (mouse double minute 2)-binding protein, 104kD",
             "Mdm2, transformed 3T3 cell double minute 2, p53 binding protein (mouse) binding protein, 104kDa"
@@ -332,7 +314,6 @@
             "wild-type p53-induced phosphatase 1",
             "protein phosphatase 2C, delta isoform"
         ],
-        "previousSymbols": [],
         "previousNames": [
             "protein phosphatase 1D magnesium-dependent, delta isoform"
         ],
@@ -363,8 +344,6 @@
             "parkin-like cytoplasmic p53 binding protein",
             "p53-associated parkin-like cytoplasmic protein"
         ],
-        "previousSymbols": [],
-        "previousNames": [],
         "chromosome": "6p21.1",
         "locusType": "gene with protein product",
         "omimids": [
@@ -397,7 +376,6 @@
             "NBP",
             "p53CP"
         ],
-        "nameSynonyms": [],
         "previousSymbols": [
             "TP73L",
             "TP53L",
@@ -433,7 +411,6 @@
             "MGC16925",
             "DKFZp434D229"
         ],
-        "nameSynonyms": [],
         "previousSymbols": [
             "LRDD",
             "PIDD"
@@ -464,8 +441,6 @@
             "MDMX",
             "HDMX"
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
         "previousNames": [
             "mouse double minute 4, human homolog of; p53-binding protein",
             "Mdm4, transformed 3T3 cell double minute 4, p53 binding protein (mouse)",
@@ -527,7 +502,6 @@
             "MU",
             "H-B"
         ],
-        "nameSynonyms": [],
         "previousSymbols": [
             "GST1"
         ],
@@ -539,7 +513,6 @@
         "omimids": [
             "138350"
         ],
-        "pmids": [],
         "uuid": "65175499-1c34-11e5-a9ab-60f81dc5b05a"
     },
     {
@@ -553,9 +526,6 @@
         "synonyms": [
             "FLJ37870"
         ],
-        "nameSynonyms": [],
-        "previousSymbols": [],
-        "previousNames": [],
         "chromosome": "5q14.1",
         "locusType": "gene with protein product",
         "omimids": [
@@ -581,8 +551,6 @@
         "nameSynonyms": [
             "Li-Fraumeni syndrome"
         ],
-        "previousSymbols": [],
-        "previousNames": [],
         "chromosome": "17p13.1",
         "locusType": "gene with protein product",
         "omimids": [

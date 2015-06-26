@@ -54,6 +54,7 @@
             "title": "OMIM ID",
             "description": "OMIM identifier to Orphanet disease",
             "type": "array",
+            "default": [],
             "default": "",
             "pattern": "^[0-9]{6}$"
         },

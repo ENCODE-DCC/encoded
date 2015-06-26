@@ -26,8 +26,7 @@
         "title": {
             "title": "Title",
             "description": "Title of atricle",
-            "type": "string",
-            "uniqueKey": "article:pmid"
+            "type": "string"
         },
         "journal": {
             "title": "Journal",

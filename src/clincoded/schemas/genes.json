@@ -56,7 +56,8 @@
             "title": "Synonyms",
             "description": "List of Synonyms of the gene",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "Synonym",
                 "description": "Synonym",
                 "type": "string"
@@ -66,7 +67,8 @@
             "title": "Name Synonyms",
             "description": "List of Name Synonyms of the gene",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "Name Synonym",
                 "description": "Name Synonym of the gene",
                 "type": "string"
@@ -76,7 +78,8 @@
             "title": "Previous Symbol",
             "description": "List of previous symbols of the gene",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "Previous Symbol",
                 "description": "Previous symbol of the gene",
                 "type": "string"
@@ -86,7 +89,8 @@
             "title": "Previous Name(s)",
             "description": "List of previous names of the gene",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "Previous Name",
                 "description": "Previous name of the gene",
                 "type": "string"
@@ -106,7 +110,8 @@
             "title": "OMIM IDs",
             "description": "List of OMIM ids of the genen",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "OMIM ID",
                 "description": "OMIM ID of the gene",
                 "type": "string"
@@ -116,7 +121,8 @@
             "title": "PMID IDs",
             "description": "List of PMIDs",
             "type": "array",
-            "itmes": {
+            "default": [],
+            "items": {
                 "title": "PMID",
                 "description": "PMID of article in which the gene is selected",
                 "type": "string"

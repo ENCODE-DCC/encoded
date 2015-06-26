@@ -4,7 +4,6 @@
         "term": "Achondroplasia",
         "orphaNumber": "15",
         "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=15",
-        "synonyms": [],
         "active": true,
         "omimids": [
             "100800"
@@ -177,7 +176,6 @@
         "term": "Pleuropulmonary blastoma",
         "orphaNumber": "64742",
         "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=64742",
-        "synonyms": [],
         "active": true,
         "omimids": [
             "601200"
