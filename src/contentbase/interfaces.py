@@ -1,7 +1,8 @@
 # Tool names
 BLOBS = 'blobs'
-CONNECTION = 'connection'
+CALCULATED_PROPERTIES = 'calculated_properties'
 COLLECTIONS = 'collections'
+CONNECTION = 'connection'
 DBSESSION = 'dbsession'
 STORAGE = 'storage'
 ROOT = 'root'

@@ -3,10 +3,11 @@ import venusian
 from pyramid.decorator import reify
 from pyramid.traversal import find_root
 from types import MethodType
+from .interfaces import CALCULATED_PROPERTIES
 
 
 def includeme(config):
-    config.registry['calculated_properties'] = CalculatedProperties()
+    config.registry[CALCULATED_PROPERTIES] = CalculatedProperties()
     config.add_directive('add_calculated_property', add_calculated_property)
 
 
@@ -138,7 +139,7 @@ class CalculatedProperty(object):
 # Imperative configuration
 def add_calculated_property(config, fn, name, context, condition=None, schema=None,
                             attr=None, define=False, category='object'):
-    calculated_properties = config.registry['calculated_properties']
+    calculated_properties = config.registry[CALCULATED_PROPERTIES]
     config.action(
         ('calculated_property', context, category, name),
         calculated_properties.register_prop,
@@ -179,7 +180,7 @@ def calculated_property(**settings):
 
 
 def calculate_properties(context, request, ns=None, category='object'):
-    calculated_properties = request.registry['calculated_properties']
+    calculated_properties = request.registry[CALCULATED_PROPERTIES]
     props = calculated_properties.props_for(context, category)
     defined = {name: prop for name, prop in props.items() if prop.define}
     if isinstance(context, type):

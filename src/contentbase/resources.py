@@ -52,8 +52,9 @@ from .embedding import (
 )
 from .interfaces import (
     BLOBS,
-    CONNECTION,
+    CALCULATED_PROPERTIES,
     COLLECTIONS,
+    CONNECTION,
     DBSESSION,
     STORAGE,
     ROOT,
@@ -258,7 +259,7 @@ class AbstractTypeInfo(object):
 class TypeInfo(AbstractTypeInfo):
     def __init__(self, registry, item_type, factory):
         super(TypeInfo, self).__init__(registry, item_type)
-        self.calculated_properties = registry['calculated_properties']
+        self.calculated_properties = registry[CALCULATED_PROPERTIES]
         self.factory = factory
         self.base_types = factory.base_types
         self.embedded = factory.embedded
