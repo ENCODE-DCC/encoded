@@ -9,7 +9,10 @@ To load the initial data:
 from past.builtins import basestring
 from pyramid.paster import get_app
 from elasticsearch import RequestError
-from contentbase import TYPES
+from contentbase import (
+    COLLECTIONS,
+    TYPES,
+)
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -459,7 +462,7 @@ def run(app, collections=None, dry_run=False):
                 es.indices.create(index=index, body=index_settings())
 
     if not collections:
-        collections = ['meta'] + list(registry['collections'].by_item_type.keys())
+        collections = ['meta'] + list(registry[COLLECTIONS].by_item_type.keys())
 
     for collection_name in collections:
         if collection_name == 'meta':
@@ -467,7 +470,7 @@ def run(app, collections=None, dry_run=False):
             mapping = META_MAPPING
         else:
             doc_type = collection_name
-            collection = registry['collections'].by_item_type[collection_name]
+            collection = registry[COLLECTIONS].by_item_type[collection_name]
             mapping = type_mapping(registry[TYPES], collection.item_type)
 
         if mapping is None:
