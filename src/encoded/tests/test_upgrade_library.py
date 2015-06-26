@@ -42,38 +42,33 @@ def library_3(library):
     return item
 
 
-def test_library_upgrade(app, library_1):
-    migrator = app.registry['migrator']
+def test_library_upgrade(migrator, library_1):
     value = migrator.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'released'
 
 
-def test_library_upgrade_status_encode3(app, library_1):
-    migrator = app.registry['migrator']
+def test_library_upgrade_status_encode3(migrator, library_1):
     library_1['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
     value = migrator.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
 
 
-def test_library_upgrade_status_deleted(app, library_1):
-    migrator = app.registry['migrator']
+def test_library_upgrade_status_deleted(migrator, library_1):
     library_1['status'] = 'DELETED'
     value = migrator.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
 
 
-def test_library_upgrade_paired_ended(app, library_2):
-    migrator = app.registry['migrator']
+def test_library_upgrade_paired_ended(migrator, library_2):
     value = migrator.upgrade('library', library_2, target_version='4')
     assert value['schema_version'] == '4'
     assert 'paired_ended' not in value
 
 
-def test_library_fragmentation(app, library_3):
-    migrator = app.registry['migrator']
+def test_library_fragmentation(migrator, library_3):
     value = migrator.upgrade('library', library_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['fragmentation_method'] == 'shearing (Covaris generic)'

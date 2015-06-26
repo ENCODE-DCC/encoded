@@ -20,8 +20,7 @@ def workflow_run_1(workflow_run):
     return item
 
 
-def test_workflow_run_upgrade_1(app, workflow_run_1):
-    migrator = app.registry['migrator']
+def test_workflow_run_upgrade_1(migrator, workflow_run_1):
     value = migrator.upgrade('workflow_run', workflow_run_1, current_version=workflow_run_1['schema_version'], target_version='2')
     assert value['schema_version'] == '2'
     assert value['dx_analysis_id'] == 'analysis-fake'

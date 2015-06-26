@@ -74,44 +74,38 @@ def mouse_donor_3(root, mouse_donor, publication):
     return properties
 
 
-def test_human_donor_upgrade(app, human_donor_1):
-    migrator = app.registry['migrator']
+def test_human_donor_upgrade(migrator, human_donor_1):
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'in progress'
 
 
-def test_mouse_donor_upgrade_status_encode2(app, mouse_donor_1):
-    migrator = app.registry['migrator']
+def test_mouse_donor_upgrade_status_encode2(migrator, mouse_donor_1):
     value = migrator.upgrade('mouse_donor', mouse_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'released'
 
 
-def test_donor_upgrade_status_deleted(app, human_donor_1):
-    migrator = app.registry['migrator']
+def test_donor_upgrade_status_deleted(migrator, human_donor_1):
     human_donor_1['status'] = 'DELETED'
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
 
 
-def test_model_organism_donor_upgrade_(app, mouse_donor_2):
-    migrator = app.registry['migrator']
+def test_model_organism_donor_upgrade_(migrator, mouse_donor_2):
     value = migrator.upgrade('mouse_donor', mouse_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert 'sex' not in value
 
 
-def test_human_donor_age(app, human_donor_2):
-    migrator = app.registry['migrator']
+def test_human_donor_age(migrator, human_donor_2):
     value = migrator.upgrade('human_donor', human_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['age'] == '11'
 
 
-def test_mouse_donor_upgrade_references(root, registry, mouse_donor, mouse_donor_3, publication, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_mouse_donor_upgrade_references(root, migrator, mouse_donor, mouse_donor_3, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(mouse_donor['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('mouse_donor', mouse_donor_3, target_version='4', context=context)

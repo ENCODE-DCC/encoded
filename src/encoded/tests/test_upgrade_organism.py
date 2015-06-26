@@ -19,8 +19,7 @@ def organism_1(organism):
     return item
 
 
-def test_organism_upgrade(app, organism_1):
-    migrator = app.registry['migrator']
+def test_organism_upgrade(migrator, organism_1):
     value = migrator.upgrade('organism', organism_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'

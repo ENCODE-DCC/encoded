@@ -69,15 +69,13 @@ def file_5(file_base):
     return item
 
 
-def test_file_upgrade(registry, file_1):
-    migrator = registry['migrator']
+def test_file_upgrade(migrator, file_1):
     value = migrator.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade2(root, migrator, file_2, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('file', file_2, target_version='3', context=context)
@@ -85,8 +83,7 @@ def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request
     assert value['status'] == 'in progress'
 
 
-def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade3(root, migrator, file_3, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('file', file_3, target_version='4', context=context)
@@ -96,8 +93,7 @@ def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request
     assert 'download_path' not in value
 
 
-def test_file_upgrade4(root, registry, file_4, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade4(root, migrator, file_4, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
     content_md5sum = '0123456789abcdef0123456789abcdef'

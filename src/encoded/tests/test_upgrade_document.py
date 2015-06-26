@@ -39,38 +39,33 @@ def document_3(root, document, publication):
     return properties
 
 
-def test_document_0_upgrade(registry, document_0, publication):
-    migrator = registry['migrator']
+def test_document_0_upgrade(migrator, document_0, publication):
     value = migrator.upgrade('document', document_0, target_version='2')
     assert value['schema_version'] == '2'
     assert value['references'] == [publication['identifiers'][0]]
 
 
-def test_document_upgrade_status(registry, document_1):
-    migrator = registry['migrator']
+def test_document_upgrade_status(migrator, document_1):
     value = migrator.upgrade('document', document_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
 
 
-def test_document_upgrade_status_encode2(registry, document_1):
-    migrator = registry['migrator']
+def test_document_upgrade_status_encode2(migrator, document_1):
     document_1['award'] = '366388ac-685d-415c-b0bb-834ffafdf094'
     value = migrator.upgrade('document', document_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'released'
 
 
-def test_document_upgrade_status_deleted(registry, document_1):
-    migrator = registry['migrator']
+def test_document_upgrade_status_deleted(migrator, document_1):
     document_1['status'] = 'DELETED'
     value = migrator.upgrade('document', document_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
 
 
-def test_document_upgrade_references(root, registry, document, document_3, publication, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_document_upgrade_references(root, migrator, document, document_3, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(document['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('document', document_3, target_version='4', context=context)

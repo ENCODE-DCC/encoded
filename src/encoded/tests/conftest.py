@@ -161,6 +161,11 @@ def elasticsearch(registry):
 
 
 @fixture
+def migrator(registry):
+    return registry['migrator']
+
+
+@fixture
 def root(app):
     return app.root_factory(app)
 

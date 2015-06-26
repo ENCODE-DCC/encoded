@@ -151,87 +151,76 @@ def biosample_characterization_4(root, biosample_characterization, publication):
     return properties
 
 
-def test_antibody_characterization_upgrade(app, antibody_characterization_1):
-    migrator = app.registry['migrator']
+def test_antibody_characterization_upgrade(migrator, antibody_characterization_1):
     value = migrator.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'PENDING DCC REVIEW'
     assert value['characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
 
 
-def test_biosample_characterization_upgrade(app, biosample_characterization_1):
-    migrator = app.registry['migrator']
+def test_biosample_characterization_upgrade(migrator, biosample_characterization_1):
     value = migrator.upgrade('biosample_characterization', biosample_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'NOT REVIEWED'
     assert value['characterization_method'] == 'FACs analysis'
 
 
-def test_construct_characterization_upgrade(app, construct_characterization_1):
-    migrator = app.registry['migrator']
+def test_construct_characterization_upgrade(migrator, construct_characterization_1):
     value = migrator.upgrade('construct_characterization', construct_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'NOT SUBMITTED FOR REVIEW BY LAB'
     assert value['characterization_method'] == 'immunoblot'
 
 
-def test_rnai_characterization_upgrade(app, rnai_characterization_1):
-    migrator = app.registry['migrator']
+def test_rnai_characterization_upgrade(migrator, rnai_characterization_1):
     value = migrator.upgrade('rnai_characterization', rnai_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'IN PROGRESS'
     assert value['characterization_method'] == 'knockdown or knockout'
 
 
-def test_antibody_characterization_upgrade_status(app, antibody_characterization_2):
-    migrator = app.registry['migrator']
+def test_antibody_characterization_upgrade_status(migrator, antibody_characterization_2):
     value = migrator.upgrade('antibody_characterization', antibody_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'compliant'
 
 
-def test_biosample_characterization_upgrade_status_encode2(app, biosample_characterization_2):
-    migrator = app.registry['migrator']
+def test_biosample_characterization_upgrade_status_encode2(migrator, biosample_characterization_2):
     value = migrator.upgrade('biosample_characterization', biosample_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'released'
 
 
-def test_rnai_characterization_upgrade_status_encode3(app, rnai_characterization_2):
-    migrator = app.registry['migrator']
+def test_rnai_characterization_upgrade_status_encode3(migrator, rnai_characterization_2):
     value = migrator.upgrade('rnai_characterization', rnai_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'in progress'
 
 
-def test_construct_characterization_upgrade_status_deleted(app, construct_characterization_2):
-    migrator = app.registry['migrator']
+def test_construct_characterization_upgrade_status_deleted(migrator, construct_characterization_2):
     value = migrator.upgrade('construct_characterization', construct_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'deleted'
 
 
-def test_antibody_characterization_upgrade_primary(app, antibody_characterization_3):
-    migrator = app.registry['migrator']
+def test_antibody_characterization_upgrade_primary(migrator, antibody_characterization_3):
     value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
     assert value['schema_version'] == '5'
     assert value['primary_characterization_method'] == 'immunoblot'
     assert 'characterization_method' not in value
 
 
-def test_antibody_characterization_upgrade_secondary(app, antibody_characterization_3):
+def test_antibody_characterization_upgrade_secondary(migrator, antibody_characterization_3):
     antibody_characterization_3['characterization_method'] = 'immunoprecipitation followed by mass spectrometry'
-    migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
     assert value['schema_version'] == '5'
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
     assert 'characterization_method' not in value
 
 
-def test_antibody_characterization_upgrade_compliant_status(app, antibody_characterization_3):
+def test_antibody_characterization_upgrade_compliant_status(migrator, antibody_characterization_3):
     antibody_characterization_3['characterization_method'] = 'immunoprecipitation followed by mass spectrometry'
     antibody_characterization_3['status'] = 'compliant'
-    migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
     assert value['schema_version'] == '5'
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
@@ -240,10 +229,9 @@ def test_antibody_characterization_upgrade_compliant_status(app, antibody_charac
     assert value['documents'] == ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
 
 
-def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_characterization_3):
+def test_antibody_characterization_upgrade_not_compliant_status(migrator, antibody_characterization_3):
     antibody_characterization_3['characterization_method'] = 'immunoprecipitation followed by mass spectrometry'
     antibody_characterization_3['status'] = 'not reviewed'
-    migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
     assert value['schema_version'] == '5'
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
@@ -251,8 +239,7 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
 
 
-def test_biosample_characterization_upgrade_references(root, registry, biosample_characterization, biosample_characterization_4, publication, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_biosample_characterization_upgrade_references(root, migrator, biosample_characterization, biosample_characterization_4, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample_characterization['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('biosample_characterization', biosample_characterization_4, target_version='5', context=context)

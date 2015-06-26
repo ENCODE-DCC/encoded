@@ -73,8 +73,7 @@ def dataset_5(root, dataset, publication):
     return properties
 
 
-def test_experiment_upgrade(root, registry, experiment, experiment_1, file_dataset, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade(root, migrator, experiment, experiment_1, file_dataset, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('experiment', experiment_1, target_version='2', context=context)
@@ -83,8 +82,7 @@ def test_experiment_upgrade(root, registry, experiment, experiment_1, file_datas
     assert value['related_files'] == [file_dataset['uuid']]
 
 
-def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade_dbxrefs(root, migrator, experiment, experiment_2, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('experiment', experiment_2, target_version='3', context=context)
@@ -94,8 +92,7 @@ def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, th
     assert value['dbxrefs'] == ['UCSC-ENCODE-hg19:wgEncodeEH002945', 'GEO:GSM99494']
 
 
-def test_experiment_upgrade_dbxrefs_mouse(root, registry, experiment, experiment_2, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade_dbxrefs_mouse(root, migrator, experiment, experiment_2, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     experiment_2['encode2_dbxrefs'] = ['wgEncodeEM008391']
@@ -106,8 +103,7 @@ def test_experiment_upgrade_dbxrefs_mouse(root, registry, experiment, experiment
     assert value['dbxrefs'] == ['UCSC-ENCODE-mm9:wgEncodeEM008391', 'GEO:GSM99494']
 
 
-def test_dataset_upgrade_dbxrefs(root, registry, dataset, dataset_2, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_dbxrefs(root, migrator, dataset, dataset_2, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
@@ -117,8 +113,7 @@ def test_dataset_upgrade_dbxrefs(root, registry, dataset, dataset_2, threadlocal
     assert 'geo_dbxrefs' not in value
 
 
-def test_dataset_upgrade_dbxrefs_human(root, registry, dataset, dataset_2, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_dbxrefs_human(root, migrator, dataset, dataset_2, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     dataset_2['aliases'] = [ 'ucsc_encode_db:hg19-wgEncodeSydhTfbs']
@@ -129,8 +124,7 @@ def test_dataset_upgrade_dbxrefs_human(root, registry, dataset, dataset_2, threa
     assert 'geo_dbxrefs' not in value
 
 
-def test_dataset_upgrade_dbxrefs_alias(root, registry, dataset, dataset_2, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_dbxrefs_alias(root, migrator, dataset, dataset_2, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     dataset_2['aliases'] = ['ucsc_encode_db:wgEncodeEH002945']
@@ -141,8 +135,7 @@ def test_dataset_upgrade_dbxrefs_alias(root, registry, dataset, dataset_2, threa
     assert 'geo_dbxrefs' not in value
 
 
-def test_experiment_upgrade_status(root, registry, experiment, experiment_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade_status(root, migrator, experiment, experiment_3, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('experiment', experiment_3, target_version='4', context=context)
@@ -150,8 +143,7 @@ def test_experiment_upgrade_status(root, registry, experiment, experiment_3, thr
     assert value['status'] == 'deleted'
 
 
-def test_dataset_upgrade_status(root, registry, dataset, dataset_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_status(root, migrator, dataset, dataset_3, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_3, target_version='4', context=context)
@@ -159,8 +151,7 @@ def test_dataset_upgrade_status(root, registry, dataset, dataset_3, threadlocals
     assert value['status'] == 'released'
 
 
-def test_experiment_upgrade_status_encode3(root, registry, experiment, experiment_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade_status_encode3(root, migrator, experiment, experiment_3, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     experiment_3['award'] = '529e3e74-3caa-4842-ae64-18c8720e610e'
@@ -170,8 +161,7 @@ def test_experiment_upgrade_status_encode3(root, registry, experiment, experimen
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_no_status_encode2(root, registry, dataset, dataset_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_no_status_encode2(root, migrator, dataset, dataset_3, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     del dataset_3['status']
@@ -180,8 +170,7 @@ def test_dataset_upgrade_no_status_encode2(root, registry, dataset, dataset_3, t
     assert value['status'] == 'released'
 
 
-def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experiment_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_experiment_upgrade_no_status_encode3(root, migrator, experiment, experiment_3, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     experiment_3['award'] = '529e3e74-3caa-4842-ae64-18c8720e610e'
@@ -191,8 +180,7 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_references(root, registry, dataset, dataset_5, publication, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_dataset_upgrade_references(root, migrator, dataset, dataset_5, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_5, target_version='6', context=context)

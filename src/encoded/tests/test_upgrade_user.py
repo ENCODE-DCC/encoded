@@ -20,8 +20,7 @@ def user_1(user):
     return item
 
 
-def test_user_upgrade(app, user_1):
-    migrator = app.registry['migrator']
+def test_user_upgrade(migrator, user_1):
     value = migrator.upgrade('user', user_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'

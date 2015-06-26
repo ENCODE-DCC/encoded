@@ -18,8 +18,7 @@ def publication_1(publication):
     return item
 
 
-def test_publication_upgrade(app, publication_1):
-    migrator = app.registry['migrator']
+def test_publication_upgrade(migrator, publication_1):
     value = migrator.upgrade('publication', publication_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'references' not in value

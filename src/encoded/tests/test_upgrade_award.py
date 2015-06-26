@@ -18,23 +18,20 @@ def award_1(award):
     return item
 
 
-def test_award_upgrade(app, award_1):
-    migrator = app.registry['migrator']
+def test_award_upgrade(migrator, award_1):
     value = migrator.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'disabled'
 
 
-def test_award_upgrade_encode3(app, award_1):
-    migrator = app.registry['migrator']
+def test_award_upgrade_encode3(migrator, award_1):
     award_1['rfa'] = 'ENCODE3'
     value = migrator.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_award_upgrade_url(app, award_1):
-    migrator = app.registry['migrator']
+def test_award_upgrade_url(migrator, award_1):
     award_1['url'] = ''
     value = migrator.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'

@@ -31,8 +31,7 @@ def treatment_2(treatment):
     return item
 
 
-def test_treatment_upgrade(app, treatment_1):
-    migrator = app.registry['migrator']
+def test_treatment_upgrade(migrator, treatment_1):
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
@@ -40,9 +39,8 @@ def test_treatment_upgrade(app, treatment_1):
     assert 'award' not in value
 
 
-def test_treatment_upgrade_encode_dbxref(app, treatment_1):
+def test_treatment_upgrade_encode_dbxref(migrator, treatment_1):
     treatment_1['encode2_dbxrefs'] = ["encode:hESC to endoderm differentiation treatment"]
-    migrator = app.registry['migrator']
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
@@ -50,8 +48,7 @@ def test_treatment_upgrade_encode_dbxref(app, treatment_1):
     assert 'award' not in value
 
 
-def test_treatment_upgrade_status(app, treatment_2):
-    migrator = app.registry['migrator']
+def test_treatment_upgrade_status(migrator, treatment_2):
     value = migrator.upgrade('treatment', treatment_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'

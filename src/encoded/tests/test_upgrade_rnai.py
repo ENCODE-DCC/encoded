@@ -22,23 +22,20 @@ def rnai_1(rnai):
     return item
 
 
-def test_rnai_upgrade(app, rnai_1):
-    migrator = app.registry['migrator']
+def test_rnai_upgrade(migrator, rnai_1):
     value = migrator.upgrade('rnai', rnai_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'in progress'
 
 
-def test_rnai_upgrade_status_encode2(app, rnai_1):
-    migrator = app.registry['migrator']
+def test_rnai_upgrade_status_encode2(migrator, rnai_1):
     rnai_1['award'] = '366388ac-685d-415c-b0bb-834ffafdf094'
     value = migrator.upgrade('rnai', rnai_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'released'
 
 
-def test_rnai_upgrade_status_deleted(app, rnai_1):
-    migrator = app.registry['migrator']
+def test_rnai_upgrade_status_deleted(migrator, rnai_1):
     rnai_1['status'] = 'DELETED'
     value = migrator.upgrade('rnai', rnai_1, target_version='2')
     assert value['schema_version'] == '2'

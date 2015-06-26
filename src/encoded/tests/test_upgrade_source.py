@@ -22,8 +22,7 @@ def source_1(source, lab, submitter, award):
     return item
 
 
-def test_source_upgrade(app, source_1):
-    migrator = app.registry['migrator']
+def test_source_upgrade(migrator, source_1):
     value = migrator.upgrade('source', source_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
