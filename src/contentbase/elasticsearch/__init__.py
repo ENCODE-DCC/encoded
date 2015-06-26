@@ -7,8 +7,10 @@ from pyramid.settings import (
     asbool,
     aslist,
 )
-from .interfaces import ELASTIC_SEARCH
-
+from .interfaces import (
+    ELASTIC_SEARCH,
+    INDEXER,
+)
 import json
 import sys
 PY2 = sys.version_info.major == 2
