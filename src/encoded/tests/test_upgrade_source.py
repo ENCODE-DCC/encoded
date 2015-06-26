@@ -22,8 +22,8 @@ def source_1(source, lab, submitter, award):
     return item
 
 
-def test_source_upgrade(migrator, source_1):
-    value = migrator.upgrade('source', source_1, target_version='2')
+def test_source_upgrade(upgrader, source_1):
+    value = upgrader.upgrade('source', source_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
     assert 'award' not in value

@@ -30,15 +30,15 @@ def platform_2(platform):
     return item
 
 
-def test_platform_upgrade(migrator, platform_1):
-    value = migrator.upgrade('platform', platform_1, target_version='2')
+def test_platform_upgrade(upgrader, platform_1):
+    value = upgrader.upgrade('platform', platform_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert 'geo_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:AB_SOLiD_3.5', 'GEO:GPL9442']
 
 
-def test_platform_upgrade_status(migrator, platform_2):
-    value = migrator.upgrade('platform', platform_2, target_version='3')
+def test_platform_upgrade_status(upgrader, platform_2):
+    value = upgrader.upgrade('platform', platform_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'

@@ -18,8 +18,8 @@ def publication_1(publication):
     return item
 
 
-def test_publication_upgrade(migrator, publication_1):
-    value = migrator.upgrade('publication', publication_1, target_version='2')
+def test_publication_upgrade(upgrader, publication_1):
+    value = upgrader.upgrade('publication', publication_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'references' not in value
     assert value['identifiers'] == ['PMID:25409824']

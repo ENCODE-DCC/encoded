@@ -19,7 +19,7 @@ def pipeline_1(pipeline):
     return item
 
 
-def test_pipeline_upgrade_1(migrator, pipeline_1):
-    value = migrator.upgrade('pipeline', pipeline_1, target_version='2')
+def test_pipeline_upgrade_1(upgrader, pipeline_1):
+    value = upgrader.upgrade('pipeline', pipeline_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value.get('award') is not None

@@ -26,26 +26,26 @@ def target_2(target):
     })
     return item
 
-def test_target_upgrade(migrator, target_1):
-    value = migrator.upgrade('target', target_1, target_version='2')
+def test_target_upgrade(upgrader, target_1):
+    value = upgrader.upgrade('target', target_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_target_investigated_as_upgrade(migrator, target_2):
-    value = migrator.upgrade('target', target_2, target_version='3')
+def test_target_investigated_as_upgrade(upgrader, target_2):
+    value = upgrader.upgrade('target', target_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['transcription factor']
 
 
-def test_target_investigated_as_upgrade_tag(migrator, target_2):
+def test_target_investigated_as_upgrade_tag(upgrader, target_2):
     target_2['label'] = 'eGFP'
-    value = migrator.upgrade('target', target_2, target_version='3')
+    value = upgrader.upgrade('target', target_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['tag']
 
-def test_target_investigated_as_upgrade_recombinant(migrator, target_2):
+def test_target_investigated_as_upgrade_recombinant(upgrader, target_2):
     target_2['label'] = 'eGFP-test'
-    value = migrator.upgrade('target', target_2, target_version='3')
+    value = upgrader.upgrade('target', target_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['recombinant protein', 'transcription factor']

@@ -31,24 +31,24 @@ def treatment_2(treatment):
     return item
 
 
-def test_treatment_upgrade(migrator, treatment_1):
-    value = migrator.upgrade('treatment', treatment_1, target_version='2')
+def test_treatment_upgrade(upgrader, treatment_1):
+    value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:Estradiol_1nM']
     assert 'award' not in value
 
 
-def test_treatment_upgrade_encode_dbxref(migrator, treatment_1):
+def test_treatment_upgrade_encode_dbxref(upgrader, treatment_1):
     treatment_1['encode2_dbxrefs'] = ["encode:hESC to endoderm differentiation treatment"]
-    value = migrator.upgrade('treatment', treatment_1, target_version='2')
+    value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:hESC to endoderm differentiation treatment']
     assert 'award' not in value
 
 
-def test_treatment_upgrade_status(migrator, treatment_2):
-    value = migrator.upgrade('treatment', treatment_2, target_version='3')
+def test_treatment_upgrade_status(upgrader, treatment_2):
+    value = upgrader.upgrade('treatment', treatment_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'

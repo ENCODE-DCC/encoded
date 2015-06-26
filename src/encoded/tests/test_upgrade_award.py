@@ -18,21 +18,21 @@ def award_1(award):
     return item
 
 
-def test_award_upgrade(migrator, award_1):
-    value = migrator.upgrade('award', award_1, target_version='2')
+def test_award_upgrade(upgrader, award_1):
+    value = upgrader.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'disabled'
 
 
-def test_award_upgrade_encode3(migrator, award_1):
+def test_award_upgrade_encode3(upgrader, award_1):
     award_1['rfa'] = 'ENCODE3'
-    value = migrator.upgrade('award', award_1, target_version='2')
+    value = upgrader.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_award_upgrade_url(migrator, award_1):
+def test_award_upgrade_url(upgrader, award_1):
     award_1['url'] = ''
-    value = migrator.upgrade('award', award_1, target_version='2')
+    value = upgrader.upgrade('award', award_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'url' not in value
