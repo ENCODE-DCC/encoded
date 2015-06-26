@@ -7,6 +7,7 @@ if sys.version_info.major == 2:
     functools.lru_cache = lru_cache
 
 
+from contentbase.interfaces import *  # noqa
 from contentbase.resources import *  # noqa
 
 

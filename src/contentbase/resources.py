@@ -50,6 +50,16 @@ from .embedding import (
     embed,
     expand_path,
 )
+from .interfaces import (
+    BLOBS,
+    CONNECTION,
+    COLLECTIONS,
+    DBSESSION,
+    STORAGE,
+    ROOT,
+    TYPES,
+    PHASE1_5_CONFIG,
+)
 from .schema_utils import validate_request
 from .storage import (
     RDBBlobStorage,
@@ -60,16 +70,6 @@ from collections import (
 )
 from .validation import ValidationFailure
 
-PHASE1_5_CONFIG = -15
-
-
-ROOT = 'root'
-TYPES = 'types'
-CONNECTION = 'connection'
-COLLECTIONS = 'collections'
-DBSESSION = 'dbsession'
-STORAGE = 'storage'
-BLOBS = 'blobs'
 
 _marker = object()
 
