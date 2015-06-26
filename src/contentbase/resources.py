@@ -63,7 +63,7 @@ from .validation import ValidationFailure
 PHASE1_5_CONFIG = -15
 
 
-ROOT = LOCATION_ROOT = 'root'
+ROOT = 'root'
 TYPES = 'types'
 CONNECTION = 'connection'
 COLLECTIONS = 'collections'

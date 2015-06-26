@@ -1,5 +1,5 @@
 from pyramid.interfaces import PHASE2_CONFIG
-from contentbase import LOCATION_ROOT
+from contentbase import ROOT
 from contentbase.upgrader import default_upgrade_finalizer
 
 LATE = 10
@@ -12,7 +12,7 @@ def includeme(config):
         """ add_upgrade for all item types
         """
         migrator = config.registry['migrator']
-        root = config.registry[LOCATION_ROOT]
+        root = config.registry[ROOT]
         for item_type, collection in root.by_item_type.items():
             version = collection.type_info.schema_version
             if version is not None:
@@ -24,7 +24,7 @@ def includeme(config):
         """ add_upgrade for all item types
         """
         migrator = config.registry['migrator']
-        root = config.registry[LOCATION_ROOT]
+        root = config.registry[ROOT]
         for item_type, collection in root.by_item_type.items():
             if item_type not in migrator:
                 continue
