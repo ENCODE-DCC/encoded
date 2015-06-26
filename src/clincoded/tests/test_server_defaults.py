@@ -21,9 +21,9 @@ def test_server_defaults(admin, anontestapp):
 
 @fixture(scope='session')
 def test_accession_app(request, check_constraints, zsa_savepoints, app_settings):
-    from encoded import main
+    from clincoded import main
     app_settings = app_settings.copy()
-    app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
+    app_settings['accession_factory'] = 'clincoded.server_defaults.test_accession'
     return main({}, **app_settings)
 
 
