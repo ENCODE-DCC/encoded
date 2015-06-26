@@ -59,6 +59,7 @@ from .interfaces import (
     STORAGE,
     ROOT,
     TYPES,
+    UPGRADER,
     PHASE1_5_CONFIG,
     Created,
     BeforeModified,
@@ -621,9 +622,9 @@ class Item(object):
         current_version = properties.get('schema_version', '')
         target_version = self.type_info.schema_version
         if target_version is not None and current_version != target_version:
-            migrator = self.registry['migrator']
+            upgrader = self.registry[UPGRADER]
             try:
-                properties = migrator.upgrade(
+                properties = upgrader.upgrade(
                     self.item_type, properties, current_version, target_version,
                     context=self, registry=self.registry)
             except RuntimeError:

@@ -8,6 +8,7 @@ DBSESSION = 'dbsession'
 STORAGE = 'storage'
 ROOT = 'root'
 TYPES = 'types'
+UPGRADER = 'upgrader'
 
 # Constants
 PHASE1_5_CONFIG = -15

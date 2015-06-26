@@ -162,7 +162,8 @@ def elasticsearch(registry):
 
 @fixture
 def migrator(registry):
-    return registry['migrator']
+    from contentbase import UPGRADER
+    return registry[UPGRADER]
 
 
 @fixture
