@@ -8,6 +8,7 @@ from pyramid.settings import (
     aslist,
 )
 from .interfaces import (
+    APP_FACTORY,
     ELASTIC_SEARCH,
     INDEXER,
 )

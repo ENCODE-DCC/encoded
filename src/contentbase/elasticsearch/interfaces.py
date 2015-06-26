@@ -1,6 +1,7 @@
 from zope.interface import Interface
 
 # Registry tool id
+APP_FACTORY = 'app_factory'
 ELASTIC_SEARCH = 'elasticsearch'
 INDEXER = 'indexer'
 
