@@ -1,6 +1,6 @@
 from pyramid.interfaces import PHASE2_CONFIG
 from contentbase import (
-    ROOT,
+    TYPES,
     UPGRADER,
 )
 from contentbase.upgrader import default_upgrade_finalizer
@@ -15,9 +15,9 @@ def includeme(config):
         """ add_upgrade for all item types
         """
         upgrader = config.registry[UPGRADER]
-        root = config.registry[ROOT]
-        for item_type, collection in root.by_item_type.items():
-            version = collection.type_info.schema_version
+        types = config.registry[TYPES]
+        for item_type, type_info in types.types.items():
+            version = type_info.schema_version
             if version is not None:
                 upgrader.add_upgrade(item_type, version)
 
@@ -27,8 +27,8 @@ def includeme(config):
         """ add_upgrade for all item types
         """
         upgrader = config.registry[UPGRADER]
-        root = config.registry[ROOT]
-        for item_type, collection in root.by_item_type.items():
+        types = config.registry[TYPES]
+        for item_type, type_info in types.types.items():
             if item_type not in upgrader:
                 continue
             if not upgrader[item_type].upgrade_steps:
