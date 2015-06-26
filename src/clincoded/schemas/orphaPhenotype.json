@@ -52,11 +52,14 @@
         },
         "omimids": {
             "title": "OMIM ID",
-            "description": "OMIM identifier to Orphanet disease",
+            "description": "List of OMIM ids",
             "type": "array",
             "default": [],
-            "default": "",
-            "pattern": "^[0-9]{6}$"
+            "items": {
+                "title": "OMIM ID",
+                "description": "OMIM ID",
+                "type": "string"
+            }
         },
         "synonyms": {
             "title": "Synonyms",
