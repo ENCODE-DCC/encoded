@@ -59,6 +59,9 @@ from .interfaces import (
     ROOT,
     TYPES,
     PHASE1_5_CONFIG,
+    Created,
+    BeforeModified,
+    AfterModified,
 )
 from .schema_utils import validate_request
 from .storage import (
@@ -1186,24 +1189,6 @@ def item_edit(context, request, render=None):
         '@graph': [rendered],
     }
     return result
-
-
-class Created(object):
-    def __init__(self, object, request):
-        self.object = object
-        self.request = request
-
-
-class BeforeModified(object):
-    def __init__(self, object, request):
-        self.object = object
-        self.request = request
-
-
-class AfterModified(object):
-    def __init__(self, object, request):
-        self.object = object
-        self.request = request
 
 
 def simple_path_ids(obj, path):
