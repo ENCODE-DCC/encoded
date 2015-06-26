@@ -43,6 +43,7 @@ var Input = module.exports.Input = React.createClass({
         labelClassName: React.PropTypes.string, // CSS classes to add to labels
         groupClassName: React.PropTypes.string, // CSS classes to add to control groups (label/input wrapper div)
         wrapperClassName: React.PropTypes.string, // CSS classes to add to wrapper div around inputs
+        inputClassName: React.PropTypes.string, // CSS classes to add to input elements themselves
         value: React.PropTypes.string, // Value to pre-fill input with
         required: React.PropTypes.bool // T to make this a required field
     },
@@ -78,7 +79,7 @@ var Input = module.exports.Input = React.createClass({
         switch (this.props.type) {
             case 'text':
             case 'email':
-                inputClasses = 'form-control' + (this.props.error ? ' error' : '');
+                inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 input = (
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
