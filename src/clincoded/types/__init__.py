@@ -16,19 +16,43 @@ from .base import (
 def includeme(config):
     config.scan()
 
-### new collection added for orphaPhenotype.json, 06/19/2015
+### new collections added for handling curation data, 06/19/2015
+@collection(
+    name='genes',
+    unique_key='genes:symbol',
+    properties={
+        'title': 'HGNC Genes',
+        'description': 'List of HGNC genes',
+    })
+class Gene(Item):
+    item_type = 'genes'
+    schema = load_schema('clincoded:schemas/genes.json')
+    name_key = 'symbol'
+
 @collection(
     name='diseases',
     unique_key='orphaPhenotype:orphaNumber',
     properties={
-        'title': 'Orphanet Terms',
-        'description': 'List of Orphanet terms',
+        'title': 'Orphanet Diseases',
+        'description': 'List of Orphanet diseases (phenotypes)',
     })
 class OrphaPhenotype(Item):
     item_type = 'orphaPhenotype'
     schema = load_schema('clincoded:schemas/orphaPhenotype.json')
     name_key = 'orphaNumber'
-### end of new collection for orphaPhenotype.json
+
+@collection(
+    name='articles',
+    unique_key='article:pmid',
+    properties={
+        'title': 'Articles',
+        'description': 'List of PubMed articles stored locally',
+    })
+class Article(Item):
+    item_type = 'article'
+    schema = load_schema('clincoded:schemas/article.json')
+    name_key = 'pmid'
+### end of new collections for curation data
 
 
 @collection(
