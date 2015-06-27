@@ -44,6 +44,7 @@ var Input = module.exports.Input = React.createClass({
         groupClassName: React.PropTypes.string, // CSS classes to add to control groups (label/input wrapper div)
         wrapperClassName: React.PropTypes.string, // CSS classes to add to wrapper div around inputs
         inputClassName: React.PropTypes.string, // CSS classes to add to input elements themselves
+        rows: React.PropTypes.string, // Number of rows in textarea
         value: React.PropTypes.string, // Value to pre-fill input with
         required: React.PropTypes.bool // T to make this a required field
     },
@@ -99,6 +100,19 @@ var Input = module.exports.Input = React.createClass({
                             <select className="form-control" ref="input">
                                 {this.props.children}
                             </select>
+                            <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
+                        </div>
+                    </div>
+                );
+                break;
+
+            case 'textarea':
+                inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
+                input = (
+                    <div className={this.props.groupClassName}>
+                        {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
+                        <div className={this.props.wrapperClassName}>
+                            <textarea className={inputClasses} id={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} rows={this.props.rows} />
                             <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                         </div>
                     </div>

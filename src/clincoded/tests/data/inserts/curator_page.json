@@ -10,5 +10,11 @@
         "title": "Create New Gene-Disease Record",
         "status": "released",
         "uuid": "8f8ab029-c57a-4fe0-9a65-48dbd2c7ad39"
+    },
+    {
+        "name": "group-curation",
+        "title": "Group Curation",
+        "status": "released",
+        "uuid": "a1d4d18b-27be-4a2b-9447-503e310d6f66"
     }
 ]

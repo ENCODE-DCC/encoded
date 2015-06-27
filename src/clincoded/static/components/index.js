@@ -18,6 +18,7 @@ require('./search');
 require('./publication');
 require('./curator');
 require('./create_gene_disease');
+require('./group_curation');
 require('./testing');
 require('./edit');
 require('./inputs');

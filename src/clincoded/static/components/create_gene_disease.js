@@ -113,7 +113,7 @@ var CreateGeneDisease = React.createClass({
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
                         <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />}
                             error={formErrors['orphanet-id']} clearError={this.clrFormErrors.bind(null, 'orphanet-id')}
-                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="orphanet-input" required />
+                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
                         <Input type="select" id="hpo" ref="hpo" label="Mode of Inheritance"
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
                             {hpoValues.map(function(v, i) {

@@ -19,9 +19,7 @@ var CuratorPage = module.exports.CuratorPage = React.createClass({
         var CuratorPageView = globals.curator_page.lookup(context, context.name);
         var content = <CuratorPageView {...this.props} />;
         return (
-            <div>
-                {content}
-            </div>
+            <div>{content}</div>
         );
     }
 });
@@ -30,7 +28,7 @@ globals.content_views.register(CuratorPage, 'curator_page');
 
 
 // Curator page content
-var CuratorCentral = module.exports.CuratorCentral = React.createClass({
+var CuratorCentral = React.createClass({
     getInitialState: function() {
         return {
             currPmid: -1,
@@ -75,16 +73,7 @@ var CuratorCentral = module.exports.CuratorCentral = React.createClass({
                         </div>
                         {currPmidItem ?
                             <div className="col-md-3">
-                                <nav className="nav-add-evidence">
-                                    <h5>Add Evidence for PMID:{currPmidItem.id}</h5>
-                                    <ul className="nav nav-pills nav-stacked">
-                                        <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Group Information</a></li>
-                                        <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Family Information</a></li>
-                                        <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Individual Information</a></li>
-                                        <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Functional Information</a></li>
-                                        <li><a className="btn btn-primary" href="#">Variant Information</a></li>
-                                    </ul>
-                                </nav>
+                                <CurationNav currPmidItem={currPmidItem} />
                             </div>
                         : null}
                     </div>
@@ -98,7 +87,7 @@ globals.curator_page.register(CuratorCentral, 'curator_page', 'curation-central'
 
 
 // Curation data header for Gene:Disease
-var CurationData = React.createClass({
+var CurationData = module.exports.CurationData = React.createClass({
     render: function() {
         return (
             <div className="container curation-data">
@@ -107,6 +96,24 @@ var CurationData = React.createClass({
                     <DiseaseCurationData />
                 </div>
             </div>
+        );
+    }
+});
+
+
+var CurationNav = module.exports.CurationNav = React.createClass({
+    render: function() {
+        return (
+            <nav className="nav-add-evidence">
+                <h5>Add Evidence for PMID:{this.props.currPmidItem.id}</h5>
+                <ul className="nav nav-pills nav-stacked">
+                    <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Group Information</a></li>
+                    <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Family Information</a></li>
+                    <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Individual Information</a></li>
+                    <li><a className="btn btn-primary" href="#"><i className="icon icon-plus-circle"></i> Functional Information</a></li>
+                    <li><a className="btn btn-primary" href="#">Variant Information</a></li>
+                </ul>
+            </nav>
         );
     }
 });
@@ -200,7 +207,7 @@ var AddPmidModal = React.createClass({
 
 
 // Displays the PM item summary, with authors, title, citation, and DOI
-var PmidSummary = React.createClass({
+var PmidSummary = module.exports.PmidSummary = React.createClass({
     propTypes: {
         pmidItem: React.PropTypes.object
     },

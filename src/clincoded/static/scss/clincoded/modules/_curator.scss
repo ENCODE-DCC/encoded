@@ -162,3 +162,14 @@
         font-size: 1.4rem;
     }
 }
+
+.panel-curator {
+    margin: 2px 0;
+    padding: 15px;
+    background-color: $color-neutral-bg;
+    @include border-radius(0);
+
+    p {
+        margin: 0;
+    }
+}

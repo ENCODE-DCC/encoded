@@ -28,7 +28,8 @@ p {
 input[type=text],
 input[type=password],
 input[type=email],
-input[type=search] {
+input[type=search],
+textarea.form-control {
     background-color: #f8f8f8;
 }
 
