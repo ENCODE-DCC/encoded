@@ -19,6 +19,8 @@ from contentbase import (
     collection_add,
     item_edit,
     collection,
+)
+from contentbase.validators import (
     validate_item_content_post,
     validate_item_content_put,
 )
