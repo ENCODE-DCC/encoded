@@ -29,6 +29,12 @@
             "type": "string",
             "linkTo": "orphaPhenotype"
         },
+        "sex": {
+            "title": "Sex",
+            "description": "Sex",
+            "type": "string",
+            "default": ""
+        },
         "hpoidInDiagnosis": {
             "title": "HPO ID(s)",
             "description": "List of HPO ID for the disease",
@@ -60,12 +66,6 @@
         "termsInDiagnosis": {
             "title": "None-HPO term(s) Eliminated",
             "description": "List of none-HPO terms eliminated from the disease",
-            "type": "string",
-            "default": ""
-        },
-        "sex": {
-            "title": "Sex",
-            "description": "Sex",
             "type": "string",
             "default": ""
         },
@@ -160,6 +160,28 @@
                 "description": "List of variant ids, see variant.json for detials",
                 "type": "string"
             }
+        }
+    },
+    "columns": {
+        "individualid": {
+            "title": "Individual",
+            "type": "string"
+        },
+        "diagnosis": {
+            "title": "Diagnosis",
+            "type": "string"
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string"
+        },
+        "race": {
+            "title": "Race",
+            "type": "string"
+        },
+        "method": {
+            "title": "Method",
+            "type": "string"
         }
     }
 }

@@ -15,7 +15,7 @@ ORDER = [
     'lab',
     'organism',
     'source',
-    'variant',
+    #'variant',
     'publication',
     'document',
     'human_donor',

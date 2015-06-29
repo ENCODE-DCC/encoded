@@ -17,6 +17,7 @@ def includeme(config):
     config.scan()
 
 ### new collections added for handling curation data, 06/19/2015
+
 @collection(
     name='genes',
     unique_key='genes:symbol',
@@ -72,8 +73,11 @@ class Gdm(Item):
         'annotations.groups',
         'annotations.groups.commonDiagnosis',
         'annotations.groups.familyIncluded',
+        'annotations.groups.familyIncluded.commonDiagnosis',
+        'annotations.groups.familyIncluded.individualIncluded',
+        'annotations.groups.familyIncluded.individualIncluded.diagnosis',
         'annotations.groups.individualIncluded',
-        'annotations.groups.familyIncluded.individualIncluded'
+        'annotations.groups.individualIncluded.diagnosis',
     ]
 
 @collection(
@@ -92,8 +96,11 @@ class Annotation(Item):
         'groups',
         'groups.commonDiagnosis',
         'groups.familyIncluded',
+        'groups.familyIncluded.commonDiagnosis',
+        'group.familyIncluded.individualIncluded',
+        'group.familyIncluded.individualIncluded.diagnosis',
         'groups.individualIncluded',
-        'group.familyIncluded.individualIncluded'
+        'groups.individualIncluded.diagnosis'
     ]
 
 @collection(
@@ -110,7 +117,10 @@ class Group(Item):
     embedded = [
         'commonDiagnosis',
         'familyIncluded',
-        'individualIncluded'
+        'familyIncluded.individualIncluded',
+        'familyIncluded.individualIncluded.diagnosis',
+        'individualIncluded',
+        'individualIncluded.diagnosis'
     ]
 
 @collection(
@@ -126,7 +136,8 @@ class Family(Item):
     name_key = 'familyid'
     embedded = [
         'commonDiagnosis',
-        'individualIncluded'
+        'individualIncluded',
+        'individualIncluded.diagnosis'
     ]
 
 @collection(
@@ -134,15 +145,14 @@ class Family(Item):
     unique_key='individual:individualid',
     properties={
         'title': 'Individuals',
-        'description': 'List of individuals in the evidence/group/family',
+        'description': 'List of individuals in the evidence, group, and/or family in the gene:disease:mode pair',
     })
 class Individual(Item):
     item_type = 'individual'
     schema = load_schema('clincoded:schemas/individual.json')
     name_key = 'individualid'
-    embedded = [
-        'diagnosis'
-    ]
+    embedded = ['diagnosis']
+
 ### end of new collections for curation data
 
 
