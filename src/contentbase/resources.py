@@ -41,7 +41,6 @@ from uuid import (
     UUID,
     uuid4,
 )
-from .cache import ManagerLRUCache
 from .calculated import (
     calculate_properties,
     calculated_property,
@@ -96,7 +95,6 @@ def includeme(config):
     registry[TYPES] = TypesTool(registry)
     registry[STORAGE] = RDBStorage(registry[DBSESSION])
     registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
-    registry[CONNECTION] = Connection(registry)
     config.set_root_factory(root_factory)
 
 
@@ -268,104 +266,6 @@ class TypesTool(object):
 
     def __getitem__(self, name):
         return self.types[name]
-
-
-class UnknownItemTypeError(Exception):
-    pass
-
-
-class Connection(object):
-    ''' Intermediates between the storage and the rest of the system
-    '''
-    def __init__(self, registry):
-        self.registry = registry
-        self.item_cache = ManagerLRUCache('contentbase.connection.item_cache', 1000)
-        self.unique_key_cache = ManagerLRUCache('contentbase.connection.key_cache', 1000)
-
-    @reify
-    def storage(self):
-        return self.registry[STORAGE]
-
-    @reify
-    def types(self):
-        return self.registry[TYPES]
-
-    def get_by_uuid(self, uuid, default=None):
-        if isinstance(uuid, basestring):
-            try:
-                uuid = UUID(uuid)
-            except ValueError:
-                return default
-        elif not isinstance(uuid, UUID):
-            raise TypeError(uuid)
-
-        uuid = str(uuid)
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        model = self.storage.get_by_uuid(uuid)
-        if model is None:
-            return default
-
-        try:
-            Item = self.types[model.item_type].factory
-        except KeyError:
-            raise UnknownItemTypeError(model.item_type)
-
-        item = Item(self.registry, model)
-        model.used_for(item)
-        self.item_cache[uuid] = item
-        return item
-
-    def get_by_unique_key(self, unique_key, name, default=None):
-        pkey = (unique_key, name)
-
-        cached = self.unique_key_cache.get(pkey)
-        if cached is not None:
-            return self.get_by_uuid(cached)
-
-        model = self.storage.get_by_unique_key(unique_key, name)
-        if model is None:
-            return default
-
-        uuid = model.uuid
-        self.unique_key_cache[pkey] = uuid
-        cached = self.item_cache.get(uuid)
-        if cached is not None:
-            return cached
-
-        try:
-            Item = self.types[model.item_type].factory
-        except KeyError:
-            raise UnknownItemTypeError(model.item_type)
-
-        item = Item(self.registry, model)
-        model.used_for(item)
-        self.item_cache[uuid] = item
-        return item
-
-    def get_rev_links(self, model, rel, *item_types):
-        return self.storage.get_rev_links(model, rel, *item_types)
-
-    def __iter__(self, item_type=None):
-        for uuid in self.storage.__iter__(item_type):
-            yield uuid
-
-    def __len__(self, item_type=None):
-        return self.storage.__len__(item_type)
-
-    def __getitem__(self, uuid):
-        item = self.get_by_uuid(uuid)
-        if item is None:
-            raise KeyError(uuid)
-        return item
-
-    def create(self, item_type, uuid):
-        return self.storage.create(item_type, uuid)
-
-    def update(self, model, properties, sheets=None, unique_keys=None, links=None):
-        self.storage.update(model, properties, sheets, unique_keys, links)
 
 
 class Root(object):

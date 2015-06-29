@@ -16,6 +16,7 @@ def includeme(config):
     config.include('.stats')
     config.include('.batchupgrade')
     config.include('.calculated')
+    config.include('.connection')
     config.include('.embedding')
     config.include('.json_renderer')
     config.include('.validation')
