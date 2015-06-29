@@ -9,6 +9,10 @@ if sys.version_info.major == 2:
 
 from contentbase.interfaces import *  # noqa
 from contentbase.resources import *  # noqa
+from contentbase.config import (  # noqa
+    collection,
+    root,
+)
 
 
 def includeme(config):
@@ -16,6 +20,7 @@ def includeme(config):
     config.include('.stats')
     config.include('.batchupgrade')
     config.include('.calculated')
+    config.include('.config')
     config.include('.connection')
     config.include('.embedding')
     config.include('.json_renderer')
