@@ -9,6 +9,41 @@ var React = require('react');
 var _ = require('underscore');
 
 
+// Surround Input elements with the Form element
+var Form = module.exports.Form = React.createClass({
+    // Add 'id' property to any Input elements. Make it a copy of the Input's ref. Run through all children
+    // of the form, and any children of those children, recursively.
+    createInputRefs: function(children) {
+        var processedChildren = React.Children.map(children, function(child) {
+            var props = {};
+
+            // Copy ref to new id property.
+            if (child.ref) {
+                props.id = child.ref;
+            }
+
+            // If the current child has children, process them recursively and assign the result to the new children property
+            if (child.props && child.props.children) {
+                props.children = this.createInputRefs(child.props.children);
+            }
+
+            // If we made new properties, clone the child and assign the properties to the clone
+            return Object.keys(props).length > 0 ? React.cloneElement(child, props) : child;
+        }.bind(this));
+        return processedChildren;
+    },
+
+    render: function() {
+        var children = this.createInputRefs(this.props.children);
+        return (
+            <form onSubmit={this.props.submitHandler} className={this.props.formClassName}>
+                {children}
+            </form>
+        );
+    }
+});
+
+
 var InputMixin = module.exports.InputMixin = {
     formValues: {},
 
@@ -77,7 +112,6 @@ var InputMixin = module.exports.InputMixin = {
 var Input = module.exports.Input = React.createClass({
     propTypes: {
         type: React.PropTypes.string.isRequired, // Type of input
-        id: React.PropTypes.string.isRequired, // Unique ID of input
         label: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.object
