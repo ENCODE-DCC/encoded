@@ -74,6 +74,7 @@ from collections import (
     defaultdict,
 )
 from .validation import ValidationFailure
+from .util import ensurelist
 
 
 _marker = object()
@@ -94,12 +95,6 @@ def includeme(config):
 
 def root_factory(request):
     return request.registry[ROOT]
-
-
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
 
 
 # No-validation validators
@@ -594,7 +589,7 @@ class Item(object):
 
     def unique_keys(self, properties):
         return {
-            name: [v for prop in props for v in aslist(properties.get(prop, ()))]
+            name: [v for prop in props for v in ensurelist(properties.get(prop, ()))]
             for name, props in self.type_info.schema_keys.items()
         }
 

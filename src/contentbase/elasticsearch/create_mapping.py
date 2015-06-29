@@ -6,13 +6,13 @@ To load the initial data:
     %(prog)s production.ini
 
 """
-from past.builtins import basestring
 from pyramid.paster import get_app
 from elasticsearch import RequestError
 from contentbase import (
     COLLECTIONS,
     TYPES,
 )
+from contentbase.util import ensurelist
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -340,12 +340,6 @@ def combined_mapping(types, *item_types):
     return combined
 
 
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
-
-
 def combine_schemas(a, b):
     if a == b:
         return a
@@ -358,7 +352,7 @@ def combine_schemas(a, b):
         if a[name] == b[name]:
             combined[name] = a[name]
         elif name == 'type':
-            combined[name] = sorted(set(aslist(a[name]) + aslist(b[name])))
+            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
         elif name == 'properties':
             combined[name] = {}
             for k in set(a[name].keys()).intersection(b[name].keys()):
