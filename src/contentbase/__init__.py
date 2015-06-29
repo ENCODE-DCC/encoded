@@ -24,6 +24,7 @@ def includeme(config):
     config.include('.invalidation')
     config.include('.upgrader')
     config.include('.auditor')
+    config.include('.storage')
     config.include('.typeinfo')
     config.include('.resources')
     config.include('.attachment')

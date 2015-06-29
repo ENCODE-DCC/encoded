@@ -50,11 +50,8 @@ from .embedding import (
     expand_path,
 )
 from .interfaces import (
-    BLOBS,
     COLLECTIONS,
     CONNECTION,
-    DBSESSION,
-    STORAGE,
     ROOT,
     TYPES,
     UPGRADER,
@@ -62,10 +59,6 @@ from .interfaces import (
     Created,
     BeforeModified,
     AfterModified,
-)
-from .storage import (
-    RDBBlobStorage,
-    RDBStorage,
 )
 from .validation import ValidationFailure
 from .validators import (
@@ -88,8 +81,6 @@ def includeme(config):
     registry = config.registry
     config.scan(__name__)
     registry[COLLECTIONS] = CollectionsTool()
-    registry[STORAGE] = RDBStorage(registry[DBSESSION])
-    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
     config.set_root_factory(root_factory)
 
 
