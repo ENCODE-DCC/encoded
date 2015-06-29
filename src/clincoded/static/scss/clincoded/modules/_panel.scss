@@ -1,0 +1,47 @@
+.panel-group {
+    margin-bottom: 10px;
+}
+
+.panel, .panel-group .panel {
+    margin-bottom: 10px;
+    @include box-shadow(none);
+    @include border-radius(2px);
+}
+
+.panel-default>.panel-heading {
+    padding: 0;
+
+    h4 {
+        margin: 0;
+        padding: 0;
+    }
+
+    a {
+        display: block;
+        padding: 10px 20px;
+        margin: 0;
+        background-color: $color-trim;
+        color: #fff;
+        text-decoration: none;
+    }
+}
+
+.panel-closed {
+    display: none;
+}
+
+.panel-std {
+    background-color: #f0f0f0;
+    padding: 20px 30px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        padding: 40px 50px 0;
+    }
+}
+
+.panel-header-indicator {
+    float: right;
+    line-height: 260%;
+    margin-right: 10px;
+    color: #fff;
+}

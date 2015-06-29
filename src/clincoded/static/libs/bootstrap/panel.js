@@ -32,24 +32,31 @@ var PanelGroup = module.exports.PanelGroup = React.createClass({
 var Panel = module.exports.Panel = React.createClass({
     propTypes: {
         title: React.PropTypes.string, // Title in panel's header
+        open: React.PropTypes.bool, // T if an accordion panel should default to open
         accordion: React.PropTypes.bool // T if part of an accordion panel group; copied from PanelGroup props
     },
 
     getInitialState: function() {
         return {
-            open: !!this.props.open
+            open: !!this.props.open || !this.props.accordion
         };
     },
 
-    handleClick: function() {
-        this.setState({open: !this.state.open});
+    handleClick: function(e) {
+        e.preventDefault(); // Prevent auto-scroll to top on state change
+        if (this.props.accordion) {
+            this.setState({open: !this.state.open});
+        }
     },
 
     render: function() {
+        var panelClasses = 'panel-body panel-std' + ((!this.state.open && this.props.accordion) ? ' panel-closed' : '');
+        var indicatorClasses = 'icon panel-header-indicator ' + (this.props.accordion ? (this.state.open ? 'icon-chevron-up' : 'icon-chevron-down') : '');
         return (
             <div className="panel panel-default">
                 {this.props.title ?
                     <div className="panel-heading" role="tab">
+                        {this.props.accordion ? <i className={indicatorClasses}></i> : null}
                         {this.props.accordion ?
                             <h4><a href="#" onClick={this.handleClick}>{this.props.title}</a></h4>
                         :
@@ -57,11 +64,9 @@ var Panel = module.exports.Panel = React.createClass({
                         }
                     </div>
                 : null}
-                {this.state.open || !this.props.accordion ?
-                    <div className="panel-body">
-                        {this.props.children}
-                    </div>
-                : null}
+                <div className={panelClasses}>
+                    {this.props.children}
+                </div>
             </div>
         );
     }

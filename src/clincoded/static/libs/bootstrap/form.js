@@ -158,13 +158,16 @@ var Input = module.exports.Input = React.createClass({
             case 'text':
             case 'email':
                 inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
+                var innerInput = (
+                    <span>
+                        <input className={inputClasses} type={this.props.type} id={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} />
+                        <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
+                    </span>
+                );
                 input = (
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
-                        <div className={this.props.wrapperClassName}>
-                            <input className={inputClasses} type={this.props.type} id={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} />
-                            <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
-                        </div>
+                        {this.props.wrapperClassName ? <div className={this.props.wrapperClassName}>{innerInput}</div> : <span>{innerInput}</span>}
                     </div>
                 );
                 break;
@@ -196,6 +199,17 @@ var Input = module.exports.Input = React.createClass({
                 );
                 break;
 
+            case 'text-range':
+                input = (
+                    <div className={this.props.groupClassName}>
+                        {this.props.label ? <label className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
+                        <div className={this.props.wrapperClassName}>
+                            {this.props.children}
+                        </div>
+                    </div>
+                );
+                break;
+
             case 'submit':
                 var title = this.props.value ? this.props.value : 'Submit';
                 input = (
@@ -211,6 +225,6 @@ var Input = module.exports.Input = React.createClass({
                 break;
         }
 
-        return <div>{input}</div>;
+        return <span>{input}</span>;
     }
 });
