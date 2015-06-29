@@ -37,7 +37,7 @@ var CreateGeneDisease = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    // Basic form content validation
+    // Form content validation
     validateForm: function() {
         // Check if required fields have values
         var valid = this.validateRequired();
@@ -92,17 +92,16 @@ var CreateGeneDisease = React.createClass({
     },
 
     render: function() {
-        var formErrors = this.getFormErrors();
         return (
             <div className="container">
                 <h1>{this.props.context.title}</h1>
                 <form onSubmit={this.submitForm} className="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
                     <div className="row">
                         <Input type="text" id="hgncgene" ref="hgncgene" label={<LabelHgncGene />}
-                            error={formErrors['hgncgene']} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
+                            error={this.getFormError('hgncgene')} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
                         <Input type="text" id="orphanetid" ref="orphanetid" label={<LabelOrphanetId />}
-                            error={formErrors['orphanetid']} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
+                            error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
                         <Input type="select" id="hpo" ref="hpo" label="Mode of Inheritance"
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
@@ -111,7 +110,7 @@ var CreateGeneDisease = React.createClass({
                             })}
                         </Input>
                         <Input type="text" id="omimid" ref="omimid" label={<LabelOmimId />}
-                            error={formErrors['omimid']} clearError={this.clrFormErrors.bind(null, 'omim-id')}
+                            error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim-id')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                         <Input type="submit" wrapperClassName="pull-right" id="submit" />
                     </div>

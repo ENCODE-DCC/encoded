@@ -1,4 +1,10 @@
 "use strict";
+// Use this module when you have a form with input fields and an optional submit button.
+// It supplies an Input component used for all types of form fields (e.g. text fields,
+// drop-downs, etc.). The component that includes the form must also include the InputMixin
+// mixin that handles standard form things like saving and retrieving form values, and
+// handling validation errors.
+
 var React = require('react');
 var _ = require('underscore');
 
@@ -6,40 +12,51 @@ var _ = require('underscore');
 var InputMixin = module.exports.InputMixin = {
     formValues: {},
 
-    setFormValue: function(ref, value) {
-        this.formValues[ref] = value;
-    },
-
-    getFormValue: function(ref) {
-        return this.formValues[ref];
-    },
-
+    // Do not call; called by React.
     getInitialState: function() {
         return {formErrors: {}};
     },
 
-    getFormErrors: function() {
-        return this.state.formErrors;
+    // Retrieves the saved value of the Input with the given 'ref' value. setFormValue
+    // must already have been called with this Input's value.
+    getFormValue: function(ref) {
+        return this.formValues[ref];
     },
 
-    // Set form errors without affecting ones already set
+    // Normally used after the submit button is clicked. Call this to save the value
+    // from the Input with the given 'ref' value and the value itself. This does
+    // NOT modify the form input values; it just saves them for later processing.
+    setFormValue: function(ref, value) {
+        this.formValues[ref] = value;
+    },
+
+    // Get the saved form error for the Input with the given 'ref' value.
+    getFormError: function(ref) {
+        return this.state.formErrors[ref];
+    },
+
+    // Save a form error for the given Input's 'ref' value for later retrieval with getFormError.
+    // The message that should be displayed to the user is passed in 'msg'.
     setFormErrors: function(ref, msg) {
         var formErrors = this.state.formErrors;
         formErrors[ref] = msg;
         this.setState({formErrors: formErrors});
     },
 
-    // Clear error state from an input with 'id' as its Input id.
-    // This is called by Input components when their contents change.
-    clrFormErrors: function(id) {
+    // Clear error state from the Input with the given 'ref' value. This should be passed to
+    // Input components in the 'clearError' property so that it can be called when an Input's
+    // value changes.
+    clrFormErrors: function(ref) {
         var errors = this.state.formErrors;
-        errors[id] = '';
+        errors[ref] = '';
         this.setState({formErrors: errors});
     },
 
-    // Do form validation on the required fields. Each field checked
-    // must have a unique ref, and the boolean 'required' field set if
-    // it's required. The Input
+    // Do form validation on the required fields. Each field checked must have a unique ref,
+    // and the boolean 'required' field set if it's required. All the Input's values must
+    // already have been collected with setFormValue. Returns true if all required fields
+    // have values, or false if any do not. It also sets any empty required Inputs error
+    // to the 'Required' message so it's displayed on the next render.
     validateRequired: function() {
         var valid = true;
         Object.keys(this.refs).forEach(function(ref) {
