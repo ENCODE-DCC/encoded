@@ -1,5 +1,4 @@
 from past.builtins import basestring
-from posixpath import join
 from pyramid.settings import asbool
 from pyramid.traversal import (
     find_resource,
@@ -9,7 +8,6 @@ from uuid import (
     UUID,
     uuid4,
 )
-from .embedding import embed
 from .etag import if_match_tid
 from .interfaces import (
     COLLECTIONS,
@@ -151,7 +149,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, join(item_uri, '@@details'), as_user=True)
+        rendered = request.embed(item_uri, '@@details', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -191,7 +189,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, join(item_uri, '@@object'), as_user=True)
+        rendered = request.embed(item_uri, '@@object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200

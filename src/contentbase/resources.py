@@ -9,7 +9,6 @@ from future.utils import (
 )
 from itertools import islice
 from past.builtins import basestring
-from posixpath import join
 from pyramid.decorator import reify
 from pyramid.exceptions import PredicateMismatch
 from pyramid.httpexceptions import (
@@ -36,7 +35,6 @@ from .calculated import (
     calculated_property,
 )
 from .embedding import (
-    embed,
     expand_path,
 )
 from .etag import etag_tid
@@ -378,8 +376,8 @@ def collection_list(context, request):
 
     root = find_root(context)
     if context.__name__ in root['pages']:
-        properties['default_page'] = embed(
-            request, '/pages/%s/@@page' % context.__name__, as_user=True)
+        properties['default_page'] = request.embed(
+            '/pages/%s/@@page' % context.__name__, as_user=True)
 
     result = request.embed(path, '@@listing?' + request.query_string, as_user=True)
     result.update(properties)
@@ -402,7 +400,7 @@ def item_view(context, request):
     if request.query_string:
 
         path += '?' + request.query_string
-    return embed(request, path, as_user=True)
+    return request.embed(path, as_user=True)
 
 
 def item_links(context, request):
@@ -641,12 +639,12 @@ def path_ids(request, obj, path):
     if isinstance(value, list):
         for member in value:
             if remaining and isinstance(member, basestring):
-                member = embed(request, join(member, '@@object'))
+                member = request.embed(member, '@@object')
             for item_uri in path_ids(request, member, remaining):
                 yield item_uri
     else:
         if remaining and isinstance(value, basestring):
-            value = embed(request, join(value, '@@object'))
+            value = request.embed(value, '@@object')
         for item_uri in path_ids(request, value, remaining):
             yield item_uri
 
@@ -658,7 +656,7 @@ def inherit_audits(request, embedded, embedded_paths):
 
     audits = {}
     for audit_path in audit_paths:
-        result = embed(request, join(audit_path, '@@audit-self'))
+        result = request.embed(audit_path, '@@audit-self')
         for audit in result['audit']:
             if audit['level_name'] in audits:
                 audits[audit['level_name']].append(audit)
