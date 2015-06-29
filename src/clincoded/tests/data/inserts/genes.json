@@ -1,0 +1,566 @@
+[
+    {
+        "symbol": "FGFR3",
+        "hgncid": "HGNC:3690",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:3690",
+        "entrezid": "2261",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/2261",
+        "name": "fibroblast growth factor receptor 3gene with protein product",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "CEK2",
+            "JTK4",
+            "CD333"
+        ],
+        "previousSymbols": [
+            "ACH"
+        ],
+        "previousNames": [
+            "achondroplasia, thanatophoric dwarfism"
+        ],
+        "chromosome": "4p16.3",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "134934"
+        ],
+        "pmids": [
+            "1847508"
+        ],
+        "uuid": "e7c51b8a-1c34-11e5-ab27-60f81dc5b05a"
+    },
+    {
+        "symbol": "RAD51C",
+        "hgncid": "HGNC:9820",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:9820",
+        "entrezid": "5889",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/5889",
+        "name": "RAD51 paralog C",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "RAD51L2",
+            "FANCO"
+        ],
+        "previousNames": [
+            "RAD51 (S. cerevisiae) homolog C",
+            "RAD51 homolog C (S. cerevisiae)"
+        ],
+        "chromosome": "17q25.1",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "602774"
+        ],
+        "pmids": [
+            "9469824",
+            "22167183"
+        ],
+        "uuid": "e265b19c-1c34-11e5-a27c-60f81dc5b05a"
+    },
+    {
+        "symbol": "DICER1",
+        "hgncid": "HGNC:17098",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:17098",
+        "entrezid": "23405",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/23405",
+        "name": "dicer 1, ribonuclease type III",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "Dicer",
+            "KIAA0928",
+            "K12H4.8-LIKE",
+            "HERNA"
+        ],
+        "nameSynonyms": [
+            "dicer 1, double-stranded RNA-specific endoribonuclease"
+        ],
+        "previousSymbols": [
+            "MNG1"
+        ],
+        "previousNames": [
+            "Dicer1, Dcr-1 homolog (Drosophila)",
+            "multinodular goitre 1"
+        ],
+        "chromosome": "14q32.13",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "606241"
+        ],
+        "pmids": [
+            "10051563",
+            "10786632",
+            "21205968"
+        ],
+        "uuid": "da926a0a-1c34-11e5-b1eb-60f81dc5b05a"
+    },
+    {
+        "symbol": "SMAD3",
+        "hgncid": "HGNC:6769",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:6769",
+        "entrezid": "4088",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/4088",
+        "name": "SMAD family member 3",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "JV15-2",
+            "HsT17436"
+        ],
+        "nameSynonyms": [
+            "MADH3"
+        ],
+        "previousNames": [
+            "MAD, mothers against decapentaplegic homolog 3 (Drosophila)",
+            "SMAD, mothers against DPP homolog 3 (Drosophila)"
+        ],
+        "chromosome": "15q21-q22",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "603109"
+        ],
+        "pmids": [
+            "8774881",
+            "8673135"
+        ],
+        "uuid": "d474e1ab-1c34-11e5-b601-60f81dc5b05a"
+    },
+    {
+        "symbol": "AGTR2",
+        "hgncid": "HGNC:338",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:338",
+        "entrezid": "186",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/186",
+        "name": "angiotensin II receptor, type 2",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "AT2",
+            "MRX88"
+        ],
+        "previousNames": [
+            "angiotensin receptor 2"
+        ],
+        "chromosome": "Xq22-q23",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "300034"
+        ],
+        "pmids": [
+            "1550596"
+        ],
+        "uuid": "cade0ed4-1c34-11e5-b48e-60f81dc5b05a"
+    },
+    {
+        "symbol": "CD3E",
+        "hgncid": "HGNC:1674",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:1674",
+        "entrezid": "916",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/916",
+        "name": "CD3e molecule, epsilon (CD3-TCR complex)",
+        "hgncStatus": "Approved",
+        "previousNames": [
+            "CD3e antigen, epsilon polypeptide (TiT3 complex)"
+        ],
+        "chromosome": "11q23",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "186830"
+        ],
+        "pmids": [],
+        "uuid": "c46d1b4c-1c34-11e5-a0cc-60f81dc5b05a"
+    },
+    {
+        "symbol": "FANCM",
+        "hgncid": "HGNC:23168",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:23168",
+        "entrezid": "57697",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/57697",
+        "name": "Fanconi anemia, complementation group M",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "FAAP250"
+        ],
+        "previousSymbols": [
+            "KIAA1596"
+        ],
+        "previousNames": [
+            "KIAA1596"
+        ],
+        "chromosome": "14q21.3",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "609644"
+        ],
+        "pmids": [
+            "10997877",
+            "16116422"
+        ],
+        "uuid": "be87d21c-1c34-11e5-97f7-60f81dc5b05a"
+    },
+    {
+        "symbol": "NGLY1",
+        "hgncid": "HGNC:17646",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:17646",
+        "entrezid": "55768",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/55768",
+        "name": "N-glycanase 1",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "FLJ11005",
+            "PNG1"
+        ],
+        "chromosome": "3p23",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "610661"
+        ],
+        "uuid": "b728ee7a-1c34-11e5-9874-60f81dc5b05a"
+    },
+    {
+        "symbol": "BRCA1",
+        "hgncid": "HGNC:1100",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:1100",
+        "entrezid": "672",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/762",
+        "name": "breast cancer 1, early onset",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "RNF53",
+            "BRCC1",
+            "PPP1R53",
+            "FANCS"
+        ],
+        "nameSynonyms": [
+            "BRCA1/BRCA2-containing complex, subunit 1",
+            "protein phosphatase 1, regulatory subunit 53",
+            "Fanconi anemia, complementation group S"
+        ],
+        "chromosome": "17q21.31",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "113705"
+        ],
+        "pmids": [
+            "1676470"
+        ],
+        "uuid": "b0b8eae3-1c34-11e5-ac44-60f81dc5b05a"
+    },
+    {
+        "symbol": "EGFR",
+        "hgncid": "HGNC:3236",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:3236",
+        "entrezid": "1956",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/1956",
+        "name": "epidermal growth factor receptor",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "ERBB1"
+        ],
+        "nameSynonyms": [
+            "erythroblastic leukemia viral (v-erb-b) oncogene homolog (avian)",
+            "erb-b2 receptor tyrosine kinase 1"
+        ],
+        "previousSymbols": [
+            "ERBB"
+        ],
+        "previousNames": [
+            "epidermal growth factor receptor (avian erythroblastic leukemia viral (v-erb-b) oncogene homolog)"
+        ],
+        "chromosome": "7p12",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "131550"
+        ],
+        "pmids": [
+            "1505215"
+        ],
+        "uuid": "a8ad0de1-1c34-11e5-8952-60f81dc5b05a"
+    },
+    {
+        "symbol": "MTBP",
+        "hgncid": "HGNC:7417",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:7417",
+        "entrezid": "27085",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/27085",
+        "name": "MDM2 binding protein",
+        "hgncStatus": "Approved",
+        "synonyms": [
+
+        ],
+        "previousNames": [
+            "MDM2 (mouse double minute 2)-binding protein, 104kD",
+            "Mdm2, transformed 3T3 cell double minute 2, p53 binding protein (mouse) binding protein, 104kDa"
+        ],
+        "chromosome": "8q24.1-q24.2",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "605927"
+        ],
+        "pmids": [
+            "10906133",
+            "11060448"
+        ],
+        "uuid": "a0221426-1c34-11e5-a98e-60f81dc5b05a"
+    },
+    {
+        "symbol": "PPM1D",
+        "hgncid": "HGNC:9277",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:9277",
+        "entrezid": "8493",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/8493",
+        "name": "protein phosphatase, Mg2+/Mn2+ dependent, 1D",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "Wip1",
+            "PP2C-DELTA"
+        ],
+        "nameSynonyms": [
+            "wild-type p53-induced phosphatase 1",
+            "protein phosphatase 2C, delta isoform"
+        ],
+        "previousNames": [
+            "protein phosphatase 1D magnesium-dependent, delta isoform"
+        ],
+        "chromosome": "17q23.3",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "605100"
+        ],
+        "pmids": [
+            "9177166"
+        ],
+        "uuid": "976c2251-1c34-11e5-aa54-60f81dc5b05a"
+    },
+    {
+        "symbol": "CUL9",
+        "hgncid": "HGNC:15982",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:15982",
+        "entrezid": "23113",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/23113",
+        "name": "cullin 9",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "H7AP1",
+            "KIAA0708",
+            "PARC"
+        ],
+        "nameSynonyms": [
+            "parkin-like cytoplasmic p53 binding protein",
+            "p53-associated parkin-like cytoplasmic protein"
+        ],
+        "chromosome": "6p21.1",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "607489"
+        ],
+        "pmids": [
+            "17332328",
+            "10521492",
+            "12526791"
+        ],
+        "uuid": "8fa4df11-1c34-11e5-8122-60f81dc5b05a"
+    },
+    {
+        "symbol": "TP63",
+        "hgncid": "HGNC:15979",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:15979",
+        "entrezid": "8626",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/8626",
+        "name": "tumor protein p63",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "p51",
+            "SHFM4",
+            "EEC3",
+            "p63",
+            "p73L",
+            "OFC8",
+            "KET",
+            "p73H",
+            "NBP",
+            "p53CP"
+        ],
+        "previousSymbols": [
+            "TP73L",
+            "TP53L",
+            "TP53CP"
+        ],
+        "previousNames": [
+            "tumor protein p73-like",
+            "tumor protein p53-like",
+            "tumor protein p53-competing protein"
+        ],
+        "chromosome": "3q27-q29",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "603273"
+        ],
+        "pmids": [
+            "9774969",
+            "9662378",
+            "11181441",
+            "11181451"
+        ],
+        "uuid": "87abd005-1c34-11e5-ab22-60f81dc5b05a"
+    },
+    {
+        "symbol": "PIDD1",
+        "hgncid": "HGNC:16491",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:16491",
+        "entrezid": "55367",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/55367",
+        "name": "p53-induced death domain protein 1",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "MGC16925",
+            "DKFZp434D229"
+        ],
+        "previousSymbols": [
+            "LRDD",
+            "PIDD"
+        ],
+        "previousNames": [
+            "leucine-rich repeats and death domain containing",
+            "p53-induced death domain protein"
+        ],
+        "chromosome": "11p15.5",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "605247"
+        ],
+        "pmids": [
+            "10825539"
+        ],
+        "uuid": "7ee4bc4c-1c34-11e5-8550-60f81dc5b05a"
+    },
+    {
+        "symbol": "MDM4",
+        "hgncid": "HGNC:6974",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:6974",
+        "entrezid": "4194",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/4194",
+        "name": "MDM4, p53 regulator",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "MDMX",
+            "HDMX"
+        ],
+        "previousNames": [
+            "mouse double minute 4, human homolog of; p53-binding protein",
+            "Mdm4, transformed 3T3 cell double minute 4, p53 binding protein (mouse)",
+            "Mdm4 p53 binding protein homolog (mouse)"
+        ],
+        "chromosome": "1q32",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "602704"
+        ],
+        "pmids": [
+            "9226370",
+            "14660608"
+        ],
+        "uuid": "74064a68-1c34-11e5-b6ae-60f81dc5b05a"
+    },
+    {
+        "symbol": "CDIP1",
+        "hgncid": "HGNC:13234",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:13234",
+        "entrezid": "29965",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/29965",
+        "name": "cell death-inducing p53 target 1",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "CDIP",
+            "LITAFL"
+        ],
+        "nameSynonyms": [
+            "cell death involved p53-target",
+            "lipopolysaccharide-induced TNF factor-like"
+        ],
+        "previousSymbols": [
+            "C16orf5"
+        ],
+        "previousNames": [
+            "chromosome 16 open reading frame 5"
+        ],
+        "chromosome": "16p13.3",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "610503"
+        ],
+        "pmids": [
+            "10570909",
+            "17599062"
+        ],
+        "uuid": "6dae8ba8-1c34-11e5-8d7f-60f81dc5b05a"
+    },
+    {
+        "symbol": "GSTM1",
+        "hgncid": "HGNC:4632",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:4632",
+        "entrezid": "2944",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/2944",
+        "name": "glutathione S-transferase mu 1",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "MU",
+            "H-B"
+        ],
+        "previousSymbols": [
+            "GST1"
+        ],
+        "previousNames": [
+            "glutathione S-transferase M1"
+        ],
+        "chromosome": "1p13.3",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "138350"
+        ],
+        "uuid": "65175499-1c34-11e5-a9ab-60f81dc5b05a"
+    },
+    {
+        "symbol": "JMY",
+        "hgncid": "HGNC:28916",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:28916",
+        "entrezid": "133746",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/133746",
+        "name": "junction mediating and regulatory protein, p53 cofactor",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "FLJ37870"
+        ],
+        "chromosome": "5q14.1",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "604279"
+        ],
+        "pmids": [
+            "10518217"
+        ],
+        "uuid": "5f4c0c0c-1c34-11e5-9b11-60f81dc5b05a"
+    },
+    {
+        "symbol": "TP53",
+        "hgncid": "HGNC:11998",
+        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:11998",
+        "entrezid": "7157",
+        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/7157",
+        "name": "tumor protein p53",
+        "hgncStatus": "Approved",
+        "synonyms": [
+            "p53",
+            "LFS1"
+        ],
+        "nameSynonyms": [
+            "Li-Fraumeni syndrome"
+        ],
+        "chromosome": "17p13.1",
+        "locusType": "gene with protein product",
+        "omimids": [
+            "191170"
+        ],
+        "pmids": [
+            "6396087",
+            "3456488",
+            "2047879"
+        ],
+        "uuid": "59e9e6a6-1c34-11e5-bcda-60f81dc5b05a"
+    }
+]

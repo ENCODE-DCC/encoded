@@ -16,19 +16,134 @@ from .base import (
 def includeme(config):
     config.scan()
 
-### new collection added for orphaPhenotype.json, 06/19/2015
+### new collections added for handling curation data, 06/19/2015
+@collection(
+    name='genes',
+    unique_key='genes:symbol',
+    properties={
+        'title': 'HGNC Genes',
+        'description': 'List of HGNC genes',
+    })
+class Gene(Item):
+    item_type = 'genes'
+    schema = load_schema('clincoded:schemas/genes.json')
+    name_key = 'symbol'
+
 @collection(
     name='diseases',
     unique_key='orphaPhenotype:orphaNumber',
     properties={
-        'title': 'Orphanet Terms',
-        'description': 'List of Orphanet terms',
+        'title': 'Orphanet Diseases',
+        'description': 'List of Orphanet diseases (phenotypes)',
     })
 class OrphaPhenotype(Item):
     item_type = 'orphaPhenotype'
     schema = load_schema('clincoded:schemas/orphaPhenotype.json')
     name_key = 'orphaNumber'
-### end of new collection for orphaPhenotype.json
+
+@collection(
+    name='articles',
+    unique_key='article:pmid',
+    properties={
+        'title': 'Articles',
+        'description': 'List of PubMed articles stored locally',
+    })
+class Article(Item):
+    item_type = 'article'
+    schema = load_schema('clincoded:schemas/article.json')
+    name_key = 'pmid'
+
+@collection(
+    name='gdm',
+    unique_key='gdm:gdmid',
+    properties={
+        'title': 'Gene:Disease:Mode',
+        'description': 'List of Gene:Disease:Mode pairs',
+    })
+class Gdm(Item):
+    item_type = 'gdm'
+    schema = load_schema('clincoded:schemas/gdm.json')
+    name_key = 'gdmid'
+    embedded = [
+        'geneSymbol',
+        'orphaNumber',
+        'annotations',
+        'annotations.article',
+        'annotations.groups',
+        'annotations.groups.commonDiagnosis',
+        'annotations.groups.familyIncluded',
+        'annotations.groups.individualIncluded',
+        'annotations.groups.familyIncluded.individualIncluded'
+    ]
+
+@collection(
+    name='evidences',
+    unique_key='annotation:annotationid',
+    properties={
+        'title': 'Evidences',
+        'description': 'List of evidences in all G:D:M pairs',
+    })
+class Annotation(Item):
+    item_type = 'annotation'
+    schema = load_schema('clincoded:schemas/annotation.json')
+    name_key = 'annotationid'
+    embedded = [
+        'article',
+        'groups',
+        'groups.commonDiagnosis',
+        'groups.familyIncluded',
+        'groups.individualIncluded',
+        'group.familyIncluded.individualIncluded'
+    ]
+
+@collection(
+    name='groups',
+    unique_key='group:groupid',
+    properties={
+        'title': 'Groups',
+        'description': 'List of groups in the evidence',
+    })
+class Group(Item):
+    item_type = 'group'
+    schema = load_schema('clincoded:schemas/group.json')
+    name_key = 'groupid'
+    embedded = [
+        'commonDiagnosis',
+        'familyIncluded',
+        'individualIncluded'
+    ]
+
+@collection(
+    name='families',
+    unique_key='family:familyid',
+    properties={
+        'title': 'Families',
+        'description': 'List of families in the evidence/group',
+    })
+class Family(Item):
+    item_type = 'family'
+    schema = load_schema('clincoded:schemas/family.json')
+    name_key = 'familyid'
+    embedded = [
+        'commonDiagnosis',
+        'individualIncluded'
+    ]
+
+@collection(
+    name='individuals',
+    unique_key='individual:individualid',
+    properties={
+        'title': 'Individuals',
+        'description': 'List of individuals in the evidence/group/family',
+    })
+class Individual(Item):
+    item_type = 'individual'
+    schema = load_schema('clincoded:schemas/individual.json')
+    name_key = 'individualid'
+    embedded = [
+        'diagnosis'
+    ]
+### end of new collections for curation data
 
 
 @collection(

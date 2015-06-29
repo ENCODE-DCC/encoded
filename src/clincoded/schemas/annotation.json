@@ -1,0 +1,130 @@
+{
+    "title": "Annotation",
+    "id": "/profiles/annotation.json",
+    "description": "List of evidences in a gdm",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["annotationid", "article", "owner", "dateTime"],
+    "identifyingProperties": ["uuid", "annotationid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "annotationid": {
+            "title": "Annotation ID",
+            "description": "Unique id for evidences",
+            "type": "string",
+            "pattern": "^[0-9]{1,9}$",
+            "uniqueKey": true
+        },
+        "owner": {
+            "title": "Owner",
+            "description": "Curator email",
+            "type": "string"
+        },
+        "article": {
+            "title": "Article",
+            "description": "PMID of article from where evidence is picked",
+            "type": "string",
+            "linkTo": "article"
+        },
+        "dateTime": {
+            "title": "Date",
+            "description": "Date and time to create the evidence",
+            "type": "string"
+        },
+        "groups": {
+            "title": "Group",
+            "description": "List of group ids",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Group ID",
+                "description": "Group id",
+                "type": "string",
+                "linkTo": "group"
+            }
+        },
+        "families": {
+            "title": "Family",
+            "descripton": "List of Family IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Family ID",
+                "description": "Family id",
+                "type": "string",
+                "linkTo": "family"
+            }
+        },
+        "individuals": {
+            "title": "Individual",
+            "descripton": "List of Individual IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Individual ID",
+                "description": "Individual id",
+                "type": "string",
+                "linkTo": "individual"
+            }
+        },
+        "functionalData": {
+            "title": "Functional Data Analysis",
+            "descripton": "List of FunctionalData IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Functional Data ID",
+                "description": "FunctionalData id",
+                "type": "string",
+                "linkTo": "functionalData"
+            }
+        },
+        "active": {
+            "title": "Active",
+            "description": "Boolean switch for using the evidence",
+            "type": "boolean"
+        }
+    },
+    "columns": {
+        "annotationid": {
+            "title": "Item",
+            "type": "string"
+        },
+        "article": {
+            "title": "Article",
+            "type": "string"
+        },
+        "owner": {
+            "title": "Created",
+            "type": "string"
+        },
+        "groups": {
+            "title": "Group",
+            "type": "string"
+        },
+        "families": {
+            "title": "Family",
+            "type": "string"
+        },
+        "individuals": {
+            "title": "Individual",
+            "type": "string"
+        },
+        "functionalData": {
+            "title": "Functional",
+            "type": "string"
+        }
+    },
+    "boost_values": {
+        "pmid": 1.0,
+        "owner": 1.0
+    }
+}

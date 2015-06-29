@@ -1,0 +1,44 @@
+[
+    {
+        "uudi": "359612a3-18fb-11e5-be10-60f81dc5b05a",
+        "individualid": "1",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "2"
+    },
+    {
+        "uudi": "6f762e73-1910-11e5-998f-60f81dc5b05a",
+        "individualid": "2",
+        "diagnosis": "15",
+        "sex": "Female",
+        "method": "1"
+    },
+    {
+        "uudi": "7997f687-1910-11e5-a066-60f81dc5b05a",
+        "individualid": "3",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "1"
+    },
+    {
+        "uudi": "8395c173-1910-11e5-8c7c-60f81dc5b05a",
+        "individualid": "4",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "3"
+    },
+    {
+        "uudi": "8e204451-1910-11e5-a206-60f81dc5b05a",
+        "individualid": "5",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "4"
+    },
+    {
+        "uudi": "95df0123-1910-11e5-bf07-60f81dc5b05a",
+        "individualid": "6",
+        "diagnosis": "15",
+        "sex": "Female",
+        "method": "5"
+    }
+]

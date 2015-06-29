@@ -16,10 +16,6 @@ ORDER = [
     'organism',
     'source',
     'variant',
-    'allele',
-    'condition',
-    'phenotype',
-    'gene',
     'publication',
     'document',
     'human_donor',
@@ -27,8 +23,15 @@ ORDER = [
     'software_version',
     'image',
     'page',
-    'orphaPhenotype',
     'curator_page',
+    'genes',
+    'orphaPhenotype',
+    'article',
+    'individual',
+    'family',
+    'group',
+    'annotation',
+    'gdm',
 ]
 
 ##############################################################################
@@ -43,7 +46,6 @@ ORDER = [
 
 def noop(dictrows):
     """ No-op component
-
     Useful for pipeline component factories.
     """
     return dictrows
@@ -55,6 +57,7 @@ def remove_keys_with_empty_value(dictrows):
             k: v for k, v in row.items()
             if k and v not in ('', None, [])
         }
+
 
 
 ##############################################################################
@@ -378,7 +381,6 @@ def find_doc(docsdir, filename):
 
 def attachment(path):
     """ Create an attachment upload object from a filename
-
     Embeds the attachment as a data url.
     """
     import magic
@@ -498,6 +500,15 @@ PHASE1_PIPELINES = {
     ],
     'publication': [
         remove_keys('datasets'),
+    ],
+    'orphaPhenotype': [
+        remove_keys('active', "schema_version"),
+    ],
+    'annotation': [
+        remove_keys('active', "schema_version"),
+    ],
+    'gdm': [
+        remove_keys('active', "schema_version"),
     ]
 }
 
