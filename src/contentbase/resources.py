@@ -160,25 +160,6 @@ def validate_item_content_patch(context, request):
     validate_request(schema, request, data, current)
 
 
-def permission_checker(context, request):
-    def checker(permission):
-        return request.has_permission(permission, context)
-    return checker
-
-
-def uncamel(string):
-    """ CamelCase -> camel_case
-    """
-    out = ''
-    before = ''
-    for char in string:
-        if char.isupper() and before.isalnum() and not before.isupper():
-            out += '_'
-        out += char.lower()
-        before = char
-    return out
-
-
 def root(factory):
     """ Set the root
     """
