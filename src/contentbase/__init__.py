@@ -36,3 +36,4 @@ def includeme(config):
     config.include('.schema_graph')
     config.include('.jsonld_context')
     config.include('.schema_views')
+    config.include('.crud_views')

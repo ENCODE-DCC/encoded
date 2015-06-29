@@ -16,9 +16,11 @@ from contentbase.schema_utils import (
     load_schema,
 )
 from contentbase import (
+    collection,
+)
+from contentbase.crud_views import (
     collection_add,
     item_edit,
-    collection,
 )
 from contentbase.validators import (
     validate_item_content_post,
