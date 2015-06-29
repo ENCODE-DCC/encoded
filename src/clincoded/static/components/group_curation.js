@@ -83,7 +83,7 @@ var GroupName = React.createClass({
     render: function() {
         return (
             <div className="row">
-                <Input type="text" id="group-name" ref="groupname" label="Group name (optional):"
+                <Input type="text" id="groupname" ref="groupname" label="Group name (optional):"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             </div>
         );
@@ -95,16 +95,16 @@ var GroupCommonDiseases = React.createClass({
     render: function() {
         return (
             <div className="row">
-                <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />}
+                <Input type="text" id="orphanetid" ref="orphanetid" label={<LabelOrphanetId />}
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
-                <Input type="text" id="hpo-id" ref="hpoid" label={<LabelHpoId />}
+                <Input type="text" id="hpoid" ref="hpoid" label={<LabelHpoId />}
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
-                <Input type="textarea" id="pheno-terms" ref="phenoterms" label={<LabelPhenoTerms />} rows="5"
+                <Input type="textarea" id="phenoterms" ref="phenoterms" label={<LabelPhenoTerms />} rows="5"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                 <h4>Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper</h4>
-                <Input type="text" id="not-hpo-id" ref="nothpoid" label={<LabelHpoId not />}
+                <Input type="text" id="nothpoid" ref="nothpoid" label={<LabelHpoId not />}
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
-                <Input type="textarea" id="pheno-terms" ref="phenoterms" label={<LabelPhenoTerms not />} rows="5"
+                <Input type="textarea" id="phenoterms" ref="phenoterms" label={<LabelPhenoTerms not />} rows="5"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             </div>
         );
@@ -147,9 +147,9 @@ var GroupDemographics = React.createClass({
     render: function() {
         return (
             <div className="row">
-                <Input type="text" id="male-count" ref="malecount" label="# males:"
+                <Input type="text" id="malecount" ref="malecount" label="# males:"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-                <Input type="text" id="female-count" ref="malecount" label="# females:"
+                <Input type="text" id="femalecount" ref="malecount" label="# females:"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                 <Input type="select" id="country" ref="country" label="Country of Origin:"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group">
@@ -174,13 +174,15 @@ var GroupDemographics = React.createClass({
                 </Input>
                 <h4>Age Range</h4>
                 <div className="demographics-age-range">
-                    <Input type="select" id="agerange-type" ref="agerangetype" label="Type:"
+                    <Input type="select" id="agerangetype" ref="agerangetype" label="Type:"
                         labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group">
                         <option value="onset">Onset</option>
                         <option value="report">Report</option>
                         <option value="diagnosis">Diagnosis</option>
                         <option value="death">Death</option>
                     </Input>
+                    <div className="form-inline">
+                    </div>
                 </div>
             </div>
         );
