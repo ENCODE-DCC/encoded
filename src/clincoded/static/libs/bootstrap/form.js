@@ -4,6 +4,16 @@ var _ = require('underscore');
 
 
 var InputMixin = module.exports.InputMixin = {
+    formValues: {},
+
+    setFormValue: function(ref, value) {
+        this.formValues[ref] = value;
+    },
+
+    getFormValue: function(ref) {
+        return this.formValues[ref];
+    },
+
     getInitialState: function() {
         return {formErrors: {}};
     },
@@ -13,9 +23,9 @@ var InputMixin = module.exports.InputMixin = {
     },
 
     // Set form errors without affecting ones already set
-    setFormErrors: function(id, msg) {
+    setFormErrors: function(ref, msg) {
         var formErrors = this.state.formErrors;
-        formErrors[id] = msg;
+        formErrors[ref] = msg;
         this.setState({formErrors: formErrors});
     },
 
@@ -25,6 +35,22 @@ var InputMixin = module.exports.InputMixin = {
         var errors = this.state.formErrors;
         errors[id] = '';
         this.setState({formErrors: errors});
+    },
+
+    // Do form validation on the required fields. Each field checked
+    // must have a unique ref, and the boolean 'required' field set if
+    // it's required. The Input
+    validateRequired: function() {
+        var valid = true;
+        Object.keys(this.refs).forEach(function(ref) {
+            if (this.refs[ref].props.required && !this.getFormValue(ref)) {
+                // Required field has no value. Set error state to render
+                // error, and remember to return false.
+                this.setFormErrors(ref, 'Required');
+                valid = false;
+            }
+        }, this);
+        return valid;
     }
 };
 

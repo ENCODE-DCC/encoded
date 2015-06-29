@@ -37,24 +37,16 @@ var CreateGeneDisease = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    // Holds data from the form
-    formdata: {},
-
     // Basic form content validation
     validateForm: function() {
-        var valid = true;
+        // Check if required fields have values
+        var valid = this.validateRequired();
 
-        if (!this.formdata.hgncgene) {
-            this.setFormErrors('hgnc-gene', 'Required');
-            valid = false;
-        }
-        if (!this.formdata.orphanetid) {
-            this.setFormErrors('orphanet-id', 'Required');
-            valid = false;
-        } else {
-            valid = this.formdata.orphanetid.match(/^ORPHA[0-9]{1,6}$/i);
+        // Check if orphanetid 
+        if (valid) {
+            valid = this.getFormValue('orphanetid').match(/^ORPHA[0-9]{1,6}$/i);
             if (!valid) {
-                this.setFormErrors('orphanet-id', 'Use the form ORPHAxxxx');
+                this.setFormErrors('orphanetid', 'Use the form ORPHAxxxx');
             }
         }
         return valid;
@@ -62,17 +54,15 @@ var CreateGeneDisease = React.createClass({
 
     // When the form is submitted...
     submitForm: function(e) {
-        var formdata = {};
-
         e.preventDefault(); // Don't run through HTML submit handler
 
         // Get values from form and validate them
-        this.formdata.hgncgene = this.refs.hgncgene.getValue();
-        this.formdata.orphanetid = this.refs.orphanetid.getValue();
-        this.formdata.omimid = this.refs.omimid.getValue();
-        this.formdata.hpo = this.refs.hpo.getSelectedOption();
+        this.setFormValue('hgncgene', this.refs.hgncgene.getValue());
+        this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
+        this.setFormValue('omimid', this.refs.omimid.getValue());
+        this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
-            var orphaId = this.formdata.orphanetid.match(/^ORPHA([0-9]{1,6})$/i)[1];
+            var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
 
             // Verify orphanet ID exists in DB
             var url = '/diseases/' + orphaId;
@@ -87,7 +77,7 @@ var CreateGeneDisease = React.createClass({
             })
             .catch(function() {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
-                this.setFormErrors('orphanet-id', 'Orphanet ID not found');
+                this.setFormErrors('orphanetid', 'Orphanet ID not found');
             }.bind(this))
             .then(this.receive);
         }
@@ -108,11 +98,11 @@ var CreateGeneDisease = React.createClass({
                 <h1>{this.props.context.title}</h1>
                 <form onSubmit={this.submitForm} className="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
                     <div className="row">
-                        <Input type="text" id="hgnc-gene" ref="hgncgene" label={<LabelHgncGene />}
-                            error={formErrors['hgnc-gene']} clearError={this.clrFormErrors.bind(null, 'hgnc-gene')}
+                        <Input type="text" id="hgncgene" ref="hgncgene" label={<LabelHgncGene />}
+                            error={formErrors['hgncgene']} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
-                        <Input type="text" id="orphanet-id" ref="orphanetid" label={<LabelOrphanetId />}
-                            error={formErrors['orphanet-id']} clearError={this.clrFormErrors.bind(null, 'orphanet-id')}
+                        <Input type="text" id="orphanetid" ref="orphanetid" label={<LabelOrphanetId />}
+                            error={formErrors['orphanetid']} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
                         <Input type="select" id="hpo" ref="hpo" label="Mode of Inheritance"
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
@@ -120,8 +110,8 @@ var CreateGeneDisease = React.createClass({
                                 return <option key={v.value} value={v.value}>{v.text}</option>;
                             })}
                         </Input>
-                        <Input type="text" id="omim-id" ref="omimid" label={<LabelOmimId />}
-                            error={formErrors['omim-id']} clearError={this.clrFormErrors.bind(null, 'omim-id')}
+                        <Input type="text" id="omimid" ref="omimid" label={<LabelOmimId />}
+                            error={formErrors['omimid']} clearError={this.clrFormErrors.bind(null, 'omim-id')}
                             labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                         <Input type="submit" wrapperClassName="pull-right" id="submit" />
                     </div>
