@@ -27,7 +27,8 @@ ORDER = [
     'image',
     'page',
     'curator_page',
-    'genes',
+    'gene',
+    #'genes',
     'orphaPhenotype',
     'article',
 ]
