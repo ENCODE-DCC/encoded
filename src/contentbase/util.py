@@ -24,10 +24,8 @@ def simple_path_ids(obj, path):
     value = obj.get(name, None)
     if value is None:
         return
-    if isinstance(value, list):
-        for member in value:
-            for result in simple_path_ids(member, remaining):
-                yield result
-    else:
-        for result in simple_path_ids(value, remaining):
+    if not isinstance(value, list):
+        value = [value]
+    for member in value:
+        for result in simple_path_ids(member, remaining):
             yield result

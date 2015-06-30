@@ -608,16 +608,12 @@ def traversed_path_ids(request, obj, path):
     value = obj.get(name, None)
     if value is None:
         return
-    if isinstance(value, list):
-        for member in value:
-            if remaining and isinstance(member, basestring):
-                member = request.embed(member, '@@object')
-            for item_uri in traversed_path_ids(request, member, remaining):
-                yield item_uri
-    else:
-        if remaining and isinstance(value, basestring):
-            value = request.embed(value, '@@object')
-        for item_uri in traversed_path_ids(request, value, remaining):
+    if not isinstance(value, list):
+        value = [value]
+    for member in value:
+        if remaining and isinstance(member, basestring):
+            member = request.embed(member, '@@object')
+        for item_uri in traversed_path_ids(request, member, remaining):
             yield item_uri
 
 
