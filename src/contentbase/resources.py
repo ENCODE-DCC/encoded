@@ -614,7 +614,7 @@ def simple_path_ids(obj, path):
             yield result
 
 
-def path_ids(request, obj, path):
+def traversed_path_ids(request, obj, path):
     if isinstance(path, basestring):
         path = path.split('.')
     if not path:
@@ -629,19 +629,19 @@ def path_ids(request, obj, path):
         for member in value:
             if remaining and isinstance(member, basestring):
                 member = request.embed(member, '@@object')
-            for item_uri in path_ids(request, member, remaining):
+            for item_uri in traversed_path_ids(request, member, remaining):
                 yield item_uri
     else:
         if remaining and isinstance(value, basestring):
             value = request.embed(value, '@@object')
-        for item_uri in path_ids(request, value, remaining):
+        for item_uri in traversed_path_ids(request, value, remaining):
             yield item_uri
 
 
 def inherit_audits(request, embedded, embedded_paths):
     audit_paths = {embedded['@id']}
     for embedded_path in embedded_paths:
-        audit_paths.update(path_ids(request, embedded, embedded_path))
+        audit_paths.update(traversed_path_ids(request, embedded, embedded_path))
 
     audits = {}
     for audit_path in audit_paths:
