@@ -149,7 +149,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = request.embed(item_uri, '@@details', as_user=True)
+        rendered = request.embed(item_uri, '@@object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201

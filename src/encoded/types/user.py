@@ -17,6 +17,7 @@ from contentbase import (
     item_view_object,
     collection,
 )
+from contentbase.calculated import calculate_properties
 
 
 @collection(
@@ -51,10 +52,16 @@ class User(Item):
         return {owner: 'role.owner'}
 
 
-@view_config(context=User, permission='view_details', request_method='GET',
-             name='details')
-def user_details_view(context, request):
-    return item_view_object(context, request)
+@view_config(context=User, permission='view', request_method='GET', name='page')
+def user_page_view(context, request):
+    if request.has_permission('view_details'):
+        properties = item_view_object(context, request)
+    else:
+        item_path = request.resource_path(context)
+        properties = request.embed(item_path, '@@object')
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
+    return properties
 
 
 @view_config(context=User, permission='view', request_method='GET',
@@ -80,5 +87,5 @@ def current_user(request):
         return {}
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid, '@@details')
+    path = request.resource_path(collection, userid)
     return request.embed(path, as_user=True)

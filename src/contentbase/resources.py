@@ -438,8 +438,6 @@ def uuid_to_path(request, obj, path):
 
 @view_config(context=Item, permission='view', request_method='GET',
              name='object')
-@view_config(context=Item, permission='view', request_method='GET',
-             name='details')
 def item_view_object(context, request):
     """ Render json structure
 

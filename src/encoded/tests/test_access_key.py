@@ -33,7 +33,9 @@ def no_login_submitter(testapp, lab, award):
         'submits_for': [lab['@id']],
         'status': 'disabled',
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
