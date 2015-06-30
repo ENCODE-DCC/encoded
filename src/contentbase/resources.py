@@ -22,7 +22,6 @@ from pyramid.security import (
 )
 from pyramid.settings import asbool
 from pyramid.traversal import (
-    find_root,
     resource_path,
 )
 from pyramid.view import (
@@ -374,10 +373,8 @@ def collection_list(context, request):
     if request.query_string:
         properties['@id'] += '?' + request.query_string
 
-    root = find_root(context)
-    if context.__name__ in root['pages']:
-        properties['default_page'] = request.embed(
-            '/pages/%s/@@page' % context.__name__, as_user=True)
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
 
     result = request.embed(path, '@@listing?' + request.query_string, as_user=True)
     result.update(properties)
@@ -727,15 +724,11 @@ def item_index_data(context, request):
 
 @view_config(context=Root, request_method='GET')
 def home(context, request):
-    result = context.__json__(request)
-    result.update({
+    properties = context.__json__(request)
+    properties.update({
         '@id': request.resource_path(context),
         '@type': ['portal'],
     })
-
-    try:
-        result['default_page'] = request.embed('/pages/homepage/@@page', as_user=True)
-    except KeyError:
-        pass
-
-    return result
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
+    return properties

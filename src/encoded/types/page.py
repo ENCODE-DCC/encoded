@@ -5,7 +5,9 @@ from contentbase.schema_utils import (
 from contentbase import (
     COLLECTIONS,
     CONNECTION,
+    Collection,
     ROOT,
+    Root,
     calculated_property,
     collection,
     item_view_page,
@@ -133,3 +135,35 @@ def page_view_page(context, request):
         if 'item' in block and block['item']:
             block['item'] = request.embed(block['item'], '@@page', as_user=True)
     return properties
+
+
+@calculated_property(
+    category='page',
+    name='default_page',
+    context=Collection,
+    schema={
+        "title": "Default page",
+        "type": "string",
+        "linkTo": "page",
+    })
+def collection_default_page(context, request):
+    try:
+        return request.embed('/pages/%s/@@page' % context.__name__, as_user=True)
+    except KeyError:
+        pass
+
+
+@calculated_property(
+    category='page',
+    name='default_page',
+    context=Root,
+    schema={
+        "title": "Default page",
+        "type": "string",
+        "linkTo": "page",
+    })
+def root_default_page(context, request):
+    try:
+        return request.embed('/pages/homepage/@@page', as_user=True)
+    except KeyError:
+        pass
