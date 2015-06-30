@@ -476,8 +476,6 @@ def item_view_page(context, request):
     properties = request.embed(item_path, '@@embedded')
     calculated = calculate_properties(context, request, properties, category='page')
     properties.update(calculated)
-    if request.has_permission('audit', context):
-        properties['audit'] = request.embed(item_path, '@@audit')['audit']
     return properties
 
 
@@ -563,6 +561,13 @@ def item_view_audit(context, request):
         '@id': path,
         'audit': audit,
     }
+
+
+@calculated_property(context=Item, category='page',
+                     condition=lambda request: request.has_permission('audit'))
+def audit(context, request):
+    path = request.resource_path(context)
+    return request.embed(path, '@@audit')['audit']
 
 
 @view_config(context=Item, permission='view_raw', request_method='GET',
