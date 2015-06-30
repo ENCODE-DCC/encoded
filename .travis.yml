@@ -9,19 +9,11 @@ addons:
   - graphviz
 env:
   global:
-    - secure: |-
-        CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
-        cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
-        7diAxOq7YSxxqA2XdtLydkNlo85BWoucmc0yHEl3weNR9554UmM=
-    - secure: |-
-        WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
-        SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
-        ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
+    - secure: "TJYx9N1ZqFPTt5IBhc7GRQNEr5d7HlhRzXv8UnWCT1OSW4j1AHhXJ2Uql4tIUx0frwrSySCOMx+PFtg0vvf0iYOAR4jNl+/cgLV/6JgtnuGiKG3Pwyu7r3ED0I2v0ZV2jSVGAd0VW5/l4Wq7ZFRaPb6YQHKQ6HIhM+4CXaITT3Gg5+Q/ELCMTuxYqG0kFmRAuu+qsJYOFrbxvGuELhlRuYsSGKJj95YuJO2ImHLbbhwyERUPsVtZPk3om10TAT3o+nNqfy+CZNTmi7jusYcdOO/OJ8CDD/CM9bBnr65TQZix6ThTDT0wsGDYQiIgopWiu+reAkDAvI1zkOZcFHket7On1lC6eBATSTg1NZOV+aaSTJsyZzGH8qjGgOhsnIqTwrQ5/IphzzuORnpP2L1x0njYTssAM7F4xeCmlrLohzEsp2GLVacZE13kwZc1HLcldxM8deTtksoQxEZxFa6m4awOuBZqDTyAYUaf8BKv1YBGeNUxuUBe0e7o9AyS8cuOBfDaZ0/8I2hMgW2oXK6r+Gj8oZCaY1eY02b+E2LOZIiRiHxSjwMmi9TgySuQDWCjnv7Mqi3cWFiMshXNdPwASe0uRG1vskNwXJR9iBumvHPWcKUtb+LAGfSGAHfTnmWex3xcsDfLC6lgmxp/ZWWcUNJ1I38TIaoR0LLeU+k+DSg="
+    - secure: "VU4CFUVXtaiDY+9+ic2RR7A5jzpPkRIw0D0txoLiAJPw6pjtAuifiNBF0q1f9WIEL7KX97ekJgskPN+3Z20AYpe9FHwR8JiMAxvHudI8ygjP8dwJ6Asr4MssvfToXzkdKRkV8fPnREgy9tNPrZTGp2X7oexr5D8rSKjwrVqtVDQJCKaHPIDgWwo877KLsn8pTJcGCJ76IT7xmXwRDkFnxOZgQPIJaiyXLhf28zO+GvgkXQu1dpvuhk+SeAMyIgpaRRvIEnUV4z4kGet/nfwzxI9H8zZoqyJemgMyVZeES2TKfjXKpCO+QqxgYsoteUDu41yKV4p/0UuuTsgD/yEm7Fe0T1aTu5nJAaS5cQjWjuCYUF3KmZKHcEnkU9ASn3AOEBNkK1zZrvu772Gnky+22kgcrrWqBbzw6FRkfYGHnuAQqg6NUtazrFJKxBEAZ5fefc4328xYV8N/RPhIU7x8diRmzSMctEdpyj6Ie7F1nYzE3LEqBCJugzhDzE+PhqYwG17KTJGnMOtNtc4ohX0GNK3bS1aeMWquRMozuUYq4XlBYqSyQnk7njbbbJ9kr4bm/RJhgX3ZgoWnkY3NxbwJIF2r4Px4IuMF0qgLq8G/H90tnSXSv3HU4oT/oXZt6IqmoDwzll9AaCiPO7/csqOJ8KrIYtTj6kXpU2zEHWcSaeA="
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
-    - python: "2.7"
-      env: BROWSER=
     - python: "3.4"
       env: BROWSER=Chrome
     - python: "3.4"

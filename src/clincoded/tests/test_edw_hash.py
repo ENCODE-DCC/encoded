@@ -9,5 +9,5 @@ TEST_HASHES = {
 
 @pytest.mark.parametrize(('password', 'pwhash'), TEST_HASHES.items())
 def test_edw_hash(password, pwhash):
-    from encoded.edw_hash import EDWHash
+    from clincoded.edw_hash import EDWHash
     assert EDWHash.encrypt(password) == pwhash

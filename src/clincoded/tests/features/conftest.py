@@ -1,6 +1,6 @@
 import pytest
 
-pytest_plugins = 'encoded.tests.bdd'
+pytest_plugins = 'clincoded.tests.bdd'
 
 
 # patch cookie support back into spliter's remote webdriver
@@ -25,7 +25,7 @@ def app(app_settings):
     from .. import test_indexing
     from contentbase.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
-        create_mapping.run(app)
+        # create_mapping.run(app)
         yield app
 
 
@@ -44,8 +44,8 @@ def workbook(app):
 
     from ...loadxl import load_all
     from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    inserts = resource_filename('clincoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('clincoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
 
     testapp.post_json('/index', {})

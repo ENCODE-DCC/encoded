@@ -10,28 +10,28 @@ _app_settings = {
     'collection_datastore': 'database',
     'item_datastore': 'database',
     'multiauth.policies': 'persona session remoteuser accesskey',
-    'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
-    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
+    'multiauth.groupfinder': 'clincoded.authorization.groupfinder',
+    'multiauth.policy.persona.use': 'clincoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.persona.base': 'clincoded.persona.PersonaAuthenticationPolicy',
     'multiauth.policy.persona.namespace': 'persona',
-    'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.use': 'clincoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
     'multiauth.policy.session.namespace': 'mailto',
-    'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.remoteuser.use': 'clincoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
-    'multiauth.policy.accesskey.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.accesskey.use': 'clincoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.accesskey.namespace': 'accesskey',
-    'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
-    'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
+    'multiauth.policy.accesskey.base': 'clincoded.authentication.BasicAuthAuthenticationPolicy',
+    'multiauth.policy.accesskey.check': 'clincoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.verifier': 'browserid.LocalVerifier',
-    'persona.siteName': 'ENCODE DCC Submission',
+    'persona.siteName': 'ClinGen Submission',
     'load_test_only': True,
     'testing': True,
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
-    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
+    'ontology_path': pkg_resources.resource_filename('clincoded', '../../ontology.json'),
 }
 
 
@@ -138,7 +138,7 @@ def dummy_request(root, registry, app):
 def app(zsa_savepoints, check_constraints, app_settings):
     '''WSGI application level functional testing.
     '''
-    from encoded import main
+    from clincoded import main
     return main({}, **app_settings)
 
 
@@ -172,8 +172,8 @@ def workbook(connection, app, app_settings):
 
         from ..loadxl import load_all
         from pkg_resources import resource_filename
-        inserts = resource_filename('encoded', 'tests/data/inserts/')
-        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        inserts = resource_filename('clincoded', 'tests/data/inserts/')
+        docsdir = [resource_filename('clincoded', 'tests/data/documents/')]
         load_all(testapp, inserts, docsdir)
 
         yield
@@ -322,7 +322,7 @@ def server(_server, external_tx):
 @pytest.mark.fixture_lock('contentbase.storage.DBSession')
 @pytest.yield_fixture(scope='session')
 def connection(request, engine_url):
-    from encoded import configure_engine
+    from clincoded import configure_engine
     from contentbase.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
@@ -549,7 +549,7 @@ def no_deps(request, connection):
 def lab(testapp):
     item = {
         'name': 'encode-lab',
-        'title': 'ENCODE lab',
+        'title': 'ClinGen lab',
     }
     return testapp.post_json('/lab', item).json['@graph'][0]
 
@@ -581,7 +581,7 @@ def wrangler(testapp):
 @pytest.fixture
 def submitter(testapp, lab, award):
     item = {
-        'first_name': 'ENCODE',
+        'first_name': 'ClinGen',
         'last_name': 'Submitter',
         'email': 'encode_submitter@example.org',
         'submits_for': [lab['@id']],
@@ -616,9 +616,9 @@ def remc_member(testapp):
 def award(testapp):
     item = {
         'name': 'encode3-award',
-        'rfa': 'ENCODE3',
-        'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
+        'rfa': 'ClinGen3',
+        'project': 'ClinGen',
+        'viewing_group': 'ClinGen',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -626,12 +626,12 @@ def award(testapp):
 @pytest.fixture
 def encode2_award(testapp):
     item = {
-        # upgrade/shared.py ENCODE2_AWARDS
+        # upgrade/shared.py ClinGen2_AWARDS
         'uuid': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
         'name': 'encode2-award',
-        'rfa': 'ENCODE2',
-        'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
+        'rfa': 'ClinGen2',
+        'project': 'ClinGen',
+        'viewing_group': 'ClinGen',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -855,21 +855,21 @@ def publication(testapp, lab, award):
     return testapp.post_json('/publication', item).json['@graph'][0]
 
 
-@pytest.fixture
-def pipeline(testapp):
-    item = {
-        'title': "Test pipeline",
-    }
-    return testapp.post_json('/pipeline', item).json['@graph'][0]
+# @pytest.fixture
+# def pipeline(testapp):
+#     item = {
+#         'title': "Test pipeline",
+#     }
+#     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-@pytest.fixture
-def workflow_run(testapp, pipeline):
-    item = {
-        'pipeline': pipeline['@id'],
-        'status': 'finished',
-    }
-    return testapp.post_json('/workflow_run', item).json['@graph'][0]
+# @pytest.fixture
+# def workflow_run(testapp, pipeline):
+#     item = {
+#         'pipeline': pipeline['@id'],
+#         'status': 'finished',
+#     }
+#     return testapp.post_json('/workflow_run', item).json['@graph'][0]
 
 
 @pytest.fixture
