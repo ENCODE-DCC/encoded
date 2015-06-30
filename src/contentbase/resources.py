@@ -57,7 +57,11 @@ def includeme(config):
     config.scan(__name__)
 
 
-class Root(object):
+class Resource(object):
+    pass
+
+
+class Root(Resource):
     __name__ = ''
     __parent__ = None
     __acl__ = [
@@ -102,7 +106,7 @@ class Root(object):
         return self.properties.copy()
 
 
-class Collection(Mapping):
+class Collection(Resource, Mapping):
     properties = {}
     unique_key = None
 
@@ -162,7 +166,7 @@ class Collection(Mapping):
         return self.properties.copy()
 
 
-class Item(object):
+class Item(Resource):
     item_type = 'item'
     base_types = ['item']
     name_key = None
@@ -366,10 +370,6 @@ def collection_list(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
 
-    actions = request.embed(path, '@@actions', as_user=True)['actions']
-    if actions:
-        properties['actions'] = actions
-
     if request.query_string:
         properties['@id'] += '?' + request.query_string
 
@@ -463,20 +463,10 @@ def item_view_embedded(context, request):
     return properties
 
 
-@view_config(context=Item, permission='view', request_method='GET',
-             name='actions')
-@view_config(context=Collection, permission='list', request_method='GET',
-             name='actions')
-def item_actions(context, request):
-    ns = {
-        'has_permission': request.has_permission,
-        'item_uri': request.resource_path(context),
-        'item_type': context.item_type,
-    }
-    actions = calculate_properties(context, request, ns, category='action')
-    return {
-        'actions': list(actions.values()),
-    }
+@calculated_property(context=Resource, category='page')
+def actions(context, request):
+    actions = calculate_properties(context, request, category='action')
+    return list(actions.values())
 
 
 @view_config(context=Item, permission='view', request_method='GET',
@@ -484,9 +474,8 @@ def item_actions(context, request):
 def item_view_page(context, request):
     item_path = request.resource_path(context)
     properties = request.embed(item_path, '@@embedded')
-    actions = request.embed(item_path, '@@actions', as_user=True)['actions']
-    if actions:
-        properties['actions'] = actions
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
     if request.has_permission('audit', context):
         properties['audit'] = request.embed(item_path, '@@audit')['audit']
     return properties
