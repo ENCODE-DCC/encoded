@@ -1,0 +1,43 @@
+.form-control {
+    @include border-radius(2px);
+    font-size: 1rem;
+}
+
+.form-std {
+    input[type=submit] {
+        margin-bottom: 40px;
+    }
+
+    p {
+        color: #606060;
+    }
+}
+
+.form-create-gene-disease {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.form-error {
+    color: red;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=search] {
+    &.error {
+        border: 1px solid red;
+        background-color: #f0d8d0;
+    }
+}
+
+.uppercase-input {
+    text-transform: uppercase;
+}
+
+.form-group-inline {
+    display: inline-block;
+}
