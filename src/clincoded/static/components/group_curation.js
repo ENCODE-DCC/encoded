@@ -49,7 +49,7 @@ var GroupCuration = React.createClass({
                     : null}
                     <div className="row group-curation-content">
                         <div className="col-sm-8">
-                            <Form formClassName="form-horizontal">
+                            <Form formClassName="form-horizontal form-std">
                                 <Panel>
                                     <GroupName />
                                 </Panel>
@@ -78,6 +78,7 @@ var GroupCuration = React.createClass({
                                         <GroupAdditional />
                                     </Panel>
                                 </PanelGroup>
+                                <Input type="submit" wrapperClassName="pull-right" id="submit" />
                             </Form>
                         </div>
                         {currPmidItem ?
@@ -117,7 +118,7 @@ var GroupCommonDiseases = React.createClass({
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
                 <Input type="textarea" ref="phenoterms" label={<LabelPhenoTerms />} rows="5"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-                <p>Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper</p>
+                <p className="col-sm-7 col-sm-offset-5">Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper.</p>
                 <Input type="text" ref="nothpoid" label={<LabelHpoId not />}
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
                 <Input type="textarea" ref="phenoterms" label={<LabelPhenoTerms not />} rows="5"
@@ -188,7 +189,7 @@ var GroupDemographics = React.createClass({
                     <option value="mixed">Mixed</option>
                     <option value="unknown">Unknown</option>
                 </Input>
-                <h4>Age Range</h4>
+                <h4 className="col-sm-7 col-sm-offset-5">Age Range</h4>
                 <div className="demographics-age-range">
                     <Input type="select" ref="agerangetype" label="Type:"
                         labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group">
@@ -256,7 +257,7 @@ var GroupMethods = React.createClass({
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
                 </Input>
-                <h4>Genotyping Method</h4>
+                <h4 className="col-sm-7 col-sm-offset-5">Genotyping Method</h4>
                 <Input type="select" ref="genotypingmethod1" label="Method 1:"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group">
                     <option value="yes">Exome sequencing</option>
@@ -308,7 +309,7 @@ var GroupAdditional = React.createClass({
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                 <Input type="textarea" ref="otherpmids" label="Add any other PMID(s) that have evidence about this same Group:" rows="5"
                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-                <p>Note: Any variants associated with Individuals in the group who will be counted as probands are not captured at the Group level — they need to be captured at the Family level or Individual levels. Submit the Group information and you will be prompted to enter Family or Individual information after that.</p>
+                <p className="col-sm-7 col-sm-offset-5">Note: Any variants associated with Individuals in the group who will be counted as probands are not captured at the Group level — they need to be captured at the Family level or Individual levels. Submit the Group information and you will be prompted to enter Family or Individual information after that.</p>
             </div>
         );
     }

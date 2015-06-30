@@ -4,12 +4,12 @@
 }
 
 .form-std {
-    background-color: #f0f0f0;
-    border: 1px solid #c0c0c0;
-    padding: 20px 30px;
+    input[type=submit] {
+        margin-bottom: 40px;
+    }
 
-    @media screen and (min-width: $screen-sm-min) {
-        padding: 40px 50px 20px;
+    p {
+        color: #606060;
     }
 }
 

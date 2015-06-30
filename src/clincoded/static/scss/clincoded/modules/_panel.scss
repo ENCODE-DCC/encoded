@@ -23,6 +23,10 @@
         background-color: $color-trim;
         color: #fff;
         text-decoration: none;
+
+        &:hover {
+            background-color: $color-trim-dark;
+        }
     }
 }
 
@@ -44,4 +48,5 @@
     line-height: 260%;
     margin-right: 10px;
     color: #fff;
+    pointer-events: none;
 }

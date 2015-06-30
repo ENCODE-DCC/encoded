@@ -3,11 +3,13 @@ var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var form = require('../libs/bootstrap/form');
+var panel = require('../libs/bootstrap/panel');
 var parseAndLogError = require('./mixins').parseAndLogError;
 
 var Form = form.Form;
 var Input = form.Input;
 var InputMixin = form.InputMixin;
+var Panel = panel.Panel;
 
 
 var hpoValues = [
@@ -95,26 +97,30 @@ var CreateGeneDisease = React.createClass({
         return (
             <div className="container">
                 <h1>{this.props.context.title}</h1>
-                <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std form-create-gene-disease col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1">
-                    <div className="row">
-                        <Input type="text" ref="hgncgene" label={<LabelHgncGene />}
-                            error={this.getFormError('hgncgene')} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
-                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
-                        <Input type="text" ref="orphanetid" label={<LabelOrphanetId />}
-                            error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
-                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
-                        <Input type="select" ref="hpo" label="Mode of Inheritance"
-                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
-                            {hpoValues.map(function(v, i) {
-                                return <option key={v.value} value={v.value}>{v.text}</option>;
-                            })}
-                        </Input>
-                        <Input type="text" ref="omimid" label={<LabelOmimId />}
-                            error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim-id')}
-                            labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-                        <Input type="submit" wrapperClassName="pull-right" id="submit" />
-                    </div>
-                </Form>
+                <div className="col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 form-create-gene-disease">
+                    <Panel>
+                        <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
+                            <div className="row">
+                                <Input type="text" ref="hgncgene" label={<LabelHgncGene />}
+                                    error={this.getFormError('hgncgene')} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
+                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
+                                <Input type="text" ref="orphanetid" label={<LabelOrphanetId />}
+                                    error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
+                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
+                                <Input type="select" ref="hpo" label="Mode of Inheritance"
+                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
+                                    {hpoValues.map(function(v, i) {
+                                        return <option key={v.value} value={v.value}>{v.text}</option>;
+                                    })}
+                                </Input>
+                                <Input type="text" ref="omimid" label={<LabelOmimId />}
+                                    error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim-id')}
+                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
+                                <Input type="submit" wrapperClassName="pull-right" id="submit" />
+                            </div>
+                        </Form>
+                    </Panel>
+                </div>
             </div>
         );
     }
