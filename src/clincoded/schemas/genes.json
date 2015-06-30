@@ -30,27 +30,32 @@
         "hgncurl": {
             "title": "HGNC URL",
             "description": "Hyperlink to HGNC webpage of the gene",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "entrezid": {
             "title": "Entrez ID",
             "description": "Entrez id of the gene",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "entrezurl": {
             "title": "Entrez URL",
             "description": "Hyperlink to Entrez webpage of the gene",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "name": {
             "title": "Gene Name",
             "description": "Gene name",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "hgncStatus": {
             "title": "HGNC Status",
             "description": "Status of the genen in HGNC",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "synonyms": {
             "title": "Synonyms",
@@ -99,12 +104,14 @@
         "chromosome": {
             "title": "Chromosome",
             "description": "Chromosome location of the gene",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "locusType": {
             "title": "Locus Type",
             "description": "HGNC locus type of the gene",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "omimids": {
             "title": "OMIM IDs",
