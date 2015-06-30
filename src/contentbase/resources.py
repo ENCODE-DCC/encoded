@@ -33,9 +33,6 @@ from .calculated import (
     calculate_properties,
     calculated_property,
 )
-from .embedding import (
-    expand_path,
-)
 from .etag import etag_tid
 from .interfaces import (
     COLLECTIONS,
@@ -47,6 +44,7 @@ from .interfaces import (
 from .validation import ValidationFailure
 from .util import (
     ensurelist,
+    expand_path,
     simple_path_ids,
 )
 

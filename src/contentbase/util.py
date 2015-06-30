@@ -29,3 +29,24 @@ def simple_path_ids(obj, path):
     for member in value:
         for result in simple_path_ids(member, remaining):
             yield result
+
+
+def expand_path(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if isinstance(value, list):
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = value[index] = request.embed(member, '@@object')
+            expand_path(request, member, remaining)
+    else:
+        if not isinstance(value, dict):
+            value = obj[name] = request.embed(value, '@@object')
+        expand_path(request, value, remaining)
