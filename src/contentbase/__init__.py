@@ -22,7 +22,7 @@ def includeme(config):
     config.include('.calculated')
     config.include('.config')
     config.include('.connection')
-    config.include('.embedding')
+    config.include('.embed')
     config.include('.json_renderer')
     config.include('.validation')
     config.include('.predicates')
