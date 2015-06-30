@@ -45,7 +45,10 @@ from .interfaces import (
     UPGRADER,
 )
 from .validation import ValidationFailure
-from .util import ensurelist
+from .util import (
+    ensurelist,
+    simple_path_ids,
+)
 
 
 _marker = object()
@@ -592,26 +595,6 @@ def item_view_edit(context, request):
         )
 
     return properties
-
-
-def simple_path_ids(obj, path):
-    if isinstance(path, basestring):
-        path = path.split('.')
-    if not path:
-        yield obj
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if isinstance(value, list):
-        for member in value:
-            for result in simple_path_ids(member, remaining):
-                yield result
-    else:
-        for result in simple_path_ids(value, remaining):
-            yield result
 
 
 def traversed_path_ids(request, obj, path):

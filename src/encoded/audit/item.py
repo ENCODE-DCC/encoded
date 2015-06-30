@@ -4,9 +4,9 @@ from contentbase.auditor import (
 )
 from contentbase import (
     UPGRADER,
-    simple_path_ids,
 )
 from contentbase.schema_utils import validate
+from contentbase.util import simple_path_ids
 
 
 @audit_checker('item', frame='object')
