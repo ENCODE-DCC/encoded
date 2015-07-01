@@ -59,7 +59,12 @@ def includeme(config):
 
 
 class Resource(object):
-    pass
+
+    @calculated_property(name='@id', schema={
+        "type": "string",
+    })
+    def jsonld_id(self, request):
+        return request.resource_path(self)
 
 
 class Root(Resource):
@@ -106,6 +111,15 @@ class Root(Resource):
     def __json__(self, request=None):
         return self.properties.copy()
 
+    @calculated_property(name='@type', schema={
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def jsonld_type(self):
+        return ['portal']
+
 
 class Collection(Resource, Mapping):
     properties = {}
@@ -149,6 +163,12 @@ class Collection(Resource, Mapping):
     def __len__(self):
         return self.connection.__len__(self.item_type)
 
+    def __hash__(self):
+        return object.__hash__(self)
+
+    def __eq__(self, other):
+        return self is other
+
     def get(self, name, default=None):
         resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
@@ -165,6 +185,18 @@ class Collection(Resource, Mapping):
 
     def __json__(self, request):
         return self.properties.copy()
+
+    @calculated_property(name='@type', schema={
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def jsonld_type(self):
+        return [
+            '{item_type}_collection'.format(item_type=self.item_type),
+            'collection',
+        ]
 
 
 class Item(Resource):
@@ -294,12 +326,6 @@ class Item(Resource):
         connection = self.registry[CONNECTION]
         connection.update(self.model, properties, sheets, unique_keys, links)
 
-    @calculated_property(name='@id', schema={
-        "type": "string",
-    })
-    def jsonld_id(self, request):
-        return request.resource_path(self)
-
     @calculated_property(name='@type', schema={
         "type": "array",
         "items": {
@@ -351,37 +377,40 @@ def collection_view_listing_db(context, request):
     return result
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
-             name='object')
-def collection_view_object(context, request):
-    uri = request.resource_path(context)
-    properties = context.__json__(request)
-    properties.update({
-        '@id': uri,
-        '@type': [
-            '{item_type}_collection'.format(item_type=context.item_type),
-            'collection',
-        ],
-    })
+@view_config(context=Root, request_method='GET', name='page')
+def home(context, request):
+    properties = request.embed(request.resource_path(context), '@@object')
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
     return properties
 
 
-@view_config(context=Collection, permission='list', request_method='GET')
+@view_config(context=Root, request_method='GET', name='object')
+@view_config(context=Collection, permission='list', request_method='GET', name='object')
+def collection_view_object(context, request):
+    properties = context.__json__(request)
+    calculated = calculate_properties(context, request, properties)
+    properties.update(calculated)
+    return properties
+
+
+@view_config(context=Collection, permission='list', request_method='GET', name='page')
 def collection_list(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
+    calculated = calculate_properties(context, request, properties, category='page')
+    properties.update(calculated)
 
     if request.query_string:
         properties['@id'] += '?' + request.query_string
-
-    calculated = calculate_properties(context, request, properties, category='page')
-    properties.update(calculated)
 
     result = request.embed(path, '@@listing?' + request.query_string, as_user=True)
     result.update(properties)
     return result
 
 
+@view_config(context=Root, request_method='GET')
+@view_config(context=Collection, permission='list', request_method='GET')
 @view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
@@ -396,7 +425,6 @@ def item_view(context, request):
             raise_with_traceback(exc, tb)
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
-
         path += '?' + request.query_string
     return request.embed(path, as_user=True)
 
@@ -689,15 +717,3 @@ def item_index_data(context, request):
     }
 
     return document
-
-
-@view_config(context=Root, request_method='GET')
-def home(context, request):
-    properties = context.__json__(request)
-    properties.update({
-        '@id': request.resource_path(context),
-        '@type': ['portal'],
-    })
-    calculated = calculate_properties(context, request, properties, category='page')
-    properties.update(calculated)
-    return properties
