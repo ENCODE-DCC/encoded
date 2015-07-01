@@ -130,7 +130,7 @@ def access_key_edit(context, request):
 
 @view_config(context=AccessKey, permission='view_raw', request_method='GET',
              name='raw')
-def item_view_raw(context, request):
+def access_key_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
         properties = context.upgrade_properties()
     else:
