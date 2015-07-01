@@ -12,11 +12,9 @@ from ..authentication import (
     generate_user,
     CRYPT_CONTEXT,
 )
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     collection,
+    load_schema,
 )
 from contentbase.crud_views import (
     collection_add,

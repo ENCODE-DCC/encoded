@@ -18,6 +18,7 @@ from .resources import (  # noqa
     Resource,
     Root,
 )
+from .schema_utils import load_schema  # noqa
 
 
 def includeme(config):

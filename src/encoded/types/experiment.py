@@ -1,10 +1,8 @@
 from pyramid.traversal import find_root
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,

@@ -8,13 +8,11 @@ from pyramid.security import (
     effective_principals,
 )
 from .base import Item
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     Root,
     calculated_property,
     collection,
+    load_schema,
 )
 from contentbase.calculated import calculate_properties
 from contentbase.resource_views import item_view_object

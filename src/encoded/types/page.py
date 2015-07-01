@@ -1,7 +1,4 @@
-from contentbase.schema_utils import (
-    load_schema,
-    VALIDATOR_REGISTRY,
-)
+from contentbase.schema_utils import VALIDATOR_REGISTRY
 from contentbase import (
     COLLECTIONS,
     CONNECTION,
@@ -10,6 +7,7 @@ from contentbase import (
     Root,
     calculated_property,
     collection,
+    load_schema,
 )
 from contentbase.resource_views import item_view_page
 from .base import (
