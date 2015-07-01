@@ -331,6 +331,7 @@
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "enrichment",
+                        "replication timing profile",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -343,9 +344,14 @@
                         "predicted forebrain enhancers",
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
+                        "candidate regulatory elements",
                         
                         "genome reference",
                         "genome index",
+                        "female genome reference",
+                        "female genome index",
+                        "male genome reference",
+                        "male genome index",
                         "spike-in sequence",
 
                         "enhancer validation"
@@ -389,7 +395,7 @@
 
                         "predicted transcription start sites",
                         "optimal idr thresholded peaks",
-                        "conserved idr thresholded peaks",
+                        "conservative idr thresholded peaks",
 
                         "validation",
 
@@ -619,6 +625,7 @@
         "unfiltered modified peptide quantification": "quantification",
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
+        "replication timing profile": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
@@ -636,16 +643,21 @@
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
         "optimal idr thresholded peaks": "annotation",
-        "conserved idr thresholded peaks": "annotation",
+        "conservative idr thresholded peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
-                
+        "candidate regulatory elements": "annotation",
+
         "genome index": "reference",
         "genome reference": "reference",
+        "female genome reference": "reference",
+        "female genome index": "reference",
+        "male genome reference": "reference",
+        "male genome index": "reference",
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",

@@ -20,7 +20,7 @@ Feature: Antibodies
         When I go back
         And I wait for the table to fully load
         When I click the link to "/antibodies/ENCAB000ADQ/"
-        And I should see an element with the css selector "div.data-display"
+        Then I should see an element with the css selector "div.data-display"
         And I should see "ENCAB000ADQ"
 
     Scenario: Detail page

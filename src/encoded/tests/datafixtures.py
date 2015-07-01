@@ -312,8 +312,10 @@ def publication(testapp, lab, award):
 
 
 @pytest.fixture
-def pipeline(testapp):
+def pipeline(testapp, lab, award):
     item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
         'title': "Test pipeline",
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]

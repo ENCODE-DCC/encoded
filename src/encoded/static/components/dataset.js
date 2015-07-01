@@ -231,7 +231,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     getInitialState: function() {
         return {
             col: {raw: 'accession', proc: 'accession'},
-            reversed: {raw: false, proc: false}
+            reversed: {raw: false, proc: false, ref: false}
         };
     },
 
@@ -367,10 +367,57 @@ var FileTable = module.exports.FileTable = React.createClass({
         return this.state.reversed.proc ? -diff : diff;
     },
 
+    sortColRef: function(a, b) {
+        var diff;
+
+        switch (this.state.col.ref) {
+            case 'title':
+                diff = a.title > b.title ? 1 : -1;
+                break;
+            case 'file_type':
+                diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
+                break;
+            case 'output_type':
+                var aLower = a.output_type.toLowerCase();
+                var bLower = b.output_type.toLowerCase();
+                diff = aLower > bLower ? 1 : (aLower === bLower ? 0 : -1);
+                break;
+            case 'assembly':
+                if (a.assembly && b.assembly) {
+                    diff = a.assembly > b.assembly ? 1 : (a.assembly === b.assembly ? 0 : -1);
+                } else {
+                    diff = a.assembly ? -1 : (b.assembly ? 1 : 0);
+                }
+                break;
+            case 'annotation':
+                if (a.genome_annotation && b.genome_annotation) {
+                    diff = a.genome_annotation > b.genome_annotation ? 1 : (a.genome_annotation === b.genome_annotation ? 0 : -1);
+                } else {
+                    diff = a.genome_annotation ? -1 : (b.genome_annotation ? 1 : 0);
+                }
+                break;
+            case 'lab':
+                diff = a.lab.title > b.lab.title ? 1 : (a.lab.title === b.lab.title ? 0 : -1);
+                break;
+            case 'date_created':
+                if (a.date_created && b.date_created) {
+                    diff = Date.parse(a.date_created) - Date.parse(b.date_created);
+                } else {
+                    diff = a.date_created ? -1 : (b.date_created ? 1 : 0);
+                }
+                break;
+            default:
+                diff = 0;
+                break;
+        }
+        return this.state.reversed.ref ? -diff : diff;
+    },
+
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rowsRaw = {};
         var rowsProc = {};
+        var rowsRef = {};
         var encodevers = this.props.encodevers;
         var cellClassRaw = {
             title: 'tcell-sort',
@@ -395,13 +442,30 @@ var FileTable = module.exports.FileTable = React.createClass({
             lab: 'tcell-sort',
             date_created: 'tcell-sort'
         };
+        var cellClassRef = {
+            title: 'tcell-sort',
+            file_type: 'tcell-sort',
+            output_type: 'tcell-sort',
+            assembly: 'tcell-sort',
+            annotation: 'tcell-sort',
+            lab: 'tcell-sort',
+            date_created: 'tcell-sort'
+        };
 
         var colCountRaw = Object.keys(cellClassRaw).length + (encodevers == "3" ? 1 : 0);
         var colCountProc = Object.keys(cellClassProc).length + (encodevers == "3" ? 1 : 0);
+        var colCountRef = Object.keys(cellClassRef).length + (encodevers == "3" ? 1 : 0);
         cellClassRaw[this.state.col.raw] = this.state.reversed.raw ? 'tcell-desc' : 'tcell-asc';
         cellClassProc[this.state.col.proc] = this.state.reversed.proc ? 'tcell-desc' : 'tcell-asc';
+        cellClassRef[this.state.col.ref] = this.state.reversed.ref ? 'tcell-desc' : 'tcell-asc';
         var files = _(this.props.items).groupBy(function(file) {
-            return file.output_category === 'raw data' ? 'raw' : 'proc';
+            if (file.output_category === 'raw data') {
+               return 'raw';
+            } else if (file.output_category === 'reference') {
+               return 'ref';
+            } else {
+               return 'proc';
+            }
         });
         if (files.raw) {
             files.raw.sort(this.sortColRaw).forEach(function (file) {
@@ -439,6 +503,26 @@ var FileTable = module.exports.FileTable = React.createClass({
                         <td>{file.output_type}</td>
                         <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
+                        <td>{file.assembly}</td>
+                        <td>{file.genome_annotation}</td>
+                        <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                        <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                        {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
+                    </tr>
+                );
+            });
+        }
+        if (files.ref) {
+            files.ref.sort(this.sortColRef).forEach(function (file) {
+                rowsRef[file['@id']] = (
+                    <tr>
+                        <td>
+                            {file.title}<br />
+                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                            {humanFileSize(file.file_size)}
+                        </td>
+                        <td>{file.file_type}</td>
+                        <td>{file.output_type}</td>
                         <td>{file.assembly}</td>
                         <td>{file.genome_annotation}</td>
                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
@@ -505,6 +589,34 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <tfoot>
                                 <tr>
                                     <td colSpan={colCountProc}></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                : null}
+
+                {files.ref ?
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr className="table-section"><th colSpan={colCountRef}>Reference data</th></tr>
+                                <tr>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'title')}>Accession<i className={cellClassRef.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'file_type')}>File type<i className={cellClassRef.file_type}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'output_type')}>Output type<i className={cellClassRef.output_type}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'assembly')}>Mapping assembly<i className={cellClassRef.assembly}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'annotation')}>Genome annotation<i className={cellClassRef.annotation}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'lab')}>Lab<i className={cellClassRef.lab}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'ref', 'date_created')}>Date added<i className={cellClassRef.date_created}></i></th>
+                                    {encodevers == "3" ? <th>Validation status</th> : null}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rowsRef}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan={colCountRef}></td>
                                 </tr>
                             </tfoot>
                         </table>
