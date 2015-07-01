@@ -492,7 +492,8 @@ def item_view_embedded(context, request):
 @calculated_property(context=Resource, category='page')
 def actions(context, request):
     actions = calculate_properties(context, request, category='action')
-    return list(actions.values())
+    if actions:
+        return list(actions.values())
 
 
 @view_config(context=Item, permission='view', request_method='GET',
