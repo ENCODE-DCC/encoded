@@ -304,7 +304,7 @@ var Table = module.exports.Table = React.createClass({
                             <form ref="form" className="form-inline col-sm-6 table-filter" onKeyUp={this.handleKeyUp} 
                                 data-skiprequest="true" data-removeempty="true">
                                 <div className="form-group table-filter-input">
-                                    <label for="table-filter">Filter table by:</label>
+                                    <label htmlFor="table-filter">Filter table by:</label>
                                     <input ref="q" disabled={this.state.communicating || undefined} 
                                         name="q" type="search" defaultValue={searchTerm} 
                                         className="form-control" id="table-filter" /> 

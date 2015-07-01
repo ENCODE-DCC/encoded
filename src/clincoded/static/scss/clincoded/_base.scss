@@ -14,9 +14,9 @@ body {
     position: relative;
 }
 
-h1, .h1 { font-size: $font-size-h1; }
-h2, .h2 { font-size: $font-size-h2; }
-h3, .h3 { font-size: $font-size-h3; }
+h1, .h1 { font-size: $font-size-h1; font-weight: 300; }
+h2, .h2 { font-size: $font-size-h2; font-weight: 300; }
+h3, .h3 { font-size: $font-size-h3; font-weight: 300; }
 h4, .h4 { font-size: $font-size-h4; }
 h5, .h5 { font-size: $font-size-h5; }
 h6, .h6 { font-size: $font-size-h6; }
@@ -28,14 +28,17 @@ p {
 input[type=text],
 input[type=password],
 input[type=email],
-input[type=search] {
+input[type=search],
+textarea.form-control {
     background-color: #f8f8f8;
 }
 
 .btn {
     @include border-radius(2px);
-    border: none;
     font-size: 1rem;
+}
+
+.btn-primary {
     border: none;
     background-color: $color-btn;
 

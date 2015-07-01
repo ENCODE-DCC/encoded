@@ -55,8 +55,12 @@
 @import "clincoded/variables";
 @import "clincoded/base";
 @import "clincoded/modules/navbar";
+@import "clincoded/modules/modal";
+@import "clincoded/modules/form";
+@import "clincoded/modules/panel";
 @import "clincoded/modules/curator";
 @import "clincoded/modules/table";
+@import "clincoded/modules/group_curation";
 
 // Utility classes - Bootstrap 3, keep last
 @import "bootstrap/utilities";
