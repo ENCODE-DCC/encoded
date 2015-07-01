@@ -27,7 +27,7 @@
             "title": "HGNC Symbol",
             "description": "HGNC Symbol of gene.",
             "type": "string",
-            "linkTo": "genes"
+            "linkTo": "gene"
         },
         "orphaNumber": {
             "title": "Orpha ID",

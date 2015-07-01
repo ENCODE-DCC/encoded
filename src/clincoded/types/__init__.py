@@ -20,14 +20,14 @@ def includeme(config):
 
 @collection(
     name='genes',
-    unique_key='genes:symbol',
+    unique_key='gene:symbol',
     properties={
         'title': 'HGNC Genes',
         'description': 'List of HGNC genes',
     })
 class Gene(Item):
-    item_type = 'genes'
-    schema = load_schema('clincoded:schemas/genes.json')
+    item_type = 'gene'
+    schema = load_schema('clincoded:schemas/gene.json')
     name_key = 'symbol'
 
 @collection(
@@ -72,12 +72,19 @@ class Gdm(Item):
         'annotations.article',
         'annotations.groups',
         'annotations.groups.commonDiagnosis',
+        'annotations.groups.otherGenes',
         'annotations.groups.familyIncluded',
         'annotations.groups.familyIncluded.commonDiagnosis',
         'annotations.groups.familyIncluded.individualIncluded',
         'annotations.groups.familyIncluded.individualIncluded.diagnosis',
         'annotations.groups.individualIncluded',
         'annotations.groups.individualIncluded.diagnosis',
+        'annotations.families',
+        'annotations.families.commonDiagnosis',
+        'annotations.families.individualIncluded',
+        'annotations.families.individualIncluded.diagnosis',
+        'annotations.individuals',
+        'annotations.groups.individuals.diagnosis',
     ]
 
 @collection(
@@ -95,12 +102,19 @@ class Annotation(Item):
         'article',
         'groups',
         'groups.commonDiagnosis',
+        'groups.otherGenes',
         'groups.familyIncluded',
         'groups.familyIncluded.commonDiagnosis',
         'group.familyIncluded.individualIncluded',
         'group.familyIncluded.individualIncluded.diagnosis',
         'groups.individualIncluded',
-        'groups.individualIncluded.diagnosis'
+        'groups.individualIncluded.diagnosis',
+        'families',
+        'families.commonDiagnosis',
+        'families.individualIncluded',
+        'families.individualIncluded.diagnosis',
+        'individuals',
+        'individuals.diagnosis',
     ]
 
 @collection(
@@ -116,7 +130,9 @@ class Group(Item):
     name_key = 'groupid'
     embedded = [
         'commonDiagnosis',
+        'otherGenes',
         'familyIncluded',
+        'familyIncluded.commonDiagnosis',
         'familyIncluded.individualIncluded',
         'familyIncluded.individualIncluded.diagnosis',
         'individualIncluded',

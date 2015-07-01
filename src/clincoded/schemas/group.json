@@ -192,7 +192,13 @@
             "title": "Other Gene(s)",
             "description": "List of other genes",
             "type": "array",
-            "default": []
+            "default": [],
+            "items": {
+                "title": "Symbol",
+                "description": "HGNC symbol",
+                "type": "string",
+                "linkTo": "gene"
+            }
         },
         "method": {
             "title": "Method",

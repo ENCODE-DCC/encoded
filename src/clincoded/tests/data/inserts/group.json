@@ -10,6 +10,10 @@
         "numberOfProbandsWithoutFamilyInformation": "1",
         "numberOfProbandWithVariantInGene": "3",
         "numberOfProbandsWithoutVariantInGene": "0",
+        "otherGenes": [
+            "TP53",
+            "TP63"
+        ],
         "method": "1",
         "familyIncluded": [
             "1",
@@ -31,6 +35,11 @@
         "numberOfProbandsWithoutFamilyInformation": "2",
         "numberOfProbandWithVariantInGene": "11",
         "numberOfProbandsWithoutVariantInGene": "1",
+        "otherGenes": [
+            "PIDD1",
+            "PPM1D",
+            "JMY"
+        ],
         "method": "4",
         "familyIncluded": [
             "3",
