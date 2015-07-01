@@ -46,13 +46,13 @@
         },
         "started_running": {
             "title": "Start time",
-            "description": "When the analysis started",
+            "description": "When the analysis was created",
             "type": "string",
             "format": "date-time"
         },
         "stopped_running": {
             "title": "Finish time",
-            "description": "When the analysis ended",
+            "description": "When the analysis was finished",
             "type": "string",
             "format": "date-time"
         },
