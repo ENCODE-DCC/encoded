@@ -10,8 +10,8 @@ from contentbase import (
     Root,
     calculated_property,
     collection,
-    item_view_page,
 )
+from contentbase.resource_views import item_view_page
 from .base import (
     ALLOW_EVERYONE_VIEW,
     Item,

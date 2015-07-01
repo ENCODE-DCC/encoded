@@ -6,12 +6,17 @@ if sys.version_info.major == 2:
     from backports.functools_lru_cache import lru_cache
     functools.lru_cache = lru_cache
 
-
-from contentbase.interfaces import *  # noqa
-from contentbase.resources import *  # noqa
-from contentbase.config import (  # noqa
+from .calculated import calculated_property  # noqa
+from .config import (  # noqa
     collection,
     root,
+)
+from .interfaces import *  # noqa
+from .resources import (  # noqa
+    Collection,
+    Item,
+    Resource,
+    Root,
 )
 
 
@@ -38,3 +43,4 @@ def includeme(config):
     config.include('.schema_views')
     config.include('.crud_views')
     config.include('.indexing_views')
+    config.include('.resource_views')

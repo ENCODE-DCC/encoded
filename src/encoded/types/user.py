@@ -14,10 +14,10 @@ from contentbase.schema_utils import (
 from contentbase import (
     Root,
     calculated_property,
-    item_view_object,
     collection,
 )
 from contentbase.calculated import calculate_properties
+from contentbase.resource_views import item_view_object
 
 
 @collection(
