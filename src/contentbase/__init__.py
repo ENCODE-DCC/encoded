@@ -19,6 +19,7 @@ from .resources import (  # noqa
     Root,
 )
 from .schema_utils import load_schema  # noqa
+from .upgrader import upgrade_step  # noqa
 
 
 def includeme(config):
