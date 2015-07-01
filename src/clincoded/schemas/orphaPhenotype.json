@@ -3,7 +3,7 @@
     "description": "Schema for storing and using Orphanet data.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["orphaNumber", "phenotypeName"],
+    "required": ["orphaNumber", "term"],
     "identifyingProperties": ["uuid", "orphaNumber"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -21,11 +21,16 @@
             "pattern": "^[0-9]{1,6}$",
             "uniqueKey": "orphaPhenotype:orphaNumber"
         },
-        "phenotypeName": {
-            "title": "Unique full name of Orphanet phenotype.",
-            "description": "Ontology term describing Orphanet phenotype.",
+        "term": {
+            "title": "Orphanet Term.",
+            "description": "Ontology term describing Orphanet diseases.",
             "type":  "string",
             "uniqueKey": "orphaPhenotype:orphaNumber"
+        },
+        "url": {
+            "title": "URL",
+            "description": "Hyperlink to Orphanet webpage of the disease",
+            "type":  "string"
         },
         "type": {
             "title": "Type.",
@@ -45,18 +50,27 @@
                 "Biological anomaly"
             ]
         },
-        "omimIds": {
+        "omimids": {
             "title": "OMIM ID",
-            "description": "OMIM identifier to Orphanet disease",
+            "description": "List of OMIM ids",
             "type": "array",
-            "default": "",
-            "pattern": "^[0-9]{6}$"
+            "default": [],
+            "items": {
+                "title": "OMIM ID",
+                "description": "OMIM ID",
+                "type": "string"
+            }
         },
         "synonyms": {
             "title": "Synonyms",
-            "description": "Synonym name(s) of Orphanet diseases.",
+            "description": "Lis of synonym of the disease.",
             "type": "array",
-            "default": ""
+            "default": [],
+            "items": {
+                "title": "Synonym",
+                "description": "Term of one synonym",
+                "type": "string"
+            }
         },
         "active": {
             "description": "boolean switch to set if the phenotype avaliable for curation.",
@@ -69,7 +83,7 @@
             "title": "ORPHA Number",
             "type": "string"
         },
-        "phenotypeName": {
+        "term": {
             "title": "Term",
             "type": "string"
         },
@@ -79,9 +93,9 @@
         },
         "synonyms": {
             "title": "Synonym(s)",
-            "type": "string"
+            "type": "array"
         },
-        "omimIds": {
+        "omimids": {
             "title": "OMIM ID(s)",
             "type": "string"
         }

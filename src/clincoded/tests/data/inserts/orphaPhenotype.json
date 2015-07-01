@@ -1,24 +1,25 @@
 [
     {
         "uuid": "78867c7a-16a6-11e5-8007-60f81dc5b05a",
-        "phenotypeName": "Achondroplasia",
+        "term": "Achondroplasia",
         "orphaNumber": "15",
-        "synonyms": [],
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=15",
         "active": true,
-        "omimIds": [
+        "omimids": [
             "100800"
         ],
         "type": "Disease"
     },
     {
         "uuid": "788aaf99-16a6-11e5-8661-60f81dc5b05a",
-        "phenotypeName": "Fanconi anemia",
+        "term": "Fanconi anemia",
         "orphaNumber": "84",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=84",
         "synonyms": [
             "Fanconi pancytopenia"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "609054",
             "610832",
             "613390",
@@ -39,14 +40,15 @@
     },
     {
         "uuid": "788ae1de-16a6-11e5-b341-60f81dc5b05a",
-        "phenotypeName": "Nephroblastoma",
+        "term": "Nephroblastoma",
         "orphaNumber": "654",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=654",
         "synonyms": [
             "Renal embryonic tumor",
             "Wilms tumor"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "194070",
             "194071",
             "194090",
@@ -57,24 +59,25 @@
     },
     {
         "uuid": "788aee73-16a6-11e5-8505-60f81dc5b05a",
-        "phenotypeName": "Severe combined immunodeficiency",
+        "term": "Severe combined immunodeficiency",
         "orphaNumber": "183660",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=183660",
         "synonyms": [
             "SCID"
         ],
         "active": true,
-        "omimIds": [],
         "type": "Group of phenomes"
     },
     {
         "uuid": "788c3bb0-16a6-11e5-8618-60f81dc5b05a",
-        "phenotypeName": "X-linked non-syndromic intellectual disability",
+        "term": "X-linked non-syndromic intellectual disability",
         "orphaNumber": "777",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=777",
         "synonyms": [
             "X-linked non-specific intellectual disability"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "300046",
             "300047",
             "300062",
@@ -117,14 +120,15 @@
     },
     {
         "uuid": "788cd05e-16a6-11e5-97c0-60f81dc5b05a",
-        "phenotypeName": "Congenital muscular dystrophy with intellectual disability",
+        "term": "Congenital muscular dystrophy with intellectual disability",
         "orphaNumber": "370968",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=370968",
         "synonyms": [
             "CMD with intellectual disability",
             "CMD-MR"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "606612",
             "608840",
             "613155",
@@ -135,27 +139,29 @@
     },
     {
         "uuid": "788d04b5-16a6-11e5-bc96-60f81dc5b05a",
-        "phenotypeName": "Aneurysm - osteoarthritis syndrome",
+        "term": "Aneurysm - osteoarthritis syndrome",
         "orphaNumber": "284984",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=284984",
         "synonyms": [
             "AOS"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "613795"
         ],
         "type": "Disease"
     },
     {
         "uuid": "788d45ab-16a6-11e5-9042-60f81dc5b05a",
-        "phenotypeName": "Familial exudative vitreoretinopathy",
+        "term": "Familial exudative vitreoretinopathy",
         "orphaNumber": "891",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=891",
         "synonyms": [
             "Criswick-Schepens syndrome",
             "FEVR"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "133780",
             "305390",
             "601813",
@@ -166,25 +172,26 @@
     },
     {
         "uuid": "788d967d-16a6-11e5-acfb-60f81dc5b05a",
-        "phenotypeName": "Pleuropulmonary blastoma",
+        "term": "Pleuropulmonary blastoma",
         "orphaNumber": "64742",
-        "synonyms": [],
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=64742",
         "active": true,
-        "omimIds": [
+        "omimids": [
             "601200"
         ],
         "type": "Disease"
     },
     {
         "uuid": "788e024f-16a6-11e5-a0b5-60f81dc5b05a",
-        "phenotypeName": "Milroy disease",
+        "term": "Milroy disease",
         "orphaNumber": "79452",
+        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=79452",
         "synonyms": [
             "Hereditary lymphedema type I",
             "Nonne-Milroy lymphedema"
         ],
         "active": true,
-        "omimIds": [
+        "omimids": [
             "153100",
             "247440",
             "611944",

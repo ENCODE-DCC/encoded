@@ -1,0 +1,85 @@
+{
+    "title": "Articles",
+    "description": "Schema for storing PubMed article data",
+    "id": "/profiles/article.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["pmid"],
+    "identifyingProperties": ["uuid", "pmid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "pmid": {
+            "title": "PMID",
+            "description": "Unique PubMed article id",
+            "type": "string",
+            "pattern": "^[0-9]{1,8}$",
+            "uniqueKey": true
+        },
+        "title": {
+            "title": "Title",
+            "description": "Title of atricle",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
+            "description": "Journal of article",
+            "type": "string"
+        },
+        "date": {
+            "title": "Date",
+            "description": "Date of published",
+            "type":  "string"
+        },
+        "firstAuthor": {
+            "title": "First Author",
+            "description": "First author of article",
+            "type": "string"
+        },
+        "abstract": {
+            "title": "Abstract",
+            "descripton": "Abstract of article",
+            "type": "string",
+            "default": ""
+        },
+        "url": {
+            "title": "URL",
+            "description": "Hyperlink to PubMed webpage",
+            "type": "string",
+            "format": "uri"
+        }
+    },
+    "columns": {
+        "pmid": {
+            "title": "PMID",
+            "type": "string"
+        },
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
+            "type": "string"
+        },
+        "date": {
+            "title": "Published",
+            "type": "string"
+        },
+        "firstAuthor": {
+            "title": "First Author",
+            "type": "string"
+        },
+        "abstract": {
+            "title": "Abstract",
+            "type": "string"
+        }
+    }
+}
