@@ -40,6 +40,7 @@ class Experiment(Dataset):
         'files.qc_metrics',
         'files.qc_metrics.step_run',
         'files.qc_metrics.step_run.analysis_step',
+        'control_for',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
@@ -101,6 +102,7 @@ class Experiment(Dataset):
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('replicate', 'experiment'),
+        'control_for': ('experiment', 'possible_controls')
     })
 
     @calculated_property(condition='biosample_term_id', schema={
@@ -183,6 +185,16 @@ class Experiment(Dataset):
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(schema={
+        "title": "Control for",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "experiment.possible_controls",
+        },
+    })
+    def control_for(self, request, control_for):
+        return paths_filtered_by_status(request, control_for)
 
 @collection(
     name='replicates',
