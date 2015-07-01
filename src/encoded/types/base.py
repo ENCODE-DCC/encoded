@@ -133,6 +133,10 @@ class Item(contentbase.Item):
 
         # publication
         'published': ALLOW_CURRENT,
+
+        # pipeline
+        'active': ALLOW_CURRENT,
+        'archived': ALLOW_CURRENT,
     }
 
     @property

@@ -108,6 +108,10 @@
             "title": "Biosample treatment",
             "type": "array"
         },
+        "files.pipeline.title": {
+            "title": "Pipeline",
+            "type": "string"
+        },
         "files.file_type": {
             "title": "Available data",
             "type": "string"

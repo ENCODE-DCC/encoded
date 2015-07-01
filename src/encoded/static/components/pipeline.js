@@ -59,14 +59,30 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             // Add files and their steps as nodes to the graph
             analysis_steps.forEach(function(step) {
                 var stepId = step['@id'];
+                var swVersionList = [];
+                var label;
 
                 // Make an array of step types
                 var stepTypesList = step.analysis_step_types.map(function(type) {
                     return type;
                 });
 
+                // Collect software version titles
+                if (step.software_versions && step.software_versions.length) {
+                    swVersionList = step.software_versions.map(function(version) {
+                        return version.software.title;
+                    });
+                }
+
+                // Build the node label; both step types and sw version titles if available
+                if (swVersionList.length) {
+                    label = [step.analysis_step_types.join(', '), swVersionList.join(', ')];
+                } else {
+                    label = step.analysis_step_types.join(', ');
+                }
+
                 // Assemble a single analysis step node.
-                jsonGraph.addNode(stepId, step.name,
+                jsonGraph.addNode(stepId, label,
                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: step});
 
                 // If the node has parents, render the edges to those parents
@@ -86,14 +102,26 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     step.parents.forEach(function(parent) {
                         if (parent.uuid in allSteps) {
                             var stepId = parent['@id'];
+                            var swVersionList = [];
+                            var label;
+
                             if (!jsonGraph.getNode(stepId)) {
-                                // Make an array of step types
-                                var stepTypesList = parent.analysis_step_types.map(function(type) {
-                                    return type;
-                                });
+                                // Collect software version titles
+                                if (parent.software_versions && parent.software_versions.length) {
+                                    swVersionList = parent.software_versions.map(function(version) {
+                                        return version.software.title;
+                                    });
+                                }
+
+                                // Build the node label; both step types and sw version titles if available
+                                if (swVersionList.length) {
+                                    label = [parent.analysis_step_types.join(', '), swVersionList.join(', ')];
+                                } else {
+                                    label = parent.analysis_step_types.join(', ');
+                                }
 
                                 // Assemble a single analysis step node.
-                                jsonGraph.addNode(stepId, stepTypesList.join(', '),
+                                jsonGraph.addNode(stepId, label,
                                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
                             }
                         }
@@ -162,29 +190,22 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
-                        {context.accession ?
-                            <div data-test="accession">
-                                <dt>Accession</dt>
-                                <dd>{context.accession}</dd>
-                            </div>
-                        : null}
-
                         <div data-test="title">
                             <dt>Title</dt>
                             <dd>{context.source_url ? <a href={context.source_url}>{context.title}</a> : context.title}</dd>
                         </div>
 
-                        {context.version ?
-                            <div data-test="version">
-                                <dt>Version</dt>
-                                <dd>{context.version}</dd>
-                            </div>
-                        : null}
-
                         {context.assay_term_name ?
                             <div data-test="assay">
                                 <dt>Assay</dt>
                                 <dd>{context.assay_term_name}</dd>
+                            </div>
+                        : null}
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
                             </div>
                         : null}
 
@@ -197,13 +218,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <div data-test="awardpi">
                                 <dt>Award PI</dt>
                                 <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
                             </div>
                         : null}
                     </dl>
@@ -289,7 +303,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {node && node.metadata.pipeline ?
                         <div data-test="pipeline">
                             <dt>Pipeline</dt>
-                            <dd>{node.metadata.pipeline.title}</dd>
+                            <dd><a href={node.metadata.pipeline['@id']}>{node.metadata.pipeline.title}</a></dd>
                         </div>
                     : null}
 
@@ -409,16 +423,8 @@ var Listing = React.createClass({
                             <div><strong>Assay: </strong>{result.assay_term_name}</div>
                         : null}
 
-                        {result.version ?
-                            <div><strong>Version: </strong>{result.version}</div>
-                        : null}
-
                         {swTitle.length ?
                             <div><strong>Software: </strong>{swTitle.join(', ')}</div>
-                        : null}
-
-                        {publishedBy.length ?
-                            <div><strong>Created by: </strong>{publishedBy.join(', ')}</div>
                         : null}
                     </div>
                 </div>

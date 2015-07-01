@@ -12,7 +12,6 @@
         { "$ref": "mixins.json#/uuid"},
         { "$ref": "mixins.json#/accession"},
         { "$ref": "mixins.json#/aliases"},
-        { "$ref": "mixins.json#/accessioned_status"},
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/submitted"},
@@ -20,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "name": {
             "title": "Name",
@@ -31,6 +30,17 @@
         },
         "accession": {
             "accessionType": "PL"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum": [
+                "in progress",
+                "deleted",
+                "archived",
+                "active"
+            ]
         },
         "title": {
             "title": "Title",
@@ -102,17 +112,17 @@
             "title": "Pipeline status",
             "type": "string"
         },
-        "version": {
-            "title": "Version",
-            "type": "integer"
+        "title": {
+            "title": "Pipeline groups",
+            "type": "string"
         },
         "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
         },
-        "analysis_steps.software_versions.software.references.published_by": {
-            "title": "Created by",
-            "type": "array"
+        "lab.title": {
+            "title": "Developed by",
+            "type": "string"
         }
     },
     "columns": {
