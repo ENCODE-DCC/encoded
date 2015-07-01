@@ -4,14 +4,12 @@ from contentbase.schema_utils import (
 from contentbase import (
     calculated_property,
     collection,
-    item_view_page,
 )
 from .base import (
     Item,
     paths_filtered_by_status,
 )
 from itertools import chain
-from pyramid.view import view_config
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
 
@@ -168,20 +166,15 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-
-@view_config(context=Dataset, permission='view', request_method='GET', name='page')
-def dataset_view_page(context, request):
-    properties = item_view_page(context, request)
-    if 'hub'in properties:
-        hub_url = urljoin(request.resource_url(request.root), properties['hub'])
-        properties = properties.copy()
-        hg_connect = ''.join([
-            'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
-            '?hgHub_do_redirect=on',
-            '&hgHubConnect.remakeTrackHub=on',
-            '&hgHub_do_firstDb=1&',
-        ])
-        properties['visualize_ucsc'] = hg_connect + '&'.join([
-            'hubUrl=' + quote_plus(hub_url, ':/@'),
-        ])
-    return properties
+    @calculated_property(condition='hub', category='page', schema={
+        "title": "Visualuze at UCSC",
+        "type": "string",
+    })
+    def visualize_ucsc(self, request, hub):
+        hub_url = urljoin(request.resource_url(request.root), hub)
+        return (
+            'http://genome.ucsc.edu/cgi-bin/hgHubConnect'
+            '?hgHub_do_redirect=on'
+            '&hgHubConnect.remakeTrackHub=on'
+            '&hgHub_do_firstDb=1&hubUrl='
+        ) + quote_plus(hub_url, ':/@')
