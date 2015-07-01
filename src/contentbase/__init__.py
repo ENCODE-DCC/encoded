@@ -37,3 +37,4 @@ def includeme(config):
     config.include('.jsonld_context')
     config.include('.schema_views')
     config.include('.crud_views')
+    config.include('.indexing_views')
