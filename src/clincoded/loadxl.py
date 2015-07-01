@@ -15,7 +15,14 @@ ORDER = [
     'lab',
     'organism',
     'source',
+<<<<<<< HEAD
     #'variant',
+=======
+    'variant',
+    'allele',
+    'condition',
+    'phenotype',
+>>>>>>> dev
     'publication',
     'document',
     'human_donor',
@@ -25,6 +32,7 @@ ORDER = [
     'page',
     'curator_page',
     'gene',
+<<<<<<< HEAD
     'orphaPhenotype',
     'article',
     'individual',
@@ -32,6 +40,11 @@ ORDER = [
     'group',
     'annotation',
     'gdm',
+=======
+    #'genes',
+    'orphaPhenotype',
+    'article',
+>>>>>>> dev
 ]
 
 ##############################################################################
