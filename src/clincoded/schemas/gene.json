@@ -1,0 +1,162 @@
+{
+    "title": "HGNC Gene",
+    "id": "/profiles/gdm.json",
+    "description": "Schema for storing HGNC genes",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["symbol", "hgncid"],
+    "identifyingProperties": ["uuid", "symbol"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "symbol": {
+            "title": "Gene Symbol",
+            "description": "HGNC Symbol",
+            "type": "string",
+            "uniqueKey": true
+        },
+        "hgncid": {
+            "title": "HGNC Number",
+            "description": "HGNC identifier of gene",
+            "type": "string"
+        },
+        "hgncurl": {
+            "title": "HGNC URL",
+            "description": "Hyperlink to HGNC webpage of the gene",
+            "type": "string"
+        },
+        "entrezid": {
+            "title": "Entrez ID",
+            "description": "Entrez id of the gene",
+            "type": "string"
+        },
+        "entrezurl": {
+            "title": "Entrez URL",
+            "description": "Hyperlink to Entrez webpage of the gene",
+            "type": "string"
+        },
+        "name": {
+            "title": "Gene Name",
+            "description": "Gene name",
+            "type": "string"
+        },
+        "hgncStatus": {
+            "title": "HGNC Status",
+            "description": "Status of the genen in HGNC",
+            "type": "string"
+        },
+        "synonyms": {
+            "title": "Synonyms",
+            "description": "List of Synonyms of the gene",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Synonym",
+                "description": "Synonym",
+                "type": "string"
+            }
+        },
+        "nameSynonyms": {
+            "title": "Name Synonyms",
+            "description": "List of Name Synonyms of the gene",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Name Synonym",
+                "description": "Name Synonym of the gene",
+                "type": "string"
+            }
+        },
+        "previousSymbols": {
+            "title": "Previous Symbol",
+            "description": "List of previous symbols of the gene",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous Symbol",
+                "description": "Previous symbol of the gene",
+                "type": "string"
+            }
+        },
+        "previousNames": {
+            "title": "Previous Name(s)",
+            "description": "List of previous names of the gene",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous Name",
+                "description": "Previous name of the gene",
+                "type": "string"
+            }
+        },
+        "chromosome": {
+            "title": "Chromosome",
+            "description": "Chromosome location of the gene",
+            "type": "string"
+        },
+        "locusType": {
+            "title": "Locus Type",
+            "description": "HGNC locus type of the gene",
+            "type": "string"
+        },
+        "omimids": {
+            "title": "OMIM IDs",
+            "description": "List of OMIM ids of the genen",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "OMIM ID",
+                "description": "OMIM ID of the gene",
+                "type": "string"
+            }
+        },
+        "pmids": {
+            "title": "PMID IDs",
+            "description": "List of PMIDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "PMID",
+                "description": "PMID of article in which the gene is selected",
+                "type": "string"
+            }
+        }
+    },
+    "columns": {
+        "symbol": {
+            "title": "Symbol",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "type": "string"
+        },
+        "synonyms": {
+            "title": "Synonyms",
+            "type": "string"
+        },
+        "nameSynonyms": {
+            "title": "Name Synonyms",
+            "type": "string"
+        },
+        "chromosome": {
+            "title": "Chr",
+            "type": "string"
+        },
+        "locusType": {
+            "title": "HGNC Locus",
+            "type": "string"
+        },
+        "entrezid": {
+            "title": "Entrez #",
+            "type": "string"
+        }
+    }
+}

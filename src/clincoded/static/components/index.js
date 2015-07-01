@@ -6,7 +6,7 @@ require('./image');
 require('./collection');
 require('./dbxref');
 require('./errors');
-require('./gene');
+//require('./gene');
 require('./footer');
 require('./globals');
 require('./home');
