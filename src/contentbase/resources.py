@@ -65,6 +65,12 @@ class Resource(object):
     def jsonld_id(self, request):
         return request.resource_path(self)
 
+    @calculated_property(category='page')
+    def actions(self, request):
+        actions = calculate_properties(self, request, category='action')
+        if actions:
+            return list(actions.values())
+
 
 class Root(Resource):
     __name__ = ''
@@ -487,13 +493,6 @@ def item_view_embedded(context, request):
     for path in context.embedded:
         expand_path(request, properties, path)
     return properties
-
-
-@calculated_property(context=Resource, category='page')
-def actions(context, request):
-    actions = calculate_properties(context, request, category='action')
-    if actions:
-        return list(actions.values())
 
 
 @view_config(context=Item, permission='view', request_method='GET',
