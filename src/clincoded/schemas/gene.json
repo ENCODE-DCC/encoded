@@ -30,52 +30,37 @@
         "hgncurl": {
             "title": "HGNC URL",
             "description": "Hyperlink to HGNC webpage of the gene",
-<<<<<<< HEAD
-            "type": "string"
-=======
+            "type": "string",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "entrezid": {
             "title": "Entrez ID",
             "description": "Entrez id of the gene",
-<<<<<<< HEAD
-            "type": "string"
-=======
+            "type": "string",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "entrezurl": {
             "title": "Entrez URL",
             "description": "Hyperlink to Entrez webpage of the gene",
-<<<<<<< HEAD
-            "type": "string"
-=======
+            "type": "string",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "name": {
             "title": "Gene Name",
             "description": "Gene name",
-<<<<<<< HEAD
-            "type": "string"
-=======
+            "type": "string",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "hgncStatus": {
             "title": "HGNC Status",
             "description": "Status of the genen in HGNC",
-<<<<<<< HEAD
-            "type": "string"
-=======
+            "type": "string",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "synonyms": {
             "title": "Synonyms",
@@ -109,7 +94,6 @@
                 "description": "Previous symbol of the gene",
                 "type": "string"
             }
-<<<<<<< HEAD
         },
         "previousNames": {
             "title": "Previous Name(s)",
@@ -131,7 +115,6 @@
             "title": "Locus Type",
             "description": "HGNC locus type of the gene",
             "type": "string"
-=======
         },
         "previousNames": {
             "title": "Previous Name(s)",
@@ -155,7 +138,6 @@
             "description": "HGNC locus type of the gene",
             "type": "string",
             "default": ""
->>>>>>> dev
         },
         "omimids": {
             "title": "OMIM IDs",
