@@ -17,19 +17,6 @@ def includeme(config):
     config.scan()
 
 ### new collections added for handling curation data, 06/19/2015
-'''
-@collection(
-    name='genes',
-    unique_key='genes:symbol',
-    properties={
-        'title': 'HGNC Genes',
-        'description': 'List of HGNC genes',
-    })
-class Gene(Item):
-    item_type = 'genes'
-    schema = load_schema('clincoded:schemas/genes.json')
-    name_key = 'symbol'
-'''
 @collection(
     name='genes',
     unique_key='gene:symbol',
@@ -58,13 +45,46 @@ class OrphaPhenotype(Item):
     name='articles',
     unique_key='article:pmid',
     properties={
-        'title': 'Articles',
-        'description': 'List of PubMed articles stored locally',
+        'title': 'References',
+        'description': 'List of PubMed references stored locally',
     })
 class Article(Item):
     item_type = 'article'
     schema = load_schema('clincoded:schemas/article.json')
     name_key = 'pmid'
+
+@collection(
+    name='gdm',
+    unique_key='gdm:gdmId',
+    properties={
+        'title': 'Gene:Disease:Mode',
+        'description': 'List of Gene:Disease:Mode pairs',
+    })
+class Gdm(Item):
+    item_type = 'gdm'
+    schema = load_schema('clincoded:schemas/gdm.json')
+    name_key = 'gdmId'
+    embedded = [
+        'geneSymbol',
+        'orphaNumber',
+        'annotations',
+        'annotations.article'
+    ]
+
+@collection(
+    name='evidence',
+    unique_key='annotation:annotationId',
+    properties={
+        'title': 'Evidence',
+        'description': 'List of evidence for all G:D:M pairs',
+    })
+class Annotation(Item):
+    item_type = 'annotation'
+    schema = load_schema('clincoded:schemas/annotation.json')
+    name_key = 'annotationId'
+    embedded = [
+        'article'
+    ]
 ### end of new collections for curation data
 
 

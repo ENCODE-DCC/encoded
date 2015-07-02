@@ -1,0 +1,196 @@
+{
+    "title": "Gene Disease Mode",
+    "id": "/profiles/gdm.json",
+    "description": "Schema for storing gene:disease:mode data.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["gdmId", "geneSymbol", "orphaNumber", "modeInheritance", "owner", "status", "dateTime"],
+    "identifyingProperties": ["uuid", "gdmId"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "gdmId": {
+            "title": "Unique ID for gdm pair",
+            "description": "Unique id and digital count.",
+            "type": "string",
+            "pattern": "^[0-9]{1,12}$",
+            "uniqueKey": true
+        },
+        "geneSymbol": {
+            "title": "HGNC Symbol",
+            "description": "HGNC Symbol of gene.",
+            "type": "string",
+            "linkTo": "gene"
+        },
+        "orphaNumber": {
+            "title": "Orpha ID",
+            "description": "Unique id for Orphanet phenotypes.",
+            "type": "string",
+            "linkTo": "orphaPhenotype"
+        },
+        "modeInheritance": {
+            "title": "Mode",
+            "description": "Mode of Inheritance",
+            "type": "string",
+            "enum": [
+                "Autosomal dominant inheritance (HP:0000006)",
+                "Autosomal dominant inheritance with maternal imprinting (HP:0012275)",
+                "Autosomal dominant inheritance with paternal imprinting (HP:0012274)",
+                "Autosomal recessive inheritance (HP:0000007)",
+                "Autosomal unknown",
+                "Codominant",
+                "Genetic anticipation (HP:0003743)",
+                "Mitochondrial inheritance (HP:0001427)",
+                "Sex-limited autosomal dominant (HP:0001470)",
+                "Somatic mutation (HP:0001428)",
+                "Sporadic (HP:0003745)",
+                "X-linked dominant inheritance (HP:0001423)",
+                "X-linked inheritance (HP:0001417)",
+                "X-linked recessive inheritance (HP:0001419)",
+                "Y-linked inheritance (HP:0001450)",
+                "Other"
+            ]
+        },
+        "omimId": {
+            "title": "OMIM ID",
+            "description": "OMIM id",
+            "type": "string",
+            "default": ""
+        },
+        "omimurl": {
+            "title": "OMIM url",
+            "description": "Hyperlink to OMIM webpage",
+            "type": "string",
+            "default": ""
+        },
+        "owner": {
+            "title": "Owner",
+            "descripton": "Curator's email",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "descripton": "Currant status of the gdm",
+            "type": "string",
+            "enum": [
+                "Creation",
+                "Evidence",
+                "Summary",
+                "Provisional Assertion",
+                "Draft of Final",
+                "Final"
+            ]
+        },
+        "dateTime": {
+            "title": "Date and Time",
+            "description": "Date and time stemp",
+            "type": "string"
+        },
+        "annotations": {
+            "title": "Annotations",
+            "description": "List of evidence for the gdm",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Annotation",
+                "description": "ID of an evidence added to the gdm",
+                "comment": "See annotation.json for details",
+                "type": "string",
+                "linkTo": "annotation"
+            }
+        },
+        "summary": {
+            "title": "Summary",
+            "description": "Summary of evidence",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
+        },
+        "provisionalClassifications": {
+            "title": "Provisional Classification",
+            "description": "Provisional Assertion",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
+        },
+        "draftClassification": {
+            "title": "Draft Assertion",
+            "description": "Draft of final",
+            "type": "string",
+            "default": ""
+        },
+        "finalClassification": {
+            "title": "Final Assertion",
+            "description": "Final asserion",
+            "type": "string",
+            "default": ""
+        },
+        "active": {
+            "description": "boolean switch to set if the phenotype avaliable for curation.",
+            "type": "boolean",
+            "default": true
+        }
+    },
+    "columns": {
+        "gdmId": {
+            "title": "Item",
+            "type": "string"
+        },
+        "geneSymbol": {
+            "title": "Gene",
+            "type": "string"
+        },
+        "orphaNumber": {
+            "title": "Orpha #",
+            "type": "string"
+        },
+        "modeInheritance": {
+            "title": "Mode of Inheritance",
+            "type": "string"
+        },
+        "omimId": {
+            "title": "OMIM ID",
+            "type": "string"
+        },
+        "owner": {
+            "title": "Creator",
+            "type": "string"
+        },
+        "status": {
+            "title": "Curation Status",
+            "type": "string"
+        },
+        "annotations": {
+            "title": "Evidence",
+            "type": "string"
+        },
+        "summary": {
+            "title": "Summary",
+            "type": "string"
+        },
+        "draftClassification": {
+            "title": "Draft Assertion",
+            "type": "string"
+        },
+        "finalClassification": {
+            "title": "Final Assertion",
+            "type": "string"
+        }
+    },
+    "boost_values": {
+        "annotations":1.0
+    }
+}

@@ -1,0 +1,38 @@
+[
+    {
+        "annotationId": "1",
+        "owner": "tsneddon@stanford.edu",
+        "article": "7913883",
+        "dateTime": "Tue Feb 24 2015 12:52:27 GMT-0800 (PST)",
+        "groups":[
+            "1",
+            "2"
+        ],
+        "uuid": "bb3432ca-1788-11e5-aefb-60f81dc5b05a",
+        "active": true
+    },
+    {
+        "annotationId": "2",
+        "owner": "tsneddon@stanford.edu",
+        "article": "8078586",
+        "dateTime": "Tue Feb 24 2015 12:54:07 GMT-0800 (PST)",
+        "uuid": "4172f4ab-189e-11e5-a10f-60f81dc5b05a",
+        "active": true
+    },
+    {
+        "annotationId": "3",
+        "owner": "tsneddon@stanford.edu",
+        "article": "7847369",
+        "dateTime": "Tue Feb 24 2015 12:55:04 GMT-0800 (PST)",
+        "uuid": "5cd72a73-189e-11e5-9db5-60f81dc5b05a",
+        "active": true
+    },
+    {
+        "annotationId": "4",
+        "owner": "tsneddon@stanford.edu",
+        "article": "9001669",
+        "dateTime": "Tue Feb 24 2015 12:56:10 GMT-0800 (PST)",
+        "uuid": "75ed0680-189e-11e5-9cf0-60f81dc5b05a",
+        "active": true
+    }
+]

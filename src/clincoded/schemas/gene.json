@@ -4,7 +4,7 @@
     "description": "Schema for storing HGNC genes",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["symbol", "hgncid"],
+    "required": ["symbol", "hgncId"],
     "identifyingProperties": ["uuid", "symbol"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,7 +22,7 @@
             "type": "string",
             "uniqueKey": true
         },
-        "hgncid": {
+        "hgncId": {
             "title": "HGNC Number",
             "description": "HGNC identifier of gene",
             "type": "string"
@@ -31,11 +31,13 @@
             "title": "HGNC URL",
             "description": "Hyperlink to HGNC webpage of the gene",
             "type": "string",
+            "type": "string",
             "default": ""
         },
-        "entrezid": {
+        "entrezId": {
             "title": "Entrez ID",
             "description": "Entrez id of the gene",
+            "type": "string",
             "type": "string",
             "default": ""
         },
@@ -43,17 +45,20 @@
             "title": "Entrez URL",
             "description": "Hyperlink to Entrez webpage of the gene",
             "type": "string",
+            "type": "string",
             "default": ""
         },
         "name": {
             "title": "Gene Name",
             "description": "Gene name",
             "type": "string",
+            "type": "string",
             "default": ""
         },
         "hgncStatus": {
             "title": "HGNC Status",
             "description": "Status of the genen in HGNC",
+            "type": "string",
             "type": "string",
             "default": ""
         },
@@ -104,6 +109,27 @@
         "chromosome": {
             "title": "Chromosome",
             "description": "Chromosome location of the gene",
+            "type": "string"
+        },
+        "locusType": {
+            "title": "Locus Type",
+            "description": "HGNC locus type of the gene",
+            "type": "string"
+        },
+        "previousNames": {
+            "title": "Previous Name(s)",
+            "description": "List of previous names of the gene",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous Name",
+                "description": "Previous name of the gene",
+                "type": "string"
+            }
+        },
+        "chromosome": {
+            "title": "Chromosome",
+            "description": "Chromosome location of the gene",
             "type": "string",
             "default": ""
         },
@@ -113,7 +139,7 @@
             "type": "string",
             "default": ""
         },
-        "omimids": {
+        "omimIds": {
             "title": "OMIM IDs",
             "description": "List of OMIM ids of the genen",
             "type": "array",
@@ -161,7 +187,7 @@
             "title": "HGNC Locus",
             "type": "string"
         },
-        "entrezid": {
+        "entrezId": {
             "title": "Entrez #",
             "type": "string"
         }

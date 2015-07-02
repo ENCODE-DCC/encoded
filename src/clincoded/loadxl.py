@@ -28,9 +28,10 @@ ORDER = [
     'page',
     'curator_page',
     'gene',
-    #'genes',
     'orphaPhenotype',
     'article',
+    'annotation',
+    'gdm',
 ]
 
 ##############################################################################

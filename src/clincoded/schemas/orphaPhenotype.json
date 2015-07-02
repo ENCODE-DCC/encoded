@@ -50,7 +50,7 @@
                 "Biological anomaly"
             ]
         },
-        "omimids": {
+        "omimIds": {
             "title": "OMIM ID",
             "description": "List of OMIM ids",
             "type": "array",
@@ -95,7 +95,7 @@
             "title": "Synonym(s)",
             "type": "array"
         },
-        "omimids": {
+        "omimIds": {
             "title": "OMIM ID(s)",
             "type": "string"
         }
