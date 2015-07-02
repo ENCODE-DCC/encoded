@@ -126,7 +126,7 @@ var Graph = module.exports.Graph = React.createClass({
     getInitialState: function() {
         return {
             dlDisabled: false, // Download button disabled because of IE
-            verticalGraph: true // True for vertically oriented graph, false for horizontal
+            verticalGraph: false // True for vertically oriented graph, false for horizontal
         };
     },
 

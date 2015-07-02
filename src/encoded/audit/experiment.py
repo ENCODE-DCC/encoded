@@ -83,25 +83,6 @@ def audit_experiment_replicated(value, system):
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_description(value, system):
-    '''
-    Experiments should have descriptions that contain the experimental variables and
-    read like phrases.  I cannot get all of that here, but I thought I would start
-    with looking for funny characters.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if 'description' not in value:
-        return
-
-    notallowed = ['=', ':', '!', ';']
-    if any(c in notallowed for c in value['description']):
-        detail = 'Experiment {} has odd character(s) in the description'.format(value['@id'])
-        raise AuditFailure('malformed description', detail, level='WARNING')
-
-
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_documents(value, system):
     '''

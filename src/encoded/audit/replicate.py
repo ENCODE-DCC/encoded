@@ -4,24 +4,6 @@ from contentbase import (
 )
 
 
-@audit_checker('replicate', frame='object')
-def audit_rep_extra_items(value, system):
-    '''
-    A replicate should no longer have platforms, read_length, paired_end
-    Should be in the schema.
-    '''
-
-    for item in ['platform', 'read_length', 'paired_ended']:
-
-        if item in value:
-            detail = 'Replicate {} has a item {}'.format(
-                value['@id'],
-                value[item]  # ['name']
-                )
-            error_message = 'replicate with {}'.format(item)
-            raise AuditFailure(error_message, detail, level='DCC_ACTION')
-
-
 @audit_checker('replicate', frame=['experiment'])
 def audit_status_replicate(value, system):
     '''
