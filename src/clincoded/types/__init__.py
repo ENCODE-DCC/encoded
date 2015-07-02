@@ -45,8 +45,8 @@ class OrphaPhenotype(Item):
     name='articles',
     unique_key='article:pmid',
     properties={
-        'title': 'Articles',
-        'description': 'List of PubMed articles stored locally',
+        'title': 'References',
+        'description': 'List of PubMed references stored locally',
     })
 class Article(Item):
     item_type = 'article'
@@ -55,7 +55,7 @@ class Article(Item):
 
 @collection(
     name='gdm',
-    unique_key='gdm:gdmid',
+    unique_key='gdm:gdmId',
     properties={
         'title': 'Gene:Disease:Mode',
         'description': 'List of Gene:Disease:Mode pairs',
@@ -63,7 +63,7 @@ class Article(Item):
 class Gdm(Item):
     item_type = 'gdm'
     schema = load_schema('clincoded:schemas/gdm.json')
-    name_key = 'gdmid'
+    name_key = 'gdmId'
     embedded = [
         'geneSymbol',
         'orphaNumber',
@@ -73,7 +73,7 @@ class Gdm(Item):
 
 @collection(
     name='evidences',
-    unique_key='annotation:annotationid',
+    unique_key='annotation:annotationId',
     properties={
         'title': 'Evidences',
         'description': 'List of evidences in all G:D:M pairs',
@@ -81,7 +81,7 @@ class Gdm(Item):
 class Annotation(Item):
     item_type = 'annotation'
     schema = load_schema('clincoded:schemas/annotation.json')
-    name_key = 'annotationid'
+    name_key = 'annotationId'
     embedded = [
         'article'
     ]

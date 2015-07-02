@@ -1,6 +1,6 @@
 [
     {
-        "annotationid": "1",
+        "annotationId": "1",
         "owner": "tsneddon@stanford.edu",
         "article": "7913883",
         "dateTime": "Tue Feb 24 2015 12:52:27 GMT-0800 (PST)",
@@ -12,7 +12,7 @@
         "active": true
     },
     {
-        "annotationid": "2",
+        "annotationId": "2",
         "owner": "tsneddon@stanford.edu",
         "article": "8078586",
         "dateTime": "Tue Feb 24 2015 12:54:07 GMT-0800 (PST)",
@@ -20,7 +20,7 @@
         "active": true
     },
     {
-        "annotationid": "3",
+        "annotationId": "3",
         "owner": "tsneddon@stanford.edu",
         "article": "7847369",
         "dateTime": "Tue Feb 24 2015 12:55:04 GMT-0800 (PST)",
@@ -28,7 +28,7 @@
         "active": true
     },
     {
-        "annotationid": "4",
+        "annotationId": "4",
         "owner": "tsneddon@stanford.edu",
         "article": "9001669",
         "dateTime": "Tue Feb 24 2015 12:56:10 GMT-0800 (PST)",

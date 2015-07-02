@@ -4,7 +4,7 @@
     "description": "Schema for storing HGNC genes",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["symbol", "hgncid"],
+    "required": ["symbol", "hgncId"],
     "identifyingProperties": ["uuid", "symbol"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -22,7 +22,7 @@
             "type": "string",
             "uniqueKey": true
         },
-        "hgncid": {
+        "hgncId": {
             "title": "HGNC Number",
             "description": "HGNC identifier of gene",
             "type": "string"
@@ -34,7 +34,7 @@
             "type": "string",
             "default": ""
         },
-        "entrezid": {
+        "entrezId": {
             "title": "Entrez ID",
             "description": "Entrez id of the gene",
             "type": "string",
@@ -139,7 +139,7 @@
             "type": "string",
             "default": ""
         },
-        "omimids": {
+        "omimIds": {
             "title": "OMIM IDs",
             "description": "List of OMIM ids of the genen",
             "type": "array",
@@ -187,7 +187,7 @@
             "title": "HGNC Locus",
             "type": "string"
         },
-        "entrezid": {
+        "entrezId": {
             "title": "Entrez #",
             "type": "string"
         }

@@ -4,8 +4,8 @@
     "description": "Schema for storing gene:disease:mode data.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["gdmid", "geneSymbol", "orphaNumber", "modeInheritance", "owner", "status", "dateTime"],
-    "identifyingProperties": ["uuid", "gdmid"],
+    "required": ["gdmId", "geneSymbol", "orphaNumber", "modeInheritance", "owner", "status", "dateTime"],
+    "identifyingProperties": ["uuid", "gdmId"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -16,7 +16,7 @@
         "schema_version": {
             "default": "1"
         },
-        "gdmid": {
+        "gdmId": {
             "title": "Unique ID for gdm pair",
             "description": "Unique id and digital count.",
             "type": "string",
@@ -58,7 +58,7 @@
                 "Other"
             ]
         },
-        "omimid": {
+        "omimId": {
             "title": "OMIM ID",
             "description": "OMIM id",
             "type": "string",
@@ -145,7 +145,7 @@
         }
     },
     "columns": {
-        "gdmid": {
+        "gdmId": {
             "title": "Item",
             "type": "string"
         },
@@ -161,7 +161,7 @@
             "title": "Mode of Inheritance",
             "type": "string"
         },
-        "omimid": {
+        "omimId": {
             "title": "OMIM ID",
             "type": "string"
         },

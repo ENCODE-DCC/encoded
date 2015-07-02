@@ -4,8 +4,8 @@
     "description": "List of evidences in a gdm",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["annotationid", "article", "owner", "dateTime"],
-    "identifyingProperties": ["uuid", "annotationid"],
+    "required": ["annotationId", "article", "owner", "dateTime"],
+    "identifyingProperties": ["uuid", "annotationId"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -16,7 +16,7 @@
         "schema_version": {
             "default": "1"
         },
-        "annotationid": {
+        "annotationId": {
             "title": "Annotation ID",
             "description": "Unique id for evidences",
             "type": "string",
@@ -90,7 +90,7 @@
         }
     },
     "columns": {
-        "annotationid": {
+        "annotationId": {
             "title": "Item",
             "type": "string"
         },
