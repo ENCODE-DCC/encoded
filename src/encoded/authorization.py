@@ -1,4 +1,4 @@
-from contentbase import LOCATION_ROOT
+from contentbase import ROOT
 
 
 def groupfinder(login, request):
@@ -7,7 +7,7 @@ def groupfinder(login, request):
     namespace, localname = login.split('.', 1)
     user = None
     # We may get called before the context is found and the root set
-    root = request.registry[LOCATION_ROOT]
+    root = request.registry[ROOT]
 
     if namespace == 'remoteuser':
         if localname in ['EMBED', 'INDEXER']:

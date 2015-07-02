@@ -114,117 +114,103 @@ def biosample_10(root, biosample):
     return properties
 
 
-def test_biosample_upgrade(app, biosample_1):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+def test_biosample_upgrade(upgrader, biosample_1):
+    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1000
 
 
-def test_biosample_upgrade_unknown(app, biosample_1):
+def test_biosample_upgrade_unknown(upgrader, biosample_1):
     biosample_1['starting_amount'] = 'Unknown'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'starting_amount' not in value
 
 
-def test_biosample_upgrade_empty_string(app, biosample_1):
+def test_biosample_upgrade_empty_string(upgrader, biosample_1):
     biosample_1['starting_amount'] = ''
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'starting_amount' not in value
 
 
-def test_biosample_upgrade_exponent(app, biosample_1):
+def test_biosample_upgrade_exponent(upgrader, biosample_1):
     biosample_1['starting_amount'] = '1 X 10^5'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1e5
 
 
-def test_biosample_upgrade_number(app, biosample_1):
+def test_biosample_upgrade_number(upgrader, biosample_1):
     biosample_1['starting_amount'] = -1
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == -1
 
 
-def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_2, target_version='3')
+def test_biosample_upgrade_subcellular_fraction(upgrader, biosample_2):
+    value = upgrader.upgrade('biosample', biosample_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['subcellular_fraction_term_name'] == 'nucleus'
     assert value['subcellular_fraction_term_id'] == 'GO:0005634'
     assert 'subcellular_fraction' not in value
 
 
-def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
+def test_biosample_upgrade_subcellular_fraction_membrane(upgrader, biosample_2):
     biosample_2['subcellular_fraction'] = 'membrane fraction'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_2, target_version='3')
+    value = upgrader.upgrade('biosample', biosample_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['subcellular_fraction_term_name'] == 'membrane'
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
 
 
-def test_biosample_upgrade_array_to_string(app, biosample_3, biosample):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+def test_biosample_upgrade_array_to_string(upgrader, biosample_3, biosample):
+    value = upgrader.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['part_of'] == biosample['uuid']
     assert value['derived_from'] == biosample['uuid']
 
 
-def test_biosample_upgrade_empty_array(app, biosample_3, biosample):
+def test_biosample_upgrade_empty_array(upgrader, biosample_3, biosample):
     biosample_3['derived_from'] = []
     biosample_3['part_of'] = []
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    value = upgrader.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
     assert 'part_of' not in value
     assert 'derived_from' not in value
 
 
-def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+def test_biosample_upgrade_encode2_dbxref(upgrader, biosample_3):
+    value = upgrader.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:Liver']
     assert 'encode2_dbxrefs' not in value
 
 
-def test_biosample_upgrade_encode2_complex_dbxref(app, biosample_3):
+def test_biosample_upgrade_encode2_complex_dbxref(upgrader, biosample_3):
     biosample_3['encode2_dbxrefs'] = ['B-cells CD20+ (RO01778)']
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    value = upgrader.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:B-cells CD20+ (RO01778)']
     assert 'encode2_dbxrefs' not in value
 
 
-def test_biosample_upgrade_status_encode2(app, biosample_4):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_4, target_version='5')
+def test_biosample_upgrade_status_encode2(upgrader, biosample_4):
+    value = upgrader.upgrade('biosample', biosample_4, target_version='5')
     assert value['schema_version'] == '5'
     assert value['status'] == 'released'
 
 
-def test_biosample_upgrade_status_encode3(app, biosample_4):
+def test_biosample_upgrade_status_encode3(upgrader, biosample_4):
     biosample_4['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_4, target_version='5')
+    value = upgrader.upgrade('biosample', biosample_4, target_version='5')
     assert value['schema_version'] == '5'
     assert value['status'] == 'in progress'
 
 
-def test_biosample_upgrade_model_organism(app, biosample_6):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+def test_biosample_upgrade_model_organism(upgrader, biosample_6):
+    value = upgrader.upgrade('biosample', biosample_6, target_version='7')
     assert value['schema_version'] == '7'
     assert 'sex' not in value
     assert 'age' not in value
@@ -233,10 +219,9 @@ def test_biosample_upgrade_model_organism(app, biosample_6):
     assert 'life_stage' not in value
 
 
-def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
+def test_biosample_upgrade_model_organism_mouse(upgrader, biosample_6):
     biosample_6['organism'] = '3413218c-3d86-498b-a0a2-9a406638e786'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+    value = upgrader.upgrade('biosample', biosample_6, target_version='7')
     assert value['schema_version'] == '7'
     assert 'sex' not in value
     assert value['model_organism_sex'] == 'male'
@@ -283,43 +268,38 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     assert 'starting_amount' not in res.json
 
 
-def test_biosample_worm_life_stage(app, biosample_7):
+def test_biosample_worm_life_stage(upgrader, biosample_7):
     biosample_7['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_7, target_version='8')
+    value = upgrader.upgrade('biosample', biosample_7, target_version='8')
     assert value['schema_version'] == '8'
     assert value['worm_life_stage'] == 'mixed stage (embryonic)'
 
 
-def test_biosample_age_pattern(app, biosample_8):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_8, target_version='9')
+def test_biosample_age_pattern(upgrader, biosample_8):
+    value = upgrader.upgrade('biosample', biosample_8, target_version='9')
     assert value['schema_version'] == '9'
     assert value['model_organism_age'] == '15'
 
 
-def test_biosample_age_pattern2(app, biosample_8):
+def test_biosample_age_pattern2(upgrader, biosample_8):
     biosample_8['model_organism_age'] = '15.0-16.0'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_8, target_version='9')
+    value = upgrader.upgrade('biosample', biosample_8, target_version='9')
     assert value['schema_version'] == '9'
     assert value['model_organism_age'] == '15-16'
 
 
-def test_biosample_references(root, registry, biosample,  biosample_9, publication, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_biosample_references(root, upgrader, biosample,  biosample_9, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('biosample', biosample_9, target_version='10', context=context)
+    value = upgrader.upgrade('biosample', biosample_9, target_version='10', context=context)
     assert value['schema_version'] == '10'
     assert value['references'] == [publication['uuid']]
 
 
-def test_biosample_worm_synch_stage(root, registry, biosample, biosample_10, dummy_request):
-    migrator = registry['migrator']
+def test_biosample_worm_synch_stage(root, upgrader, biosample, biosample_10, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
     biosample_10['organism'] = '2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20'
-    value = migrator.upgrade('biosample', biosample_10, target_version='11', context=context)
+    value = upgrader.upgrade('biosample', biosample_10, target_version='11', context=context)
     assert value['schema_version'] == '11'
     assert value['worm_synchronization_stage'] == 'L1 larva starved after bleaching'

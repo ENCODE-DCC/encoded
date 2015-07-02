@@ -12,13 +12,15 @@ from ..authentication import (
     generate_user,
     CRYPT_CONTEXT,
 )
-from contentbase.schema_utils import (
+from contentbase import (
+    collection,
     load_schema,
 )
-from contentbase import (
+from contentbase.crud_views import (
     collection_add,
     item_edit,
-    collection,
+)
+from contentbase.validators import (
     validate_item_content_post,
     validate_item_content_put,
 )
@@ -126,7 +128,7 @@ def access_key_edit(context, request):
 
 @view_config(context=AccessKey, permission='view_raw', request_method='GET',
              name='raw')
-def item_view_raw(context, request):
+def access_key_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
         properties = context.upgrade_properties()
     else:

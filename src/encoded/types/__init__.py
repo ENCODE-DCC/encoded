@@ -1,10 +1,8 @@
 from contentbase.attachment import ItemWithAttachment
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from pyramid.traversal import find_root
 from .base import (
