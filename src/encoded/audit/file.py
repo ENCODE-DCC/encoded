@@ -1,4 +1,4 @@
-from contentbase.auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
@@ -241,4 +241,4 @@ def audit_file_paired_ended_run_type(value, system):
         if (value['paired_end'] == 1) and 'paired_with' not in value:
             detail = 'File {} has a paired-ended run_type but is missing a paired_end=2 mate'.format(
                 value['@id'])
-            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')    
+            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')

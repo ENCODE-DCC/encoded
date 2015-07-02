@@ -1,9 +1,7 @@
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     Item,

@@ -69,42 +69,38 @@ def file_5(file_base):
     return item
 
 
-def test_file_upgrade(registry, file_1):
-    migrator = registry['migrator']
-    value = migrator.upgrade('file', file_1, target_version='2')
+def test_file_upgrade(upgrader, file_1):
+    value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade2(root, upgrader, file_2, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('file', file_2, target_version='3', context=context)
+    value = upgrader.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
 
 
-def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade3(root, upgrader, file_3, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('file', file_3, target_version='4', context=context)
+    value = upgrader.upgrade('file', file_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['lab'] != ''
     assert value['award'] != ''
     assert 'download_path' not in value
 
 
-def test_file_upgrade4(root, registry, file_4, file, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_file_upgrade4(root, upgrader, file_4, file, threadlocals, dummy_request):
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
     content_md5sum = '0123456789abcdef0123456789abcdef'
     fake_registry = {
         'backfill_2683': {file['md5sum']: content_md5sum},
     }
-    value = migrator.upgrade(
+    value = upgrader.upgrade(
         'file', file_4, target_version='5', context=context, registry=fake_registry)
     assert value['schema_version'] == '5'
     assert value['file_format'] == 'bed'

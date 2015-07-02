@@ -6,18 +6,21 @@ Example:
     %(prog)s production.ini --app-name app
 
 """
+import itertools
 import logging
 import transaction
 from copy import deepcopy
-from contentbase import STORAGE
+from contentbase import (
+    CONNECTION,
+    STORAGE,
+    UPGRADER,
+)
 from pyramid.view import view_config
 from pyramid.traversal import find_resource
+from .schema_utils import validate
 
 EPILOG = __doc__
 logger = logging.getLogger(__name__)
-
-from .schema_utils import validate
-import itertools
 
 
 def includeme(config):
@@ -75,8 +78,8 @@ def update_item(storage, context):
             update = True
     else:
         properties = deepcopy(properties)
-        migrator = context.registry['migrator']
-        properties = migrator.upgrade(
+        upgrader = context.registry[UPGRADER]
+        properties = upgrader.upgrade(
             context.item_type, properties, current_version, target_version,
             context=context, registry=context.registry)
         if 'schema_version' in properties:
@@ -136,7 +139,7 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
     logging.getLogger('contentbase').setLevel(logging.DEBUG)
 
     testapp = internal_app(config_uri, app_name, username)
-    connection = testapp.app.registry['connection']
+    connection = testapp.app.registry[CONNECTION]
     uuids = [str(uuid) for uuid in connection]
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))

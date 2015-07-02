@@ -1,5 +1,4 @@
 from pyramid.config.views import DefaultViewMapper
-from pyramid.events import NewRequest
 from pyramid.httpexceptions import (
     HTTPError,
     HTTPBadRequest,
@@ -15,7 +14,8 @@ import simplejson as json
 
 
 def includeme(config):
-    config.add_subscriber(wrap_request, NewRequest)
+    config.add_request_method(lambda request: {}, 'validated', reify=True)
+    config.add_request_method(lambda request: Errors(), 'errors', reify=True)
     config.add_view(view=failed_validation, context=ValidationFailure)
     config.add_view(view=http_error, context=HTTPError)
     config.add_view(view=database_is_read_only, context=InternalError)
@@ -44,18 +44,6 @@ class Errors(list):
         for error in obj:
             errors.add(**error)
         return errors
-
-
-def wrap_request(event):
-    """Adds a "validated" dict and a custom "errors" object to
-    the request object if they don't already exists
-    """
-    request = event.request
-    if not hasattr(request, 'validated'):
-        setattr(request, 'validated', {})
-
-    if not hasattr(request, 'errors'):
-        setattr(request, 'errors', Errors())
 
 
 class ValidationFailure(HTTPUnprocessableEntity):

@@ -1,4 +1,4 @@
-from contentbase.upgrader import upgrade_step
+from contentbase import upgrade_step
 
 
 @upgrade_step('platform', '', '2')

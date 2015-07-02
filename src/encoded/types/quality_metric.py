@@ -1,9 +1,9 @@
 from contentbase import (
     collection,
     calculated_property,
+    load_schema,
 )
 from contentbase.attachment import ItemWithAttachment
-from contentbase.schema_utils import load_schema
 from .base import (
     Item,
 )

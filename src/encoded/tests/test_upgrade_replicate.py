@@ -71,44 +71,40 @@ def replicate_4(root, replicate):
     return properties
 
 
-def test_replicate_upgrade(root, registry, replicate, replicate_1, library, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_replicate_upgrade(root, upgrader, replicate, replicate_1, library, threadlocals, dummy_request):
     context = root.get_by_uuid(replicate['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('replicate', replicate_1, target_version='3', context=context)
+    value = upgrader.upgrade('replicate', replicate_1, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == library['status']
     assert 'paired_ended' not in value
 
 
-def test_replicate_upgrade_read_length(root, registry, replicate, replicate_1, library, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_replicate_upgrade_read_length(root, upgrader, replicate, replicate_1, library, threadlocals, dummy_request):
     context = root.get_by_uuid(replicate['uuid'])
     dummy_request.context = context
     replicate_1['read_length'] = 36
     replicate_1['read_length_units'] = 'nt'
-    value = migrator.upgrade('replicate', replicate_1, target_version='3', context=context)
+    value = upgrader.upgrade('replicate', replicate_1, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == library['status']
     assert value['paired_ended'] is False
 
 
-def test_replicate_upgrade_flowcell(root, registry, replicate, replicate_3, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_replicate_upgrade_flowcell(root, upgrader, replicate, replicate_3, threadlocals, dummy_request):
     context = root.get_by_uuid(replicate['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('replicate', replicate_3, target_version='4', context=context)
+    value = upgrader.upgrade('replicate', replicate_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert 'flowcell_details' not in value
     assert 'machine' in value['notes']
     assert 'Test notes' in value['notes']
 
 
-def test_replicate_upgrade_platform_etc(root, registry, replicate, replicate_4, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_replicate_upgrade_platform_etc(root, upgrader, replicate, replicate_4, threadlocals, dummy_request):
     context = root.get_by_uuid(replicate['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('replicate', replicate_4, target_version='5', context=context)
+    value = upgrader.upgrade('replicate', replicate_4, target_version='5', context=context)
     assert value['schema_version'] == '5'
     assert 'platform' not in value
     assert 'read_length' not in value

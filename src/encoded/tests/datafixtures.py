@@ -18,7 +18,9 @@ def admin(testapp):
         'email': 'admin@example.org',
         'groups': ['admin'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -31,7 +33,9 @@ def wrangler(testapp):
         'email': 'wrangler@example.org',
         'groups': ['admin'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -43,7 +47,9 @@ def submitter(testapp, lab, award):
         'submits_for': [lab['@id']],
         'viewing_groups': [award['viewing_group']],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -54,7 +60,9 @@ def viewing_group_member(testapp, award):
         'email': 'viewing_group_member@example.org',
         'viewing_groups': [award['viewing_group']],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -65,7 +73,9 @@ def remc_member(testapp):
         'email': 'remc_member@example.org',
         'viewing_groups': ['REMC'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture

@@ -1,3 +1,4 @@
+from contentbase.interfaces import UPGRADER
 from pkg_resources import parse_version
 from pyramid.interfaces import (
     PHASE1_CONFIG,
@@ -7,7 +8,7 @@ import venusian
 
 
 def includeme(config):
-    config.registry['migrator'] = Migrator()
+    config.registry[UPGRADER] = Upgrader()
     config.add_directive('add_upgrade', add_upgrade)
     config.add_directive('add_upgrade_step', add_upgrade_step)
     config.add_directive('set_upgrade_finalizer', set_upgrade_finalizer)
@@ -33,35 +34,35 @@ class VersionTooHigh(UpgradeError):
     pass
 
 
-class Migrator(object):
-    """ Migration manager
+class Upgrader(object):
+    """ Upgrade manager
     """
     def __init__(self):
-        self.schema_migrators = {}
+        self.schema_upgraders = {}
         self.default_finalizer = None
 
     def add_upgrade(self, schema_name, version, finalizer=None):
-        if schema_name in self.schema_migrators:
+        if schema_name in self.schema_upgraders:
             raise ConfigurationError('duplicate schema_name', schema_name)
         if finalizer is None:
             finalizer = self.default_finalizer
-        schema_migrator = SchemaMigrator(schema_name, version, finalizer)
-        self.schema_migrators[schema_name] = schema_migrator
+        schema_upgrader = SchemaUpgrader(schema_name, version, finalizer)
+        self.schema_upgraders[schema_name] = schema_upgrader
 
     def upgrade(self, schema_name, value,
                 current_version='', target_version=None, **kw):
-        schema_migrator = self.schema_migrators[schema_name]
-        return schema_migrator.upgrade(
+        schema_upgrader = self.schema_upgraders[schema_name]
+        return schema_upgrader.upgrade(
             value, current_version, target_version, **kw)
 
     def __getitem__(self, schema_name):
-        return self.schema_migrators[schema_name]
+        return self.schema_upgraders[schema_name]
 
     def __contains__(self, schema_name):
-        return schema_name in self.schema_migrators
+        return schema_name in self.schema_upgraders
 
 
-class SchemaMigrator(object):
+class SchemaUpgrader(object):
     """ Manages upgrade steps
     """
     def __init__(self, name, version, finalizer=None):
@@ -148,8 +149,8 @@ def add_upgrade(config, schema_name, version, finalizer=None):
         config.set_upgrade_finalizer(schema_name, finalizer)
 
     def callback():
-        migrator = config.registry['migrator']
-        migrator.add_upgrade(schema_name, version)
+        upgrader = config.registry[UPGRADER]
+        upgrader.add_upgrade(schema_name, version)
 
     config.action(
         ('add_upgrade', schema_name),
@@ -159,8 +160,8 @@ def add_upgrade(config, schema_name, version, finalizer=None):
 def add_upgrade_step(config, schema_name, step, source='', dest=None):
 
     def callback():
-        migrator = config.registry['migrator']
-        migrator[schema_name].add_upgrade_step(step, source, dest)
+        upgrader = config.registry[UPGRADER]
+        upgrader[schema_name].add_upgrade_step(step, source, dest)
 
     config.action(
         ('add_upgrade_step', schema_name, parse_version(source)),
@@ -170,8 +171,8 @@ def add_upgrade_step(config, schema_name, step, source='', dest=None):
 def set_upgrade_finalizer(config, schema_name, finalizer):
 
     def callback():
-        migrator = config.registry['migrator']
-        migrator[schema_name].finalizer = finalizer
+        upgrader = config.registry[UPGRADER]
+        upgrader[schema_name].finalizer = finalizer
 
     config.action(
         ('set_upgrade_finalizer', schema_name),
@@ -181,8 +182,8 @@ def set_upgrade_finalizer(config, schema_name, finalizer):
 def set_default_upgrade_finalizer(config, finalizer):
 
     def callback():
-        migrator = config.registry['migrator']
-        migrator.default_finalizer = finalizer
+        upgrader = config.registry[UPGRADER]
+        upgrader.default_finalizer = finalizer
 
     config.action(
         'set_default_upgrade_finalizer',
@@ -199,7 +200,7 @@ def upgrade_step(schema_name, source='', dest=None):
         def callback(scanner, factory_name, factory):
             scanner.config.add_upgrade_step(schema_name, step, source, dest)
 
-        venusian.attach(step, callback, category='migrator')
+        venusian.attach(step, callback, category='contentbase.upgrader')
         return step
 
     return decorate
@@ -213,7 +214,7 @@ def upgrade_finalizer(schema_name):
         def callback(scanner, factory_name, factory):
             scanner.config.set_upgrade_finalizer(schema_name, finalizer)
 
-        venusian.attach(finalizer, callback, category='migrator')
+        venusian.attach(finalizer, callback, category='contentbase.upgrader')
         return finalizer
 
     return decorate
@@ -223,14 +224,14 @@ def default_upgrade_finalizer(finalizer):
     def callback(scanner, factory_name, factory):
         scanner.config.set_default_upgrade_finalizer(finalizer)
 
-    venusian.attach(finalizer, callback, category='migrator')
+    venusian.attach(finalizer, callback, category='contentbase.upgrader')
     return finalizer
 
 
 # Upgrade
 def upgrade(request, schema_name, value,
             current_version='', target_version=None, **kw):
-    migrator = request.registry['migrator']
-    return migrator.upgrade(
+    upgrader = request.registry[UPGRADER]
+    return upgrader.upgrade(
         schema_name, value, current_version='', target_version=None,
         request=request, **kw)

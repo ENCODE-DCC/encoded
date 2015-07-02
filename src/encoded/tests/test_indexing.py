@@ -32,7 +32,8 @@ def app(app_settings):
     yield app
 
     # Shutdown multiprocessing pool to close db conns.
-    app.registry['indexer'].shutdown()
+    from contentbase.elasticsearch import INDEXER
+    app.registry[INDEXER].shutdown()
 
     from contentbase import DBSESSION
     DBSession = app.registry[DBSESSION]

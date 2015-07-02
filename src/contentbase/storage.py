@@ -21,10 +21,22 @@ from sqlalchemy.orm.exc import (
     FlushError,
     NoResultFound,
 )
+from .interfaces import (
+    BLOBS,
+    DBSESSION,
+    STORAGE,
+)
 from .json_renderer import json_renderer
 import json
 import transaction
 import uuid
+
+
+def includeme(config):
+    registry = config.registry
+    registry[STORAGE] = RDBStorage(registry[DBSESSION])
+    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
+
 
 Base = declarative_base()
 

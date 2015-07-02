@@ -3,11 +3,9 @@ from contentbase import (
     BeforeModified,
     calculated_property,
     collection,
-)
-from contentbase.schema_utils import (
     load_schema,
-    schema_validator,
 )
+from contentbase.schema_utils import schema_validator
 from .base import (
     Item,
     paths_filtered_by_status,
