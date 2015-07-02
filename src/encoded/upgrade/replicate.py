@@ -38,9 +38,8 @@ def replicate_4_5(value, system):
     details = {}
 
     for item in ['read_length', 'platform', 'read_length_units', 'paired_ended']:
-        if value[item] is not None:
-            details[item] = value[item]
         if item in value:
+            details[item] = value[item]
             del value[item]
 
     if 'notes' in value:
