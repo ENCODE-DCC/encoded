@@ -1,7 +1,7 @@
 {
     "title": "Annotation",
     "id": "/profiles/annotation.json",
-    "description": "List of evidences in a gdm",
+    "description": "List of evidence in a gdm",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["annotationId", "article", "owner", "dateTime"],
@@ -18,7 +18,7 @@
         },
         "annotationId": {
             "title": "Annotation ID",
-            "description": "Unique id for evidences",
+            "description": "Unique id for evidence",
             "type": "string",
             "pattern": "^[0-9]{1,9}$",
             "uniqueKey": true

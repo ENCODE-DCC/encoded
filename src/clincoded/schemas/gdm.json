@@ -95,7 +95,7 @@
         },
         "annotations": {
             "title": "Annotations",
-            "description": "List of evidences to the gdm",
+            "description": "List of evidence for the gdm",
             "type": "array",
             "default": [],
             "items": {
@@ -108,7 +108,7 @@
         },
         "summary": {
             "title": "Summary",
-            "description": "Summary of evidences",
+            "description": "Summary of evidence",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -174,7 +174,7 @@
             "type": "string"
         },
         "annotations": {
-            "title": "Evidence(s)",
+            "title": "Evidence",
             "type": "string"
         },
         "summary": {

@@ -72,11 +72,11 @@ class Gdm(Item):
     ]
 
 @collection(
-    name='evidences',
+    name='evidence',
     unique_key='annotation:annotationId',
     properties={
-        'title': 'Evidences',
-        'description': 'List of evidences in all G:D:M pairs',
+        'title': 'Evidence',
+        'description': 'List of evidence for all G:D:M pairs',
     })
 class Annotation(Item):
     item_type = 'annotation'
