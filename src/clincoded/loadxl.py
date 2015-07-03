@@ -26,12 +26,12 @@ ORDER = [
     'software_version',
     'image',
     'page',
-    'curator_page',
     'gene',
     'orphaPhenotype',
     'article',
     'annotation',
     'gdm',
+    'curator_page', # keep at bottom so it can load other type data
 ]
 
 ##############################################################################
