@@ -1,5 +1,5 @@
 'use strict';
-var React = require('React');
+var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var curator = require('./curator');
