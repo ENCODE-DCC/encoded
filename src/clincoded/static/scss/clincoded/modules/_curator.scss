@@ -139,37 +139,45 @@
     font-weight: bold;
 }
 
-.nav-add-evidence {
-    background-color: $color-neutral-bg !important;
-    text-align: center;
-    padding: 10px;
-
-    h5 {
-        margin-top: 0;
-        font-weight: bold;
-    }
-
-    li {
-        .btn {
-            text-align: left;
-        }
-    }
-
-    .icon {
-        position: relative;
-        top: 1px;
-        margin-right: 5px;
-        font-size: 1.4rem;
-    }
-}
-
 .panel-curator {
     margin: 2px 0;
     padding: 15px;
-    background-color: $color-neutral-bg;
+    background-color: darken($color-neutral-bg, 10%);
     @include border-radius(0);
 
     p {
         margin: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+}
+
+.panel-evidence-group {
+    .panel-heading {
+        padding: 10px 0;
+
+        h4 {
+            text-align: center;
+            font-weight: bold;
+        }
+    }
+
+    .panel-body {
+        padding: 10px;
+
+        .panel-heading {
+            padding: 5px 10px;
+            background-color: #a0a0a0;
+            color: #fff;
+
+            h4 {
+                font-size: 1.1rem;
+                text-align: left;
+            }
+        }
+
+        .panel-body {
+            background-color: #fff;
+        }
     }
 }

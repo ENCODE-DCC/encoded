@@ -10,14 +10,14 @@ var PanelGroup = module.exports.PanelGroup = React.createClass({
 
     render: function() {
         // If accordion panel group, add accordion property to child Panels
-        var children = React.Children.map(this.props.children, function(child) {
+        var children = React.Children.map(this.props.children, child => {
             if (child.type === Panel) {
                 // Adding properties to children means cloning them, so...
                 var clone = React.cloneElement(child, {accordion: true});
                 return clone;
             }
             return child;
-        }.bind(this));
+        });
 
         return (
             <div className="panel-group">
@@ -33,7 +33,8 @@ var Panel = module.exports.Panel = React.createClass({
     propTypes: {
         title: React.PropTypes.string, // Title in panel's header
         open: React.PropTypes.bool, // T if an accordion panel should default to open
-        accordion: React.PropTypes.bool // T if part of an accordion panel group; copied from PanelGroup props
+        accordion: React.PropTypes.bool, // T if part of an accordion panel group; copied from PanelGroup props
+        panelClassName: React.PropTypes.string // Classes to add to panel
     },
 
     getInitialState: function() {
@@ -50,10 +51,11 @@ var Panel = module.exports.Panel = React.createClass({
     },
 
     render: function() {
+        var panelWrapperClasses = 'panel panel-default' + (this.props.panelClassName ? ' ' + this.props.panelClassName : '');
         var panelClasses = 'panel-body panel-std' + ((!this.state.open && this.props.accordion) ? ' panel-closed' : '');
         var indicatorClasses = 'icon panel-header-indicator ' + (this.props.accordion ? (this.state.open ? 'icon-chevron-up' : 'icon-chevron-down') : '');
         return (
-            <div className="panel panel-default">
+            <div className={panelWrapperClasses}>
                 {this.props.title ?
                     <div className="panel-heading" role="tab">
                         {this.props.accordion ? <i className={indicatorClasses}></i> : null}

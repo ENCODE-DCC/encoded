@@ -14,7 +14,7 @@ var Form = module.exports.Form = React.createClass({
     // Add 'id' property to any Input elements. Make it a copy of the Input's ref. Run through all children
     // of the form, and any children of those children, recursively.
     createInputRefs: function(children) {
-        var processedChildren = React.Children.map(children, function(child) {
+        var processedChildren = React.Children.map(children, child => {
             var props = {};
 
             // Copy ref to new id property.
@@ -29,7 +29,7 @@ var Form = module.exports.Form = React.createClass({
 
             // If we made new properties, clone the child and assign the properties to the clone
             return Object.keys(props).length > 0 ? React.cloneElement(child, props) : child;
-        }.bind(this));
+        });
         return processedChildren;
     },
 
@@ -44,7 +44,7 @@ var Form = module.exports.Form = React.createClass({
 });
 
 
-var InputMixin = module.exports.InputMixin = {
+var FormMixin = module.exports.FormMixin = {
     formValues: {},
 
     // Do not call; called by React.
@@ -94,14 +94,14 @@ var InputMixin = module.exports.InputMixin = {
     // to the 'Required' message so it's displayed on the next render.
     validateRequired: function() {
         var valid = true;
-        Object.keys(this.refs).forEach(function(ref) {
+        Object.keys(this.refs).forEach(ref => {
             if (this.refs[ref].props.required && !this.getFormValue(ref)) {
                 // Required field has no value. Set error state to render
                 // error, and remember to return false.
                 this.setFormErrors(ref, 'Required');
                 valid = false;
             }
-        }, this);
+        });
         return valid;
     }
 };
@@ -177,7 +177,7 @@ var Input = module.exports.Input = React.createClass({
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
                         <div className={this.props.wrapperClassName}>
-                            <select className="form-control" ref="input">
+                            <select className="form-control" ref="input" onChange={this.props.clearError}>
                                 {this.props.children}
                             </select>
                             <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>

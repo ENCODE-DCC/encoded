@@ -7,12 +7,14 @@ var panel = require('../libs/bootstrap/panel');
 var parseAndLogError = require('./mixins').parseAndLogError;
 
 var Form = form.Form;
+var FormMixin = form.FormMixin;
 var Input = form.Input;
-var InputMixin = form.InputMixin;
 var Panel = panel.Panel;
 
 
 var hpoValues = [
+    {value: '', text: 'Select', disabled: true},
+    {value: '', text: '', disabled: true},
     {value: 'hp-0000006', text: 'Autosomal dominant inheritance'},
     {value: 'hp-0012275', text: 'Autosomal dominant inheritance with maternal imprinting'},
     {value: 'hp-0012274', text: 'Autosomal dominant inheritance with paternal imprinting'},
@@ -33,7 +35,7 @@ var hpoValues = [
 
 
 var CreateGeneDisease = React.createClass({
-    mixins: [InputMixin],
+    mixins: [FormMixin],
 
     contextTypes: {
         fetch: React.PropTypes.func,
@@ -62,34 +64,73 @@ var CreateGeneDisease = React.createClass({
         // Get values from form and validate them
         this.setFormValue('hgncgene', this.refs.hgncgene.getValue());
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
-        this.setFormValue('omimid', this.refs.omimid.getValue());
         this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
+            var geneId = this.getFormValue('hgncgene');
 
-            // Verify orphanet ID exists in DB
-            var url = '/diseases/' + orphaId;
-            var request = this.context.fetch(url, {
+            // Verify user-entered orphanet ID and HGNC gene exist in DB. Start by doing JSON
+            // requests for both and getting back their promises.
+            var orphaRequest = this.context.fetch('/diseases/' + orphaId, {
                 headers: {'Accept': 'application/json'}
             });
-            request.then(function(response) {
+            var geneRequest = this.context.fetch('/genes/' + geneId, {
+                headers: {'Accept': 'application/json'}
+            });
+
+            // Handle server responses for orphanet ID and HGNC gene ID through their promises.
+            var orphaJson = orphaRequest.then(response => {
+                // Received Orphanet ID response or error. If the response is fine, request
+                // the JSON in a promise.
                 if (!response.ok) { 
+                    this.setFormErrors('orphanetid', 'Orphanet ID not found');
                     throw response;
                 }
                 return response.json();
-            })
-            .catch(function() {
+            });
+            var geneJson = geneRequest.then(response => {
+                // Received HGNC gene response or error. If the response is fine, request
+                // the JSON in a promise.
+                if (!response.ok) { 
+                    this.setFormErrors('hgncgene', 'HGNC gene symbol not found');
+                    throw response;
+                }
+                return response.json();
+            });
+
+            // Once both json() promises return, handle their data. If either errors, use the catch case.
+            Promise.all([orphaJson, geneJson])
+            .then(this.receive)
+            .catch(function(e) {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
-                this.setFormErrors('orphanetid', 'Orphanet ID not found');
-            }.bind(this))
-            .then(this.receive);
+            });
+
         }
     },
 
     // Receive data from JSON request.
     receive: function(data) {
-        if (data) {
-            this.context.navigate('/curation-central');
+        if (data && data.length) {
+            var value = {};
+            value.symbol = 'GENESYMBOL';
+            value.hgncid = 'HGNCID';
+            var request = this.context.fetch('/genes/', {
+                method: 'POST',
+                headers: {
+                    'If-Match': this.props.etag || '*',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(value)
+            });
+            request.then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .catch(parseAndLogError.bind(undefined, 'putRequest'))
+            .then(function() {
+                this.context.navigate('/curation-central');
+            }.bind(this));
         }
     },
 
@@ -108,14 +149,12 @@ var CreateGeneDisease = React.createClass({
                                     error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
                                 <Input type="select" ref="hpo" label="Mode of Inheritance"
+                                    error={this.getFormError('hpo')} clearError={this.clrFormErrors.bind(null, 'hpo')}
                                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required>
                                     {hpoValues.map(function(v, i) {
-                                        return <option key={v.value} value={v.value}>{v.text}</option>;
+                                        return <option key={i} value={v.value} disabled={v.disabled ? 'disabled' : ''} selected={i === 0 ? 'true' : ''}>{v.text}</option>;
                                     })}
                                 </Input>
-                                <Input type="text" ref="omimid" label={<LabelOmimId />}
-                                    error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim-id')}
-                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
                                 <Input type="submit" wrapperClassName="pull-right" id="submit" />
                             </div>
                         </Form>
@@ -139,11 +178,5 @@ var LabelHgncGene = React.createClass({
 var LabelOrphanetId = React.createClass({
     render: function() {
         return <span>Enter <a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet ID</a></span>;
-    }
-});
-
-var LabelOmimId = React.createClass({
-    render: function() {
-        return <span>Enter <a href="http://www.omim.org/" target="_blank" title="Online Mendelian Inheritance in Man home page in a new tab">OMIM</a> phenotype ID</span>;
     }
 });

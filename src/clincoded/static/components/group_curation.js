@@ -15,6 +15,7 @@ var Panel = panel.Panel;
 var Form = form.Form;
 var Input = form.Input;
 var InputMixin = form.InputMixin;
+var PmidDoiButtons = curator.PmidDoiButtons;
 
 
 // Temporary hard-coded data to display
@@ -45,6 +46,7 @@ var GroupCuration = React.createClass({
                     {currPmidItem ?
                         <div className="panel-curator">
                             <PmidSummary pmidItem={currPmidItem} />
+                            <PmidDoiButtons pmidId={currPmidItem.id} doiId={currPmidItem.doi} />
                         </div>
                     : null}
                     <div className="row group-curation-content">
@@ -78,7 +80,7 @@ var GroupCuration = React.createClass({
                                         <GroupAdditional />
                                     </Panel>
                                 </PanelGroup>
-                                <Input type="submit" wrapperClassName="pull-right" id="submit" />
+                                <div className="clearfix"><Input type="submit" wrapperClassName="pull-right" id="submit" /></div>
                             </Form>
                         </div>
                         {currPmidItem ?
