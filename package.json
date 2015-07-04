@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "jquery, domready held back.",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "sh postinstall.sh"
   },
   "author": "",
   "license": "MIT",
