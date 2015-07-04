@@ -62,17 +62,17 @@ var CurationPalette = module.exports.CurationNav = React.createClass({
     render: function() {
         return (
             <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.currPmidItem.id}>
-                <Panel title={<CurationPaletteTitles title="Group" />}>Stuff</Panel>
-                <Panel title={<CurationPaletteTitles title="Family" />}>Stuff</Panel>
-                <Panel title={<CurationPaletteTitles title="Individual" />}>Stuff</Panel>
-                <Panel title={<CurationPaletteTitles title="Functional" />}>Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Group" />} panelClassName="panel-evidence">Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Individual" />} panelClassName="panel-evidence">Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Functional" />} panelClassName="panel-evidence">Stuff</Panel>
             </Panel>
         );
     }
 });
 
 
-// HTML labels for inputs follow.
+// Title for each section of the curation palette. Contains the title and an Add button.
 var CurationPaletteTitles = React.createClass({
     propTypes: {
         title: React.PropTypes.string // Title to display
@@ -80,10 +80,10 @@ var CurationPaletteTitles = React.createClass({
 
     render: function() {
         return (
-            <div>
-                <h4>{this.props.title}</h4>
-                <button>Add {this.props.title} Information</button>
-            </div>
+            <a href="#" className="clearfix">
+                <h4 className="pull-left">{this.props.title}</h4>
+                <i className="icon icon-plus-circle pull-right"></i>
+            </a>
         );
     }
 });
@@ -124,9 +124,10 @@ var DiseaseCurationData = React.createClass({
 });
 
 
+// Display buttons to bring up the PubMed and doi-specified web pages.
 var PmidDoiButtons = module.exports.PmidDoiButtons = React.createClass({
     propTypes: {
-        pmidId: React.PropTypes.string, // Numeric string PMID
+        pmidId: React.PropTypes.string, // Numeric string PMID for PubMed page
         doiId: React.PropTypes.string // DOI ID
     },
 

@@ -153,7 +153,7 @@
 }
 
 .panel-evidence-group {
-    .panel-heading {
+    > .panel-heading {
         padding: 10px 0;
 
         h4 {
@@ -162,22 +162,32 @@
         }
     }
 
+    > .panel-body {
+        padding: 10px 10px 0 10px;
+    }
+}
+
+
+.panel-evidence {
+    .panel-heading {
+        padding: 0;
+
+        h4 {
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        a {
+            padding: 5px 10px;
+        }
+    }
+
     .panel-body {
         padding: 10px;
+        background-color: #fff;
+    }
 
-        .panel-heading {
-            padding: 5px 10px;
-            background-color: #a0a0a0;
-            color: #fff;
-
-            h4 {
-                font-size: 1.1rem;
-                text-align: left;
-            }
-        }
-
-        .panel-body {
-            background-color: #fff;
-        }
+    .icon {
+        font-size: 1.3rem;
     }
 }
