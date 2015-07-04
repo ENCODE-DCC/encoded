@@ -2,12 +2,18 @@
 var React = require('react');
 
 var Footer = React.createClass({
-    shouldComponentUpdate: function (nextProps, nextState) {
-        return false;
-    },
-
     render: function() {
         console.log('render footer');
+        var session = this.props.session;
+        var disabled = !this.props.loadingComplete;
+        var user_actions = this.props.user_actions;
+        var userActionRender;
+
+        if (!(session && session['auth.userid'])) {
+            userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
+        } else {
+            userActionRender = <a href="#" data-trigger={user_actions[0].trigger}>Submitter sign out</a>;
+        }
         return (
             <footer id="page-footer" className="page-footer">
                 <div className="container">
@@ -16,6 +22,7 @@ var Footer = React.createClass({
                             <ul className="footer-links">
                                 <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                                 <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
+                                <li id="user-actions-footer">{userActionRender}</li>
                             </ul>
                             <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University.</p>
                         </div>
