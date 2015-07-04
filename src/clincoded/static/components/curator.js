@@ -58,15 +58,32 @@ var PmidSummary = module.exports.PmidSummary = React.createClass({
 });
 
 
-var CurationNav = module.exports.CurationNav = React.createClass({
+var CurationPalette = module.exports.CurationNav = React.createClass({
     render: function() {
         return (
             <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.currPmidItem.id}>
-                <Panel title="Group">Stuff</Panel>
-                <Panel title="Family">Stuff</Panel>
-                <Panel title="Individual">Stuff</Panel>
-                <Panel title="Functional">Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Group" />}>Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Family" />}>Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Individual" />}>Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Functional" />}>Stuff</Panel>
             </Panel>
+        );
+    }
+});
+
+
+// HTML labels for inputs follow.
+var CurationPaletteTitles = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string // Title to display
+    },
+
+    render: function() {
+        return (
+            <div>
+                <h4>{this.props.title}</h4>
+                <button>Add {this.props.title} Information</button>
+            </div>
         );
     }
 });

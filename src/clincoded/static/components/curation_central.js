@@ -73,11 +73,12 @@ var CuratorCentral = React.createClass({
 globals.curator_page.register(CuratorCentral, 'curator_page', 'curation-central');
 
 
+// Display the list of PubMed articles passed in pmidItems.
 var PmidSelectionList = React.createClass({
     propTypes: {
-        pmidItems: React.PropTypes.array,
-        currPmid: React.PropTypes.number,
-        currPmidChange: React.PropTypes.func
+        pmidItems: React.PropTypes.array, // List of PubMed items
+        currPmid: React.PropTypes.number, // PMID of currently selected article
+        currPmidChange: React.PropTypes.func // Function to call when currently selected article changes
     },
 
     render: function() {
@@ -110,6 +111,7 @@ var PmidSelectionList = React.createClass({
 });
 
 
+// The content of the Add PMID(s) modal dialog box
 var AddPmidModal = React.createClass({
     render: function() {
         return (
