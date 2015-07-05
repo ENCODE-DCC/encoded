@@ -224,11 +224,13 @@ var Documents = React.createClass({
             <dd>
                 {this.props.docs.map(function(doc, i) {
                     var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    var docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
                         <div className="multi-dd dl-link">
                             <i className="icon icon-download"></i>&nbsp;
                             <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
-                                {doc.aliases[0]}
+                                {docName}
                             </a>
                         </div>
                     );
