@@ -3,9 +3,9 @@ from pyramid.view import view_config
 from contentbase import (
     Collection,
     TYPES,
-    collection_view_listing_db,
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
+from contentbase.resource_views import collection_view_listing_db
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
@@ -371,12 +371,6 @@ def search(context, request, search_type=None):
         del query['query']['query_string']
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
-    elif size <= 25:
-        # highlight only when search type, search term and size are specified
-        query['highlight'] = {
-            'order': 'score',
-            'fields': highlights
-        }
 
     # Setting filters
     used_filters = set_filters(request, query, result)

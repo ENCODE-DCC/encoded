@@ -7,7 +7,6 @@ from pyramid.security import (
     DENY_ALL,
     Everyone,
 )
-from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
     traverse,
@@ -133,6 +132,10 @@ class Item(contentbase.Item):
 
         # publication
         'published': ALLOW_CURRENT,
+
+        # pipeline
+        'active': ALLOW_CURRENT,
+        'archived': ALLOW_CURRENT,
     }
 
     @property
@@ -186,39 +189,34 @@ class SharedItem(Item):
         return roles
 
 
-def contextless_has_permission(permission):
-    request = get_current_request()
-    return request.has_permission('forms', request.root)
-
-
 @contentbase.calculated_property(context=Item.Collection, category='action')
-def add(item_uri, item_type, has_permission):
-    if has_permission('add') and contextless_has_permission('forms'):
+def add(context, request):
+    if request.has_permission('add') and request.has_permission('forms', request.root):
         return {
             'name': 'add',
             'title': 'Add',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': '{item_uri}#!add'.format(item_uri=item_uri),
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!add'.format(item_uri=request.resource_path(context)),
         }
 
 
 @contentbase.calculated_property(context=Item, category='action')
-def edit(item_uri, item_type, has_permission):
-    if has_permission('edit') and contextless_has_permission('forms'):
+def edit(context, request):
+    if request.has_permission('edit') and request.has_permission('forms', request.root):
         return {
             'name': 'edit',
             'title': 'Edit',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + '#!edit',
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!edit'.format(item_uri=request.resource_path(context)),
         }
 
 
 @contentbase.calculated_property(context=Item, category='action')
-def edit_json(item_uri, item_type, has_permission):
-    if has_permission('edit'):
+def edit_json(context, request):
+    if request.has_permission('edit'):
         return {
             'name': 'edit-json',
             'title': 'Edit JSON',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + '#!edit-json',
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }

@@ -208,3 +208,15 @@ form.table-filter {
     @extend %tcell-template;
     @extend .icon-sort-desc;
 }
+
+.highlight-row {
+    td {
+        background-color: #606060 !important;
+        color: #fff;
+        font-weight: bold;
+
+        a {
+            color: #fff !important;
+        }
+    }
+}

@@ -1,4 +1,3 @@
-from past.builtins import basestring
 from pyramid.events import (
     ApplicationCreated,
     subscriber,
@@ -6,6 +5,7 @@ from pyramid.events import (
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from urllib.parse import urlparse
+from .util import ensurelist
 
 
 def includeme(config):
@@ -18,12 +18,6 @@ def includeme(config):
     config.add_route('jsonld_context_no_slash', term_path.rstrip('/'))
     config.add_route('jsonld_term', term_path + '{term}')
     config.scan(__name__)
-
-
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
 
 
 @subscriber(ApplicationCreated)
@@ -146,7 +140,7 @@ def make_jsonld_context(event):
                 if existing[prop] == definition[prop]:
                     continue
                 existing[prop] = sorted(
-                    set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
+                    set(ensurelist(existing.get(prop, [])) + ensurelist(definition[prop])))
 
             if existing['@type'] != definition['@type']:
                 existing['@type'] = prefix + ':BrokenPropertyOrClass'
@@ -252,7 +246,7 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
         }
 
         if 'rdfs:subPropertyOf' in subschema:
-            prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
+            prop_ld['rdfs:subPropertyOf'] = ensurelist(subschema['rdfs:subPropertyOf'])
 
         subschema = subschema.get('items', subschema)
         if 'title' in subschema:
@@ -261,7 +255,7 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
         if 'description' in subschema:
             prop_ld['rdfs:comment'] = subschema['description']
 
-        links = aslist(subschema.get('linkTo', []))
+        links = ensurelist(subschema.get('linkTo', []))
         if subschema.get('linkFrom'):
             links.append(subschema['linkFrom'].split('.')[0])
         if len(links) == 1:
@@ -270,7 +264,7 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
         elif len(links) > 1:
             prop_ld['rdfs:range'] = {
                 '@type': 'owl:Class',
-                'owl:unionOf': [term_path + type_name for type_name in aslist(links)],
+                'owl:unionOf': [term_path + type_name for type_name in ensurelist(links)],
             }
 
         yield prop_ld

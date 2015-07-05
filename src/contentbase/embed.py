@@ -85,27 +85,6 @@ def _embed(request, path, as_user='EMBED'):
     return result, subreq._embedded_uuids, subreq._linked_uuids
 
 
-def expand_path(request, obj, path):
-    if isinstance(path, basestring):
-        path = path.split('.')
-    if not path:
-        return
-    name = path[0]
-    remaining = path[1:]
-    value = obj.get(name, None)
-    if value is None:
-        return
-    if isinstance(value, list):
-        for index, member in enumerate(value):
-            if not isinstance(member, dict):
-                member = value[index] = request.embed(member, '@@object')
-            expand_path(request, member, remaining)
-    else:
-        if not isinstance(value, dict):
-            value = obj[name] = request.embed(value, '@@object')
-        expand_path(request, value, remaining)
-
-
 class NullRenderer:
     '''Sets result value directly as response.
     '''

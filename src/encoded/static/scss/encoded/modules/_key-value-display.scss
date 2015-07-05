@@ -169,6 +169,18 @@ dd ul, .multi-value {
     }
 }
 
+.multi-comma {
+    margin-right: 0;
+
+    &:after {
+        content: ",\00a0";
+    }
+
+    &:last-child:after {
+        content: normal;
+    }
+}
+
 .multi-dd {
     margin-bottom: 10px;
 }

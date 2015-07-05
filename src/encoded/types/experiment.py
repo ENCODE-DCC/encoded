@@ -1,10 +1,8 @@
 from pyramid.traversal import find_root
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,
@@ -38,6 +36,9 @@ class Experiment(Dataset):
         'files.analysis_step.software_versions.software',
         'files.replicate.library.biosample',
         'files.step_run.qc_metrics',
+        'files.qc_metrics.step_run',
+        'files.qc_metrics.step_run.analysis_step',
+        'control_for',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
@@ -61,7 +62,6 @@ class Experiment(Dataset):
         'replicates.library.biosample.treatments',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'possible_controls',
         'target.organism',
         'references',
@@ -93,12 +93,12 @@ class Experiment(Dataset):
         'replicates.library.biosample.pooled_from',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'target.organism',
     ]
     rev = Dataset.rev.copy()
     rev.update({
         'replicates': ('replicate', 'experiment'),
+        'control_for': ('experiment', 'possible_controls')
     })
 
     @calculated_property(condition='biosample_term_id', schema={
@@ -181,6 +181,16 @@ class Experiment(Dataset):
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(schema={
+        "title": "Control for",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "experiment.possible_controls",
+        },
+    })
+    def control_for(self, request, control_for):
+        return paths_filtered_by_status(request, control_for)
 
 @collection(
     name='replicates',
@@ -199,7 +209,6 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
-        'platform',
     ]
 
     def unique_keys(self, properties):

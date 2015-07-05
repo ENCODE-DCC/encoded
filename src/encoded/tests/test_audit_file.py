@@ -21,8 +21,7 @@ def file_rep(replicate, file_exp, testapp):
     item = {
         'experiment': file_exp['uuid'],
         'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'paired_ended': False
+        'technical_replicate_number': 1
         }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
@@ -46,8 +45,7 @@ def file_rep2(replicate, file_exp2, testapp):
     item = {
         'experiment': file_exp2['uuid'],
         'biological_replicate_number': 1,
-        'technical_replicate_number': 1,
-        'paired_ended': False
+        'technical_replicate_number': 1
         }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
@@ -170,7 +168,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
 
 
 def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
-    testapp.patch_json(file_rep2['@id'], {'paired_ended': True})
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -181,7 +178,6 @@ def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
 
 
 def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
-    testapp.patch_json(file_rep2['@id'], {'paired_ended': False})
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended', 'output_type': 'reads', 'file_size': 23498234, 'paired_end': 1})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']

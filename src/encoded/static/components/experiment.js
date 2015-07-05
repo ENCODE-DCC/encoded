@@ -25,6 +25,7 @@ var AuditDetail = audit.AuditDetail;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
+var ExperimentTable = dataset.ExperimentTable;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -172,6 +173,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -281,14 +284,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.possible_controls.length ?
+                        {context.possible_controls && context.possible_controls.length ?
                             <div data-test="possible-controls">
                                 <dt>Controls</dt>
                                 <dd>
                                     <ul>
                                         {context.possible_controls.map(function (control) {
                                             return (
-                                                <li key={control['@id']}>
+                                                <li key={control['@id']} className="multi-comma">
                                                     <a href={control['@id']}>
                                                         {control.accession}
                                                     </a>
@@ -393,12 +396,36 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
+                {context.control_for && context.control_for.length ?
+                    <ControllingExperiments {...this.props} url={experiments_url} />
+                : null}
+
             </div>
         );
     }
 });
 
 globals.content_views.register(Experiment, 'experiment');
+
+
+var ControllingExperiments = React.createClass({
+    render: function () {
+        var context = this.props.context;
+
+        return (
+            <div>
+                <span className="pull-right">
+                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
+                </span>
+
+                <div>
+                    <h3>Experiments with {context.accession} as a control:</h3>
+                    <ExperimentTable {...this.props} items={context.control_for} limit={5} total={context.control_for.length} />
+                </div>
+            </div>
+        );
+    }
+});
 
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
@@ -999,7 +1026,7 @@ var FileDetailView = function(node) {
                 {selectedFile.file_format ?
                     <div data-test="format">
                         <dt>Format</dt>
-                        <dd>{selectedFile.file_format}</dd>
+                        <dd>{selectedFile.file_type}</dd>
                     </div>
                 : null}
 

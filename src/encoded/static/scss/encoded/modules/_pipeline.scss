@@ -106,6 +106,22 @@ g.edgePath {
     border-bottom: 1px solid #e8e8e8;
 }
 
+.step-info {
+    padding: 15px 30px;
+    border: 1px solid #e0e0e0;
+}
+
+.selected-step {
+    @extend .step-info;
+    background-color: #e8f0e8;
+}
+
+.graph-node-info {
+    hr {
+        margin: 0 !important;
+    }
+}
+
 .btn-orient-wrapper {
     padding: 1px 4px;
 }

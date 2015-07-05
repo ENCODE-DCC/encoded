@@ -161,6 +161,12 @@ def elasticsearch(registry):
 
 
 @fixture
+def upgrader(registry):
+    from contentbase import UPGRADER
+    return registry[UPGRADER]
+
+
+@fixture
 def root(app):
     return app.root_factory(app)
 

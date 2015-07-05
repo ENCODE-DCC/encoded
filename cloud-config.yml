@@ -111,6 +111,10 @@ runcmd:
 - cd /srv/encoded
 - sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
 - sudo -u encoded git checkout %(COMMIT)s
+- mkdir /opt/cloudwatchmon
+- chown build:build /opt/cloudwatchmon
+- sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
+- sudo -u build /opt/cloudwatchmon/bin/pip install -r cloudwatchmon-requirements.txt
 - mkdir /opt/wal-e
 - chown postgres:postgres /opt/wal-e
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
@@ -158,6 +162,10 @@ ssh_authorized_keys:
 
 users:
 - default
+- name: build
+  gecos: Build user
+  inactive: true
+  system: true
 - name: encoded
   gecos: ENCODE Metadata Database daemon user
   inactive: true
@@ -178,6 +186,10 @@ write_files:
         "${distro_id} ${distro_codename}-security";
     };
     Unattended-Upgrade::Automatic-Reboot "true";
+
+- path: /etc/cron.d/cloudwatchmon
+  content: |
+    */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
 
 - path: /etc/default/elasticsearch
   content: |

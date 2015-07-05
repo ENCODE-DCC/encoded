@@ -1,5 +1,5 @@
 from future.standard_library import install_aliases
-install_aliases()
+install_aliases()  # NOQA
 import base64
 import codecs
 import json
@@ -181,7 +181,8 @@ def main(global_config, **local_config):
         settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
     config = Configurator(settings=settings)
-    config.registry['app_factory'] = main  # used by mp_indexer
+    from contentbase.elasticsearch import APP_FACTORY
+    config.registry[APP_FACTORY] = main  # used by mp_indexer
 
     config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
     from pyramid_localroles import LocalRolesAuthorizationPolicy

@@ -8,14 +8,16 @@ from contentbase import DBSESSION
 from contentbase.storage import (
     TransactionRecord,
 )
-from .interfaces import ELASTIC_SEARCH
+from .interfaces import (
+    ELASTIC_SEARCH,
+    INDEXER,
+)
 import datetime
 import logging
 import pytz
 
 
 log = logging.getLogger(__name__)
-INDEXER = 'indexer'
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 

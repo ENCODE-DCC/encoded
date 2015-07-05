@@ -4,8 +4,8 @@ Feature: Generics
     Scenario Outline: Generics
         When I visit "/<item_type>/"
         Then I should see an element with the css selector ".collection-table"
-        And I wait for the table to fully load
-        And I should see an element with the css selector ".collection-table > tbody > tr"
+        When I wait for the table to fully load
+        Then I should see an element with the css selector ".collection-table > tbody > tr"
         And I should not see "N/A"
         And I should not see "NULL"
         And I should not see "null"

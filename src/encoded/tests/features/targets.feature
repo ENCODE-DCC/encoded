@@ -12,7 +12,7 @@ Feature: Targets
 
     Scenario: Detail page
         When I visit "/targets/ADNP-human/"
-        And I should see an element with the css selector ".view-item.type-target"
+        Then I should see an element with the css selector ".view-item.type-target"
 
         When I click the link to "http://www.uniprot.org/uniprot/Q9H2P0"
         Then the browser's URL should contain "www.uniprot.org"

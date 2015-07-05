@@ -1,9 +1,7 @@
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     collection,
     calculated_property,
+    load_schema,
 )
 from .base import (
     Item,
@@ -23,14 +21,20 @@ class Pipeline(Item):
     name_key = 'accession'
     embedded = [
         'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
         'analysis_steps',
         'analysis_steps.parents',
         'analysis_steps.parents.software_versions',
         'analysis_steps.parents.software_versions.software',
         'analysis_steps.parents.software_versions.software.references',
+        'analysis_steps.documents',
         'analysis_steps.software_versions',
         'analysis_steps.software_versions.software',
         'analysis_steps.software_versions.software.references',
+        'lab',
+        'award.pi.lab',
     ]
 
 

@@ -22,7 +22,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "antibody": {
             "title": "Antibody",
@@ -56,34 +56,6 @@
             "comment": "See library.json for available identifiers.",
             "type": "string",
             "linkTo": "library"
-        },
-        "platform": {
-            "title": "Platform",
-            "description": "The measurement device used to collect data.",
-            "comment": "See platform.json for available identifiers.",
-            "type": "string",
-            "permission": "import_items",
-            "linkTo": "platform"
-        },
-        "paired_ended": {
-            "title": "Paired-end sequencing",
-            "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
-            "permission": "import_items",
-            "type": "boolean"
-        },
-        "read_length": {
-            "title": "Read length",
-            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
-            "comment": "When submitting read length, must submit value for read length units.",
-            "permission": "import_items",
-            "type": "integer"
-        },
-        "read_length_units": {
-            "title": "Read length units",
-            "type": "string",
-            "enum": [
-                "nt"
-            ]
         },
         "rbns_protein_concentration": {
             "title": "RBNS protein concentration",

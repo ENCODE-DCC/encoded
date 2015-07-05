@@ -105,7 +105,7 @@
         "status": "finished",
         "analysis_step": "36a667fe-e98c-402d-babf-88a9d39df5ff",
         "workflow_run": "541db16d-72ed-4d5f-ac12-d688c599c1fb",
-         "dx_applet_details": [
+        "dx_applet_details": [
             {
                 "dx_job_id": " job-BV016900z53k72z0Xkq003jY",
                 "started_running": "2014-10-15T11:49:12.000000+00:00",

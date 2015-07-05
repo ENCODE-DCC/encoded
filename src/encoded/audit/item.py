@@ -1,9 +1,12 @@
-from contentbase.auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
-from contentbase import simple_path_ids
+from contentbase import (
+    UPGRADER,
+)
 from contentbase.schema_utils import validate
+from contentbase.util import simple_path_ids
 
 
 @audit_checker('item', frame='object')
@@ -17,9 +20,9 @@ def audit_item_schema(value, system):
     current_version = properties.get('schema_version', '')
     target_version = context.type_info.schema_version
     if target_version is not None and current_version != target_version:
-        migrator = registry['migrator']
+        upgrader = registry[UPGRADER]
         try:
-            properties = migrator.upgrade(
+            properties = upgrader.upgrade(
                 context.item_type, properties, current_version, target_version,
                 finalize=False, context=context, registry=registry)
         except RuntimeError:

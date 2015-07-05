@@ -605,5 +605,19 @@
         "state": "WA",
         "title": "Robert Waterston, UW",
         "uuid": "44324de6-c057-451f-a8f1-1d9a6cb2762c"
+    },
+    {
+        "address1": "DNA Nexus",
+        "awards": [
+            "/awards/U41HG006992/"
+        ],
+        "country": "USA",
+        "name": "encode-processing-pipeline",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "pi": "uskuf.shyec@doton.danona",
+        "status": "current",
+        "title": "ENCODE Processing Pipeline",
+        "uuid": "44324de6-c057-451f-a8f1-1d9a6cb9875d"
     }
 ]

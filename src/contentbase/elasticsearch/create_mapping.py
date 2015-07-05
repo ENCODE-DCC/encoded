@@ -6,10 +6,13 @@ To load the initial data:
     %(prog)s production.ini
 
 """
-from past.builtins import basestring
 from pyramid.paster import get_app
 from elasticsearch import RequestError
-from contentbase import TYPES
+from contentbase import (
+    COLLECTIONS,
+    TYPES,
+)
+from contentbase.util import ensurelist
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -86,7 +89,7 @@ def schema_mapping(name, schema):
             }
         }
 
-    if type_ == 'string':
+    if type_ in ['string', 'boolean']:
         return {
             'type': 'string',
             'include_in_all': False,
@@ -117,20 +120,6 @@ def schema_mapping(name, schema):
     if type_ == 'integer':
         return {
             'type': 'long',
-            'include_in_all': False,
-            'store': True,
-            'fields': {
-                'raw': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
-                }
-            }
-        }
-
-    if type_ == 'boolean':
-        return {
-            'type': 'boolean',
             'include_in_all': False,
             'store': True,
             'fields': {
@@ -351,12 +340,6 @@ def combined_mapping(types, *item_types):
     return combined
 
 
-def aslist(value):
-    if isinstance(value, basestring):
-        return [value]
-    return value
-
-
 def combine_schemas(a, b):
     if a == b:
         return a
@@ -369,7 +352,7 @@ def combine_schemas(a, b):
         if a[name] == b[name]:
             combined[name] = a[name]
         elif name == 'type':
-            combined[name] = sorted(set(aslist(a[name]) + aslist(b[name])))
+            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
         elif name == 'properties':
             combined[name] = {}
             for k in set(a[name].keys()).intersection(b[name].keys()):
@@ -452,7 +435,7 @@ def type_mapping(types, item_type, embed=True):
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        del new_mapping[last]['include_in_all']
+        new_mapping[last].pop('include_in_all', None)
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
@@ -473,7 +456,7 @@ def run(app, collections=None, dry_run=False):
                 es.indices.create(index=index, body=index_settings())
 
     if not collections:
-        collections = ['meta'] + list(registry['collections'].by_item_type.keys())
+        collections = ['meta'] + list(registry[COLLECTIONS].by_item_type.keys())
 
     for collection_name in collections:
         if collection_name == 'meta':
@@ -481,7 +464,7 @@ def run(app, collections=None, dry_run=False):
             mapping = META_MAPPING
         else:
             doc_type = collection_name
-            collection = registry['collections'].by_item_type[collection_name]
+            collection = registry[COLLECTIONS].by_item_type[collection_name]
             mapping = type_mapping(registry[TYPES], collection.item_type)
 
         if mapping is None:
