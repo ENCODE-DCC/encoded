@@ -396,10 +396,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
-                {context.control_for && context.control_for.length ?
-                    <ControllingExperiments {...this.props} url={experiments_url} />
-                : null}
-
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
             </div>
         );
     }
@@ -420,7 +417,7 @@ var ControllingExperiments = React.createClass({
 
                 <div>
                     <h3>Experiments with {context.accession} as a control:</h3>
-                    <ExperimentTable {...this.props} items={context.control_for} limit={5} total={context.control_for.length} />
+                    <ExperimentTable {...this.props} limit={5} />
                 </div>
             </div>
         );
