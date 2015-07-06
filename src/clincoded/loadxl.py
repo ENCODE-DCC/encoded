@@ -25,7 +25,6 @@ ORDER = [
     'software',
     'software_version',
     'image',
-    'page',
     'gene',
     'orphaPhenotype',
     'article',

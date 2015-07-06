@@ -28,12 +28,13 @@ var Form = module.exports.Form = React.createClass({
             }
 
             // If we made new properties, clone the child and assign the properties to the clone
-            return Object.keys(props).length > 0 ? React.cloneElement(child, props) : child;
+            return Object.keys(props).length ? React.cloneElement(child, props) : child;
         });
         return processedChildren;
     },
 
     render: function() {
+        // Before rendering, copy any refs on any elements in the form to each element's id property
         var children = this.createInputRefs(this.props.children);
         return (
             <form onSubmit={this.props.submitHandler} className={this.props.formClassName}>
@@ -123,6 +124,7 @@ var Input = module.exports.Input = React.createClass({
         inputClassName: React.PropTypes.string, // CSS classes to add to input elements themselves
         rows: React.PropTypes.string, // Number of rows in textarea
         value: React.PropTypes.string, // Value to pre-fill input with
+        defaultValue: React.PropTypes.string, // Default value for <select>
         required: React.PropTypes.bool // T to make this a required field
     },
 
@@ -177,7 +179,7 @@ var Input = module.exports.Input = React.createClass({
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
                         <div className={this.props.wrapperClassName}>
-                            <select className="form-control" ref="input" onChange={this.props.clearError}>
+                            <select className="form-control" ref="input" onChange={this.props.clearError} defaultValue={this.props.defaultValue}>
                                 {this.props.children}
                             </select>
                             <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
