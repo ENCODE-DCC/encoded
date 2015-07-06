@@ -62,7 +62,6 @@
             "title": "Protein tags",
             "description": "Recombinant tags in the construct.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Protein tag",
                 "description": "Recombinant tag in the construct.",
