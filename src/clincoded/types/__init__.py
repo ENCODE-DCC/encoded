@@ -65,8 +65,8 @@ class Gdm(Item):
     schema = load_schema('clincoded:schemas/gdm.json')
     name_key = 'gdmId'
     embedded = [
-        'geneSymbol',
-        'orphaNumber',
+        'gene',
+        'disease',
         'annotations',
         'annotations.article'
     ]
