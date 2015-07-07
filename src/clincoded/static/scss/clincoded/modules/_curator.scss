@@ -27,6 +27,26 @@
     }
 }
 
+.curation-data-title {
+    margin-bottom: 2px;
+    color: #000;
+    background-color: #c0c0c0;
+    text-align: center;
+
+    h1 {
+        margin: 5px 0 2px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin: 2px 0 5px;
+        font-size: 1.1rem;
+        font-weight: 300;
+        font-style: italic;
+    }
+}
+
 .curation-data-gene {
     margin-bottom: 2px;
 }

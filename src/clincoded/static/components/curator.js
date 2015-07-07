@@ -24,18 +24,35 @@ globals.content_views.register(CuratorPage, 'curator_page');
 // Curation data header for Gene:Disease
 var CurationData = module.exports.CurationData = React.createClass({
     propTypes: {
-        gdm: React.PropTypes.object.isRequired // GDM data to display
+        gdm: React.PropTypes.object // GDM data to display
     },
 
     render: function() {
-        return (
-            <div className="container curation-data">
-                <div className="row equal-height">
-                    <GeneCurationData gene={this.props.gdm.geneSymbol} />
-                    <DiseaseCurationData />
+        var gdm = this.props.gdm;
+
+        if (gdm && Object.keys(gdm).length > 0) {
+            var gene = this.props.gdm.geneSymbol;
+            var disease = this.props.gdm.orphaNumber;
+
+            return (
+                <div>
+                    <div className="curation-data-title">
+                        <div className="container">
+                            <h1>{gene.symbol} – {disease.term}</h1>
+                            <h2>{this.props.gdm.modeInheritance}</h2>
+                        </div>
+                    </div>
+                    <div className="container curation-data">
+                        <div className="row equal-height">
+                            <GeneCurationData gene={gene} />
+                            <DiseaseCurationData disease={disease} />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return null;
+        }
     }
 });
 
@@ -96,18 +113,22 @@ var CurationPaletteTitles = React.createClass({
 // Display the gene section of the curation data
 var GeneCurationData = React.createClass({
     propTypes: {
-        gene: React.PropTypes.object.isRequired // Object to display
+        gene: React.PropTypes.object // Object to display
     },
 
     render: function() {
+        var gene = this.props.gene;
+
         return (
             <div className="col-xs-12 col-sm-3 gutter-exc">
                 <div className="curation-data-gene">
-                    <dl>
-                        <dt>Gene A</dt>
-                        <dd><a href="#">{this.props.hgncId}</a></dd>
-                        <dd>EntrezID: <a href={this.props.entrezurl}>{this.props.entrezId}</a></dd>
-                    </dl>
+                    {gene ?
+                        <dl>
+                            <dt>{gene.symbol}</dt>
+                            <dd><a href={gene.hgncurl} target="_blank">{gene.hgncId}</a></dd>
+                            <dd>EntrezID:<a href={gene.entrezurl} target="_blank">{gene.entrezId}</a></dd>
+                        </dl>
+                    : null}
                 </div>
             </div>
         );
@@ -117,14 +138,22 @@ var GeneCurationData = React.createClass({
 
 // Display the disease section of the curation data
 var DiseaseCurationData = React.createClass({
+    propTypes: {
+        disease: React.PropTypes.object // Object to display
+    },
+
     render: function() {
+        var disease = this.props.disease;
+
         return (
             <div className="col-xs-12 col-sm-9 gutter-exc">
                 <div className="curation-data-disease">
-                    <dl>
-                        <dt>Disease</dt>
-                        <dd>Orphanet ID: <a href="#">166035</a></dd>
-                    </dl>
+                    {disease ?
+                        <dl>
+                            <dt>{disease.term}</dt>
+                            <dd>Orphanet ID: <a href={disease.url} target="_blank">{disease.orphaNumber}</a></dd>
+                        </dl>
+                    : null}
                 </div>
             </div>
         );

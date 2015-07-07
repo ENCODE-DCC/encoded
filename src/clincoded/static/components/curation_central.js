@@ -20,7 +20,7 @@ var pmid_items = require('./testdata').pmid_items;
 
 
 // Curator page content
-var CuratorCentral = React.createClass({
+var CurationCentral = React.createClass({
     getInitialState: function() {
         return {
             currPmid: -1,
@@ -32,37 +32,46 @@ var CuratorCentral = React.createClass({
         fetch: React.PropTypes.func
     },
 
+    // Called when currently selected PMID changes
     currPmidChange: function(pmid) {
         this.setState({currPmid: pmid, selectionListOpen: false});
     },
 
+    // Retrieve the GDM object from the DB with the given uuid
     getGdm: function(uuid) {
         // Retrieve the GDM with the UUID from the query string
         var gdmRequest = this.context.fetch('/gdm/' + uuid, {
             headers: {'Accept': 'application/json'}
         }).then(response => {
-            // Received Orphanet ID response or error. If the response is fine, request
+            // Received DB query response or error. If the response is fine, request
             // the JSON in a promise.
             if (!response.ok) { 
+                // Error
                 throw response;
             }
+
+            // Success; get the response’s JSON
             return response.json();
         }).catch(parseAndLogError.bind(undefined, 'putRequest'))
         .then(data => {
+            // The response's JSON is in 'data'; set the Curator Central component
             this.setState({currGdm: data});
         });
     },
 
-    componentWillMount: function() {
+    // After the Curator Central page component mounts, grab the uuid from the query string and
+    // retrieve the corresponding GDM from the DB.
+    componentDidMount: function() {
         // See if there’s a GDM UUID to retrieve
         var gdmUuid;
         var queryParsed = this.props.href && url.parse(this.props.href, true).query;
         if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'version' query string item, if any
+            // Find the first 'gdm' query string item, if any
             var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
                 return key === 'gdm';
             });
             if (uuidKey) {
+                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
                 gdmUuid = queryParsed[uuidKey];
                 if (typeof gdmUuid === 'object') {
                     gdmUuid = gdmUuid[0];
@@ -114,7 +123,7 @@ var CuratorCentral = React.createClass({
     }
 });
 
-globals.curator_page.register(CuratorCentral, 'curator_page', 'curation-central');
+globals.curator_page.register(CurationCentral, 'curator_page', 'curation-central');
 
 
 // Display the list of PubMed articles passed in pmidItems.
