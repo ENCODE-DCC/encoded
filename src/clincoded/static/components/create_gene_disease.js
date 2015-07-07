@@ -70,7 +70,7 @@ var CreateGeneDisease = React.createClass({
         e.preventDefault(); // Don't run through HTML submit handler
 
         // Get values from form and validate them
-        this.setFormValue('hgncgene', this.refs.hgncgene.getValue());
+        this.setFormValue('hgncgene', this.refs.hgncgene.getValue().toUpperCase());
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
         this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
@@ -159,7 +159,7 @@ var CreateGeneDisease = React.createClass({
                             <div className="row">
                                 <Input type="text" ref="hgncgene" label={<LabelHgncGene />}
                                     error={this.getFormError('hgncgene')} clearError={this.clrFormErrors.bind(null, 'hgncgene')}
-                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
+                                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
                                 <Input type="text" ref="orphanetid" label={<LabelOrphanetId />}
                                     error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                                     labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
