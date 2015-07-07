@@ -120,8 +120,8 @@ var CreateGeneDisease = React.createClass({
         // Put together the new GDM object with form data and other info
         var value = {
             gdmId: (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000) + '',
-            geneSymbol: this.getFormValue('hgncgene'),
-            orphaNumber: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
+            gene: this.getFormValue('hgncgene'),
+            disease: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
             modeInheritance: this.getHpoText(this.getFormValue('hpo')),
             owner: this.props.session['auth.userid'],
             status: 'Creation',
