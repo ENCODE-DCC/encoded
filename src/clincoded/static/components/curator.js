@@ -33,13 +33,14 @@ var CurationData = module.exports.CurationData = React.createClass({
         if (gdm && Object.keys(gdm).length > 0) {
             var gene = this.props.gdm.geneSymbol;
             var disease = this.props.gdm.orphaNumber;
+            var mode = this.props.gdm.modeInheritance.match(/^(.*?)(?: \(HP:[0-9]*?\)){0,1}$/)[1];
 
             return (
                 <div>
                     <div className="curation-data-title">
                         <div className="container">
                             <h1>{gene.symbol} – {disease.term}</h1>
-                            <h2>{this.props.gdm.modeInheritance}</h2>
+                            <h2>{mode}</h2>
                         </div>
                     </div>
                     <div className="container curation-data">
