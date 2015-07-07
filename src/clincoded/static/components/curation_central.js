@@ -1,10 +1,12 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var url = require('url');
 var globals = require('./globals');
 var curator = require('./curator');
 var modal = require('../libs/bootstrap/modal');
 var form = require('../libs/bootstrap/form');
+var parseAndLogError = require('./mixins').parseAndLogError;
 
 var Modal = modal.Modal;
 var Input = form.Input;
@@ -22,16 +24,58 @@ var CuratorCentral = React.createClass({
     getInitialState: function() {
         return {
             currPmid: -1,
+            currGdm: {}
         };
+    },
+
+    contextTypes: {
+        fetch: React.PropTypes.func
     },
 
     currPmidChange: function(pmid) {
         this.setState({currPmid: pmid, selectionListOpen: false});
     },
 
+    getGdm: function(uuid) {
+        // Retrieve the GDM with the UUID from the query string
+        var gdmRequest = this.context.fetch('/gdm/' + uuid, {
+            headers: {'Accept': 'application/json'}
+        }).then(response => {
+            // Received Orphanet ID response or error. If the response is fine, request
+            // the JSON in a promise.
+            if (!response.ok) { 
+                throw response;
+            }
+            return response.json();
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .then(data => {
+            this.setState({currGdm: data});
+        });
+    },
+
+    componentWillMount: function() {
+        // See if there’s a GDM UUID to retrieve
+        var gdmUuid;
+        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
+        if (queryParsed && Object.keys(queryParsed).length) {
+            // Find the first 'version' query string item, if any
+            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'gdm';
+            });
+            if (uuidKey) {
+                gdmUuid = queryParsed[uuidKey];
+                if (typeof gdmUuid === 'object') {
+                    gdmUuid = gdmUuid[0];
+                }
+                this.getGdm(gdmUuid);
+            }
+        }
+    },
+
     render: function() {
         var currPmidItem;
 
+        // Get the PM item for the currently selected PMID
         if (this.state.currPmid) {
             currPmidItem = _(pmid_items).find(function(item) {
                 return item.id === this.state.currPmid;
@@ -40,7 +84,7 @@ var CuratorCentral = React.createClass({
 
         return (
             <div>
-                <CurationData />
+                <CurationData gdm={this.state.currGdm} />
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">

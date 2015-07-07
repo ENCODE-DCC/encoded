@@ -108,7 +108,7 @@ var CreateGeneDisease = React.createClass({
 
             // Once both json() promises return, handle their data. If either errors, use the catch case.
             Promise.all([orphaJson, geneJson])
-            .then(this.receive)
+            .then(this.createGdm)
             .catch(function(e) {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
             });
@@ -116,7 +116,8 @@ var CreateGeneDisease = React.createClass({
     },
 
     // Receive data from JSON request.
-    receive: function(data) {
+    createGdm: function(data) {
+        // Put together the new GDM object with form data and other info
         var value = {
             gdmId: (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000) + '',
             geneSymbol: this.getFormValue('hgncgene'),
@@ -127,7 +128,7 @@ var CreateGeneDisease = React.createClass({
             dateTime: new Date().toISOString()
         };
 
-        // Post the 
+        // Post the new data to the DB. fetch returns a JS promise.
         var request = this.context.fetch('/gdm/', {
             method: 'POST',
             headers: {
@@ -137,12 +138,14 @@ var CreateGeneDisease = React.createClass({
             body: JSON.stringify(value)
         });
         request.then(response => {
-            if (!response.ok) throw response;
+            // GDM DB object creation done. Throw error or get JSON from response
+            if (!response.ok) { throw response; }
             return response.json();
         })
         .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(function(data) {
-            console.log(data);
+        .then(data => {
+            var uuid = data['@graph'][0].uuid;
+            this.context.navigate('/curation-central/' + '?gdm=' + uuid);
         });
     },
 
