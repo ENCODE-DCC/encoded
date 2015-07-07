@@ -21,7 +21,7 @@ def _type_length():
         'software',
         'software_version',
         'image',
-        'page',
+        # 'page',
         'orphaPhenotype',
         'curator_page',
     ]
@@ -299,35 +299,35 @@ def test_post_duplicate_uuid(testapp, mouse):
 #     ]
 
 
-def test_page_toplevel(workbook, anontestapp):
-    res = anontestapp.get('/test-section/', status=200)
-    assert res.json['@id'] == '/test-section/'
-
-    res = anontestapp.get('/pages/test-section/', status=301)
-    assert res.location == 'http://localhost/test-section/'
-
-
-def test_page_nested(workbook, anontestapp):
-    res = anontestapp.get('/test-section/subpage/', status=200)
-    assert res.json['@id'] == '/test-section/subpage/'
-
-
-def test_page_homepage(workbook, anontestapp):
-    res = anontestapp.get('/pages/homepage/', status=200)
-    assert res.json['canonical_uri'] == '/'
-
-    res = anontestapp.get('/', status=200)
-    assert 'default_page' in res.json
-    assert res.json['default_page']['@id'] == '/pages/homepage/'
-
-
-def test_page_collection_default(workbook, anontestapp):
-    res = anontestapp.get('/pages/images/', status=200)
-    assert res.json['canonical_uri'] == '/images/'
-
-    res = anontestapp.get('/images/', status=200)
-    assert 'default_page' in res.json
-    assert res.json['default_page']['@id'] == '/pages/images/'
+# def test_page_toplevel(workbook, anontestapp):
+#     res = anontestapp.get('/test-section/', status=200)
+#     assert res.json['@id'] == '/test-section/'
+# 
+#     res = anontestapp.get('/pages/test-section/', status=301)
+#     assert res.location == 'http://localhost/test-section/'
+# 
+# 
+# def test_page_nested(workbook, anontestapp):
+#     res = anontestapp.get('/test-section/subpage/', status=200)
+#     assert res.json['@id'] == '/test-section/subpage/'
+# 
+# 
+# def test_page_homepage(workbook, anontestapp):
+#     res = anontestapp.get('/pages/homepage/', status=200)
+#     assert res.json['canonical_uri'] == '/'
+# 
+#     res = anontestapp.get('/', status=200)
+#     assert 'default_page' in res.json
+#     assert res.json['default_page']['@id'] == '/pages/homepage/'
+# 
+# 
+# def test_page_collection_default(workbook, anontestapp):
+#     res = anontestapp.get('/pages/images/', status=200)
+#     assert res.json['canonical_uri'] == '/images/'
+# 
+#     res = anontestapp.get('/images/', status=200)
+#     assert 'default_page' in res.json
+#     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
 # def test_antibody_redirect(testapp, antibody_approval):
