@@ -27,6 +27,26 @@
     }
 }
 
+.curation-data-title {
+    margin-bottom: 2px;
+    color: #000;
+    background-color: #c0c0c0;
+    text-align: center;
+
+    h1 {
+        margin: 5px 0 2px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin: 2px 0 5px;
+        font-size: 1.1rem;
+        font-weight: 300;
+        font-style: italic;
+    }
+}
+
 .curation-data-gene {
     margin-bottom: 2px;
 }
@@ -139,37 +159,55 @@
     font-weight: bold;
 }
 
-.nav-add-evidence {
-    background-color: $color-neutral-bg !important;
-    text-align: center;
-    padding: 10px;
-
-    h5 {
-        margin-top: 0;
-        font-weight: bold;
-    }
-
-    li {
-        .btn {
-            text-align: left;
-        }
-    }
-
-    .icon {
-        position: relative;
-        top: 1px;
-        margin-right: 5px;
-        font-size: 1.4rem;
-    }
-}
-
 .panel-curator {
     margin: 2px 0;
     padding: 15px;
-    background-color: $color-neutral-bg;
+    background-color: darken($color-neutral-bg, 10%);
     @include border-radius(0);
 
     p {
         margin: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+}
+
+.panel-evidence-group {
+    > .panel-heading {
+        padding: 10px 0;
+
+        h4 {
+            text-align: center;
+            font-weight: bold;
+        }
+    }
+
+    > .panel-body {
+        padding: 10px 10px 0 10px;
+    }
+}
+
+
+.panel-evidence {
+    .panel-heading {
+        padding: 0;
+
+        h4 {
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        a {
+            padding: 5px 10px;
+        }
+    }
+
+    .panel-body {
+        padding: 10px;
+        background-color: #fff;
+    }
+
+    .icon {
+        font-size: 1.3rem;
     }
 }
