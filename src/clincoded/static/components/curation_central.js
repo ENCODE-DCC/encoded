@@ -12,18 +12,15 @@ var Modal = modal.Modal;
 var Input = form.Input;
 var PmidDoiButtons = curator.PmidDoiButtons;
 var CurationData = curator.CurationData;
-var CurationNav = curator.CurationNav;
+var CurationPalette = curator.CurationPalette;
 var PmidSummary = curator.PmidSummary;
-
-// Temporary hard-coded data to display
-var pmid_items = require('./testdata').pmid_items;
 
 
 // Curator page content
 var CurationCentral = React.createClass({
     getInitialState: function() {
         return {
-            currPmid: -1,
+            currPmid: '',
             currGdm: {}
         };
     },
@@ -82,38 +79,40 @@ var CurationCentral = React.createClass({
     },
 
     render: function() {
-        var currPmidItem;
+        var currArticle;
+        var gdm = this.state.currGdm;
 
         // Get the PM item for the currently selected PMID
         if (this.state.currPmid) {
-            currPmidItem = _(pmid_items).find(function(item) {
-                return item.id === this.state.currPmid;
-            }, this);
+            var currAnnotation = _(gdm.annotations).find(annotation => {
+                return annotation.article.pmid === this.state.currPmid;
+            });
+            currArticle = currAnnotation ? currAnnotation.article : null;
         }
 
         return (
             <div>
-                <CurationData gdm={this.state.currGdm} />
+                <CurationData gdm={gdm} />
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">
-                            <PmidSelectionList pmidItems={pmid_items} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange} /> 
+                            <PmidSelectionList annotations={gdm.annotations} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange} /> 
                         </div>
                         <div className="col-md-6">
-                            {currPmidItem ?
+                            {currArticle ?
                                 <div className="curr-pmid-overview">
-                                    <PmidSummary pmidItem={currPmidItem} />
-                                    <PmidDoiButtons pmidId={currPmidItem.id} doiId={currPmidItem.doi} />
+                                    <PmidSummary article={currArticle} />
+                                    <PmidDoiButtons pmid={currArticle.pmid} />
                                     <div className="pmid-overview-abstract">
                                         <h4>Abstract</h4>
-                                        <p>{currPmidItem.abstract}</p>
+                                        <p>{currArticle.abstract}</p>
                                     </div>
                                 </div>
                             : null}
                         </div>
-                        {currPmidItem ?
+                        {currArticle ?
                             <div className="col-md-3">
-                                <CurationNav currPmidItem={currPmidItem} />
+                                <CurationPalette article={currArticle} />
                             </div>
                         : null}
                     </div>
@@ -129,13 +128,13 @@ globals.curator_page.register(CurationCentral, 'curator_page', 'curation-central
 // Display the list of PubMed articles passed in pmidItems.
 var PmidSelectionList = React.createClass({
     propTypes: {
-        pmidItems: React.PropTypes.array, // List of PubMed items
-        currPmid: React.PropTypes.number, // PMID of currently selected article
+        annotations: React.PropTypes.array, // List of PubMed items
+        currPmid: React.PropTypes.string, // PMID of currently selected article
         currPmidChange: React.PropTypes.func // Function to call when currently selected article changes
     },
 
     render: function() {
-        var items = this.props.pmidItems;
+        var annotations = this.props.annotations;
 
         return (
             <div>
@@ -144,20 +143,22 @@ var PmidSelectionList = React.createClass({
                         <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal />}>Add New PMID(s)</button>
                     </Modal>
                 </div>
-                <div className="pmid-selection-list">
-                    {items.map(function(item) {
-                        var classList = 'pmid-selection-list-item' + (item.id === this.props.currPmid ? ' curr-pmid' : '');
+                {annotations ?
+                    <div className="pmid-selection-list">
+                        {annotations.map(annotation => {
+                            var classList = 'pmid-selection-list-item' + (annotation.article.pmid === this.props.currPmid ? ' curr-pmid' : '');
 
-                        return (
-                            <div key={item.id} className={classList} onClick={this.props.currPmidChange.bind(null, item.id)}>
-                                <div className="pmid-selection-list-specs">
-                                    <PmidSummary pmidItem={item} />
+                            return (
+                                <div key={annotation.article.pmid} className={classList} onClick={this.props.currPmidChange.bind(null, annotation.article.pmid)}>
+                                    <div className="pmid-selection-list-specs">
+                                        <PmidSummary article={annotation.article} />
+                                    </div>
+                                    <div className="pmid-selection-list-pmid"><a href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + annotation.article.pmid} target="_blank">PMID: {annotation.article.pmid}</a></div>
                                 </div>
-                                <div className="pmid-selection-list-pmid"><a href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + item.id} target="_blank">PMID: {item.id}</a></div>
-                            </div>
-                        );
-                    }, this)}
-                </div>
+                            );
+                        })}
+                    </div>
+                : null}
             </div>
         );
     }

@@ -58,32 +58,34 @@ var CurationData = module.exports.CurationData = React.createClass({
 });
 
 
-// Displays the PM item summary, with authors, title, citation, and DOI
+// Displays the PM item summary, with authors, title, citation
 var PmidSummary = module.exports.PmidSummary = React.createClass({
     propTypes: {
-        pmidItem: React.PropTypes.object
+        article: React.PropTypes.object
     },
 
     render: function() {
-        var item = this.props.pmidItem;
+        var article = this.props.article;
 
         return (
             <p>
-                {item.authors[0]}
-                {item.authors.length > 1 ? <span>, et al </span> : null}
-                {item.title + '. '}
-                {item.nlm_title + ', '}
-                {item.specifier + '. doi: ' + item.doi + '.'}
+                {article.firstAuthor + '. '}
+                {article.title + '. '}
+                {article.date}
             </p>
         );
     }
 });
 
 
-var CurationPalette = module.exports.CurationNav = React.createClass({
+var CurationPalette = module.exports.CurationPalette = React.createClass({
+    propTypes: {
+        article: React.PropTypes.object
+    },
+
     render: function() {
         return (
-            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.currPmidItem.id}>
+            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.article.pmid}>
                 <Panel title={<CurationPaletteTitles title="Group" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Individual" />} panelClassName="panel-evidence">Stuff</Panel>
@@ -163,20 +165,18 @@ var DiseaseCurationData = React.createClass({
 
 
 // Display buttons to bring up the PubMed and doi-specified web pages.
+// For now, no doi is available
 var PmidDoiButtons = module.exports.PmidDoiButtons = React.createClass({
     propTypes: {
-        pmidId: React.PropTypes.string, // Numeric string PMID for PubMed page
-        doiId: React.PropTypes.string // DOI ID
+        pmid: React.PropTypes.string // Numeric string PMID for PubMed page
     },
 
     render: function() {
-        var pmidId = this.props.pmidId;
-        var doiId = this.props.doiId;
+        var pmid = this.props.pmid;
 
         return (
             <div className="pmid-doi-btns">
-                {pmidId ? <a className="btn btn-primary" target="_blank" href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + pmidId}>PubMed</a> : null}
-                {doiId ? <a className="btn btn-primary" target="_blank" href={'http://dx.doi.org/' + doiId}>doi</a> : null}
+                {pmid ? <a className="btn btn-primary" target="_blank" href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + pmid}>PubMed</a> : null}
             </div>
         );
     }

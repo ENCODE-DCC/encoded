@@ -161,7 +161,7 @@
             "title": "Mode of Inheritance",
             "type": "string"
         },
-        "geneSymbol.symbol": {
+        "gene.symbol": {
             "title": "Gene Symbol",
             "type": "string"
         },

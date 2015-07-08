@@ -8,7 +8,7 @@ var globals = require('./globals');
 var curator = require('./curator');
 
 var CurationData = curator.CurationData;
-var CurationNav = curator.CurationNav;
+var CurationPalette = curator.CurationPalette;
 var PmidSummary = curator.PmidSummary;
 var PanelGroup = panel.PanelGroup;
 var Panel = panel.Panel;
@@ -16,11 +16,7 @@ var Form = form.Form;
 var Input = form.Input;
 var InputMixin = form.InputMixin;
 var PmidDoiButtons = curator.PmidDoiButtons;
-
-
-// Temporary hard-coded data to display
-var pmid_items = require('./testdata').pmid_items;
-var country_codes = require('./testdata').country_codes;
+var country_codes = globals.country_codes;
 
 
 var GroupCuration = React.createClass({
@@ -34,9 +30,7 @@ var GroupCuration = React.createClass({
                 return key === 'pmid';
             });
             var pmid = parseInt(queryParsed[pmidKey], 10);
-            currPmidItem = _(pmid_items).find(function(item) {
-                return item.id === pmid;
-            });
+            currPmidItem = null;
         }
 
         return (
@@ -85,7 +79,7 @@ var GroupCuration = React.createClass({
                         </div>
                         {currPmidItem ?
                             <div className="col-sm-4">
-                                <CurationNav currPmidItem={currPmidItem} />
+                                <CurationPalette currPmidItem={currPmidItem} />
                             </div>
                         : null}
                     </div>
