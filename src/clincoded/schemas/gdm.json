@@ -149,20 +149,20 @@
             "title": "Item",
             "type": "string"
         },
-        "gene": {
-            "title": "Gene",
+        "gene.symbol": {
+            "title": "Gene Symbol",
             "type": "string"
         },
-        "disease": {
+        "disease.orphaNumber": {
             "title": "Orpha #",
             "type": "string"
         },
+        "disease.term": {
+            "title": "Disease Term",
+            "type": "string"
+            },
         "modeInheritance": {
             "title": "Mode of Inheritance",
-            "type": "string"
-        },
-        "geneSymbol.symbol": {
-            "title": "Gene Symbol",
             "type": "string"
         },
         "omimId": {
@@ -171,10 +171,6 @@
         },
         "owner": {
             "title": "Creator",
-            "type": "string"
-        },
-        "status": {
-            "title": "Curation Status",
             "type": "string"
         },
         "annotations": {
