@@ -14,10 +14,10 @@ var React = require('react');
 // modal. If you don't pass this property, no Cancel button is displayed.
 
 
-var ModalMixin = module.exports.ModalMixin = {
+module.exports.ModalMixin = {
     childContextTypes: {
         modalOpen: React.PropTypes.bool, // T if modal is visible
-        openModal: React.PropTyhpes.func, // Function to open the modal
+        openModal: React.PropTypes.func, // Function to open the modal
         closeModal: React.PropTypes.func // Function to close the modal
     },
 
