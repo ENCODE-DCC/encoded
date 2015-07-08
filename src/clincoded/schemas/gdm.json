@@ -165,10 +165,6 @@
             "title": "Mode of Inheritance",
             "type": "string"
         },
-        "geneSymbol.symbol": {
-            "title": "Gene Symbol",
-            "type": "string"
-        },
         "omimId": {
             "title": "OMIM ID",
             "type": "string"
