@@ -9,6 +9,9 @@ var form = require('../libs/bootstrap/form');
 var parseAndLogError = require('./mixins').parseAndLogError;
 
 var Modal = modal.Modal;
+var ModalMixin = modal.ModalMixin;
+var Form = form.Form;
+var FormMixin = form.FormMixin;
 var Input = form.Input;
 var PmidDoiButtons = curator.PmidDoiButtons;
 var CurationData = curator.CurationData;
@@ -127,6 +130,8 @@ globals.curator_page.register(CurationCentral, 'curator_page', 'curation-central
 
 // Display the list of PubMed articles passed in pmidItems.
 var PmidSelectionList = React.createClass({
+    mixins: [ModalMixin],
+
     propTypes: {
         annotations: React.PropTypes.array, // List of PubMed items
         currPmid: React.PropTypes.string, // PMID of currently selected article
@@ -139,7 +144,7 @@ var PmidSelectionList = React.createClass({
         return (
             <div>
                 <div className="pmid-selection-add">
-                    <Modal title='Add New PMID(s)' btnOk='Submit' btnCancel='Cancel'>
+                    <Modal title='Add New PMID(s)' btnCancel='Cancel'>
                         <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal />}>Add New PMID(s)</button>
                     </Modal>
                 </div>
@@ -167,12 +172,19 @@ var PmidSelectionList = React.createClass({
 
 // The content of the Add PMID(s) modal dialog box
 var AddPmidModal = React.createClass({
+    mixins: [FormMixin],
+
     render: function() {
         return (
             <div>
                 <div className="modal-body">
-                    <p>Enter a PMID ID</p>
-                    <Input type="text" id="pmid-input" ref="pmid-input" label="PMID to search" />
+                    <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
+                        <Input type="text" ref="pmid" label="Enter a PMID ID"
+                            error={this.getFormError('pmid')} clearError={this.clrFormErrors.bind(null, 'pmid')}
+                            labelClassName="control-label" groupClassName="form-group" required />
+                    </Form>
+                </div>
+                <div className='modal-footer'>
                 </div>
             </div>
         );
