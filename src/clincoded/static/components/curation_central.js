@@ -121,16 +121,26 @@ var CurationCentral = React.createClass({
             return response.json();
         }).then(gdmObj => {
             // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
-            gdmObj.annotations.push('/evidence/' + createdAnnotation.uuid + '/');
-            return this.context.fetch('/gdm/', {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newAnnotation)
-        });
-        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
+            gdmObj.annotations.push('/evidence/' + createdAnnotation.annotationId + '/');
+            delete gdmObj.uuid;
+            delete gdmObj['@id'];
+            delete gdmObj['@type'];
+            return this.context.fetch('/gdm/' + this.state.currGdm.gdmId, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(gdmObj)
+            });
+        }).then(response => {
+            // GDM DB update creation done. Throw error or get JSON from response
+            if (!response.ok) { throw response; }
+            return response.json();
+        }).then(data => {
+            this.getGdm(data['@graph'][0].uuid);
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     render: function() {
