@@ -66,6 +66,12 @@ class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
 
+    def unique_keys(self, properties):
+        keys = super(AnalysisStepVersion, self).unique_keys(properties)
+        value = u'{analysis_step}/{version}'.format(**properties)
+        keys.setdefault('analysis_step_version:analysis_step_version', []).append(value)
+        return keys
+
 
 @collection(
     name='analysis-step-runs',
