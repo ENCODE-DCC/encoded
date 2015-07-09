@@ -30,7 +30,7 @@ var CurationData = module.exports.CurationData = React.createClass({
     render: function() {
         var gdm = this.props.gdm;
 
-        if (gdm && Object.keys(gdm).length > 0) {
+        if (gdm && Object.keys(gdm).length > 0 && gdm['@type'][0] === 'gdm') {
             var gene = this.props.gdm.gene;
             var disease = this.props.gdm.disease;
             var mode = this.props.gdm.modeInheritance.match(/^(.*?)(?: \(HP:[0-9]*?\)){0,1}$/)[1];
