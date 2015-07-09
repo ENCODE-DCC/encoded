@@ -56,9 +56,7 @@ module.exports.ModalMixin = {
 
 var Modal = module.exports.Modal = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title in modal's header
-        btnOk: React.PropTypes.string, // Title of OK button
-        btnCancel: React.PropTypes.string // Title of Cancel button
+        title: React.PropTypes.string.isRequired // Title in modal's header
     },
 
     contextTypes: {
@@ -72,7 +70,7 @@ var Modal = module.exports.Modal = React.createClass({
         };
     },
 
-    handleClick: function(el, e) {
+    handleClick: function(el) {
         this.setState({modal: el});
         this.context.openModal();
     },

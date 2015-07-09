@@ -125,7 +125,8 @@ var Input = module.exports.Input = React.createClass({
         rows: React.PropTypes.string, // Number of rows in textarea
         value: React.PropTypes.string, // Value to pre-fill input with
         defaultValue: React.PropTypes.string, // Default value for <select>
-        required: React.PropTypes.bool // T to make this a required field
+        required: React.PropTypes.bool, // T to make this a required field
+        cancelHandler: React.PropTypes.func // Called to handle cancel button click
     },
 
     // Get the text the user entered from the text-type field. Meant to be called from
@@ -214,12 +215,17 @@ var Input = module.exports.Input = React.createClass({
 
             case 'submit':
                 var title = this.props.value ? this.props.value : 'Submit';
+                inputClasses = 'btn' + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 input = (
-                    <div className={this.props.groupClassName}>
-                        <div className={this.props.wrapperClassName}>
-                            <input className="btn btn-primary" type={this.props.type} value={title} onClick={this.props.submitHandler} />
-                        </div>
-                    </div>
+                    <input className={inputClasses} type={this.props.type} value={title} onClick={this.props.submitHandler} />
+                );
+                break;
+
+            case 'cancel':
+                title = this.props.title ? this.props.title : 'Cancel';
+                inputClasses = 'btn' + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
+                input = (
+                    <button className={inputClasses} onClick={this.props.cancelHandler}>{title}</button>
                 );
                 break;
 

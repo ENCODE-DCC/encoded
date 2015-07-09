@@ -154,7 +154,7 @@ var CreateGeneDisease = React.createClass({
             <div className="container">
                 <h1>{this.props.context.title}</h1>
                 <div className="col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 form-create-gene-disease">
-                    <Panel>
+                    <Panel panelClassName="panel-create-gene-disease">
                         <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
                             <div className="row">
                                 <Input type="text" ref="hgncgene" label={<LabelHgncGene />}
@@ -170,7 +170,7 @@ var CreateGeneDisease = React.createClass({
                                         return <option key={i} value={v.value} disabled={v.disabled ? 'disabled' : ''}>{v.text}</option>;
                                     })}
                                 </Input>
-                                <Input type="submit" wrapperClassName="pull-right" id="submit" />
+                                <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
                             </div>
                         </Form>
                     </Panel>

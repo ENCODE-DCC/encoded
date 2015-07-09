@@ -144,8 +144,8 @@ var PmidSelectionList = React.createClass({
         return (
             <div>
                 <div className="pmid-selection-add">
-                    <Modal title='Add New PMID(s)' btnCancel='Cancel'>
-                        <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal />}>Add New PMID(s)</button>
+                    <Modal title='Add new PubMed Article'>
+                        <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal closeModal={this.closeModal} />}>Add New PMID(s)</button>
                     </Modal>
                 </div>
                 {annotations ?
@@ -174,19 +174,51 @@ var PmidSelectionList = React.createClass({
 var AddPmidModal = React.createClass({
     mixins: [FormMixin],
 
+    propTypes: {
+        closeModal: React.PropTypes.func // Function to call to close the modal
+    },
+
+    // Form content validation
+    validateForm: function() {
+        // Check if required fields have values
+        var valid = this.validateRequired();
+
+        // Check if orphanetid 
+        if (valid) {
+            valid = this.getFormValue('pmid').match(/^[0-9]{1,10}$/i);
+            if (!valid) {
+                this.setFormErrors('pmid', 'Only numbers allowed');
+            }
+        }
+        return valid;
+    },
+
+    submitForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.setFormValue('pmid', this.refs.pmid.getValue());
+        if (this.validateForm()) {
+            this.props.closeModal();
+        }
+    },
+
+    cancelForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.props.closeModal();
+    },
+
     render: function() {
         return (
-            <div>
+            <Form submitHandler={this.submitForm} formClassName="form-std">
                 <div className="modal-body">
-                    <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
-                        <Input type="text" ref="pmid" label="Enter a PMID ID"
-                            error={this.getFormError('pmid')} clearError={this.clrFormErrors.bind(null, 'pmid')}
-                            labelClassName="control-label" groupClassName="form-group" required />
-                    </Form>
+                    <Input type="text" ref="pmid" label="Enter a PubMed ID"
+                        error={this.getFormError('pmid')} clearError={this.clrFormErrors.bind(null, 'pmid')}
+                        labelClassName="control-label" groupClassName="form-group" required />
                 </div>
                 <div className='modal-footer'>
+                    <Input type="cancel" inputClassName="btn-default btn-inline-spacer" cancelHandler={this.cancelForm} />
+                    <Input type="submit" inputClassName="btn-primary btn-inline-spacer" title="Add Article" />
                 </div>
-            </div>
+            </Form>
         );
     }
 });
