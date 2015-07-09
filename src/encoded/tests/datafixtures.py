@@ -362,23 +362,32 @@ def software_version(testapp, software):
 
 
 @pytest.fixture
-def analysis_step(testapp, software_version):
+def analysis_step(testapp):
     item = {
         'name': 'fastqc',
         'title': 'fastqc',
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
-        'software_versions': [
-            software_version['@id'],
-        ],
+
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
 
 @pytest.fixture
-def analysis_step_run(testapp, analysis_step, workflow_run):
+def analysis_step_version(testapp, analysis_step, software_version):
     item = {
         'analysis_step': analysis_step['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run(testapp, analysis_step_version, workflow_run):
+    item = {
+        'analysis_step_version': analysis_step_version['@id'],
         'status': 'finished',
         'workflow_run': workflow_run['@id'],
     }
