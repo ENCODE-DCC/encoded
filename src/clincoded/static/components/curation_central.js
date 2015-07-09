@@ -84,11 +84,11 @@ var CurationCentral = React.createClass({
 
     // Add an article whose object is given to the current GDM
     updateGdmArticles: function(article) {
-        var createdAnnotation;
+        var newAnnotation;
         var currGdm = this.state.currGdm;
 
         // Put together a new annotation object with the article reference
-        var newAnnotation = {
+        var newAnnotationObj = {
             owner: this.props.session['auth.userid'],
             article: article.pmid,
             dateTime: new Date().toISOString(),
@@ -96,34 +96,34 @@ var CurationCentral = React.createClass({
         };
 
         // Post new annotation to the DB. fetch returns a JS promise.
-        var request = this.context.fetch('/evidence/', {
+        this.context.fetch('/evidence/', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newAnnotation)
-        });
-        request.then(response => {
-            // Annotation DB object creation done. Throw error or get JSON from response
+            body: JSON.stringify(newAnnotationObj)
+        }).then(response => {
             if (!response.ok) { throw response; }
             return response.json();
         }).then(data => {
-            createdAnnotation = data['@graph'][0];
+            // Save the new annotation; fetch the currently displayed GDM as an object without its embedded
+            // objects; basically the object as it exists in the DB.
+            newAnnotation = data['@graph'][0];
             return this.context.fetch('/gdm/' + this.state.currGdm.uuid + '/?frame=object', {
                 headers: {'Accept': 'application/json'}
             });
         }).then(response => {
-            // Received DB query response or error. If the response is fine, request
-            // the JSON in a promise.
             if (!response.ok) { throw response; }
             return response.json();
         }).then(gdmObj => {
-            // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
-            gdmObj.annotations.push('/evidence/' + createdAnnotation.uuid + '/');
+            // Get 422 (Unprocessible entity) if we PUT any of these fields
             delete gdmObj.uuid;
             delete gdmObj['@id'];
             delete gdmObj['@type'];
+
+            // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
+            gdmObj.annotations.push('/evidence/' + newAnnotation.uuid + '/');
             return this.context.fetch('/gdm/' + this.state.currGdm.uuid, {
                 method: 'PUT',
                 headers: {
@@ -133,13 +133,12 @@ var CurationCentral = React.createClass({
                 body: JSON.stringify(gdmObj)
             });
         }).then(response => {
-            // GDM DB update creation done. Throw error or get JSON from response
             if (!response.ok) { throw response; }
             return response.json();
         }).then(data => {
+            // Retrieve the updated GDM and set it as the new state GDM to force a rerendering.
             this.getGdm(data['@graph'][0].uuid);
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'));
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     render: function() {
@@ -269,6 +268,7 @@ var AddPmidModal = React.createClass({
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
         this.setFormValue('pmid', this.refs.pmid.getValue());
         if (this.validateForm()) {
+            // Form is valid -- we have a good PMID. Fetch the article with that PMID
             var enteredPmid = this.getFormValue('pmid');
             this.context.fetch('/articles/' + enteredPmid, {
                 headers: {'Accept': 'application/json'}
@@ -280,13 +280,12 @@ var AddPmidModal = React.createClass({
                     throw response;
                 }
                 return response.json();
-            })
-            .catch(function(e) {
-                parseAndLogError.bind(undefined, 'fetchedRequest');
-            })
-            .then(data => {
+            }).then(article => {
+                // Close the modal; update the GDM with this article.
                 this.props.closeModal();
-                this.props.updateGdmArticles(data);
+                this.props.updateGdmArticles(article);
+            }).catch(function(e) {
+                parseAndLogError.bind(undefined, 'fetchedRequest');
             });
         }
     },
