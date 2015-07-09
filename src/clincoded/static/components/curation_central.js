@@ -89,7 +89,6 @@ var CurationCentral = React.createClass({
 
         // Put together a new annotation object with the article reference
         var newAnnotation = {
-            annotationId: (Math.floor(Math.random() * (99999999 - 1000 + 1)) + 1000) + '', // temporary annotationID generation
             owner: this.props.session['auth.userid'],
             article: article.pmid,
             dateTime: new Date().toISOString(),
@@ -121,11 +120,11 @@ var CurationCentral = React.createClass({
             return response.json();
         }).then(gdmObj => {
             // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
-            gdmObj.annotations.push('/evidence/' + createdAnnotation.annotationId + '/');
+            gdmObj.annotations.push('/evidence/' + createdAnnotation.uuid + '/');
             delete gdmObj.uuid;
             delete gdmObj['@id'];
             delete gdmObj['@type'];
-            return this.context.fetch('/gdm/' + this.state.currGdm.gdmId, {
+            return this.context.fetch('/gdm/' + this.state.currGdm.uuid, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
