@@ -48,12 +48,6 @@
             "descripton": "Abstract of article",
             "type": "string",
             "default": ""
-        },
-        "url": {
-            "title": "URL",
-            "description": "Hyperlink to PubMed webpage",
-            "type": "string",
-            "format": "uri"
         }
     },
     "columns": {
