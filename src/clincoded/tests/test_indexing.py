@@ -48,7 +48,7 @@ def app(app_settings):
 @pytest.fixture(autouse=True)
 def teardown(app, dbapi_conn):
     from contentbase.elasticsearch import create_mapping
-    # create_mapping.run(app)
+    create_mapping.run(app)
     cursor = dbapi_conn.cursor()
     cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
     cursor.close()
@@ -78,41 +78,41 @@ def listening_conn(dbapi_conn):
     cursor.close()
 
 
-# @pytest.mark.slow
-# def test_indexing_workbook(testapp, indexer_testapp):
-#     # First post a single item so that subsequent indexing is incremental
-#     testapp.post_json('/testing-post-put-patch/', {'required': ''})
-#     res = indexer_testapp.post_json('/index', {'record': True})
-#     assert res.json['indexed'] == 1
+@pytest.mark.slow
+def test_indexing_workbook(testapp, indexer_testapp):
+    # First post a single item so that subsequent indexing is incremental
+    testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['indexed'] == 1
 
-#     from ..loadxl import load_all
-#     from pkg_resources import resource_filename
-#     inserts = resource_filename('clincoded', 'tests/data/inserts/')
-#     docsdir = [resource_filename('clincoded', 'tests/data/documents/')]
-#     load_all(testapp, inserts, docsdir)
-#     res = indexer_testapp.post_json('/index', {'record': True})
-#     assert res.json['updated']
-#     assert res.json['indexed']
+    from ..loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('clincoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('clincoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['updated']
+    assert res.json['indexed']
 
-#     res = testapp.get('/search/?type=biosample')
-#     assert res.json['total'] > 5
+    res = testapp.get('/search/?type=gdm')
+    assert res.json['total'] > 5
 
 
-# def test_indexing_simple(testapp, indexer_testapp):
-#     # First post a single item so that subsequent indexing is incremental
-#     testapp.post_json('/testing-post-put-patch/', {'required': ''})
-#     res = indexer_testapp.post_json('/index', {'record': True})
-#     assert res.json['indexed'] == 1
-#     assert 'txn_count' not in res.json
+def test_indexing_simple(testapp, indexer_testapp):
+    # First post a single item so that subsequent indexing is incremental
+    testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['indexed'] == 1
+    assert 'txn_count' not in res.json
 
-#     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
-#     uuid = res.json['@graph'][0]['uuid']
-#     res = indexer_testapp.post_json('/index', {'record': True})
-#     assert res.json['indexed'] == 1
-#     assert res.json['txn_count'] == 1
-#     assert res.json['updated'] == [uuid]
-#     res = testapp.get('/search/?type=testing_post_put_patch')
-#     assert res.json['total'] == 2
+    res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    uuid = res.json['@graph'][0]['uuid']
+    res = indexer_testapp.post_json('/index', {'record': True})
+    assert res.json['indexed'] == 1
+    assert res.json['txn_count'] == 1
+    assert res.json['updated'] == [uuid]
+    res = testapp.get('/search/?type=testing_post_put_patch')
+    assert res.json['total'] == 2
 
 
 def test_listening(testapp, listening_conn):
