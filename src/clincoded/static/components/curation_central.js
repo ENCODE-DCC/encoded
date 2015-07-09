@@ -111,7 +111,25 @@ var CurationCentral = React.createClass({
             return response.json();
         }).then(data => {
             createdAnnotation = data['@graph'][0];
-            console.log(JSON.stringify(currGdm));
+            return this.context.fetch('/gdm/' + this.state.currGdm.uuid + '/?frame=object', {
+                headers: {'Accept': 'application/json'}
+            });
+        }).then(response => {
+            // Received DB query response or error. If the response is fine, request
+            // the JSON in a promise.
+            if (!response.ok) { throw response; }
+            return response.json();
+        }).then(gdmObj => {
+            // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
+            gdmObj.annotations.push('/evidence/' + createdAnnotation.uuid + '/');
+            return this.context.fetch('/gdm/', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAnnotation)
+        });
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
