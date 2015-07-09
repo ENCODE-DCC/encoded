@@ -49,11 +49,25 @@ class AnalysisStep(Item):
     item_type = 'analysis_step'
     schema = load_schema('encoded:schemas/analysis_step.json')
     name_key = 'name'
+    rev = {
+        'pipelines': ('pipeline', 'analysis_steps'),
+    }
     embedded = [
         'software_versions',
         'software_versions.software',
         'parents'
     ]
+
+    @calculated_property(schema={
+        "title": "Pipelines",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "pipeline",
+        },
+    })
+    def pipelines(self, request, pipelines):
+        return paths_filtered_by_status(request, pipelines)
 
 
 @collection(
