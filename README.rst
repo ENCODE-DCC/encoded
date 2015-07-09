@@ -67,7 +67,7 @@ If it does not exist, set a session key::
 
     $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
-To Start the application locally
+Start the application locally
 ================================
 
 In one terminal startup the database servers with::
@@ -86,7 +86,7 @@ Indexing will then proceed in a background thread similar to the production setu
 
 Browse to the interface at http://localhost:6543/.
 
-To Run the tests locally  (tests also run on travis-ci with every push)
+Run the tests locally  (tests also run on travis-ci with every push)
 ========================
 
 To run specific tests locally::
@@ -117,8 +117,8 @@ Or if you need to supply command line arguments::
 
     $ ./node_modules/.bin/jest
 
-To Modify the Local (postgres) Database
-========================================
+Notes on modifying the local (Postgres) database
+=====================================
 
 Note:  The below is generally superceeded by the dev-servers command which creates a temporary PG db, then throws it away.  But this might be useful for some deep debugging.
 
@@ -146,7 +146,7 @@ To dump a postgres database:
 To restore a postgres database:
     pg_restore -d encoded FILE_NAME (as user encoded on demo vm)
 
-Manually Create ElasticSearch mapping
+Notes on manually creation of ElasticSearch mapping
 --------------------------------------
     $ bin/create-mapping production.ini
 
@@ -175,8 +175,6 @@ You can specify whether the compiled CSS is minified or not in config.rb. (Curre
 Force compiling
 ---------------
 
-::
-
     $ compass compile
 
 Again, you can specify whether the compiled CSS is minified or not in config.rb.
@@ -188,7 +186,7 @@ And of course::
     $ compass help
 
 
-SublimeLinter
+Notes on SublimeLinter
 =============
 
 To setup SublimeLinter with Sublime Text 3, first install the linters::
