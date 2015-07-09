@@ -57,6 +57,17 @@ class AnalysisStep(Item):
 
 
 @collection(
+    name='analysis-step-versions',
+    properties={
+        'title': 'Analysis step versions',
+        'description': 'Listing of Analysis Step Versions',
+    })
+class AnalysisStepVersion(Item):
+    item_type = 'analysis_step_version'
+    schema = load_schema('encoded:schemas/analysis_step_version.json')
+
+
+@collection(
     name='analysis-step-runs',
     properties={
         'title': 'Analysis step runs',

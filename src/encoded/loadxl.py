@@ -42,6 +42,7 @@ ORDER = [
     'software',
     'software_version',
     'analysis_step',
+    'analysis_step_version',
     'pipeline',
     'workflow_run',
     'analysis_step_run',
