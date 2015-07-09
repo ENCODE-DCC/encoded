@@ -4,7 +4,7 @@
     "description": "Schema for storing gene:disease:mode data.",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["gdmId", "geneSymbol", "orphaNumber", "modeInheritance", "owner", "status", "dateTime"],
+    "required": ["gdmId", "gene", "disease", "modeInheritance", "owner", "status", "dateTime"],
     "identifyingProperties": ["uuid", "gdmId"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -23,13 +23,13 @@
             "pattern": "^[0-9]{1,12}$",
             "uniqueKey": true
         },
-        "geneSymbol": {
+        "gene": {
             "title": "HGNC Symbol",
             "description": "HGNC Symbol of gene.",
             "type": "string",
             "linkTo": "gene"
         },
-        "orphaNumber": {
+        "disease": {
             "title": "Orpha ID",
             "description": "Unique id for Orphanet phenotypes.",
             "type": "string",
@@ -149,14 +149,18 @@
             "title": "Item",
             "type": "string"
         },
-        "geneSymbol": {
-            "title": "Gene",
+        "gene.symbol": {
+            "title": "Gene Symbol",
             "type": "string"
         },
-        "orphaNumber": {
+        "disease.orphaNumber": {
             "title": "Orpha #",
             "type": "string"
         },
+        "disease.term": {
+            "title": "Disease Term",
+            "type": "string"
+            },
         "modeInheritance": {
             "title": "Mode of Inheritance",
             "type": "string"
@@ -167,10 +171,6 @@
         },
         "owner": {
             "title": "Creator",
-            "type": "string"
-        },
-        "status": {
-            "title": "Curation Status",
             "type": "string"
         },
         "annotations": {
