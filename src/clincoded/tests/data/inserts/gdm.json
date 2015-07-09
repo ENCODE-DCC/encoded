@@ -1,7 +1,6 @@
 [
     {
         "uuid": "3e144866-16d9-11e5-b451-60f81dc5b05a",
-        "gdmId": "1",
         "gene": "RAD51C",
         "disease": "84",
         "modeInheritance": "Autosomal dominant inheritance (HP:0000006)",
@@ -14,7 +13,6 @@
     },
     {
         "uuid": "7f9988fa-16d9-11e5-ba73-60f81dc5b05a",
-        "gdmId": "2",
         "gene": "DICER1",
         "disease": "64742",
         "modeInheritance": "Autosomal dominant inheritance with maternal imprinting (HP:0012275)",
@@ -27,7 +25,6 @@
     },
     {
         "uuid": "9ffd7c1e-16d9-11e5-b283-60f81dc5b05a",
-        "gdmId": "3",
         "gene": "FGFR3",
         "disease": "15",
         "modeInheritance": "Autosomal recessive inheritance (HP:0000007)",
@@ -37,13 +34,12 @@
         "status": "Evidence",
         "dateTime": "Fri Mar 20 2015 10:02:09 PDT",
         "annotations": [
-            "1",
-            "3"
+            "bb3432ca-1788-11e5-aefb-60f81dc5b05a",
+            "5cd72a73-189e-11e5-9db5-60f81dc5b05a"
         ]
     },
     {
         "uuid": "aa005efa-16d9-11e5-97aa-60f81dc5b05a",
-        "gdmId": "4",
         "gene": "SMAD3",
         "disease": "284984",
         "modeInheritance": "Autosomal unknown",
@@ -56,7 +52,6 @@
     },
     {
         "uuid": "ef9a6fa1-16d9-11e5-9918-60f81dc5b05a",
-        "gdmId": "5",
         "gene": "AGTR2",
         "disease": "777",
         "modeInheritance": "Autosomal dominant inheritance with paternal imprinting (HP:0012274)",
@@ -69,7 +64,6 @@
     },
     {
         "uuid": "fb815cae-16d9-11e5-8574-60f81dc5b05a",
-        "gdmId": "6",
         "gene": "CD3E",
         "disease": "183660",
         "modeInheritance": "Codominant",
@@ -82,7 +76,6 @@
     },
     {
         "uuid": "08bc9bcc-16da-11e5-86d6-60f81dc5b05a",
-        "gdmId": "7",
         "gene": "FANCM",
         "disease": "84",
         "modeInheritance": "Other",
