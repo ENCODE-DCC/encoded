@@ -81,6 +81,38 @@ var CurationCentral = React.createClass({
         }
     },
 
+    // Add an article whose object is given to the current GDM
+    updateGdmArticles: function(article) {
+        // Put together a new annotation object with the article reference
+        var newAnnotation = {
+            annotationId: (Math.floor(Math.random() * (99999999 - 1000 + 1)) + 1000) + '', // temporary annotationID generation
+            owner: this.props.session['auth.userid'],
+            article: article.pmid,
+            dateTime: new Date().toISOString(),
+            active: true
+        };
+
+        // Post the new data to the DB. fetch returns a JS promise.
+        var request = this.context.fetch('/evidence/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newAnnotation)
+        });
+        request.then(response => {
+            // GDM DB object creation done. Throw error or get JSON from response
+            if (!response.ok) { throw response; }
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .then(data => {
+            var uuid = data['@graph'][0].uuid;
+            console.log(uuid);
+        });
+    },
+
     render: function() {
         var currArticle;
         var gdm = this.state.currGdm;
@@ -99,7 +131,8 @@ var CurationCentral = React.createClass({
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">
-                            <PmidSelectionList annotations={gdm.annotations} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange} /> 
+                            <PmidSelectionList annotations={gdm.annotations} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange}
+                                    updateGdmArticles={this.updateGdmArticles} /> 
                         </div>
                         <div className="col-md-6">
                             {currArticle ?
@@ -135,7 +168,8 @@ var PmidSelectionList = React.createClass({
     propTypes: {
         annotations: React.PropTypes.array, // List of PubMed items
         currPmid: React.PropTypes.string, // PMID of currently selected article
-        currPmidChange: React.PropTypes.func // Function to call when currently selected article changes
+        currPmidChange: React.PropTypes.func, // Function to call when currently selected article changes
+        updateGdmArticles: React.PropTypes.func // Function to call when we have an article to add to the GDM
     },
 
     render: function() {
@@ -145,7 +179,9 @@ var PmidSelectionList = React.createClass({
             <div>
                 <div className="pmid-selection-add">
                     <Modal title='Add new PubMed Article'>
-                        <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal closeModal={this.closeModal} />}>Add New PMID(s)</button>
+                        <button className="btn btn-primary pmid-selection-add-btn" modal={<AddPmidModal closeModal={this.closeModal} updateGdmArticles={this.props.updateGdmArticles} />}>
+                            Add New PMID(s)
+                        </button>
                     </Modal>
                 </div>
                 {annotations ?
@@ -175,7 +211,12 @@ var AddPmidModal = React.createClass({
     mixins: [FormMixin],
 
     propTypes: {
-        closeModal: React.PropTypes.func // Function to call to close the modal
+        closeModal: React.PropTypes.func, // Function to call to close the modal
+        updateGdmArticles: React.PropTypes.func // Function to call when we have an article to add to the GDM
+    },
+
+    contextTypes: {
+        fetch: React.PropTypes.func // Function to perform a search
     },
 
     // Form content validation
@@ -183,7 +224,7 @@ var AddPmidModal = React.createClass({
         // Check if required fields have values
         var valid = this.validateRequired();
 
-        // Check if orphanetid 
+        // Valid if the field has only 10 or fewer digits 
         if (valid) {
             valid = this.getFormValue('pmid').match(/^[0-9]{1,10}$/i);
             if (!valid) {
@@ -193,14 +234,36 @@ var AddPmidModal = React.createClass({
         return valid;
     },
 
+    // Called when the modal form’s submit button is clicked. Handles validation and triggering
+    // the process to add an article.
     submitForm: function(e) {
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
         this.setFormValue('pmid', this.refs.pmid.getValue());
         if (this.validateForm()) {
-            this.props.closeModal();
+            var enteredPmid = this.getFormValue('pmid');
+            this.context.fetch('/articles/' + enteredPmid, {
+                headers: {'Accept': 'application/json'}
+            }).then(response => {
+                // Received Orphanet ID response or error. If the response is fine, request
+                // the JSON in a promise.
+                if (!response.ok) {
+                    this.setFormErrors('pmid', 'PMID not found');
+                    throw response;
+                }
+                return response.json();
+            })
+            .catch(function(e) {
+                parseAndLogError.bind(undefined, 'fetchedRequest');
+            })
+            .then(data => {
+                this.props.closeModal();
+                this.props.updateGdmArticles(data);
+            });
         }
     },
 
+    // Called when the modal form's cancel button is clicked. Just closes the modal like
+    // nothing happened.
     cancelForm: function(e) {
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
         this.props.closeModal();
