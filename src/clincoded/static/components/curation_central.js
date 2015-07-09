@@ -40,7 +40,7 @@ var CurationCentral = React.createClass({
     // Retrieve the GDM object from the DB with the given uuid
     getGdm: function(uuid) {
         // Retrieve the GDM with the UUID from the query string
-        var gdmRequest = this.context.fetch('/gdm/' + uuid, {
+        this.context.fetch('/gdm/' + uuid, {
             headers: {'Accept': 'application/json'}
         }).then(response => {
             // Received DB query response or error. If the response is fine, request
@@ -52,7 +52,8 @@ var CurationCentral = React.createClass({
 
             // Success; get the response’s JSON
             return response.json();
-        }).catch(parseAndLogError.bind(undefined, 'putRequest'))
+        })
+        .catch(parseAndLogError.bind(undefined, 'putRequest'))
         .then(data => {
             // The response's JSON is in 'data'; set the Curator Central component
             this.setState({currGdm: data});
@@ -83,6 +84,9 @@ var CurationCentral = React.createClass({
 
     // Add an article whose object is given to the current GDM
     updateGdmArticles: function(article) {
+        var createdAnnotation;
+        var currGdm = this.state.currGdm;
+
         // Put together a new annotation object with the article reference
         var newAnnotation = {
             annotationId: (Math.floor(Math.random() * (99999999 - 1000 + 1)) + 1000) + '', // temporary annotationID generation
@@ -92,7 +96,7 @@ var CurationCentral = React.createClass({
             active: true
         };
 
-        // Post the new data to the DB. fetch returns a JS promise.
+        // Post new annotation to the DB. fetch returns a JS promise.
         var request = this.context.fetch('/evidence/', {
             method: 'POST',
             headers: {
@@ -102,15 +106,13 @@ var CurationCentral = React.createClass({
             body: JSON.stringify(newAnnotation)
         });
         request.then(response => {
-            // GDM DB object creation done. Throw error or get JSON from response
+            // Annotation DB object creation done. Throw error or get JSON from response
             if (!response.ok) { throw response; }
             return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(data => {
-            var uuid = data['@graph'][0].uuid;
-            console.log(uuid);
-        });
+        }).then(data => {
+            createdAnnotation = data['@graph'][0];
+            console.log(JSON.stringify(currGdm));
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     render: function() {
