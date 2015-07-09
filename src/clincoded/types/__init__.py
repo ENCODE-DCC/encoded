@@ -55,7 +55,7 @@ class Article(Item):
 
 @collection(
     name='gdm',
-    unique_key='gdm:gdmId',
+    unique_key='gdm:uuid',
     properties={
         'title': 'Gene:Disease:Mode',
         'description': 'List of Gene:Disease:Mode pairs',
@@ -63,7 +63,7 @@ class Article(Item):
 class Gdm(Item):
     item_type = 'gdm'
     schema = load_schema('clincoded:schemas/gdm.json')
-    name_key = 'gdmId'
+    name_key = 'uuid'
     embedded = [
         'gene',
         'disease',
@@ -73,7 +73,7 @@ class Gdm(Item):
 
 @collection(
     name='evidence',
-    unique_key='annotation:annotationId',
+    unique_key='annotation:uuid',
     properties={
         'title': 'Evidence',
         'description': 'List of evidence for all G:D:M pairs',
@@ -81,7 +81,7 @@ class Gdm(Item):
 class Annotation(Item):
     item_type = 'annotation'
     schema = load_schema('clincoded:schemas/annotation.json')
-    name_key = 'annotationId'
+    name_key = 'uuid'
     embedded = [
         'article'
     ]
