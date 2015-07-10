@@ -26,9 +26,9 @@ class Pipeline(Item):
         'documents.submitted_by',
         'analysis_steps',
         'analysis_steps.documents',
-        'analysis_steps.software_versions',
-        'analysis_steps.software_versions.software',
-        'analysis_steps.software_versions.software.references',
+        'analysis_steps.current_version.software_versions',
+        'analysis_steps.current_version.software_versions.software',
+        'analysis_steps.current_version.software_versions.software.references',
         'lab',
         'award.pi.lab',
     ]
@@ -47,6 +47,7 @@ class AnalysisStep(Item):
     name_key = 'name'
     rev = {
         'pipelines': ('pipeline', 'analysis_steps'),
+        'versions': ('analysis_step_version', 'analysis_step')
     }
     embedded = [
         'software_versions',
@@ -64,6 +65,20 @@ class AnalysisStep(Item):
     })
     def pipelines(self, request, pipelines):
         return paths_filtered_by_status(request, pipelines)
+
+    @calculated_property(schema={
+        "title": "Current version",
+        "type": "string",
+        "linkTo": "analysis_step_version",
+    })
+    def current_version(self, request, versions):
+        version_objects = [
+            request.embed(path, '@@object')
+            for path in paths_filtered_by_status(request, versions)
+        ]
+        if version_objects:
+            current = max(version_objects, key=lambda obj: obj['version'])
+            return current['@id']
 
 
 @collection(
