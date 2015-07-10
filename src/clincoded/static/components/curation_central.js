@@ -7,6 +7,7 @@ var curator = require('./curator');
 var modal = require('../libs/bootstrap/modal');
 var form = require('../libs/bootstrap/form');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var RestMixin = require('./rest').RestMixin;
 
 var Modal = modal.Modal;
 var ModalMixin = modal.ModalMixin;
@@ -21,15 +22,13 @@ var PmidSummary = curator.PmidSummary;
 
 // Curator page content
 var CurationCentral = React.createClass({
+    mixins: [RestMixin],
+
     getInitialState: function() {
         return {
             currPmid: '',
             currGdm: {}
         };
-    },
-
-    contextTypes: {
-        fetch: React.PropTypes.func
     },
 
     // Called when currently selected PMID changes
@@ -39,25 +38,10 @@ var CurationCentral = React.createClass({
 
     // Retrieve the GDM object from the DB with the given uuid
     getGdm: function(uuid) {
-        // Retrieve the GDM with the UUID from the query string
-        this.context.fetch('/gdm/' + uuid, {
-            headers: {'Accept': 'application/json'}
-        }).then(response => {
-            // Received DB query response or error. If the response is fine, request
-            // the JSON in a promise.
-            if (!response.ok) { 
-                // Error
-                throw response;
-            }
-
-            // Success; get the response’s JSON
-            return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(data => {
-            // The response's JSON is in 'data'; set the Curator Central component
-            this.setState({currGdm: data});
-        });
+        this.getRestData('/gdm/' + uuid).then(gdm => {
+            // The GDM object successfully retrieved; set the Curator Central component
+            this.setState({currGdm: gdm});
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     // After the Curator Central page component mounts, grab the uuid from the query string and
@@ -96,45 +80,20 @@ var CurationCentral = React.createClass({
         };
 
         // Post new annotation to the DB. fetch returns a JS promise.
-        this.context.fetch('/evidence/', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newAnnotationObj)
-        }).then(response => {
-            if (!response.ok) { throw response; }
-            return response.json();
-        }).then(data => {
+        this.postRestData('/evidence/', newAnnotationObj).then(data => {
             // Save the new annotation; fetch the currently displayed GDM as an object without its embedded
-            // objects; basically the object as it exists in the DB.
+            // objects; basically the object as it exists in the DB. We'll update that and write it back to the DB.
             newAnnotation = data['@graph'][0];
-            return this.context.fetch('/gdm/' + this.state.currGdm.uuid + '/?frame=object', {
-                headers: {'Accept': 'application/json'}
-            });
-        }).then(response => {
-            if (!response.ok) { throw response; }
-            return response.json();
+            return this.getRestData('/gdm/' + this.state.currGdm.uuid + '/?frame=object');
         }).then(gdmObj => {
-            // Get 422 (Unprocessible entity) if we PUT any of these fields
+            // We'll get 422 (Unprocessible entity) if we PUT any of these fields:
             delete gdmObj.uuid;
             delete gdmObj['@id'];
             delete gdmObj['@type'];
 
             // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
             gdmObj.annotations.push('/evidence/' + newAnnotation.uuid + '/');
-            return this.context.fetch('/gdm/' + this.state.currGdm.uuid, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(gdmObj)
-            });
-        }).then(response => {
-            if (!response.ok) { throw response; }
-            return response.json();
+            return this.putRestData('/gdm/' + this.state.currGdm.uuid, gdmObj);
         }).then(data => {
             // Retrieve the updated GDM and set it as the new state GDM to force a rerendering.
             this.getGdm(data['@graph'][0].uuid);
@@ -236,7 +195,7 @@ var PmidSelectionList = React.createClass({
 
 // The content of the Add PMID(s) modal dialog box
 var AddPmidModal = React.createClass({
-    mixins: [FormMixin],
+    mixins: [FormMixin, RestMixin],
 
     propTypes: {
         closeModal: React.PropTypes.func, // Function to call to close the modal
@@ -270,21 +229,12 @@ var AddPmidModal = React.createClass({
         if (this.validateForm()) {
             // Form is valid -- we have a good PMID. Fetch the article with that PMID
             var enteredPmid = this.getFormValue('pmid');
-            this.context.fetch('/articles/' + enteredPmid, {
-                headers: {'Accept': 'application/json'}
-            }).then(response => {
-                // Received Orphanet ID response or error. If the response is fine, request
-                // the JSON in a promise.
-                if (!response.ok) {
-                    this.setFormErrors('pmid', 'PMID not found');
-                    throw response;
-                }
-                return response.json();
-            }).then(article => {
+            this.getRestData('/articles/' + enteredPmid).then(article => {
                 // Close the modal; update the GDM with this article.
                 this.props.closeModal();
                 this.props.updateGdmArticles(article);
-            }).catch(function(e) {
+            }).catch(e => {
+                this.setFormErrors('pmid', 'PMID not found');
                 parseAndLogError.bind(undefined, 'fetchedRequest');
             });
         }
