@@ -74,6 +74,6 @@
         },
     "boost_values": {
         "target.label": 1.0,
-        "target.aliases": 1.0}    
+        "target.aliases": 1.0    
     }
 }
