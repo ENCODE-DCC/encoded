@@ -111,9 +111,5 @@
             "title": "Functional",
             "type": "string"
         }
-    },
-    "boost_values": {
-        "pmid": 1.0,
-        "owner": 1.0
     }
 }

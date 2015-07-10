@@ -338,9 +338,7 @@ def search(context, request, search_type=None):
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
-            doc_types = ['antibody_lot', 'biosample',
-                         'experiment', 'target', 'dataset', 'page', 'publication',
-                         'software']
+            doc_types = ['annotation', 'article', 'gdm', 'gene', 'orphaPhenotype']
     else:
         for item_type in doc_types:
             qs = urlencode([

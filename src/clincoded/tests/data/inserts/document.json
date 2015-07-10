@@ -25,14 +25,14 @@
     },
     {
         "aliases": [
-            "encode:bedMethyl.as" 
+            "encode:bedMethyl.as"
         ],
         "attachment": "bedMethyl.txt",
         "award": "ENCODE2",
         "document_type": "file format specification",
         "lab": "richard-myers",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8" 
+        "uuid": "c9b6be80-2266-4af2-abbc-f5fc5e8ae5d8"
     },
     {
         "aliases": [
@@ -177,25 +177,6 @@
         "lab": "peggy-farnham",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "uuid": "2897e1e0-a322-4579-86dd-d5e8cf4e6c24"
-    },
-    {
-        "aliases": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
-        "attachment": "mouse.wgEncodeSydhHist.txt",
-        "award": "ENCODE2-Mouse",
-        "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
-        "document_type": "general protocol",
-        "lab": "michael-snyder",
-        "references": [
-            "72a4a030-bdfb-11e4-bb52-0800200c9a66",
-            "341bf550-be0c-11e4-bb52-0800200c9a66",
-            "cf890830-bdfc-11e4-bb52-0800200c9a66",
-            "4be68100-be0c-11e4-bb52-0800200c9a66",
-            "9c52b8c0-bdfd-11e4-bb52-0800200c9a66"
-        ],
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
     },
     {
         "aliases": [

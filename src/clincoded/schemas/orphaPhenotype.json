@@ -27,11 +27,6 @@
             "type":  "string",
             "uniqueKey": "orphaPhenotype:orphaNumber"
         },
-        "url": {
-            "title": "URL",
-            "description": "Hyperlink to Orphanet webpage of the disease",
-            "type":  "string"
-        },
         "type": {
             "title": "Type.",
             "description": "Type of Orphanet phenotype.",
