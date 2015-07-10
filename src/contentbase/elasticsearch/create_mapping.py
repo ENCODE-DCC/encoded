@@ -452,7 +452,8 @@ def type_mapping(types, item_type, embed=True):
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['index_analyzer'] = 'clincoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'clincoded_search_analyzer'
-        del new_mapping[last]['include_in_all']
+        if 'include_in_all' in new_mapping[last]:
+            del new_mapping[last]['include_in_all']
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
