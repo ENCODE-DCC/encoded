@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "title": "Name",
@@ -58,16 +58,6 @@
                      "interaction calling"
                  ]
              }
-        },
-        "software_versions": {
-            "title": "Software version",
-            "description": "The software version used in the analysis.",
-            "type": "array",
-            "items": {
-                "comment": "See software_version.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "software_version"
-            }
         },
         "input_file_types": {
             "title": "Input file types",
