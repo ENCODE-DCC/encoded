@@ -2,12 +2,9 @@
 ClinGen Curation Database and Interface
 ========================
 
-|Build status|_
+[![Build Status](https://travis-ci.org/ClinGen/clincoded.svg?branch=dev)](https://travis-ci.org/ClinGen/clincoded)
 
-.. |Build status| image:: https://travis-ci.org/ClinGen/clincoded.png?branch=master
-.. |Build status| image:: https://travis-ci.org/ClinGen/clincoded.png?branch=dev
-.. _Build status: https://travis-ci.org/ClinGen/clincoded
-
+[![Build Status](https://travis-ci.org/ClinGen/clincoded.svg?branch=master)](https://travis-ci.org/ClinGen/clincoded)
 
 This software creates an object store and user interface for the collection of mappings between human diseases and genetic variation as input by the ClinGen curation staff.
 
