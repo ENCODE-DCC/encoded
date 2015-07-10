@@ -5,6 +5,7 @@ ClinGen Curation Database and Interface
 |Build status|_
 
 .. |Build status| image:: https://travis-ci.org/ClinGen/clincoded.png?branch=master
+.. |Build status| image:: https://travis-ci.org/ClinGen/clincoded.png?branch=dev
 .. _Build status: https://travis-ci.org/ClinGen/clincoded
 
 
@@ -38,7 +39,13 @@ If you need to update dependencies::
 
     $ brew update
     $ brew upgrade
-    $ rm -rf clincoded/eggs
+    $ make clean
+
+You can also use the Makefile to set up for a clean buildout::
+
+    $ make clean
+
+Then proceed to step 1b.
 
 Linux
 -----
@@ -74,8 +81,8 @@ In one terminal startup the database servers with::
 
     $ bin/dev-servers development.ini --app-name app --clear --init --load
 
-This will first clear any existing data in /tmp/clincodd.
-Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
+This will first clear any existing data in /tmp/clincoded.
+Then postgres and elasticsearch servers will be initiated within /tmp/clincoded.
 The servers are started, and finally the test set will be loaded.
 
 In a second terminal, run the app in with::
@@ -124,27 +131,27 @@ Note:  The below is generally superceeded by the dev-servers command which creat
 
 If you wish a clean db wipe for DEVELOPMENT::
 
-    $ dropdb encoded
+    $ dropdb clincoded
     ...
-    $ createdb encoded
+    $ createdb clincoded
     $ pg_ctl -D /usr/local/var/postgres -l pg.log start
 
 Database setup on VMs::
 
     # service postgresql-9.3 initdb
     # service postgresql-9.3 start
-    # sudo -u postgres createuser --createdb encoded
+    # sudo -u postgres createuser --createdb clincoded
 
-Then as the encoded user::
+Then as the clincoded user::
 
-    $ createdb encoded
+    $ createdb clincoded
 
 To dump a postgres database:
-    pg_dump -Fc encoded > FILE_NAME  (as user encoded on demo vm)
-    (FILE_NAME for production is ~/encoded/archive/encoded-YYYYMMDD.dump)
+    pg_dump -Fc clincoded > FILE_NAME  (as user clincoded on demo vm)
+    (FILE_NAME for production is ~/clincoded/archive/clincoded-YYYYMMDD.dump)
 
 To restore a postgres database:
-    pg_restore -d encoded FILE_NAME (as user encoded on demo vm)
+    pg_restore -d clincoded FILE_NAME (as user clincoded on demo vm)
 
 Notes on manually creation of ElasticSearch mapping
 --------------------------------------
