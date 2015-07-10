@@ -22,13 +22,14 @@ var RestMixin = module.exports.RestMixin = {
     },
 
     // GET data from the given URI. Returns data in the promise.
-    getRestData: function(uri) {
+    // Non-OK error response calls the optional errorHandler function.
+    getRestData: function(uri, errorHandler) {
         return this.context.fetch(uri, {
             method: 'GET',
             headers: {'Accept': 'application/json'}
         }).then(response => {
             // Success response, but might not necessarily be a success; check 'ok' before use
-            if (!response.ok) { throw response; }
+            if (!response.ok) { if (errorHandler) { errorHandler() }; throw response; }
 
             // Actual success. Get the response's JSON as a promise.
             return response.json();
@@ -36,6 +37,12 @@ var RestMixin = module.exports.RestMixin = {
             // Unsuccessful retrieval
             throw error;
         });
+    },
+
+    getRestDatas: function(uris, handlers) {
+        return Promise.all(uris.map(function(uri, i) {
+            return this.getRestData(uri, handlers[i]);
+        }.bind(this)));
     },
 
     // PUT given object to the given URI. Returns written data as a promise.

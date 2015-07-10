@@ -6,6 +6,7 @@ var fetched = require('./fetched');
 var form = require('../libs/bootstrap/form');
 var panel = require('../libs/bootstrap/panel');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var RestMixin = require('./rest').RestMixin;
 
 var Form = form.Form;
 var FormMixin = form.FormMixin;
@@ -36,7 +37,7 @@ var hpoValues = [
 
 
 var CreateGeneDisease = React.createClass({
-    mixins: [FormMixin],
+    mixins: [FormMixin, RestMixin],
 
     contextTypes: {
         fetch: React.PropTypes.func,
@@ -77,39 +78,15 @@ var CreateGeneDisease = React.createClass({
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
             var geneId = this.getFormValue('hgncgene');
 
-            // Verify user-entered orphanet ID and HGNC gene exist in DB. Start by doing JSON
-            // requests for both and getting back their promises.
-            var orphaRequest = this.context.fetch('/diseases/' + orphaId, {
-                headers: {'Accept': 'application/json'}
-            });
-            var geneRequest = this.context.fetch('/genes/' + geneId, {
-                headers: {'Accept': 'application/json'}
-            });
-
-            // Handle server responses for orphanet ID and HGNC gene ID through their promises.
-            var orphaJson = orphaRequest.then(response => {
-                // Received Orphanet ID response or error. If the response is fine, request
-                // the JSON in a promise.
-                if (!response.ok) { 
-                    this.setFormErrors('orphanetid', 'Orphanet ID not found');
-                    throw response;
-                }
-                return response.json();
-            });
-            var geneJson = geneRequest.then(response => {
-                // Received HGNC gene response or error. If the response is fine, request
-                // the JSON in a promise.
-                if (!response.ok) { 
-                    this.setFormErrors('hgncgene', 'HGNC gene symbol not found');
-                    throw response;
-                }
-                return response.json();
-            });
-
-            // Once both json() promises return, handle their data. If either errors, use the catch case.
-            Promise.all([orphaJson, geneJson])
-            .then(this.createGdm)
-            .catch(function(e) {
+            this.getRestDatas([
+                '/diseases/' + orphaId,
+                '/genes/' + geneId
+            ], [
+                function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
+                function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
+            ]).then(
+                this.createGdm
+            ).catch(function(e) {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
             });
         }
