@@ -231,11 +231,33 @@ var AddPmidModal = React.createClass({
             var enteredPmid = this.getFormValue('pmid');
             this.getRestData('/articles/' + enteredPmid).then(article => {
                 // Close the modal; update the GDM with this article.
+                return Promise.resolve(article);
+            }, e => {
+                // PubMed article not in our DB; go out to PubMed itself to retrieve it as XML
+                return this.getRestDataXml('http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&retmode=xml&id=' + enteredPmid).then(data => {
+                    var newArticle = {};
+                    var medline = data.PubmedArticleSet.PubmedArticle[0].MedlineCitation[0];
+                    var article = medline.Article[0];
+                    newArticle.pmid = medline.PMID[0]['_'];
+                    newArticle.title = article.ArticleTitle[0];
+                    var journal = article.Journal[0];
+                    var journalIssue = journal.JournalIssue[0];
+                    var pubDate = journalIssue.PubDate[0];
+                    newArticle.journal = journal.Title[0];
+                    newArticle.date = pubDate.Year[0] + ' ' + pubDate.Month[0] + ';' + journalIssue.Volume[0] + '(' + journalIssue.Issue[0] + '):' + article.Pagination[0].MedlinePgn[0];
+                    var author = article.AuthorList[0].Author[0];
+                    newArticle.firstAuthor = author.LastName[0] + ' ' + author.Initials[0];
+                    newArticle.abstract = article.Abstract[0].AbstractText[0];
+                    return this.postRestData('/articles/', newArticle).then(data => {
+                        return Promise.resolve(data['@graph'][0]);
+                    })
+                });
+            }).then(article => {
+                console.log(article);
                 this.props.closeModal();
                 this.props.updateGdmArticles(article);
-            }).catch(e => {
-                this.setFormErrors('pmid', 'PMID not found');
-                parseAndLogError.bind(undefined, 'fetchedRequest');
+            }).catch(function(e) {
+                console.log('ERROR %o', e);
             });
         }
     },

@@ -1,5 +1,17 @@
 'use strict';
 var React = require('react');
+var parseXml = require('xml2js').parseString;
+
+
+// Promise-generating version of xml2js entry point
+function parseXmlAsync(xml){
+    return new Promise(function(resolve, reject){
+         parseXml(xml, function(err, data){
+             if (err !== null) { return reject(err); }
+             resolve(data);
+         });
+    });
+}
 
 
 // Mixin to use REST APIs conveniently. In this project, this is mostly used to read or write data
@@ -21,7 +33,26 @@ var RestMixin = module.exports.RestMixin = {
         fetch: React.PropTypes.func
     },
 
-    // GET data from the given URI. Returns data in the promise.
+    getRestDataXml: function(uri, errorHandler) {
+        return this.context.fetch(uri, {
+            method: 'GET',
+            headers: {'Accept': 'application/xml'}
+        }).then(response => {
+            // Success response, but might not necessarily be a success; check 'ok' before use
+            if (!response.ok) { if (errorHandler) { errorHandler() }; throw response; }
+
+            // Actual success. Get the response's JSON as a promise.
+            return response.text();
+        }, error => {
+            // Unsuccessful retrieval
+            throw error;
+        }).then(xml => {
+            // Successful retrieval of XML
+            return parseXmlAsync(xml);
+        });
+    },
+
+    // GET JSON data from the given URI. Returns data in the promise.
     // Non-OK error response calls the optional errorHandler function.
     getRestData: function(uri, errorHandler) {
         return this.context.fetch(uri, {
@@ -39,7 +70,7 @@ var RestMixin = module.exports.RestMixin = {
         });
     },
 
-    // Get data from the given URIs (in an array), and return a promise once all GET REST requests
+    // Get JSON data from the given URIs (in an array), and return a promise once all GET REST requests
     // have succeeded. Optionally, if any GET requests fail, call the corresponding function in the
     // 'handlers' array.
     getRestDatas: function(uris, handlers) {
