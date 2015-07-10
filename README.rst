@@ -1,9 +1,16 @@
 ========================
 ClinGen Curation Database and Interface
 ========================
+DEV
+***
+.. image:: https://travis-ci.org/ClinGen/clincoded.svg?branch=dev
+    :target: https://travis-ci.org/ClinGen/clincoded
 
-#DEV: [![Build Status](https://travis-ci.org/ClinGen/clincoded.svg?branch=dev)](https://travis-ci.org/ClinGen/clincoded) MASTER: [![Build Status](https://travis-ci.org/ClinGen/clincoded.svg?branch=master)](https://travis-ci.org/ClinGen/clincoded)
-
+PROD
+*******
+.. image:: https://travis-ci.org/ClinGen/clincoded.svg?branch=master
+    :target: https://travis-ci.org/ClinGen/clincoded
+    
 This software creates an object store and user interface for the collection of mappings between human diseases and genetic variation as input by the ClinGen curation staff.
 
 Baseline Dependendencies
