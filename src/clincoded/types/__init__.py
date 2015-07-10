@@ -55,7 +55,7 @@ class Article(Item):
 
 @collection(
     name='gdm',
-    unique_key='gdm:gdmId',
+    unique_key='gdm:uuid',
     properties={
         'title': 'Gene:Disease:Mode',
         'description': 'List of Gene:Disease:Mode pairs',
@@ -63,7 +63,7 @@ class Article(Item):
 class Gdm(Item):
     item_type = 'gdm'
     schema = load_schema('clincoded:schemas/gdm.json')
-    name_key = 'gdmId'
+    name_key = 'uuid'
     embedded = [
         'gene',
         'disease',
@@ -73,7 +73,7 @@ class Gdm(Item):
 
 @collection(
     name='evidence',
-    unique_key='annotation:annotationId',
+    unique_key='annotation:uuid',
     properties={
         'title': 'Evidence',
         'description': 'List of evidence for all G:D:M pairs',
@@ -81,7 +81,7 @@ class Gdm(Item):
 class Annotation(Item):
     item_type = 'annotation'
     schema = load_schema('clincoded:schemas/annotation.json')
-    name_key = 'annotationId'
+    name_key = 'uuid'
     embedded = [
         'article'
     ]
@@ -151,79 +151,3 @@ class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('clincoded:schemas/document.json')
     embedded = ['lab', 'award', 'submitted_by']
-
-
-@collection(
-    name='publications',
-    unique_key='publication:identifier',
-    properties={
-        'title': 'Publications',
-        'description': 'Publication pages',
-    })
-class Publication(Item):
-    item_type = 'publication'
-    schema = load_schema('clincoded:schemas/publication.json')
-    embedded = ['datasets']
-
-    def unique_keys(self, properties):
-        keys = super(Publication, self).unique_keys(properties)
-        if properties.get('identifiers'):
-            keys.setdefault('alias', []).extend(properties['identifiers'])
-        return keys
-
-    @calculated_property(condition='date_published', schema={
-        "title": "Publication year",
-        "type": "string",
-    })
-    def publication_year(self, date_published):
-        return date_published.partition(' ')[0]
-
-
-@collection(
-    name='software',
-    unique_key='software:name',
-    properties={
-        'title': 'Software',
-        'description': 'Software pages',
-    })
-class Software(Item):
-    item_type = 'software'
-    schema = load_schema('clincoded:schemas/software.json')
-    name_key = 'name'
-    embedded = [
-        'references',
-        'versions'
-    ]
-    rev = {
-        'versions': ('software_version', 'software')
-    }
-
-    @calculated_property(schema={
-        "title": "Versions",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "software_version",
-        },
-    })
-    def versions(self, request, versions):
-        return paths_filtered_by_status(request, versions)
-
-
-@collection(
-    name='software-versions',
-    properties={
-        'title': 'Software version',
-        'description': 'Software version pages',
-    })
-class SoftwareVersion(Item):
-    item_type = 'software_version'
-    schema = load_schema('clincoded:schemas/software_version.json')
-    embedded = ['software', 'software.references']
-
-    def __ac_local_roles__(self):
-        # Use lab/award from parent software object for access control.
-        properties = self.upgrade_properties()
-        root = find_root(self)
-        software = root.get_by_uuid(properties['software'])
-        return software.__ac_local_roles__()

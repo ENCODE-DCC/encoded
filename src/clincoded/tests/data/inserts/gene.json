@@ -2,9 +2,7 @@
     {
         "symbol": "FGFR3",
         "hgncId": "HGNC:3690",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:3690",
         "entrezId": "2261",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/2261",
         "name": "fibroblast growth factor receptor 3gene with protein product",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -31,9 +29,7 @@
     {
         "symbol": "RAD51C",
         "hgncId": "HGNC:9820",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:9820",
         "entrezId": "5889",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/5889",
         "name": "RAD51 paralog C",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -58,9 +54,7 @@
     {
         "symbol": "DICER1",
         "hgncId": "HGNC:17098",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:17098",
         "entrezId": "23405",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/23405",
         "name": "dicer 1, ribonuclease type III",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -94,9 +88,7 @@
     {
         "symbol": "SMAD3",
         "hgncId": "HGNC:6769",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:6769",
         "entrezId": "4088",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/4088",
         "name": "SMAD family member 3",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -124,9 +116,7 @@
     {
         "symbol": "AGTR2",
         "hgncId": "HGNC:338",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:338",
         "entrezId": "186",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/186",
         "name": "angiotensin II receptor, type 2",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -149,9 +139,7 @@
     {
         "symbol": "CD3E",
         "hgncId": "HGNC:1674",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:1674",
         "entrezId": "916",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/916",
         "name": "CD3e molecule, epsilon (CD3-TCR complex)",
         "hgncStatus": "Approved",
         "previousNames": [
@@ -168,9 +156,7 @@
     {
         "symbol": "FANCM",
         "hgncId": "HGNC:23168",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:23168",
         "entrezId": "57697",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/57697",
         "name": "Fanconi anemia, complementation group M",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -196,9 +182,7 @@
     {
         "symbol": "NGLY1",
         "hgncId": "HGNC:17646",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:17646",
         "entrezId": "55768",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/55768",
         "name": "N-glycanase 1",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -215,9 +199,7 @@
     {
         "symbol": "BRCA1",
         "hgncId": "HGNC:1100",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:1100",
         "entrezId": "672",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/762",
         "name": "breast cancer 1, early onset",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -244,9 +226,7 @@
     {
         "symbol": "EGFR",
         "hgncId": "HGNC:3236",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:3236",
         "entrezId": "1956",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/1956",
         "name": "epidermal growth factor receptor",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -275,9 +255,7 @@
     {
         "symbol": "MTBP",
         "hgncId": "HGNC:7417",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:7417",
         "entrezId": "27085",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/27085",
         "name": "MDM2 binding protein",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -301,9 +279,7 @@
     {
         "symbol": "PPM1D",
         "hgncId": "HGNC:9277",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:9277",
         "entrezId": "8493",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/8493",
         "name": "protein phosphatase, Mg2+/Mn2+ dependent, 1D",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -330,9 +306,7 @@
     {
         "symbol": "CUL9",
         "hgncId": "HGNC:15982",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:15982",
         "entrezId": "23113",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/23113",
         "name": "cullin 9",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -359,9 +333,7 @@
     {
         "symbol": "TP63",
         "hgncId": "HGNC:15979",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:15979",
         "entrezId": "8626",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/8626",
         "name": "tumor protein p63",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -402,9 +374,7 @@
     {
         "symbol": "PIDD1",
         "hgncId": "HGNC:16491",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:16491",
         "entrezId": "55367",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/55367",
         "name": "p53-induced death domain protein 1",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -432,9 +402,7 @@
     {
         "symbol": "MDM4",
         "hgncId": "HGNC:6974",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:6974",
         "entrezId": "4194",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/4194",
         "name": "MDM4, p53 regulator",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -460,9 +428,7 @@
     {
         "symbol": "CDIP1",
         "hgncId": "HGNC:13234",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:13234",
         "entrezId": "29965",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/29965",
         "name": "cell death-inducing p53 target 1",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -493,9 +459,7 @@
     {
         "symbol": "GSTM1",
         "hgncId": "HGNC:4632",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:4632",
         "entrezId": "2944",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/2944",
         "name": "glutathione S-transferase mu 1",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -518,9 +482,7 @@
     {
         "symbol": "JMY",
         "hgncId": "HGNC:28916",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:28916",
         "entrezId": "133746",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/133746",
         "name": "junction mediating and regulatory protein, p53 cofactor",
         "hgncStatus": "Approved",
         "synonyms": [
@@ -539,9 +501,7 @@
     {
         "symbol": "TP53",
         "hgncId": "HGNC:11998",
-        "hgncurl": "http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=HGNC:11998",
         "entrezId": "7157",
-        "entrezurl": "http://www.ncbi.nlm.nih.gov/gene/7157",
         "name": "tumor protein p53",
         "hgncStatus": "Approved",
         "synonyms": [

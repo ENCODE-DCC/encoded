@@ -27,23 +27,9 @@
             "description": "HGNC identifier of gene",
             "type": "string"
         },
-        "hgncurl": {
-            "title": "HGNC URL",
-            "description": "Hyperlink to HGNC webpage of the gene",
-            "type": "string",
-            "type": "string",
-            "default": ""
-        },
         "entrezId": {
             "title": "Entrez ID",
             "description": "Entrez id of the gene",
-            "type": "string",
-            "type": "string",
-            "default": ""
-        },
-        "entrezurl": {
-            "title": "Entrez URL",
-            "description": "Hyperlink to Entrez webpage of the gene",
             "type": "string",
             "type": "string",
             "default": ""

@@ -3,7 +3,6 @@
         "uuid": "78867c7a-16a6-11e5-8007-60f81dc5b05a",
         "term": "Achondroplasia",
         "orphaNumber": "15",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=15",
         "active": true,
         "omimIds": [
             "100800"
@@ -14,7 +13,6 @@
         "uuid": "788aaf99-16a6-11e5-8661-60f81dc5b05a",
         "term": "Fanconi anemia",
         "orphaNumber": "84",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=84",
         "synonyms": [
             "Fanconi pancytopenia"
         ],
@@ -42,7 +40,6 @@
         "uuid": "788ae1de-16a6-11e5-b341-60f81dc5b05a",
         "term": "Nephroblastoma",
         "orphaNumber": "654",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=654",
         "synonyms": [
             "Renal embryonic tumor",
             "Wilms tumor"
@@ -61,7 +58,6 @@
         "uuid": "788aee73-16a6-11e5-8505-60f81dc5b05a",
         "term": "Severe combined immunodeficiency",
         "orphaNumber": "183660",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=183660",
         "synonyms": [
             "SCID"
         ],
@@ -72,7 +68,6 @@
         "uuid": "788c3bb0-16a6-11e5-8618-60f81dc5b05a",
         "term": "X-linked non-syndromic intellectual disability",
         "orphaNumber": "777",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=777",
         "synonyms": [
             "X-linked non-specific intellectual disability"
         ],
@@ -122,7 +117,6 @@
         "uuid": "788cd05e-16a6-11e5-97c0-60f81dc5b05a",
         "term": "Congenital muscular dystrophy with intellectual disability",
         "orphaNumber": "370968",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=370968",
         "synonyms": [
             "CMD with intellectual disability",
             "CMD-MR"
@@ -141,7 +135,6 @@
         "uuid": "788d04b5-16a6-11e5-bc96-60f81dc5b05a",
         "term": "Aneurysm - osteoarthritis syndrome",
         "orphaNumber": "284984",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=284984",
         "synonyms": [
             "AOS"
         ],
@@ -155,7 +148,6 @@
         "uuid": "788d45ab-16a6-11e5-9042-60f81dc5b05a",
         "term": "Familial exudative vitreoretinopathy",
         "orphaNumber": "891",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=891",
         "synonyms": [
             "Criswick-Schepens syndrome",
             "FEVR"
@@ -174,7 +166,6 @@
         "uuid": "788d967d-16a6-11e5-acfb-60f81dc5b05a",
         "term": "Pleuropulmonary blastoma",
         "orphaNumber": "64742",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=64742",
         "active": true,
         "omimIds": [
             "601200"
@@ -185,7 +176,6 @@
         "uuid": "788e024f-16a6-11e5-a0b5-60f81dc5b05a",
         "term": "Milroy disease",
         "orphaNumber": "79452",
-        "url": "http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=79452",
         "synonyms": [
             "Hereditary lymphedema type I",
             "Nonne-Milroy lymphedema"
