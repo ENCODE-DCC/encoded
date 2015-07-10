@@ -3,7 +3,7 @@
     "id": "/profiles/analysis_step_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["status"],
+    "required": ["analysis_step_version", "status"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -15,13 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
-        },
-        "analysis_step": {
-            "title": "Analysis Step",
-            "description": "Reference to template step in pipeline",
-            "type": "string",
-            "linkTo": "analysis_step"        
+            "default": "2"
         },
         "analysis_step_version": {
             "title": "Analysis Step Version",

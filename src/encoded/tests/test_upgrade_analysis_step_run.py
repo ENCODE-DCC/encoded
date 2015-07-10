@@ -1,0 +1,29 @@
+import pytest
+
+
+@pytest.fixture
+def analysis_step_version_with_alias(testapp, analysis_step, software_version):
+    item = {
+        'aliases': ['versionof:' + analysis_step['name']],
+        'analysis_step': analysis_step['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_1(analysis_step, workflow_run):
+    item = {
+        'analysis_step': analysis_step['uuid'],
+        'status': 'finished',
+        'workflow_run': workflow_run['uuid'],
+    }
+    return item
+
+
+def test_analysis_step_run_1_2(registry, upgrader, analysis_step_run_1, analysis_step_version_with_alias, threadlocals):
+    value = upgrader.upgrade('analysis_step_run', analysis_step_run_1, current_version='1', target_version='2', registry=registry)
+    assert value['analysis_step_version'] == analysis_step_version_with_alias['uuid']
+    assert 'analysis_step' not in value
