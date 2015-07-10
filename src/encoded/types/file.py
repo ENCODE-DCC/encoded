@@ -94,7 +94,7 @@ class File(Item):
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'qc_metrics.step_run.analysis_step',
+        'qc_metrics.step_run.analysis_step_version.analysis_step',
     ]
 
     @property
