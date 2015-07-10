@@ -11,7 +11,7 @@ var React = require('react');
 // ...at the top of its definition. The component can then use these methods:
 //
 // this.getRestData(uri): GET data from the given URI. Returns data in the promise.
-// this.getRestData(uris): GET data from the array of given URIs. Returns data in the promise.
+// this.getRestDatas(uris): GET data from the array of given URIs. Returns data in the promise.
 // this.putRestData(uri,obj): PUT given object to the given URI. Returns written data as a promise.
 // this.postRestData(uri,obj): POST given object to the given URI. Returns written data as a promise.
 
@@ -39,6 +39,9 @@ var RestMixin = module.exports.RestMixin = {
         });
     },
 
+    // Get data from the given URIs (in an array), and return a promise once all GET REST requests
+    // have succeeded. Optionally, if any GET requests fail, call the corresponding function in the
+    // 'handlers' array.
     getRestDatas: function(uris, handlers) {
         return Promise.all(uris.map(function(uri, i) {
             return this.getRestData(uri, handlers[i]);

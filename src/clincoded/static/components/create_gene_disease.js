@@ -75,9 +75,12 @@ var CreateGeneDisease = React.createClass({
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
         this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
+            // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
             var geneId = this.getFormValue('hgncgene');
 
+            // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
+            // If either error out, set the form error fields
             this.getRestDatas([
                 '/diseases/' + orphaId,
                 '/genes/' + geneId
@@ -85,6 +88,7 @@ var CreateGeneDisease = React.createClass({
                 function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
                 function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
             ]).then(
+                // Create the GDM, called as a thennable method
                 this.createGdm
             ).catch(function(e) {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
@@ -92,10 +96,10 @@ var CreateGeneDisease = React.createClass({
         }
     },
 
-    // Receive data from JSON request.
-    createGdm: function(data) {
+    // Create the GDM once its disease and gene data have been verified to exist.
+    createGdm: function() {
         // Put together the new GDM object with form data and other info
-        var value = {
+        var newGdm = {
             gene: this.getFormValue('hgncgene'),
             disease: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
             modeInheritance: this.getHpoText(this.getFormValue('hpo')),
@@ -104,25 +108,12 @@ var CreateGeneDisease = React.createClass({
             dateTime: new Date().toISOString()
         };
 
-        // Post the new data to the DB. fetch returns a JS promise.
-        var request = this.context.fetch('/gdm/', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value)
-        });
-        request.then(response => {
-            // GDM DB object creation done. Throw error or get JSON from response
-            if (!response.ok) { throw response; }
-            return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(data => {
+        // Post the new GDM to the DB. Once promise returns, go to /curation-central page with the UUID
+        // of the new GDM in the query string.
+        this.postRestData('/gdm/', newGdm).then(data => {
             var uuid = data['@graph'][0].uuid;
-            this.context.navigate('/curation-central/' + '?gdm=' + uuid);
-        });
+            this.context.navigate('/curation-central/?gdm=' + uuid);
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     render: function() {
