@@ -50,8 +50,9 @@ class AnalysisStep(Item):
         'versions': ('analysis_step_version', 'analysis_step')
     }
     embedded = [
-        'software_versions',
-        'software_versions.software',
+        'current_version',
+        'current_version.software_versions',
+        'current_version.software_versions.software',
         'parents'
     ]
 
