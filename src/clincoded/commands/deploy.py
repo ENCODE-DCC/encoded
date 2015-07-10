@@ -100,7 +100,8 @@ def main():
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
-    parser.add_argument('--wale-s3-prefix', default='s3://clincoded-backups-prod/production')
+# TEMP for initial tests --comment out prod backups
+#    parser.add_argument('--wale-s3-prefix', default='s3://clincoded-backups-prod/production')
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
