@@ -117,7 +117,7 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
 #- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
+#- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo -u clincoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
 - sudo -u clincoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
@@ -127,7 +127,7 @@ runcmd:
 - sudo -u clincoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 #TEMP for inital tests --use bin/dev-servers for mapping and loading test data
 #- sudo -u clincoded bin/create-mapping production.ini --app-name app
-- sudo -u clincoded bin/dev-servers development.ini --app-name app --clear --init --load
+#- sudo -u clincoded bin/dev-servers development.ini --app-name app --clear --init --load
 - ln -s /srv/clincoded/etc/clincoded-apache.conf /etc/apache2/sites-available/clincoded.conf
 - ln -s /srv/clincoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
