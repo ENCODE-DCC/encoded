@@ -25,6 +25,38 @@ var ChangeLog = module.exports.ChangeLog = React.createClass({
     }
 });
 
+
+var Schema = module.exports.Schema = React.createClass({
+    render: function() {
+        var schema = this.props.schema;
+        var required = schema.required || [];
+        return <div>
+            {schema.title && <header>{schema.title}</header>}
+            {schema.type && <p>{JSON.stringify(schema.type)}</p>}
+            {schema.description && <p>{schema.description}</p>}
+            {schema.comment && <p><i>{schema.comment}</i></p>}
+            {schema.properties &&
+                <div>
+                    <header>Properties</header>
+                    {Object.keys(schema.properties).map(propname => {
+                        var subschema = schema.properties[propname];
+                        var proprequired = required.indexOf(propname) != -1;
+                        return !subschema.calculatedProperty && <div className={proprequired ? 'required' : null}>
+                            <header>{propname}</header>
+                            <Schema schema={subschema} />
+                        </div>;
+                    })}
+                </div>}
+            {schema.items &&
+                <div>
+                    <header>Items</header>
+                    <Schema schema={schema.items} />
+                </div>}
+        </div>;
+    }
+});
+
+
 var SchemaPage = module.exports.SchemaPage = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -41,7 +73,7 @@ var SchemaPage = module.exports.SchemaPage = React.createClass({
                 {typeof context.description == "string" ? <p className="description">{context.description}</p> : null}
                 <section className="view-detail panel">
                     <div className="container">
-                        <pre>{JSON.stringify(context, null, 4)}</pre>
+                        <Schema schema={context} />
                     </div>
                 </section>
                 {changelog && <fetched.FetchedData>
