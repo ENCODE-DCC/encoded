@@ -109,7 +109,7 @@ class AnalysisStepRun(Item):
     item_type = 'analysis_step_run'
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
-        'analysis_step',
+        'analysis_step_version.analysis_step',
         'workflow_run',
         'qc_metrics',
         'output_files'
