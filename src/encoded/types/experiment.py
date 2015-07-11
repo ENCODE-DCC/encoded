@@ -37,7 +37,7 @@ class Experiment(Dataset):
         'files.replicate.library.biosample',
         'files.qc_metrics',
         'files.qc_metrics.step_run',
-        'files.qc_metrics.step_run.analysis_step',
+        'files.qc_metrics.step_run.analysis_step_version.analysis_step',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
