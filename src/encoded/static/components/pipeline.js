@@ -50,14 +50,14 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             // Make an object with all step UUIDs in the pipeline
             var allSteps = {};
             analysis_steps.forEach(function(step) {
-                allSteps[step.uuid] = step;
+                allSteps[step['@id']] = step;
             });
 
             // Create an empty graph architecture
             jsonGraph = new JsonGraph(this.props.context.accession);
 
             // Add files and their steps as nodes to the graph
-            analysis_steps.forEach(function(step) {
+            analysis_steps.forEach(step => {
                 var stepId = step['@id'];
                 var swVersionList = [];
                 var label;
@@ -88,18 +88,18 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
                     step.parents.forEach(function(parent) {
-                        if (parent.uuid in allSteps) {
-                            jsonGraph.addEdge(parent['@id'], stepId);
+                        if (allSteps[parent]) {
+                            jsonGraph.addEdge(parent, stepId);
                         }
                     });
                 }
-            }, this);
+            });
 
             // If any analysis step parents haven't been seen yet,
             // add them to the graph too
-            analysis_steps.forEach(function(step) {
+            analysis_steps.forEach(step => {
                 if (step.parents && step.parents.length) {
-                    step.parents.forEach(function(parent) {
+                    step.parents.forEach(parent => {
                         if (parent.uuid in allSteps) {
                             var stepId = parent['@id'];
                             var swVersionList = [];
@@ -125,9 +125,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                                     {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
                             }
                         }
-                    }, this);
+                    });
                 }
-            }, this);
+            });
 
         }
         return jsonGraph;
@@ -166,9 +166,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         this.jsonGraph = this.assembleGraph();
 
         // Find the selected step, if any
-        var selectedStep;
+        var selectedStep, selectedNode;
         if (this.state.infoNodeId) {
-            var selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
+            selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
             }
@@ -229,7 +229,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <div className="graph-node-info">
                                 {selectedStep ?
                                     <div className="step-info">
-                                        <AnalysisStep step={selectedStep} />
+                                        <AnalysisStep step={selectedStep} node={selectedNode} />
                                     </div>
                                 : null}
                             </div>
@@ -259,6 +259,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
     render: function() {
         var step = this.props.step;
         var node = this.props.node;
+        var softwareVersions = step.current_version && step.current_version.software_versions;
         var typesList = step.analysis_step_types.join(", ");
 
         return (
@@ -300,13 +301,6 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                         </div>
                     : null}
 
-                    {node && node.metadata.pipeline ?
-                        <div data-test="pipeline">
-                            <dt>Pipeline</dt>
-                            <dd><a href={node.metadata.pipeline['@id']}>{node.metadata.pipeline.title}</a></dd>
-                        </div>
-                    : null}
-
                     {step.qa_stats_generated && step.qa_stats_generated.length ?
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
@@ -321,11 +315,11 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                         </div>
                     : null}
 
-                    {step.software_versions && step.software_versions.length ?
+                    {softwareVersions && softwareVersions.length ?
                         <div data-test="swversions">
                             <dt>Software</dt>
                             <dd>
-                                {step.software_versions.map(function(version, i) {
+                                {softwareVersions.map(function(version, i) {
                                     var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                     return (
                                         <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">

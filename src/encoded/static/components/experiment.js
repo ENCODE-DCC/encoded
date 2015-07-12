@@ -698,15 +698,14 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             allReplicates[file.replicate.biological_replicate_number].push(file);
         }
 
-        // Track all the pipelines used for each step that's part of a pipeline.
-        if (file.pipeline && file.pipeline.analysis_steps) {
-            file.pipeline.analysis_steps.forEach(function(step) {
-                allPipelines[step] = file.pipeline;
-            });
-        }
+        // Note whether any files have an analysis step
+        var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+        stepExists = stepExists || !!fileAnalysisStep;
 
-        // Note whether any files have analysis steps.
-        stepExists = stepExists || !!file.analysis_step;
+        // Save the pipeline array used for each step used by the file.
+        if (fileAnalysisStep) {
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+        }
 
         // Build a list of all files in the graph, including contributed files, for convenience
         allFiles[file['@id']] = file;
@@ -859,11 +858,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
-            if (file.analysis_step) {
+            var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (fileAnalysisStep) {
                 // Make an ID and label for the step
-                stepId = 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
-                label = file.analysis_step.analysis_step_types;
-                pipelineInfo = allPipelines[file.analysis_step['@id']];
+                stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
+                label = fileAnalysisStep.analysis_step_types;
+                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
                 error = false;
             } else if (derivedFileIds(file)) {
                 // File derives from others, but no analysis step; make dummy step
@@ -885,8 +885,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         shape: 'rect',
                         cornerRadius: 4,
                         parentNode: replicateNode,
-                        ref: file.analysis_step,
-                        pipeline: pipelineInfo,
+                        ref: fileAnalysisStep,
+                        pipelines: pipelineInfo,
                         fileId: file['@id']
                     });
                 }
@@ -959,7 +959,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     // Handle a click in a graph node
     handleNodeClick: function(nodeId) {
-        console.log(nodeId);
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
@@ -1064,11 +1063,11 @@ var FileDetailView = function(node) {
                     </div>
                 : null}
 
-                {selectedFile.step_run ?
+                {selectedFile.analysis_step_version ?
                     <div>
                         <dt>Software</dt>
                         <dd>
-                            {selectedFile.analysis_step.software_versions.map(function(version, i) {
+                            {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
                                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                 return (
                                     <a href={version.software['@id']} key={i} className="software-version">

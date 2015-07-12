@@ -26,6 +26,7 @@ class Pipeline(Item):
         'documents.submitted_by',
         'analysis_steps',
         'analysis_steps.documents',
+        'analysis_steps.pipelines',
         'analysis_steps.current_version.software_versions',
         'analysis_steps.current_version.software_versions.software',
         'analysis_steps.current_version.software_versions.software.references',
