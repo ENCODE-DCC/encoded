@@ -878,6 +878,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
+        "genome_annotation": "M4",
         "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG"],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
@@ -897,6 +898,8 @@
         "file_size": 370148294,
         "output_type": "methylation state at CpG",
         "lab": "/labs/richard-myers/",
+        "assembly": "hg19",
+        "genome_annotation": "M4",
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
@@ -916,6 +919,8 @@
         "alternate_accessions": [],
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
+        "assembly": "GRCh38",
+        "genome_annotation": "M4",
         "output_type": "methylation state at CHH",
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
@@ -937,7 +942,9 @@
         "output_type": "methylation state at CHG",
         "aliases": [],
         "derived_from": ["ENCFF434GXF"],
-         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
+        "assembly": "GRCh38",
+        "genome_annotation": "M4",
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
         "accession": "ENCFF000VWO",
