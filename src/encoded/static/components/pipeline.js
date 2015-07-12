@@ -301,6 +301,22 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                         </div>
                     : null}
 
+                    {node && node.metadata.pipelines && node.metadata.pipelines.length ?
+                        <div data-test="pipeline">
+                            <dt>Pipeline</dt>
+                            <dd>
+                                {node.metadata.pipelines.map(function(pipeline, i) {
+                                    return (
+                                        <span key={i}>
+                                            {i > 0 ? <span>{','}<br /></span> : null}
+                                            <a href={pipeline['@id']}>{pipeline.title}</a>
+                                        </span>
+                                    );
+                                })}
+                            </dd>
+                        </div>
+                    : null}
+
                     {step.qa_stats_generated && step.qa_stats_generated.length ?
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
