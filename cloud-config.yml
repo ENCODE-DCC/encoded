@@ -145,8 +145,8 @@ runcmd:
 - if test "%(ROLE)s" = "demo"
 - then
 #TEMP for inital tests --uses development.ini
-#-   sudo -u clincoded bin/batchupgrade production.ini --app-name app
--   sudo -u clincoded bin/batchupgrade development.ini --app-name app
+-   sudo -u clincoded bin/batchupgrade production.ini --app-name app
+#-   sudo -u clincoded bin/batchupgrade development.ini --app-name app
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
