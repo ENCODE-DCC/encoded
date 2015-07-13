@@ -1,9 +1,17 @@
 'use strict';
 var React = require('react');
+var _ = require('underscore');
+var modal = require('../libs/bootstrap/modal');
 var panel = require('../libs/bootstrap/panel');
+var form = require('../libs/bootstrap/form');
 var globals = require('./globals');
 
 var Panel = panel.Panel;
+var Modal = modal.Modal;
+var ModalMixin = modal.ModalMixin;
+var Form = form.Form;
+var FormMixin = form.FormMixin;
+var Input = form.Input;
 
 
 var CuratorPage = module.exports.CuratorPage = React.createClass({
@@ -24,7 +32,9 @@ globals.content_views.register(CuratorPage, 'curator_page');
 // Curation data header for Gene:Disease
 var CurationData = module.exports.CurationData = React.createClass({
     propTypes: {
-        gdm: React.PropTypes.object // GDM data to display
+        gdm: React.PropTypes.object, // GDM data to display
+        omimId: React.PropTypes.string, // OMIM ID to display
+        updateOmimId: React.PropTypes.func // Function to call when OMIM ID changes
     },
 
     render: function() {
@@ -46,7 +56,8 @@ var CurationData = module.exports.CurationData = React.createClass({
                     <div className="container curation-data">
                         <div className="row equal-height">
                             <GeneCurationData gene={gene} />
-                            <DiseaseCurationData disease={disease} />
+                            <DiseaseCurationData gdm={this.props.gdm} omimId={this.props.omimId} updateOmimId={this.props.updateOmimId} />
+                            <CuratorCurationData gdm={this.props.gdm} />
                         </div>
                     </div>
                 </div>
@@ -126,7 +137,7 @@ var GeneCurationData = React.createClass({
         var gene = this.props.gene;
 
         return (
-            <div className="col-xs-12 col-sm-3 gutter-exc">
+            <div className="col-xs-12 col-sm-4 gutter-exc">
                 <div className="curation-data-gene">
                     {gene ?
                         <dl>
@@ -144,20 +155,130 @@ var GeneCurationData = React.createClass({
 
 // Display the disease section of the curation data
 var DiseaseCurationData = React.createClass({
+    mixins: [ModalMixin],
+
     propTypes: {
-        disease: React.PropTypes.object // Object to display
+        gdm: React.PropTypes.object, // Object to display
+        omimId: React.PropTypes.string, // OMIM ID to display
+        updateOmimId: React.PropTypes.func // Function to call when OMIM ID changes
     },
 
     render: function() {
-        var disease = this.props.disease;
+        var gdm = this.props.gdm;
+        var disease = gdm.disease;
 
         return (
-            <div className="col-xs-12 col-sm-9 gutter-exc">
+            <div className="col-xs-12 col-sm-4 gutter-exc">
                 <div className="curation-data-disease">
                     {disease ?
                         <dl>
                             <dt>{disease.term}</dt>
                             <dd>Orphanet ID: <a href={disease.url} target="_blank">{disease.orphaNumber}</a></dd>
+                            <dd>
+                                OMIM ID: {this.props.omimId ? <span>{this.props.omimId}</span> : 'not set'}&nbsp;
+                                <Modal title="Add/Change OMIM ID">
+                                    <a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">Edit OMIM ID</a>
+                                </Modal>
+                            </dd>
+                        </dl>
+                    : null}
+                </div>
+            </div>
+        );
+    }
+});
+
+
+// The content of the Add PMID(s) modal dialog box
+var AddOmimIdModal = React.createClass({
+    mixins: [FormMixin],
+
+    propTypes: {
+        closeModal: React.PropTypes.func, // Function to call to close the modal
+        updateOmimId: React.PropTypes.func // Function to call when we have a new OMIM ID
+    },
+
+    // Form content validation
+    validateForm: function() {
+        // Check if required fields have values
+        var valid = this.validateRequired();
+
+        // Valid if the field has only 10 or fewer digits 
+        if (valid) {
+            valid = this.getFormValue('omimid').match(/^[0-9]{1,10}$/i);
+            if (!valid) {
+                this.setFormErrors('omimid', 'Only numbers allowed');
+            }
+        }
+        return valid;
+    },
+
+    // Called when the modal form’s submit button is clicked. Handles validation and triggering
+    // the process to add an article.
+    submitForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.setFormValue('omimid', this.refs.omimid.getValue());
+        if (this.validateForm()) {
+            // Form is valid -- we have a good PMID. Fetch the article with that PMID
+            this.props.closeModal();
+            var enteredOmimId = this.getFormValue('omimid');
+                this.props.updateOmimId(enteredOmimId);
+        }
+    },
+
+    // Called when the modal form's cancel button is clicked. Just closes the modal like
+    // nothing happened.
+    cancelForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.props.closeModal();
+    },
+
+    render: function() {
+        return (
+            <Form submitHandler={this.submitForm} formClassName="form-std">
+                <div className="modal-body">
+                    <Input type="text" ref="omimid" label="Enter an OMIM ID"
+                        error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim')}
+                        labelClassName="control-label" groupClassName="form-group" required />
+                </div>
+                <div className='modal-footer'>
+                    <Input type="cancel" inputClassName="btn-default btn-inline-spacer" cancelHandler={this.cancelForm} />
+                    <Input type="submit" inputClassName="btn-primary btn-inline-spacer" title="Add/Change OMIM ID" />
+                </div>
+            </Form>
+        );
+    }
+});
+
+
+// Display the curator data of the curation data
+var CuratorCurationData = React.createClass({
+    propTypes: {
+        gdm: React.PropTypes.object // GDM with curator data to display
+    },
+
+    render: function() {
+        var gdm = this.props.gdm;
+        var annotationOwners = _.uniq(gdm.annotations.map(function(annotation) {
+            return annotation.owner;
+        })).sort();
+
+        return (
+            <div className="col-xs-12 col-sm-4 gutter-exc">
+                <div className="curation-data-curator">
+                    {gdm ?
+                        <dl>
+                            <dt>{gdm.status} – {gdm.owner}</dt>
+                            <dd>
+                                {annotationOwners.map(function(owner, i) {
+                                    return (
+                                        <span key={i}>
+                                            {i > 0 ? ', ' : ''}
+                                            {owner}
+                                        </span>
+                                    );
+                                })}
+                            </dd>
                         </dl>
                     : null}
                 </div>

@@ -27,6 +27,7 @@ var CurationCentral = React.createClass({
     getInitialState: function() {
         return {
             currPmid: '',
+            currOmimId: '',
             currGdm: {}
         };
     },
@@ -40,7 +41,7 @@ var CurationCentral = React.createClass({
     getGdm: function(uuid) {
         this.getRestData('/gdm/' + uuid).then(gdm => {
             // The GDM object successfully retrieved; set the Curator Central component
-            this.setState({currGdm: gdm});
+            this.setState({currGdm: gdm, currOmimId: gdm.omimId});
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
@@ -91,12 +92,28 @@ var CurationCentral = React.createClass({
             delete gdmObj['@id'];
             delete gdmObj['@type'];
 
-            // The GDM object is in 'data'. Add our new annotation reference to the array of annotations in the GDM.
+            // Add our new annotation reference to the array of annotations in the GDM.
             gdmObj.annotations.push('/evidence/' + newAnnotation.uuid + '/');
             return this.putRestData('/gdm/' + this.state.currGdm.uuid, gdmObj);
         }).then(data => {
             // Retrieve the updated GDM and set it as the new state GDM to force a rerendering.
             this.getGdm(data['@graph'][0].uuid);
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
+    },
+
+    updateOmimId: function(omimId) {
+        this.getRestData(
+            '/gdm/' + this.state.currGdm.uuid + '/?frame=object'
+        ).then(gdmObj => {
+            // We'll get 422 (Unprocessible entity) if we PUT any of these fields:
+            delete gdmObj.uuid;
+            delete gdmObj['@id'];
+            delete gdmObj['@type'];
+
+            gdmObj.omimId = omimId;
+            return this.putRestData('/gdm/' + this.state.currGdm.uuid, gdmObj);
+        }).then(data => {
+            this.setState({currOmimId: omimId});
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
@@ -114,7 +131,7 @@ var CurationCentral = React.createClass({
 
         return (
             <div>
-                <CurationData gdm={gdm} />
+                <CurationData gdm={gdm} omimId={this.state.currOmimId} updateOmimId={this.updateOmimId} />
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">

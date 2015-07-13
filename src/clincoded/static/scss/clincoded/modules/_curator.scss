@@ -47,12 +47,14 @@
     }
 }
 
-.curation-data-gene {
+.curation-data-gene,
+.curation-data-disease {
     margin-bottom: 2px;
 }
 
 .curation-data-disease,
-.curation-data-gene {
+.curation-data-gene,
+.curation-data-curator {
     padding: 10px;
     background-color: $color-neutral-bg;
 
