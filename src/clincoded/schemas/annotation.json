@@ -40,7 +40,8 @@
             "items": {
                 "title": "Group ID",
                 "description": "Group id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "group"
             }
         },
         "families": {
@@ -51,7 +52,8 @@
             "items": {
                 "title": "Family ID",
                 "description": "Family id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "family"
             }
         },
         "individuals": {
@@ -62,7 +64,8 @@
             "items": {
                 "title": "Individual ID",
                 "description": "Individual id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "individual"
             }
         },
         "functionalData": {

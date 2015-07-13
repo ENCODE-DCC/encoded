@@ -1,0 +1,93 @@
+{
+    "title": "ControlGroup",
+    "id": "/profiles/controlGroup.json",
+    "description": "Schema for storing control group data",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["label"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "label": {
+            "title": "Label",
+            "description": "An user entered label for the control group",
+            "type": "string"
+        },
+        "commonDiagnosis": {
+            "title": "Common Diagnosis",
+            "description": "OrphaNumber of common diagnosis for the group",
+            "type": "string",
+            "default": "",
+            "linkTo": "orphaPhenotype"
+        },
+        "numberOfMale": {
+            "title": "Number of Male",
+            "description": "Count of Male in the group",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfFemale": {
+            "title": "Number of Female",
+            "description": "Count of female in the group",
+            "type": "string",
+            "default": ""
+        },
+        "method": {
+            "title": "Method",
+            "description": "Mothed id",
+            "type": "string",
+            "default": "",
+            "linkTo": "method"
+        },
+        "numberOfControls": {
+            "title": "Number of Controls",
+            "description": "Number of controls",
+            "type": "string",
+            "default": "0"
+        },
+        "numberOfControlAlleles": {
+            "title": "Number of Control Alleles",
+            "description": "Number of control alleles",
+            "type": "string",
+            "default": "0"
+        },
+        "numberOfControlAllelesWithVariant": {
+            "title": "Number of Control Allele with Variant",
+            "description": "Number of control allele with variant",
+            "type": "string",
+            "default": ""
+        },
+        "dateTime": {
+            "title": "Date and Time",
+            "description": "Time stamp of the group creation",
+            "type": "string",
+            "default": ""
+        }
+    },
+    "columns": {
+        "uuid": {
+            "title": "Control",
+            "type": "string"
+        },
+        "label": {
+            "title": "Label",
+            "type": "string"
+        },
+        "numberOfControls": {
+            "title": "# Controls",
+            "type": "string"
+        },
+        "numberOfControlAlleles": {
+            "title": "# Alleles",
+            "type": "string"
+        }
+    }
+}

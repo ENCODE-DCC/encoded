@@ -1,0 +1,16 @@
+[
+    {
+        "analysisType": "type1",
+        "description": "some thing about type1",
+        "oddsRatio": "5:4",
+        "pvalue": "0.175",
+        "uuid": "2fcb3073-1ebc-11e5-b386-60f81dc5b05a"
+    },
+    {
+        "analysisType": "type2",
+        "description": "some thing about type2",
+        "oddsRatio": "100:150",
+        "pvalue": "0.333",
+        "uuid": "ca6f290f-2765-11e5-ba44-60f81dc5b05a"
+    }
+]

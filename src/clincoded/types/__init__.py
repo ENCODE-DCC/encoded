@@ -54,6 +54,22 @@ class Article(Item):
     name_key = 'pmid'
 
 @collection(
+    name='controlgroups',
+    unique_key='controlGroup:uuid',
+    properties={
+        'title': 'Control Groups',
+        'description': 'List of control groups in all gdm pairs',
+    })
+class ControlGroup(Item):
+    item_type = 'controlGroup'
+    schema = load_schema('clincoded:schemas/controlGroup.json')
+    name_key = 'uuid'
+    embedded = [
+        'commonDiagnosis',
+        'method',
+    ]
+
+@collection(
     name='gdm',
     unique_key='gdm:uuid',
     properties={
@@ -68,7 +84,33 @@ class Gdm(Item):
         'gene',
         'disease',
         'annotations',
-        'annotations.article'
+        'annotations.article',
+        'annotations.groups',
+        'annotations.groups.commonDiagnosis',
+        'annotations.groups.otherGenes',
+        'annotations.groups.method',
+        'annotations.groups.statistic',
+        'annotations.groups.familyIncluded',
+        'annotations.groups.familyIncluded.commonDiagnosis',
+        'annotations.groups.familyIncluded.method',
+        'annotations.groups.familyIncluded.individualIncluded',
+        'annotations.groups.familyIncluded.individualIncluded.diagnosis',
+        'annotations.groups.familyIncluded.individualIncluded.method',
+        'annotations.groups.individualIncluded',
+        'annotations.groups.individualIncluded.diagnosis',
+        'annotations.groups.individualIncluded.method',
+        'annotations.groups.control',
+        'annotations.groups.control.commonDiagnosis',
+        'annotations.groups.control.method',
+        'annotations.families',
+        'annotations.families.commonDiagnosis',
+        'annotations.families.method',
+        'annotations.families.individualIncluded',
+        'annotations.families.individualIncluded.diagnosis',
+        'annotations.families.individualIncluded.method',
+        'annotations.individuals',
+        'annotations.individuals.diagnosis',
+        'annotations.individuals.method',
     ]
 
 @collection(
@@ -83,8 +125,122 @@ class Annotation(Item):
     schema = load_schema('clincoded:schemas/annotation.json')
     name_key = 'uuid'
     embedded = [
-        'article'
+        'article',
+        'groups',
+        'groups.commonDiagnosis',
+        'groups.otherGenes',
+        'groups.method',
+        'groups.statistic',
+        'groups.familyIncluded.commonDiagnosis',
+        'groups.familyIncluded.method',
+        'groups.familyIncluded.individualIncluded',
+        'groups.familyIncluded.individualIncluded.diagnosis',
+        'groups.familyIncluded.individualIncluded.method',
+        'groups.individualIncluded',
+        'groups.individualIncluded.diagnosis',
+        'groups.individualIncluded.method',
+        'groups.control',
+        'groups.control.commonDiagnosis',
+        'groups.control.method',
+        'families',
+        'families.commonDiagnosis',
+        'families.method',
+        'families.individualIncluded',
+        'families.individualIncluded.diagnosis',
+        'families.individualIncluded.method',
+        'individuals',
+        'individuals.diagnosis',
+        'individuals.method',
     ]
+
+@collection(
+    name='groups',
+    unique_key='group:uuid',
+    properties={
+        'title': 'Groups',
+        'description': 'List of groups in all gdm pairs',
+    })
+class Group(Item):
+    item_type = 'group'
+    schema = load_schema('clincoded:schemas/group.json')
+    name_key = 'uuid'
+    embedded = [
+        'commonDiagnosis',
+        'otherGenes',
+        'method',
+        'statistic',
+        'familyIncluded',
+        'familyIncluded.commonDiagnosis',
+        'familyIncluded.method',
+        'familyIncluded.individualIncluded',
+        'familyIncluded.individualIncluded.diagnosis',
+        'familyIncluded.individualIncluded.method',
+        'individualIncluded',
+        'individualIncluded.diagnosis',
+        'individualIncluded.method',
+        'control',
+        'control.commonDiagnosis',
+        'control.method'
+    ]
+
+@collection(
+    name='families',
+    unique_key='family:uuid',
+    properties={
+        'title': 'Families',
+        'description': 'List of families in all gdm pairs',
+    })
+class Family(Item):
+    item_type = 'family'
+    schema = load_schema('clincoded:schemas/family.json')
+    name_key = 'uuid'
+    embedded = [
+        'commonDiagnosis',
+        'method',
+        'individualIncluded',
+        'individualIncluded.diagnosis',
+        'individualIncluded.method'
+    ]
+
+@collection(
+    name='individuals',
+    unique_key='individual:uuid',
+    properties={
+        'title': 'Individuals',
+        'description': 'List of individuals in gdm pair',
+    })
+class Individual(Item):
+    item_type = 'individual'
+    schema = load_schema('clincoded:schemas/individual.json')
+    name_key = 'uuid'
+    embedded = [
+        'diagnosis',
+        'method'
+    ]
+
+@collection(
+    name='methods',
+    unique_key='method:uuid',
+    properties={
+        'title': 'Methods',
+        'description': 'List of methods in all groups, families and individuals',
+    })
+class Method(Item):
+    item_type = 'method'
+    schema = load_schema('clincoded:schemas/method.json')
+    name_key = 'uuid'
+
+@collection(
+    name='statistics',
+    unique_key='statistic:uuid',
+    properties={
+        'title': 'Statistical Study',
+        'description': 'List of statistical studies in all gdm pairs',
+    })
+class Statistic(Item):
+    item_type = 'statistic'
+    schema = load_schema('clincoded:schemas/statistic.json')
+    name_key = 'uuid'
 ### end of new collections for curation data
 
 

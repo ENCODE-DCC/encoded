@@ -4,31 +4,41 @@
         "article": "7913883",
         "dateTime": "Tue Feb 24 2015 12:52:27 GMT-0800 (PST)",
         "groups":[
-            "1",
-            "2"
+            "eab0dd0a-1d05-11e5-8d2d-60f81dc5b05a",
+            "edea98e3-25cc-11e5-9019-60f81dc5b05a"
         ],
-        "uuid": "bb3432ca-1788-11e5-aefb-60f81dc5b05a",
-        "active": true
+        "families": [
+            "25c6a663-18fa-11e5-8554-60f81dc5b05a"
+        ],
+        "individuals": [
+            "8395c173-1910-11e5-8c7c-60f81dc5b05a"
+        ],
+        "active": true,
+        "uuid": "bb3432ca-1788-11e5-aefb-60f81dc5b05a"
     },
     {
         "owner": "tsneddon@stanford.edu",
         "article": "8078586",
         "dateTime": "Tue Feb 24 2015 12:54:07 GMT-0800 (PST)",
-        "uuid": "4172f4ab-189e-11e5-a10f-60f81dc5b05a",
-        "active": true
+        "families": [
+            "a20e9182-18fa-11e5-96d1-60f81dc5b05a",
+            "ab9a37ba-18fa-11e5-bad8-60f81dc5b05a"
+        ],
+        "active": true,
+        "uuid": "4172f4ab-189e-11e5-a10f-60f81dc5b05a"
     },
     {
         "owner": "tsneddon@stanford.edu",
         "article": "7847369",
         "dateTime": "Tue Feb 24 2015 12:55:04 GMT-0800 (PST)",
-        "uuid": "5cd72a73-189e-11e5-9db5-60f81dc5b05a",
-        "active": true
+        "active": true,
+        "uuid": "5cd72a73-189e-11e5-9db5-60f81dc5b05a"
     },
     {
         "owner": "tsneddon@stanford.edu",
         "article": "9001669",
         "dateTime": "Tue Feb 24 2015 12:56:10 GMT-0800 (PST)",
-        "uuid": "75ed0680-189e-11e5-9cf0-60f81dc5b05a",
-        "active": true
+        "active": true,
+        "uuid": "75ed0680-189e-11e5-9cf0-60f81dc5b05a"
     }
 ]

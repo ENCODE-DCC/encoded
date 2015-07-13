@@ -1,0 +1,54 @@
+[
+    {
+        "uuid": "359612a3-18fb-11e5-be10-60f81dc5b05a",
+        "label": "Individual AAA",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
+        "variants": [
+            "c71fc085-2683-11e5-b9fe-60f81dc5b05a",
+            "3b3af7f0-2685-11e5-bc56-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "6f762e73-1910-11e5-998f-60f81dc5b05a",
+        "label": "Individual BBB",
+        "diagnosis": "15",
+        "sex": "Female",
+        "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
+        "variants": [
+            "35eedfdc-2685-11e5-b6a0-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "7997f687-1910-11e5-a066-60f81dc5b05a",
+        "label": "Individual CCC",
+        "diagnosis": "15",
+        "sex": "Female",
+        "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a"
+    },
+    {
+        "uuid": "8395c173-1910-11e5-8c7c-60f81dc5b05a",
+        "label": "Individual DDD",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "3c4eb8f0-1912-11e5-90c7-60f81dc5b05a",
+        "variants": [
+            "e9f9a6d7-2685-11e5-8e9c-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "8e204451-1910-11e5-a206-60f81dc5b05a",
+        "label": "Individual EEE",
+        "diagnosis": "15",
+        "sex": "Male",
+        "method": "3c4eb8f0-1912-11e5-90c7-60f81dc5b05a"
+    },
+    {
+        "uuid": "95df0123-1910-11e5-bf07-60f81dc5b05a",
+        "label": "Individual FFF",
+        "diagnosis": "15",
+        "sex": "Female",
+        "method": "3c4eb8f0-1912-11e5-90c7-60f81dc5b05a"
+    }
+]
