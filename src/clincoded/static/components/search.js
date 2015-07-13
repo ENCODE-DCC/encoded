@@ -591,36 +591,17 @@ var AuditMixin = audit.AuditMixin;
                     return false;
                 }
             });
-            var moreTerms = terms.slice(5);
             var TermComponent = field === 'type' ? TypeTerm : Term;
-            var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
-            var moreTermSelected = selectedTermCount > 0;
-            var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-            var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-            var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+            var selectedTermCount = countSelectedTerms(terms, field, filters);
             return (
                 <div className="facet" hidden={terms.length === 0}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
-                            {terms.slice(0, 5).map(function (term) {
-                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                            {terms.map(function (term) {
+                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} />;
                             }.bind(this))}
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {moreTerms.map(function (term) {
-                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                                }.bind(this))}
-                            </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <label className="pull-right">
-                                    <small>
-                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                    </small>
-                            </label>
-                        : null}
                     </ul>
                 </div>
             );
