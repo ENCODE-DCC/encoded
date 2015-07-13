@@ -122,7 +122,7 @@ def login(request):
 def logout(request):
     """View to forget the user"""
     request.session.get_csrf_token()
-    request.session['user_properties'] = {}
+    request.session.invalidate()
     request.response.headerlist.extend(forget(request))
     if asbool(request.params.get('redirect', True)):
         raise HTTPFound(location=request.resource_path(request.root))
