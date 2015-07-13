@@ -18,7 +18,7 @@ var PmidDoiButtons = curator.PmidDoiButtons;
 var CurationData = curator.CurationData;
 var CurationPalette = curator.CurationPalette;
 var PmidSummary = curator.PmidSummary;
-
+var external_url_map = globals.external_url_map;
 
 // Curator page content
 var CurationCentral = React.createClass({
@@ -201,7 +201,7 @@ var PmidSelectionList = React.createClass({
                                     <div className="pmid-selection-list-specs">
                                         <PmidSummary article={annotation.article} />
                                     </div>
-                                    <div className="pmid-selection-list-pmid"><a href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + annotation.article.pmid} target="_blank">PMID: {annotation.article.pmid}</a></div>
+                                    <div className="pmid-selection-list-pmid"><a href={external_url_map['PubMed'] + annotation.article.pmid} target="_blank">PMID: {annotation.article.pmid}</a></div>
                                 </div>
                             );
                         })}
@@ -254,7 +254,7 @@ var AddPmidModal = React.createClass({
                 return Promise.resolve(article);
             }, e => {
                 // PubMed article not in our DB; go out to PubMed itself to retrieve it as XML
-                return this.getRestDataXml('http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&retmode=xml&id=' + enteredPmid).then(data => {
+                return this.getRestDataXml(external_url_map['PubMedSearch'] + enteredPmid).then(data => {
                     // Retrieved article data from PubMed; convert it to our DB article object format
                     var newArticle = {};
                     var medline = data.PubmedArticleSet.PubmedArticle[0].MedlineCitation[0];

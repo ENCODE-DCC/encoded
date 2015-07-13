@@ -60,7 +60,7 @@ var CreateGeneDisease = React.createClass({
         if (valid) {
             valid = this.getFormValue('orphanetid').match(/^ORPHA[0-9]{1,6}$/i);
             if (!valid) {
-                this.setFormErrors('orphanetid', 'Use the form ORPHAxxxx');
+                this.setFormErrors('orphanetid', 'Use Orphanet IDs (e.g. ORPHA15)');
             }
         }
         return valid;
@@ -159,6 +159,6 @@ var LabelHgncGene = React.createClass({
 
 var LabelOrphanetId = React.createClass({
     render: function() {
-        return <span>Enter <a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet ID</a></span>;
+        return <span>Enter <a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet</a> ID</span>;
     }
 });

@@ -115,6 +115,16 @@ module.exports.dbxref_prefix_map = {
     "doi": "http://dx.doi.org/doi:"
 };
 
+module.exports.external_url_map = {
+    'PubMedSearch': 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&retmode=xml&id=',
+    'PubMed': 'https://www.ncbi.nlm.nih.gov/pubmed/',
+    'OrphaNet': 'http://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=EN&Expert=',
+    'HGNC': 'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=',
+    'Entrez': 'http://www.ncbi.nlm.nih.gov/gene/',
+    'OMIM': 'http://omim.org/'
+};
+
+
 var country_codes = module.exports.country_codes = [
     {code: "AF", name: "Afghanistan"},
     {code: "AX", name: "Åland Islands"},

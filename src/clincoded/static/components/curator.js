@@ -12,6 +12,7 @@ var ModalMixin = modal.ModalMixin;
 var Form = form.Form;
 var FormMixin = form.FormMixin;
 var Input = form.Input;
+var external_url_map = globals.external_url_map;
 
 
 var CuratorPage = module.exports.CuratorPage = React.createClass({
@@ -142,8 +143,8 @@ var GeneCurationData = React.createClass({
                     {gene ?
                         <dl>
                             <dt>{gene.symbol}</dt>
-                            <dd><a href={gene.hgncurl} target="_blank">{gene.hgncId}</a></dd>
-                            <dd>EntrezID:<a href={gene.entrezurl} target="_blank">{gene.entrezId}</a></dd>
+                            <dd><a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.hgncId + ' in a new window'}>{gene.hgncId}</a></dd>
+                            <dd>EntrezID:<a href={external_url_map['Entrez'] + gene.entrezId} target="_blank" title={'NCBI page for gene ' + gene.entrezId + ' in a new window'}>{gene.entrezId}</a></dd>
                         </dl>
                     : null}
                 </div>
@@ -173,11 +174,15 @@ var DiseaseCurationData = React.createClass({
                     {disease ?
                         <dl>
                             <dt>{disease.term}</dt>
-                            <dd>Orphanet ID: <a href={disease.url} target="_blank">{disease.orphaNumber}</a></dd>
+                            <dd><a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new window">Orphanet</a> ID: <a href={external_url_map['OrphaNet'] + disease.orphaNumber} target="_blank" title={'Orphanet page for ORPHA' + disease.orphaNumber + ' in a new window'}>{disease.orphaNumber}</a></dd>
                             <dd>
-                                OMIM ID: {this.props.omimId ? <span>{this.props.omimId}</span> : 'not set'}&nbsp;
+                                <a href="http://omim.org/" target="_blank" title="Online Mendelian Inheritance in Man home page in a new window">OMIM</a> ID: {this.props.omimId ?
+                                    <a href={external_url_map['OMIM'] + this.props.omimId} title={'Open Online Mendelian Inheritance in Man page for OMIM ID ' + this.props.omimId + ' in a new window'} target="_blank">
+                                        {this.props.omimId}
+                                    </a>
+                                : 'not set'}&nbsp;
                                 <Modal title="Add/Change OMIM ID">
-                                    <a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">Edit OMIM ID</a>
+                                    <a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">Edit OMIM phenotype ID</a>
                                 </Modal>
                             </dd>
                         </dl>
@@ -300,7 +305,7 @@ var PmidDoiButtons = module.exports.PmidDoiButtons = React.createClass({
 
         return (
             <div className="pmid-doi-btns">
-                {pmid ? <a className="btn btn-primary" target="_blank" href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + pmid}>PubMed</a> : null}
+                {pmid ? <a className="btn btn-primary" target="_blank" href={external_url_map['PubMed'] + pmid}>PubMed</a> : null}
             </div>
         );
     }
