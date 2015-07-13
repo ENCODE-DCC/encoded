@@ -145,13 +145,14 @@
     padding: 10px;
     border-top: 1px solid #e0e0e0;
     cursor: pointer;
+    background-color: #f0f0f0;
 
     &:hover {
         background-color: $color-hover;
     }
 
     &.curr-pmid {
-        background-color: $color-selected;
+        background-color: #fff;
     }
 }
 

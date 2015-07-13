@@ -61,17 +61,20 @@ var CurationData = module.exports.CurationData = React.createClass({
 // Displays the PM item summary, with authors, title, citation
 var PmidSummary = module.exports.PmidSummary = React.createClass({
     propTypes: {
-        article: React.PropTypes.object
+        article: React.PropTypes.object, // Article object to display
+        displayJournal: React.PropTypes.bool // T to display article journal
     },
 
     render: function() {
         var article = this.props.article;
+        var date = (/^([\d]{4})(.*?)$/).exec(article.date);
 
         return (
             <p>
                 {article.firstAuthor + '. '}
-                {article.title + '. '}
-                {article.date}
+                {article.title + ' '}
+                {this.props.displayJournal ? <i>{article.journal + '. '}</i> : null}
+                <strong>{date[1]}</strong>{date[2]}
             </p>
         );
     }

@@ -124,7 +124,7 @@ var CurationCentral = React.createClass({
                         <div className="col-md-6">
                             {currArticle ?
                                 <div className="curr-pmid-overview">
-                                    <PmidSummary article={currArticle} />
+                                    <PmidSummary article={currArticle} displayJournal />
                                     <PmidDoiButtons pmid={currArticle.pmid} />
                                     <div className="pmid-overview-abstract">
                                         <h4>Abstract</h4>
@@ -160,7 +160,10 @@ var PmidSelectionList = React.createClass({
     },
 
     render: function() {
-        var annotations = this.props.annotations;
+        var annotations = _(this.props.annotations).sortBy(function(annotation) {
+            // Sort list of articles by author
+            return annotation.article.firstAuthor;
+        });
 
         return (
             <div>
@@ -235,6 +238,7 @@ var AddPmidModal = React.createClass({
             }, e => {
                 // PubMed article not in our DB; go out to PubMed itself to retrieve it as XML
                 return this.getRestDataXml('http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=PubMed&retmode=xml&id=' + enteredPmid).then(data => {
+                    // Retrieved article data from PubMed; convert it to our DB article object format
                     var newArticle = {};
                     var medline = data.PubmedArticleSet.PubmedArticle[0].MedlineCitation[0];
                     var article = medline.Article[0];
@@ -242,15 +246,21 @@ var AddPmidModal = React.createClass({
                     newArticle.title = article.ArticleTitle[0];
                     var journal = article.Journal[0];
                     var journalIssue = journal.JournalIssue[0];
-                    var pubDate = journalIssue.PubDate[0];
+                    var pubDateObj = journalIssue.PubDate[0];
+                    var pubDate;
+                    if (pubDateObj.MedlineDate) {
+                        pubDate = pubDateObj.MedlineDate[0];
+                    } else if (pubDateObj.Year || pubDateObj.Month) {
+                        pubDate = pubDateObj.Year[0] + (pubDateObj.Month ? ' ' + pubDateObj.Month[0] : '');
+                    }
                     newArticle.journal = journal.Title[0];
-                    newArticle.date = pubDate.Year[0] + ' ' + pubDate.Month[0] + ';' + journalIssue.Volume[0] + '(' + journalIssue.Issue[0] + '):' + article.Pagination[0].MedlinePgn[0];
+                    newArticle.date = (pubDate ? pubDate + ';' : '') + journalIssue.Volume[0] + '(' + journalIssue.Issue[0] + '):' + article.Pagination[0].MedlinePgn[0];
                     var author = article.AuthorList[0].Author[0];
                     newArticle.firstAuthor = author.LastName[0] + ' ' + author.Initials[0];
                     newArticle.abstract = article.Abstract[0].AbstractText[0];
                     return this.postRestData('/articles/', newArticle).then(data => {
                         return Promise.resolve(data['@graph'][0]);
-                    })
+                    });
                 });
             }).then(article => {
                 console.log(article);
