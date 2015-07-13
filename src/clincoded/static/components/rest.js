@@ -39,7 +39,7 @@ var RestMixin = module.exports.RestMixin = {
             headers: {'Accept': 'application/xml'}
         }).then(response => {
             // Success response, but might not necessarily be a success; check 'ok' before use
-            if (!response.ok) { if (errorHandler) { errorHandler() }; throw response; }
+            if (!response.ok) { if (errorHandler) { errorHandler(); } throw response; }
 
             // Actual success. Get the response's JSON as a promise.
             return response.text();
@@ -60,7 +60,7 @@ var RestMixin = module.exports.RestMixin = {
             headers: {'Accept': 'application/json'}
         }).then(response => {
             // Success response, but might not necessarily be a success; check 'ok' before use
-            if (!response.ok) { if (errorHandler) { errorHandler() }; throw response; }
+            if (!response.ok) { if (errorHandler) { errorHandler(); } throw response; }
 
             // Actual success. Get the response's JSON as a promise.
             return response.json();

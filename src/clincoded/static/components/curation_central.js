@@ -263,7 +263,6 @@ var AddPmidModal = React.createClass({
                     });
                 });
             }).then(article => {
-                console.log(article);
                 this.props.closeModal();
                 this.props.updateGdmArticles(article);
             }).catch(function(e) {
