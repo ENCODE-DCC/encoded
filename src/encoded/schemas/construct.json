@@ -19,11 +19,20 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
-        "tags": {
-            "required": ["tags"],
-            "properties": {
-                "construct_type": {"enum": ["fusion protein"]}
-            }
+        "construct_type": {
+            "oneOf": [
+                {
+                    "required": ["tags"],
+                    "properties": {
+                        "construct_type": {"enum": ["fusion protein"]}
+                    }
+                },
+                {
+                    "properties": {
+                        "construct_type": {"enum": ["zinc-finger knockout", "TALEN"]}
+                    }
+                }
+            ]
         }
     },
     "properties": {
