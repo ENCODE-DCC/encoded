@@ -1,11 +1,13 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var form = require('../libs/bootstrap/form');
 var panel = require('../libs/bootstrap/panel');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var RestMixin = require('./rest').RestMixin;
 
 var Form = form.Form;
 var FormMixin = form.FormMixin;
@@ -36,7 +38,7 @@ var hpoValues = [
 
 
 var CreateGeneDisease = React.createClass({
-    mixins: [FormMixin],
+    mixins: [FormMixin, RestMixin],
 
     contextTypes: {
         fetch: React.PropTypes.func,
@@ -59,7 +61,7 @@ var CreateGeneDisease = React.createClass({
         if (valid) {
             valid = this.getFormValue('orphanetid').match(/^ORPHA[0-9]{1,6}$/i);
             if (!valid) {
-                this.setFormErrors('orphanetid', 'Use the form ORPHAxxxx');
+                this.setFormErrors('orphanetid', 'Use Orphanet IDs (e.g. ORPHA15)');
             }
         }
         return valid;
@@ -74,79 +76,45 @@ var CreateGeneDisease = React.createClass({
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
         this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
+            // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
             var geneId = this.getFormValue('hgncgene');
 
-            // Verify user-entered orphanet ID and HGNC gene exist in DB. Start by doing JSON
-            // requests for both and getting back their promises.
-            var orphaRequest = this.context.fetch('/diseases/' + orphaId, {
-                headers: {'Accept': 'application/json'}
-            });
-            var geneRequest = this.context.fetch('/genes/' + geneId, {
-                headers: {'Accept': 'application/json'}
-            });
-
-            // Handle server responses for orphanet ID and HGNC gene ID through their promises.
-            var orphaJson = orphaRequest.then(response => {
-                // Received Orphanet ID response or error. If the response is fine, request
-                // the JSON in a promise.
-                if (!response.ok) { 
-                    this.setFormErrors('orphanetid', 'Orphanet ID not found');
-                    throw response;
-                }
-                return response.json();
-            });
-            var geneJson = geneRequest.then(response => {
-                // Received HGNC gene response or error. If the response is fine, request
-                // the JSON in a promise.
-                if (!response.ok) { 
-                    this.setFormErrors('hgncgene', 'HGNC gene symbol not found');
-                    throw response;
-                }
-                return response.json();
-            });
-
-            // Once both json() promises return, handle their data. If either errors, use the catch case.
-            Promise.all([orphaJson, geneJson])
-            .then(this.createGdm)
-            .catch(function(e) {
+            // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
+            // If either error out, set the form error fields
+            this.getRestDatas([
+                '/diseases/' + orphaId,
+                '/genes/' + geneId
+            ], [
+                function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
+                function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
+            ]).then(
+                // Create the GDM, called as a thennable method
+                this.createGdm
+            ).catch(function(e) {
                 parseAndLogError.bind(undefined, 'fetchedRequest');
             });
         }
     },
 
-    // Receive data from JSON request.
-    createGdm: function(data) {
+    // Create the GDM once its disease and gene data have been verified to exist.
+    createGdm: function() {
         // Put together the new GDM object with form data and other info
-        var value = {
-            gdmId: (Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000) + '',
+        var newGdm = {
             gene: this.getFormValue('hgncgene'),
             disease: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
             modeInheritance: this.getHpoText(this.getFormValue('hpo')),
             owner: this.props.session['auth.userid'],
             status: 'Creation',
-            dateTime: new Date().toISOString()
+            dateTime: moment().format()
         };
 
-        // Post the new data to the DB. fetch returns a JS promise.
-        var request = this.context.fetch('/gdm/', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(value)
-        });
-        request.then(response => {
-            // GDM DB object creation done. Throw error or get JSON from response
-            if (!response.ok) { throw response; }
-            return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(data => {
+        // Post the new GDM to the DB. Once promise returns, go to /curation-central page with the UUID
+        // of the new GDM in the query string.
+        this.postRestData('/gdm/', newGdm).then(data => {
             var uuid = data['@graph'][0].uuid;
-            this.context.navigate('/curation-central/' + '?gdm=' + uuid);
-        });
+            this.context.navigate('/curation-central/?gdm=' + uuid);
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
     render: function() {
@@ -154,7 +122,7 @@ var CreateGeneDisease = React.createClass({
             <div className="container">
                 <h1>{this.props.context.title}</h1>
                 <div className="col-md-8 col-md-offset-2 col-sm-9 col-sm-offset-1 form-create-gene-disease">
-                    <Panel>
+                    <Panel panelClassName="panel-create-gene-disease">
                         <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
                             <div className="row">
                                 <Input type="text" ref="hgncgene" label={<LabelHgncGene />}
@@ -170,7 +138,7 @@ var CreateGeneDisease = React.createClass({
                                         return <option key={i} value={v.value} disabled={v.disabled ? 'disabled' : ''}>{v.text}</option>;
                                     })}
                                 </Input>
-                                <Input type="submit" wrapperClassName="pull-right" id="submit" />
+                                <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
                             </div>
                         </Form>
                     </Panel>
@@ -192,6 +160,6 @@ var LabelHgncGene = React.createClass({
 
 var LabelOrphanetId = React.createClass({
     render: function() {
-        return <span>Enter <a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet ID</a></span>;
+        return <span>Enter <a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet</a> ID</span>;
     }
 });
