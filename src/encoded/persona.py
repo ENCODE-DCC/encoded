@@ -157,7 +157,6 @@ def session(request):
              permission='impersonate')
 def impersonate_user(request):
     """As an admin, impersonate a different user."""
-    request.session.get_csrf_token()
     userid = request.validated['userid']
     user = request.embed('/current-user', as_user=userid)
     if not user:
