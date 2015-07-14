@@ -8,6 +8,10 @@
         "variants": [
             "c71fc085-2683-11e5-b9fe-60f81dc5b05a",
             "3b3af7f0-2685-11e5-bc56-60f81dc5b05a"
+        ],
+        "assessments": [
+            "3ecaaf6b-2a4c-11e5-ab2d-60f81dc5b05a",
+            "4519985e-2a4c-11e5-96a0-60f81dc5b05a"
         ]
     },
     {
@@ -18,6 +22,9 @@
         "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
         "variants": [
             "35eedfdc-2685-11e5-b6a0-60f81dc5b05a"
+        ],
+        "assessments": [
+            "550d702b-2a4c-11e5-856d-60f81dc5b05a"
         ]
     },
     {

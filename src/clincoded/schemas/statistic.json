@@ -58,7 +58,8 @@
             "items": {
                 "title": "Assessment",
                 "description": "Assessment id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "variant"
             }
         },
         "assessments": {
@@ -69,7 +70,8 @@
             "items": {
                 "title": "Assessment",
                 "description": "Assessment id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "assessment"
             }
         }
     }

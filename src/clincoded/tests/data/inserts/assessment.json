@@ -1,0 +1,44 @@
+[
+    {
+        "uuid": "3ecaaf6b-2a4c-11e5-ab2d-60f81dc5b05a",
+        "owner": "kgliu@stanford.edu",
+        "value": "Supports",
+        "dateTime": "date and time 01",
+        "active": true
+    },
+    {
+        "uuid": "4519985e-2a4c-11e5-96a0-60f81dc5b05a",
+        "owner": "tsneddon@stanford.edu",
+        "value": "Review",
+        "dateTime": "date and time 02",
+        "active": true
+    },
+    {
+        "uuid": "4aec0dae-2a4c-11e5-a66f-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "value": "Review",
+        "dateTime": "date and time 03",
+        "active": true
+    },
+    {
+        "uuid": "4f94a226-2a4c-11e5-887c-60f81dc5b05a",
+        "owner": "fytanaka@stanford.edu",
+        "value": "Supports",
+        "dateTime": "date and time 04",
+        "active": true
+    },
+    {
+        "uuid": "550d702b-2a4c-11e5-856d-60f81dc5b05a",
+        "owner": "kdalton@stanford.edu",
+        "value": "Contradicts",
+        "dateTime": "date and time 05",
+        "active": true
+    },
+    {
+        "uuid": "5a5cefba-2a4c-11e5-9f97-60f81dc5b05a",
+        "owner": "minyoung.choi@stanford.edu",
+        "value": "Review",
+        "dateTime": "date and time 06",
+        "active": true
+    }
+]

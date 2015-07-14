@@ -102,31 +102,43 @@ class Gdm(Item):
         'annotations.groups.otherGenes',
         'annotations.groups.method',
         'annotations.groups.statistic',
+        'annotations.groups.statistic.variants',
+        'annotations.groups.statistic.assessments',
         'annotations.groups.familyIncluded',
         'annotations.groups.familyIncluded.commonDiagnosis',
         'annotations.groups.familyIncluded.method',
+        'annotations.groups.familyIncluded.variants',
+        'annotations.groups.familyIncluded.segregation',
+        'annotations.groups.familyIncluded.segregation.assessments',
         'annotations.groups.familyIncluded.individualIncluded',
         'annotations.groups.familyIncluded.individualIncluded.diagnosis',
         'annotations.groups.familyIncluded.individualIncluded.method',
         'annotations.groups.familyIncluded.individualIncluded.variants',
+        'annotations.groups.familyIncluded.individualIncluded.assessments',
         'annotations.groups.individualIncluded',
         'annotations.groups.individualIncluded.diagnosis',
         'annotations.groups.individualIncluded.method',
         'annotations.groups.individualIncluded.variants',
+        'annotations.groups.individualIncluded.assessments',
         'annotations.groups.control',
         'annotations.groups.control.commonDiagnosis',
         'annotations.groups.control.method',
         'annotations.families',
         'annotations.families.commonDiagnosis',
         'annotations.families.method',
+        'annotations.families.variants',
+        'annotations.families.segregation',
+        'annotations.families.segregation.assessments',
         'annotations.families.individualIncluded',
         'annotations.families.individualIncluded.diagnosis',
         'annotations.families.individualIncluded.method',
         'annotations.families.individualIncluded.variants',
+        'annotations.families.individualIncluded.assessments',
         'annotations.individuals',
         'annotations.individuals.diagnosis',
         'annotations.individuals.method',
         'annotations.individuals.variants',
+        'annotations.individuals.assessments'
     ]
 
 @collection(
@@ -147,30 +159,42 @@ class Annotation(Item):
         'groups.otherGenes',
         'groups.method',
         'groups.statistic',
+        'groups.statistic.variants',
+        'groups.statistic.assessments',
         'groups.familyIncluded.commonDiagnosis',
         'groups.familyIncluded.method',
+        'groups.familyIncluded.variants',
+        'groups.familyIncluded.segregation',
+        'groups.familyIncluded.segregation.assessments',
         'groups.familyIncluded.individualIncluded',
         'groups.familyIncluded.individualIncluded.diagnosis',
         'groups.familyIncluded.individualIncluded.method',
         'groups.familyIncluded.individualIncluded.variants',
+        'groups.familyIncluded.individualIncluded.assessments',
         'groups.individualIncluded',
         'groups.individualIncluded.diagnosis',
         'groups.individualIncluded.method',
         'groups.individualIncluded.variants',
+        'groups.individualIncluded.assessments',
         'groups.control',
         'groups.control.commonDiagnosis',
         'groups.control.method',
         'families',
         'families.commonDiagnosis',
         'families.method',
+        'families.variants',
+        'families.segregation',
+        'families.segregation.assessments',
         'families.individualIncluded',
         'families.individualIncluded.diagnosis',
         'families.individualIncluded.method',
         'families.individualIncluded.variants',
+        'families.individualIncluded.assessments',
         'individuals',
         'individuals.diagnosis',
         'individuals.method',
-        'individuals.variants'
+        'individuals.variants',
+        'individuals.assessments'
     ]
 
 @collection(
@@ -189,17 +213,24 @@ class Group(Item):
         'otherGenes',
         'method',
         'statistic',
+        'statistic.variants',
+        'statistic.assessments',
         'familyIncluded',
         'familyIncluded.commonDiagnosis',
         'familyIncluded.method',
+        'familyIncluded.variants',
+        'familyIncluded.segregation',
+        'familyIncluded.segregation.assessments',
         'familyIncluded.individualIncluded',
         'familyIncluded.individualIncluded.diagnosis',
         'familyIncluded.individualIncluded.method',
         'familyIncluded.individualIncluded.variants',
+        'familyIncluded.individualIncluded.assessments',
         'individualIncluded',
         'individualIncluded.diagnosis',
         'individualIncluded.method',
         'individualIncluded.variants',
+        'individualIncluded.assessments',
         'control',
         'control.commonDiagnosis',
         'control.method'
@@ -219,10 +250,14 @@ class Family(Item):
     embedded = [
         'commonDiagnosis',
         'method',
+        'segregation',
+        'segregation.assessments',
+        'variants',
         'individualIncluded',
         'individualIncluded.diagnosis',
         'individualIncluded.method',
-        'individualIncluded.variants'
+        'individualIncluded.variants',
+        'individualIncluded.assessments'
     ]
 
 @collection(
@@ -239,7 +274,8 @@ class Individual(Item):
     embedded = [
         'diagnosis',
         'method',
-        'variants'
+        'variants',
+        'assessments'
     ]
 
 @collection(
@@ -264,6 +300,37 @@ class Method(Item):
 class Statistic(Item):
     item_type = 'statistic'
     schema = load_schema('clincoded:schemas/statistic.json')
+    name_key = 'uuid'
+    embedded = [
+        'variants',
+        'assessments'
+    ]
+
+@collection(
+    name='segregations',
+    unique_key='segregation:uuid',
+    properties={
+        'title': 'Segregation Study',
+        'description': 'List of segregation studies in all gdm pairs',
+    })
+class Segregation(Item):
+    item_type = 'segregation'
+    schema = load_schema('clincoded:schemas/segregation.json')
+    name_key = 'uuid'
+    embedded = [
+        'assessments'
+    ]
+
+@collection(
+    name='assessments',
+    unique_key='assessment:uuid',
+    properties={
+        'title': 'Assessments',
+        'description': 'List of assessments to all studies',
+    })
+class Assessment(Item):
+    item_type = 'assessment'
+    schema = load_schema('clincoded:schemas/assessment.json')
     name_key = 'uuid'
 ### end of new collections for curation data
 

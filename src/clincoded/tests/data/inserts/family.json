@@ -5,11 +5,15 @@
         "commonDiagnosis": "15",
         "numberOfMale": "3",
         "numberOfFemale": "3",
+        "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
+        "segregation": "08b61bb3-2a5b-11e5-b2e4-60f81dc5b05a",
+        "variants": [
+            "df8135d4-2685-11e5-af19-60f81dc5b05a"
+        ],
         "individualIncluded": [
             "6f762e73-1910-11e5-998f-60f81dc5b05a",
             "7997f687-1910-11e5-a066-60f81dc5b05a"
-        ],
-        "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a"
+        ]
     },
     {
         "uuid": "d674b2c2-18f9-11e5-a556-60f81dc5b05a",

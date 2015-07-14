@@ -49,16 +49,6 @@
                 "type": "string",
                 "default": ""
             }
-        },
-        "assessments": {
-            "title": "Assessments",
-            "description": "List of assessments",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Asssessment",
-                "type": "string"
-            }
         }
     },
     "columns": {
@@ -81,10 +71,6 @@
         "other": {
             "title": "Other Description",
             "type": "string"
-        },
-        "assessments": {
-            "title": "Assessments",
-            "type": "array"
         }
     }
 }

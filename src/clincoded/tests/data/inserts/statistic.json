@@ -4,6 +4,12 @@
         "description": "some thing about type1",
         "oddsRatio": "5:4",
         "pvalue": "0.175",
+        "variants": [
+            "e496545c-2685-11e5-a4b3-60f81dc5b05a"
+        ],
+        "assessments": [
+            "5a5cefba-2a4c-11e5-9f97-60f81dc5b05a"
+        ],
         "uuid": "2fcb3073-1ebc-11e5-b386-60f81dc5b05a"
     },
     {
@@ -11,6 +17,12 @@
         "description": "some thing about type2",
         "oddsRatio": "100:150",
         "pvalue": "0.333",
+        "variants": [
+            "d439f000-2685-11e5-9792-60f81dc5b05a"
+        ],
+        "assessments": [
+            "4aec0dae-2a4c-11e5-a66f-60f81dc5b05a"
+        ],
         "uuid": "ca6f290f-2765-11e5-ba44-60f81dc5b05a"
     }
 ]

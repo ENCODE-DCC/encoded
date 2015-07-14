@@ -1,0 +1,142 @@
+{
+    "title": "Assessment",
+    "id": "/profiles/assessment.json",
+    "description": "Schema for storing and using assessments",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["owner", "dateTime"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "owner": {
+            "title": "Owner",
+            "description": "Email of creator",
+            "type": "string"
+        },
+        "dateTime": {
+            "title": "Date/Time",
+            "description": "Time stamp of creation",
+            "type": "string"
+        },
+        "pedigreeDescription": {
+            "title": "Pedigree Description",
+            "description": "Pedigree Description",
+            "type": "string",
+            "default": ""
+        },
+        "pedigreeSize": {
+            "title": "Pedigree Size",
+            "description": "Pedigree Size",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfGenerationInPedigree": {
+            "title": "# Generations in Pedigree",
+            "description": "Number of generations in pedigree",
+            "type": "string",
+            "default": ""
+        },
+        "consanguineousFamily": {
+            "title": "Consanguineous Family",
+            "description": "Consanguineous Family",
+            "type": "string",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "numberOfCases": {
+            "title": "# Cases",
+            "description": "Number of cases (phenotype positive)",
+            "type": "string",
+            "default": ""
+        },
+        "deNovoType": {
+            "title": "de novo type",
+            "description": "de novo type",
+            "type": "string",
+            "enum": [
+                "",
+                "Inferred",
+                "Confirmed"
+            ]
+        },
+        "numberOfParentsUnaffectedCarriers": {
+            "title": "# Parents Unaffected",
+            "description": "Number of parents unaffected carriers",
+            "type": "string",
+            "enum": [
+                "0",
+                "1",
+                "2"
+            ]
+        },
+        "numberOfAffectedAlleles": {
+            "title": "# Affected Alleles",
+            "description": "Number of affected alleles",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfAffectedWithOneVariant": {
+            "title": "# Affected with 1 Varaint",
+            "description": "Number of affected with 1 variant",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfAffectedWithTwoVariants": {
+            "title": "# Affected with 2 Variants/Homozygous",
+            "description": "Number of affected with 2 variants or homozygous",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfUnaffectedCarriers": {
+            "title": "# Unaffected Carriers",
+            "description": "Number of unaffected carriers",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfUnaffectedIndividuals": {
+            "title": "# Unaffected Individuals",
+            "description": "Number of unaffected individuals",
+            "type": "string",
+            "default": ""
+        },
+        "probandAssociatedWithBoth": {
+            "title": "Is Proband Associated with Both",
+            "description": "If > 1 variant, is proband associated with both",
+            "type": "string",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "additionalInformation": {
+            "title": "Additional Information",
+            "description": "Additional information of the segregation",
+            "type": "string",
+            "default": ""
+        },
+        "assessments": {
+            "title": "Assessments",
+            "description": "List of assessments to the segregation",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Assessment",
+                "description": "uuid link to assessment",
+                "type": "string",
+                "linkTo": "assessment"
+            }
+        }
+    }
+}
