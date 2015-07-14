@@ -54,6 +54,18 @@ class Article(Item):
     name_key = 'pmid'
 
 @collection(
+    name='variants',
+    unique_key='variant:uuid',
+    properties={
+        'title': 'Variants',
+        'description': 'List of variants stored locally',
+    })
+class Variant(Item):
+    item_type = 'variant'
+    schema = load_schema('clincoded:schemas/variant.json')
+    name_key = 'uuid'
+
+@collection(
     name='controlgroups',
     unique_key='controlGroup:uuid',
     properties={
@@ -96,9 +108,11 @@ class Gdm(Item):
         'annotations.groups.familyIncluded.individualIncluded',
         'annotations.groups.familyIncluded.individualIncluded.diagnosis',
         'annotations.groups.familyIncluded.individualIncluded.method',
+        'annotations.groups.familyIncluded.individualIncluded.variants',
         'annotations.groups.individualIncluded',
         'annotations.groups.individualIncluded.diagnosis',
         'annotations.groups.individualIncluded.method',
+        'annotations.groups.individualIncluded.variants',
         'annotations.groups.control',
         'annotations.groups.control.commonDiagnosis',
         'annotations.groups.control.method',
@@ -108,9 +122,11 @@ class Gdm(Item):
         'annotations.families.individualIncluded',
         'annotations.families.individualIncluded.diagnosis',
         'annotations.families.individualIncluded.method',
+        'annotations.families.individualIncluded.variants',
         'annotations.individuals',
         'annotations.individuals.diagnosis',
         'annotations.individuals.method',
+        'annotations.individuals.variants',
     ]
 
 @collection(
@@ -136,9 +152,11 @@ class Annotation(Item):
         'groups.familyIncluded.individualIncluded',
         'groups.familyIncluded.individualIncluded.diagnosis',
         'groups.familyIncluded.individualIncluded.method',
+        'groups.familyIncluded.individualIncluded.variants',
         'groups.individualIncluded',
         'groups.individualIncluded.diagnosis',
         'groups.individualIncluded.method',
+        'groups.individualIncluded.variants',
         'groups.control',
         'groups.control.commonDiagnosis',
         'groups.control.method',
@@ -148,9 +166,11 @@ class Annotation(Item):
         'families.individualIncluded',
         'families.individualIncluded.diagnosis',
         'families.individualIncluded.method',
+        'families.individualIncluded.variants',
         'individuals',
         'individuals.diagnosis',
         'individuals.method',
+        'individuals.variants'
     ]
 
 @collection(
@@ -175,9 +195,11 @@ class Group(Item):
         'familyIncluded.individualIncluded',
         'familyIncluded.individualIncluded.diagnosis',
         'familyIncluded.individualIncluded.method',
+        'familyIncluded.individualIncluded.variants',
         'individualIncluded',
         'individualIncluded.diagnosis',
         'individualIncluded.method',
+        'individualIncluded.variants',
         'control',
         'control.commonDiagnosis',
         'control.method'
@@ -199,7 +221,8 @@ class Family(Item):
         'method',
         'individualIncluded',
         'individualIncluded.diagnosis',
-        'individualIncluded.method'
+        'individualIncluded.method',
+        'individualIncluded.variants'
     ]
 
 @collection(
@@ -215,7 +238,8 @@ class Individual(Item):
     name_key = 'uuid'
     embedded = [
         'diagnosis',
-        'method'
+        'method',
+        'variants'
     ]
 
 @collection(

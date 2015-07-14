@@ -28,6 +28,7 @@ ORDER = [
     'gene',
     'orphaPhenotype',
     'article',
+    'variant',
     'method',
     'individual',
     'family',

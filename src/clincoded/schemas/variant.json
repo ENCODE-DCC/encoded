@@ -1,76 +1,89 @@
 {
     "title": "Variant",
-    "description": "Schema for submitting a human genetic varient.",
     "id": "/profiles/variant.json",
+    "description": "Schema for storing and using variant data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "chromosome", "position", "reference_allele"],
-    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
+    "required": [],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/shared_status" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "dbxref": {
-            "title": "External identifiers",
-            "description": "Unique identifiers from external resources (e.g. ClinVar, dbVar).",
+        "dbSNPId": {
+            "title": "dbSNP ID",
+            "description": "dbSNP id of the variant",
+            "type": "string",
+            "default": ""
+        },
+        "clinVarRCV": {
+            "title": "ClinVar ID",
+            "description": "ClinVar id for the variant",
+            "type": "string",
+            "default": ""
+        },
+        "hgvsNames": {
+            "title": "HGVS Names",
+            "description": "List of HGVS names of the variant",
             "type": "array",
             "default": [],
             "items": {
-                "title": "External identifier",
-                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
-                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
-                "type":  "string"
+                "title": "HGVS Name",
+                "type": "string",
+                "default": ""
             }
         },
-        "chromosome": {
-            "title": "Chromosome",
-            "description": "Human Chromosomal variant is located on",
-            "type": "string",
-            "enum": ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","X","Y"]
+        "other": {
+            "title": "Others",
+            "description": "List of other name(s)",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Name",
+                "type": "string",
+                "default": ""
+            }
         },
-        "position": {
-            "title": "Chromosomal Position",
-            "description": "Chromosomal coordinate of variant in human genome",
-            "type": "number"
-        },
-        "reference_allele": {
-            "title": "Reference allele",
-            "description": "Sequence of this position in the human reference",
-            "type": "string",
-            "format": "DNAsequence"
-        },
-        "label": {
-            "title": "Descriptive name of variant",
-            "description": "Common name for the variant",
-            "type": "string",
-            "format": "variant_lable"
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "proposed",
-            "enum": [
-                "proposed",
-                "current",
-                "deleted",
-                "replaced"
-            ]
+        "assessments": {
+            "title": "Assessments",
+            "description": "List of assessments",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Asssessment",
+                "type": "string"
+            }
         }
     },
     "columns": {
-        "label": {
-            "title": "Target",
+        "uuid": {
+            "title": "Variant",
             "type": "string"
         },
-        "dbxref": {
-            "title": "External resources",
+        "dbSNPId": {
+            "title": "dbSNP ID",
+            "type": "string"
+        },
+        "clinVarRCV": {
+            "title": "ClinVar RCV",
+            "type": "string"
+        },
+        "hgvsNames": {
+            "title": "HGVS Name(s)",
+            "type": "array"
+        },
+        "other": {
+            "title": "Other Description",
+            "type": "string"
+        },
+        "assessments": {
+            "title": "Assessments",
             "type": "array"
         }
     }

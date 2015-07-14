@@ -21,6 +21,7 @@ var AuditMixin = audit.AuditMixin;
         gene: {title: 'Genes'},
         orphaPhenotype: {title: 'Orphanet Phenotypes'},
         article: {title: 'Articles'},
+        variant: {title: 'Variants'},
         gdm: {title: 'GDMs'},
         annotation: {title: 'Annotations'},
         group: {title: 'Groups'},
