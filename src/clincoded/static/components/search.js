@@ -26,7 +26,7 @@ var AuditMixin = audit.AuditMixin;
         annotation: {title: 'Evidences'},
         group: {title: 'Groups'},
         family: {title: 'Famlies'},
-        individual: {title: 'Individuals'}
+        individual: {title: 'Individuals'},
         assessment: {title: 'Assessments'},
     };
 
