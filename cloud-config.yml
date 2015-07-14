@@ -115,12 +115,12 @@ runcmd:
 - chown postgres:postgres /opt/wal-e
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
+##TEMP for inital tests --load test data from test data backup
+- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.3
 - /etc/init.d/postgresql stop
 #TEMP for inital tests --commented out
 #- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
-#- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
-##TEMP for inital tests --load test data from test data backup
-- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.3 
+#- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/ 
 - /etc/init.d/postgresql start
 - sudo -u clincoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
 - sudo -u clincoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
