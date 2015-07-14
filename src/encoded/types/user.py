@@ -20,6 +20,7 @@ from contentbase import (
 from contentbase.calculated import calculate_properties
 from contentbase.resource_views import item_view_object
 from contentbase.util import expand_path
+import contentbase
 
 
 @collection(
@@ -110,4 +111,22 @@ def current_user(request):
     namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
     path = request.resource_path(collection, userid)
-    return request.embed(path, as_user=True)
+    user = request.embed(path, as_user=True)
+
+    user_actions = calculate_properties(User, request, category='user_action')
+    user['user_actions'] = list(user_actions.values()) if user_actions else []
+
+    return user
+
+
+@contentbase.calculated_property(context=User, category='user_action')
+def impersonate(context, request):
+    # This is assuming the user_action calculated properties
+    # will only be fetched from the current_user view,
+    # which ensures that the user represented by 'context' is also an effective principal
+    if request.has_permission('impersonate'):
+        return {
+            'name': 'impersonate',
+            'title': 'Impersonate User…',
+            'href': '/impersonate-user',
+        }

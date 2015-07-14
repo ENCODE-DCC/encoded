@@ -8,6 +8,9 @@ var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var Modal = require('react-bootstrap/lib/Modal');
 var ItemStore = require('./lib/store').ItemStore;
+var ReactForms = require('react-forms');
+var Form = require('./form').Form;
+var ObjectPicker = require('./inputs').ObjectPicker;
 
 
 class AccessKeyStore extends ItemStore {
@@ -171,3 +174,25 @@ var User = module.exports.User = React.createClass({
 
 
 globals.content_views.register(User, 'user');
+
+
+var ImpersonateUserSchema = ReactForms.schema.Mapping({}, {
+    userid: ReactForms.schema.Scalar({
+        label: 'User',
+        hint: 'Enter the email of the user you want to impersonate.',
+    }),
+});
+
+
+var ImpersonateUserForm = React.createClass({
+    render: function() {
+        return (
+            <div>
+                <h2>Impersonate User</h2>
+                <Form {...this.props} schema={ImpersonateUserSchema} submitLabel="Submit"
+                      method="POST" action="/impersonate-user" />
+            </div>
+        );
+    }
+});
+globals.content_views.register(ImpersonateUserForm, 'impersonate-user-form');

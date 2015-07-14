@@ -1,4 +1,6 @@
 from browserid.errors import TrustError
+from contentbase.validation import ValidationFailure
+from contentbase.validators import no_validate_item_content_post
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import ConfigurationError
 from pyramid.httpexceptions import (
@@ -17,6 +19,7 @@ from pyramid.settings import (
 from pyramid.view import (
     view_config,
 )
+
 
 _marker = object()
 
@@ -149,13 +152,24 @@ def session(request):
     return request.session
 
 
-@view_config(route_name='impersonate-user', request_method='GET',
+@view_config(route_name='impersonate-user', request_method='GET', permission='impersonate')
+def impersonate_user_form(request):
+    return {
+        '@type': ['impersonate-user-form', 'form']
+    }
+
+
+@view_config(route_name='impersonate-user', request_method='POST',
+             validators=[no_validate_item_content_post],
              permission='impersonate')
 def impersonate_user(request):
     """As an admin, impersonate a different user."""
     request.session.get_csrf_token()
-    userid = request.params['userid']
-    request.session['user_properties'] = request.embed('/current-user', as_user=userid)
+    userid = request.validated['userid']
+    user = request.embed('/current-user', as_user=userid)
+    if not user:
+        raise ValidationFailure('body', ['userid'], 'User not found.')
+    request.session['user_properties'] = user
     request.session['disable_persona'] = True
     request.response.headerlist.extend(remember(request, 'mailto.' + userid))
-    return request.session
+    return {'@graph': [request.embed('/current-user', as_user=userid)]}

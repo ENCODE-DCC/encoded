@@ -64,6 +64,12 @@ var Form = module.exports.Form = React.createClass({
         };
     },
 
+    getDefaultProps: function() {
+        return {
+            submitLabel: 'Save',
+        }
+    },
+
     getInitialState: function() {
         return {
             isValid: true,
@@ -96,7 +102,7 @@ var Form = module.exports.Form = React.createClass({
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>Save</button>
+                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>{this.props.submitLabel}</button>
                 </div>
                 {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             </div>
