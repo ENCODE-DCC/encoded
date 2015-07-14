@@ -116,7 +116,7 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 ##TEMP for inital tests --load test data from test data backup
-- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.3
+- sudo -u postgres psql clincoded < DEV_TEST_DB_DUMP_9.3
 - /etc/init.d/postgresql stop
 #TEMP for inital tests --commented out
 #- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
