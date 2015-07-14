@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var modal = require('../libs/bootstrap/modal');
 var panel = require('../libs/bootstrap/panel');
 var form = require('../libs/bootstrap/form');
@@ -143,8 +144,8 @@ var GeneCurationData = React.createClass({
                     {gene ?
                         <dl>
                             <dt>{gene.symbol}</dt>
-                            <dd><a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.hgncId + ' in a new window'}>{gene.hgncId}</a></dd>
-                            <dd>EntrezID:<a href={external_url_map['Entrez'] + gene.entrezId} target="_blank" title={'NCBI page for gene ' + gene.entrezId + ' in a new window'}>{gene.entrezId}</a></dd>
+                            <dd>HGNC ID: <a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.hgncId + ' in a new window'}>{gene.hgncId}</a></dd>
+                            <dd>NCBI Gene ID: <a href={external_url_map['Entrez'] + gene.entrezId} target="_blank" title={'NCBI page for gene ' + gene.entrezId + ' in a new window'}>{gene.entrezId}</a></dd>
                         </dl>
                     : null}
                 </div>
@@ -167,6 +168,7 @@ var DiseaseCurationData = React.createClass({
     render: function() {
         var gdm = this.props.gdm;
         var disease = gdm.disease;
+        var addEdit = this.props.omimId ? 'Edit' : 'Add';
 
         return (
             <div className="col-xs-12 col-sm-3 gutter-exc">
@@ -174,15 +176,15 @@ var DiseaseCurationData = React.createClass({
                     {disease ?
                         <dl>
                             <dt>{disease.term}</dt>
-                            <dd><a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new window">Orphanet</a> ID: <a href={external_url_map['OrphaNet'] + disease.orphaNumber} target="_blank" title={'Orphanet page for ORPHA' + disease.orphaNumber + ' in a new window'}>{disease.orphaNumber}</a></dd>
+                            <dd>Orphanet ID: <a href={external_url_map['OrphaNet'] + disease.orphaNumber} target="_blank" title={'Orphanet page for ORPHA' + disease.orphaNumber + ' in a new window'}>{'ORPHA' + disease.orphaNumber}</a></dd>
                             <dd>
                                 <a href="http://omim.org/" target="_blank" title="Online Mendelian Inheritance in Man home page in a new window">OMIM</a> ID: {this.props.omimId ?
                                     <a href={external_url_map['OMIM'] + this.props.omimId} title={'Open Online Mendelian Inheritance in Man page for OMIM ID ' + this.props.omimId + ' in a new window'} target="_blank">
                                         {this.props.omimId}
                                     </a>
-                                : 'not set'}&nbsp;
-                                <Modal title="Add/Change OMIM ID">
-                                    <a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">Edit OMIM phenotype ID</a>
+                                : null}&nbsp;
+                                <Modal title="Add/Change OMIM ID" wrapperClassName="edit-omim-modal">
+                                    <span>[</span><a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">{addEdit}</a><span>]</span>
                                 </Modal>
                             </dd>
                         </dl>
@@ -218,13 +220,12 @@ var AddOmimIdModal = React.createClass({
         return valid;
     },
 
-    // Called when the modal form’s submit button is clicked. Handles validation and triggering
-    // the process to add an article.
+    // Called when the modal form’s submit button is clicked. Handles validation and updating the OMIM in the GDM.
     submitForm: function(e) {
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
         this.setFormValue('omimid', this.refs.omimid.getValue());
         if (this.validateForm()) {
-            // Form is valid -- we have a good PMID. Fetch the article with that PMID
+            // Form is valid -- we have a good OMIM ID. Close the modal and update the current GDM's OMIM ID
             this.props.closeModal();
             var enteredOmimId = this.getFormValue('omimid');
                 this.props.updateOmimId(enteredOmimId);
@@ -262,28 +263,55 @@ var CuratorCurationData = React.createClass({
         gdm: React.PropTypes.object // GDM with curator data to display
     },
 
+    // Return the latest annotation in the given GDM
+    findLatestAnnotation: function() {
+        var annotations = this.props.gdm.annotations;
+        var latestAnnotation = {};
+        var latestTime = 0;
+        if (annotations && annotations.length) {
+            annotations.forEach(function(annotation) {
+                // Get Unix timestamp version of annotation's time and compare against the saved version.
+                var time = moment(annotation.dateTime).format('x');
+                if (latestTime < time) {
+                    latestAnnotation = annotation;
+                    latestTime = time;
+                }
+            });
+        }
+        return latestAnnotation;
+    },
+
     render: function() {
         var gdm = this.props.gdm;
         var annotationOwners = _.uniq(gdm.annotations.map(function(annotation) {
             return annotation.owner;
         })).sort();
+        var latestAnnotation = this.findLatestAnnotation();
 
         return (
             <div className="col-xs-12 col-sm-6 gutter-exc">
                 <div className="curation-data-curator">
                     {gdm ?
-                        <dl>
-                            <dt>{gdm.status} – {gdm.owner} – {gdm.dateTime}</dt>
-                            <dd>
-                                {annotationOwners.map(function(owner, i) {
-                                    return (
-                                        <span key={i}>
-                                            {i > 0 ? ', ' : ''}
-                                            {owner}
-                                        </span>
-                                    );
-                                })}
-                            </dd>
+                        <dl className="inline-dl clearfix">
+                            <dt>Status: </dt><dd>{gdm.status}</dd>
+                            <dt>Creator: </dt><dd><a href={'mailto:' + gdm.owner}>{gdm.owner}</a> – {moment(gdm.dateTime).format('YYYY MMM DD, h:mm a')}</dd>
+                            {annotationOwners && annotationOwners.length ?
+                                <div>
+                                    <dt>Participants: </dt>
+                                    <dd>
+                                        {annotationOwners.map(function(owner, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    <a href={'mailto:' + owner}>{owner}</a>
+                                                </span>
+                                            );
+                                        })}
+                                    </dd>
+                                    <dt>Last edited: </dt>
+                                    <dd><a href={'mailto:' + latestAnnotation.owner}>{latestAnnotation.owner}</a> — {moment(latestAnnotation.dateTime).format('YYYY MMM DD, h:mm a')}</dd>
+                                </div>
+                            : null}
                         </dl>
                     : null}
                 </div>

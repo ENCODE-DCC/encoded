@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 var _ = require('underscore');
+var moment = require('moment');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var form = require('../libs/bootstrap/form');
@@ -105,7 +106,7 @@ var CreateGeneDisease = React.createClass({
             modeInheritance: this.getHpoText(this.getFormValue('hpo')),
             owner: this.props.session['auth.userid'],
             status: 'Creation',
-            dateTime: new Date().toISOString()
+            dateTime: moment().format()
         };
 
         // Post the new GDM to the DB. Once promise returns, go to /curation-central page with the UUID

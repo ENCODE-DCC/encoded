@@ -56,7 +56,8 @@ module.exports.ModalMixin = {
 
 var Modal = module.exports.Modal = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired // Title in modal's header
+        title: React.PropTypes.string.isRequired, // Title in modal's header
+        wrapperClassName: React.PropTypes.string // CSS classes for modal trigger wrapper
     },
 
     contextTypes: {
@@ -93,7 +94,7 @@ var Modal = module.exports.Modal = React.createClass({
         var btnOkTitle = this.props.btnOk ? this.props.btnOk : 'OK';
 
         return (
-            <div>
+            <div className={this.props.wrapperClassName}>
                 {children}
                 {this.context.modalOpen ?
                     <div>
