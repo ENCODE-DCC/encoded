@@ -69,6 +69,17 @@ def file_5(file_base):
     return item
 
 
+@pytest.fixture
+def file_6(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '5',
+        'file_format': 'bigWig',
+        'output_type': 'signal of multi-mapped reads'
+    })
+    return item
+
+
 def test_file_upgrade(upgrader, file_1):
     value = upgrader.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -107,3 +118,11 @@ def test_file_upgrade4(root, upgrader, file_4, file, threadlocals, dummy_request
     assert value['file_format_type'] == 'bedMethyl'
     assert value['output_type'] == 'base overlap signal'
     assert value['content_md5sum'] == content_md5sum
+
+
+def test_file_upgrade5(root, upgrader, file_6, file, threadlocals, dummy_request):
+    context = root.get_by_uuid(file['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('file', file_6, target_version='6', context=context)
+    assert value['schema_version'] == '6'
+    assert value['output_type'] != 'signal of all reads'
