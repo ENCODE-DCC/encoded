@@ -116,8 +116,11 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
+#TEMP for inital tests --commented out
 #- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 #- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
+##TEMP for inital tests --load test data from test data backup
+-sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.3 
 - /etc/init.d/postgresql start
 - sudo -u clincoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
 - sudo -u clincoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
@@ -125,9 +128,7 @@ runcmd:
 #- sudo -u clincoded bin/aws s3 cp --recursive s3://clincoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u clincoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-#TEMP for inital tests --use bin/dev-servers for mapping and loading test data
 - sudo -u clincoded bin/create-mapping production.ini --app-name app
-#- sudo -u clincoded bin/dev-servers development.ini --app-name app --clear --init --load
 - ln -s /srv/clincoded/etc/clincoded-apache.conf /etc/apache2/sites-available/clincoded.conf
 - ln -s /srv/clincoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
@@ -144,9 +145,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
-#TEMP for inital tests --uses development.ini
 -   sudo -u clincoded bin/batchupgrade production.ini --app-name app
-#-   sudo -u clincoded bin/batchupgrade development.ini --app-name app
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -171,7 +170,6 @@ users:
   # https://github.com/rubygems/rubygems/issues/689
   homedir: /srv/clincoded
 
-#TEMP for inital tests --commented out
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
   content: |
@@ -216,7 +214,6 @@ write_files:
 
 - path: /etc/postgresql/9.3/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"
-#/TEMP for inital tests --commented out
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmiM5UBd3Rant92xxhCVZFW+U+gUN3aLkICO1gzOGr/Ps173YgzgVPmdKdiI6vBzCZ8BXMG/aeiBHk2LKA+vFjh1/sFRA51nA+hnBzXuIbWYpsTHaGG3BFhnAP8tzDm/7MYRkIeXLwZRwTeFtrMd9MR/HGBVG5HmbM/jtrvTRWZVwFnXRxLQ3Rs5Y9v1QKOrZs4w5tt3iKBiBr+kJKhDHV5O8COowxjcfSqCZmfafVJQNR+8Dg6cvaizqY+ykHpgzc+a7oXJfo1LDDQELl0DGIPDIa340jMDjSSVV0o+RpjbIXTtH4m3TDpKRmZsTQrnHCMNSp5Uk7mMkhKwIwX1SP clincoded-dev@clinicalgenome.org
