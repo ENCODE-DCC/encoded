@@ -47,12 +47,14 @@
     }
 }
 
-.curation-data-gene {
+.curation-data-gene,
+.curation-data-disease {
     margin-bottom: 2px;
 }
 
 .curation-data-disease,
-.curation-data-gene {
+.curation-data-gene,
+.curation-data-curator {
     padding: 10px;
     background-color: $color-neutral-bg;
 
@@ -145,13 +147,14 @@
     padding: 10px;
     border-top: 1px solid #e0e0e0;
     cursor: pointer;
+    background-color: #f0f0f0;
 
     &:hover {
         background-color: $color-hover;
     }
 
     &.curr-pmid {
-        background-color: $color-selected;
+        background-color: #fff;
     }
 }
 
@@ -210,4 +213,14 @@
     .icon {
         font-size: 1.3rem;
     }
+}
+
+.panel-create-gene-disease {
+    .panel-std {
+        padding-bottom: 40px;
+    }
+}
+
+.edit-omim-modal {
+    display: inline;
 }

@@ -125,7 +125,8 @@ var Input = module.exports.Input = React.createClass({
         rows: React.PropTypes.string, // Number of rows in textarea
         value: React.PropTypes.string, // Value to pre-fill input with
         defaultValue: React.PropTypes.string, // Default value for <select>
-        required: React.PropTypes.bool // T to make this a required field
+        required: React.PropTypes.bool, // T to make this a required field
+        cancelHandler: React.PropTypes.func // Called to handle cancel button click
     },
 
     // Get the text the user entered from the text-type field. Meant to be called from
@@ -162,7 +163,7 @@ var Input = module.exports.Input = React.createClass({
                 inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 var innerInput = (
                     <span>
-                        <input className={inputClasses} type={this.props.type} id={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} />
+                        <input className={inputClasses} type={this.props.type} id={this.props.id} name={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} />
                         <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                     </span>
                 );
@@ -194,7 +195,7 @@ var Input = module.exports.Input = React.createClass({
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
                         <div className={this.props.wrapperClassName}>
-                            <textarea className={inputClasses} id={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} rows={this.props.rows} />
+                            <textarea className={inputClasses} id={this.props.id} name={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} rows={this.props.rows} />
                             <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                         </div>
                     </div>
@@ -213,13 +214,18 @@ var Input = module.exports.Input = React.createClass({
                 break;
 
             case 'submit':
-                var title = this.props.value ? this.props.value : 'Submit';
+                var title = this.props.title ? this.props.title : 'Submit';
+                inputClasses = 'btn' + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 input = (
-                    <div className={this.props.groupClassName}>
-                        <div className={this.props.wrapperClassName}>
-                            <input className="btn btn-primary" type={this.props.type} value={title} onClick={this.props.submitHandler} />
-                        </div>
-                    </div>
+                    <input className={inputClasses} type={this.props.type} value={title} onClick={this.props.submitHandler} />
+                );
+                break;
+
+            case 'cancel':
+                title = this.props.title ? this.props.title : 'Cancel';
+                inputClasses = 'btn' + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
+                input = (
+                    <button className={inputClasses} onClick={this.props.cancelHandler}>{title}</button>
                 );
                 break;
 
