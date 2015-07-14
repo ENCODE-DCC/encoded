@@ -112,7 +112,7 @@ def login(request):
     else:
         namespace, userid = login.split('.', 1)
     if namespace != 'persona':
-        request.session['user_properties'] = {}
+        request.session.invalidate()
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()
     request.session['user_properties'] = request.embed('/current-user', as_user=userid)
