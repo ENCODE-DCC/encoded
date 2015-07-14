@@ -1,9 +1,19 @@
 'use strict';
 var React = require('react');
+var _ = require('underscore');
+var moment = require('moment');
+var modal = require('../libs/bootstrap/modal');
 var panel = require('../libs/bootstrap/panel');
+var form = require('../libs/bootstrap/form');
 var globals = require('./globals');
 
 var Panel = panel.Panel;
+var Modal = modal.Modal;
+var ModalMixin = modal.ModalMixin;
+var Form = form.Form;
+var FormMixin = form.FormMixin;
+var Input = form.Input;
+var external_url_map = globals.external_url_map;
 
 
 var CuratorPage = module.exports.CuratorPage = React.createClass({
@@ -24,13 +34,15 @@ globals.content_views.register(CuratorPage, 'curator_page');
 // Curation data header for Gene:Disease
 var CurationData = module.exports.CurationData = React.createClass({
     propTypes: {
-        gdm: React.PropTypes.object // GDM data to display
+        gdm: React.PropTypes.object, // GDM data to display
+        omimId: React.PropTypes.string, // OMIM ID to display
+        updateOmimId: React.PropTypes.func // Function to call when OMIM ID changes
     },
 
     render: function() {
         var gdm = this.props.gdm;
 
-        if (gdm && Object.keys(gdm).length > 0) {
+        if (gdm && Object.keys(gdm).length > 0 && gdm['@type'][0] === 'gdm') {
             var gene = this.props.gdm.gene;
             var disease = this.props.gdm.disease;
             var mode = this.props.gdm.modeInheritance.match(/^(.*?)(?: \(HP:[0-9]*?\)){0,1}$/)[1];
@@ -46,7 +58,8 @@ var CurationData = module.exports.CurationData = React.createClass({
                     <div className="container curation-data">
                         <div className="row equal-height">
                             <GeneCurationData gene={gene} />
-                            <DiseaseCurationData disease={disease} />
+                            <DiseaseCurationData gdm={this.props.gdm} omimId={this.props.omimId} updateOmimId={this.props.updateOmimId} />
+                            <CuratorCurationData gdm={this.props.gdm} />
                         </div>
                     </div>
                 </div>
@@ -58,32 +71,37 @@ var CurationData = module.exports.CurationData = React.createClass({
 });
 
 
-// Displays the PM item summary, with authors, title, citation, and DOI
+// Displays the PM item summary, with authors, title, citation
 var PmidSummary = module.exports.PmidSummary = React.createClass({
     propTypes: {
-        pmidItem: React.PropTypes.object
+        article: React.PropTypes.object, // Article object to display
+        displayJournal: React.PropTypes.bool // T to display article journal
     },
 
     render: function() {
-        var item = this.props.pmidItem;
+        var article = this.props.article;
+        var date = (/^([\d]{4})(.*?)$/).exec(article.date);
 
         return (
             <p>
-                {item.authors[0]}
-                {item.authors.length > 1 ? <span>, et al </span> : null}
-                {item.title + '. '}
-                {item.nlm_title + ', '}
-                {item.specifier + '. doi: ' + item.doi + '.'}
+                {article.firstAuthor + '. '}
+                {article.title + ' '}
+                {this.props.displayJournal ? <i>{article.journal + '. '}</i> : null}
+                <strong>{date[1]}</strong>{date[2]}
             </p>
         );
     }
 });
 
 
-var CurationPalette = module.exports.CurationNav = React.createClass({
+var CurationPalette = module.exports.CurationPalette = React.createClass({
+    propTypes: {
+        article: React.PropTypes.object
+    },
+
     render: function() {
         return (
-            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.currPmidItem.id}>
+            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.article.pmid}>
                 <Panel title={<CurationPaletteTitles title="Group" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Individual" />} panelClassName="panel-evidence">Stuff</Panel>
@@ -126,8 +144,8 @@ var GeneCurationData = React.createClass({
                     {gene ?
                         <dl>
                             <dt>{gene.symbol}</dt>
-                            <dd><a href={gene.hgncurl} target="_blank">{gene.hgncId}</a></dd>
-                            <dd>EntrezID:<a href={gene.entrezurl} target="_blank">{gene.entrezId}</a></dd>
+                            <dd>HGNC ID: <a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.hgncId + ' in a new window'}>{gene.hgncId}</a></dd>
+                            <dd>NCBI Gene ID: <a href={external_url_map['Entrez'] + gene.entrezId} target="_blank" title={'NCBI page for gene ' + gene.entrezId + ' in a new window'}>{gene.entrezId}</a></dd>
                         </dl>
                     : null}
                 </div>
@@ -139,20 +157,161 @@ var GeneCurationData = React.createClass({
 
 // Display the disease section of the curation data
 var DiseaseCurationData = React.createClass({
+    mixins: [ModalMixin],
+
     propTypes: {
-        disease: React.PropTypes.object // Object to display
+        gdm: React.PropTypes.object, // Object to display
+        omimId: React.PropTypes.string, // OMIM ID to display
+        updateOmimId: React.PropTypes.func // Function to call when OMIM ID changes
     },
 
     render: function() {
-        var disease = this.props.disease;
+        var gdm = this.props.gdm;
+        var disease = gdm.disease;
+        var addEdit = this.props.omimId ? 'Edit' : 'Add';
 
         return (
-            <div className="col-xs-12 col-sm-9 gutter-exc">
+            <div className="col-xs-12 col-sm-3 gutter-exc">
                 <div className="curation-data-disease">
                     {disease ?
                         <dl>
                             <dt>{disease.term}</dt>
-                            <dd>Orphanet ID: <a href={disease.url} target="_blank">{disease.orphaNumber}</a></dd>
+                            <dd>Orphanet ID: <a href={external_url_map['OrphaNet'] + disease.orphaNumber} target="_blank" title={'Orphanet page for ORPHA' + disease.orphaNumber + ' in a new window'}>{'ORPHA' + disease.orphaNumber}</a></dd>
+                            <dd>
+                                <a href="http://omim.org/" target="_blank" title="Online Mendelian Inheritance in Man home page in a new window">OMIM</a> ID: {this.props.omimId ?
+                                    <a href={external_url_map['OMIM'] + this.props.omimId} title={'Open Online Mendelian Inheritance in Man page for OMIM ID ' + this.props.omimId + ' in a new window'} target="_blank">
+                                        {this.props.omimId}
+                                    </a>
+                                : null}&nbsp;
+                                <Modal title="Add/Change OMIM ID" wrapperClassName="edit-omim-modal">
+                                    <span>[</span><a modal={<AddOmimIdModal closeModal={this.closeModal} updateOmimId={this.props.updateOmimId} />} href="#">{addEdit}</a><span>]</span>
+                                </Modal>
+                            </dd>
+                        </dl>
+                    : null}
+                </div>
+            </div>
+        );
+    }
+});
+
+
+// The content of the Add PMID(s) modal dialog box
+var AddOmimIdModal = React.createClass({
+    mixins: [FormMixin],
+
+    propTypes: {
+        closeModal: React.PropTypes.func, // Function to call to close the modal
+        updateOmimId: React.PropTypes.func // Function to call when we have a new OMIM ID
+    },
+
+    // Form content validation
+    validateForm: function() {
+        // Check if required fields have values
+        var valid = this.validateRequired();
+
+        // Valid if the field has only 10 or fewer digits 
+        if (valid) {
+            valid = this.getFormValue('omimid').match(/^[0-9]{1,10}$/i);
+            if (!valid) {
+                this.setFormErrors('omimid', 'Only numbers allowed');
+            }
+        }
+        return valid;
+    },
+
+    // Called when the modal form’s submit button is clicked. Handles validation and updating the OMIM in the GDM.
+    submitForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.setFormValue('omimid', this.refs.omimid.getValue());
+        if (this.validateForm()) {
+            // Form is valid -- we have a good OMIM ID. Close the modal and update the current GDM's OMIM ID
+            this.props.closeModal();
+            var enteredOmimId = this.getFormValue('omimid');
+                this.props.updateOmimId(enteredOmimId);
+        }
+    },
+
+    // Called when the modal form's cancel button is clicked. Just closes the modal like
+    // nothing happened.
+    cancelForm: function(e) {
+        e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
+        this.props.closeModal();
+    },
+
+    render: function() {
+        return (
+            <Form submitHandler={this.submitForm} formClassName="form-std">
+                <div className="modal-body">
+                    <Input type="text" ref="omimid" label="Enter an OMIM ID"
+                        error={this.getFormError('omimid')} clearError={this.clrFormErrors.bind(null, 'omim')}
+                        labelClassName="control-label" groupClassName="form-group" required />
+                </div>
+                <div className='modal-footer'>
+                    <Input type="cancel" inputClassName="btn-default btn-inline-spacer" cancelHandler={this.cancelForm} />
+                    <Input type="submit" inputClassName="btn-primary btn-inline-spacer" title="Add/Change OMIM ID" />
+                </div>
+            </Form>
+        );
+    }
+});
+
+
+// Display the curator data of the curation data
+var CuratorCurationData = React.createClass({
+    propTypes: {
+        gdm: React.PropTypes.object // GDM with curator data to display
+    },
+
+    // Return the latest annotation in the given GDM
+    findLatestAnnotation: function() {
+        var annotations = this.props.gdm.annotations;
+        var latestAnnotation = {};
+        var latestTime = 0;
+        if (annotations && annotations.length) {
+            annotations.forEach(function(annotation) {
+                // Get Unix timestamp version of annotation's time and compare against the saved version.
+                var time = moment(annotation.dateTime).format('x');
+                if (latestTime < time) {
+                    latestAnnotation = annotation;
+                    latestTime = time;
+                }
+            });
+        }
+        return latestAnnotation;
+    },
+
+    render: function() {
+        var gdm = this.props.gdm;
+        var annotationOwners = _.uniq(gdm.annotations.map(function(annotation) {
+            return annotation.owner;
+        })).sort();
+        var latestAnnotation = this.findLatestAnnotation();
+
+        return (
+            <div className="col-xs-12 col-sm-6 gutter-exc">
+                <div className="curation-data-curator">
+                    {gdm ?
+                        <dl className="inline-dl clearfix">
+                            <dt>Status: </dt><dd>{gdm.status}</dd>
+                            <dt>Creator: </dt><dd><a href={'mailto:' + gdm.owner}>{gdm.owner}</a> – {moment(gdm.dateTime).format('YYYY MMM DD, h:mm a')}</dd>
+                            {annotationOwners && annotationOwners.length ?
+                                <div>
+                                    <dt>Participants: </dt>
+                                    <dd>
+                                        {annotationOwners.map(function(owner, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    <a href={'mailto:' + owner}>{owner}</a>
+                                                </span>
+                                            );
+                                        })}
+                                    </dd>
+                                    <dt>Last edited: </dt>
+                                    <dd><a href={'mailto:' + latestAnnotation.owner}>{latestAnnotation.owner}</a> — {moment(latestAnnotation.dateTime).format('YYYY MMM DD, h:mm a')}</dd>
+                                </div>
+                            : null}
                         </dl>
                     : null}
                 </div>
@@ -163,20 +322,18 @@ var DiseaseCurationData = React.createClass({
 
 
 // Display buttons to bring up the PubMed and doi-specified web pages.
+// For now, no doi is available
 var PmidDoiButtons = module.exports.PmidDoiButtons = React.createClass({
     propTypes: {
-        pmidId: React.PropTypes.string, // Numeric string PMID for PubMed page
-        doiId: React.PropTypes.string // DOI ID
+        pmid: React.PropTypes.string // Numeric string PMID for PubMed page
     },
 
     render: function() {
-        var pmidId = this.props.pmidId;
-        var doiId = this.props.doiId;
+        var pmid = this.props.pmid;
 
         return (
             <div className="pmid-doi-btns">
-                {pmidId ? <a className="btn btn-primary" target="_blank" href={'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + pmidId}>PubMed</a> : null}
-                {doiId ? <a className="btn btn-primary" target="_blank" href={'http://dx.doi.org/' + doiId}>doi</a> : null}
+                {pmid ? <a className="btn btn-primary" target="_blank" href={external_url_map['PubMed'] + pmid}>PubMed</a> : null}
             </div>
         );
     }
