@@ -195,4 +195,4 @@ var ImpersonateUserForm = React.createClass({
         );
     }
 });
-globals.content_views.register(ImpersonateUserForm, 'impersonate-user-form');
+globals.content_views.register(ImpersonateUserForm, 'portal', 'impersonate-user');

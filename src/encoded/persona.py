@@ -152,13 +152,6 @@ def session(request):
     return request.session
 
 
-@view_config(route_name='impersonate-user', request_method='GET', permission='impersonate')
-def impersonate_user_form(request):
-    return {
-        '@type': ['impersonate-user-form', 'form']
-    }
-
-
 @view_config(route_name='impersonate-user', request_method='POST',
              validators=[no_validate_item_content_post],
              permission='impersonate')

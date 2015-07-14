@@ -130,5 +130,5 @@ def impersonate(context, request):
         return {
             'name': 'impersonate',
             'title': 'Impersonate User…',
-            'href': '/impersonate-user',
+            'href': '/#!impersonate-user',
         }
