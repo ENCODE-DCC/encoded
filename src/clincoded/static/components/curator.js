@@ -138,7 +138,7 @@ var GeneCurationData = React.createClass({
         var gene = this.props.gene;
 
         return (
-            <div className="col-xs-12 col-sm-4 gutter-exc">
+            <div className="col-xs-12 col-sm-3 gutter-exc">
                 <div className="curation-data-gene">
                     {gene ?
                         <dl>
@@ -169,7 +169,7 @@ var DiseaseCurationData = React.createClass({
         var disease = gdm.disease;
 
         return (
-            <div className="col-xs-12 col-sm-4 gutter-exc">
+            <div className="col-xs-12 col-sm-3 gutter-exc">
                 <div className="curation-data-disease">
                     {disease ?
                         <dl>
@@ -269,11 +269,11 @@ var CuratorCurationData = React.createClass({
         })).sort();
 
         return (
-            <div className="col-xs-12 col-sm-4 gutter-exc">
+            <div className="col-xs-12 col-sm-6 gutter-exc">
                 <div className="curation-data-curator">
                     {gdm ?
                         <dl>
-                            <dt>{gdm.status} – {gdm.owner}</dt>
+                            <dt>{gdm.status} – {gdm.owner} – {gdm.dateTime}</dt>
                             <dd>
                                 {annotationOwners.map(function(owner, i) {
                                     return (
