@@ -1,4 +1,6 @@
 'use strict';
+// Derived from:
+// https://github.com/standard-analytics/pubmed-schema-org/blob/master/lib/pubmed.js
 
 var _ = require('underscore');
 
@@ -142,17 +144,6 @@ function parsePubmed(xml, pmid){
                 }
             }
         }
-
-        var citations = pubmedCitations($PubmedArticle);
-        if (citations) {
-            pkg.citation = citations;
-        }
-
-        var dataset = pubmedDataset($PubmedArticle);
-        if (dataset) {
-            pkg.hasPart = dataset;
-        }
-
     }
 
     return pkg;
@@ -458,90 +449,5 @@ function pubmedSourceOrganization($PubmedArticle){
         return sourceOrganizations;
     }
 
-
-}
-
-
-function pubmedCitations($PubmedArticle){
-
-    var citations = [];
-    var $CommentsCorrectionsList = $PubmedArticle.getElementsByTagName('CommentsCorrectionsList')[0];
-    if($CommentsCorrectionsList){
-        var $CommentsCorrections = $CommentsCorrectionsList.getElementsByTagName('CommentsCorrections');
-        if($CommentsCorrections){
-            Array.prototype.forEach.call($CommentsCorrections, function($CommentsCorrections){
-                var ref = {};
-
-                //var refType = $CommentsCorrections.getAttribute('RefType'); TODO can we use that to infer @type ??
-
-                ref['@type'] = 'ScholarlyArticle';
-
-                var $RefSource = $CommentsCorrections.getElementsByTagName('RefSource')[0];
-                if($RefSource){
-                    ref.description = $RefSource.textContent;
-                }
-
-                var $PMID = $CommentsCorrections.getElementsByTagName('PMID')[0];
-                if($PMID){
-                    ref.sameAs = 'http://www.ncbi.nlm.nih.gov/pubmed/' + $PMID.textContent;
-                }
-
-                if(Object.keys(ref).length){
-                    citations.push(ref);
-                }
-            });
-        }
-    }
-    if(citations.length){
-        return citations;
-    }
-
-}
-
-
-
-/**
- * dataset: <DataBankList> e.g pmid: 19237716
- * TODO add URI from: http://www.nlm.nih.gov/bsd/medline_databank_source.html
- */
-function pubmedDataset($PubmedArticle){
-
-    var datasets = [];
-    var $DataBankLists = $PubmedArticle.getElementsByTagName('DataBankList');
-    if($DataBankLists){
-        Array.prototype.forEach.call($DataBankLists, function($DataBankList){
-            var $DataBanks = $DataBankList.getElementsByTagName('DataBank');
-            if($DataBanks){
-                Array.prototype.forEach.call($DataBanks, function($DataBank){
-                    var catalogName;
-                    var $DataBankName = $DataBank.getElementsByTagName('DataBankName')[0];
-                    if($DataBankName){
-                        catalogName = $DataBankName.textContent;
-                    }
-
-                    if(catalogName){
-                        var $accessionNumberLists = $DataBank.getElementsByTagName('AccessionNumberList');
-                        if($accessionNumberLists){
-                            Array.prototype.forEach.call($accessionNumberLists, function($accessionNumberList){
-                                var $accessionNumbers = $accessionNumberList.getElementsByTagName('AccessionNumber');
-                                if($accessionNumbers){
-                                    Array.prototype.forEach.call($accessionNumbers, function($accessionNumber){
-                                        datasets.push({
-                                            name: $accessionNumber.textContent,
-                                            catalog: { name: catalogName }
-                                        });
-                                    });
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    if(datasets.length){
-        return datasets;
-    }
 
 }

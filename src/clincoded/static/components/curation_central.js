@@ -8,6 +8,7 @@ var modal = require('../libs/bootstrap/modal');
 var form = require('../libs/bootstrap/form');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var RestMixin = require('./rest').RestMixin;
+var parsePubmed = require('../libs/parse-pubmed').parsePubmed;
 
 var Modal = modal.Modal;
 var ModalMixin = modal.ModalMixin;
@@ -254,7 +255,8 @@ var AddPmidModal = React.createClass({
                 return Promise.resolve(article);
             }, e => {
                 // PubMed article not in our DB; go out to PubMed itself to retrieve it as XML
-                return this.getRestDataXml(external_url_map['PubMedSearch'] + enteredPmid).then(data => {
+                return this.getRestDataXml(external_url_map['PubMedSearch'] + enteredPmid).then(xml => {
+                    var pubmedData = parsePubmed(xml, enteredPmid);
                     // Retrieved article data from PubMed; convert it to our DB article object format
                     var newArticle = {};
                     var medline = data.PubmedArticleSet.PubmedArticle[0].MedlineCitation[0];
