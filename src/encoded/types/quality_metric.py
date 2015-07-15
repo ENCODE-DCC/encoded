@@ -34,6 +34,7 @@ class MadCCLrnaMetric(QualityMetric):
         },
     })
     def applies_to(self, request, step_run):
+        # FIXME workflow_run no longer exists
         workflow_run = request.embed(step_run, '@@object').get('workflow_run', {})
         if workflow_run:
             input_files = request.embed(workflow_run, '@@object')['input_files']

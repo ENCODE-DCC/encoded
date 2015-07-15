@@ -345,15 +345,6 @@ def pipeline(testapp, lab, award):
 
 
 @pytest.fixture
-def workflow_run(testapp, pipeline):
-    item = {
-        'pipeline': pipeline['@id'],
-        'status': 'finished',
-    }
-    return testapp.post_json('/workflow_run', item).json['@graph'][0]
-
-
-@pytest.fixture
 def software(testapp, award, lab):
     item = {
         "name": "fastqc",
@@ -398,11 +389,10 @@ def analysis_step_version(testapp, analysis_step, software_version):
 
 
 @pytest.fixture
-def analysis_step_run(testapp, analysis_step_version, workflow_run):
+def analysis_step_run(testapp, analysis_step_version):
     item = {
         'analysis_step_version': analysis_step_version['@id'],
         'status': 'finished',
-        'workflow_run': workflow_run['@id'],
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 

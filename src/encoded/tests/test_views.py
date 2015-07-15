@@ -152,7 +152,6 @@ def test_load_sample_data(
         source,
         submitter,
         target,
-        workflow_run,
         ):
     assert True, 'Fixtures have loaded sample data'
 

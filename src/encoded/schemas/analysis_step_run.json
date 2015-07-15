@@ -23,12 +23,6 @@
             "type": "string",
             "linkTo": "analysis_step_version"
         },
-        "workflow_run": {
-            "title": "Workflow Run",
-            "description": "Reference executed workflow_run objects",
-            "type": "string",
-            "linkTo": "workflow_run"
-        },
         "dx_applet_details": {
             "title": "DNA Nexus applet details",
             "description": "Metadata capture from DNA Nexus applets",

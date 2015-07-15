@@ -14,11 +14,11 @@ def analysis_step_version_with_alias(testapp, analysis_step, software_version):
 
 
 @pytest.fixture
-def analysis_step_run_1(analysis_step, workflow_run):
+def analysis_step_run_1(analysis_step):
     item = {
         'analysis_step': analysis_step['uuid'],
         'status': 'finished',
-        'workflow_run': workflow_run['uuid'],
+        'workflow_run': 'does not exist',
     }
     return item
 
@@ -27,3 +27,4 @@ def test_analysis_step_run_1_2(registry, upgrader, analysis_step_run_1, analysis
     value = upgrader.upgrade('analysis_step_run', analysis_step_run_1, current_version='1', target_version='2', registry=registry)
     assert value['analysis_step_version'] == analysis_step_version_with_alias['uuid']
     assert 'analysis_step' not in value
+    assert 'workflows_run' not in value
