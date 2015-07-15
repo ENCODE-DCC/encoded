@@ -117,6 +117,7 @@ var Input = module.exports.Input = React.createClass({
             React.PropTypes.string,
             React.PropTypes.object
         ]), // <label> for input; string or another React component
+        placeholder: React.PropTypes.string, // <input> placeholder text
         error: React.PropTypes.string, // Error message to display below input
         labelClassName: React.PropTypes.string, // CSS classes to add to labels
         groupClassName: React.PropTypes.string, // CSS classes to add to control groups (label/input wrapper div)
@@ -163,7 +164,7 @@ var Input = module.exports.Input = React.createClass({
                 inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 var innerInput = (
                     <span>
-                        <input className={inputClasses} type={this.props.type} id={this.props.id} name={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} />
+                        <input className={inputClasses} type={this.props.type} id={this.props.id} name={this.props.id} placeholder={this.props.placeholder} ref="input" value={this.props.value} onChange={this.props.clearError} />
                         <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                     </span>
                 );
