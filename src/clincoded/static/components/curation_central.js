@@ -8,6 +8,7 @@ var modal = require('../libs/bootstrap/modal');
 var form = require('../libs/bootstrap/form');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var RestMixin = require('./rest').RestMixin;
+var parsePubmed = require('../libs/parse-pubmed').parsePubmed;
 
 var Modal = modal.Modal;
 var ModalMixin = modal.ModalMixin;
@@ -254,27 +255,8 @@ var AddPmidModal = React.createClass({
                 return Promise.resolve(article);
             }, e => {
                 // PubMed article not in our DB; go out to PubMed itself to retrieve it as XML
-                return this.getRestDataXml(external_url_map['PubMedSearch'] + enteredPmid).then(data => {
-                    // Retrieved article data from PubMed; convert it to our DB article object format
-                    var newArticle = {};
-                    var medline = data.PubmedArticleSet.PubmedArticle[0].MedlineCitation[0];
-                    var article = medline.Article[0];
-                    newArticle.pmid = medline.PMID[0]['_'];
-                    newArticle.title = article.ArticleTitle[0];
-                    var journal = article.Journal[0];
-                    var journalIssue = journal.JournalIssue[0];
-                    var pubDateObj = journalIssue.PubDate[0];
-                    var pubDate;
-                    if (pubDateObj.MedlineDate) {
-                        pubDate = pubDateObj.MedlineDate[0];
-                    } else if (pubDateObj.Year || pubDateObj.Month) {
-                        pubDate = pubDateObj.Year[0] + (pubDateObj.Month ? ' ' + pubDateObj.Month[0] : '');
-                    }
-                    newArticle.journal = journal.Title[0];
-                    newArticle.date = (pubDate ? pubDate + ';' : '') + journalIssue.Volume[0] + '(' + journalIssue.Issue[0] + '):' + article.Pagination[0].MedlinePgn[0];
-                    var author = article.AuthorList[0].Author[0];
-                    newArticle.firstAuthor = author.LastName[0] + ' ' + author.Initials[0];
-                    newArticle.abstract = article.Abstract[0].AbstractText[0];
+                return this.getRestDataXml(external_url_map['PubMedSearch'] + enteredPmid).then(xml => {
+                    var newArticle = parsePubmed(xml, enteredPmid);
                     return this.postRestData('/articles/', newArticle).then(data => {
                         return Promise.resolve(data['@graph'][0]);
                     });
