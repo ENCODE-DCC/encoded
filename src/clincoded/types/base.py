@@ -41,7 +41,6 @@ ALLOW_LAB_SUBMITTER_EDIT = [
 ]
 
 ALLOW_CURRENT = [
-    #(Allow, Everyone, 'view'),
     (Allow, Authenticated, 'view'),
     (Allow, 'group.admin', 'edit'),
 ]
