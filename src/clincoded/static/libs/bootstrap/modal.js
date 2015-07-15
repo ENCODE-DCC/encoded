@@ -14,36 +14,66 @@ var React = require('react');
 // modal. If you don't pass this property, no Cancel button is displayed.
 
 
-var Modal = module.exports.Modal = React.createClass({
-    propTypes: {
-        title: React.PropTypes.string.isRequired, // Title in modal's header
-        btnOk: React.PropTypes.string, // Title of OK button
-        btnCancel: React.PropTypes.string // Title of Cancel button
+module.exports.ModalMixin = {
+    childContextTypes: {
+        modalOpen: React.PropTypes.bool, // T if modal is visible
+        openModal: React.PropTypes.func, // Function to open the modal
+        closeModal: React.PropTypes.func // Function to close the modal
+    },
+
+    // Retrieve current React context
+    getChildContext: function() {
+        return {
+            modalOpen: this.state.modalOpen,
+            openModal: this.openModal,
+            closeModal: this.closeModal
+        };
     },
 
     getInitialState: function() {
         return {
-            modal: null,
-            visible: false
+            modalOpen: false // T if the model and blocking backdrop are visible
         };
     },
 
-    handleClick: function(name, e) {
-        this.setState({modal: name, visible: true});
+    // Open the modal
+    openModal: function() {
+        this.setState({modalOpen: true});
+
+        // Add class to body element to make modal-backdrop div visible
         document.body.classList.add('modal-open');
     },
 
-    handleBtnOk: function() {
-        this.closeModal();
-    },
-
-    handleBtnCancel: function() {
-        this.closeModal();
-    },
-
+    // Close the modal
     closeModal: function() {
-        this.setState({visible: false});
+        this.setState({modalOpen: false});
+
+        // Remove class from body element to make modal-backdrop div visible
         document.body.classList.remove('modal-open');
+    }
+};
+
+
+var Modal = module.exports.Modal = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title in modal's header
+        wrapperClassName: React.PropTypes.string // CSS classes for modal trigger wrapper
+    },
+
+    contextTypes: {
+        openModal: React.PropTypes.func, // Function to open the modal
+        modalOpen: React.PropTypes.bool // T if modal is visible
+    },
+
+    getInitialState: function() {
+        return {
+            modal: null
+        };
+    },
+
+    handleClick: function(el) {
+        this.setState({modal: el});
+        this.context.openModal();
     },
 
     render: function() {
@@ -64,9 +94,9 @@ var Modal = module.exports.Modal = React.createClass({
         var btnOkTitle = this.props.btnOk ? this.props.btnOk : 'OK';
 
         return (
-            <div>
+            <div className={this.props.wrapperClassName}>
                 {children}
-                {this.state.visible ?
+                {this.context.modalOpen ?
                     <div>
                         <div className="modal" style={{display: 'block'}}>
                             <div className="modal-dialog">
@@ -75,10 +105,6 @@ var Modal = module.exports.Modal = React.createClass({
                                         <h4 className="modal-title">{this.props.title}</h4>
                                     </div>
                                     {this.state.modal}
-                                    <div className='modal-footer'>
-                                        {this.props.btnCancel ? <button className="btn btn-default" onClick={this.handleBtnCancel}>{this.props.btnCancel}</button> : null}
-                                        <button className="btn btn-primary" onClick={this.handleBtnOk}>{btnOkTitle}</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
