@@ -1745,7 +1745,7 @@
     "html5shiv": {
       "version": "3.7.2",
       "from": "html5shiv@>=3.7.2 <4.0.0",
-      "resolved": "https://registry.npmjs.org/html5shiv/-/html5shiv-3.7.2.tgz"
+      "resolved": "git+https://github.com/aFarkas/html5shiv.git#3.7.2"
     },
     "immutable": {
       "version": "3.7.4",
