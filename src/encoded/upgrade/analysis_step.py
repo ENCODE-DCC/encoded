@@ -58,3 +58,19 @@ def analysis_step_1_2(value, system):
 
     value['input_file_types'] = input_mapping[value['name']]
     value['output_file_types'] = output_mapping[value['name']]
+
+
+@upgrade_step('analysis_step', '2', '3')
+def analysis_step_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/3019
+
+    import re
+
+    if 'output_file_types' in value:
+        for i in range(0, len(value['output_file_types'])):
+            string = value['output_file_types'][i]
+            value['output_file_types'][i] = re.sub('multi-mapped', 'all', string)
+    if 'input_file_types' in value:
+        for i in range(0, len(value['input_file_types'])):
+            string = value['input_file_types'][i]
+            value['input_file_types'][i] = re.sub('multi-mapped', 'all', string)
