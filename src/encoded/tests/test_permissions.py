@@ -83,32 +83,39 @@ def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
-def test_users_view_details_admin(submitter, testapp):
+def test_user_view_details_admin(submitter, access_key, testapp):
     res = testapp.get(submitter['@id'])
     assert 'email' in res.json
+    assert 'access_keys' in res.json
+    assert 'access_key_id' in res.json['access_keys'][0]
 
 
-def test_users_view_details_self(submitter, submitter_testapp):
+def test_users_view_details_self(submitter, access_key, submitter_testapp):
     res = submitter_testapp.get(submitter['@id'])
     assert 'email' in res.json
+    assert 'access_keys' in res.json
+    assert 'access_key_id' in res.json['access_keys'][0]
 
 
 def test_users_view_basic_authenticated(submitter, authenticated_testapp):
     res = authenticated_testapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_view_basic_anon(submitter, anontestapp):
     res = anontestapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_view_basic_indexer(submitter, indexer_testapp):
     res = indexer_testapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_list_denied_authenticated(authenticated_testapp):

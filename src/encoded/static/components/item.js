@@ -300,6 +300,9 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
         }
+        if (p.formInput == 'textarea') {
+            props.input = <textarea rows="4" />;
+        }
         return ReactForms.schema.Scalar(props);
     }
 };

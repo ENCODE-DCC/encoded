@@ -167,8 +167,8 @@
         "title": "bam-to-bigwig-tophat",
         "input_file_types": ["alignments"],
         "output_file_types": [
-            "minus strand signal of multi-mapped reads",
-            "plus strand signal of multi-mapped reads",
+            "minus strand signal of all reads",
+            "plus strand signal of all reads",
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
@@ -180,8 +180,8 @@
         "title": "bam-to-bigwig-star",
         "input_file_types": ["alignments"],
         "output_file_types": [
-            "minus strand signal of multi-mapped reads",
-            "plus strand signal of multi-mapped reads",
+            "minus strand signal of all reads",
+            "plus strand signal of all reads",
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
