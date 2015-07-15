@@ -11,6 +11,7 @@ def includeme(config):
 
 def _filtered_schema(collection, request):
     schema = collection.type_info.schema.copy()
+    schema['@type'] = ['jsonschema']
 
     properties = OrderedDict()
     for k, v in schema['properties'].items():
