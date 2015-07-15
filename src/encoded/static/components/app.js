@@ -230,7 +230,7 @@ var App = React.createClass({
                                 {errors}
                                 <div id="layout-footer"></div>
                             </div>
-                            <Footer session={this.state.session} loadingComplete={this.state.loadingComplete} user_actions={this.state.user_actions} />
+                            <Footer session={this.state.session} loadingComplete={this.state.loadingComplete} />
                         </div>
                     </div>
                 </body>

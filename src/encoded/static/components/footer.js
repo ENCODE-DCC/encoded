@@ -6,13 +6,12 @@ var Footer = React.createClass({
         console.log('render footer');
         var session = this.props.session;
         var disabled = !this.props.loadingComplete;
-        var user_actions = this.props.user_actions;
         var userActionRender;
 
         if (!(session && session['auth.userid'])) {
             userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
         } else {
-            userActionRender = <a href="#" data-trigger={user_actions[0].trigger}>Submitter sign out</a>;
+            userActionRender = <a href="#" data-trigger="logout">Submitter sign out</a>;
         }
         return (
             <footer id="page-footer" className="page-footer">
