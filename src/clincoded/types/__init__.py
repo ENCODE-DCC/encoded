@@ -76,10 +76,6 @@ class ControlGroup(Item):
     item_type = 'controlGroup'
     schema = load_schema('clincoded:schemas/controlGroup.json')
     name_key = 'uuid'
-    embedded = [
-        'commonDiagnosis',
-        'method',
-    ]
 
 @collection(
     name='gdm',
@@ -121,8 +117,6 @@ class Gdm(Item):
         'annotations.groups.individualIncluded.variants',
         'annotations.groups.individualIncluded.assessments',
         'annotations.groups.control',
-        'annotations.groups.control.commonDiagnosis',
-        'annotations.groups.control.method',
         'annotations.families',
         'annotations.families.commonDiagnosis',
         'annotations.families.method',
@@ -177,8 +171,6 @@ class Annotation(Item):
         'groups.individualIncluded.variants',
         'groups.individualIncluded.assessments',
         'groups.control',
-        'groups.control.commonDiagnosis',
-        'groups.control.method',
         'families',
         'families.commonDiagnosis',
         'families.method',
@@ -231,9 +223,7 @@ class Group(Item):
         'individualIncluded.method',
         'individualIncluded.variants',
         'individualIncluded.assessments',
-        'control',
-        'control.commonDiagnosis',
-        'control.method'
+        'control'
     ]
 
 @collection(

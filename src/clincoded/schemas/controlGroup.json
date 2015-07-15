@@ -21,13 +21,6 @@
             "description": "An user entered label for the control group",
             "type": "string"
         },
-        "commonDiagnosis": {
-            "title": "Common Diagnosis",
-            "description": "OrphaNumber of common diagnosis for the group",
-            "type": "string",
-            "default": "",
-            "linkTo": "orphaPhenotype"
-        },
         "numberOfMale": {
             "title": "Number of Male",
             "description": "Count of Male in the group",
@@ -40,12 +33,76 @@
             "type": "string",
             "default": ""
         },
-        "method": {
-            "title": "Method",
-            "description": "Mothed id",
+        "countryOfOrigin": {
+            "title": "Country Of Origin",
+            "description": "Country in which the group original live",
+            "type": "string",
+            "default": ""
+        },
+        "ethnicity": {
+            "title": "Ethnicity",
+            "description": "Ethnicity",
             "type": "string",
             "default": "",
-            "linkTo": "method"
+            "enum": [
+                "",
+                "Hispanic or Latino",
+                "Not Hispanic or Latino"
+            ]
+        },
+        "race": {
+            "title": "Race",
+            "description": "Race",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "American Indian or Alaska Native",
+                "Asian",
+                "Black",
+                "Native Hawaiian or Other Pacific Islander",
+                "White",
+                "Mixed",
+                "Unknown"
+            ]
+        },
+        "ageRangeType": {
+            "title": "Type of Age Range",
+            "description": "Type of age range in group",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Onset",
+                "Report",
+                "Diagnosis",
+                "Death"
+            ]
+        },
+        "ageRangeFrom": {
+            "title": "Age Range From",
+            "description": "Yongest age in the group",
+            "type": "string",
+            "default": ""
+        },
+        "ageRangeTo": {
+            "title": "Age Range To",
+            "description": "Oldest age in the group",
+            "type": "string",
+            "default": ""
+        },
+        "ageRangeUnit": {
+            "title": "Age Range Unit",
+            "description": "Unit of age",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Days",
+                "Weeks",
+                "Months",
+                "Years"
+            ]
         },
         "numberOfControls": {
             "title": "Number of Controls",
