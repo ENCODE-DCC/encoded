@@ -157,15 +157,11 @@ var UserActions = React.createClass({
         var session = this.props.session;
         var disabled = !this.props.loadingComplete;
         if (!(session && session['auth.userid'])) {
-            return (
-                <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
-                    <NavItem data-trigger="login" disabled={disabled}>Sign in</NavItem>
-                </Nav>
-            );
+            return null;
         }
         var actions = this.props.user_actions.map(function (action) {
             return (
-                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+                <NavItem href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     {action.title}
                 </NavItem>
             );

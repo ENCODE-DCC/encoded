@@ -1,4 +1,6 @@
 from browserid.errors import TrustError
+from contentbase.validation import ValidationFailure
+from contentbase.validators import no_validate_item_content_post
 from pyramid.authentication import CallbackAuthenticationPolicy
 from pyramid.config import ConfigurationError
 from pyramid.httpexceptions import (
@@ -17,6 +19,7 @@ from pyramid.settings import (
 from pyramid.view import (
     view_config,
 )
+
 
 _marker = object()
 
@@ -42,6 +45,7 @@ def includeme(config):
     config.add_route('login', 'login')
     config.add_route('logout', 'logout')
     config.add_route('session', 'session')
+    config.add_route('impersonate-user', 'impersonate-user')
 
 
 class LoginDenied(HTTPForbidden):
@@ -108,7 +112,7 @@ def login(request):
     else:
         namespace, userid = login.split('.', 1)
     if namespace != 'persona':
-        request.session['user_properties'] = {}
+        request.session.invalidate()
         request.response.headerlist.extend(forget(request))
         raise LoginDenied()
     request.session['user_properties'] = request.embed('/current-user', as_user=userid)
@@ -121,7 +125,7 @@ def login(request):
 def logout(request):
     """View to forget the user"""
     request.session.get_csrf_token()
-    request.session['user_properties'] = {}
+    request.session.invalidate()
     request.response.headerlist.extend(forget(request))
     if asbool(request.params.get('redirect', True)):
         raise HTTPFound(location=request.resource_path(request.root))
@@ -146,3 +150,18 @@ def session(request):
         return request.session
     request.session['user_properties'] = request.embed('/current-user', as_user=userid)
     return request.session
+
+
+@view_config(route_name='impersonate-user', request_method='POST',
+             validators=[no_validate_item_content_post],
+             permission='impersonate')
+def impersonate_user(request):
+    """As an admin, impersonate a different user."""
+    userid = request.validated['userid']
+    user = request.embed('/current-user', as_user=userid)
+    if not user:
+        raise ValidationFailure('body', ['userid'], 'User not found.')
+    request.session['user_properties'] = user
+    request.session['disable_persona'] = True
+    request.response.headerlist.extend(remember(request, 'mailto.' + userid))
+    return {'@graph': [request.embed('/current-user', as_user=userid)]}
