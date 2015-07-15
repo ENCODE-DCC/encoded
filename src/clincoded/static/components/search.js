@@ -28,12 +28,6 @@ var AuditMixin = audit.AuditMixin;
         family: {title: 'Famlies'},
         individual: {title: 'Individuals'},
         assessment: {title: 'Assessments'},
-        orphaPhenotype: {title: 'Orphanet Phenotypes'},
-        article: {title: 'Articles'},
-        gdm: {title: 'GDMs'},
-        annotation: {title: 'Annotations'},
-        group: {title: 'Groups'},
-        family: {title: 'Famlies'},
     };
 
     var Listing = module.exports.Listing = function (props) {
