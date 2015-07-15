@@ -42,9 +42,9 @@ var portal = {
 };
 
 
-var user_actions = [
-    {id: 'signout', title: 'Sign out', trigger: 'logout'}
-];
+var profile_action = {id: 'profile', title: 'Profile', trigger: 'profile'};
+var logout_action = {id: 'signout', title: 'Sign out', trigger: 'logout'};
+
 
 // See https://github.com/facebook/react/issues/2323
 var Title = React.createClass({
@@ -67,6 +67,7 @@ var App = React.createClass({
     mixins: [mixins.Persona, mixins.HistoryAndTriggers],
     triggers: {
         login: 'triggerLogin',
+        profile: 'triggerProfile',
         logout: 'triggerLogout',
     },
 
@@ -74,7 +75,6 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            user_actions: user_actions,
             dropdownComponent: undefined
         };
     },
@@ -113,6 +113,10 @@ var App = React.createClass({
             e.preventDefault();
             this.handleDropdownChange(undefined);
         }
+    },
+
+    triggerProfile: function() {
+        this.navigate(this.state.session.user_properties['@id']);
     },
 
     // Once the app component is mounted, bind keydowns to handleKey function
@@ -184,6 +188,14 @@ var App = React.createClass({
             this.historyEnabled = false;
         }
 
+        // build user menu
+        var session = this.state.session;
+        if (session.user_properties !== undefined) {
+            var user_actions = [profile_action];
+            Array.prototype.push.apply(user_actions, session.user_properties.user_actions || []);
+            user_actions.push(logout_action);
+        }
+
         return (
             <html lang="en">
                 <head>
@@ -210,7 +222,7 @@ var App = React.createClass({
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context_actions}
-                                        user_actions={this.state.user_actions} session={this.state.session}
+                                        user_actions={user_actions} session={session}
                                         loadingComplete={this.state.loadingComplete} />
                                 <div id="content" className="container" key={key}>
                                     {content}

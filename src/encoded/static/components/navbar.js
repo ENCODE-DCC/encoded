@@ -161,7 +161,7 @@ var UserActions = React.createClass({
         }
         var actions = this.props.user_actions.map(function (action) {
             return (
-                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+                <NavItem href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     {action.title}
                 </NavItem>
             );
