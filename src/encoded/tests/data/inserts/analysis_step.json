@@ -241,8 +241,8 @@
         "uuid": "b9d7eea7-8546-41f4-80e3-0fbee31fba8b",
         "input_file_types": ["alignments"],
         "output_file_types": [
-            "minus strand signal of multi-mapped reads",
-            "plus strand signal of multi-mapped reads",
+            "minus strand signal of all reads",
+            "plus strand signal of all reads",
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
@@ -256,8 +256,8 @@
         "uuid": "5b5bc4ed-1c35-4d74-ace2-76609df36846",
         "input_file_types": ["alignments"],
         "output_file_types": [
-            "minus strand signal of multi-mapped reads",
-            "plus strand signal of multi-mapped reads",
+            "minus strand signal of all reads",
+            "plus strand signal of all reads",
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
