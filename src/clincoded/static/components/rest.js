@@ -1,15 +1,16 @@
 'use strict';
 var React = require('react');
 var parseXml = require('xml2js').parseString;
+var parsePubmed = require('../libs/parse-pubmed').parsePubmed;
 
 
 // Promise-generating version of xml2js entry point
 function parseXmlAsync(xml){
     return new Promise(function(resolve, reject){
-         parseXml(xml, function(err, data){
-             if (err !== null) { return reject(err); }
-             resolve(data);
-         });
+        parseXml(xml, function(err, data){
+            if (err !== null) { return reject(err); }
+            resolve(data);
+        });
     });
 }
 
@@ -47,6 +48,8 @@ var RestMixin = module.exports.RestMixin = {
             // Unsuccessful retrieval
             throw error;
         }).then(xml => {
+            var pkg = parsePubmed(xml, 0);
+            console.log(pkg);
             // Successful retrieval of XML
             return parseXmlAsync(xml);
         });
