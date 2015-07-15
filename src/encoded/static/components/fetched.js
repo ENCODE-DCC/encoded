@@ -12,6 +12,10 @@ var Param = module.exports.Param = React.createClass({
         fetch: React.PropTypes.func
     },
 
+    getDefaultProps: function() {
+        return {type: 'json'};
+    },
+
     getInitialState: function () {
         return {
             fetchedRequest: undefined,
@@ -45,15 +49,36 @@ var Param = module.exports.Param = React.createClass({
                 fetchedRequest: undefined,
             });
         }
-        request = this.context.fetch(url, {
-            headers: {'Accept': 'application/json'}
-        });
-        request.then(response => {
-            if (!response.ok) throw response;
-            return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
-        .then(this.receive);
+        // XXX Errors should really result in a separate component being rendered.
+        if (this.props.type === 'json') {
+            request = this.context.fetch(url, {
+                headers: {'Accept': 'application/json'}
+            });
+            request.then(response => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .then(this.receive);
+        } else if (this.props.type === 'text') {
+            request = this.context.fetch(url);
+            request.then(response => {
+                if (!response.ok) throw response;
+                return response.text();
+            })
+            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .then(this.receive);
+        } else if (this.props.type === 'blob') {
+            request = this.context.fetch(url);
+            request.then(response => {
+                if (!response.ok) throw response;
+                return response.blob();
+            })
+            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .then(this.receive);
+        } else {
+            throw "Unsupported type: " + this.props.type;
+        }
 
         this.setState({
             fetchedRequest: request

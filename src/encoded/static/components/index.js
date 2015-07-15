@@ -31,5 +31,6 @@ require('./edit');
 require('./inputs');
 require('./blocks');
 require('./user');
+require('./schema');
 
 module.exports = require('./app');
