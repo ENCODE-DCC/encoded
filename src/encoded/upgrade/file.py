@@ -170,7 +170,8 @@ def file_3_4(value, system):
     root = find_root(context)
     dataset = root.get_by_uuid(value['dataset']).upgrade_properties()
 
-    value.pop('download_path')
+    if 'download_path' in value:
+        value.pop('download_path')
 
     value['lab'] = dataset['lab']
     value['award'] = dataset['award']

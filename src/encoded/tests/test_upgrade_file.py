@@ -61,18 +61,6 @@ def file_4(file_base):
 def file_5(file_base):
     item = file_base.copy()
     item.update({
-        'schema_version': '4',
-        'file_format': 'fastq',
-        'download_path': 'bob.bigBed',
-        'output_type': 'reads'
-    })
-    return item
-
-
-@pytest.fixture
-def file_6(file_base):
-    item = file_base.copy()
-    item.update({
         'schema_version': '5',
         'file_format': 'bigWig',
         'output_type': 'signal of multi-mapped reads'
@@ -120,9 +108,10 @@ def test_file_upgrade4(root, upgrader, file_4, file, threadlocals, dummy_request
     assert value['content_md5sum'] == content_md5sum
 
 
-def test_file_upgrade5(root, upgrader, file_6, file, threadlocals, dummy_request):
-    context = root.get_by_uuid(file['uuid'])
-    dummy_request.context = context
-    value = upgrader.upgrade('file', file_6, target_version='6', context=context)
+def test_file_upgrade5(root, upgrader, registry, file_5, file, threadlocals, dummy_request):
+    #context = root.get_by_uuid(file['uuid'])
+    #dummy_request.context = context
+    value = upgrader.upgrade(
+        'file', file_5, current_version='5', target_version='6', registry=registry)
     assert value['schema_version'] == '6'
-    assert value['output_type'] != 'signal of all reads'
+    assert value['output_type'] == 'signal of all reads'
