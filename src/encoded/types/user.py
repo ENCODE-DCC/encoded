@@ -128,7 +128,7 @@ def impersonate(context, request):
     # which ensures that the user represented by 'context' is also an effective principal
     if request.has_permission('impersonate'):
         return {
-            'name': 'impersonate',
+            'id': 'impersonate',
             'title': 'Impersonate User…',
             'href': '/#!impersonate-user',
         }
