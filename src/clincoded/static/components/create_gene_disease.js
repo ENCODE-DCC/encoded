@@ -45,13 +45,6 @@ var CreateGeneDisease = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    getHpoText: function(value) {
-        var matchingValue = _(hpoValues).find(function(hpoValue) {
-            return hpoValue.value === value;
-        });
-        return matchingValue ? matchingValue.text : '';
-    },
-
     // Form content validation
     validateForm: function() {
         // Check if required fields have values
@@ -74,11 +67,13 @@ var CreateGeneDisease = React.createClass({
         // Get values from form and validate them
         this.setFormValue('hgncgene', this.refs.hgncgene.getValue().toUpperCase());
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
-        this.setFormValue('hpo', this.refs.hpo.getValue());
+        var hpoDOMNode = this.refs.hpo.refs.input.getDOMNode();
+        this.setFormValue('hpo', hpoDOMNode[hpoDOMNode.selectedIndex].text);
         if (this.validateForm()) {
             // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
             var geneId = this.getFormValue('hgncgene');
+            var mode = this.getFormValue('hpo');
 
             // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
             // If either error out, set the form error fields
@@ -88,11 +83,27 @@ var CreateGeneDisease = React.createClass({
             ], [
                 function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
                 function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
-            ]).then(
-                // Create the GDM, called as a thennable method
-                this.createGdm
-            ).catch(function(e) {
-                parseAndLogError.bind(undefined, 'fetchedRequest');
+            ]).then(data => {
+                // Load GDM if one with matching gene/disease/mode already exists
+                return this.getRestData(
+                    '/search/?type=gdm&disease.orphaNumber=' + orphaId + '&gene.symbol=' + geneId + '&modeInheritance=' + mode
+                ).then(gdmSearch => {
+                    // Found matching GDM. Get its UUID and pass it to curation central page
+                    if (gdmSearch.total === 0) {
+                        throw gdmSearch;
+                    } else {
+                        var uuid = gdmSearch['@graph'][0].uuid;
+                        this.context.navigate('/curation-central/?gdm=' + uuid);
+                    }
+                });
+            }).catch(e => {
+                if (e && e.total === 0) {
+                    // No matching GDM found; make a new GDM
+                    this.createGdm();
+                } else {
+                    // Some unexpected error happened
+                    parseAndLogError.bind(undefined, 'fetchedRequest');
+                }
             });
         }
     },
@@ -103,7 +114,7 @@ var CreateGeneDisease = React.createClass({
         var newGdm = {
             gene: this.getFormValue('hgncgene'),
             disease: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
-            modeInheritance: this.getHpoText(this.getFormValue('hpo')),
+            modeInheritance: this.getFormValue('hpo'),
             owner: this.props.session['auth.userid'],
             status: 'Creation',
             dateTime: moment().format()
