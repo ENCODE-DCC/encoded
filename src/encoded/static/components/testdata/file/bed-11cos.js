@@ -11,7 +11,8 @@ module.exports = {
     "md5sum": "9e39f46aa18273f269360535fce32ed2",
     "output_type": "UniformlyProcessedPeakCalls",
     "status": "released",
-    "analysis_step": require('../analysis_step/encode-2-step'),
+    "analysis_step_version": require('../analysis_step/step-version-1'), // @calculated_property
+    "step_run": require('../analysis_step/step-run-1'),
     "submitted_by": "amet.fusce@est.fermentum",
     "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
     "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"

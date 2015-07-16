@@ -74,3 +74,6 @@ def analysis_step_2_3(value, system):
         for i in range(0, len(value['input_file_types'])):
             string = value['input_file_types'][i]
             value['input_file_types'][i] = re.sub('multi-mapped', 'all', string)
+
+    # http://redmine.encodedcc.org/issues/3074
+    del value['software_versions']

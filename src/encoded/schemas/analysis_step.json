@@ -4,7 +4,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "title", "analysis_step_types", "software_versions", "input_file_types"],
+    "required": ["name", "title", "analysis_step_types", "input_file_types"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases", "name"],
     "mixinProperties": [
@@ -58,16 +58,6 @@
                      "interaction calling"
                  ]
              }
-        },
-        "software_versions": {
-            "title": "Software version",
-            "description": "The software version used in the analysis.",
-            "type": "array",
-            "items": {
-                "comment": "See software_version.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "software_version"
-            }
         },
         "input_file_types": {
             "title": "Input file types",

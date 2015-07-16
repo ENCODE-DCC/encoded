@@ -108,7 +108,7 @@
             "title": "Biosample treatment",
             "type": "array"
         },
-        "files.pipeline.title": {
+        "files.analysis_step_version.analysis_step.pipelines.title": {
             "title": "Pipeline",
             "type": "string"
         },

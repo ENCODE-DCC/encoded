@@ -140,7 +140,10 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
 
     testapp = internal_app(config_uri, app_name, username)
     connection = testapp.app.registry[CONNECTION]
-    uuids = [str(uuid) for uuid in connection]
+    if types is None:
+        uuids = [str(uuid) for uuid in connection]
+    else:
+        uuids = [str(uuid) for item_type in types for uuid in connection.__iter__(item_type)]
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))
 
