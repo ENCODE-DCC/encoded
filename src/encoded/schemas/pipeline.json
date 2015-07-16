@@ -37,6 +37,7 @@
             "default": "in progress",
             "enum": [
                 "in progress",
+                "replaced",
                 "deleted",
                 "archived",
                 "active"
