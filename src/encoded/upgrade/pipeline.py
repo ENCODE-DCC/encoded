@@ -17,11 +17,11 @@ def pipeline_2_3(value, system):
     value.pop('end_points', None)
 
     # http://redmine.encodedcc.org/issues/3074 note 16
-    if value['accession'] in ['ENCPL739VZK', 'ENCPL086BPC', 'ENCPL611KAU']:
+    if value.get('accession') in ['ENCPL739VZK', 'ENCPL086BPC', 'ENCPL611KAU']:
         value['status'] = 'replaced'
-    elif value['accession'] == 'ENCPL521QAX':
+    elif value.get('accession') == 'ENCPL521QAX':
         value['status'] = 'deleted'
-    elif value['accession'] == 'ENCPL002LSE':
+    elif value.get('accession') == 'ENCPL002LSE':
         value['analysis_steps'] = [
             '9ca04da2-5ef7-4ba1-b78c-41dfc4be0c11',  # /analysis-steps/index-rsem-v-1-0/
             '76635694-c515-4a41-9976-ec59bb8b8522',  # /analysis-steps/index-star-v-1-0/
@@ -32,7 +32,7 @@ def pipeline_2_3(value, system):
             '67dec549-0feb-493c-8b3c-830b34207076',  # /analysis-steps/lrna-se-star-unstranded-signals-for-tophat-step-v-1/
             '267a9410-348b-4f32-a1bf-9392aacb8f61'   # /analysis-steps/lrna-se-star-unstranded-signal-step-v-1/
             ]
-    elif value['accession'] == 'ENCPL002LPE':
+    elif value.get('accession') == 'ENCPL002LPE':
         value['analysis_steps'] = [
             '9ca04da2-5ef7-4ba1-b78c-41dfc4be0c11',  # /analysis-steps/index-rsem-v-1-0/
             '76635694-c515-4a41-9976-ec59bb8b8522',  # /analysis-steps/index-star-v-1-0/
