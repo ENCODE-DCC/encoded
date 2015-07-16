@@ -1,0 +1,18 @@
+[
+    {
+        "label": "ControlGroup01",
+        "numberOfMale": "12",
+        "numberOfFemale": "10",
+        "numberOfControls": "22",
+        "numberOfControlAlleles": "18",
+        "uuid": "edbb7745-25b4-11e5-9520-60f81dc5b05a"
+    },
+    {
+        "label": "ControlGroup02",
+        "numberOfMale": "9",
+        "numberOfFemale": "10",
+        "numberOfControls": "19",
+        "numberOfControlAlleles": "15",
+        "uuid": "8f952659-2747-11e5-a501-60f81dc5b05a"
+    }
+]
