@@ -77,3 +77,24 @@ def analysis_step_2_3(value, system):
 
     # http://redmine.encodedcc.org/issues/3074
     del value['software_versions']
+    
+    # http://redmine.encodedcc.org/issues/3074 note 16 and 3073
+    if value.get('name') in ['lrna-se-star-alignment-step-v-2-0',
+                            'lrna-pe-star-alignment-step-v-2-0',
+                            'lrna-pe-star-stranded-signal-step-v-2-0',
+                            'lrna-pe-star-stranded-signals-for-tophat-step-v-2-0',
+                            'lrna-se-star-unstranded-signal-step-v-2-0',
+                            'lrna-se-star-unstranded-signals-for-tophat-step-v-2-0',
+                            'index-star-v-2-0',
+                            'rampage-grit-peak-calling-step-v-1-1'
+                            ]:
+        value['status'] = 'deleted'
+
+    if value.get('name') == 'lrna-pe-rsem-quantification-v-1':
+        value['parents'] = ['ace7163c-563a-43d6-a86f-686405af167d', #/analysis-steps/lrna-pe-star-alignment-step-v-1/'
+                            '9ca04da2-5ef7-4ba1-b78c-41dfc4be0c11'  #/analysis-steps/index-rsem-v-1-0/'
+                            ]
+    elif value.get('name') == 'lrna-se-rsem-quantification-step-v-1':
+        value['parents'] = ['3cad3827-7f21-4f70-9cbc-e718b5529775', #/analysis-steps/lrna-se-star-alignment-step-v-1/',
+                            '9ca04da2-5ef7-4ba1-b78c-41dfc4be0c11'  #/analysis-steps/index-rsem-v-1-0/'
+                            ]
