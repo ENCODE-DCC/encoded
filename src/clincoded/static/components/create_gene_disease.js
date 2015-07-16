@@ -74,11 +74,13 @@ var CreateGeneDisease = React.createClass({
         // Get values from form and validate them
         this.setFormValue('hgncgene', this.refs.hgncgene.getValue().toUpperCase());
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
-        this.setFormValue('hpo', this.refs.hpo.getValue());
+        var hpoDOMNode = this.refs.hpo.refs.input.getDOMNode();
+        this.setFormValue('hpo', hpoDOMNode[hpoDOMNode.selectedIndex].text);
         if (this.validateForm()) {
             // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
             var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
             var geneId = this.getFormValue('hgncgene');
+            var mode = this.getFormValue('hpo');
 
             // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
             // If either error out, set the form error fields
@@ -88,10 +90,24 @@ var CreateGeneDisease = React.createClass({
             ], [
                 function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
                 function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
-            ]).then(
-                // Create the GDM, called as a thennable method
-                this.createGdm
-            ).catch(function(e) {
+            ]).then(data => {
+                // Load GDM if one with matching gene/disease/mode already exists
+                return this.getRestData(
+                    '/search/?type=gdm&disease.orphaNumber=' + orphaId + '&gene.symbol=' + geneId + '&modeInheritance=' + mode
+                ).then(gdmSearch => {
+                    // Found matching GDM. Get its UUID and pass it to curation central page
+                    if (gdmSearch.total === 0) {
+                        throw gdmSearch;
+                    } else {
+                        var uuid = gdmSearch['@graph'][0].uuid;
+                        this.context.navigate('/curation-central/?gdm=' + uuid);
+                    }
+                },
+                    // Did not find matching GDM; make a new one
+                    this.createGdm
+                );
+            }).catch(e => {
+                console.log('ERROR: %o', e);
                 parseAndLogError.bind(undefined, 'fetchedRequest');
             });
         }
@@ -99,6 +115,7 @@ var CreateGeneDisease = React.createClass({
 
     // Create the GDM once its disease and gene data have been verified to exist.
     createGdm: function() {
+        console.log('CREATING');
         // Put together the new GDM object with form data and other info
         var newGdm = {
             gene: this.getFormValue('hgncgene'),
