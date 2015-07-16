@@ -1,0 +1,38 @@
+[
+    {
+        "uuid": "08b61bb3-2a5b-11e5-b2e4-60f81dc5b05a",
+        "owner": "tsneddon@stanford.edu",
+        "dateTime": "date time 01",
+        "pedigreeDescription": "K8725",
+        "pedigreeSize": "15",
+        "numberOfGenerationInPedigree": "3",
+        "consanguineousFamily": "No",
+        "numberOfCases": "5",
+        "numberOfParentsUnaffectedCarriers": "1",
+        "numberOfAffectedAlleles": "8",
+        "numberOfAffectedWithOneVariant": "2",
+        "numberOfAffectedWithTwoVariants": "3",
+        "numberOfUnaffectedCarriers": "3",
+        "numberOfUnaffectedIndividuals": "10",
+        "probandAssociatedWithBoth": "Yes",
+        "additionalInformation": "11 of the 15 family members were sequenced",
+        "assessments": [
+            "4f94a226-2a4c-11e5-887c-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "0f636d99-2a5b-11e5-944b-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "dateTime": "date time 02"
+    },
+    {
+        "uuid": "150c4668-2a5b-11e5-9578-60f81dc5b05a",
+        "owner": "fytanaka@stanford",
+        "dateTime": "date time 03"
+    },
+    {
+        "uuid": "1c692e80-2a5b-11e5-860f-60f81dc5b05a",
+        "owner": "kgliu@stanford.edu",
+        "dateTime": "date time 04"
+    }
+]

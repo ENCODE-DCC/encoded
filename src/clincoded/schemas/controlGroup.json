@@ -1,0 +1,150 @@
+{
+    "title": "ControlGroup",
+    "id": "/profiles/controlGroup.json",
+    "description": "Schema for storing control group data",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["label"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "label": {
+            "title": "Label",
+            "description": "An user entered label for the control group",
+            "type": "string"
+        },
+        "numberOfMale": {
+            "title": "Number of Male",
+            "description": "Count of Male in the group",
+            "type": "string",
+            "default": ""
+        },
+        "numberOfFemale": {
+            "title": "Number of Female",
+            "description": "Count of female in the group",
+            "type": "string",
+            "default": ""
+        },
+        "countryOfOrigin": {
+            "title": "Country Of Origin",
+            "description": "Country in which the group original live",
+            "type": "string",
+            "default": ""
+        },
+        "ethnicity": {
+            "title": "Ethnicity",
+            "description": "Ethnicity",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Hispanic or Latino",
+                "Not Hispanic or Latino"
+            ]
+        },
+        "race": {
+            "title": "Race",
+            "description": "Race",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "American Indian or Alaska Native",
+                "Asian",
+                "Black",
+                "Native Hawaiian or Other Pacific Islander",
+                "White",
+                "Mixed",
+                "Unknown"
+            ]
+        },
+        "ageRangeType": {
+            "title": "Type of Age Range",
+            "description": "Type of age range in group",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Onset",
+                "Report",
+                "Diagnosis",
+                "Death"
+            ]
+        },
+        "ageRangeFrom": {
+            "title": "Age Range From",
+            "description": "Yongest age in the group",
+            "type": "string",
+            "default": ""
+        },
+        "ageRangeTo": {
+            "title": "Age Range To",
+            "description": "Oldest age in the group",
+            "type": "string",
+            "default": ""
+        },
+        "ageRangeUnit": {
+            "title": "Age Range Unit",
+            "description": "Unit of age",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Days",
+                "Weeks",
+                "Months",
+                "Years"
+            ]
+        },
+        "numberOfControls": {
+            "title": "Number of Controls",
+            "description": "Number of controls",
+            "type": "string",
+            "default": "0"
+        },
+        "numberOfControlAlleles": {
+            "title": "Number of Control Alleles",
+            "description": "Number of control alleles",
+            "type": "string",
+            "default": "0"
+        },
+        "numberOfControlAllelesWithVariant": {
+            "title": "Number of Control Allele with Variant",
+            "description": "Number of control allele with variant",
+            "type": "string",
+            "default": ""
+        },
+        "dateTime": {
+            "title": "Date and Time",
+            "description": "Time stamp of the group creation",
+            "type": "string",
+            "default": ""
+        }
+    },
+    "columns": {
+        "uuid": {
+            "title": "Control",
+            "type": "string"
+        },
+        "label": {
+            "title": "Label",
+            "type": "string"
+        },
+        "numberOfControls": {
+            "title": "# Controls",
+            "type": "string"
+        },
+        "numberOfControlAlleles": {
+            "title": "# Alleles",
+            "type": "string"
+        }
+    }
+}

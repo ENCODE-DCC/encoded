@@ -19,12 +19,15 @@ var AuditMixin = audit.AuditMixin;
     // Should really be singular...
     var types = {
         gene: {title: 'Genes'},
-        orphaPhenotype: {title: 'Orphanet Phenotypes'},
-        article: {title: 'Articles'},
+        orphaPhenotype: {title: 'Diseases'},
+        article: {title: 'References'},
+        variant: {title: 'Variants'},
         gdm: {title: 'GDMs'},
-        annotation: {title: 'Annotations'},
+        annotation: {title: 'Evidences'},
         group: {title: 'Groups'},
         family: {title: 'Famlies'},
+        individual: {title: 'Individuals'},
+        assessment: {title: 'Assessments'},
     };
 
     var Listing = module.exports.Listing = function (props) {

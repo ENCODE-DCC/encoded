@@ -1,0 +1,78 @@
+{
+    "title": "Statistical Study",
+    "id": "/profiles/statistic.json",
+    "description": "Schema for storing and using statistic data",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["analysisType", "description"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "analysisType": {
+            "title": "Analysis Type",
+            "description": "Analysis Type",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "description": "Description of analysis type",
+            "type": "string"
+        },
+        "oddsRatio": {
+            "title": "Odds Ratio",
+            "description": "Odds ratio",
+            "type": "string",
+            "default": ""
+        },
+        "pvalue": {
+            "title": "p Value",
+            "description": "p value",
+            "type": "string",
+            "default": ""
+        },
+        "other": {
+            "title": "Other",
+            "description": "Other information",
+            "type": "string",
+            "default": ""
+        },
+        "authorConclusions": {
+            "title": "Author's Conclusions",
+            "description": "Autho's conclusions",
+            "type": "string",
+            "default": ""
+        },
+        "variants": {
+            "title": "Statistical Study",
+            "description": "List of variants associated to the statistical study",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Assessment",
+                "description": "Assessment id",
+                "type": "string",
+                "linkTo": "variant"
+            }
+        },
+        "assessments": {
+            "title": "Assessments",
+            "description": "List of assessments",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Assessment",
+                "description": "Assessment id",
+                "type": "string",
+                "linkTo": "assessment"
+            }
+        }
+    }
+}
