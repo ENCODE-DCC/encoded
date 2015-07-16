@@ -4,7 +4,7 @@
     "description": "Schema for storing group data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "commonDiagnosis", "method"],
+    "required": ["label", "commonDiagnosis"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
