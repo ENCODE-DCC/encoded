@@ -19,14 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
-        },
-        "name": {
-            "title": "Name",
-            "description": "Unique name of the software package, lower cased version of title.",
-            "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+$",
-            "uniqueKey": true
+            "default": "3"
         },
         "accession": {
             "accessionType": "PL"
@@ -55,12 +48,6 @@
             "permission": "import_items",
             "default": ""
         },
-        "version": {
-            "title": "Version",
-            "description": "The version of a particular pipeline.",
-            "comment": "Increments with each change to the series of analysis." ,
-            "type": "integer"
-        },
         "analysis_steps": {
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
@@ -68,18 +55,6 @@
             "items": {
                 "title": "Analysis step",
                 "description": "A particular computational analysis step used by the pipeline.",
-                "comment": "See analysis_step.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "analysis_step"
-            }
-        },
-        "end_points": {
-            "title": "End Points of Pipeline",
-            "description": "A subset of analysis steps that represent the end of the pipeline",
-            "type": "array",
-            "items": {
-                "title": "Analysis step",
-                "description": "A particular end step computational analysis step used by the pipeline.",
                 "comment": "See analysis_step.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "analysis_step"
@@ -133,10 +108,6 @@
         },
         "title": {
             "title": "Pipeline",
-            "type": "string"
-        },
-        "version": {
-            "title": "Version",
             "type": "string"
         },
         "assay_term_name": {
@@ -197,7 +168,6 @@
         "analysis_steps.current_version.software_versions.software.references.title": 1.0,
         "assay_term_name": 1.0,
         "assay_term_id": 1.0,
-        "title": 1.0,
-        "version": 1.0
+        "title": 1.0
     }
 }

@@ -4,13 +4,9 @@
         "accession": "ENCPL001MQC",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
-        "name": "dna-methylation-pipeline-qc",
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "end_points": [
-            "wgbs_lambda_qc"
-        ],
         "analysis_steps": [
             "wgbs_lambda_qc"
         ],
@@ -22,13 +18,9 @@
         "accession": "ENCPL000MEG",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
-        "name": "dna-methylation-pipeline-genome-prep",
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "end_points": [
-            "prep-bismark"
-        ],
         "analysis_steps": [
             "prep-bismark"
         ],
@@ -40,14 +32,9 @@
         "accession": "ENCPL002BIS",
         "assay_term_id": "OBI:0000748",
         "assay_term_name": "whole genome bisulfite sequencing",
-        "name": "dna-methylation-pipeline-se",
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
-        "end_points": [
-            "mott-trim-align-bismark",
-            "extract-bismark"
-        ],
         "analysis_steps": [
             "mott-trim-align-bismark",
             "extract-bismark"
@@ -60,17 +47,11 @@
         "accession": "ENCPL003RNA",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
-        "name": "long-rna-seq-pipeline-pe",
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
-        "end_points": [
-            "quant-rsem",
-            "bam-to-bigwig-tophat",
-            "bam-to-bigwig-star"
-        ],
         "analysis_steps": [
             "prep-star",
             "prep-tophat",
@@ -78,7 +59,8 @@
             "align-star",
             "align-tophat",
             "quant-rsem",
-            "bam-to-bigwig-tophat"
+            "bam-to-bigwig-tophat",
+            "bam-to-bigwig-star"
         ],
         "status": "active"
     },
@@ -86,9 +68,6 @@
         "accession": "ENCPL001GRV",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
-        "end_points": [
-            "signal-test-step-1"
-        ],
         "analysis_steps": [
             "alignment-test-step-1",
             "signal-test-step-1"
@@ -106,10 +85,6 @@
         "accession": "ENCPL001CRG",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
-        "end_points": [
-            "quantification-test-step-1",
-            "idr-test-step-1"
-        ],
         "analysis_steps": [
             "alignment-test-step-2",
             "quantification-test-step-1",
@@ -128,10 +103,6 @@
         "accession": "ENCPL001ENC",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
-        "end_points": [
-            "encode-2-step",
-            "idr-test-step-2"
-        ],
         "analysis_steps": [
             "encode-2-step",
             "idr-test-step-2"
@@ -150,9 +121,6 @@
         "accession": "ENCPL001CLP",
         "assay_term_id": "NTR:0001449",
         "assay_term_name": "iCLIP",
-        "end_points": [
-            "peak-calling-test-step-1"
-        ],
         "analysis_steps": [
             "alignment-test-step-3",
             "peak-calling-test-step-1"
@@ -168,9 +136,6 @@
     },
     {
         "accession": "ENCPL001FVD",
-        "end_points": [
-            "fastqc"
-        ],
         "analysis_steps": [
             "fastqc"
         ],
