@@ -23,8 +23,6 @@ var Footer = React.createClass({
                     <div className="col-sm-7 col-sm-pull-5">
                             <ul className="footer-logos">
                                 <li><a href="/"><img src="/static/img/clingen-logo-sm.svg" alt="ClinGen" id="clingen-logo" height="49px" width="117px" /></a></li>
-                                <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt-2x.png" alt="UC Santa Cruz" id="ucsc-logo" width="107px" height="42px" /></a>
-                                </li>
                                 <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white-2x.png" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
                             </ul>
                         </div>

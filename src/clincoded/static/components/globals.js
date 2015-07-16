@@ -85,7 +85,7 @@ module.exports.statusOrder = [
 ];
 
 
-module.exports.productionHost = {'www.clinicalgenome.org':1, 'clinicalgenome.org':1};
+module.exports.productionHost = {'curation.clinicalgenome.org':1};
 
 module.exports.clincodedVersionMap = {
     "ClinGen1": "1"
