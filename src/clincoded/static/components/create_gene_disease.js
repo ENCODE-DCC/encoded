@@ -45,13 +45,6 @@ var CreateGeneDisease = React.createClass({
         navigate: React.PropTypes.func
     },
 
-    getHpoText: function(value) {
-        var matchingValue = _(hpoValues).find(function(hpoValue) {
-            return hpoValue.value === value;
-        });
-        return matchingValue ? matchingValue.text : '';
-    },
-
     // Form content validation
     validateForm: function() {
         // Check if required fields have values
@@ -102,25 +95,26 @@ var CreateGeneDisease = React.createClass({
                         var uuid = gdmSearch['@graph'][0].uuid;
                         this.context.navigate('/curation-central/?gdm=' + uuid);
                     }
-                },
-                    // Did not find matching GDM; make a new one
-                    this.createGdm
-                );
+                });
             }).catch(e => {
-                console.log('ERROR: %o', e);
-                parseAndLogError.bind(undefined, 'fetchedRequest');
+                if (e && e.total === 0) {
+                    // No matching GDM found; make a new GDM
+                    this.createGdm();
+                } else {
+                    // Some unexpected error happened
+                    parseAndLogError.bind(undefined, 'fetchedRequest');
+                }
             });
         }
     },
 
     // Create the GDM once its disease and gene data have been verified to exist.
     createGdm: function() {
-        console.log('CREATING');
         // Put together the new GDM object with form data and other info
         var newGdm = {
             gene: this.getFormValue('hgncgene'),
             disease: this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1],
-            modeInheritance: this.getHpoText(this.getFormValue('hpo')),
+            modeInheritance: this.getFormValue('hpo'),
             owner: this.props.session['auth.userid'],
             status: 'Creation',
             dateTime: moment().format()
