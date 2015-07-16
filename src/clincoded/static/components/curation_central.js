@@ -27,7 +27,7 @@ var CurationCentral = React.createClass({
 
     getInitialState: function() {
         return {
-            currPmid: '',
+            currAnnotation: {},
             currOmimId: '',
             currGdm: {}
         };
@@ -35,7 +35,18 @@ var CurationCentral = React.createClass({
 
     // Called when currently selected PMID changes
     currPmidChange: function(pmid) {
-        this.setState({currPmid: pmid, selectionListOpen: false});
+        var gdm = this.state.currGdm;
+
+        if (Object.keys(gdm).length) {
+            // Find the annotation in the GDM matching the given pmid
+            var currAnnotation = _(gdm.annotations).find(annotation => {
+                return annotation.article.pmid === pmid;
+            });
+
+            if (currAnnotation) {
+                this.setState({currAnnotation: currAnnotation, selectionListOpen: false});                
+            }
+        }
     },
 
     // Retrieve the GDM object from the DB with the given uuid
@@ -119,16 +130,9 @@ var CurationCentral = React.createClass({
     },
 
     render: function() {
-        var currArticle;
         var gdm = this.state.currGdm;
-
-        // Get the PM item for the currently selected PMID
-        if (this.state.currPmid) {
-            var currAnnotation = _(gdm.annotations).find(annotation => {
-                return annotation.article.pmid === this.state.currPmid;
-            });
-            currArticle = currAnnotation ? currAnnotation.article : null;
-        }
+        var annotation = this.state.currAnnotation;
+        var currArticle = annotation ? annotation.article : null;
 
         return (
             <div>
@@ -136,7 +140,7 @@ var CurationCentral = React.createClass({
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">
-                            <PmidSelectionList annotations={gdm.annotations} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange}
+                            <PmidSelectionList annotations={gdm.annotations} currPmid={currArticle ? currArticle.pmid : ''} currPmidChange={this.currPmidChange}
                                     updateGdmArticles={this.updateGdmArticles} /> 
                         </div>
                         <div className="col-md-6">

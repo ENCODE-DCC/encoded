@@ -20,6 +20,28 @@ var country_codes = globals.country_codes;
 
 
 var GroupCuration = React.createClass({
+    // After the Group Curation page component mounts, grab the article PMID from the query
+    // string and retrieve the corresponding GDM from the DB.
+    componentDidMount: function() {
+        // See if there’s a GDM UUID to retrieve
+        var annotationUuid;
+        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
+        if (queryParsed && Object.keys(queryParsed).length) {
+            // Find the first 'gdm' query string item, if any
+            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'gdm';
+            });
+            if (uuidKey) {
+                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
+                annotationUuid = queryParsed[uuidKey];
+                if (typeof gdmUuid === 'object') {
+                    annotationUuid = annotationUuid[0];
+                }
+                //this.getGdm(annotationUuid);
+            }
+        }
+    },
+
     render: function() {
         var currPmidItem;
 
