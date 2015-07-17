@@ -160,7 +160,8 @@ runcmd:
 # - sudo -i -u clincoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 
 ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWCTZCWznGwbZSnKOwJ3fTPo6DHQIFBwOmzfQ8HBnOKD5PuJRuR1/ZkpzxAuMVkLslAgd7hMQx3YzJb85YgoZVnVNxpCtg51u5B/2uYoJEU8wEUCR1XKQ5u7v7R+Bw8M11jLjjonGrvW+kREij6pRnEzdwEyoVHTAjtKVJXwR1U+Bisq3U3rvOQygoW6IuFXucfOx/OdcqL7JtqDc6xjgUlJfvn3/bZ5y+NuJtWIj9sayLGEVbW4D0iTMk+cXGDiQP4cqEbSJK/XbiGthPHJnkmjWbN1qmV+fXvnz2e+sIlxd4In7K+S/Jgg/+SkLHkOQOhMijqvjqjuWV7vuhT5AP clincoded-dev@clinicalgenome.org
+#- ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWCTZCWznGwbZSnKOwJ3fTPo6DHQIFBwOmzfQ8HBnOKD5PuJRuR1/ZkpzxAuMVkLslAgd7hMQx3YzJb85YgoZVnVNxpCtg51u5B/2uYoJEU8wEUCR1XKQ5u7v7R+Bw8M11jLjjonGrvW+kREij6pRnEzdwEyoVHTAjtKVJXwR1U+Bisq3U3rvOQygoW6IuFXucfOx/OdcqL7JtqDc6xjgUlJfvn3/bZ5y+NuJtWIj9sayLGEVbW4D0iTMk+cXGDiQP4cqEbSJK/XbiGthPHJnkmjWbN1qmV+fXvnz2e+sIlxd4In7K+S/Jgg/+SkLHkOQOhMijqvjqjuWV7vuhT5AP clincoded-dev@clinicalgenome.org
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDpMWpOrj0Vo/uxjZJqnOAnPaa/V+VGzXv56VCHvRhDf1eLzqukxdFsgnkLEFsTbMtQEOKLvdc64qnGI19YxgIQIIh2Rv2BA4nwV3rBvKHHuVmKt2XNUXcLmKYtgsFEUxE8Ggjk5F1pgEM/t02EDTfO+e1f90zH+82ahYB2YdogbRhOL85EsQat6HALjEnCSYIIg3UGpb9AAHvxvhTYaE4wOiy2YmKncqW9Hm7CzVAQiruS5eXzCGmfa+hjX8+Jhd1vhte+O5lR7T/kUdqw8Q9gSF9DD/9hx/In79BKFK+TxV60/0vkRtdmLgY3L2+7Z0uzshNW9ah55AuRcVO//o3 clincoded-dev@clinicalgenome.org
 
 users:
 - default
