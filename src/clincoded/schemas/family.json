@@ -23,9 +23,13 @@
         },
         "commonDiagnosis": {
             "title": "Common Diagnosis",
-            "description": "OrphaNumber of common diagnosis for the family",
-            "type": "string",
-            "linkTo": "orphaPhenotype"
+            "description": "List of Orphanet IDs of common diagnosis for the family",
+            "type": "array",
+            "items": {
+                "title": "Orphanet ID",
+                "type": "string",
+                "linkTo": "orphaPhenotype"
+            }
         },
         "hpoIdInDiagnosis": {
             "title": "HPO ID(s)",
@@ -210,7 +214,7 @@
             "title": "Label",
             "type": "string"
         },
-        "commonDiagnosis.orphaNumber": {
+        "commonDiagnosis": {
             "title": "Diagnosis",
             "type": "string"
         },

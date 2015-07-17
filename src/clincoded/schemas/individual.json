@@ -23,9 +23,13 @@
         },
         "diagnosis": {
             "title": "Diagnosis",
-            "description": "Orpha Number to diagnosis",
-            "type": "string",
-            "linkTo": "orphaPhenotype"
+            "description": "List of Orphanet IDs to diagnosis",
+            "type": "array",
+            "items": {
+                "title": "Orphanet ID",
+                "type": "string",
+                "linkTo": "orphaPhenotype"
+            }
         },
         "sex": {
             "title": "Sex",
@@ -192,7 +196,7 @@
             "title": "Label",
             "type": "string"
         },
-        "diagnosis.orphaNumber": {
+        "diagnosis": {
             "title": "Diagnosis",
             "type": "string"
         },

@@ -1,7 +1,10 @@
 [
     {
         "label": "CaseGroupRousseau",
-        "commonDiagnosis": "15",
+        "commonDiagnosis": [
+            "15",
+            "891"
+        ],
         "numberOfMale": "8",
         "numberOfFemale": "7",
         "numberOfProbands": "3",
@@ -20,7 +23,10 @@
     },
     {
         "label": "CaseGroupAA",
-        "commonDiagnosis": "15",
+        "commonDiagnosis": [
+            "15",
+            "777"
+        ],
         "numberOfMale": "28",
         "numberOfFemale": "17",
         "numberOfProbands": "11",
@@ -35,7 +41,10 @@
     },
     {
         "label": "CaseGroupShiang",
-        "commonDiagnosis": "15",
+        "commonDiagnosis": [
+            "15",
+            "654"
+        ],
         "numberOfMale": "18",
         "numberOfFemale": "17",
         "numberOfProbands": "12",
