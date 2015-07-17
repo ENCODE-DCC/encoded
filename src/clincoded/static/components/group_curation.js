@@ -71,42 +71,15 @@ var GroupCuration = React.createClass({
 
         // Bring form values to where we can check on them, then validate.
         this.setFormValue('groupname', this.refs.groupname.getValue());
-        if (this.validateForm()) {
-            // Create a new group with new values from the form, writing to the DB.
-            var newGroup = {
-                label: this.getFormValue('groupname')
-            };
-
-            this.postRestData('/group/', newGdm).then(data => {
-                var uuid = data['@graph'][0].uuid;
-                this.context.navigate('/curation-central/?gdm=' + uuid);
-            }).catch(parseAndLogError.bind(undefined, 'putRequest'));
-        }
-
-        // Put the new group object into the annotation, and write that to the DB.
-
-        // Get values from form and validate them
-        this.setFormValue('hgncgene', this.refs.hgncgene.getValue().toUpperCase());
         this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
-        this.setFormValue('hpo', this.refs.hpo.getValue());
         if (this.validateForm()) {
-            // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
-            var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
-            var geneId = this.getFormValue('hgncgene');
+            var orphaNumber = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
 
-            // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
-            // If either error out, set the form error fields
-            this.getRestDatas([
-                '/diseases/' + orphaId,
-                '/genes/' + geneId
-            ], [
-                function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
-                function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
-            ]).then(
-                // Create the GDM, called as a thennable method
-                this.createGdm
-            ).catch(function(e) {
-                parseAndLogError.bind(undefined, 'fetchedRequest');
+            // Verify given Orpha ID exists in DB
+            this.getRestData('/diseases/' + orphaNumber).then(gdm => {
+                console.log('FOUND');
+            }, e => {
+                console.log('NOT FOUND');
             });
         }
     },
@@ -135,7 +108,7 @@ var GroupCuration = React.createClass({
                         <div className="col-sm-9">
                             <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
                                 <Panel>
-                                    <GroupName />
+                                    {GroupName.call(this)}
                                 </Panel>
                                 <PanelGroup accordion>
                                     <Panel title="Common diseases &amp; phenotypes" open>
@@ -162,7 +135,7 @@ var GroupCuration = React.createClass({
                                         <GroupAdditional />
                                     </Panel>
                                 </PanelGroup>
-                                <div className="clearfix"><Input type="submit" wrapperClassName="pull-right" id="submit" /></div>
+                                <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
                             </Form>
                         </div>
                         {annotation && Object.keys(annotation).length ?
@@ -180,16 +153,15 @@ var GroupCuration = React.createClass({
 globals.curator_page.register(GroupCuration, 'curator_page', 'group-curation');
 
 
-var GroupName = React.createClass({
-    render: function() {
-        return (
-            <div className="row">
-                <Input type="text" ref="groupname" label="Group name (optional):"
-                    labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            </div>
-        );
-    }
-});
+var GroupName = function() {
+    return (
+        <div className="row">
+            <Input type="text" ref="groupname" label="Group name:"
+                error={this.getFormError('groupname')} clearError={this.clrFormErrors.bind(null, 'groupname')}
+                labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
+        </div>
+    );
+};
 
 
 var GroupCommonDiseases = React.createClass({
