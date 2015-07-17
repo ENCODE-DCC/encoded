@@ -6,6 +6,8 @@ var panel = require('../libs/bootstrap/panel');
 var form = require('../libs/bootstrap/form');
 var globals = require('./globals');
 var curator = require('./curator');
+var parseAndLogError = require('./mixins').parseAndLogError;
+var RestMixin = require('./rest').RestMixin;
 
 var CurationData = curator.CurationData;
 var CurationPalette = curator.CurationPalette;
@@ -13,6 +15,7 @@ var PmidSummary = curator.PmidSummary;
 var PanelGroup = panel.PanelGroup;
 var Panel = panel.Panel;
 var Form = form.Form;
+var FormMixin = form.FormMixin;
 var Input = form.Input;
 var InputMixin = form.InputMixin;
 var PmidDoiButtons = curator.PmidDoiButtons;
@@ -20,8 +23,27 @@ var country_codes = globals.country_codes;
 
 
 var GroupCuration = React.createClass({
-    // After the Group Curation page component mounts, grab the article PMID from the query
-    // string and retrieve the corresponding GDM from the DB.
+    mixins: [FormMixin, RestMixin],
+
+    getInitialState: function() {
+        return {
+            annotation: {}
+        };
+    },
+
+    // Retrieve the annotation object with the given UUID from the DB. If successful, set the component
+    // state to the retrieved annotation to cause a rerender of the component.
+    getAnnotation: function(uuid) {
+        this.getRestData('/evidence/' + uuid).then(annotation => {
+            // The GDM object successfully retrieved; set the Curator Central component
+            this.setState({annotation: annotation});
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
+    },
+
+    // After the Group Curation page component mounts, grab the annotation UUID from the query
+    // string and retrieve the corresponding annotation from the DB, if it exists.
+    // Note, we have to do this after the component mounts because AJAX DB queries can't be
+    // done from unmounted components.
     componentDidMount: function() {
         // See if there’s a GDM UUID to retrieve
         var annotationUuid;
@@ -29,7 +51,7 @@ var GroupCuration = React.createClass({
         if (queryParsed && Object.keys(queryParsed).length) {
             // Find the first 'gdm' query string item, if any
             var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'gdm';
+                return key === 'evidence';
             });
             if (uuidKey) {
                 // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
@@ -37,37 +59,81 @@ var GroupCuration = React.createClass({
                 if (typeof gdmUuid === 'object') {
                     annotationUuid = annotationUuid[0];
                 }
-                //this.getGdm(annotationUuid);
+
+                // Query the DB with this UUID, setting the component state if successful.
+                this.getAnnotation(annotationUuid);
             }
         }
     },
 
-    render: function() {
-        var currPmidItem;
+    submitForm: function(e) {
+        e.preventDefault(); // Don't run through HTML submit handler
 
-        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'pmid' query string item, if any
-            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'pmid';
-            });
-            var pmid = parseInt(queryParsed[pmidKey], 10);
-            currPmidItem = null;
+        // Bring form values to where we can check on them, then validate.
+        this.setFormValue('groupname', this.refs.groupname.getValue());
+        if (this.validateForm()) {
+            // Create a new group with new values from the form, writing to the DB.
+            var newGroup = {
+                label: this.getFormValue('groupname')
+            };
+
+            this.postRestData('/group/', newGdm).then(data => {
+                var uuid = data['@graph'][0].uuid;
+                this.context.navigate('/curation-central/?gdm=' + uuid);
+            }).catch(parseAndLogError.bind(undefined, 'putRequest'));
         }
+
+        // Put the new group object into the annotation, and write that to the DB.
+
+        // Get values from form and validate them
+        this.setFormValue('hgncgene', this.refs.hgncgene.getValue().toUpperCase());
+        this.setFormValue('orphanetid', this.refs.orphanetid.getValue());
+        this.setFormValue('hpo', this.refs.hpo.getValue());
+        if (this.validateForm()) {
+            // Get the free-text values for the Orphanet ID and the Gene ID to check against the DB
+            var orphaId = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i)[1];
+            var geneId = this.getFormValue('hgncgene');
+
+            // Get the disease and gene objects corresponding to the given Orphanet and Gene IDs in parallel.
+            // If either error out, set the form error fields
+            this.getRestDatas([
+                '/diseases/' + orphaId,
+                '/genes/' + geneId
+            ], [
+                function() { this.setFormErrors('orphanetid', 'Orphanet ID not found'); }.bind(this),
+                function() { this.setFormErrors('hgncgene', 'HGNC gene symbol not found'); }.bind(this)
+            ]).then(
+                // Create the GDM, called as a thennable method
+                this.createGdm
+            ).catch(function(e) {
+                parseAndLogError.bind(undefined, 'fetchedRequest');
+            });
+        }
+    },
+
+    // Create the GDM once its disease and gene data have been verified to exist.
+    createGroup: function() {
+        // Put together the new GDM object with form data and other info
+        var newGroup = {
+        };
+
+        // Post the new GDM to the DB. Once promise returns, go to /curation-central page with the UUID
+        // of the new GDM in the query string.
+        this.postRestData('/group/', newGroup).then(data => {
+            var uuid = data['@graph'][0].uuid;
+        }).catch(parseAndLogError.bind(undefined, 'putRequest'));
+    },
+
+    render: function() {
+        var annotation = this.state.annotation;
 
         return (
             <div>
                 <CurationData />
                 <div className="container">
-                    {currPmidItem ?
-                        <div className="panel-curator">
-                            <PmidSummary pmidItem={currPmidItem} />
-                            <PmidDoiButtons pmidId={currPmidItem.id} doiId={currPmidItem.doi} />
-                        </div>
-                    : null}
                     <div className="row group-curation-content">
-                        <div className="col-sm-8">
-                            <Form formClassName="form-horizontal form-std">
+                        <div className="col-sm-9">
+                            <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
                                 <Panel>
                                     <GroupName />
                                 </Panel>
@@ -99,9 +165,9 @@ var GroupCuration = React.createClass({
                                 <div className="clearfix"><Input type="submit" wrapperClassName="pull-right" id="submit" /></div>
                             </Form>
                         </div>
-                        {currPmidItem ?
-                            <div className="col-sm-4">
-                                <CurationPalette currPmidItem={currPmidItem} />
+                        {annotation && Object.keys(annotation).length ?
+                            <div className="col-sm-3">
+                                <CurationPalette article={annotation.article} />
                             </div>
                         : null}
                     </div>
