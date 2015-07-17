@@ -92,25 +92,27 @@ class RDBStorage(object):
         else:
             return [link.source_rid for link in model.revs if link.rel == rel]
 
-    def __iter__(self, item_type=None):
+    def __iter__(self, *item_types):
         session = self.DBSession()
         query = session.query(Resource.rid)
 
-        if item_type is not None:
+        if item_types:
             query = query.filter(
-                Resource.item_type == item_type
+                Resource.item_type.in_(item_types)
             )
 
         for rid, in query.yield_per(self.batchsize):
             yield rid
 
-    def __len__(self, item_type=None):
+    def __len__(self, *item_types):
         session = self.DBSession()
         query = session.query(Resource.rid)
-        if item_type is not None:
+
+        if item_types:
             query = query.filter(
-                Resource.item_type == item_type
+                Resource.item_type.in_(item_types)
             )
+
         return query.count()
 
     def create(self, item_type, rid):

@@ -130,7 +130,7 @@ def batch_upgrade(request):
     return {'results': results}
 
 
-def run(config_uri, app_name=None, username=None, types=None, batch_size=500, processes=None):
+def run(config_uri, app_name=None, username=None, types=(), batch_size=500, processes=None):
     # multiprocessing.get_context is Python 3 only.
     from multiprocessing import get_context
     from multiprocessing.pool import Pool
@@ -140,10 +140,7 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
 
     testapp = internal_app(config_uri, app_name, username)
     connection = testapp.app.registry[CONNECTION]
-    if types is None:
-        uuids = [str(uuid) for uuid in connection]
-    else:
-        uuids = [str(uuid) for item_type in types for uuid in connection.__iter__(item_type)]
+    uuids = [str(uuid) for uuid in connection.__iter__(*types)]
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))
 
