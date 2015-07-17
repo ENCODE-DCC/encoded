@@ -144,7 +144,7 @@ var GeneCurationData = React.createClass({
                     {gene ?
                         <dl>
                             <dt>{gene.symbol}</dt>
-                            <dd>HGNC ID: <a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.hgncId + ' in a new window'}>{gene.hgncId}</a></dd>
+                            <dd>HGNC Symbol: <a href={external_url_map['HGNC'] + gene.hgncId} target="_blank" title={'HGNC page for ' + gene.symbol + ' in a new window'}>{gene.symbol}</a></dd>
                             <dd>NCBI Gene ID: <a href={external_url_map['Entrez'] + gene.entrezId} target="_blank" title={'NCBI page for gene ' + gene.entrezId + ' in a new window'}>{gene.entrezId}</a></dd>
                         </dl>
                     : null}

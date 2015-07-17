@@ -28,7 +28,7 @@ var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Not found</h1>
-                        <p>The page could not be found. Please check the URL or enter a search term like "skin", "ChIP-seq", or "CTCF" in the toolbar above.</p>
+                        <p>The page could not be found.</p>
                     </div>
                 </div>
             </div>
@@ -53,8 +53,8 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Not available</h1>
-                        <p>Please sign in to view this page.</p> 
-                        <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>
+                        <p>Please sign in to view this page.</p>
+                        <p>Or <a href='mailto:clingen-helpdesk@lists.stanford.edu'>Request an account.</a></p>
                     </div>
                 </div>
             </div>
@@ -82,9 +82,9 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Login failure</h1>
-                        <p>Access is restricted to ENCODE consortium members.</p>
-                        <p><a href='mailto:encode-help@lists.stanford.edu'>Request an account</a></p>
-                        
+                        <p>Access is restricted to ClinGen curators.</p>
+                        <p><a href='mailto:clingen-helpdesk@lists.stanford.edu'>Request an account</a></p>
+
                     </div>
                 </div>
             </div>

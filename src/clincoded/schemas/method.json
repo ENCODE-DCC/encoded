@@ -1,0 +1,134 @@
+{
+    "title": "Method",
+    "id": "/profiles/method.json",
+    "description": "Schema for storing and using method data",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "previousTesting": {
+            "title": "Previous Testing",
+            "description": "Previous testing",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "previousTestingDescription": {
+            "title": "Previous Testing",
+            "description": "Previous testing",
+            "type": "string",
+            "default": ""
+        },
+        "genomeWideStudy": {
+            "title": "Genome-Wide Study",
+            "description": "Genome-wide study",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "genotypingMethods": {
+            "title": "Genotyping Method(s)",
+            "description": "List of genotyping methods",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Genotyping Method",
+                "description": "Genotyping method",
+                "type": "string",
+                "enum": [
+                    "Exome sequencing",
+                    "Genotyping",
+                    "HRM",
+                    "PCR",
+                    "Sanger",
+                    "Whole genome shotgun sequencing"
+                ]
+            }
+        },
+        "entireGeneSequenced": {
+            "title": "Entire Gene Sequenced",
+            "description": "Entire gene sequenced",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "copyNumberAssessed": {
+            "title": "Copy Number Assessed",
+            "description": "Copy number assessed",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "specificMutationsGenotyped": {
+            "title": "Copy Number Assessed",
+            "description": "Copy number assessed",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "specificMutationsGenotypedMethod": {
+            "title": "Specific Mutations Genotyped Method",
+            "description": "Method by which specific mutations genotyped",
+            "type": "string",
+            "default": ""
+        },
+        "additionalInformation": {
+            "title": "Additional Information",
+            "description": "Additional information",
+            "type": "string",
+            "default": ""
+        }
+    },
+    "columns": {
+        "uuid": {
+            "title": "Method",
+            "type": "string"
+        },
+        "previousTesting": {
+            "title": "Previous Test",
+            "type": "string"
+        },
+        "genomeWideStudy": {
+            "title": "Genome Wide Study",
+            "type": "string"
+        },
+        "entireGeneSequenced": {
+            "title": "Entire Gene Sequenced",
+            "type": "string"
+        },
+        "specificMutationsGenotyped": {
+            "title": "Specific Mutation",
+            "type": "string"
+        }
+    }
+}

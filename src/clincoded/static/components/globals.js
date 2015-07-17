@@ -57,7 +57,7 @@ module.exports.truncateString = function (str, len) {
 module.exports.bindEvent = function (el, eventName, eventHandler) {
     if (el.addEventListener) {
         // Modern browsers
-        el.addEventListener(eventName, eventHandler, false); 
+        el.addEventListener(eventName, eventHandler, false);
     } else if (el.attachEvent) {
         // IE8 specific
         el.attachEvent('on' + eventName, eventHandler);
@@ -67,7 +67,7 @@ module.exports.bindEvent = function (el, eventName, eventHandler) {
 module.exports.unbindEvent = function (el, eventName, eventHandler) {
     if (el.removeEventListener) {
         // Modern browsers
-        el.removeEventListener(eventName, eventHandler, false); 
+        el.removeEventListener(eventName, eventHandler, false);
     } else if (el.detachEvent) {
         // IE8 specific
         el.detachEvent('on' + eventName, eventHandler);
@@ -85,11 +85,10 @@ module.exports.statusOrder = [
 ];
 
 
-module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
+module.exports.productionHost = {'curation.clinicalgenome.org':1};
 
-module.exports.encodeVersionMap = {
-    "ENCODE2": "2",
-    "ENCODE3": "3"
+module.exports.clincodedVersionMap = {
+    "ClinGen1": "1"
 };
 
 module.exports.dbxref_prefix_map = {

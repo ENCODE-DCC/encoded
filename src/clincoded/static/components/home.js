@@ -10,7 +10,7 @@ var SignIn = module.exports.SignIn = React.createClass({
             <div id="signin-box" className="col-sm-3" hidden={hidden}>
                 <h4>Data Providers</h4>
                 <a href="" disabled={disabled} data-trigger="login" className="signin-button btn btn-large btn-success">Sign In</a>
-                <p>No access? <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>.</p>
+                <p>No access? <a href='mailto:clingen-helpdesk@lists.stanford.edu'>Request an account</a>.</p>
                 <p>Authentication by <a href="http://www.mozilla.org/en-US/persona/" target="_blank">Mozilla Persona</a>.</p>
             </div>
         );
@@ -26,11 +26,7 @@ var Home = module.exports.Home = React.createClass({
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="project-info site-title">
-                                <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
-                            </div>
-                            <div id="info-box" className="project-info text-panel">
-                                <h4>Preview the new ENCODE Portal</h4>
-                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type in the toolbar above.</p>
+                                <h1>ClinGen Curator Portal</h1>
                             </div>
                         </div>
                     </div>
