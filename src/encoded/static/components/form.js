@@ -186,12 +186,22 @@ var Form = module.exports.Form = React.createClass({
                         if (v.children[name[i]] === undefined) {
                             v.children[name[i]] = {children: {}, error: null};
                         }
-                        if (schemaNode.get === undefined) {
+                        if (schemaNode.children !== undefined) {
+                            if (typeof name[i] === 'number') { // array
+                                // might need to traverse into fetched fieldset
+                                var component = schemaNode.children.props.get('component');
+                                if (component !== undefined) {
+                                    schemaNode = component.props.schema;
+                                } else {
+                                    schemaNode = schemaNode.children;
+                                }
+                            } else {
+                                schemaNode = schemaNode.children.get(name[i]);
+                            }
+                        } else {
                             // we've reached a scalar; stop and show error here
                             description = name.slice(i).join('/') + ': ' + description;
-                            break;
-                        } else {
-                            schemaNode = schemaNode.get(name[i]);
+                            break;                            
                         }
                         v = v.children[name[i]];
                     }
