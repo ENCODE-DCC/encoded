@@ -178,19 +178,28 @@ var Form = module.exports.Form = React.createClass({
                 if (match) {
                     name.push(match[1]);
                 }
+                var description = error.description;
                 if (name.length) {
                     var v = externalValidation;
+                    var schemaNode = this.props.schema;
                     for (var i = 0; i < name.length; i++) {
                         if (v.children[name[i]] === undefined) {
                             v.children[name[i]] = {children: {}, error: null};
                         }
+                        if (schemaNode.get === undefined) {
+                            // we've reached a scalar; stop and show error here
+                            description = name.slice(i).join('/') + ': ' + description;
+                            break;
+                        } else {
+                            schemaNode = schemaNode.get(name[i]);
+                        }
                         v = v.children[name[i]];
                     }
-                    v.error = error.description;
+                    v.error = description;
                 } else {
-                    schemaErrors.push(error.description);
+                    schemaErrors.push(description);
                 }
-            });
+            }.bind(this));
         } else if (data.title) {
             schemaErrors.push(data.title);
         }
