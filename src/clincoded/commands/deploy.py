@@ -111,7 +111,7 @@ def main():
         '--image-id', default='ami-5189a661',
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20150325")
     parser.add_argument(
-        '--instance-type', default='t2.medium',
+        '--instance-type', default='t2.micro',
         help="specify 'c4.2xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
