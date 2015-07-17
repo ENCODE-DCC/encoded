@@ -64,6 +64,9 @@ class Variant(Item):
     item_type = 'variant'
     schema = load_schema('clincoded:schemas/variant.json')
     name_key = 'uuid'
+    embedded = [
+        "assessments"
+    ]
 
 @collection(
     name='controlgroups',

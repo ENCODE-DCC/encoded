@@ -4,7 +4,7 @@
     "description": "Schema for storing and using individual data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "diagnosis", "method"],
+    "required": ["label", "diagnosis"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -136,17 +136,25 @@
             "title": "Method",
             "description": "Mothed id",
             "type": "string",
+            "default": "",
             "linkTo": "method"
         },
         "additionalInformation": {
             "title": "Additional Information",
             "description": "List of Additional information for the individual",
+            "type": "string",
+            "default": ""
+        },
+        "otherPMIDs": {
+            "title": "Other PMIDs",
+            "description": "List of other PMIDs having evidence about the individual",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Itme",
-                "description": "",
-                "type": "string"
+                "title": "PMID",
+                "description": "PMID",
+                "type": "string",
+                "linkTo": "article"
             }
         },
         "variants": {

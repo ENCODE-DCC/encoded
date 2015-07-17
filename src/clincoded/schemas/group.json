@@ -203,12 +203,19 @@
         "additionalInformation": {
             "title": "Additional Information",
             "description": "List of Additional information of the group",
+            "type": "string",
+            "default": ""
+        },
+        "otherPMIDs": {
+            "title": "Other PMIDs",
+            "description": "List of other PMIDs having evidence about the group",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Info",
-                "description": "",
-                "type": "string"
+                "title": "PMID",
+                "description": "PMID",
+                "type": "string",
+                "linkTo": "article"
             }
         },
         "statistic": {
