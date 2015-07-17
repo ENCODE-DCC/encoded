@@ -152,7 +152,6 @@
             "title": "Method",
             "description": "Mothed uuid",
             "type": "string",
-            "default": "",
             "linkTo": "method"
         },
         "segregation": {

@@ -140,7 +140,6 @@
             "title": "Method",
             "description": "Mothed id",
             "type": "string",
-            "default": "",
             "linkTo": "method"
         },
         "additionalInformation": {

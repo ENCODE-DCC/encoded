@@ -22,7 +22,7 @@ def includeme(config):
     unique_key='gene:symbol',
     properties={
         'title': 'HGNC Genes',
-        'description': 'List of HGNC genes',
+        'description': 'List of genes',
     })
 class Gene(Item):
     item_type = 'gene'
@@ -40,6 +40,48 @@ class OrphaPhenotype(Item):
     item_type = 'orphaPhenotype'
     schema = load_schema('clincoded:schemas/orphaPhenotype.json')
     name_key = 'orphaNumber'
+
+'''
+@collection(
+    name='diseases',
+    unique_key='orphaPhenotype:uuid',
+    properties={
+        'title': 'diseases',
+        'description': 'List of all diseases',
+    })
+class Disease(Item):
+    item_type = 'disease'
+    schema = load_schema('clincoded:schemas/disease.json')
+    name_key = 'uuid'
+
+@collection(
+    name='statistics',
+    unique_key='statistic:uuid',
+    properties={
+        'title': 'Statistical Study',
+        'description': 'List of statistical studies in all gdm pairs',
+    })
+class Statistic(Item):
+    item_type = 'statistic'
+    schema = load_schema('clincoded:schemas/statistic.json')
+    name_key = 'uuid'
+    embedded = [
+        'variants',
+        'assessments'
+    ]
+
+@collection(
+    name='controlgroups',
+    unique_key='controlGroup:uuid',
+    properties={
+        'title': 'Control Groups',
+        'description': 'List of control groups in all gdm pairs',
+    })
+class ControlGroup(Item):
+    item_type = 'controlGroup'
+    schema = load_schema('clincoded:schemas/controlGroup.json')
+    name_key = 'uuid'
+'''
 
 @collection(
     name='articles',
@@ -69,18 +111,6 @@ class Variant(Item):
     ]
 
 @collection(
-    name='controlgroups',
-    unique_key='controlGroup:uuid',
-    properties={
-        'title': 'Control Groups',
-        'description': 'List of control groups in all gdm pairs',
-    })
-class ControlGroup(Item):
-    item_type = 'controlGroup'
-    schema = load_schema('clincoded:schemas/controlGroup.json')
-    name_key = 'uuid'
-
-@collection(
     name='gdm',
     unique_key='gdm:uuid',
     properties={
@@ -100,9 +130,9 @@ class Gdm(Item):
         'annotations.groups.commonDiagnosis',
         'annotations.groups.otherGenes',
         'annotations.groups.method',
-        'annotations.groups.statistic',
-        'annotations.groups.statistic.variants',
-        'annotations.groups.statistic.assessments',
+        #'annotations.groups.statistic',
+        #'annotations.groups.statistic.variants',
+        #'annotations.groups.statistic.assessments',
         'annotations.groups.familyIncluded',
         'annotations.groups.familyIncluded.commonDiagnosis',
         'annotations.groups.familyIncluded.method',
@@ -119,7 +149,7 @@ class Gdm(Item):
         'annotations.groups.individualIncluded.method',
         'annotations.groups.individualIncluded.variants',
         'annotations.groups.individualIncluded.assessments',
-        'annotations.groups.control',
+        #'annotations.groups.control',
         'annotations.families',
         'annotations.families.commonDiagnosis',
         'annotations.families.method',
@@ -155,9 +185,9 @@ class Annotation(Item):
         'groups.commonDiagnosis',
         'groups.otherGenes',
         'groups.method',
-        'groups.statistic',
-        'groups.statistic.variants',
-        'groups.statistic.assessments',
+        #'groups.statistic',
+        #'groups.statistic.variants',
+        #'groups.statistic.assessments',
         'groups.familyIncluded.commonDiagnosis',
         'groups.familyIncluded.method',
         'groups.familyIncluded.variants',
@@ -173,7 +203,7 @@ class Annotation(Item):
         'groups.individualIncluded.method',
         'groups.individualIncluded.variants',
         'groups.individualIncluded.assessments',
-        'groups.control',
+        #'groups.control',
         'families',
         'families.commonDiagnosis',
         'families.method',
@@ -207,9 +237,9 @@ class Group(Item):
         'commonDiagnosis',
         'otherGenes',
         'method',
-        'statistic',
-        'statistic.variants',
-        'statistic.assessments',
+        #'statistic',
+        #'statistic.variants',
+        #'statistic.assessments',
         'familyIncluded',
         'familyIncluded.commonDiagnosis',
         'familyIncluded.method',
@@ -226,7 +256,7 @@ class Group(Item):
         'individualIncluded.method',
         'individualIncluded.variants',
         'individualIncluded.assessments',
-        'control'
+        #'control'
     ]
 
 @collection(
@@ -282,22 +312,6 @@ class Method(Item):
     item_type = 'method'
     schema = load_schema('clincoded:schemas/method.json')
     name_key = 'uuid'
-
-@collection(
-    name='statistics',
-    unique_key='statistic:uuid',
-    properties={
-        'title': 'Statistical Study',
-        'description': 'List of statistical studies in all gdm pairs',
-    })
-class Statistic(Item):
-    item_type = 'statistic'
-    schema = load_schema('clincoded:schemas/statistic.json')
-    name_key = 'uuid'
-    embedded = [
-        'variants',
-        'assessments'
-    ]
 
 @collection(
     name='segregations',

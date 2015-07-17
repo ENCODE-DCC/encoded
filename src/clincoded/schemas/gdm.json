@@ -100,6 +100,7 @@
             "default": [],
             "uniqueItems": true,
             "items": {
+                "title": "Summary",
                 "type": "string"
             }
         },
@@ -108,8 +109,8 @@
             "description": "Provisional Assertion",
             "type": "array",
             "default": [],
-            "uniqueItems": true,
             "items": {
+                "title": "Provisional Assertion",
                 "type": "string"
             }
         },
