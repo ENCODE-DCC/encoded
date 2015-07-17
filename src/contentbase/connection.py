@@ -94,14 +94,14 @@ class Connection(object):
 
     def __iter__(self, *item_types):
         if not item_types:
-            item_types = self.types.keys()
-        for uuid in self.storage.__iter__(item_types):
+            item_types = self.types.types.keys()
+        for uuid in self.storage.__iter__(*item_types):
             yield uuid
 
     def __len__(self, *item_types):
         if not item_types:
-            item_types = self.types.keys()
-        return self.storage.__len__(item_types)
+            item_types = self.types.types.keys()
+        return self.storage.__len__(*item_types)
 
     def __getitem__(self, uuid):
         item = self.get_by_uuid(uuid)
