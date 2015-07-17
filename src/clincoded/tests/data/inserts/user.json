@@ -1149,5 +1149,20 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "3a70a47f-711a-473f-93cd-0996421eeaf2"
+    },
+    {
+        "email": "hitz@stanford.edu",
+        "first_name": "Ben",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Hitz",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "748c68cb-b59e-48dd-88e9-1bcd8be199d6"
     }
 ]
