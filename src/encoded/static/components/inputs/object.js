@@ -9,7 +9,7 @@ var openLinksInNewWindow = function(e) {
     if (e.isDefaultPrevented()) return;
 
     // intercept links and open in new tab
-    var target = event.target;
+    var target = e.target;
     while (target && (target.tagName.toLowerCase() != 'a')) {
         target = target.parentElement;
     }
