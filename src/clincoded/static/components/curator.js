@@ -96,13 +96,14 @@ var PmidSummary = module.exports.PmidSummary = React.createClass({
 
 var CurationPalette = module.exports.CurationPalette = React.createClass({
     propTypes: {
-        article: React.PropTypes.object
+        annotation: React.PropTypes.object.isRequired, // Current annotation that owns the article
+        gdm: React.PropTypes.object.isRequired // Current GDM that owns the given annotation
     },
 
     render: function() {
         return (
-            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.article.pmid}>
-                <Panel title={<CurationPaletteTitles title="Group" />} panelClassName="panel-evidence">Stuff</Panel>
+            <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
+                <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Individual" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Functional" />} panelClassName="panel-evidence">Stuff</Panel>
@@ -115,12 +116,13 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
 // Title for each section of the curation palette. Contains the title and an Add button.
 var CurationPaletteTitles = React.createClass({
     propTypes: {
-        title: React.PropTypes.string // Title to display
+        title: React.PropTypes.string, // Title to display
+        url: React.PropTypes.string // URL for panel title click to go to.
     },
 
     render: function() {
         return (
-            <a href="#" className="clearfix">
+            <a href={this.props.url} className="clearfix">
                 <h4 className="pull-left">{this.props.title}</h4>
                 <i className="icon icon-plus-circle pull-right"></i>
             </a>
@@ -223,7 +225,7 @@ var AddOmimIdModal = React.createClass({
     // Called when the modal form’s submit button is clicked. Handles validation and updating the OMIM in the GDM.
     submitForm: function(e) {
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
-        this.setFormValue('omimid', this.refs.omimid.getValue());
+        this.saveFormValue('omimid', this.refs.omimid.getValue());
         if (this.validateForm()) {
             // Form is valid -- we have a good OMIM ID. Close the modal and update the current GDM's OMIM ID
             this.props.closeModal();

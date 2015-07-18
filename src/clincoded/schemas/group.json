@@ -197,7 +197,6 @@
             "title": "Method",
             "description": "Mothed id",
             "type": "string",
-            "default": "",
             "linkTo": "method"
         },
         "additionalInformation": {
@@ -215,7 +214,6 @@
             "title": "Statistical Study",
             "description": "Statistical study associated to the group",
             "type": "string",
-            "default": "",
             "linkTo": "statistic"
         },
         "familyIncluded": {
@@ -246,7 +244,6 @@
             "title": "Control Group",
             "description": "ID of control group associated to the group",
             "type": "string",
-            "default": "",
             "linkTo": "controlGroup"
         },
         "dateTime": {

@@ -157,7 +157,7 @@ var CurationCentral = React.createClass({
                         </div>
                         {currArticle ?
                             <div className="col-md-3">
-                                <CurationPalette article={currArticle} />
+                                <CurationPalette gdm={gdm} annotation={annotation} />
                             </div>
                         : null}
                     </div>
@@ -250,7 +250,7 @@ var AddPmidModal = React.createClass({
     // the process to add an article.
     submitForm: function(e) {
         e.preventDefault(); e.stopPropagation(); // Don't run through HTML submit handler
-        this.setFormValue('pmid', this.refs.pmid.getValue());
+        this.saveFormValue('pmid', this.refs.pmid.getValue());
         if (this.validateForm()) {
             // Form is valid -- we have a good PMID. Fetch the article with that PMID
             var enteredPmid = this.getFormValue('pmid');

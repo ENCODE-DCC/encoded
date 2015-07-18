@@ -62,8 +62,19 @@ var FormMixin = module.exports.FormMixin = {
     // Normally used after the submit button is clicked. Call this to save the value
     // from the Input with the given 'ref' value and the value itself. This does
     // NOT modify the form input values; it just saves them for later processing.
-    setFormValue: function(ref, value) {
+    saveFormValue: function(ref, value) {
         this.formValues[ref] = value;
+    },
+
+    // Call this to avoid calling 'saveFormValue' for every form item. It goes through all the
+    // form items with refs (should be all of them) and saves a formValue property with the
+    // corresponding value from the DOM.
+    saveAllFormValues: function() {
+        if (this.refs && Object.keys(this.refs).length) {
+            Object.keys(this.refs).map(ref => {
+                this.saveFormValue(ref, this.refs[ref].getValue());
+            });
+        }
     },
 
     // Get the saved form error for the Input with the given 'ref' value.
