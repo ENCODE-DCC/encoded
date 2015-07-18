@@ -12,3 +12,7 @@ def analysis_step_run_1_2(value, system):
     analysis_step = root[analysis_step_uuid]
     analysis_step_version = root['versionof:{name}'.format(**analysis_step.properties)]
     value['analysis_step_version'] = str(analysis_step_version.uuid)
+
+    # http://redmine.encodedcc.org/issues/3075
+    if 'workflow_run' in value:
+        del value['workflow_run']

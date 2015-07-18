@@ -218,17 +218,19 @@ var ExperimentsUsingAntibody = React.createClass({
 });
 
 
-var StandardsDocuments = React.createClass({
+var Documents = React.createClass({
     render: function() {
         return (
             <dd>
                 {this.props.docs.map(function(doc, i) {
                     var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    var docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
                         <div className="multi-dd dl-link">
                             <i className="icon icon-download"></i>&nbsp;
                             <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
-                                {doc.aliases[0]}
+                                {docName}
                             </a>
                         </div>
                     );
@@ -278,14 +280,6 @@ var Characterization = module.exports.Characterization = React.createClass({
             download = (
                 <em>Document not available</em>
             );
-        }
-
-        // Compile a list of attached standards documents
-        var standardsDocuments = [];
-        if (context.documents) {
-            standardsDocuments = context.documents.filter(function(doc) {
-                return doc.document_type === "standards document";
-            });
         }
 
         var excerpt;
@@ -352,10 +346,10 @@ var Characterization = module.exports.Characterization = React.createClass({
                             {download}
                         </div>
 
-                        {standardsDocuments.length ?
-                            <div data-test="standardsdoc">
-                                <dt>Standards documents</dt>
-                                <StandardsDocuments docs={standardsDocuments} />
+                        {context.documents && context.documents.length ?
+                            <div data-test="documents">
+                                <dt>Documents</dt>
+                                <Documents docs={context.documents} />
                             </div>
                         : null}
                     </dl>

@@ -64,6 +64,12 @@ var Form = module.exports.Form = React.createClass({
         };
     },
 
+    getDefaultProps: function() {
+        return {
+            submitLabel: 'Save',
+        }
+    },
+
     getInitialState: function() {
         return {
             isValid: true,
@@ -96,7 +102,7 @@ var Form = module.exports.Form = React.createClass({
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>Save</button>
+                    <button onClick={this.save} className="btn btn-success" disabled={!this.canSave()}>{this.props.submitLabel}</button>
                 </div>
                 {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             </div>
@@ -172,19 +178,40 @@ var Form = module.exports.Form = React.createClass({
                 if (match) {
                     name.push(match[1]);
                 }
+                var description = error.description;
                 if (name.length) {
                     var v = externalValidation;
+                    var schemaNode = this.props.schema;
                     for (var i = 0; i < name.length; i++) {
                         if (v.children[name[i]] === undefined) {
                             v.children[name[i]] = {children: {}, error: null};
                         }
+                        if (schemaNode.children !== undefined) {
+                            if (typeof name[i] === 'number') { // array
+                                // might need to traverse into fetched fieldset
+                                var component = schemaNode.children.props.get('component');
+                                if (component !== undefined) {
+                                    schemaNode = component.props.schema;
+                                } else {
+                                    schemaNode = schemaNode.children;
+                                }
+                            } else {
+                                schemaNode = schemaNode.children.get(name[i]);
+                            }
+                        } else {
+                            // we've reached a scalar; stop and show error here
+                            description = name.slice(i).join('/') + ': ' + description;
+                            break;                            
+                        }
                         v = v.children[name[i]];
                     }
-                    v.error = error.description;
+                    v.error = description;
                 } else {
-                    schemaErrors.push(error.description);
+                    schemaErrors.push(description);
                 }
-            });
+            }.bind(this));
+        } else if (data.title) {
+            schemaErrors.push(data.title);
         }
 
         // convert to format expected by react-forms

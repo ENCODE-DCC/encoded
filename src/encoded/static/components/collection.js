@@ -219,11 +219,10 @@ var lookup_column = function (result, column) {
                     if (!response.ok) throw response;
                     return response.json();
                 })
-                .catch(parseAndLogError.bind(undefined, 'allRequest'))
                 .then(data => {
                     self.extractData({context: data});
                     self.setState({communicating: false});
-                });
+                }, parseAndLogError.bind(undefined, 'allRequest'));
                 this.setState({
                     allRequest: request,
                     communicating: true

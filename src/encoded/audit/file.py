@@ -29,7 +29,7 @@ def audit_file_replicate_match(value, system):
     does.  These tend to get confused when replacing objects.
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'replicate' not in value:
@@ -70,7 +70,7 @@ def audit_file_read_length(value, system):
     Reads files should have a read_length
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['output_type'] != 'reads':
@@ -90,7 +90,7 @@ def audit_file_controlled_by(value, system):
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
@@ -148,7 +148,7 @@ def audit_file_flowcells(value, system):
     Don't bother to check anything but ENCODE3
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] not in ['fastq']:
@@ -168,7 +168,7 @@ def audit_paired_with(value, system):
     DISABLING until ticket 1795 is implemented
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'paired_end' not in value:
@@ -197,7 +197,7 @@ def audit_paired_with(value, system):
 @audit_checker('file', frame='object')
 def audit_file_size(value, system):
 
-    if value['status'] in ['deleted', 'replaced', 'uploading']:
+    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
         return
 
     if 'file_size' not in value:

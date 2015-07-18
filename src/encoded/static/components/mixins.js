@@ -98,7 +98,11 @@ module.exports.Persona = {
     componentDidMount: function () {
         // Login / logout actions must be deferred until persona is ready.
         this.extractSessionCookie();
-        $script.ready('persona', this.configurePersona);
+        if (!this.parseSessionCookie(this.extractSessionCookie()).disable_persona) {
+            $script.ready('persona', this.configurePersona);
+        } else {
+            this.setState({loadingComplete: true});
+        }
     },
 
     ajaxPrefilter: function (options, original, xhr) {
@@ -153,6 +157,7 @@ module.exports.Persona = {
         if (this.props.session_cookie !== session_cookie) {
             this.setProps({session_cookie: session_cookie});
         }
+        return session_cookie;
     },
 
     componentWillReceiveProps: function (nextProps) {

@@ -111,7 +111,6 @@ class AnalysisStepRun(Item):
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step_version.analysis_step',
-        'workflow_run',
         'qc_metrics',
         'output_files'
     ]
@@ -141,20 +140,6 @@ class AnalysisStepRun(Item):
     })
     def output_files(self, request, output_files):
         return paths_filtered_by_status(request, output_files)
-
-
-@collection(
-    name='workflow-runs',
-    properties={
-        'title': 'Workflow runs',
-        'description': 'Listing of (DNANexus) Workflow Runs'
-    })
-class WorkflowRun(Item):
-    item_type = 'workflow_run'
-    schema = load_schema('encoded:schemas/workflow_run.json')
-    embedded = [
-        'pipeline'
-    ]
 
 
 @collection(

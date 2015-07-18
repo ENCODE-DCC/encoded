@@ -96,11 +96,11 @@ class PickStorage(object):
     def get_rev_links(self, model, rel, *item_types):
         return self.storage().get_rev_links(model, rel, *item_types)
 
-    def __iter__(self, item_type=None):
-        return self.storage().__iter__(item_type)
+    def __iter__(self, *item_types):
+        return self.storage().__iter__(*item_types)
 
-    def __len__(self, item_type=None):
-        return self.storage().__len__(item_type)
+    def __len__(self, *item_types):
+        return self.storage().__len__(*item_types)
 
     def create(self, item_type, uuid):
         return self.write.create(item_type, uuid)
@@ -156,16 +156,16 @@ class ElasticSearchStorage(object):
             hit['fields']['uuid'][0] for hit in data['hits']['hits']
         ]
 
-    def __iter__(self, item_type=None):
+    def __iter__(self, *item_types):
         query = {
             'fields': ['uuid'],
-            'filter': {'term': {'item_type': item_type}} if item_type else {'match_all': {}},
+            'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
         for hit in scan(self.es, query=query):
             yield hit['fields']['uuid'][0]
 
-    def __len__(self, item_type=None):
+    def __len__(self, *item_types):
         query = {
-            'filter': {'term': {'item_type': item_type}} if item_type else {'match_all': {}},
+            'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
         return self.es.count(index=self.index, body=query)
