@@ -285,20 +285,12 @@
             "title": "Probands",
             "type": "string"
         },
-        "statistic": {
-            "title": "Statistical Study",
-            "type": "string"
-        },
         "familyIncluded": {
             "title": "Family Included",
             "type": "string"
         },
         "individualIncluded": {
             "title": "Individual Included",
-            "type": "string"
-        },
-        "control.label": {
-            "title": "Control",
             "type": "string"
         }
     }

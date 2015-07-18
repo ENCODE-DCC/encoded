@@ -17,8 +17,6 @@
             "TP63"
         ],
         "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
-        "statistic" : "2fcb3073-1ebc-11e5-b386-60f81dc5b05a",
-        "control": "edbb7745-25b4-11e5-9520-60f81dc5b05a",
         "uuid": "eab0dd0a-1d05-11e5-8d2d-60f81dc5b05a"
     },
     {
@@ -35,8 +33,6 @@
         "numberOfProbandWithVariantInGene": "13",
         "numberOfProbandsWithoutVariantInGene": "10",
         "method": "197e1c8a-1912-11e5-8050-60f81dc5b05a",
-        "statistic" : "2fcb3073-1ebc-11e5-b386-60f81dc5b05a",
-        "control": "edbb7745-25b4-11e5-9520-60f81dc5b05a",
         "uuid": "e79009fd-2988-11e5-b98a-60f81dc5b05a"
     },
     {
@@ -58,7 +54,6 @@
             "JMY"
         ],
         "method": "34d309dc-1912-11e5-aa88-60f81dc5b05a",
-        "statistic" : "2fcb3073-1ebc-11e5-b386-60f81dc5b05a",
         "familyIncluded": [
             "ab9a37ba-18fa-11e5-bad8-60f81dc5b05a",
             "e659bd3a-18f8-11e5-9d3a-60f81dc5b05a"
@@ -66,7 +61,6 @@
         "individualIncluded": [
             "359612a3-18fb-11e5-be10-60f81dc5b05a"
         ],
-        "control": "8f952659-2747-11e5-a501-60f81dc5b05a",
         "uuid": "edea98e3-25cc-11e5-9019-60f81dc5b05a"
     }
 ]
