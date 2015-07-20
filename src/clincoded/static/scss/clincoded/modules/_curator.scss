@@ -65,7 +65,7 @@
 }
 
 .equal-height {
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 @media screen and (min-width: $screen-sm-min) {
@@ -218,6 +218,12 @@
 .panel-create-gene-disease {
     .panel-std {
         padding-bottom: 40px;
+    }
+}
+
+.panel-dashboard {
+    .panel-std {
+        padding: 10px 30px 20px 30px;
     }
 }
 

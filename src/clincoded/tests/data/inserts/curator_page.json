@@ -16,5 +16,11 @@
         "title": "Group Curation",
         "status": "released",
         "uuid": "a1d4d18b-27be-4a2b-9447-503e310d6f66"
+    },
+    {
+        "name": "dashboard",
+        "title": "Dashboard",
+        "status": "released",
+        "uuid": "a6dbc91f-ed63-4ff9-a723-18f6cab05dae"
     }
 ]
