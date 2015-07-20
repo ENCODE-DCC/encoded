@@ -92,7 +92,7 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
 runcmd:
-# Ideally this would build as a different user so encoded only has read
+# Ideally this would build as a different user so clincoded only has read
 # permissions
 - set -e
 - update-rc.d elasticsearch defaults
@@ -104,34 +104,38 @@ runcmd:
 -   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
 -   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - fi
-- sudo -u postgres createuser encoded
-- sudo -u postgres createdb --owner=encoded encoded
-- mkdir /srv/encoded
-- chown encoded:encoded /srv/encoded
-- cd /srv/encoded
-- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
-- sudo -u encoded git checkout %(COMMIT)s
+- sudo -u postgres createuser clincoded
+- sudo -u postgres createdb --owner=clincoded clincoded
+- mkdir /srv/clincoded
+- chown clincoded:clincoded /srv/clincoded
+- cd /srv/clincoded
+- sudo -u clincoded git clone --no-checkout https://github.com/ClinGen/clincoded.git .
+- sudo -u clincoded git checkout %(COMMIT)s
 - mkdir /opt/wal-e
 - chown postgres:postgres /opt/wal-e
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
+##TEMP for inital tests --load test data from test data backup
+- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.3
 - /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
+#TEMP for inital tests --commented out
+#- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
+#- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/ 
 - /etc/init.d/postgresql start
-- sudo -u encoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
-- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
+- sudo -u clincoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
+- sudo -u clincoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
+#TEMP for inital tests --commented out
+#- sudo -u clincoded bin/aws s3 cp --recursive s3://clincoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
-- sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/create-mapping production.ini --app-name app
-- ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
-- ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
+- sudo -u clincoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
+- sudo -u clincoded bin/create-mapping production.ini --app-name app
+- ln -s /srv/clincoded/etc/clincoded-apache.conf /etc/apache2/sites-available/clincoded.conf
+- ln -s /srv/clincoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
 - a2enmod proxy_http
 - a2enmod rewrite
 - a2enmod ssl
-- a2ensite encoded.conf
+- a2ensite clincoded.conf
 - a2dissite 000-default
 - a2enconf logging
 - a2disconf charset
@@ -139,32 +143,31 @@ runcmd:
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
-- if test "%(ROLE)s" = "demo"
-- then
--   sudo -u encoded bin/batchupgrade production.ini --app-name app
-- fi
+#TEMP for inital tests --commented out
+# - if test "%(ROLE)s" = "demo"
+# - then
+# -   sudo -u clincoded bin/batchupgrade production.ini --app-name app
+# - fi
+#/TEMP
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload
 # - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
+# - sudo -u clincoded bin/update-keys-links production.ini --app-name app
+# - sudo -u clincoded bin/upgrade production.ini --app-name app
 # - sudo -i -u postgres /opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-push /var/lib/postgresql/9.3/main
 # - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
+# - sudo -i -u clincoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 
 users:
 - default
-- name: encoded
-  gecos: ENCODE Metadata Database daemon user
+- name: clincoded
+  gecos: ClinGen Gene Curation Database daemon user
   inactive: true
   system: true
   # Specified homedir must exist
   # https://github.com/rubygems/rubygems/issues/689
-  homedir: /srv/encoded
+  homedir: /srv/clincoded
 
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
@@ -212,4 +215,4 @@ write_files:
   content: "%(WALE_S3_PREFIX)s"
 
 - path: /etc/ssh/users_ca.pub
-  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+  content: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmiM5UBd3Rant92xxhCVZFW+U+gUN3aLkICO1gzOGr/Ps173YgzgVPmdKdiI6vBzCZ8BXMG/aeiBHk2LKA+vFjh1/sFRA51nA+hnBzXuIbWYpsTHaGG3BFhnAP8tzDm/7MYRkIeXLwZRwTeFtrMd9MR/HGBVG5HmbM/jtrvTRWZVwFnXRxLQ3Rs5Y9v1QKOrZs4w5tt3iKBiBr+kJKhDHV5O8COowxjcfSqCZmfafVJQNR+8Dg6cvaizqY+ykHpgzc+a7oXJfo1LDDQELl0DGIPDIa340jMDjSSVV0o+RpjbIXTtH4m3TDpKRmZsTQrnHCMNSp5Uk7mMkhKwIwX1SP clincoded-dev@clinicalgenome.org
