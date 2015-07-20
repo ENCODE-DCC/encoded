@@ -29,8 +29,7 @@ var Dashboard = React.createClass({
     },
 
     // Retrieve the GDMs and other objects related to user via search
-    getData: function() {
-        var userid = this.props.session['auth.userid'];
+    getData: function(userid) {
         this.getRestDatas(['/search/?type=gdm&limit=10&owner=' + userid,'/search/?limit=10&owner=' + userid], [function() {}, function() {}]).then(data => {
             // Search objects successfully retrieved; clean up results
             // GDM List panel results
@@ -47,7 +46,7 @@ var Dashboard = React.createClass({
             // Recent History panel results
             for (var i = 0; i < data[1]['@graph'].length; i++) {
                 var temp = data[1]['@graph'][i];
-                var tempDisplayName = ''
+                var tempDisplayName = 'Item';
                 switch (temp['@type'][0]) {
                     case 'annotation':
                         tempDisplayName = 'Annotation for PMID:' + temp['article']['pmid'];
@@ -63,7 +62,8 @@ var Dashboard = React.createClass({
                 }
                 tempRecentHistory.push({
                     url: temp['@id'],
-                    displayName: tempDisplayName
+                    displayName: tempDisplayName,
+                    dateTime: temp['dateTime']
                 });
             }
             // Set states for cleaned results
@@ -77,8 +77,10 @@ var Dashboard = React.createClass({
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
-    componentDidMount: function() {
-        this.getData();
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.session['auth.userid'] !== this.props.session['auth.userid']) {
+            this.getData(nextProps.session['auth.userid']);
+        }
     },
 
     render: function() {
@@ -100,7 +102,7 @@ var Dashboard = React.createClass({
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName}</a></li>
+                                    return <li><a href={item.url}>{item.displayName}</a> (modified {item.dateTime})</li>
                                 })}
                             </ul>
                             : "You have no activity to display."}
