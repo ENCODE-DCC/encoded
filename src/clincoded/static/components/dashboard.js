@@ -102,7 +102,7 @@ var Dashboard = React.createClass({
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName}</a> (modified {item.dateTime})</li>
+                                    return <li><a href={item.url}>{item.displayName}</a> (modified {moment(item.dateTime).format( "YYYY/MM/DD h:mma")})</li>
                                 })}
                             </ul>
                             : "You have no activity to display."}
