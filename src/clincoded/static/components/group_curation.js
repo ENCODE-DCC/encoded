@@ -126,6 +126,24 @@ var GroupCuration = React.createClass({
                     newGroup.commonDiagnosis = groupDisease = groupDisease['@id'];
                     newGroup.method = newMethod['@id'];
 
+                    // Fill in the group fields from the Common Diseases & Phenotypes panel
+                    var hpoTerms = this.getFormValue('hpoid');
+                    if (hpoTerms) {
+                        newGroup.hpoIdInDiagnosis = _.compact(hpoTerms.split(','));
+                    }
+                    var phenoterms = this.getFormValue('phenoterms');
+                    if (phenoterms) {
+                        newGroup.termsInDiagnosis = phenoterms;
+                    }
+                    hpoTerms = this.getFormValue('nothpoid');
+                    if (hpoTerms) {
+                        newGroup.hpoIdInElimination = _.compact(hpoTerms.split(','));
+                    }
+                    phenoterms = this.getFormValue('notphenoterms');
+                    if (phenoterms) {
+                        // Assign to group once new group schema merged in.
+                    }
+
                     // Post the new group to the DB
                     return this.postRestData('/groups/', newGroup).then(data => {
                         return Promise.resolve(data['@graph'][0]);
@@ -233,7 +251,7 @@ var GroupCommonDiseases = function() {
             <p className="col-sm-7 col-sm-offset-5">Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper.</p>
             <Input type="text" ref="nothpoid" label={<LabelHpoId not />}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
-            <Input type="textarea" ref="phenoterms" label={<LabelPhenoTerms not />} rows="5"
+            <Input type="textarea" ref="notphenoterms" label={<LabelPhenoTerms not />} rows="5"
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
         </div>
     );
