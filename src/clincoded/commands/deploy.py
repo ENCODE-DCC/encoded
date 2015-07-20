@@ -60,21 +60,21 @@ def run(wale_s3_prefix, image_id, instance_type,
         user_data=user_data,
         block_device_map=bdm,
         instance_initiated_shutdown_behavior='terminate',
-        instance_profile_name='encoded-instance',
+        instance_profile_name='clincoded-instance',
     )
 
     time.sleep(0.5)  # sleep for a moment to ensure instance exists...
     instance = reservation.instances[0]  # Instance:i-34edd56f
-    print('%s.%s.encodedcc.org' % (instance.id, domain))
+    print('%s.%s.clinicalgenome.org' % (instance.id, domain))
     instance.add_tags({
         'Name': name,
         'branch': branch,
         'commit': commit,
         'started_by': username,
     })
-    print('ssh %s.%s.encodedcc.org' % (name, domain))
+    print('ssh %s.%s.clinicalgenome.org' % (name, domain))
     if domain == 'instance':
-        print('https://%s.demo.encodedcc.org' % name)
+        print('https://%s.demo.clinicalgenome.org' % name)
 
     sys.stdout.write(instance.state)
     while instance.state == 'pending':
@@ -96,11 +96,11 @@ def main():
         return value
 
     parser = argparse.ArgumentParser(
-        description="Deploy ENCODE on AWS",
+        description="Deploy clincoded on AWS",
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
-    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
+    parser.add_argument('--wale-s3-prefix', default='s3://clincoded-backups-prod/production')
     parser.add_argument(
         '--candidate', action='store_const', default='demo', const='candidate', dest='role',
         help="Deploy candidate instance")
