@@ -4,7 +4,7 @@
     "description": "Schema for storing and using statistic data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysisType", "description"],
+    "required": ["owner", "dateTime", "analysisType", "description"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -15,6 +15,16 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "owner": {
+            "title": "Owner",
+            "description": "Email of creatot",
+            "type": "string"
+        },
+        "dateTime": {
+            "title": "Date Time",
+            "description": "Time stamp of creation",
+            "type": "string"
         },
         "analysisType": {
             "title": "Analysis Type",

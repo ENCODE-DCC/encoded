@@ -39,15 +39,128 @@
                 "default": ""
             }
         },
-        "other": {
-            "title": "Others",
-            "description": "List of other name(s)",
+        "otherDescription": {
+            "title": "Other Description",
+            "description": "List of other descriptions",
+            "type": "string",
+            "default": ""
+        },
+        "consistentWithDiseaseMechanism": {
+            "title": "Is Variant Consistent with Disease Mechanism?",
+            "description": "Is variant consistent with disease mechanism?",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "withinFunctionalDomain": {
+            "title": "Variant within Functional Domain",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "frequencySupportPathogenicity": {
+            "title": "Does Frequency Data Support Pathogenicity",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "previouslyReported": {
+            "title": "Previously Reported",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "denovoType": {
+            "title": "de novo Type",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "consistentWithDiseaseMechanism": {
+            "title": "Is Variant Consistent with Disease Mechanism?",
+            "description": "Is variant consistent with disease mechanism?",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "intransWithAnotherVariant": {
+             "title": "in trans with Another Variant",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "supportingSegregation": {
+             "title": "Supporting Segregation Data",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "supportingStatistic": {
+             "title": "Supporting Statistical Data",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "SupportingFunctional": {
+             "title": "Supporting Functional Data",
+            "type": "string",
+            "default": "",
+            "enum": [
+                "",
+                "Yes",
+                "No"
+            ]
+        },
+        "comment": {
+            "title": "Comment",
+            "type": "string",
+            "default": ""
+        },
+        "assessments": {
+            "title": "Assessments",
+            "description": "uuid list of assessments",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Name",
+                "title": "Assessment",
                 "type": "string",
-                "default": ""
+                "linkTo": "assessment"
             }
         }
     },
@@ -68,8 +181,12 @@
             "title": "HGVS Name(s)",
             "type": "array"
         },
-        "other": {
+        "otherDescription": {
             "title": "Other Description",
+            "type": "string"
+        },
+        "assessments": {
+            "title": "Assessments",
             "type": "string"
         }
     }
