@@ -110,7 +110,7 @@ var Dashboard = React.createClass({
                     </div>
                     <div className="col-md-6">
                         <Panel panelClassName="panel-dashboard">
-                            <h3>Your Gene-Diseases records</h3>
+                            <h3>Your Gene-Disease records</h3>
                             {this.state.gdmList.length > 0 ?
                             <ul>
                                 {this.state.gdmList.map(function(item) {
