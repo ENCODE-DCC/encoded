@@ -1164,5 +1164,20 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "748c68cb-b59e-48dd-88e9-1bcd8be199d6"
+    },
+    {
+        "email": "cherry@stanford.edu",
+        "first_name": "Mike",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "PI",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Cherry",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "5a97bb8e-8b87-4863-91c1-98080d46d4be"
     }
 ]
