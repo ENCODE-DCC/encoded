@@ -159,9 +159,6 @@ runcmd:
 # - sleep 60
 # - sudo -i -u clincoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWCTZCWznGwbZSnKOwJ3fTPo6DHQIFBwOmzfQ8HBnOKD5PuJRuR1/ZkpzxAuMVkLslAgd7hMQx3YzJb85YgoZVnVNxpCtg51u5B/2uYoJEU8wEUCR1XKQ5u7v7R+Bw8M11jLjjonGrvW+kREij6pRnEzdwEyoVHTAjtKVJXwR1U+Bisq3U3rvOQygoW6IuFXucfOx/OdcqL7JtqDc6xjgUlJfvn3/bZ5y+NuJtWIj9sayLGEVbW4D0iTMk+cXGDiQP4cqEbSJK/XbiGthPHJnkmjWbN1qmV+fXvnz2e+sIlxd4In7K+S/Jgg/+SkLHkOQOhMijqvjqjuWV7vuhT5AP clincoded-dev@clinicalgenome.org
-
 users:
 - default
 - name: clincoded
