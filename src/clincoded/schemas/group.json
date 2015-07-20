@@ -4,7 +4,7 @@
     "description": "Schema for storing group data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "commonDiagnosis", "method"],
+    "required": ["label", "commonDiagnosis"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -24,9 +24,13 @@
         },
         "commonDiagnosis": {
             "title": "Common Diagnosis",
-            "description": "OrphaNumber of common diagnosis for the group",
-            "type": "string",
-            "linkTo": "orphaPhenotype"
+            "description": "List of Orphanet IDs of common diagnosis for the group",
+            "type": "array",
+            "items": {
+                "title": "Orphanet ID",
+                "type": "string",
+                "linkTo": "orphaPhenotype"
+            }
         },
         "hpoIdInDiagnosis": {
             "title": "HPO ID(s)",
@@ -197,25 +201,30 @@
             "title": "Method",
             "description": "Mothed id",
             "type": "string",
-            "default": "",
             "linkTo": "method"
         },
         "additionalInformation": {
             "title": "Additional Information",
             "description": "List of Additional information of the group",
+            "type": "string",
+            "default": ""
+        },
+        "otherPMIDs": {
+            "title": "Other PMIDs",
+            "description": "List of other PMIDs having evidence about the group",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Info",
-                "description": "",
-                "type": "string"
+                "title": "PMID",
+                "description": "PMID",
+                "type": "string",
+                "linkTo": "article"
             }
         },
         "statistic": {
             "title": "Statistical Study",
             "description": "Statistical study associated to the group",
             "type": "string",
-            "default": "",
             "linkTo": "statistic"
         },
         "familyIncluded": {
@@ -246,7 +255,6 @@
             "title": "Control Group",
             "description": "ID of control group associated to the group",
             "type": "string",
-            "default": "",
             "linkTo": "controlGroup"
         },
         "dateTime": {
@@ -265,7 +273,7 @@
             "title": "Label",
             "type": "string"
         },
-        "commonDiagnosis.orphaNumber": {
+        "commonDiagnosis": {
             "title": "Common Diagnosis",
             "type": "string"
         },
@@ -277,20 +285,12 @@
             "title": "Probands",
             "type": "string"
         },
-        "statistic": {
-            "title": "Statistical Study",
-            "type": "string"
-        },
         "familyIncluded": {
             "title": "Family Included",
             "type": "string"
         },
         "individualIncluded": {
             "title": "Individual Included",
-            "type": "string"
-        },
-        "control.label": {
-            "title": "Control",
             "type": "string"
         }
     }
