@@ -53,10 +53,27 @@ var FormMixin = module.exports.FormMixin = {
         return {formErrors: {}};
     },
 
-    // Retrieves the saved value of the Input with the given 'ref' value. setFormValue
+    // Retrieves the saved value of the Input with the given 'ref' value. saveFormValue
     // must already have been called with this Input's value.
     getFormValue: function(ref) {
         return this.formValues[ref];
+    },
+
+    // Retrieves the saved value of the Input with the given 'ref' value, and the Input
+    // value must be numeric. If the Input had no entered value at all, the empty string is
+    // returned. If the Input had an entered value but it wasn't numeric, null is returned.
+    // If the Input had a proper numberic value, a Javascript 'number' type is returned
+    // with the entered value.
+    getFormValueNumber: function(ref) {
+        var value = this.getFormValue(ref);
+        if (value) {
+            var numericValue = value.match(/^\s*(\d*)\s*$/);
+            if (numericValue) {
+                return parseInt(numericValue[1], 10);
+            }
+            return null;
+        }
+        return '';
     },
 
     // Normally used after the submit button is clicked. Call this to save the value
@@ -144,7 +161,11 @@ var Input = module.exports.Input = React.createClass({
     // Get the text the user entered from the text-type field. Meant to be called from
     // parent components.
     getValue: function() {
-        return React.findDOMNode(this.refs.input).value;
+        if (this.props.type === 'text' || this.props.type === 'email' || this.props.type === 'textarea') {
+            return React.findDOMNode(this.refs.input).value;
+        } else if (this.props.type === 'select') {
+            return this.getSelectedOption();
+        }
     },
 
     // Get the selected option from a <select> list
@@ -158,7 +179,7 @@ var Input = module.exports.Input = React.createClass({
 
         // Get the selected options value, or its text if it has no value
         if (selectedOptionNode) {
-            return selectedOptionNode.getAttribute('value') || selectedOptionNode.innerHtml;
+            return selectedOptionNode.getAttribute('value') || selectedOptionNode.innerHTML;
         }
 
         // Nothing selected
