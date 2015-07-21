@@ -98,36 +98,57 @@ var GroupCuration = React.createClass({
         // Start with default validation; indicate errors on form if not, then bail
         if (this.validateDefault()) {
             var newGroup = {}; // Holds the new group object;
-            var groupDisease, formError = false;
+            var groupDiseases, formError = false;
 
-            // Required fields are filled; check whether field values are allowed
-            var orphaMatch = this.getFormValue('orphanetid').match(/^ORPHA([0-9]{1,6})$/i);
-            if (!orphaMatch) {
+            // Parse the comma-separated list of Orphanet IDs
+            var orphaIds = captureOrphas(this.getFormValue('orphanetid'));
+
+            if (!orphaIds || !orphaIds.length) {
+                // No 'orphaXX' found 
                 formError = true;
-                this.setFormErrors('orphanetid', 'Use Orphanet IDs (e.g. ORPHA15)');
+                this.setFormErrors('orphanetid', 'Use Orphanet IDs (e.g. ORPHA15) separated by commas');
             }
             if (!formError) {
+                // Build search string from given ORPHA IDs
+                var searchStr = '/search/?type=orphaPhenotype&' + orphaIds.map(function(id) { return 'orphaNumber=' + id; }).join('&');
+
                 // Verify given Orpha ID exists in DB
-                this.getRestData('/diseases/' + orphaMatch[1]).then(disease => {
-                    groupDisease = disease;
+                this.getRestData(searchStr).then(diseases => {
+                    if (diseases['@graph'].length === orphaIds.length) {
+                        groupDiseases = diseases;
 
-                    // Make a new method and save it to the DB
-                    var newMethod = this.createMethod();
+                        // Make a new method and save it to the DB
+                        var newMethod = this.createMethod();
+                        if (newMethod) {
+                            // Post the new method to the DB. When the promise returns with the new method
+                            // object, pass it to the next promise-processing code.
+                            return this.postRestData('/methods/', newMethod).then(data => {
+                                return Promise.resolve(data['@graph'][0]);
+                            });
+                        }
 
-                    // Post the new method to the DB. When the promise returns with the new method
-                    // object, pass it to the next promise-processing code.
-                    console.log('METHOD: %o', newMethod);
-                    return this.postRestData('/methods/', newMethod).then(data => {
-                        return Promise.resolve(data['@graph'][0]);
-                    });
+                        // No method fields were set; just resolve the promise with no method object
+                        return Promise.resolve(null);
+                    } else {
+                        // Get array of missing Orphanet IDs
+                        var missingOrphas = _.difference(orphaIds, diseases['@graph'].map(function(disease) { return disease.orphaNumber; }));
+                        this.setFormErrors('orphanetid', missingOrphas.map(function(id) { return 'ORPHA' + id; }).join(', ') + ' not found');
+                        throw diseases;
+                    }
                 }, e => {
                     // The given orpha ID does *not* exist in the DB
-                    this.setFormErrors('orphanetid', 'The given disease not found');
+                    this.setFormErrors('orphanetid', 'The given diseases not found');
                 }).then(newMethod => {
-                    // Method successfully created; passed in 'newMethod'. Now make the new group.
+                    // Method successfully created if needed (null if not); passed in 'newMethod'. Now make the new group.
                     newGroup.label = this.getFormValue('groupname');
-                    newGroup.commonDiagnosis = groupDisease = groupDisease['@id'];
-                    newGroup.method = newMethod['@id'];
+
+                    // Get an array of all given disease IDs
+                    newGroup.commonDiagnosis = groupDiseases['@graph'].map(function(disease) { return disease['@id']; });
+
+                    // If a method object was created (at least one method field set), get its new object's 
+                    if (newMethod) {
+                        newGroup.method = newMethod['@id'];
+                    }
 
                     // Fill in the group fields from the Common Diseases & Phenotypes panel
                     var hpoTerms = this.getFormValue('hpoid');
@@ -331,6 +352,24 @@ var GroupCuration = React.createClass({
 globals.curator_page.register(GroupCuration, 'curator_page', 'group-curation');
 
 
+// Given a string, find all the comma-separated 'orphaXX' occurrences.
+// Return all orpha IDs in an array.
+function captureOrphas(s) {
+    var re = /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi;
+    var match, ids = [];
+
+    do {
+        match = re.exec(s);
+        if (match) {
+            ids.push(match[1]);
+        }
+    } while(match);
+    return ids;
+}
+
+
+// Group Name group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupName = function() {
     return (
         <div className="row">
@@ -342,6 +381,8 @@ var GroupName = function() {
 };
 
 
+// Common diseases group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupCommonDiseases = function() {
     return (
         <div className="row">
@@ -393,6 +434,8 @@ var LabelPhenoTerms = React.createClass({
 });
 
 
+// Demographics group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupDemographics = function() {
     return (
         <div className="row">
@@ -462,6 +505,8 @@ var GroupDemographics = function() {
 };
 
 
+// Group information group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupProbandInfo = function() {
     return(
         <div className="row">
@@ -490,6 +535,8 @@ var GroupProbandInfo = function() {
 };
 
 
+// Methods group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupMethods = function() {
     return (
         <div className="row">
@@ -562,6 +609,8 @@ var GroupMethods = function() {
 };
 
 
+// Additional Information group curation panel. Call with .call(this) to run in the same context
+// as the calling component.
 var GroupAdditional = function() {
     return (
         <div className="row">
