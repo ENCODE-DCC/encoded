@@ -4,7 +4,7 @@
     "description": "Schema for storing and using family data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "commonDiagnosis", "method"],
+    "required": ["label", "commonDiagnosis"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -23,9 +23,13 @@
         },
         "commonDiagnosis": {
             "title": "Common Diagnosis",
-            "description": "OrphaNumber of common diagnosis for the family",
-            "type": "string",
-            "linkTo": "orphaPhenotype"
+            "description": "List of Orphanet IDs of common diagnosis for the family",
+            "type": "array",
+            "items": {
+                "title": "Orphanet ID",
+                "type": "string",
+                "linkTo": "orphaPhenotype"
+            }
         },
         "hpoIdInDiagnosis": {
             "title": "HPO ID(s)",
@@ -146,13 +150,13 @@
         },
         "method": {
             "title": "Method",
-            "description": "Mothed id",
+            "description": "Mothed uuid",
             "type": "string",
             "linkTo": "method"
         },
         "segregation": {
-            "title": "Segregation Study",
-            "description": "Segregation study associated to the family",
+            "title": "Segregation",
+            "description": "uuid link to segregation",
             "type": "string",
             "linkTo": "segregation"
         },
@@ -170,12 +174,19 @@
         "additionalInformation": {
             "title": "Additional Information",
             "description": "List of Additional information of the family",
+            "type": "string",
+            "default": ""
+        },
+        "otherPMIDs": {
+            "title": "Other PMIDs",
+            "description": "List of other PMIDs having evidence about the family",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Itme",
-                "description": "",
-                "type": "string"
+                "title": "PMID",
+                "description": "PMID",
+                "type": "string",
+                "linkTo": "article"
             }
         },
         "individualIncluded": {
@@ -202,12 +213,8 @@
             "title": "Label",
             "type": "string"
         },
-        "commonDiagnosis.orphaNumber": {
+        "commonDiagnosis": {
             "title": "Diagnosis",
-            "type": "string"
-        },
-        "method": {
-            "title": "Method",
             "type": "string"
         },
         "variants": {

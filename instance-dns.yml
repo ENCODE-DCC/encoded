@@ -38,7 +38,7 @@ power_state:
   mode: reboot
 
 ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
+- ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWCTZCWznGwbZSnKOwJ3fTPo6DHQIFBwOmzfQ8HBnOKD5PuJRuR1/ZkpzxAuMVkLslAgd7hMQx3YzJb85YgoZVnVNxpCtg51u5B/2uYoJEU8wEUCR1XKQ5u7v7R+Bw8M11jLjjonGrvW+kREij6pRnEzdwEyoVHTAjtKVJXwR1U+Bisq3U3rvOQygoW6IuFXucfOx/OdcqL7JtqDc6xjgUlJfvn3/bZ5y+NuJtWIj9sayLGEVbW4D0iTMk+cXGDiQP4cqEbSJK/XbiGthPHJnkmjWbN1qmV+fXvnz2e+sIlxd4In7K+S/Jgg/+SkLHkOQOhMijqvjqjuWV7vuhT5AP clincoded-dev@clinicalgenome.org
 
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
@@ -63,7 +63,7 @@ write_files:
     respawn limit 10 5
     setuid nobody
     setgid nogroup
-    exec /usr/local/bin/aws-name-server --aws-region us-west-2 --domain instance.encodedcc.org
+    exec /usr/local/bin/aws-name-server --aws-region us-west-2 --domain instance.clinicalgenome.org
 
 - path: /etc/ssh/users_ca.pub
-  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+  content: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmiM5UBd3Rant92xxhCVZFW+U+gUN3aLkICO1gzOGr/Ps173YgzgVPmdKdiI6vBzCZ8BXMG/aeiBHk2LKA+vFjh1/sFRA51nA+hnBzXuIbWYpsTHaGG3BFhnAP8tzDm/7MYRkIeXLwZRwTeFtrMd9MR/HGBVG5HmbM/jtrvTRWZVwFnXRxLQ3Rs5Y9v1QKOrZs4w5tt3iKBiBr+kJKhDHV5O8COowxjcfSqCZmfafVJQNR+8Dg6cvaizqY+ykHpgzc+a7oXJfo1LDDQELl0DGIPDIa340jMDjSSVV0o+RpjbIXTtH4m3TDpKRmZsTQrnHCMNSp5Uk7mMkhKwIwX1SP clincoded-dev@clinicalgenome.org

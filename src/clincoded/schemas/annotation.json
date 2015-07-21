@@ -82,7 +82,8 @@
         "active": {
             "title": "Active",
             "description": "Boolean switch for using the evidence",
-            "type": "boolean"
+            "type": "boolean",
+            "default": true
         }
     },
     "columns": {

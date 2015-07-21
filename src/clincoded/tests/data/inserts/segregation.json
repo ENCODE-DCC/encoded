@@ -19,20 +19,5 @@
         "assessments": [
             "4f94a226-2a4c-11e5-887c-60f81dc5b05a"
         ]
-    },
-    {
-        "uuid": "0f636d99-2a5b-11e5-944b-60f81dc5b05a",
-        "owner": "selinad@stanford.edu",
-        "dateTime": "date time 02"
-    },
-    {
-        "uuid": "150c4668-2a5b-11e5-9578-60f81dc5b05a",
-        "owner": "fytanaka@stanford",
-        "dateTime": "date time 03"
-    },
-    {
-        "uuid": "1c692e80-2a5b-11e5-860f-60f81dc5b05a",
-        "owner": "kgliu@stanford.edu",
-        "dateTime": "date time 04"
     }
 ]
