@@ -101,9 +101,15 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
     },
 
     render: function() {
+        var annotation = this.props.annotation;
+
         return (
             <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
-                <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">Stuff</Panel>
+                <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">
+                    {annotation.groups && annotation.groups.map(function(group) {
+                        return <h5>{group.label}</h5>
+                    })}
+                </Panel>
                 <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Individual" />} panelClassName="panel-evidence">Stuff</Panel>
                 <Panel title={<CurationPaletteTitles title="Functional" />} panelClassName="panel-evidence">Stuff</Panel>

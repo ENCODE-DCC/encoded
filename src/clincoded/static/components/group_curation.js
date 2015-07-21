@@ -622,3 +622,278 @@ var GroupAdditional = function() {
         </div>
     );
 };
+
+
+var GroupViewer = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var demographicOutput = groupDemographicsViewer(context);
+
+        return (
+            <div className="container">
+                <div className="row group-curation-content">
+                    <h1>{context.label}</h1>
+                    <Panel title="Common diseases &amp; phenotypes">
+                        <dl className="dl-horizontal">
+                            <div>
+                                <dt>Orphanet Common Diagnosis</dt>
+                                <dd>
+                                    {context.commonDiagnosis.map(function(disease, i) {
+                                        return (
+                                            <span key={disease.orphaNumber}>
+                                                {i > 0 ? ', ' : ''}
+                                                {'ORPHA' + disease.orphaNumber}
+                                            </span>
+                                        );
+                                    })}
+                                </dd>
+                            </div>
+
+                            {context.hpoIdInDiagnosis && context.hpoIdInDiagnosis.length ?
+                                <div>
+                                    <dt>HPO IDs</dt>
+                                    <dd>{context.hpoIdInDiagnosis.join(', ')}</dd>
+                                </div>
+                            : null}
+
+                            {context.termsInDiagnosis ?
+                                <div>
+                                    <dt>Phenotype Terms</dt>
+                                    <dd>{context.termsInDiagnosis}</dd>
+                                </div>
+                            : null}
+
+                            {context.hpoIdInElimination && context.hpoIdInElimination.length ?
+                                <div>
+                                    <dt>Not HPO IDs</dt>
+                                    <dd>{context.hpoIdInElimination.join(', ')}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </Panel>
+
+                    {demographicOutput ?
+                        <Panel title="Group Demographics">
+                            <dl className="dl-horizontal">
+                                {demographicOutput.map(function(view) { return view; })}
+                            </dl>
+                        </Panel>
+                    : null}
+
+                    <Panel title="Group Information">
+                        <dl className="dl-horizontal">
+                            {context.numberOfProbands ?
+                                <div>
+                                    <dt>Total number individuals in group:</dt>
+                                    <dd>{context.numberOfProbands}</dd>
+                                </div>
+                            : null}
+
+                            {context.numberOfProbandsWithFamilyInformation ?
+                                <div>
+                                    <dt># individuals with family information</dt>
+                                    <dd>{context.numberOfProbandsWithFamilyInformation}</dd>
+                                </div>
+                            : null}
+
+                            {context.numberOfProbandsWithoutFamilyInformation ?
+                                <div>
+                                    <dt># individuals WITHOUT family information</dt>
+                                    <dd>{context.numberOfProbandsWithoutFamilyInformation}</dd>
+                                </div>
+                            : null}
+
+                            {context.numberOfProbandWithVariantInGene ?
+                                <div>
+                                    <dt># individuals with variant in gene being curated</dt>
+                                    <dd>{context.numberOfProbandWithVariantInGene}</dd>
+                                </div>
+                            : null}
+
+                            {context.numberOfProbandsWithoutVariantInGene ?
+                                <div>
+                                    <dt># individuals without variant in gene being curated</dt>
+                                    <dd>{context.numberOfProbandsWithoutVariantInGene}</dd>
+                                </div>
+                            : null}
+
+                            {context.numberOfProbandsWithVariantInOtherGenes ?
+                                <div>
+                                    <dt># individuals with variant found in other gene</dt>
+                                    <dd>{context.numberOfProbandsWithVariantInOtherGenes}</dd>
+                                </div>
+                            : null}
+
+                            {context.otherGenes && context.otherGenes.length ?
+                                <div>
+                                    <dt>Other genes found to have variants in them</dt>
+                                    <dd>{context.otherGenes.join(', ')}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </Panel>
+
+                    <Panel title="Methods">
+                    </Panel>
+                </div>
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(GroupViewer, 'group');
+
+
+// Generate a rendering of the Group Demographics panel contents.
+// If no property of the demographics section of the group has
+// any information, this returns null. It otherwise returns an
+// array of React components that can be rendered from a .map loop.
+function groupDemographicsViewer(context) {
+    var i = 0;
+    var output = [];
+
+    output[i++] = (context.numberOfMale ?
+        <div>
+            <dt># Males</dt>
+            <dd>{context.numberOfMale}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.numberOfFemale ?
+        <div>
+            <dt># Females</dt>
+            <dd>{context.numberOfFemale}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.countryOfOrigin ?
+        <div>
+            <dt>Country of Origin</dt>
+            <dd>{context.countryOfOrigin}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ethnicity ?
+        <div>
+            <dt>Ethnicity</dt>
+            <dd>{context.ethnicity}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.race ?
+        <div>
+            <dt>Race</dt>
+            <dd>{context.race}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.race ?
+        <div>
+            <dt>Race</dt>
+            <dd>{context.race}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeType ?
+        <div>
+            <dt>Age Range Type</dt>
+            <dd>{context.ageRangeType}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
+        <div>
+            <dt>Age Range</dt>
+            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
+        <div>
+            <dt>Age Range</dt>
+            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
+        </div>
+    : null);
+
+    if (_.some(output)) {
+        return output;
+    }
+    return null;
+}
+
+// Generate a rendering of the Group Information panel contents.
+// If no property of the demographics section of the group has
+// any information, this returns null. It otherwise returns an
+// array of React components that can be rendered from a .map loop.
+function groupInformationViewer(context) {
+    var i = 0;
+    var output = [];
+
+    output[i++] = (context.numberOfMale ?
+        <div>
+            <dt># Males</dt>
+            <dd>{context.numberOfMale}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.numberOfFemale ?
+        <div>
+            <dt># Females</dt>
+            <dd>{context.numberOfFemale}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.countryOfOrigin ?
+        <div>
+            <dt>Country of Origin</dt>
+            <dd>{context.countryOfOrigin}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ethnicity ?
+        <div>
+            <dt>Ethnicity</dt>
+            <dd>{context.ethnicity}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.race ?
+        <div>
+            <dt>Race</dt>
+            <dd>{context.race}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.race ?
+        <div>
+            <dt>Race</dt>
+            <dd>{context.race}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeType ?
+        <div>
+            <dt>Age Range Type</dt>
+            <dd>{context.ageRangeType}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
+        <div>
+            <dt>Age Range</dt>
+            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
+        </div>
+    : null);
+
+    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
+        <div>
+            <dt>Age Range</dt>
+            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
+        </div>
+    : null);
+
+    if (_.some(output)) {
+        return output;
+    }
+    return null;
+}
