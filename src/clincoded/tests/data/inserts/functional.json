@@ -1,0 +1,143 @@
+[
+    {
+        "uuid": "79ba2b61-2a6e-11e5-93f9-60f81dc5b05a",
+        "owner": "tsneddon@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 10:10:37 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Expression",
+        "expression": {
+            "organOfTissue" : "T-cells",
+            "normalExpression": {
+                "evidence": "some evidence here",
+                "evidenceInPaper": "Paragraph 2-4, page 14"
+            },
+            "alteredExpression": {
+                "evidence" : "The CD3E mRNA was abnormally small and present at a reduced level in the patient's T cells.",
+                "evidenceInPaper": "Paragraph14-16, page16"
+            }
+        }
+    },
+    {
+        "uuid": "72341d2e-2a6e-11e5-bdd7-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 12:32:57 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Protein Interactions",
+        "proteinIneractions": {
+            "interactingGenes" : [
+                "NGLY1"
+            ],
+            "interactionType" : "positive genetic interaction (MI:0935)",
+            "experimentalInteractionDetection" : "x-ray crystallography (MI:0114)",
+            "geneImplicatedInDisease": "Yes",
+            "relationshipOfOtherGenesToDisese": "very strong relationship",
+            "assessments": [
+                "4aec0dae-2a4c-11e5-a66f-60f81dc5b05a"
+            ]
+        }
+    },
+    {
+        "uuid": "6be668d4-2a6e-11e5-804a-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 16:43:12 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Biochemical function",
+        "biochemicalFunction": {
+            "identifiedFunction": "GO_Slim term here",
+            "evidenceForFunction": "some evidence",
+            "evidenceForFunctionInPapaer": "Paragraph 3-5, Page 3",
+            "geneWithSameFunctionSameDisease": {
+                "genes": [
+                    "NGLY1",
+                    "FGFR3"
+                ],
+                "evidenceForOtherGenesWithSameFunction": "some evidence for genes here",
+                "explanationOfOtherGenes": "some explanation here",
+                "evidenceInPaper": "Paragraph 21-30, page 55",
+                "assessments": [
+                    "5a5cefba-2a4c-11e5-9f97-60f81dc5b05a"
+                ]
+            },
+            "geneFunctionConsistentWithPhenotype": {
+                "phenotypeHPO": [
+                    "HP:0001470",
+                    "HP:0001427",
+                    "HP:0001419"
+                ],
+                "explanation": "some explanation here",
+                "evidenceInPaper": "Paragraph 2-12, page 12",
+                "assessments": [
+                    "550d702b-2a4c-11e5-856d-60f81dc5b05a"
+                ]
+            }
+        },
+        "variants": [
+            "e9f9a6d7-2685-11e5-8e9c-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "1ca71459-2cb5-11e5-a26a-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 16:43:12 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Rescue",
+        "rescue": {
+            "patientCellOrEngineeredEquivalent": "Patient cells",
+            "patientCellType": "EFO_12345678",
+            "descriptionOfGeneAlteration": "some description about cell here",
+            "phenotypeHPO": "HP:xxxxxxx",
+            "rescueMethod": "rescue method here (not method object in clinical data)",
+            "wildTypeRescuePhenotype": "Yes",
+            "patientVariantRescue": "Yes",
+            "explanation": "some explanation here",
+            "evidenceLocationInPaper": "Paragraph 31-32, page 2",
+            "assessments": [
+                "4aec0dae-2a4c-11e5-a66f-60f81dc5b05a"
+            ]
+        },
+        "variants": [
+            "e9f9a6d7-2685-11e5-8e9c-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "ca353d87-2cb8-11e5-85c1-60f81dc5b05a",
+        "owner": "selinad@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 16:43:12 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Functional alteration of gene/gene product",
+        "functionalAleration": {
+            "cellMutationOrEngineeredEquivalent": "Patient cells",
+            "patientCellType": "EFO_13579",
+            "normalFunctionOfGene": "GO_Slim term here",
+            "descriptoinOfGeneAlteration": "some description here",
+            "normalFunctionOfGene": "GO_Slim term for normal function",
+            "evidenceForNormalFunction": "evidence 007",
+            "evidenceInPaper": "Paragraph 2-5, page 5",
+            "assessments": [
+                "3ecaaf6b-2a4c-11e5-ab2d-60f81dc5b05a"
+            ]
+        },
+        "variants": [
+            "e9f9a6d7-2685-11e5-8e9c-60f81dc5b05a"
+        ]
+    },
+    {
+        "uuid": "d06dae6b-2cb8-11e5-8e3e-60f81dc5b05a",
+        "owner": "fytanaka@stanford.edu",
+        "dateTime": "Mon Apr 13 2015 16:43:12 GMT-0700 (PDT)",
+        "active": true,
+        "evidenceType": "Model systems",
+        "modelSystems": {
+            "animalOrCellCulture": "Engineered equivalent",
+            "cellCulture": "EFO_76543210",
+            "descriptionOfGeneAlteration": "some description about cell culture medol",
+            "phenotypeFreeText": "phenotype A1B2C3D4",
+            "phenotypeFreetextObserved": "phenotype X0Y9Z8",
+            "explanation": "some explanation",
+            "evidenceInPaper": "Paragraph 7-12, page 25"
+        },
+        "variants": [
+            "e9f9a6d7-2685-11e5-8e9c-60f81dc5b05a"
+        ]
+    }
+]
