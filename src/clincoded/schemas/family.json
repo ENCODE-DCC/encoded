@@ -59,7 +59,7 @@
                 "type": "string"
             }
         },
-        "termsInDiagnosis": {
+        "termsInElimination": {
             "title": "None-HPO term(s) Eliminated",
             "description": "List of none-HPO terms eliminated from the disease",
             "type": "string",
