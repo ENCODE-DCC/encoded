@@ -121,7 +121,7 @@ var FormMixin = module.exports.FormMixin = {
     // already have been collected with setFormValue. Returns true if all required fields
     // have values, or false if any do not. It also sets any empty required Inputs error
     // to the 'Required' message so it's displayed on the next render.
-    validateRequired: function() {
+    validateDefault: function() {
         var valid = true;
         Object.keys(this.refs).forEach(ref => {
             if (this.refs[ref].props.required && !this.getFormValue(ref)) {
@@ -129,6 +129,12 @@ var FormMixin = module.exports.FormMixin = {
                 // error, and remember to return false.
                 this.setFormErrors(ref, 'Required');
                 valid = false;
+            } else if (this.refs[ref].props.format === 'number') {
+                // Validate that format="number" fields have a valid number in them
+                if (this.getFormValueNumber(ref) === null) {
+                    this.setFormErrors(ref, 'Number only');
+                    valid = false;
+                }
             }
         });
         return valid;

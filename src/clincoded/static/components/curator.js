@@ -209,8 +209,8 @@ var AddOmimIdModal = React.createClass({
 
     // Form content validation
     validateForm: function() {
-        // Check if required fields have values
-        var valid = this.validateRequired();
+        // Start with default validation
+        var valid = this.validateDefault();
 
         // Valid if the field has only 10 or fewer digits 
         if (valid) {

@@ -47,8 +47,8 @@ var CreateGeneDisease = React.createClass({
 
     // Form content validation
     validateForm: function() {
-        // Check if required fields have values
-        var valid = this.validateRequired();
+        // Start with default validation
+        var valid = this.validateDefault();
 
         // Check if orphanetid 
         if (valid) {

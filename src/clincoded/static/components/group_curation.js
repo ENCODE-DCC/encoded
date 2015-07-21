@@ -95,8 +95,8 @@ var GroupCuration = React.createClass({
         // Save all form values from the DOM.
         this.saveAllFormValues();
 
-        // Check if required fields are filled; indicate errors on form if not, then bail
-        if (this.validateRequired()) {
+        // Start with default validation; indicate errors on form if not, then bail
+        if (this.validateDefault()) {
             var newGroup = {}; // Holds the new group object;
             var groupDisease, formError = false;
 
@@ -105,26 +105,6 @@ var GroupCuration = React.createClass({
             if (!orphaMatch) {
                 formError = true;
                 this.setFormErrors('orphanetid', 'Use Orphanet IDs (e.g. ORPHA15)');
-            }
-            var malecount = this.getFormValueNumber('malecount');
-            if (malecount === null) {
-                formError = true;
-                this.setFormErrors('malecount', 'Count must be a single number');
-            }
-            var femalecount = this.getFormValueNumber('femalecount');
-            if (femalecount === null) {
-                formError = true;
-                this.setFormErrors('femalecount', 'Count must be a single number');
-            }
-            var agefrom = this.getFormValueNumber('agefrom');
-            if (agefrom === null) {
-                formError = true;
-                this.setFormErrors('agefrom', 'Age must be a single number');
-            }
-            var ageto = this.getFormValueNumber('ageto');
-            if (agefrom === null) {
-                formError = true;
-                this.setFormErrors('ageto', 'Age must be a single number');
             }
             if (!formError) {
                 // Verify given Orpha ID exists in DB
@@ -136,6 +116,7 @@ var GroupCuration = React.createClass({
 
                     // Post the new method to the DB. When the promise returns with the new method
                     // object, pass it to the next promise-processing code.
+                    console.log('METHOD: %o', newMethod);
                     return this.postRestData('/methods/', newMethod).then(data => {
                         return Promise.resolve(data['@graph'][0]);
                     });
@@ -167,13 +148,15 @@ var GroupCuration = React.createClass({
                     }
 
                     // Fill in the group fields from the Group Demographics panel
-                    if (malecount) {
-                        newGroup.numberOfMale = malecount + '';
+                    var value = this.getFormValue('malecount');
+                    if (value) {
+                        newGroup.numberOfMale = value + '';
                     }
-                    if (femalecount) {
-                        newGroup.numberOfFemale = femalecount + '';
+                    value = this.getFormValue('femalecount');
+                    if (value) {
+                        newGroup.numberOfFemale = value + '';
                     }
-                    var value = this.getFormValue('country');
+                    value = this.getFormValue('country');
                     if (value !== 'none') {
                         newGroup.countryOfOrigin = value;
                     }
@@ -189,15 +172,29 @@ var GroupCuration = React.createClass({
                     if (value !== 'none') {
                         newGroup.ageRangeType = value + '';
                     }
-                    if (agefrom) {
-                        newGroup.ageRangeFrom = agefrom + '';
+                    value = this.getFormValue('agefrom');
+                    if (value) {
+                        newGroup.ageRangeFrom = value + '';
                     }
-                    if (ageto) {
-                        newGroup.ageRangeTo = ageto + '';
+                    value = this.getFormValue('ageto');
+                    if (value) {
+                        newGroup.ageRangeTo = value + '';
                     }
                     value = this.getFormValue('ageunit');
                     if (value !== 'none') {
                         newGroup.ageRangeUnit = value + '';
+                    }
+
+                    // Fill in the group fields from Group Information panel
+                    newGroup.numberOfProbands = this.getFormValue('indcount');
+                    newGroup.numberOfProbandsWithFamilyInformation = this.getFormValue('indfamilycount');
+                    newGroup.numberOfProbandsWithoutFamilyInformation = this.getFormValue('notindfamilycount');
+                    newGroup.numberOfProbandWithVariantInGene = this.getFormValue('indvariantgenecount');
+                    newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('notindvariantgenecount');
+                    newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('indvariantothercount');
+                    value = this.getFormValue('othergenevariants');
+                    if (value) {
+                        newGroup.numberOfProbandsWithoutVariantInGene = value;
                     }
 
                     // Post the new group to the DB
@@ -229,6 +226,7 @@ var GroupCuration = React.createClass({
         }
     },
 
+    // Create method object based on the form values
     createMethod: function() {
         var newMethod = {};
         var value1, value2;
@@ -248,10 +246,10 @@ var GroupCuration = React.createClass({
         }
         value1 = this.getFormValue('genotypingmethod1');
         value2 = this.getFormValue('genotypingmethod2');
-        if (value1 || value2) {
+        if (value1 !== 'none' || value2 !== 'none') {
             newMethod.genotypingMethods = [];
-            newMethod.genotypingMethods[0] = value1 || '';
-            newMethod.genotypingMethods[1] = value2 || '';
+            newMethod.genotypingMethods[0] = value1 !== 'none' ? value1 : '';
+            newMethod.genotypingMethods[1] = value2 !== 'none' ? value2 : '';
         }
         value1 = this.getFormValue('entiregene');
         if (value1 !== 'none') {
@@ -278,7 +276,7 @@ var GroupCuration = React.createClass({
             newMethod.additionalInformation = value1;
         }
 
-        return newMethod;
+        return Object.keys(newMethod).length ? newMethod : null;
     },
 
     render: function() {
@@ -303,6 +301,11 @@ var GroupCuration = React.createClass({
                                 <PanelGroup accordion>
                                     <Panel title="Group Demographics">
                                         {GroupDemographics.call(this)}
+                                    </Panel>
+                                </PanelGroup>
+                                <PanelGroup accordion>
+                                    <Panel title="Group Information">
+                                        {GroupProbandInfo.call(this)}
                                     </Panel>
                                 </PanelGroup>
                                 <PanelGroup accordion>
@@ -393,10 +396,10 @@ var LabelPhenoTerms = React.createClass({
 var GroupDemographics = function() {
     return (
         <div className="row">
-            <Input type="text" ref="malecount" label="# males:"
+            <Input type="text" ref="malecount" label="# males:" format="number"
                 error={this.getFormError('malecount')} clearError={this.clrFormErrors.bind(null, 'malecount')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            <Input type="text" ref="femalecount" label="# females:"
+            <Input type="text" ref="femalecount" label="# females:" format="number"
                 error={this.getFormError('femalecount')} clearError={this.clrFormErrors.bind(null, 'femalecount')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <Input type="select" ref="country" label="Country of Origin:" defaultValue="none"
@@ -438,10 +441,10 @@ var GroupDemographics = function() {
                     <option>Death</option>
                 </Input>
                 <Input type="text-range" labelClassName="col-sm-5 control-label" label="Value:" wrapperClassName="col-sm-7">
-                    <Input type="text" ref="agefrom" inputClassName="input-inline" groupClassName="form-group-inline"
+                    <Input type="text" ref="agefrom" inputClassName="input-inline" groupClassName="form-group-inline" format="number"
                         error={this.getFormError('agefrom')} clearError={this.clrFormErrors.bind(null, 'agefrom')} />
                     <span> to </span>
-                    <Input type="text" ref="ageto" inputClassName="input-inline" groupClassName="form-group-inline"
+                    <Input type="text" ref="ageto" inputClassName="input-inline" groupClassName="form-group-inline" format="number"
                         error={this.getFormError('ageto')} clearError={this.clrFormErrors.bind(null, 'ageto')} />
                 </Input>
                 <Input type="select" ref="ageunit" label="Unit:" defaultValue="none"
@@ -462,17 +465,23 @@ var GroupDemographics = function() {
 var GroupProbandInfo = function() {
     return(
         <div className="row">
-            <Input type="text" ref="indcount" label="Total number individuals in group:"
+            <Input type="text" ref="indcount" label="Total number individuals in group:" format="number"
+                error={this.getFormError('indcount')} clearError={this.clrFormErrors.bind(null, 'indcount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="indfamilycount" label="# individuals with family information:"
+            <Input type="text" ref="indfamilycount" label="# individuals with family information:" format="number"
+                error={this.getFormError('indfamilycount')} clearError={this.clrFormErrors.bind(null, 'indfamilycount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="notindfamilycount" label="# individuals WITHOUT family information:"
+            <Input type="text" ref="notindfamilycount" label="# individuals WITHOUT family information:" format="number"
+                error={this.getFormError('notindfamilycount')} clearError={this.clrFormErrors.bind(null, 'notindfamilycount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="indvariantgenecount" label="# individuals with variant in gene being curated:"
+            <Input type="text" ref="indvariantgenecount" label="# individuals with variant in gene being curated:" format="number"
+                error={this.getFormError('indvariantgenecount')} clearError={this.clrFormErrors.bind(null, 'indvariantgenecount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="notindvariantgenecount" label="# individuals without variant in gene being curated:"
+            <Input type="text" ref="notindvariantgenecount" label="# individuals without variant in gene being curated:" format="number"
+                error={this.getFormError('notindvariantgenecount')} clearError={this.clrFormErrors.bind(null, 'notindvariantgenecount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="indvariantothercount" label="# individuals with variant found in other gene:"
+            <Input type="text" ref="indvariantothercount" label="# individuals with variant found in other gene:" format="number"
+                error={this.getFormError('indvariantothercount')} clearError={this.clrFormErrors.bind(null, 'indvariantothercount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
             <Input type="text" ref="othergenevariants" label="Other genes found to have variants in them:"
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" />
