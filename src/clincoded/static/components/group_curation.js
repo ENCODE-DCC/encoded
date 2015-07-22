@@ -98,10 +98,11 @@ var GroupCuration = React.createClass({
         // Start with default validation; indicate errors on form if not, then bail
         if (this.validateDefault()) {
             var newGroup = {}; // Holds the new group object;
-            var groupDiseases, formError = false;
+            var groupDiseases, groupGenes, formError = false;
 
             // Parse the comma-separated list of Orphanet IDs
             var orphaIds = captureOrphas(this.getFormValue('orphanetid'));
+            var geneSymbols = captureGenes(this.getFormValue('othergenevariants'));
 
             if (!orphaIds || !orphaIds.length) {
                 // No 'orphaXX' found 
@@ -115,20 +116,9 @@ var GroupCuration = React.createClass({
                 // Verify given Orpha ID exists in DB
                 this.getRestData(searchStr).then(diseases => {
                     if (diseases['@graph'].length === orphaIds.length) {
+                        // Successfully retrieved all diseases
                         groupDiseases = diseases;
-
-                        // Make a new method and save it to the DB
-                        var newMethod = this.createMethod();
-                        if (newMethod) {
-                            // Post the new method to the DB. When the promise returns with the new method
-                            // object, pass it to the next promise-processing code.
-                            return this.postRestData('/methods/', newMethod).then(data => {
-                                return Promise.resolve(data['@graph'][0]);
-                            });
-                        }
-
-                        // No method fields were set; just resolve the promise with no method object
-                        return Promise.resolve(null);
+                        return Promise.resolve(diseases);
                     } else {
                         // Get array of missing Orphanet IDs
                         var missingOrphas = _.difference(orphaIds, diseases['@graph'].map(function(disease) { return disease.orphaNumber; }));
@@ -136,8 +126,41 @@ var GroupCuration = React.createClass({
                         throw diseases;
                     }
                 }, e => {
-                    // The given orpha ID does *not* exist in the DB
+                    // The given orpha IDs couldn't be retrieved for some reason.
                     this.setFormErrors('orphanetid', 'The given diseases not found');
+                    throw e;
+                }).then(diseases => {
+                    if (geneSymbols) {
+                        // At least one gene symbol entered; search the DB for them.
+                        searchStr = '/search/?type=gene&' + geneSymbols.map(function(symbol) { return 'symbol=' + symbol; }).join('&');
+                        return this.getRestData(searchStr).then(genes => {
+                            if (genes['@graph'].length === geneSymbols.length) {
+                                // Successfully retrieved all genes
+                                groupGenes = genes;
+                                return Promise.resolve(genes);
+                            } else {
+                                var missingGenes = _.difference(geneSymbols, genes['@graph'].map(function(gene) { return gene.symbol; }));
+                                this.setFormErrors('othergenevariants', missingGenes.join(', ') + ' not found');
+                                throw genes;
+                            }
+                        });
+                    } else {
+                        // No genes entered; just pass null to the next then
+                        return Promise.resolve(null);
+                    }
+                }).then(data => {
+                    // Make a new method and save it to the DB
+                    var newMethod = this.createMethod();
+                    if (newMethod) {
+                        // Post the new method to the DB. When the promise returns with the new method
+                        // object, pass it to the next promise-processing code.
+                        return this.postRestData('/methods/', newMethod).then(data => {
+                            return Promise.resolve(data['@graph'][0]);
+                        });
+                    }
+
+                    // No method fields were set; just resolve the promise with no method object
+                    return Promise.resolve(null);
                 }).then(newMethod => {
                     // Method successfully created if needed (null if not); passed in 'newMethod'. Now make the new group.
                     newGroup.label = this.getFormValue('groupname');
@@ -213,9 +236,13 @@ var GroupCuration = React.createClass({
                     newGroup.numberOfProbandWithVariantInGene = this.getFormValue('indvariantgenecount');
                     newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('notindvariantgenecount');
                     newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('indvariantothercount');
-                    value = this.getFormValue('othergenevariants');
-                    if (value) {
-                        newGroup.numberOfProbandsWithoutVariantInGene = value;
+
+                    // Get an array of all given gene symbols
+                    if (groupGenes && groupGenes['@graph'] && groupGenes['@graph'].length) {
+                        newGroup.otherGenes = groupGenes['@graph'].map(function(gene) { return gene['@id']; });
+                        if (value) {
+                            newGroup.numberOfProbandsWithoutVariantInGene = value;
+                        }
                     }
 
                     // Post the new group to the DB
@@ -352,19 +379,29 @@ var GroupCuration = React.createClass({
 globals.curator_page.register(GroupCuration, 'curator_page', 'group-curation');
 
 
-// Given a string, find all the comma-separated 'orphaXX' occurrences.
-// Return all orpha IDs in an array.
-function captureOrphas(s) {
-    var re = /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi;
-    var match, ids = [];
+function captureBase(s, re) {
+    var match, matchResults = [];
 
     do {
         match = re.exec(s);
         if (match) {
-            ids.push(match[1]);
+            matchResults.push(match[1]);
         }
     } while(match);
-    return ids;
+    return matchResults;
+}
+
+// Given a string, find all the comma-separated 'orphaXX' occurrences.
+// Return all orpha IDs in an array.
+function captureOrphas(s) {
+    return captureBase(s, /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi);
+}
+
+
+// Given a string, find all the comma-separated gene symbol occurrences.
+// Return all gene symbols in an array.
+function captureGenes(s) {
+    return s ? captureBase(s, /(?:^|,|\s*)([a-zA-Z](?:\w)*)(?=,|\s*|$)/gi) : null;
 }
 
 
@@ -529,6 +566,7 @@ var GroupProbandInfo = function() {
                 error={this.getFormError('indvariantothercount')} clearError={this.clrFormErrors.bind(null, 'indvariantothercount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
             <Input type="text" ref="othergenevariants" label="Other genes found to have variants in them:"
+                error={this.getFormError('othergenevariants')} clearError={this.clrFormErrors.bind(null, 'othergenevariants')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" />
         </div>
     );
@@ -628,6 +666,7 @@ var GroupViewer = React.createClass({
     render: function() {
         var context = this.props.context;
         var demographicOutput = groupDemographicsViewer(context);
+        console.log(context);
 
         return (
             <div className="container">
@@ -727,7 +766,7 @@ var GroupViewer = React.createClass({
                             {context.otherGenes && context.otherGenes.length ?
                                 <div>
                                     <dt>Other genes found to have variants in them</dt>
-                                    <dd>{context.otherGenes.join(', ')}</dd>
+                                    <dd>{context.otherGenes.map(function(gene) { return gene.symbol; }).join(', ')}</dd>
                                 </div>
                             : null}
                         </dl>
