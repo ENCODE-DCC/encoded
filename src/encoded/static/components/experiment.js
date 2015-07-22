@@ -619,9 +619,8 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
-// Can't be a properzz panel as the control must be passed in.
+// Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-// Controls the drawing of the file graph for the experiment. It displays both files and
 
 
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
@@ -751,6 +750,26 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
+    // Remove files with a mismatched filtering option, unless other files derived from them
+    if (filterAssembly && filterAnnotation) {
+        files.forEach(function(file) {
+            // Any files that others derive from get included always
+            if (!derivedFromFiles[file['@id']]) {
+                // File isn’t derived from; continue checking
+                if (file.output_category !== 'raw data') {
+                    // File is raw data; just remove it
+                    file.removed = true;
+                } else {
+                    // At this stage, we know it's a process or reference file. Remove from files if
+                    // it has mismatched assembly or annotation
+                    if (file.assembly && file.genome_annotation) {
+                        filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+                    }
+                }
+            }
+        });
+    }
+
     // Add contributing files to the allFiles object that other files derive from.
     // Don't worry about files they derive from; they're not included in the graph.
     if (context.contributing_files && context.contributing_files.length) {
@@ -845,12 +864,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var fileId = 'file:' + file['@id'];
             var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
             var metricsInfo;
-
-            if (filterAssembly && filterAnnotation) {
-                if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
-                    return;
-                }
-            }
 
             // Add QC metrics info from the file to the list to generate the nodes later
             if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
