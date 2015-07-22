@@ -13,6 +13,10 @@
         "individuals": [
             "8395c173-1910-11e5-8c7c-60f81dc5b05a"
         ],
+        "functionalData": [
+            "6be668d4-2a6e-11e5-804a-60f81dc5b05a",
+            "72341d2e-2a6e-11e5-bdd7-60f81dc5b05a"
+        ],
         "active": true,
         "uuid": "bb3432ca-1788-11e5-aefb-60f81dc5b05a"
     },
@@ -24,6 +28,11 @@
             "a20e9182-18fa-11e5-96d1-60f81dc5b05a",
             "ab9a37ba-18fa-11e5-bad8-60f81dc5b05a"
         ],
+        "functionalData": [
+            "79ba2b61-2a6e-11e5-93f9-60f81dc5b05a",
+            "1ca71459-2cb5-11e5-a26a-60f81dc5b05a",
+            "ca353d87-2cb8-11e5-85c1-60f81dc5b05a"
+        ],
         "active": true,
         "uuid": "4172f4ab-189e-11e5-a10f-60f81dc5b05a"
     },
@@ -31,6 +40,9 @@
         "owner": "tsneddon@stanford.edu",
         "article": "7847369",
         "dateTime": "Tue Feb 24 2015 12:55:04 GMT-0800 (PST)",
+        "functionalData": [
+            "d06dae6b-2cb8-11e5-8e3e-60f81dc5b05a"
+        ],
         "active": true,
         "uuid": "5cd72a73-189e-11e5-9db5-60f81dc5b05a"
     },
