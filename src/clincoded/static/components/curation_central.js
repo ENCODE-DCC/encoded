@@ -37,6 +37,9 @@ var CurationCentral = React.createClass({
     // Called when currently selected PMID changes
     currPmidChange: function(pmid) {
         this.setState({currPmid: pmid, selectionListOpen: false});
+        if (pmid !== undefined) {
+            window.history.pushState(null, '', '/curation-central/?gdm=' + this.state.currGdm.uuid + '&pmid=' + pmid);
+        }
     },
 
     // Retrieve the GDM object from the DB with the given uuid
