@@ -68,7 +68,7 @@ var Panel = module.exports.Panel = React.createClass({
                 {this.props.title ?
                     <div className="panel-heading" role="tab">
                         {this.props.accordion ? <i className={indicatorClasses}></i> : null}
-                        {typeof this.props.title === 'string' ? <h4>{title}</h4> : <span>{title}</span>}
+                        {typeof this.props.title === 'string' ? <h4><span className="panel-title-std">{title}</span></h4> : <span>{title}</span>}
                     </div>
                 : null}
                 <div className={panelClasses}>
