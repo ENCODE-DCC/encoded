@@ -46,10 +46,10 @@ var Dashboard = React.createClass({
             // I can figure out how to set sorting for it, this will have to do
             var sortedGdmData = _(data[0]['@graph']).sortBy(function(item) {
                 return item.dateTime;
-            });
+            }).reverse();
             var sortedHistoryData = _(data[1]['@graph']).sortBy(function(item) {
                 return item.dateTime;
-            });
+            }).reverse().slice(0,10);
 
             // GDM results; finds GDMs created by user, and also creates PMID-GDM mapping table
             // (stopgap measure until article -> GDM mapping ability is incorporated)
@@ -83,7 +83,7 @@ var Dashboard = React.createClass({
                 var tempDateTime = moment(temp['dateTime']).format( "YYYY MMM DD, h:mm a");
                 switch (temp['@type'][0]) {
                     case 'annotation':
-                        tempDisplayName = 'PMID: ' + temp['article']['pmid'] + ' to ' + pmidGdmMapping[temp['uuid']]['displayName'];
+                        tempDisplayName = 'PMID: ' + temp['article']['pmid'] + ' associated with ' + pmidGdmMapping[temp['uuid']]['displayName'];
                         tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
                         tempMessage = "added " + tempDateTime;
                         display = true;
