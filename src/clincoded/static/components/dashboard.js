@@ -29,6 +29,7 @@ var Dashboard = React.createClass({
     },
 
     setUserData: function(props) {
+        // sets the display name and curator status
         this.setState({
             userName: props['first_name'],
             userStatus: props['groups'][0].charAt(0).toUpperCase() + props['groups'][0].substring(1),
@@ -36,30 +37,56 @@ var Dashboard = React.createClass({
         });
     },
 
-    // Retrieve the GDMs and other objects related to user via search
     getData: function(userid) {
-        this.getRestDatas(['/search/?type=gdm&limit=10&owner=' + userid,'/search/?limit=10&owner=' + userid], [function() {}, function() {}]).then(data => {
-            // Search objects successfully retrieved; clean up results
-            // GDM List panel results
+        // Retrieve all GDMs and other objects related to user via search
+        this.getRestDatas(['/search/?type=gdm&limit=all', '/search/?limit=all&owner=' + userid], [function() {}, function() {}]).then(data => {
+            // Search objects successfully retrieved; process results
+
+            // Sort results by time. Ideally this would be done by the search function, but until
+            // I can figure out how to set sorting for it, this will have to do
+            var sortedGdmData = _(data[0]['@graph']).sortBy(function(item) {
+                return item.dateTime;
+            });
+            var sortedHistoryData = _(data[1]['@graph']).sortBy(function(item) {
+                return item.dateTime;
+            });
+
+            // GDM results; finds GDMs created by user, and also creates PMID-GDM mapping table
+            // (stopgap measure until article -> GDM mapping ability is incorporated)
             var tempGdmList = [], tempRecentHistory = [];
-            for (var i = 0; i < data[0]['@graph'].length; i++) {
-                var temp = data[0]['@graph'][i];
-                tempGdmList.push({
-                    url: temp['uuid'],
-                    displayName: temp['gene']['symbol'] + "-" + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")",
-                    status: temp['status'],
-                    dateTime: temp['dateTime']
-                });
+            var pmidGdmMapping = {};
+            for (var i = 0; i < sortedGdmData.length; i++) {
+                var temp = sortedGdmData[i];
+                var tempDisplayName = temp['gene']['symbol'] + "-" + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")";
+                if (temp['owner'] == userid) {
+                    tempGdmList.push({
+                        url: temp['uuid'],
+                        displayName: tempDisplayName,
+                        status: temp['status'],
+                        dateTime: temp['dateTime']
+                    });
+                }
+                if (temp['annotations'].length > 0) {
+                    for (var j = 0; j < temp['annotations'].length; j++) {
+                        pmidGdmMapping[temp['annotations'][j]['uuid']] = {uuid: temp['uuid'], displayName: tempDisplayName};
+                    }
+                }
             }
-            // Recent History panel results
-            for (var i = 0; i < data[1]['@graph'].length; i++) {
-                var temp = data[1]['@graph'][i];
+            // Recent History panel results; only displays annotation(article) addition and GDM
+            // creation history for the time being.
+            for (var i = 0; i < sortedHistoryData.length; i++) {
+                var display = false;
+                var temp = sortedHistoryData[i];
                 var tempDisplayName = 'Item';
                 var tempUrl = temp['@id'];
+                var tempMessage = '';
+                var tempDateTime = moment(temp['dateTime']).format( "YYYY MMM DD, h:mm a");
                 switch (temp['@type'][0]) {
                     case 'annotation':
-                        tempDisplayName = 'Added PMID: ' + temp['article']['pmid'];
-                        tempUrl = external_url_map['PubMed'] + temp['article']['pmid'];
+                        tempDisplayName = 'PMID: ' + temp['article']['pmid'] + ' to ' + pmidGdmMapping[temp['uuid']]['displayName'];
+                        tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
+                        tempMessage = "added " + tempDateTime;
+                        display = true;
                         break;
                     case 'assessment':
                         tempDisplayName = temp['value'] + ' Assessment';
@@ -67,15 +94,19 @@ var Dashboard = React.createClass({
                     case 'gdm':
                         tempDisplayName = temp['gene']['symbol'] + '-' + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")";
                         tempUrl = "/curation-central/?gdm=" + temp['uuid'];
+                        tempMessage = "created " + tempDateTime;
+                        display = true;
                         break;
                     default:
                         tempDisplayName = 'Item';
                 }
-                tempRecentHistory.push({
-                    url: tempUrl,
-                    displayName: tempDisplayName,
-                    dateTime: temp['dateTime']
-                });
+                if (display === true) {
+                    tempRecentHistory.push({
+                        url: tempUrl,
+                        displayName: tempDisplayName,
+                        message: tempMessage
+                    });
+                }
             }
             // Set states for cleaned results
             this.setState({
@@ -118,7 +149,7 @@ var Dashboard = React.createClass({
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName}</a> (modified {moment(item.dateTime).format( "YYYY MMM DD, h:mm a")})</li>;
+                                    return <li><a href={item.url}>{item.displayName}</a> ({item.message})</li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
