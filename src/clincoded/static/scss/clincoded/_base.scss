@@ -79,3 +79,56 @@ dl.inline-dl {
         line-height: 1.3;
     }
 }
+
+
+dl.dl-horizontal {
+    margin: 0;
+
+    dt, dd {
+        display: block;
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    dt {
+        font-weight: bold;
+        text-overflow: clip;
+        width: auto;
+
+        &:after {
+            content: ": ";
+        }
+    }
+
+    dd {
+        @extend .clearfix;
+    }
+
+    div {
+        clear: both;
+        margin: 6px 0;
+    }
+
+    @media screen and (min-width: $screen-xs-min) {
+        display: table;
+
+        dt, dd {
+            display: table-cell;
+            vertical-align: bottom;
+        }
+
+        dt {
+            padding: 6px 20px 6px 0;
+        }
+
+        dd {
+            padding: 6px 0;
+        }
+
+        div {
+            clear: none;
+            display: table-row;
+        }
+    }
+}
+

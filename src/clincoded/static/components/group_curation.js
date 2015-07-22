@@ -98,11 +98,13 @@ var GroupCuration = React.createClass({
         // Start with default validation; indicate errors on form if not, then bail
         if (this.validateDefault()) {
             var newGroup = {}; // Holds the new group object;
-            var groupDiseases, groupGenes, formError = false;
+            var groupDiseases, groupGenes, groupArticles;
+            var formError = false;
 
             // Parse the comma-separated list of Orphanet IDs
             var orphaIds = captureOrphas(this.getFormValue('orphanetid'));
             var geneSymbols = captureGenes(this.getFormValue('othergenevariants'));
+            var pmids = capturePmids(this.getFormValue('otherpmids'));
 
             if (!orphaIds || !orphaIds.length) {
                 // No 'orphaXX' found 
@@ -149,6 +151,26 @@ var GroupCuration = React.createClass({
                         return Promise.resolve(null);
                     }
                 }).then(data => {
+                    // Handle 'Add any other PMID(s) that have evidence about this same Group' list of PMIDs
+                    if (pmids) {
+                        // User entered at least one PMID
+                        searchStr = '/search/?type=article&' + pmids.map(function(pmid) { return 'pmid=' + pmid; }).join('&');
+                        return this.getRestData(searchStr).then(articles => {
+                            if (articles['@graph'].length === pmids.length) {
+                                // Successfully retrieved all genes
+                                groupArticles = articles;
+                                return Promise.resolve(articles);
+                            } else {
+                                var missingPmids = _.difference(pmids, articles['@graph'].map(function(article) { return article.pmid; }));
+                                this.setFormErrors('otherpmids', missingPmids.join(', ') + ' not found');
+                                throw articles;
+                            }
+                        });
+                    } else {
+                        // No PMIDs entered; just pass null to the next then
+                        return Promise.resolve(null);
+                    }
+                }).then(data => {
                     // Make a new method and save it to the DB
                     var newMethod = this.createMethod();
                     if (newMethod) {
@@ -176,7 +198,7 @@ var GroupCuration = React.createClass({
                     // Fill in the group fields from the Common Diseases & Phenotypes panel
                     var hpoTerms = this.getFormValue('hpoid');
                     if (hpoTerms) {
-                        newGroup.hpoIdInDiagnosis = _.compact(hpoTerms.split(','));
+                        newGroup.hpoIdInDiagnosis = _.compact(hpoTerms.toUpperCase().split(','));
                     }
                     var phenoterms = this.getFormValue('phenoterms');
                     if (phenoterms) {
@@ -184,7 +206,7 @@ var GroupCuration = React.createClass({
                     }
                     hpoTerms = this.getFormValue('nothpoid');
                     if (hpoTerms) {
-                        newGroup.hpoIdInElimination = _.compact(hpoTerms.split(','));
+                        newGroup.hpoIdInElimination = _.compact(hpoTerms.toUpperCase().split(','));
                     }
                     phenoterms = this.getFormValue('notphenoterms');
                     if (phenoterms) {
@@ -235,14 +257,21 @@ var GroupCuration = React.createClass({
                     newGroup.numberOfProbandsWithoutFamilyInformation = this.getFormValue('notindfamilycount');
                     newGroup.numberOfProbandWithVariantInGene = this.getFormValue('indvariantgenecount');
                     newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('notindvariantgenecount');
-                    newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('indvariantothercount');
+                    newGroup.numberOfProbandsWithVariantInOtherGenes = this.getFormValue('indvariantothercount');
 
-                    // Get an array of all given gene symbols
-                    if (groupGenes && groupGenes['@graph'] && groupGenes['@graph'].length) {
-                        newGroup.otherGenes = groupGenes['@graph'].map(function(gene) { return gene['@id']; });
-                        if (value) {
-                            newGroup.numberOfProbandsWithoutVariantInGene = value;
-                        }
+                    // Add array of 'Other genes found to have variants in them'
+                    if (groupGenes) {
+                        newGroup.otherGenes = groupGenes['@graph'].map(function(article) { return article['@id']; });
+                    }
+
+                    // Add array of other PMIDs
+                    if (groupArticles) {
+                        newGroup.otherPMIDs = groupArticles['@graph'].map(function(article) { return article['@id']; });
+                    }
+
+                    value = this.getFormValue('additionalinfogroup');
+                    if (value) {
+                        newGroup.additionalInformation = value;
                     }
 
                     // Post the new group to the DB
@@ -262,12 +291,11 @@ var GroupCuration = React.createClass({
                     delete annotation['@type'];
 
                     // Post the modified annotation to the DB, then go back to Curation Central
-                    console.log(annotation);
                     return this.putRestData('/evidence/' + this.state.annotation.uuid, annotation);
                 }).then(data => {
                     this.context.navigate('/curation-central/?gdm=' + this.state.gdm.uuid);
                 }).catch(function(e) {
-                    console.log('ERROR=: %o', e);
+                    console.log('GROUP CREATION ERROR=: %o', e);
                     parseAndLogError.bind(undefined, 'putRequest');
                 });
             }
@@ -312,15 +340,11 @@ var GroupCuration = React.createClass({
             newMethod.specificMutationsGenotyped = value1;
         }
         value1 = this.getFormValue('specificmutation');
-        if (value1 !== 'none') {
-            newMethod.specificMutationsGenotypedMethod = value1;
-        }
-        value1 = this.getFormValue('specificmutation');
-        if (value1 !== 'none') {
+        if (value1) {
             newMethod.specificMutationsGenotypedMethod = value1;
         }
         value1 = this.getFormValue('additionalinfomethod');
-        if (value1 !== 'none') {
+        if (value1) {
             newMethod.additionalInformation = value1;
         }
 
@@ -357,8 +381,13 @@ var GroupCuration = React.createClass({
                                     </Panel>
                                 </PanelGroup>
                                 <PanelGroup accordion>
-                                    <Panel title="Methods">
+                                    <Panel title="Group Methods">
                                         {GroupMethods.call(this)}
+                                    </Panel>
+                                </PanelGroup>
+                                <PanelGroup accordion>
+                                    <Panel title="Group Additional Information">
+                                        {GroupAdditional.call(this)}
                                     </Panel>
                                 </PanelGroup>
                                 <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
@@ -397,12 +426,18 @@ function captureOrphas(s) {
     return captureBase(s, /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi);
 }
 
-
 // Given a string, find all the comma-separated gene symbol occurrences.
 // Return all gene symbols in an array.
 function captureGenes(s) {
     return s ? captureBase(s, /(?:^|,|\s*)([a-zA-Z](?:\w)*)(?=,|\s*|$)/gi) : null;
 }
+
+// Given a string, find all the comma-separated PMID occurrences.
+// Return all PMIDs in an array.
+function capturePmids(s) {
+    return s ? captureBase(s, /(?:^|,|\s*)(\d{1,8})(?=,|\s*|$)/gi) : null;
+}
+
 
 
 // Group Name group curation panel. Call with .call(this) to run in the same context
@@ -655,8 +690,13 @@ var GroupAdditional = function() {
             <Input type="textarea" ref="additionalinfogroup" label="Additional Information about Group:" rows="5"
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <Input type="textarea" ref="otherpmids" label="Add any other PMID(s) that have evidence about this same Group:" rows="5"
+                error={this.getFormError('otherpmids')} clearError={this.clrFormErrors.bind(null, 'otherpmids')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            <p className="col-sm-7 col-sm-offset-5">Note: Any variants associated with Individuals in the group who will be counted as probands are not captured at the Group level — they need to be captured at the Family level or Individual levels. Submit the Group information and you will be prompted to enter Family or Individual information after that.</p>
+            <p className="col-sm-7 col-sm-offset-5">
+                Note: Any variants associated with Individuals in the group who will be counted as probands are not captured at the Group
+                level — they need to be captured at the Family level or Individual levels. Submit the Group information and you will be
+                prompted to enter Family or Individual information after that.
+            </p>
         </div>
     );
 };
@@ -666,13 +706,12 @@ var GroupViewer = React.createClass({
     render: function() {
         var context = this.props.context;
         var demographicOutput = groupDemographicsViewer(context);
-        console.log(context);
 
         return (
             <div className="container">
                 <div className="row group-curation-content">
                     <h1>{context.label}</h1>
-                    <Panel title="Common diseases &amp; phenotypes">
+                    <Panel title="Common diseases &amp; phenotypes" panelClassName="panel-data">
                         <dl className="dl-horizontal">
                             <div>
                                 <dt>Orphanet Common Diagnosis</dt>
@@ -712,18 +751,18 @@ var GroupViewer = React.createClass({
                     </Panel>
 
                     {demographicOutput ?
-                        <Panel title="Group Demographics">
+                        <Panel title="Group — Demographics" panelClassName="panel-data">
                             <dl className="dl-horizontal">
                                 {demographicOutput.map(function(view) { return view; })}
                             </dl>
                         </Panel>
                     : null}
 
-                    <Panel title="Group Information">
+                    <Panel title="Group — Information" panelClassName="panel-data">
                         <dl className="dl-horizontal">
                             {context.numberOfProbands ?
                                 <div>
-                                    <dt>Total number individuals in group:</dt>
+                                    <dt>Total number individuals in group</dt>
                                     <dd>{context.numberOfProbands}</dd>
                                 </div>
                             : null}
@@ -772,8 +811,101 @@ var GroupViewer = React.createClass({
                         </dl>
                     </Panel>
 
-                    <Panel title="Methods">
-                    </Panel>
+                    {context.method && Object.keys(context.method).length ?
+                        <Panel title="Group — Methods" panelClassName="panel-data">
+                            <dl className="dl-horizontal">
+                                {context.method.previousTesting ?
+                                    <div>
+                                        <dt>Previous testing</dt>
+                                        <dd>{context.method.previousTesting}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.previousTestingDescription ?
+                                    <div>
+                                        <dt>Description of previous testing</dt>
+                                        <dd>{context.method.previousTestingDescription}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.genomeWideStudy ?
+                                    <div>
+                                        <dt>Genome-wide study</dt>
+                                        <dd>{context.method.genomeWideStudy}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.genotypingMethods && context.method.genotypingMethods.length ?
+                                    <div>
+                                        <dt>Genotyping methods</dt>
+                                        <dd>{context.method.genotypingMethods.join(', ')}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.entireGeneSequenced ?
+                                    <div>
+                                        <dt>Entire gene sequenced</dt>
+                                        <dd>{context.method.entireGeneSequenced}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.copyNumberAssessed ?
+                                    <div>
+                                        <dt>Copy number assessed</dt>
+                                        <dd>{context.method.copyNumberAssessed}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.specificMutationsGenotyped ?
+                                    <div>
+                                        <dt>Specific Mutations Genotyped</dt>
+                                        <dd>{context.method.specificMutationsGenotyped}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.specificMutationsGenotypedMethod ?
+                                    <div>
+                                        <dt>Method by which Specific Mutations Genotyped</dt>
+                                        <dd>{context.method.specificMutationsGenotypedMethod}</dd>
+                                    </div>
+                                : null}
+
+                                {context.method.specificMutationsGenotypedMethod ?
+                                    <div>
+                                        <dt>Additional Information about Group Method</dt>
+                                        <dd>{context.method.additionalInformation}</dd>
+                                    </div>
+                                : null}
+                            </dl>
+                        </Panel>
+                    : null}
+
+                    {context.additionalInformation || (context.otherPMIDs && context.otherPMIDs.length) ?
+                        <Panel title="Group — Additional Information" panelClassName="panel-data">
+                            <dl className="dl-horizontal">
+                                {context.additionalInformation ?
+                                    <div>
+                                        <dt>Additional Information about Group</dt>
+                                        <dd>{context.additionalInformation}</dd>
+                                    </div>
+                                : null}
+
+                                {context.otherPMIDs && context.otherPMIDs.length ?
+                                    <div>
+                                        <dt>Additional Information about Group</dt>
+                                        <dd>{context.otherPMIDs.map(function(article, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    {article.pmid}
+                                                </span>
+                                            );
+                                        })}</dd>
+                                    </div>
+                                : null}
+                            </dl>
+                        </Panel>
+                    : null}
                 </div>
             </div>
         );
@@ -826,13 +958,6 @@ function groupDemographicsViewer(context) {
         </div>
     : null);
 
-    output[i++] = (context.race ?
-        <div>
-            <dt>Race</dt>
-            <dd>{context.race}</dd>
-        </div>
-    : null);
-
     output[i++] = (context.ageRangeType ?
         <div>
             <dt>Age Range Type</dt>
@@ -847,10 +972,10 @@ function groupDemographicsViewer(context) {
         </div>
     : null);
 
-    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
+    output[i++] = (context.ageRangeUnit ?
         <div>
-            <dt>Age Range</dt>
-            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
+            <dt>Age Range Unit</dt>
+            <dd>{context.ageRangeUnit}</dd>
         </div>
     : null);
 

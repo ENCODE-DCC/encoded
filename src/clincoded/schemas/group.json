@@ -277,10 +277,6 @@
             "title": "Common Diagnosis",
             "type": "string"
         },
-        "method": {
-            "title": "Method",
-            "type": "string"
-        },
         "numberOfProbands": {
             "title": "Probands",
             "type": "string"

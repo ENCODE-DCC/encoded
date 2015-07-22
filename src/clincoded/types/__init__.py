@@ -256,6 +256,7 @@ class Group(Item):
         'individualIncluded.method',
         'individualIncluded.variants',
         'individualIncluded.assessments',
+        'otherPMIDs',
         #'control'
     ]
 

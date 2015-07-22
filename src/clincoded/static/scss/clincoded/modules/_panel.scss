@@ -43,6 +43,14 @@
     }
 }
 
+.panel-data {
+    .panel-std {
+        @media screen and (min-width: $screen-sm-min) {
+            padding: 20px 50px;
+        }
+    }
+}
+
 .panel-header-indicator {
     float: right;
     line-height: 260%;
