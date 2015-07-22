@@ -13,7 +13,7 @@ var Form = form.Form;
 var FormMixin = form.FormMixin;
 var Input = form.Input;
 var Panel = panel.Panel;
-
+var external_url_map = globals.external_url_map;
 
 var Dashboard = React.createClass({
     mixins: [RestMixin],
@@ -37,31 +37,34 @@ var Dashboard = React.createClass({
             for (var i = 0; i < data[0]['@graph'].length; i++) {
                 var temp = data[0]['@graph'][i];
                 tempGdmList.push({
-                    url: temp['@id'],
-                    gene: temp['gene']['symbol'],
-                    disease: temp['disease']['term'],
-                    datetime: temp['annotations']['dateTime']
+                    url: temp['uuid'],
+                    displayName: temp['gene']['symbol'] + "-" + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")",
+                    status: temp['status'],
+                    dateTime: temp['dateTime']
                 });
             }
             // Recent History panel results
             for (var i = 0; i < data[1]['@graph'].length; i++) {
                 var temp = data[1]['@graph'][i];
                 var tempDisplayName = 'Item';
+                var tempUrl = temp['@id'];
                 switch (temp['@type'][0]) {
                     case 'annotation':
-                        tempDisplayName = 'Annotation for PMID:' + temp['article']['pmid'];
+                        tempDisplayName = 'Added PMID: ' + temp['article']['pmid'];
+                        tempUrl = external_url_map['PubMed'] + temp['article']['pmid'];
                         break;
                     case 'assessment':
                         tempDisplayName = temp['value'] + ' Assessment';
                         break;
                     case 'gdm':
-                        tempDisplayName = 'GDM:' + temp['gene']['symbol'] + ':' + temp['disease']['term'];
+                        tempDisplayName = temp['gene']['symbol'] + '-' + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")";
+                        tempUrl = "/curation-central/?gdm=" + temp['uuid'];
                         break;
                     default:
                         tempDisplayName = 'Item';
                 }
                 tempRecentHistory.push({
-                    url: temp['@id'],
+                    url: tempUrl,
                     displayName: tempDisplayName,
                     dateTime: temp['dateTime']
                 });
@@ -98,11 +101,11 @@ var Dashboard = React.createClass({
                             </ul>
                         </Panel>
                         <Panel panelClassName="panel-dashboard">
-                            <h3>Recent history</h3>
+                            <h3>Recent History</h3>
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName}</a> (modified {moment(item.dateTime).format( "YYYY/MM/DD h:mma")})</li>
+                                    return <li><a href={item.url}>{item.displayName}</a> (modified {moment(item.dateTime).format( "YYYY MMM DD, h:mm a")})</li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
@@ -110,14 +113,20 @@ var Dashboard = React.createClass({
                     </div>
                     <div className="col-md-6">
                         <Panel panelClassName="panel-dashboard">
-                            <h3>Your Gene-Disease records</h3>
+                            <h3>Your Gene-Disease Records</h3>
                             {this.state.gdmList.length > 0 ?
-                            <ul>
+                            <div className="gdm-list">
                                 {this.state.gdmList.map(function(item) {
-                                    return <li><a href={item.url}>{item.gene}:{item.disease}</a></li>
+                                    return (
+                                        <div className="gdm-item">
+                                            <a href={"/curation-central/?gdm=" + item.url}>{item.displayName}</a><br />
+                                            Status: <strong>{item.status}</strong><br />
+                                            Creation Date: <strong>{moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}</strong>
+                                        </div>
+                                    );
                                 })}
-                            </ul>
-                            : "You have not created any GDMs."}
+                            </div>
+                            : "You have not created any Gene-Disease-Mode of Inheritance entries."}
                         </Panel>
                     </div>
                 </div>
