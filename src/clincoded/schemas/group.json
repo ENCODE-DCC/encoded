@@ -4,7 +4,15 @@
     "description": "Schema for storing group data",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["label", "commonDiagnosis"],
+    "required": [
+        "label",
+        "commonDiagnosis",
+        "totalNumberIndividuals",
+        "numberOfIndividualsWithFamilyInformation",
+        "numberOfIndividualsWithoutFamilyInformation",
+        "numberOfIndividualsWithVariantInCuratedGene",
+        "numberOfIndividualsWithoutVariantInCuratedGene"
+    ],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -44,8 +52,8 @@
             }
         },
         "termsInDiagnosis": {
-            "title": "None-HPO term(s)",
-            "description": "None-HPO terms for the disease",
+            "title": "Non-HPO term(s)",
+            "description": "Non-HPO terms (separated by comma) for the disease",
             "type": "string",
             "default": ""
         },
@@ -60,9 +68,9 @@
                 "type": "string"
             }
         },
-        "termsInDiagnosis": {
-            "title": "None-HPO term(s) Eliminated",
-            "description": "None-HPO terms eliminated from the disease",
+        "termsInElimination": {
+            "title": "Non-HPO term(s) Eliminated",
+            "description": "Non-HPO terms (separated by comma) eliminated from the disease",
             "type": "string",
             "default": ""
         },
@@ -149,39 +157,34 @@
                 "Years"
             ]
         },
-        "numberOfProbands": {
-            "title": "Number of Probands",
-            "description": "Count of probands in the group",
-            "type": "string",
-            "default": ""
+        "totalNumberIndividuals":{
+            "title": "Total Number Individuals in Group",
+            "description": "Total Number Individuals in Group",
+            "type": "string"
         },
-        "numberOfProbandsWithFamilyInformation": {
-            "title": "Number of Probands with Family Information",
-            "description": "Count of probands with family info in the group",
-            "type": "string",
-            "default": ""
+        "numberOfIndividualsWithFamilyInformation": {
+            "title": "# Individuals with Family Information",
+            "description": "# Individuals with Family Information",
+            "type": "string"
         },
-        "numberOfProbandsWithoutFamilyInformation": {
-            "title": "Number of Probands without Family Information",
-            "description": "Count of probands without family info in the group",
-            "type": "string",
-            "default": ""
+        "numberOfIndividualsWithoutFamilyInformation": {
+            "title": "# Individuals without Family Informnation",
+            "description": "# Individuals without Family Information",
+            "type": "string"
         },
-        "numberOfProbandWithVariantInGene": {
-            "title": "Number of Probands with Variant in GDM Gene",
-            "description": "Count of probands with variant",
-            "type": "string",
-            "default": ""
+        "numberOfIndividualsWithVariantInCuratedGene": {
+            "title": "# Individuals with Variant in gene being curated",
+            "description": "# Individuals with Variant in gene being curated",
+            "type": "string"
         },
-        "numberOfProbandsWithoutVariantInGene": {
-            "title": "Number of Probands without Variant in GDM gene",
-            "description": "Count of probands without variant",
-            "type": "string",
-            "default": ""
+        "numberOfIndividualsWithoutVariantInCuratedGene": {
+            "title": "# Individuals without Variant in gene being curated",
+            "description": "# Individuals without Variant in gene being curated",
+            "type": "string"
         },
-        "numberOfProbandsWithVariantInOtherGenes": {
-            "title": "Number of Probands with Variant in Other Gene",
-            "description": "Count of probands without variant in other gene",
+        "numberOfIndividualsWithVariantInOtherGene": {
+            "title": "# Individuals with Variant in Other Gene",
+            "description": "# Individuals with Variant in other gene",
             "type": "string",
             "default": ""
         },
@@ -281,8 +284,8 @@
             "title": "Method",
             "type": "string"
         },
-        "numberOfProbands": {
-            "title": "Probands",
+        "totalNumberIndividuals": {
+            "title": "Total Number Individuals",
             "type": "string"
         },
         "familyIncluded": {
