@@ -28,6 +28,14 @@ var Dashboard = React.createClass({
         };
     },
 
+    setUserData: function(props) {
+        this.setState({
+            userName: props['first_name'],
+            userStatus: props['groups'][0].charAt(0).toUpperCase() + props['groups'][0].substring(1),
+            lastLogin: ''
+        });
+    },
+
     // Retrieve the GDMs and other objects related to user via search
     getData: function(userid) {
         this.getRestDatas(['/search/?type=gdm&limit=10&owner=' + userid,'/search/?limit=10&owner=' + userid], [function() {}, function() {}]).then(data => {
@@ -71,17 +79,22 @@ var Dashboard = React.createClass({
             }
             // Set states for cleaned results
             this.setState({
-                userName: this.props.session['user_properties']['first_name'],
-                userStatus: this.props.session['user_properties']['groups'][0].charAt(0).toUpperCase() + this.props.session['user_properties']['groups'][0].substring(1),
-                lastLogin: '',
                 recentHistory: tempRecentHistory,
                 gdmList: tempGdmList
             });
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
+    componentDidMount: function() {
+        if (this.props.session['user_properties'] !== undefined) {
+            this.setUserData(this.props.session['user_properties']);
+            this.getData(this.props.session['auth.userid']);
+        }
+    },
+
     componentWillReceiveProps: function(nextProps) {
-        if (nextProps.session['auth.userid'] !== this.props.session['auth.userid']) {
+        if (typeof nextProps.session['user_properties'] !== undefined && nextProps.session['user_properties'] != this.props.session['user_properties']) {
+            this.setUserData(nextProps.session['user_properties']);
             this.getData(nextProps.session['auth.userid']);
         }
     },

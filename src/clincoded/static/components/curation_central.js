@@ -27,7 +27,6 @@ var CurationCentral = React.createClass({
 
     getInitialState: function() {
         return {
-            tempPmid: '',
             currPmid: '',
             currOmimId: '',
             currGdm: {}
@@ -51,15 +50,12 @@ var CurationCentral = React.createClass({
     // retrieve the corresponding GDM from the DB.
     componentDidMount: function() {
         // See if there’s a GDM UUID to retrieve
-        var gdmUuid, pmid;
+        var gdmUuid;
         var queryParsed = this.props.href && url.parse(this.props.href, true).query;
         if (queryParsed && Object.keys(queryParsed).length) {
             // Find the first 'gdm' query string item, if any
             var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
                 return key === 'gdm';
-            });
-            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'pmid';
             });
             if (uuidKey) {
                 // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
@@ -68,19 +64,7 @@ var CurationCentral = React.createClass({
                     gdmUuid = gdmUuid[0];
                 }
                 this.getGdm(gdmUuid);
-
-                pmid = queryParsed[pmidKey];
-                if (typeof pmid === 'object') {
-                    pmid = pmid[0];
-                }
-                this.setState({tempPmid: pmid});
             }
-        }
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.loadingComplete === true && this.state.tempPmid !== '') {
-            this.setState({currPmid: this.state.tempPmid, selectionListOpen: false});
         }
     },
 
@@ -153,7 +137,7 @@ var CurationCentral = React.createClass({
                     <div className="row curation-content">
                         <div className="col-md-3">
                             <PmidSelectionList annotations={gdm.annotations} currPmid={this.state.currPmid} currPmidChange={this.currPmidChange}
-                                    updateGdmArticles={this.updateGdmArticles} />
+                                    updateGdmArticles={this.updateGdmArticles} /> 
                         </div>
                         <div className="col-md-6">
                             {currArticle ?
@@ -248,7 +232,7 @@ var AddPmidModal = React.createClass({
         // Check if required fields have values
         var valid = this.validateRequired();
 
-        // Valid if the field has only 10 or fewer digits
+        // Valid if the field has only 10 or fewer digits 
         if (valid) {
             valid = this.getFormValue('pmid').match(/^[0-9]{1,10}$/i);
             if (!valid) {
