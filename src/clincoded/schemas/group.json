@@ -52,8 +52,8 @@
             }
         },
         "termsInDiagnosis": {
-            "title": "None-HPO term(s)",
-            "description": "None-HPO terms for the disease",
+            "title": "Non-HPO term(s)",
+            "description": "Non-HPO terms (separated by comma) for the disease",
             "type": "string",
             "default": ""
         },
@@ -69,8 +69,8 @@
             }
         },
         "termsInElimination": {
-            "title": "None-HPO term(s) Eliminated",
-            "description": "None-HPO terms eliminated from the disease",
+            "title": "Non-HPO term(s) Eliminated",
+            "description": "Non-HPO terms (separated by comma) eliminated from the disease",
             "type": "string",
             "default": ""
         },
