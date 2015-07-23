@@ -91,37 +91,33 @@ var Dashboard = React.createClass({
             for (var i = 0; i < sortedHistoryData.length; i++) {
                 var display = false;
                 var temp = sortedHistoryData[i];
-                var tempDisplayName = '';
-                var tempDisplayName2 = '';
-                var tempUrl = temp['@id'];
+                var tempDisplayText = '';
+                var tempUrl = '';
                 var tempTimestamp = '';
                 var tempDateTime = moment(temp['dateTime']).format( "YYYY MMM DD, h:mm a");
                 switch (temp['@type'][0]) {
                     case 'annotation':
-                        tempDisplayName = 'PMID: ' + temp['article']['pmid'] + ' associated with ' + pmidGdmMapping[temp['uuid']]['displayName'];
-                        tempDisplayName2 = pmidGdmMapping[temp['uuid']]['displayName2'];
+                    // added to
                         tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
+                        tempDisplayText = <span><a href={tempUrl}>PMID:{temp['article']['pmid']}</a> added to {pmidGdmMapping[temp['uuid']]['displayName']} (<i>{pmidGdmMapping[temp['uuid']]['displayName2']}</i>)</span>;
                         tempTimestamp = "added " + tempDateTime;
                         display = true;
                         break;
                     case 'assessment':
-                        tempDisplayName = temp['value'] + ' Assessment';
+                        tempDisplayText = temp['value'] + ' Assessment';
                         break;
                     case 'gdm':
-                        tempDisplayName = temp['gene']['symbol'] + '-' + temp['disease']['term'];
-                        tempDisplayName2 = this.cleanGdmModelName(temp['modeInheritance']);
                         tempUrl = "/curation-central/?gdm=" + temp['uuid'];
+                        tempDisplayText = <span><a href={tempUrl}>{temp['gene']['symbol']}-{temp['disease']['term']} (<i>{this.cleanGdmModelName(temp['modeInheritance'])}</i>)</a></span>;
                         tempTimestamp = "created " + tempDateTime;
                         display = true;
                         break;
                     default:
-                        tempDisplayName = 'Item';
+                        tempDisplayText = 'Item';
                 }
                 if (display === true) {
                     tempRecentHistory.push({
-                        url: tempUrl,
-                        displayName: tempDisplayName,
-                        displayName2: tempDisplayName2,
+                        displayText: tempDisplayText,
                         timestamp: tempTimestamp
                     });
                 }
@@ -159,15 +155,15 @@ var Dashboard = React.createClass({
                             <h3>Tools</h3>
                             <ul>
                                 <li><a href="/create-gene-disease/">Create Gene-Disease Record</a></li>
-                                <li><a href="/gdm/">View list of Gene-Disease Records</a></li>
+                                <li><a href="/gdm/">View list of all Gene-Disease Records</a></li>
                             </ul>
                         </Panel>
                         <Panel panelClassName="panel-dashboard">
-                            <h3>Recent History</h3>
+                            <h3>Youe Recent History</h3>
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName} (<i>{item.displayName2}</i>)</a> <i>{item.timestamp}</i></li>;
+                                    return <li>{item.displayText} <i>{item.timestamp}</i></li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
@@ -182,7 +178,7 @@ var Dashboard = React.createClass({
                                     return (
                                         <div className="gdm-item">
                                             <a href={"/curation-central/?gdm=" + item.url}>{item.gdmGeneDisease} (<i>{item.gdmModel}</i>)</a><br />
-                                            In Process: <strong>{item.status}</strong><br />
+                                            Status: <strong>{item.status}</strong><br />
                                             Creation Date: <strong>{moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}</strong>
                                         </div>
                                     );
