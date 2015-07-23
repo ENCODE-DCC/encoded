@@ -175,7 +175,7 @@
     }
 }
 
-.panel-evidence-group {
+.panel-evidence-groups {
     > .panel-heading {
         padding: 0;
 
@@ -195,6 +195,10 @@
     }
 }
 
+
+.panel-evidence-group {
+    margin: 5px 0;
+}
 
 .panel-evidence {
     .panel-heading {
