@@ -75,22 +75,18 @@ function pubmedAuthors($PubmedArticle){
     var $AuthorList = $PubmedArticle.getElementsByTagName('AuthorList')[0];
     if($AuthorList){
         var $Authors = $AuthorList.getElementsByTagName('Author');
-        if ($Authors && $Authors.length) {
-            authors = $Authors.map(function($Author) {
-                var author = '';
-                var $LastName = $Author.getElementsByTagName('LastName')[0];
-                if ($LastName){
-                    author = $LastName.textContent;
-                }
-
-                var $Initials = $Author.getElementsByTagName('Initials')[0];
-                if ($Initials){
-                    author += (author ? ' ' : '') + $Initials.textContent;
-                }
-                return author;
-            });
+        for (var i = 0; i < $Authors.length; ++i) {
+            var author = '';
+            var $LastName = $Authors[i].getElementsByTagName('LastName')[0];
+            if ($LastName){
+                author = $LastName.textContent;
+            }
+            var $Initials = $Authors[i].getElementsByTagName('Initials')[0];
+            if ($Initials){
+                author += (author ? ' ' : '') + $Initials.textContent;
+            }
+            authors.push(author);
         }
-
     } else {
         authors[0] = 'Anonymous';
     }
