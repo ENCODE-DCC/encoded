@@ -1,7 +1,6 @@
 'use strict';
 // Derived from:
 // https://github.com/standard-analytics/pubmed-schema-org/blob/master/lib/pubmed.js
-var React = require('React');
 var _ = require('underscore');
 var moment = require('moment');
 
