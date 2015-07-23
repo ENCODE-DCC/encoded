@@ -111,18 +111,18 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
         return (
             <Panel panelClassName="panel-evidence-groups" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
                 <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">
-                    {annotation.groups && annotation.groups.map(function(group, i) {
+                    {annotation.groups && annotation.groups.map(function(group) {
                         return (
-                            <div className="panel-evidence-group">
-                                <h5 key={i}>{group.label}</h5>
+                            <div className="panel-evidence-group" key={group.uuid}>
+                                <h5>{group.label}</h5>
                                 <div className="evidence-curation-info">
                                     <p className="evidence-curation-info">{annotation.owner}</p>
                                     <p>{moment(annotation.dateTime).format('YYYY MMM DD, h:mm a')}</p>
                                 </div>
-                                <a href={'/group/' + group.uuid}>View</a>
+                                <a href={'/group/' + group.uuid}>View</a> | <a href={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + annotation.uuid + '&group=' + group.uuid}>Edit</a>
                             </div>
                         );
-                    })}
+                    }.bind(this))}
                 </Panel>
             </Panel>
         );

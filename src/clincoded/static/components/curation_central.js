@@ -19,6 +19,7 @@ var PmidDoiButtons = curator.PmidDoiButtons;
 var CurationData = curator.CurationData;
 var CurationPalette = curator.CurationPalette;
 var PmidSummary = curator.PmidSummary;
+var queryKeyValue = globals.queryKeyValue;
 var external_url_map = globals.external_url_map;
 
 // Curator page content
@@ -66,31 +67,15 @@ var CurationCentral = React.createClass({
     // After the Curator Central page component mounts, grab the uuid from the query string and
     // retrieve the corresponding GDM from the DB.
     componentDidMount: function() {
-        // See if there’s a GDM UUID to retrieve
-        var gdmUuid, pmid;
-        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'gdm' and 'pmid' query string items, if any
-            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'gdm';
-            });
-            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'pmid';
-            });
-            if (uuidKey) {
-                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
-                gdmUuid = queryParsed[uuidKey];
-                if (typeof gdmUuid === 'object') {
-                    gdmUuid = gdmUuid[0];
-                }
-                this.getGdm(gdmUuid);
+        var pmid;
 
-                pmid = queryParsed[pmidKey];
-                if (typeof pmid === 'object') {
-                    pmid = pmid[0];
-                }
-                this.setState({tempPmid: pmid});
-            }
+        var gdmUuid = queryKeyValue('gdm', this.props.href);
+        var pmidKey = queryKeyValue('pmid', this.props.href);
+        if (gdmUuid) {
+            this.getGdm(gdmUuid);
+        }
+        if (pmidKey) {
+            this.setState({tempPmid: pmid});
         }
     },
 

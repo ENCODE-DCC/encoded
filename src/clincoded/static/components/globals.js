@@ -1,4 +1,5 @@
 'use strict';
+var url = require('url');
 var Registry = require('../libs/registry');
 
 // Item pages
@@ -72,6 +73,16 @@ module.exports.unbindEvent = function (el, eventName, eventHandler) {
         // IE8 specific
         el.detachEvent('on' + eventName, eventHandler);
     }
+};
+
+// Retrieve a key's value from the query string in the url given in 'href'.
+// Returned 'undefined' if the key isn't found.
+module.exports.queryKeyValue = function (key, href) {
+    var queryParsed = href && url.parse(href, true).query;
+    if (queryParsed && Object.keys(queryParsed).length) {
+        return queryParsed[key];
+    }
+    return undefined;
 };
 
 // Order that antibody statuses should be displayed

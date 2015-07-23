@@ -19,6 +19,7 @@ var FormMixin = form.FormMixin;
 var Input = form.Input;
 var InputMixin = form.InputMixin;
 var PmidDoiButtons = curator.PmidDoiButtons;
+var queryKeyValue = globals.queryKeyValue;
 var country_codes = globals.country_codes;
 
 
@@ -55,33 +56,9 @@ var GroupCuration = React.createClass({
         // See if there’s a GDM UUID to retrieve
         var annotationUuid, gdmUuid;
 
-        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'gdm' query string item, if any
-            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'evidence';
-            });
-            if (uuidKey) {
-                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
-                annotationUuid = queryParsed[uuidKey];
-                if (typeof annotationUuid === 'object') {
-                    annotationUuid = annotationUuid[0];
-                }
-
-            }
-
-            // Find the first 'gdm' query string item, if any
-            uuidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'gdm';
-            });
-            if (uuidKey) {
-                // Got the GDM key for its UUID from the query string.
-                gdmUuid = queryParsed[uuidKey];
-                if (typeof gdmUuid === 'object') {
-                    gdmUuid = gdmUuid[0];
-                }
-            }
-        }
+        // Get the 'evidence' and 'gdm' UUIDs from the query string
+        annotationUuid = queryKeyValue('evidence', this.props.href);
+        gdmUuid = queryKeyValue('gdm', this.props.href);
 
         if (annotationUuid && gdmUuid) {
             // Query the DB with this UUID, setting the component state if successful.
