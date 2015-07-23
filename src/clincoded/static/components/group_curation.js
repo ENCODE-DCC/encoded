@@ -252,12 +252,12 @@ var GroupCuration = React.createClass({
                     }
 
                     // Fill in the group fields from Group Information panel
-                    newGroup.numberOfProbands = this.getFormValue('indcount');
-                    newGroup.numberOfProbandsWithFamilyInformation = this.getFormValue('indfamilycount');
-                    newGroup.numberOfProbandsWithoutFamilyInformation = this.getFormValue('notindfamilycount');
-                    newGroup.numberOfProbandWithVariantInGene = this.getFormValue('indvariantgenecount');
-                    newGroup.numberOfProbandsWithoutVariantInGene = this.getFormValue('notindvariantgenecount');
-                    newGroup.numberOfProbandsWithVariantInOtherGenes = this.getFormValue('indvariantothercount');
+                    newGroup.totalNumberIndividuals = this.getFormValue('indcount');
+                    newGroup.numberOfIndividualsWithFamilyInformation = this.getFormValue('indfamilycount');
+                    newGroup.numberOfIndividualsWithoutFamilyInformation = this.getFormValue('notindfamilycount');
+                    newGroup.numberOfIndividualsWithVariantInCuratedGene = this.getFormValue('indvariantgenecount');
+                    newGroup.numberOfIndividualsWithoutVariantInCuratedGene = this.getFormValue('notindvariantgenecount');
+                    newGroup.numberOfIndividualsWithVariantInOtherGene = this.getFormValue('indvariantothercount');
 
                     // Add array of 'Other genes found to have variants in them'
                     if (groupGenes) {
@@ -370,22 +370,22 @@ var GroupCuration = React.createClass({
                                         {GroupCommonDiseases.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion>
+                                <PanelGroup accordion open>
                                     <Panel title="Group Demographics">
                                         {GroupDemographics.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion>
+                                <PanelGroup accordion open>
                                     <Panel title="Group Information">
                                         {GroupProbandInfo.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion>
+                                <PanelGroup accordion open>
                                     <Panel title="Group Methods">
                                         {GroupMethods.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion>
+                                <PanelGroup accordion open>
                                     <Panel title="Group Additional Information">
                                         {GroupAdditional.call(this)}
                                     </Panel>
@@ -689,13 +689,14 @@ var GroupAdditional = function() {
         <div className="row">
             <Input type="textarea" ref="additionalinfogroup" label="Additional Information about Group:" rows="5"
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            <Input type="textarea" ref="otherpmids" label="Add any other PMID(s) that have evidence about this same Group:" rows="5"
+            <Input type="textarea" ref="otherpmids" label="Enter PMID(s) that report evidence about this same group:" rows="5"
                 error={this.getFormError('otherpmids')} clearError={this.clrFormErrors.bind(null, 'otherpmids')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <p className="col-sm-7 col-sm-offset-5">
-                Note: Any variants associated with Individuals in the group who will be counted as probands are not captured at the Group
-                level — they need to be captured at the Family level or Individual levels. Submit the Group information and you will be
-                prompted to enter Family or Individual information after that.
+                Note: Any variants associated with probands that will be counted towards the Classification are not
+                captured at the Group level - variants and their association with probands are required to be captured
+                at the Family or Individual level. Once you submit the Group information, you will be prompted to enter
+                Family/Individual information.
             </p>
         </div>
     );
@@ -760,45 +761,45 @@ var GroupViewer = React.createClass({
 
                     <Panel title="Group — Information" panelClassName="panel-data">
                         <dl className="dl-horizontal">
-                            {context.numberOfProbands ?
+                            {context.totalNumberIndividuals ?
                                 <div>
                                     <dt>Total number individuals in group</dt>
-                                    <dd>{context.numberOfProbands}</dd>
+                                    <dd>{context.totalNumberIndividuals}</dd>
                                 </div>
                             : null}
 
-                            {context.numberOfProbandsWithFamilyInformation ?
+                            {context.numberOfIndividualsWithFamilyInformation ?
                                 <div>
                                     <dt># individuals with family information</dt>
-                                    <dd>{context.numberOfProbandsWithFamilyInformation}</dd>
+                                    <dd>{context.numberOfIndividualsWithFamilyInformation}</dd>
                                 </div>
                             : null}
 
-                            {context.numberOfProbandsWithoutFamilyInformation ?
+                            {context.numberOfIndividualsWithoutFamilyInformation ?
                                 <div>
                                     <dt># individuals WITHOUT family information</dt>
-                                    <dd>{context.numberOfProbandsWithoutFamilyInformation}</dd>
+                                    <dd>{context.numberOfIndividualsWithoutFamilyInformation}</dd>
                                 </div>
                             : null}
 
-                            {context.numberOfProbandWithVariantInGene ?
+                            {context.numberOfIndividualsWithVariantInCuratedGene ?
                                 <div>
                                     <dt># individuals with variant in gene being curated</dt>
-                                    <dd>{context.numberOfProbandWithVariantInGene}</dd>
+                                    <dd>{context.numberOfIndividualsWithVariantInCuratedGene}</dd>
                                 </div>
                             : null}
 
-                            {context.numberOfProbandsWithoutVariantInGene ?
+                            {context.numberOfIndividualsWithoutVariantInCuratedGene ?
                                 <div>
                                     <dt># individuals without variant in gene being curated</dt>
-                                    <dd>{context.numberOfProbandsWithoutVariantInGene}</dd>
+                                    <dd>{context.numberOfIndividualsWithoutVariantInCuratedGene}</dd>
                                 </div>
                             : null}
 
-                            {context.numberOfProbandsWithVariantInOtherGenes ?
+                            {context.numberOfIndividualsWithVariantInOtherGene ?
                                 <div>
                                     <dt># individuals with variant found in other gene</dt>
-                                    <dd>{context.numberOfProbandsWithVariantInOtherGenes}</dd>
+                                    <dd>{context.numberOfIndividualsWithVariantInOtherGene}</dd>
                                 </div>
                             : null}
 

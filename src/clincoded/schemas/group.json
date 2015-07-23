@@ -280,10 +280,6 @@
             "title": "Common Diagnosis",
             "type": "string"
         },
-        "method": {
-            "title": "Method",
-            "type": "string"
-        },
         "totalNumberIndividuals": {
             "title": "Total Number Individuals",
             "type": "string"
