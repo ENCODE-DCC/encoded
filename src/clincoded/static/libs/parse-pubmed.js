@@ -1,7 +1,7 @@
 'use strict';
 // Derived from:
 // https://github.com/standard-analytics/pubmed-schema-org/blob/master/lib/pubmed.js
-
+var React = require('React');
 var _ = require('underscore');
 var moment = require('moment');
 
@@ -32,7 +32,7 @@ function parsePubmed(xml){
             article.journal = pubmedPeriodical($Journal);
         }
 
-        article.firstAuthor = pubmedAuthors($PubmedArticle);
+        article.authors = pubmedAuthors($PubmedArticle);
 
         var $ArticleTitle = $PubmedArticle.getElementsByTagName('ArticleTitle')[0];
         if($ArticleTitle){
@@ -70,27 +70,31 @@ function parsePubmed(xml){
 }
 
 function pubmedAuthors($PubmedArticle){
-    var authors = {};
-    var firstAuthor = '';
+    var authors = [];
 
     var $AuthorList = $PubmedArticle.getElementsByTagName('AuthorList')[0];
     if($AuthorList){
         var $Authors = $AuthorList.getElementsByTagName('Author');
-        var $FirstAuthor = $Authors[0];
+        if ($Authors && $Authors.length) {
+            authors = $Authors.map(function($Author) {
+                var author = '';
+                var $LastName = $Author.getElementsByTagName('LastName')[0];
+                if ($LastName){
+                    author = $LastName.textContent;
+                }
 
-        var $LastName = $FirstAuthor.getElementsByTagName('LastName')[0];
-        if($LastName){
-            firstAuthor = $LastName.textContent;
+                var $Initials = $Author.getElementsByTagName('Initials')[0];
+                if ($Initials){
+                    author += (author ? ' ' : '') + $Initials.textContent;
+                }
+                return author;
+            });
         }
 
-        var $Initials = $FirstAuthor.getElementsByTagName('Initials')[0];
-        if($Initials){
-            firstAuthor += (firstAuthor ? ' ' : '') + $Initials.textContent;
-        }
     } else {
-        firstAuthor = 'Anonymous';
+        authors[0] = 'Anonymous';
     }
-    return firstAuthor;
+    return authors;
 }
 
 function pubmedDoi($PubmedArticle){
