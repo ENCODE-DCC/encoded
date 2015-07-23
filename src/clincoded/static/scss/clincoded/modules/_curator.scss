@@ -187,6 +187,11 @@
 
     > .panel-body {
         padding: 10px 10px 0 10px;
+
+        h5 {
+            font-weight: bold;
+            margin: 0;
+        }
     }
 }
 
@@ -212,6 +217,17 @@
 
     .icon {
         font-size: 1.3rem;
+    }
+}
+
+.evidence-curation-info {
+    font-style: italic;
+    margin: 2px 0 0 0;
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.3;
     }
 }
 

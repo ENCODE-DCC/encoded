@@ -112,7 +112,16 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
             <Panel panelClassName="panel-evidence-group" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
                 <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">
                     {annotation.groups && annotation.groups.map(function(group, i) {
-                        return <h5 key={i}>{group.label}</h5>;
+                        return (
+                            <div>
+                                <h5 key={i}>{group.label}</h5>
+                                <div className="evidence-curation-info">
+                                    <p className="evidence-curation-info">{annotation.owner}</p>
+                                    <p>{moment(annotation.dateTime).format('YYYY MMM DD, h:mm a')}</p>
+                                </div>
+                                <a href={'/group/' + group.uuid}>View</a>
+                            </div>
+                        );
                     })}
                 </Panel>
                 <Panel title={<CurationPaletteTitles title="Family" />} panelClassName="panel-evidence">Stuff</Panel>
