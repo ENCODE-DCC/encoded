@@ -38,10 +38,14 @@
             "description": "Date of published",
             "type":  "string"
         },
-        "firstAuthor": {
-            "title": "First Author",
-            "description": "First author of article",
-            "type": "string"
+        "authors": {
+            "title": "Authors",
+            "description": "List of authors of the article",
+            "type": "array",
+            "items": {
+                "title": "Author",
+                "type": "string"
+            }
         },
         "abstract": {
             "title": "Abstract",
@@ -67,8 +71,8 @@
             "title": "Published",
             "type": "string"
         },
-        "firstAuthor": {
-            "title": "First Author",
+        "authors": {
+            "title": "Authors",
             "type": "string"
         },
         "abstract": {

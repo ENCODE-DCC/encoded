@@ -76,7 +76,8 @@
             "items": {
                 "title": "Functional Data ID",
                 "description": "FunctionalData id",
-                "type": "string"
+                "type": "string",
+                "linkTo": "functional"
             }
         },
         "active": {

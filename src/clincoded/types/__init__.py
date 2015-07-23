@@ -165,7 +165,19 @@ class Gdm(Item):
         'annotations.individuals.diagnosis',
         'annotations.individuals.method',
         'annotations.individuals.variants',
-        'annotations.individuals.assessments'
+        'annotations.individuals.assessments',
+        'annotations.functionalData',
+        'annotations.functionalData.variants',
+        'annotations.functionalData.biochemicalFunction.geneWithSameFunctionSameDisease.assessments',
+        'annotations.functionalData.biochemicalFunction.geneWithSameFunctionSameDisease.genes',
+        'annotations.functionalData.biochemicalFunction.geneFunctionConsistentWithPhenotype.assessments',
+        'annotations.functionalData.expression.alteredExpression.assessments',
+        'annotations.functionalData.expression.normalExpression.assessments',
+        'annotations.functionalData.proteinIneractions.interactingGenes',
+        'annotations.functionalData.proteinIneractions.assessments',
+        'annotations.functionalData.functionalAleration.assessments',
+        'annotations.functionalData.modelSystems.assessments',
+        'annotations.functionalData.rescue.assessments'
     ]
 
 @collection(
@@ -219,7 +231,19 @@ class Annotation(Item):
         'individuals.diagnosis',
         'individuals.method',
         'individuals.variants',
-        'individuals.assessments'
+        'individuals.assessments',
+        'functionalData',
+        'functionalData.variants',
+        'functionalData.biochemicalFunction.geneWithSameFunctionSameDisease.assessments',
+        'functionalData.biochemicalFunction.geneWithSameFunctionSameDisease.genes',
+        'functionalData.biochemicalFunction.geneFunctionConsistentWithPhenotype.assessments',
+        'functionalData.expression.alteredExpression.assessments',
+        'functionalData.expression.normalExpression.assessments',
+        'functionalData.proteinIneractions.interactingGenes',
+        'functionalData.proteinIneractions.assessments',
+        'functionalData.functionalAleration.assessments',
+        'functionalData.modelSystems.assessments',
+        'functionalData.rescue.assessments'
     ]
 
 @collection(
@@ -340,6 +364,31 @@ class Assessment(Item):
     item_type = 'assessment'
     schema = load_schema('clincoded:schemas/assessment.json')
     name_key = 'uuid'
+
+@collection(
+    name='functional',
+    unique_key='functional:uuid',
+    properties={
+        'title': 'Functional Data Studies',
+        'description': 'List of all functional data studies',
+    })
+class Functional(Item):
+    item_type = 'functional'
+    schema = load_schema('clincoded:schemas/functional.json')
+    name_key = 'uuid'
+    embedded = [
+        'variants',
+        'biochemicalFunction.geneWithSameFunctionSameDisease.assessments',
+        'biochemicalFunction.geneWithSameFunctionSameDisease.genes',
+        'biochemicalFunction.geneFunctionConsistentWithPhenotype.assessments',
+        'expression.alteredExpression.assessments',
+        'expression.normalExpression.assessments',
+        'proteinIneractions.interactingGenes',
+        'proteinIneractions.assessments',
+        'functionalAleration.assessments',
+        'modelSystems.assessments',
+        'rescue.assessments'
+    ]
 ### end of new collections for curation data
 
 

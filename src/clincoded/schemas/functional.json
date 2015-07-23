@@ -1,0 +1,575 @@
+{
+    "title": "Functional Data Analysis",
+    "description": "Schema for storing and using functional data.",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["owner", "dateTime", "evidenceType"],
+    "identifyingProperties": ["uuid"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "owner": {
+            "title": "Owner",
+            "description": "Email of curator who create the functional data",
+            "type": "string"
+        },
+        "dateTime": {
+            "title": "Date Time",
+            "description": "Date and time to create the functional data",
+            "type": "string"
+        },
+        "active": {
+            "title": "Active",
+            "description": "Switch to set if the functional data is avaliable for curation",
+            "type": "boolean",
+            "default": true
+        },
+        "evidenceType": {
+            "title": "Type of Evidence",
+            "description": "One of six evidence types",
+            "type": "string",
+            "enum": [
+                "Biochemical function",
+                "Protein Interactions",
+                "Expression",
+                "Functional alteration of gene/gene product",
+                "Model systems",
+                "Rescue"
+            ]
+        },
+        "biochemicalFunction": {
+            "title": "Biochemical Function",
+            "description": "Items in biochemical function type",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "identifiedFunction": {
+                    "title": "Identified Function",
+                    "description": "GO_Slim id (required)",
+                    "type": "string"
+                },
+                "evidenceForFunction": {
+                    "title": "Evidence for Function",
+                    "description": "Evidence for function (required)",
+                    "type": "string"
+                },
+                "evidenceForFunctionInPapaer": {
+                    "title": "Evidence Location in Article",
+                    "description": "Where in article to find evidence",
+                    "type": "string",
+                    "default": ""
+                },
+                "geneWithSameFunctionSameDisease": {
+                    "title": "Option A",
+                    "description": "Gene(s) with Same Function Implicated in Same Disease",
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "genes": {
+                            "title": "Genes",
+                            "description": "List of genes (HGNC symbols separated by comma) involved in the evidence (required)",
+                            "type": "array",
+                            "items": {
+                                "title": "Gene Symbol",
+                                "type": "string",
+                                "linkTo": "gene"
+                            }
+                        },
+                        "evidenceForOtherGenesWithSameFunction": {
+                            "title": "Evidence for Other Genes with Same Function",
+                            "description": "Evidence for other genes (required)",
+                            "type": "string"
+                        },
+                        "explanationOfOtherGenes": {
+                            "title": "Explanation of Other Genes",
+                            "description": "Explanation of relationship of other genes to the diasease  (optional)",
+                            "type": "string",
+                            "default": ""
+                        },
+                        "evidenceInPaper": {
+                            "title": "Explanation in Paper",
+                            "description": "Where explanation can be found in paper (optional)",
+                            "type": "string",
+                            "default": ""
+                        },
+                        "assessments": {
+                            "title": "Assessments",
+                            "description": "List of assessments",
+                            "type": "array",
+                            "default": [],
+                            "items": {
+                                "title": "Assessment",
+                                "type": "string",
+                                "linkTo": "assessment"
+                            }
+                        }
+                    }
+                },
+                "geneFunctionConsistentWithPhenotype": {
+                    "title": "Option B",
+                    "description": "Gene(s) with Same Function Implicated in Same Disease",
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "phenotypeHPO": {
+                            "title": "Phenotype (HPO)",
+                            "description": "List of HPO ids",
+                            "type": "array",
+                            "default": [],
+                            "items": {
+                                "title": "HPO ID",
+                                "description": "HPO id",
+                                "type": "string"
+                            }
+                        },
+                        "phenotypeFreeText": {
+                            "title": "Phenotype (Free Text)",
+                            "description": "Free text if HPO is not avaliable for the phenotype",
+                            "type": "string",
+                            "default": ""
+                        },
+                        "explanation": {
+                            "title": "Consistent with Disease",
+                            "description": "Explanation of how phenotype is consistent with disease",
+                            "type": "string"
+                        },
+                        "evidenceInPaper": {
+                            "title": "Consistent in Paper",
+                            "description": "Where to find the explantion in paper",
+                            "type": "string",
+                            "default": ""
+                        },
+                        "assessments": {
+                            "title": "Assessments",
+                            "description": "List of assessments",
+                            "type": "array",
+                            "default": [],
+                            "items": {
+                                "title": "Assessment",
+                                "type": "string",
+                                "linkTo": "assessment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "proteinIneractions": {
+            "title": "Interactions",
+            "description": "Items in interactions type",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "interactingGenes": {
+                    "title": "Interacting Gene(s)",
+                    "description": "List of HGNC symbols",
+                    "type": "array",
+                    "items": {
+                        "title": "Gene",
+                        "description": "HGNC sumbol",
+                        "type": "string",
+                        "linkTo": "gene"
+                    }
+                },
+                "interactionType": {
+                    "title": "Interaction Type",
+                    "description": "Interaction type",
+                    "type": "string",
+                    "enum": [
+                        "physical association (MI:0915)",
+                        "genetic interaction (MI:0208)",
+                        "negative genetic interaction (MI:0933)",
+                        "positive genetic interaction (MI:0935)"
+                    ]
+                },
+                "experimentalInteractionDetection": {
+                    "title": "Experimental Interaction Detection",
+                    "description": "Experimental Interaction Detection",
+                    "type": "string",
+                    "enum": [
+                        "coimmunoprecipitation (M:0019)",
+                        "pull down (M:0096)",
+                        "affinity chromatography technology (M:0004)",
+                        "protein cross-linking with a bifunctional reagent (M0031)",
+                        "comigration in gel electrophoresis (M:0807)",
+                        "x-ray crystallography (MI:0114)",
+                        "electron microscopy (MI:0040)"
+                    ]
+                },
+                "geneImplicatedInDisease": {
+                    "title": "Gene Expressed in Tissue",
+                    "description": "Is gene normally expressed in tissue",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "relationshipOfOtherGenesToDisese": {
+                    "title": "Raltionship of Other Gene(s) to the Disease",
+                    "description": "Explanation of relationship of other gene(s) to the disease",
+                    "type": "string"
+                },
+                "evidenceInPaper": {
+                    "title": "Evidence in Paper",
+                    "description": "Where evidence can be found in paper",
+                    "type": "string"
+                },
+                "assessments": {
+                    "title": "Assessments",
+                    "description": "List of assessments",
+                    "type": "array",
+                    "items": {
+                        "title": "Assessment uuid",
+                        "type": "string",
+                        "linkTo": "assessment"
+                    }
+                }
+            }
+        },
+        "expression": {
+            "title": "Expression",
+            "description": "Items in expression type",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "organOfTissue": {
+                    "title": "Organ of Tissue",
+                    "description": "Uberon id",
+                    "type": "string"
+                },
+                "normalExpression": {
+                    "title": "Option A",
+                    "description": "Gene normally expressed in tissues relevant to the disease",
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "evidence": {
+                            "title": "Evidence for Normal Expression",
+                            "description": "Evidence for normal expression in tissue",
+                            "type": "string"
+                        },
+                        "evidenceInPaper": {
+                            "title": "Evidence in Paper",
+                            "description": "Where evidence can be found in paper",
+                            "type": "string"
+                        },
+                        "assessments": {
+                            "title": "Assessments",
+                            "description": "List of assessment",
+                            "type": "array",
+                            "items": {
+                                "title": "Assessment",
+                                "type": "string",
+                                "linkTo": "assessment"
+                            }
+                        }
+                    }
+                },
+                "alteredExpression": {
+                    "title": "Option B",
+                    "description": "Altered expressed in Patients",
+                    "type": "object",
+                    "default": {},
+                    "properties": {
+                        "evidence": {
+                            "title": "Evidence for Altered Expression",
+                            "description": "Evidence for altered expression in patients",
+                            "type": "string"
+                        },
+                        "evidenceInPaper": {
+                            "title": "Evidence Location in Paper",
+                            "description": "Information about where evidence can be found in paper",
+                            "type": "string"
+                        },
+                        "assessments": {
+                            "title": "Assessments",
+                            "description": "List of assessments",
+                            "type": "array",
+                            "items": {
+                                "title": "Assessment uuid",
+                                "type": "string",
+                                "linkTo": "assessment"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "functionalAleration": {
+            "title": "Functional Alteration",
+            "description": "Items in Functional Alteration type",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "cellMutationOrEngineeredEquivalent": {
+                    "title": "Cell Mutation Or Engineered Equivalent",
+                    "description": "Patient cell mutation or engineered equivalent",
+                    "type": "string",
+                    "enum": [
+                        "Patient cells",
+                        "Engineered equivalent"
+                    ]
+                },
+                "patientCellType": {
+                    "title": "Patient Cell Type",
+                    "description": "EFO terms for patient cell type",
+                    "type": "string"
+                },
+                "engineeredEquivalentCellType": {
+                    "title": "Engineered Equivalent Cell Type",
+                    "description": "EFO terms",
+                    "type": "string"
+                },
+                "descriptoinOfGeneAlteration": {
+                    "title": "Gene Alteration",
+                    "description": "Description of gene alteration in engineered equivalent",
+                    "type": "string"
+                },
+                "normalFunctionOfGene": {
+                    "title": "Normal Function of Gene/Gene Procution",
+                    "description": "GO_Slim terms",
+                    "type": "string"
+                },
+                "evidenceForNormalFunction": {
+                    "title": "Evidence for Normal Function",
+                    "description": "Evidence for normal function of gene/gene product",
+                    "type": "string"
+                },
+                "evidenceInPaper": {
+                    "title": "Evidence in Paper",
+                    "description": "Where evidence can be found in paper",
+                    "type": "string",
+                    "default": ""
+                },
+                "assessments": {
+                    "title": "Assessments",
+                    "description": "List of assessments",
+                    "type": "array",
+                    "items": {
+                        "title": "Assessment uuid",
+                        "type": "string",
+                        "linkTo": "assessment"
+                    }
+                }
+            }
+        },
+        "modelSystems": {
+            "title": "Model System",
+            "description": "Items in Model System",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "animalOrCellCulture": {
+                    "title": "Animal or Cell Culture Model",
+                    "description": "Non-human animal or cell-culture model",
+                    "type": "string",
+                    "enum": [
+                        "Animal model",
+                        "Engineered equivalent"
+                    ]
+                },
+                "animalModel": {
+                    "title": "Animal Model",
+                    "description": "NCBI Taxon id for animal model",
+                    "type": "string",
+                    "default": "",
+                    "enum": [
+                        "",
+                        "Cat (Felis catus) 9685",
+                        "Chicken (Gallus gallus) 9031",
+                        "Chimpanzee (Pan troglodytes) 9598",
+                        "Cow (Bos taurus) 9913",
+                        "Dog (Canis lupus familaris) 9615",
+                        "Frog (Xenopus) 262014",
+                        "Fruit fly (Drosophila) 7215",
+                        "Gerbil (Gerbilinae) 10045",
+                        "Guinea pig (Cavia porcellus) 10141",
+                        "Hamster (Cricetinae) 10026",
+                        "Macaque (Macaca) 9539",
+                        "Mouse (Mus musculus) 10090",
+                        "Pig (Sus scrofa) 9823",
+                        "Rabbit (Oryctolagus crunicu) 9986",
+                        "Rat (Rattus norvegicus) 10116",
+                        "Round worm (Carnorhabditis elegans) 6239",
+                        "Sheep (Ovis aries) 9940",
+                        "Zebrafish (Daanio rerio) 7955"
+                    ]
+                },
+                "cellCulture": {
+                    "title": "Cell Culture Type/Line",
+                    "description": "EFO id for cell culture type/line",
+                    "type": "string",
+                    "default": ""
+                },
+                "descriptionOfGeneAlteration": {
+                    "title": "Gene Alteration",
+                    "description": "Description of gene alteration in model system",
+                    "type": "string"
+                },
+                "phenotypeHPO": {
+                    "title": "Phenotype (HPO)",
+                    "description": "HPO id of patient phenotype",
+                    "type": "string",
+                    "default": ""
+                },
+                "phenotypeFreeText": {
+                    "title": "Phenotype (Free text)",
+                    "description": "Other terms of phenotype if HPO not avaliable",
+                    "type": "string",
+                    "default": ""
+                },
+                "phenotypeHPOObserved": {
+                    "title": "Phenotype (HPO) Observed in Model System",
+                    "description": "HPO term",
+                    "type": "string",
+                    "default": ""
+                },
+                "phenotypeFreetextObserved": {
+                    "title": "Phenotype (Free text) Observed in Model System",
+                    "description": "Free text",
+                    "type": "string",
+                    "default": ""
+                },
+                "explanation": {
+                    "title": "Explanation",
+                    "description": "Explanation",
+                    "type": "string"
+                },
+                "evidenceInPaper": {
+                    "title": "Evidence in Papaer",
+                    "description": "Where evidence can be found in paper",
+                    "type": "string",
+                    "default": ""
+                },
+                "assessments": {
+                    "title": "Assessments",
+                    "description": "List of assessments",
+                    "type": "array",
+                    "items": {
+                        "title": "Assessment uuid",
+                        "type": "string",
+                        "linkTo": "assessment"
+                    }
+                }
+            }
+        },
+        "rescue": {
+            "title": "Rescue",
+            "description": "items in rescue type",
+            "type": "object",
+            "default": {},
+            "properties": {
+                "patientCellOrEngineeredEquivalent": {
+                    "title": "Cell Mutation Or Engineered Equivalent",
+                    "description": "Patient cell mutation or engineered equivalent",
+                    "type": "string",
+                    "enum": [
+                        "Patient cells",
+                        "Engineered equivalent"
+                    ]
+                },
+                "patientCellType": {
+                    "title": "Patient Cell Type",
+                    "description": "EFO term",
+                    "type": "string"
+                },
+                "engineeredEquivalentCellType": {
+                    "title": "Engineered Equivalent Cell Type/Line",
+                    "description": "EFO term",
+                    "type": "string"
+                },
+                "descriptionOfGeneAlteration": {
+                    "title": "Description of Cell (Patient or Engineered Equivalent)",
+                    "description": "Free text for description of cell",
+                    "type": "string"
+                },
+                "phenotypeHPO": {
+                    "title": "Phenotype Being rescued (HPO)",
+                    "description": "HPO term",
+                    "type": "string"
+                },
+                "phenotypeFreeText": {
+                    "title": "Phenotype Being rescued (Free text)",
+                    "description": "Free text if no HPO",
+                    "type": "string"
+                },
+                "rescueMethod": {
+                    "title": "Method",
+                    "description": "Method used to rescue",
+                    "type": "string"
+                },
+                "wildTypeRescuePhenotype": {
+                    "title": "Wild-type Rescue the Phenotype",
+                    "description": "Does the wild-type rescue the above phenotype?",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "patientVariantRescue": {
+                    "title": "Does Patient Variant Rescue",
+                    "description": "Does Patient Variant Rescue?",
+                    "type": "string",
+                    "enum": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "explanation": {
+                    "title": "Explanation",
+                    "description": "Explanation",
+                    "type": "string"
+                },
+                "evidenceLocationInPaper": {
+                    "title": "Evidence Location in Paper",
+                    "description": "Where can evidence be found in paper",
+                    "type": "string",
+                    "default": ""
+                },
+                "assessments": {
+                    "title": "Assessments",
+                    "description": "List of assessments",
+                    "type": "array",
+                    "items": {
+                        "title": "Assessment uuid",
+                        "type": "string",
+                        "linkTo": "assessment"
+                    }
+                }
+            }
+        },
+        "variants": {
+            "title": "Variants",
+            "description": "List of variant ids associated",
+            "type": "array",
+            "items": {
+                "title": "Variant ID",
+                "description": "Variant id",
+                "type": "string",
+                "linkTo": "variant"
+            }
+        }
+    },
+    "columns": {
+        "uuid": {
+            "title": "FunctionalData",
+            "type": "string"
+        },
+        "owner": {
+            "title": "Owner",
+            "type": "string"
+        },
+        "evidenceType": {
+            "title": "Type",
+            "type": "string"
+        }
+    }
+}

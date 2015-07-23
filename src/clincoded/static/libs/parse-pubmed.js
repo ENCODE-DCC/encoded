@@ -1,7 +1,6 @@
 'use strict';
 // Derived from:
 // https://github.com/standard-analytics/pubmed-schema-org/blob/master/lib/pubmed.js
-
 var _ = require('underscore');
 var moment = require('moment');
 
@@ -32,7 +31,7 @@ function parsePubmed(xml){
             article.journal = pubmedPeriodical($Journal);
         }
 
-        article.firstAuthor = pubmedAuthors($PubmedArticle);
+        article.authors = pubmedAuthors($PubmedArticle);
 
         var $ArticleTitle = $PubmedArticle.getElementsByTagName('ArticleTitle')[0];
         if($ArticleTitle){
@@ -70,27 +69,27 @@ function parsePubmed(xml){
 }
 
 function pubmedAuthors($PubmedArticle){
-    var authors = {};
-    var firstAuthor = '';
+    var authors = [];
 
     var $AuthorList = $PubmedArticle.getElementsByTagName('AuthorList')[0];
     if($AuthorList){
         var $Authors = $AuthorList.getElementsByTagName('Author');
-        var $FirstAuthor = $Authors[0];
-
-        var $LastName = $FirstAuthor.getElementsByTagName('LastName')[0];
-        if($LastName){
-            firstAuthor = $LastName.textContent;
-        }
-
-        var $Initials = $FirstAuthor.getElementsByTagName('Initials')[0];
-        if($Initials){
-            firstAuthor += (firstAuthor ? ' ' : '') + $Initials.textContent;
+        for (var i = 0; i < $Authors.length; ++i) {
+            var author = '';
+            var $LastName = $Authors[i].getElementsByTagName('LastName')[0];
+            if ($LastName){
+                author = $LastName.textContent;
+            }
+            var $Initials = $Authors[i].getElementsByTagName('Initials')[0];
+            if ($Initials){
+                author += (author ? ' ' : '') + $Initials.textContent;
+            }
+            authors.push(author);
         }
     } else {
-        firstAuthor = 'Anonymous';
+        authors[0] = 'Anonymous';
     }
-    return firstAuthor;
+    return authors;
 }
 
 function pubmedDoi($PubmedArticle){

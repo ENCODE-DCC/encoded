@@ -27,6 +27,7 @@ var CurationCentral = React.createClass({
 
     getInitialState: function() {
         return {
+            tempPmid: '',
             currAnnotation: {},
             currOmimId: '',
             currGdm: {}
@@ -35,17 +36,22 @@ var CurationCentral = React.createClass({
 
     // Called when currently selected PMID changes
     currPmidChange: function(pmid) {
-        var gdm = this.state.currGdm;
+        if (pmid !== undefined) {
+            var gdm = this.state.currGdm;
 
-        if (Object.keys(gdm).length) {
-            // Find the annotation in the GDM matching the given pmid
-            var currAnnotation = _(gdm.annotations).find(annotation => {
-                return annotation.article.pmid === pmid;
-            });
+            if (Object.keys(gdm).length) {
+                // Find the annotation in the GDM matching the given pmid
+                var currAnnotation = _(gdm.annotations).find(annotation => {
+                    return annotation.article.pmid === pmid;
+                });
 
-            if (currAnnotation) {
-                this.setState({currAnnotation: currAnnotation, selectionListOpen: false});                
+                if (currAnnotation) {
+                    this.setState({currAnnotation: currAnnotation, selectionListOpen: false});                
+                }
             }
+
+            // Remember the currently selected PMID in the query string
+            window.history.pushState(null, '', '/curation-central/?gdm=' + this.state.currGdm.uuid + '&pmid=' + pmid);
         }
     },
 
@@ -61,12 +67,15 @@ var CurationCentral = React.createClass({
     // retrieve the corresponding GDM from the DB.
     componentDidMount: function() {
         // See if there’s a GDM UUID to retrieve
-        var gdmUuid;
+        var gdmUuid, pmid;
         var queryParsed = this.props.href && url.parse(this.props.href, true).query;
         if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'gdm' query string item, if any
+            // Find the first 'gdm' and 'pmid' query string items, if any
             var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
                 return key === 'gdm';
+            });
+            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'pmid';
             });
             if (uuidKey) {
                 // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
@@ -75,7 +84,19 @@ var CurationCentral = React.createClass({
                     gdmUuid = gdmUuid[0];
                 }
                 this.getGdm(gdmUuid);
+
+                pmid = queryParsed[pmidKey];
+                if (typeof pmid === 'object') {
+                    pmid = pmid[0];
+                }
+                this.setState({tempPmid: pmid});
             }
+        }
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        if (nextProps.loadingComplete === true && this.state.tempPmid !== '') {
+            this.currPmidChange(this.state.tempPmid);
         }
     },
 
@@ -183,8 +204,8 @@ var PmidSelectionList = React.createClass({
 
     render: function() {
         var annotations = _(this.props.annotations).sortBy(function(annotation) {
-            // Sort list of articles by author
-            return annotation.article.firstAuthor;
+            // Sort list of articles by first author
+            return annotation.article.authors[0];
         });
 
         return (
@@ -236,7 +257,7 @@ var AddPmidModal = React.createClass({
         // Start with default validation
         var valid = this.validateDefault();
 
-        // Valid if the field has only 10 or fewer digits 
+        // Valid if the field has only 10 or fewer digits
         if (valid) {
             valid = this.getFormValue('pmid').match(/^[0-9]{1,10}$/i);
             if (!valid) {
