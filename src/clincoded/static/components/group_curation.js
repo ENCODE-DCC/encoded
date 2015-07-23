@@ -370,23 +370,23 @@ var GroupCuration = React.createClass({
                                         {GroupCommonDiseases.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion open>
-                                    <Panel title="Group Demographics">
+                                <PanelGroup accordion>
+                                    <Panel title="Group Demographics" open>
                                         {GroupDemographics.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion open>
-                                    <Panel title="Group Information">
+                                <PanelGroup accordion>
+                                    <Panel title="Group Information" open>
                                         {GroupProbandInfo.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion open>
-                                    <Panel title="Group Methods">
+                                <PanelGroup accordion>
+                                    <Panel title="Group Methods" open>
                                         {GroupMethods.call(this)}
                                     </Panel>
                                 </PanelGroup>
-                                <PanelGroup accordion open>
-                                    <Panel title="Group Additional Information">
+                                <PanelGroup accordion>
+                                    <Panel title="Group Additional Information" open>
                                         {GroupAdditional.call(this)}
                                     </Panel>
                                 </PanelGroup>

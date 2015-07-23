@@ -27,7 +27,6 @@ var PanelGroup = module.exports.PanelGroup = React.createClass({
     }
 });
 
-
 // Displays one panel. It can be a child of a PanelGroup if you're doing accordions.
 var Panel = module.exports.Panel = React.createClass({
     propTypes: {
@@ -57,7 +56,9 @@ var Panel = module.exports.Panel = React.createClass({
         var panelWrapperClasses = 'panel panel-default' + (this.props.panelClassName ? ' ' + this.props.panelClassName : '');
         var panelClasses = 'panel-body panel-std' + ((!this.state.open && this.props.accordion) ? ' panel-closed' : '');
         var indicatorClasses = 'icon panel-header-indicator ' + (this.props.accordion ? (this.state.open ? 'icon-chevron-up' : 'icon-chevron-down') : '');
+        var children = (this.props.children instanceof Array && this.props.children.length === 0) ? null : this.props.children;
         var title;
+
         if (this.props.accordion) {
             title = <a href="#" onClick={this.handleClick}>{this.props.title}</a>;
         } else {
@@ -76,9 +77,11 @@ var Panel = module.exports.Panel = React.createClass({
                         {typeof this.props.title === 'string' ? <h4>{title}</h4> : <span>{title}</span>}
                     </div>
                 : null}
-                <div className={panelClasses}>
-                    {this.props.children}
-                </div>
+                {children ?
+                    <div className={panelClasses}>
+                        {children}
+                    </div>
+                : null}
             </div>
         );
     }
