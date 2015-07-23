@@ -28,6 +28,15 @@ var Dashboard = React.createClass({
         };
     },
 
+    cleanGdmGeneDiseaseName: function(gene, disease) {
+        return gene + "-" + disease;
+    },
+
+    cleanGdmModelName: function(model) {
+        // remove (HP:#######) from model name
+        return model.substring(0, model.indexOf('(') - 1);
+    },
+
     setUserData: function(props) {
         // sets the display name and curator status
         this.setState({
@@ -45,11 +54,11 @@ var Dashboard = React.createClass({
             // Sort results by time. Ideally this would be done by the search function, but until
             // I can figure out how to set sorting for it, this will have to do
             var sortedGdmData = _(data[0]['@graph']).sortBy(function(item) {
-                return item.dateTime;
-            }).reverse();
+                return -moment(item.dateTime).format("X");
+            });
             var sortedHistoryData = _(data[1]['@graph']).sortBy(function(item) {
-                return item.dateTime;
-            }).reverse().slice(0,10);
+                return -moment(item.dateTime).format("X");
+            }).slice(0,10);
 
             // GDM results; finds GDMs created by user, and also creates PMID-GDM mapping table
             // (stopgap measure until article -> GDM mapping ability is incorporated)
@@ -57,18 +66,23 @@ var Dashboard = React.createClass({
             var pmidGdmMapping = {};
             for (var i = 0; i < sortedGdmData.length; i++) {
                 var temp = sortedGdmData[i];
-                var tempDisplayName = temp['gene']['symbol'] + "-" + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")";
+                var tempDisplayName =  "()";
                 if (temp['owner'] == userid) {
                     tempGdmList.push({
                         url: temp['uuid'],
-                        displayName: tempDisplayName,
+                        gdmGeneDisease: this.cleanGdmGeneDiseaseName(temp['gene']['symbol'], temp['disease']['term']),
+                        gdmModel: this.cleanGdmModelName(temp['modeInheritance']),
                         status: temp['status'],
                         dateTime: temp['dateTime']
                     });
                 }
                 if (temp['annotations'].length > 0) {
                     for (var j = 0; j < temp['annotations'].length; j++) {
-                        pmidGdmMapping[temp['annotations'][j]['uuid']] = {uuid: temp['uuid'], displayName: tempDisplayName};
+                        pmidGdmMapping[temp['annotations'][j]['uuid']] = {
+                            uuid: temp['uuid'],
+                            displayName: this.cleanGdmGeneDiseaseName(temp['gene']['symbol'], temp['disease']['term']),
+                            displayName2: this.cleanGdmModelName(temp['modeInheritance'])
+                        };
                     }
                 }
             }
@@ -77,24 +91,27 @@ var Dashboard = React.createClass({
             for (var i = 0; i < sortedHistoryData.length; i++) {
                 var display = false;
                 var temp = sortedHistoryData[i];
-                var tempDisplayName = 'Item';
+                var tempDisplayName = '';
+                var tempDisplayName2 = '';
                 var tempUrl = temp['@id'];
-                var tempMessage = '';
+                var tempTimestamp = '';
                 var tempDateTime = moment(temp['dateTime']).format( "YYYY MMM DD, h:mm a");
                 switch (temp['@type'][0]) {
                     case 'annotation':
                         tempDisplayName = 'PMID: ' + temp['article']['pmid'] + ' associated with ' + pmidGdmMapping[temp['uuid']]['displayName'];
+                        tempDisplayName2 = pmidGdmMapping[temp['uuid']]['displayName2'];
                         tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
-                        tempMessage = "added " + tempDateTime;
+                        tempTimestamp = "added " + tempDateTime;
                         display = true;
                         break;
                     case 'assessment':
                         tempDisplayName = temp['value'] + ' Assessment';
                         break;
                     case 'gdm':
-                        tempDisplayName = temp['gene']['symbol'] + '-' + temp['disease']['term'] + " (" + temp['modeInheritance'] + ")";
+                        tempDisplayName = temp['gene']['symbol'] + '-' + temp['disease']['term'];
+                        tempDisplayName2 = this.cleanGdmModelName(temp['modeInheritance']);
                         tempUrl = "/curation-central/?gdm=" + temp['uuid'];
-                        tempMessage = "created " + tempDateTime;
+                        tempTimestamp = "created " + tempDateTime;
                         display = true;
                         break;
                     default:
@@ -104,7 +121,8 @@ var Dashboard = React.createClass({
                     tempRecentHistory.push({
                         url: tempUrl,
                         displayName: tempDisplayName,
-                        message: tempMessage
+                        displayName2: tempDisplayName2,
+                        timestamp: tempTimestamp
                     });
                 }
             }
@@ -140,8 +158,8 @@ var Dashboard = React.createClass({
                         <Panel panelClassName="panel-dashboard">
                             <h3>Tools</h3>
                             <ul>
-                                <li><a href="/create-gene-disease/">View/create gene-disease record</a></li>
-                                <li><a href="/gdm/">View list of gene-disease records</a></li>
+                                <li><a href="/create-gene-disease/">Create Gene-Disease Record</a></li>
+                                <li><a href="/gdm/">View list of Gene-Disease Records</a></li>
                             </ul>
                         </Panel>
                         <Panel panelClassName="panel-dashboard">
@@ -149,7 +167,7 @@ var Dashboard = React.createClass({
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li><a href={item.url}>{item.displayName}</a> ({item.message})</li>;
+                                    return <li><a href={item.url}>{item.displayName} (<i>{item.displayName2}</i>)</a> <i>{item.timestamp}</i></li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
@@ -163,8 +181,8 @@ var Dashboard = React.createClass({
                                 {this.state.gdmList.map(function(item) {
                                     return (
                                         <div className="gdm-item">
-                                            <a href={"/curation-central/?gdm=" + item.url}>{item.displayName}</a><br />
-                                            Status: <strong>{item.status}</strong><br />
+                                            <a href={"/curation-central/?gdm=" + item.url}>{item.gdmGeneDisease} (<i>{item.gdmModel}</i>)</a><br />
+                                            In Process: <strong>{item.status}</strong><br />
                                             Creation Date: <strong>{moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}</strong>
                                         </div>
                                     );
