@@ -198,8 +198,8 @@ var PmidSelectionList = React.createClass({
 
     render: function() {
         var annotations = _(this.props.annotations).sortBy(function(annotation) {
-            // Sort list of articles by author
-            return annotation.article.firstAuthor;
+            // Sort list of articles by first author
+            return annotation.article.authors[0];
         });
 
         return (
