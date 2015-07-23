@@ -74,7 +74,7 @@ packages:
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
-- postgresql-9.4
+#- postgresql-9.4
 - pv
 - python2.7-dev
 - python3.4-dev
@@ -95,6 +95,10 @@ runcmd:
 # Ideally this would build as a different user so clincoded only has read
 # permissions
 - set -e
+- sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
+- wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - 
+- sudo apt-get update
+- sudo apt-get -y install postgresql-9.4
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.4/main/*.conf
