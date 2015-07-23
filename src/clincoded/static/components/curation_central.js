@@ -26,9 +26,34 @@ var CurationCentral = React.createClass({
     mixins: [RestMixin],
 
     getInitialState: function() {
+        // See if there’s a GDM UUID to retrieve
+        var gdmUuid, pmid;
+        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
+        if (queryParsed && Object.keys(queryParsed).length) {
+            // Find the first 'gdm' query string item, if any
+            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'gdm';
+            });
+            // Check to see if there's a PMID to retrieve, only if there's  GDM to retrieve
+            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'pmid';
+            });
+            if (uuidKey) {
+                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
+                gdmUuid = queryParsed[uuidKey];
+                if (typeof gdmUuid === 'object') {
+                    gdmUuid = gdmUuid[0];
+                }
+                // Set the PMID variable
+                pmid = queryParsed[pmidKey];
+                if (typeof pmid === 'object') {
+                    pmid = pmid[0];
+                }
+            }
+        }
         return {
-            tempPmid: '',
-            currPmid: '',
+            currPmid: pmid,
+            gdmUuid: gdmUuid,
             currOmimId: '',
             currGdm: {}
         };
@@ -38,7 +63,7 @@ var CurationCentral = React.createClass({
     currPmidChange: function(pmid) {
         this.setState({currPmid: pmid, selectionListOpen: false});
         if (pmid !== undefined) {
-            window.history.pushState(null, '', '/curation-central/?gdm=' + this.state.currGdm.uuid + '&pmid=' + pmid);
+            window.history.replaceState(window.state, '', '/curation-central/?gdm=' + this.state.gdmUuid + '&pmid=' + pmid);
         }
     },
 
@@ -53,38 +78,7 @@ var CurationCentral = React.createClass({
     // After the Curator Central page component mounts, grab the uuid from the query string and
     // retrieve the corresponding GDM from the DB.
     componentDidMount: function() {
-        // See if there’s a GDM UUID to retrieve
-        var gdmUuid, pmid;
-        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
-        if (queryParsed && Object.keys(queryParsed).length) {
-            // Find the first 'gdm' query string item, if any
-            var uuidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'gdm';
-            });
-            var pmidKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'pmid';
-            });
-            if (uuidKey) {
-                // Got the GDM key for its UUID from the query string. Now use it to retrieve that GDM
-                gdmUuid = queryParsed[uuidKey];
-                if (typeof gdmUuid === 'object') {
-                    gdmUuid = gdmUuid[0];
-                }
-                this.getGdm(gdmUuid);
-
-                pmid = queryParsed[pmidKey];
-                if (typeof pmid === 'object') {
-                    pmid = pmid[0];
-                }
-                this.setState({tempPmid: pmid});
-            }
-        }
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.loadingComplete === true && this.state.tempPmid !== '') {
-            this.currPmidChange(this.state.tempPmid);
-        }
+        this.getGdm(this.state.gdmUuid);
     },
 
     // Add an article whose object is given to the current GDM
