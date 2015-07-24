@@ -30,6 +30,9 @@ var GroupCuration = React.createClass({
         navigate: React.PropTypes.func
     },
 
+    // Keeps track of values from the query string
+    queryValues: {},
+
     getInitialState: function() {
         return {
             gdm: {}, // GDM object given in UUID
@@ -63,26 +66,19 @@ var GroupCuration = React.createClass({
         });
     },
 
-    // After the Group Curation page component mounts, grab the annotation UUID from the query
-    // string and retrieve the corresponding annotation from the DB, if it exists.
+    // After the Group Curation page component mounts, grab the GDM and annotation UUIDs from the query
+    // string and retrieve the corresponding annotation from the DB, if they exist.
     // Note, we have to do this after the component mounts because AJAX DB queries can't be
     // done from unmounted components.
     componentDidMount: function() {
-        // See if there’s a GDM UUID to retrieve
-        var annotationUuid, gdmUuid, groupUuid;
-
-        // Get the 'evidence' and 'gdm' UUIDs from the query string
-        annotationUuid = queryKeyValue('evidence', this.props.href);
-        gdmUuid = queryKeyValue('gdm', this.props.href);
-        groupUuid = queryKeyValue('group', this.props.href);
-
-        if (annotationUuid && gdmUuid) {
+        if (this.queryValues.annotationUuid && this.queryValues.gdmUuid) {
             // Query the DB with this UUID, setting the component state if successful.
-            this.getGdmAnnotation(gdmUuid, annotationUuid);
+            this.getGdmAnnotation(this.queryValues.gdmUuid, this.queryValues.annotationUuid);
         }
 
-        if (groupUuid) {
-            this.loadGroup(groupUuid);
+        // If a group's UUID was given in the query string, retrieve the group data.
+        if (this.queryValues.groupUuid) {
+            this.loadGroup(this.queryValues.groupUuid);
         }
     },
 
@@ -272,7 +268,6 @@ var GroupCuration = React.createClass({
                     }
 
                     // Post the new group to the DB
-                    console.log('GROUP: %o', newGroup);
                     return this.postRestData('/groups/', newGroup).then(data => {
                         return Promise.resolve(data['@graph'][0]);
                     });
@@ -352,51 +347,60 @@ var GroupCuration = React.createClass({
         var annotation = this.state.annotation;
         var gdm = this.state.gdm;
 
+        // Get the 'evidence', 'gdm', and 'group' UUIDs from the query string and save them locally.
+        this.queryValues.annotationUuid = queryKeyValue('evidence', this.props.href);
+        this.queryValues.gdmUuid = queryKeyValue('gdm', this.props.href);
+        this.queryValues.groupUuid = queryKeyValue('group', this.props.href);
+
         return (
             <div>
-                <CurationData />
-                <div className="container">
-                    <div className="row group-curation-content">
-                        <div className="col-sm-9">
-                            <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
-                                <Panel>
-                                    {GroupName.call(this)}
-                                </Panel>
-                                <PanelGroup accordion>
-                                    <Panel title="Common diseases &amp; phenotypes" open>
-                                        {GroupCommonDiseases.call(this)}
-                                    </Panel>
-                                </PanelGroup>
-                                <PanelGroup accordion>
-                                    <Panel title="Group Demographics" open>
-                                        {GroupDemographics.call(this)}
-                                    </Panel>
-                                </PanelGroup>
-                                <PanelGroup accordion>
-                                    <Panel title="Group Information" open>
-                                        {GroupProbandInfo.call(this)}
-                                    </Panel>
-                                </PanelGroup>
-                                <PanelGroup accordion>
-                                    <Panel title="Group Methods" open>
-                                        {GroupMethods.call(this)}
-                                    </Panel>
-                                </PanelGroup>
-                                <PanelGroup accordion>
-                                    <Panel title="Group Additional Information" open>
-                                        {GroupAdditional.call(this)}
-                                    </Panel>
-                                </PanelGroup>
-                                <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
-                            </Form>
-                        </div>
-                        {annotation && Object.keys(annotation).length ?
-                            <div className="col-sm-3">
-                                <CurationPalette gdm={gdm} annotation={annotation} />
+                {(!this.queryValues.groupUuid || Object.keys(this.state.group).length > 0) ?
+                    <div>
+                        <CurationData />
+                        <div className="container">
+                            <div className="row group-curation-content">
+                                <div className="col-sm-9">
+                                    <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
+                                        <Panel>
+                                            {GroupName.call(this)}
+                                        </Panel>
+                                        <PanelGroup accordion>
+                                            <Panel title="Common diseases &amp; phenotypes" open>
+                                                {GroupCommonDiseases.call(this)}
+                                            </Panel>
+                                        </PanelGroup>
+                                        <PanelGroup accordion>
+                                            <Panel title="Group Demographics" open>
+                                                {GroupDemographics.call(this)}
+                                            </Panel>
+                                        </PanelGroup>
+                                        <PanelGroup accordion>
+                                            <Panel title="Group Information" open>
+                                                {GroupProbandInfo.call(this)}
+                                            </Panel>
+                                        </PanelGroup>
+                                        <PanelGroup accordion>
+                                            <Panel title="Group Methods" open>
+                                                {GroupMethods.call(this)}
+                                            </Panel>
+                                        </PanelGroup>
+                                        <PanelGroup accordion>
+                                            <Panel title="Group Additional Information" open>
+                                                {GroupAdditional.call(this)}
+                                            </Panel>
+                                        </PanelGroup>
+                                        <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
+                                    </Form>
+                                </div>
+                                {annotation && Object.keys(annotation).length ?
+                                    <div className="col-sm-3">
+                                        <CurationPalette gdm={gdm} annotation={annotation} />
+                                    </div>
+                                : null}
                             </div>
-                        : null}
+                        </div>
                     </div>
-                </div>
+                : null}
             </div>
         );
     }

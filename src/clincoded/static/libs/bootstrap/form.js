@@ -168,6 +168,10 @@ var Input = module.exports.Input = React.createClass({
         cancelHandler: React.PropTypes.func // Called to handle cancel button click
     },
 
+    getInitialState: function() {
+        return {value: this.props.value};
+    },
+
     // Get the text the user entered from the text-type field. Meant to be called from
     // parent components.
     getValue: function() {
@@ -196,6 +200,11 @@ var Input = module.exports.Input = React.createClass({
         return '';
     },
 
+    handleChange: function(e) {
+        this.setState({value: e.target.value});
+        this.props.clearError(e);
+    },
+
     render: function() {
         var input, inputClasses;
         var groupClassName = 'form-group' + this.props.groupClassName ? ' ' + this.props.groupClassName : '';
@@ -206,7 +215,7 @@ var Input = module.exports.Input = React.createClass({
                 inputClasses = 'form-control' + (this.props.error ? ' error' : '') + (this.props.inputClassName ? ' ' + this.props.inputClassName : '');
                 var innerInput = (
                     <span>
-                        <input className={inputClasses} type={this.props.type} id={this.props.id} name={this.props.id} placeholder={this.props.placeholder} ref="input" value={this.props.value} onChange={this.props.clearError} />
+                        <input className={inputClasses} type={this.props.type} id={this.props.id} name={this.props.id} placeholder={this.props.placeholder} ref="input" value={this.state.value} onChange={this.handleChange} />
                         <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                     </span>
                 );
@@ -238,7 +247,7 @@ var Input = module.exports.Input = React.createClass({
                     <div className={this.props.groupClassName}>
                         {this.props.label ? <label htmlFor={this.props.id} className={this.props.labelClassName}><span>{this.props.label}{this.props.required ? ' *' : ''}</span></label> : null}
                         <div className={this.props.wrapperClassName}>
-                            <textarea className={inputClasses} id={this.props.id} name={this.props.id} ref="input" value={this.props.value} onChange={this.props.clearError} rows={this.props.rows} />
+                            <textarea className={inputClasses} id={this.props.id} name={this.props.id} ref="input" defaultValue={this.props.value} onChange={this.props.clearError} rows={this.props.rows} />
                             <div className="form-error">{this.props.error ? <span>{this.props.error}</span> : <span>&nbsp;</span>}</div>
                         </div>
                     </div>
