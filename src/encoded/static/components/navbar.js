@@ -1,34 +1,22 @@
 'use strict';
 var React = require('react');
 var url = require('url');
-var mixins = require('./mixins');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
 var NavItem = require('../react-bootstrap/NavItem');
 
-// Hide data from NavBarLayout
+
 var NavBar = React.createClass({
-    render: function() {
-        var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
-        return <NavBarLayout
-            loadingComplete={this.props.loadingComplete}
-            portal={this.props.portal}
-            section={section}
-            session={this.props.session}
-            context_actions={this.props.context_actions}
-            user_actions={this.props.user_actions}
-            href={this.props.href}
-            />;
-    }
-});
+    contextTypes: {
+        currentUrl: React.PropTypes.func,
+        portal: React.PropTypes.object
+    },
 
-
-var NavBarLayout = React.createClass({
     getInitialState: function() {
         return {
-            testWarning: !productionHost[url.parse(this.props.href).hostname]
+            testWarning: !productionHost[url.parse(this.context.currentUrl()).hostname]
         };
     },
 
@@ -49,20 +37,15 @@ var NavBarLayout = React.createClass({
     },
 
     render: function() {
-        console.log('render navbar');
-        var portal = this.props.portal;
-        var section = this.props.section;
-        var session = this.props.session;
-        var user_actions = this.props.user_actions;
-        var context_actions = this.props.context_actions;
+        var portal = this.context.portal;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
-                        <GlobalSections global_sections={portal.global_sections} section={section} />
-                        <UserActions {...this.props} />
-                        {context_actions ? <ContextActions {...this.props} /> : null}
-                        <Search {...this.props} />
+                        <GlobalSections />
+                        <UserActions />
+                        <ContextActions />
+                        <Search />
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
@@ -82,11 +65,16 @@ var NavBarLayout = React.createClass({
 
 
 var GlobalSections = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func,
+        currentUrl: React.PropTypes.func
+    },
+
     render: function() {
-        var section = this.props.section;
+        var section = url.parse(this.context.currentUrl()).pathname.split('/', 2)[1] || '';
 
         // Render top-level main menu
-        var actions = this.props.global_sections.map(function (action) {
+        var actions = this.context.listActionsFor('global_sections').map(function (action) {
             var subactions;
             if (action.children) {
                 // Has dropdown menu; render it into subactions var
@@ -114,15 +102,22 @@ var GlobalSections = React.createClass({
 });
 
 var ContextActions = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func
+    },
+
     render: function() {
-        var actions = this.props.context_actions.map(function(action) {
+        var actions = this.context.listActionsFor('context').map(function(action) {
             return (
                 <NavItem href={action.href} key={action.name}>
                     <i className="icon icon-pencil"></i> {action.title}
                 </NavItem>
             );
         });
-        if (this.props.context_actions.length > 1) {
+        if (actions.length === 0) {
+            return null;
+        }
+        if (actions.length > 1) {
             actions = (
                 <NavItem dropdown={true}>
                     <i className="icon icon-gear"></i>
@@ -137,8 +132,12 @@ var ContextActions = React.createClass({
 });
 
 var Search = React.createClass({
+    contextTypes: {
+        currentUrl: React.PropTypes.func
+    },
+
     render: function() {
-        var id = url.parse(this.props.href, true);
+        var id = url.parse(this.context.currentUrl(), true);
         var searchTerm = id.query['searchTerm'] || '';
         return (
             <form className="navbar-form navbar-right" action="/search/">
@@ -153,20 +152,25 @@ var Search = React.createClass({
 
 
 var UserActions = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func,
+        session_properties: React.PropTypes.object
+    },
+
     render: function() {
-        var session = this.props.session;
-        var disabled = !this.props.loadingComplete;
-        if (!(session && session['auth.userid'])) {
+        var session_properties = this.context.session_properties;
+        if (!session_properties['auth.userid']) {
             return null;
         }
-        var actions = this.props.user_actions.map(function (action) {
+        var actions = this.context.listActionsFor('user').map(function (action) {
             return (
                 <NavItem href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     {action.title}
                 </NavItem>
             );
         });
-        var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
+        var user = session_properties.user;
+        var fullname = (user && user.title) || 'unknown';
         return (
             <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
                 <NavItem dropdown={true}>

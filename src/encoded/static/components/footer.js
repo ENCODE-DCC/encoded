@@ -3,7 +3,6 @@ var React = require('react');
 
 var Footer = React.createClass({
     render: function() {
-        console.log('render footer');
         var session = this.props.session;
         var disabled = !this.props.loadingComplete;
         var userActionRender;
