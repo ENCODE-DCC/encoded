@@ -176,6 +176,14 @@
         "finalClassification": {
             "title": "Final Assertion",
             "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "dateTime": {
+            "title": "Creation Date",
+            "type": "string"
         }
     },
     "boost_values": {

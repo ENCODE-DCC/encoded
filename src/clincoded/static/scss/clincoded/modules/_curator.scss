@@ -65,7 +65,7 @@
 }
 
 .equal-height {
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 @media screen and (min-width: $screen-sm-min) {
@@ -218,6 +218,29 @@
 .panel-create-gene-disease {
     .panel-std {
         padding-bottom: 40px;
+    }
+}
+
+.panel-dashboard {
+    .panel-std {
+        padding: 10px 30px 20px 30px;
+    }
+
+    .gdm-list {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-bottom: none;
+
+        .gdm-item {
+            width: 100%;
+            padding: 2px 8px 2px 8px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f0f0f0;
+        }
+
+        .gdm-item:hover {
+            background-color: #cde8f6;
+        }
     }
 }
 
