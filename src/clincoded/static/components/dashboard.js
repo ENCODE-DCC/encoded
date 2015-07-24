@@ -34,8 +34,7 @@ var Dashboard = React.createClass({
 
     cleanGdmModelName: function(model) {
         // remove (HP:#######) from model name
-        var temp = model.indexOf('(') > -1 ? model.substring(0, model.indexOf('(') - 1) : model;
-        return temp;
+        return model.indexOf('(') > -1 ? model.substring(0, model.indexOf('(') - 1) : model;
     },
 
     setUserData: function(props) {
