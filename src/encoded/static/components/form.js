@@ -154,8 +154,9 @@ var Form = module.exports.Form = React.createClass({
             this.state.unsavedToken.release();
             this.setState({unsavedToken: null});
         }
-        var url = data['@graph'][0]['@id'];
-        this.props.navigate(url);
+        if(this.props.onFinish) {
+          this.props.onFinish(data);
+        }
     },
 
     receive: function (data) {
