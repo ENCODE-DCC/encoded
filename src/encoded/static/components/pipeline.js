@@ -461,7 +461,7 @@ var PipelineTable = module.exports.PipelineTable = React.createClass({
         }
 
         // Get the software version numbers for all matching software
-        var softwareId = url.parse(this.props.href).pathname;
+        var softwareId = this.props.softwareId;
         var swVers = [];
         pipelines.forEach(function(pipeline, i) {
             return pipeline.analysis_steps.some(function(analysis_step) {

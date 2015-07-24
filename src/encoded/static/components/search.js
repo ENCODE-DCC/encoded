@@ -874,6 +874,7 @@ var AuditMixin = audit.AuditMixin;
 
     var Search = search.Search = React.createClass({
         contextTypes: {
+            location_href: React.PropTypes.string,
             navigate: React.PropTypes.func
         },
 
@@ -881,7 +882,7 @@ var AuditMixin = audit.AuditMixin;
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var searchBase = url.parse(this.props.href).search || '';
+            var searchBase = url.parse(this.context.location_href).search || '';
             var facetdisplay = context.facets.some(function(facet) {
                 return facet.total > 0;
             });

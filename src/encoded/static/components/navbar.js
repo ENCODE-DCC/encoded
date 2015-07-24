@@ -10,13 +10,13 @@ var NavItem = require('../react-bootstrap/NavItem');
 
 var NavBar = React.createClass({
     contextTypes: {
-        currentUrl: React.PropTypes.func,
+        location_href: React.PropTypes.string,
         portal: React.PropTypes.object
     },
 
     getInitialState: function() {
         return {
-            testWarning: !productionHost[url.parse(this.context.currentUrl()).hostname]
+            testWarning: !productionHost[url.parse(this.context.location_href).hostname]
         };
     },
 
@@ -67,11 +67,11 @@ var NavBar = React.createClass({
 var GlobalSections = React.createClass({
     contextTypes: {
         listActionsFor: React.PropTypes.func,
-        currentUrl: React.PropTypes.func
+        location_href: React.PropTypes.string
     },
 
     render: function() {
-        var section = url.parse(this.context.currentUrl()).pathname.split('/', 2)[1] || '';
+        var section = url.parse(this.context.location_href).pathname.split('/', 2)[1] || '';
 
         // Render top-level main menu
         var actions = this.context.listActionsFor('global_sections').map(function (action) {
@@ -133,11 +133,11 @@ var ContextActions = React.createClass({
 
 var Search = React.createClass({
     contextTypes: {
-        currentUrl: React.PropTypes.func
+        location_href: React.PropTypes.string
     },
 
     render: function() {
-        var id = url.parse(this.context.currentUrl(), true);
+        var id = url.parse(this.context.location_href, true);
         var searchTerm = id.query['searchTerm'] || '';
         return (
             <form className="navbar-form navbar-right" action="/search/">

@@ -16,10 +16,14 @@ var AuditMixin = audit.AuditMixin;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var url = require('url');
         var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
         return (
             <div className="view-item">
                 <header className="row">
