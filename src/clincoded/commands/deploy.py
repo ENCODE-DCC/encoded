@@ -15,7 +15,7 @@ def nameify(s):
     return re.subn(r'\-+', '-', name)[0]
 
 
-def run(wale_s3_prefix, image_id, instance_type,
+def run(wale_s3_prefix, image_id, instance_type, dbrestore
         branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
@@ -47,7 +47,8 @@ def run(wale_s3_prefix, image_id, instance_type,
     bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     # db_restore_version = "gene_and_disease_data"
-    db_restore_version = "test_data"
+    # db_restore_version = "test_data"
+    db_restore_version = dbrestore
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
@@ -118,6 +119,8 @@ def main():
         help="specify 'c4.2xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--dbrestore', default='test_data', 
+        help="Load test data by default, use 'gene_and_disease_data' to include hgnc/orphanet")
     args = parser.parse_args()
 
     return run(**vars(args))
