@@ -183,7 +183,6 @@ var App = React.createClass({
             var ContentView = globals.content_views.lookup(context, current_action);
             content = <ContentView {...this.props} context={context}
                 loadingComplete={this.props.loadingComplete}
-                session={this.state.session}
                 />;
         }
         var errors = this.state.errors.map(function (error) {
@@ -249,7 +248,7 @@ var App = React.createClass({
                                 {errors}
                                 <div id="layout-footer"></div>
                             </div>
-                            <Footer session={this.state.session} loadingComplete={this.props.loadingComplete} />
+                            <Footer loadingComplete={this.props.loadingComplete} />
                         </div>
                     </div>
                 </body>

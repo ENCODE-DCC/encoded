@@ -2,8 +2,12 @@
 var React = require('react');
 
 var Footer = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
-        var session = this.props.session;
+        var session = this.context.session;
         var disabled = !this.props.loadingComplete;
         var userActionRender;
 
