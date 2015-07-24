@@ -146,6 +146,7 @@ var CurationCentral = React.createClass({
                                 <div className="curr-pmid-overview">
                                     <PmidSummary article={currArticle} displayJournal />
                                     <PmidDoiButtons pmid={currArticle.pmid} />
+                                    <p className="beta-note">Currently, only the curator who adds a paper to a Gene-Disease record can associate evidence with that paper.</p>
                                     {currArticle.abstract ?
                                         <div className="pmid-overview-abstract">
                                             <h4>Abstract</h4>
