@@ -79,7 +79,7 @@ var App = React.createClass({
         dropdownComponent: React.PropTypes.string,
         listActionsFor: React.PropTypes.func,
         currentResource: React.PropTypes.func,
-        currentUrl: React.PropTypes.func,
+        location_href: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
         portal: React.PropTypes.object
     },
@@ -90,7 +90,7 @@ var App = React.createClass({
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
-            currentUrl: this.currentUrl,
+            location_href: this.props.href,
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             portal: portal
         };
@@ -125,10 +125,6 @@ var App = React.createClass({
 
     currentResource: function() {
         return this.props.context;
-    },
-
-    currentUrl: function() {
-        return this.props.href;
     },
 
     currentAction: function() {
@@ -181,7 +177,7 @@ var App = React.createClass({
         }
         if (context) {
             var ContentView = globals.content_views.lookup(context, current_action);
-            content = <ContentView {...this.props} context={context} />;
+            content = <ContentView context={context} />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
