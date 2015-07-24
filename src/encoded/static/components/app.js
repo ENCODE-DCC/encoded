@@ -70,7 +70,6 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             errors: [],
-            portal: portal,
             dropdownComponent: undefined
         };
     },
@@ -185,8 +184,7 @@ var App = React.createClass({
             content = <ContentView {...this.props} context={context}
                 loadingComplete={this.props.loadingComplete}
                 session={this.state.session}
-                session_properties={this.state.session_properties}
-                portal={this.state.portal} />;
+                />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
