@@ -146,7 +146,7 @@ var CurationCentral = React.createClass({
                                 <div className="curr-pmid-overview">
                                     <PmidSummary article={currArticle} displayJournal />
                                     <PmidDoiButtons pmid={currArticle.pmid} />
-                                    <p className="beta-note">Currently, only the curator who adds a paper to a Gene-Disease record can associate evidence with that paper.</p>
+                                    <BetaNote annotation={annotation} session={this.props.session} />
                                     {currArticle.abstract ?
                                         <div className="pmid-overview-abstract">
                                             <h4>Abstract</h4>
@@ -170,6 +170,25 @@ var CurationCentral = React.createClass({
 
 globals.curator_page.register(CurationCentral, 'curator_page', 'curation-central');
 
+
+var BetaNote = React.createClass({
+    render: function() {
+        var annotation = this.props.annotation;
+        var session = this.props.session;
+        var curatorMatch = annotation.owner === (session && session.user_properties && session.user_properties.email);
+
+        return (
+            <div>
+                {!curatorMatch ?
+                    <div className="beta-note">
+                        <p>Currently, only the curator who adds a paper to a Gene-Disease record can associate evidence with that paper.</p>
+                        <p>PMID:{annotation.article.pmid} added by {annotation.owner}.</p>
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
 
 // Display the list of PubMed articles passed in pmidItems.
 var PmidSelectionList = React.createClass({
