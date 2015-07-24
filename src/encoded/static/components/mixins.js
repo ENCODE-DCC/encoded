@@ -94,7 +94,7 @@ module.exports.Persona = {
 
     getInitialState: function () {
         return {
-            session: {},
+            session: null,
             session_properties: {}
         };
     },
@@ -108,7 +108,6 @@ module.exports.Persona = {
         }
         this.setProps({
             href: window.location.href,
-            loadingComplete: true,
             session_cookie: session_cookie
         });
     },
@@ -124,7 +123,7 @@ module.exports.Persona = {
             //    // Server uses this to check user is logged in
             //    headers['X-If-Match-User'] = userid;
             //}
-            if (session._csrft_) {
+            if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
         }
@@ -154,12 +153,12 @@ module.exports.Persona = {
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.props.session_cookie !== nextProps.session_cookie) {
+        if (!this.state.session || (this.props.session_cookie !== nextProps.session_cookie)) {
             var nextState = {};
             nextState.session = this.parseSessionCookie(nextProps.session_cookie);
             if (!nextState.session['auth.userid']) {
                 nextState.session_properties = {};
-            } else if (nextState.session['auth.userid'] !== this.state.session['auth.userid']) {
+            } else if (nextState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
                 this.fetchSessionProperties();
             }
             this.setState(nextState);
@@ -259,7 +258,7 @@ module.exports.Persona = {
 
     triggerLogin: function (event) {
         console.log('Logging in (persona) ');
-        if (!this.state.session._csrft_) {
+        if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }
         $script.ready('persona', () => {

@@ -43,11 +43,6 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
-        if (!this.props.loadingComplete) return (
-            <div className="communicating">
-                <div className="loading-spinner"></div>
-            </div>
-        );
         return (
             <div className={itemClass}>
                 <div className="row">
@@ -63,14 +58,6 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
 });
 
 globals.content_views.register(HTTPForbidden, 'HTTPForbidden');
-
-
-var BlankWhileLoading = module.exports.BlankWhileLoading = function (props) {
-    if (!props.loadingComplete) return "";
-    return props.context.title;
-}
-
-globals.listing_titles.register(BlankWhileLoading, 'HTTPForbidden');
 
 
 var LoginDenied = module.exports.LoginDenied = React.createClass({

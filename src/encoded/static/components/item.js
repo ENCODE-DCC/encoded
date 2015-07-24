@@ -357,7 +357,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
@@ -368,7 +368,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
                     <FetchedForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
