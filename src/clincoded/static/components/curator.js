@@ -110,10 +110,11 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
         var annotation = this.props.annotation;
         var session = this.props.session;
         var curatorMatch = annotation.owner === (session && session.user_properties && session.user_properties.email);
+        var url = curatorMatch ? ('/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid) : null;
 
         return (
             <Panel panelClassName="panel-evidence-groups" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
-                <Panel title={<CurationPaletteTitles title="Group" url={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + this.props.annotation.uuid} />} panelClassName="panel-evidence">
+                <Panel title={<CurationPaletteTitles title="Group" url={url} />} panelClassName="panel-evidence">
                     {annotation.groups && annotation.groups.map(function(group) {
                         return (
                             <div className="panel-evidence-group" key={group.uuid}>
@@ -142,10 +143,18 @@ var CurationPaletteTitles = React.createClass({
 
     render: function() {
         return (
-            <a href={this.props.url} className="clearfix">
-                <h4 className="pull-left">{this.props.title}</h4>
-                <i className="icon icon-plus-circle pull-right"></i>
-            </a>
+            <div>
+                {this.props.url ?
+                    <a href={this.props.url} className="curation-palette-title clearfix">
+                        <h4 className="pull-left">{this.props.title}</h4>
+                        <i className="icon icon-plus-circle pull-right"></i>
+                    </a>
+                :
+                    <span className="curation-palette-title clearfix">
+                        <h4 className="pull-left">{this.props.title}</h4>
+                    </span>
+                }
+            </div>
         );
     }
 });

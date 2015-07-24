@@ -202,7 +202,9 @@ var Input = module.exports.Input = React.createClass({
 
     handleChange: function(e) {
         this.setState({value: e.target.value});
-        this.props.clearError(e);
+        if (this.props.clearError) {
+            this.props.clearError();
+        }
     },
 
     render: function() {

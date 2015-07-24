@@ -60,7 +60,7 @@ var RestMixin = module.exports.RestMixin = {
     // 'handlers' array.
     getRestDatas: function(uris, handlers) {
         return Promise.all(uris.map(function(uri, i) {
-            var handler = (handlers && handlers.length) ? handler[i] : null;
+            var handler = (handlers && handlers.length) ? handlers[i] : null;
             return this.getRestData(uri, handler);
         }.bind(this)));
     },

@@ -37,3 +37,20 @@ input[type=search] {
 .form-group-inline {
     display: inline-block;
 }
+
+.group-age-fromto {
+    display: table;
+    padding-right: 0;
+}
+
+.group-age-input {
+    display: table-cell;
+    width: 45%;
+}
+
+.group-age-inter {
+    display: table-cell;
+    width: 10%;
+    vertical-align: middle;
+    text-align: center;
+}

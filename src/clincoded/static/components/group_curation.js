@@ -169,7 +169,9 @@ var GroupCuration = React.createClass({
                     if (newMethod) {
                         if (this.state.group && this.state.group.method && Object.keys(this.state.group.method).length) {
                             // We're editing a group and it had an existing method. Just PUT an update to the method.
-                            return this.putRestData('/methods/' + this.state.group.method.uuid, newMethod);
+                            return this.putRestData('/methods/' + this.state.group.method.uuid, newMethod).then(data => {
+                                return Promise.resolve(data['@graph'][0]);
+                            });
                         } else {
                             // We're either creating a group, or editing an existing group that didn't have a method
                             // Post the new method to the DB. When the promise returns with the new method
@@ -213,7 +215,7 @@ var GroupCuration = React.createClass({
                     }
                     phenoterms = this.getFormValue('notphenoterms');
                     if (phenoterms) {
-                        // Assign to group once new group schema merged in.
+                        newGroup.termsInElimination = phenoterms;
                     }
 
                     // Fill in the group fields from the Group Demographics panel
@@ -383,7 +385,7 @@ var GroupCuration = React.createClass({
                         <CurationData />
                         <div className="container">
                             <div className="row group-curation-content">
-                                <div className="col-sm-9">
+                                <div className="col-sm-12">
                                     <Form submitHandler={this.submitForm} formClassName="form-horizontal form-std">
                                         <Panel>
                                             {GroupName.call(this)}
@@ -416,11 +418,6 @@ var GroupCuration = React.createClass({
                                         <Input type="submit" inputClassName="btn-primary pull-right" id="submit" title="Save" />
                                     </Form>
                                 </div>
-                                {annotation && Object.keys(annotation).length ?
-                                    <div className="col-sm-3">
-                                        <CurationPalette gdm={gdm} annotation={annotation} />
-                                    </div>
-                                : null}
                             </div>
                         </div>
                     </div>
@@ -591,11 +588,11 @@ var GroupDemographics = function() {
                     <option>Diagnosis</option>
                     <option>Death</option>
                 </Input>
-                <Input type="text-range" labelClassName="col-sm-5 control-label" label="Value:" wrapperClassName="col-sm-7">
-                    <Input type="text" ref="agefrom" inputClassName="input-inline" groupClassName="form-group-inline" format="number"
+                <Input type="text-range" labelClassName="col-sm-5 control-label" label="Value:" wrapperClassName="col-sm-7 group-age-fromto">
+                    <Input type="text" ref="agefrom" inputClassName="input-inline" groupClassName="form-group-inline group-age-input" format="number"
                         error={this.getFormError('agefrom')} clearError={this.clrFormErrors.bind(null, 'agefrom')} value={group.ageRangeFrom} />
-                    <span> to </span>
-                    <Input type="text" ref="ageto" inputClassName="input-inline" groupClassName="form-group-inline" format="number"
+                    <span className="group-age-inter">to</span>
+                    <Input type="text" ref="ageto" inputClassName="input-inline" groupClassName="form-group-inline group-age-input" format="number"
                         error={this.getFormError('ageto')} clearError={this.clrFormErrors.bind(null, 'ageto')} value={group.ageRangeTo} />
                 </Input>
                 <Input type="select" ref="ageunit" label="Unit:" defaultValue="none" value={group.ageRangeUnit}
@@ -727,13 +724,18 @@ var GroupMethods = function() {
 // Additional Information group curation panel. Call with .call(this) to run in the same context
 // as the calling component.
 var GroupAdditional = function() {
+    var otherpmidsVal;
     var group = this.state.group;
+    if (group) {
+        otherpmidsVal = group.otherPMIDs ? group.otherPMIDs.map(function(article) { return article.pmid; }).join() : null;
+    }
+
 
     return (
         <div className="row">
-            <Input type="textarea" ref="additionalinfogroup" label="Additional Information about Group:" rows="5"
+            <Input type="textarea" ref="additionalinfogroup" label="Additional Information about Group:" rows="5" value={group.additionalInformation}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            <Input type="textarea" ref="otherpmids" label="Enter PMID(s) that report evidence about this same group:" rows="5"
+            <Input type="textarea" ref="otherpmids" label="Enter PMID(s) that report evidence about this same group:" rows="5" value={otherpmidsVal}
                 error={this.getFormError('otherpmids')} clearError={this.clrFormErrors.bind(null, 'otherpmids')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <p className="col-sm-7 col-sm-offset-5">
@@ -750,6 +752,7 @@ var GroupAdditional = function() {
 var GroupViewer = React.createClass({
     render: function() {
         var context = this.props.context;
+        var method = context.method;
 
         return (
             <div className="container">
@@ -876,56 +879,54 @@ var GroupViewer = React.createClass({
                         </dl>
                     </Panel>
 
-                    {context.method && Object.keys(context.method).length ?
-                        <Panel title="Group — Methods" panelClassName="panel-data">
-                            <dl className="dl-horizontal">
-                                <div>
-                                    <dt>Previous testing</dt>
-                                    <dd>{context.method.previousTesting}</dd>
-                                </div>
+                    <Panel title="Group — Methods" panelClassName="panel-data">
+                        <dl className="dl-horizontal">
+                            <div>
+                                <dt>Previous testing</dt>
+                                <dd>{method && method.previousTesting}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Description of previous testing</dt>
-                                    <dd>{context.method.previousTestingDescription}</dd>
-                                </div>
+                            <div>
+                                <dt>Description of previous testing</dt>
+                                <dd>{method && method.previousTestingDescription}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Genome-wide study</dt>
-                                    <dd>{context.method.genomeWideStudy}</dd>
-                                </div>
+                            <div>
+                                <dt>Genome-wide study</dt>
+                                <dd>{method && method.genomeWideStudy}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Genotyping methods</dt>
-                                    <dd>{context.method.genotypingMethods.join(', ')}</dd>
-                                </div>
+                            <div>
+                                <dt>Genotyping methods</dt>
+                                <dd>{method && method.genotypingMethods.join(', ')}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Entire gene sequenced</dt>
-                                    <dd>{context.method.entireGeneSequenced}</dd>
-                                </div>
+                            <div>
+                                <dt>Entire gene sequenced</dt>
+                                <dd>{method && method.entireGeneSequenced}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Copy number assessed</dt>
-                                    <dd>{context.method.copyNumberAssessed}</dd>
-                                </div>
+                            <div>
+                                <dt>Copy number assessed</dt>
+                                <dd>{method && method.copyNumberAssessed}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Specific Mutations Genotyped</dt>
-                                    <dd>{context.method.specificMutationsGenotyped}</dd>
-                                </div>
+                            <div>
+                                <dt>Specific Mutations Genotyped</dt>
+                                <dd>{method && method.specificMutationsGenotyped}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Method by which Specific Mutations Genotyped</dt>
-                                    <dd>{context.method.specificMutationsGenotypedMethod}</dd>
-                                </div>
+                            <div>
+                                <dt>Method by which Specific Mutations Genotyped</dt>
+                                <dd>{method && method.specificMutationsGenotypedMethod}</dd>
+                            </div>
 
-                                <div>
-                                    <dt>Additional Information about Group Method</dt>
-                                    <dd>{context.method.additionalInformation}</dd>
-                                </div>
-                            </dl>
-                        </Panel>
-                    : null}
+                            <div>
+                                <dt>Additional Information about Group Method</dt>
+                                <dd>{method && method.additionalInformation}</dd>
+                            </div>
+                        </dl>
+                    </Panel>
 
                     <Panel title="Group — Additional Information" panelClassName="panel-data">
                         <dl className="dl-horizontal">
@@ -935,7 +936,7 @@ var GroupViewer = React.createClass({
                             </div>
 
                             <dt>Other PMID(s) that report evidence about this same group</dt>
-                            <dd>{context.otherPMIDS && context.otherPMIDs.map(function(article, i) {
+                            <dd>{context.otherPMIDs && context.otherPMIDs.map(function(article, i) {
                                 return (
                                     <span key={i}>
                                         {i > 0 ? ', ' : ''}
