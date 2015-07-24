@@ -21,13 +21,13 @@ var routes = {
 var portal = {
     portal_title: 'ClinGen',
     navMain: [
-        {id: 'dashboard', title: 'Dashboard', url: '/dashboard'},
-        {id: 'group-curation', title: 'Group Curation', url: '/group-curation'},
-        {id: 'create-gene-disease', title: 'Create Gene-Disease', url: '/create-gene-disease'},
-        {id: 'curator', title: 'Curation Central', url: '/curation-central'}
+        {id: 'dashboard', title: 'Dashboard', url: '/dashboard/'},
+        {id: 'group-curation', title: 'Group Curation', url: '/group-curation/'},
+        {id: 'create-gene-disease', title: 'Create Gene-Disease', url: '/create-gene-disease/'},
+        {id: 'curator', title: 'Curation Central', url: '/curation-central/'}
     ],
     navUser: [
-        {id: 'account', title: 'Account', url: '/account'},
+        {id: 'account', title: 'Account', url: '/account/'},
         {id: 'loginout', title: 'Login'}
     ]
 };
