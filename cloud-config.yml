@@ -95,6 +95,12 @@ runcmd:
 # Ideally this would build as a different user so clincoded only has read
 # permissions
 - set -e
+- if test "%(BACKUPDB)s" = "gene_and_disease_data"
+- then
+-   echo "====== USING gene_and_disease_data"
+- else
+-   echo "====== USING test data""
+- fi
 - sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - 
 - sudo apt-get update
