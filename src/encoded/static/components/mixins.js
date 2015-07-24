@@ -312,7 +312,8 @@ module.exports.HistoryAndTriggers = {
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
     childContextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func
+        adviseUnsavedChanges: React.PropTypes.func,
+        navigate: React.PropTypes.func
     },
 
     adviseUnsavedChanges: function () {
@@ -328,7 +329,8 @@ module.exports.HistoryAndTriggers = {
 
     getChildContext: function() {
         return {
-            adviseUnsavedChanges: this.adviseUnsavedChanges
+            adviseUnsavedChanges: this.adviseUnsavedChanges,
+            navigate: this.navigate
         };
     },
 

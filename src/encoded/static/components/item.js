@@ -343,6 +343,10 @@ var FetchedForm = React.createClass({
 
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -384,7 +388,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
     },
     finished: function(data) {
       var url = data['@graph'][0]['@id'];
-      this.props.navigate(url);
+      this.context.navigate(url);
     }
 });
 

@@ -186,6 +186,10 @@ var ImpersonateUserSchema = ReactForms.schema.Mapping({}, {
 
 
 var ImpersonateUserForm = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         return (
             <div>
@@ -198,7 +202,7 @@ var ImpersonateUserForm = React.createClass({
     },
 
     finished: function(data) {
-        this.props.navigate('/');
+        this.context.navigate('/');
     }
 });
 globals.content_views.register(ImpersonateUserForm, 'portal', 'impersonate-user');

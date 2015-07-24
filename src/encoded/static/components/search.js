@@ -873,6 +873,10 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var Search = search.Search = React.createClass({
+        contextTypes: {
+            navigate: React.PropTypes.func
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
@@ -885,7 +889,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>
