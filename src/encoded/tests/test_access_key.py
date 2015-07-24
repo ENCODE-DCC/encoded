@@ -38,12 +38,6 @@ def no_login_access_key(testapp, no_login_submitter):
     return result
 
 
-def test_access_key_current_user(anontestapp, access_key):
-    headers = {'Authorization': auth_header(access_key)}
-    res = anontestapp.get('/@@current-user', headers=headers)
-    assert res.json['submits_for']
-
-
 def test_access_key_get(anontestapp, access_key):
     headers = {'Authorization': auth_header(access_key)}
     anontestapp.get('/', headers=headers)
