@@ -355,7 +355,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             form = (
                 <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -367,7 +367,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
+                    <FetchedForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         }
@@ -381,6 +381,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 {form}
             </div>
         );
+    },
+    finished: function(data) {
+      var url = data['@graph'][0]['@id'];
+      this.props.navigate(url);
     }
 });
 
