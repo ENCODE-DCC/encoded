@@ -167,15 +167,25 @@ var GroupCuration = React.createClass({
                     // Make a new method and save it to the DB
                     var newMethod = this.createMethod();
                     if (newMethod) {
-                        // Post the new method to the DB. When the promise returns with the new method
-                        // object, pass it to the next promise-processing code.
-                        return this.postRestData('/methods/', newMethod).then(data => {
-                            return Promise.resolve(data['@graph'][0]);
-                        });
+                        if (this.state.group && this.state.group.method && Object.keys(this.state.group.method).length) {
+                            // We're editing a group and it had an existing method. Just PUT an update to the method.
+                            return this.putRestData('/methods/' + this.state.group.method.uuid, newMethod);
+                        } else {
+                            // We're either creating a group, or editing an existing group that didn't have a method
+                            // Post the new method to the DB. When the promise returns with the new method
+                            // object, pass it to the next promise-processing code.
+                            return this.postRestData('/methods/', newMethod).then(data => {
+                                return Promise.resolve(data['@graph'][0]);
+                            });
+                        }
+                    } else {
+                        // If we're editing a group and it already had a method, then delete the method from the DB.
+                        // If we're editing a group and it didn't have a method, do nothing
+                        // If we're creating a group, do nothing.
+                        // For now, just resolve the promise with no method object. We'll deal with deleting objects
+                        // later.
+                        return Promise.resolve(null);
                     }
-
-                    // No method fields were set; just resolve the promise with no method object
-                    return Promise.resolve(null);
                 }).then(newMethod => {
                     // Method successfully created if needed (null if not); passed in 'newMethod'. Now make the new group.
                     newGroup.label = this.getFormValue('groupname');
@@ -267,24 +277,38 @@ var GroupCuration = React.createClass({
                         newGroup.additionalInformation = value;
                     }
 
-                    // Post the new group to the DB
-                    return this.postRestData('/groups/', newGroup).then(data => {
-                        return Promise.resolve(data['@graph'][0]);
-                    });
+                    // Either update or create the group object in the DB
+                    if (this.state.group && Object.keys(this.state.group).length) {
+                        // We're editing a group. PUT the new group object to the DB to update the existing one.
+                        return this.putRestData('/groups/' + this.state.group.uuid, newGroup).then(data => {
+                            return Promise.resolve(data['@graph'][0]);
+                        });
+                    } else {
+                        // We created a group; post it to the DB
+                        return this.postRestData('/groups/', newGroup).then(data => {
+                            return Promise.resolve(data['@graph'][0]);
+                        });
+                    }
                 }).then(newGroup => {
-                    // Let's avoid modifying a React state property, so clone it. Add the new group
-                    // to the current annotation's 'groups' array.
-                    var annotation = _.clone(this.state.annotation);
-                    annotation.groups.push(newGroup['@id']);
+                    if (!this.state.group || Object.keys(this.state.group).length === 0) {
+                        // Let's avoid modifying a React state property, so clone it. Add the new group
+                        // to the current annotation's 'groups' array.
+                        var annotation = _.clone(this.state.annotation);
+                        annotation.groups.push(newGroup['@id']);
 
-                    // We'll get 422 (Unprocessible entity) if we PUT any of these fields:
-                    delete annotation.uuid;
-                    delete annotation['@id'];
-                    delete annotation['@type'];
+                        // We'll get 422 (Unprocessible entity) if we PUT any of these fields:
+                        delete annotation.uuid;
+                        delete annotation['@id'];
+                        delete annotation['@type'];
 
-                    // Post the modified annotation to the DB, then go back to Curation Central
-                    return this.putRestData('/evidence/' + this.state.annotation.uuid, annotation);
+                        // Post the modified annotation to the DB, then go back to Curation Central
+                        return this.putRestData('/evidence/' + this.state.annotation.uuid, annotation);
+                    } else {
+                        return Promise.resolve(this.state.annotation);
+                    }
                 }).then(data => {
+                    // Navigate back to Curation Central page.
+                    // FUTURE: Need to navigate to choices page.
                     this.context.navigate('/curation-central/?gdm=' + this.state.gdm.uuid);
                 }).catch(function(e) {
                     console.log('GROUP CREATION ERROR=: %o', e);
@@ -389,7 +413,7 @@ var GroupCuration = React.createClass({
                                                 {GroupAdditional.call(this)}
                                             </Panel>
                                         </PanelGroup>
-                                        <Input type="submit" inputClassName="btn-primary pull-right" id="submit" />
+                                        <Input type="submit" inputClassName="btn-primary pull-right" id="submit" title="Save" />
                                     </Form>
                                 </div>
                                 {annotation && Object.keys(annotation).length ?
