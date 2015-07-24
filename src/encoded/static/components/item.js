@@ -363,7 +363,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             form = (
                 <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
