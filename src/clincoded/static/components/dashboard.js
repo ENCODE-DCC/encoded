@@ -29,7 +29,7 @@ var Dashboard = React.createClass({
     },
 
     cleanGdmGeneDiseaseName: function(gene, disease) {
-        return gene + "-" + disease;
+        return gene + "–" + disease;
     },
 
     cleanGdmModelName: function(model) {
@@ -99,7 +99,7 @@ var Dashboard = React.createClass({
                     case 'annotation':
                     // added to
                         tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
-                        tempDisplayText = <span><a href={tempUrl}>PMID:{temp['article']['pmid']}</a> added to {pmidGdmMapping[temp['uuid']]['displayName']} (<i>{pmidGdmMapping[temp['uuid']]['displayName2']}</i>)</span>;
+                        tempDisplayText = <span><a href={tempUrl}>PMID:{temp['article']['pmid']}</a> added to <strong>{pmidGdmMapping[temp['uuid']]['displayName']}</strong>–<i>{pmidGdmMapping[temp['uuid']]['displayName2']}</i></span>;
                         tempTimestamp = "added " + tempDateTime;
                         display = true;
                         break;
@@ -108,7 +108,7 @@ var Dashboard = React.createClass({
                         break;
                     case 'gdm':
                         tempUrl = "/curation-central/?gdm=" + temp['uuid'];
-                        tempDisplayText = <span><a href={tempUrl}>{temp['gene']['symbol']}-{temp['disease']['term']} (<i>{this.cleanGdmModelName(temp['modeInheritance'])}</i>)</a></span>;
+                        tempDisplayText = <span><a href={tempUrl}><strong>{this.cleanGdmGeneDiseaseName(temp['gene']['symbol'], temp['disease']['term'])}</strong>–<i>{this.cleanGdmModelName(temp['modeInheritance'])}</i></a></span>;
                         tempTimestamp = "created " + tempDateTime;
                         display = true;
                         break;
@@ -159,11 +159,11 @@ var Dashboard = React.createClass({
                             </ul>
                         </Panel>
                         <Panel panelClassName="panel-dashboard">
-                            <h3>Youe Recent History</h3>
+                            <h3>Your Recent History</h3>
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li>{item.displayText} <i>{item.timestamp}</i></li>;
+                                    return <li>{item.displayText}; <i>{item.timestamp}</i></li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
@@ -177,9 +177,9 @@ var Dashboard = React.createClass({
                                 {this.state.gdmList.map(function(item) {
                                     return (
                                         <div className="gdm-item">
-                                            <a href={"/curation-central/?gdm=" + item.url}>{item.gdmGeneDisease} (<i>{item.gdmModel}</i>)</a><br />
-                                            Status: <strong>{item.status}</strong><br />
-                                            Creation Date: <strong>{moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}</strong>
+                                            <a href={"/curation-central/?gdm=" + item.url}><strong>{item.gdmGeneDisease}</strong>–<i>{item.gdmModel}</i></a><br />
+                                            <strong>Status</strong>: {item.status}<br />
+                                            <strong>Creation Date</strong>: {moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}
                                         </div>
                                     );
                                 })}
