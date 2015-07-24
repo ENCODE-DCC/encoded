@@ -8,7 +8,7 @@ var Footer = React.createClass({
 
     render: function() {
         var session = this.context.session;
-        var disabled = !this.props.loadingComplete;
+        var disabled = !session;
         var userActionRender;
 
         if (!(session && session['auth.userid'])) {

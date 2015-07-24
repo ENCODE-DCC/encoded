@@ -29,7 +29,10 @@ var Param = module.exports.Param = React.createClass({
 
     componentWillUnmount: function () {
         var xhr = this.state.fetchedRequest;
-        if (xhr) xhr.abort();
+        if (xhr) {
+            console.log('abort param xhr');
+            xhr.abort();
+        }
     },
 
     componentWillReceiveProps: function (nextProps, nextContext) {
@@ -100,21 +103,12 @@ var Param = module.exports.Param = React.createClass({
 
 
 var FetchedData = module.exports.FetchedData = React.createClass({
-
-    getDefaultProps: function() {
-        return {loadingComplete: true};
+    contextTypes: {
+        session: React.PropTypes.object
     },
 
     getInitialState: function() {
         return {};
-    },
-
-    shouldComponentUpdate: function(nextProps, nextState) {
-        if (!nextProps.loadingComplete) {
-            return false;
-        } else {
-            return true;
-        }
     },
 
     handleFetch: function(result) {
@@ -145,8 +139,12 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         if (!params.length) {
             return null;
         }
-        if (!this.props.loadingComplete) {
-            return <div className="loading-spinner"></div>;
+        if (!this.context.session) {
+            return (
+                <div className="communicating">
+                    <div className="loading-spinner"></div>
+                </div>
+            );
         }
 
         var errors = params.map(param => this.state[param.props.name])
@@ -199,7 +197,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
     
     render: function() {
         return (
-            <FetchedData loadingComplete={this.props.loadingComplete}>
+            <FetchedData>
                 <Param name="data" url={this.props.url} />
                 <Items {...this.props} />
             </FetchedData>

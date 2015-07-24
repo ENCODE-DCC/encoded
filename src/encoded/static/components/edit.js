@@ -38,7 +38,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="data" url={url} etagName="etag" />
                     <EditForm {...this.props} />
                 </fetched.FetchedData>
