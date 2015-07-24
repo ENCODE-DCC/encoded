@@ -28,8 +28,7 @@ var CurationCentral = React.createClass({
 
     getInitialState: function() {
         return {
-            tempPmid: '',
-            currAnnotation: {},
+            currPmid: queryKeyValue('pmid', this.props.href),
             currOmimId: '',
             currGdm: {}
         };
@@ -47,12 +46,12 @@ var CurationCentral = React.createClass({
                 });
 
                 if (currAnnotation) {
-                    this.setState({currAnnotation: currAnnotation, selectionListOpen: false});                
+                    this.setState({currPmid: currAnnotation.article.pmid});                
                 }
             }
-
-            // Remember the currently selected PMID in the query string
-            window.history.pushState(null, '', '/curation-central/?gdm=' + this.state.currGdm.uuid + '&pmid=' + pmid);
+            if (this.state.currGdm && Object.keys(this.state.currGdm).length) {
+                window.history.replaceState(window.state, '', '/curation-central/?gdm=' + this.state.currGdm.uuid + '&pmid=' + pmid);
+            }
         }
     },
 
@@ -67,21 +66,9 @@ var CurationCentral = React.createClass({
     // After the Curator Central page component mounts, grab the uuid from the query string and
     // retrieve the corresponding GDM from the DB.
     componentDidMount: function() {
-        var pmid;
-
         var gdmUuid = queryKeyValue('gdm', this.props.href);
-        var pmidKey = queryKeyValue('pmid', this.props.href);
         if (gdmUuid) {
             this.getGdm(gdmUuid);
-        }
-        if (pmidKey) {
-            this.setState({tempPmid: pmid});
-        }
-    },
-
-    componentWillReceiveProps: function(nextProps) {
-        if (nextProps.loadingComplete === true && this.state.tempPmid !== '') {
-            this.currPmidChange(this.state.tempPmid);
         }
     },
 
@@ -137,7 +124,12 @@ var CurationCentral = React.createClass({
 
     render: function() {
         var gdm = this.state.currGdm;
-        var annotation = this.state.currAnnotation;
+        var pmid = this.state.currPmid;
+
+        // Find the GDM's annotation for the article with the curren PMID
+        var annotation = gdm.annotations && gdm.annotations.length && _(gdm.annotations).find(function(annotation) {
+            return pmid === annotation.article.pmid;
+        });
         var currArticle = annotation ? annotation.article : null;
 
         return (
@@ -146,7 +138,7 @@ var CurationCentral = React.createClass({
                 <div className="container">
                     <div className="row curation-content">
                         <div className="col-md-3">
-                            <PmidSelectionList annotations={gdm.annotations} currPmid={currArticle ? currArticle.pmid : ''} currPmidChange={this.currPmidChange}
+                            <PmidSelectionList annotations={gdm.annotations} currPmid={pmid} currPmidChange={this.currPmidChange}
                                     updateGdmArticles={this.updateGdmArticles} /> 
                         </div>
                         <div className="col-md-6">
