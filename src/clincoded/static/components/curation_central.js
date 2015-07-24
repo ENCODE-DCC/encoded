@@ -155,7 +155,7 @@ var CurationCentral = React.createClass({
                         </div>
                         {currArticle ?
                             <div className="col-md-3">
-                                <CurationPalette gdm={gdm} annotation={annotation} />
+                                <CurationPalette gdm={gdm} annotation={annotation} session={this.props.session} />
                             </div>
                         : null}
                     </div>

@@ -102,11 +102,14 @@ var PmidSummary = module.exports.PmidSummary = React.createClass({
 var CurationPalette = module.exports.CurationPalette = React.createClass({
     propTypes: {
         annotation: React.PropTypes.object.isRequired, // Current annotation that owns the article
-        gdm: React.PropTypes.object.isRequired // Current GDM that owns the given annotation
+        gdm: React.PropTypes.object.isRequired, // Current GDM that owns the given annotation
+        session: React.PropTypes.object // Session object
     },
 
     render: function() {
         var annotation = this.props.annotation;
+        var session = this.props.session;
+        var curatorMatch = annotation.owner === (session && session.user_properties && session.user_properties.email);
 
         return (
             <Panel panelClassName="panel-evidence-groups" title={'Evidence for PMID:' + this.props.annotation.article.pmid}>
@@ -119,7 +122,7 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
                                     <p className="evidence-curation-info">{annotation.owner}</p>
                                     <p>{moment(annotation.dateTime).format('YYYY MMM DD, h:mm a')}</p>
                                 </div>
-                                <a href={'/group/' + group.uuid} target="_blank">View</a> | <a href={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + annotation.uuid + '&group=' + group.uuid}>Edit</a>
+                                <a href={'/group/' + group.uuid} target="_blank">View</a>{curatorMatch ? <span> | <a href={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + annotation.uuid + '&group=' + group.uuid}>Edit</a></span> : null}
                             </div>
                         );
                     }.bind(this))}
