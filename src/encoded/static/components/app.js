@@ -186,7 +186,7 @@ var App = React.createClass({
                 loadingComplete={this.props.loadingComplete}
                 session={this.state.session}
                 session_properties={this.state.session_properties}
-                portal={this.state.portal} navigate={this.navigate} />;
+                portal={this.state.portal} />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
