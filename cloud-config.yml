@@ -95,12 +95,6 @@ runcmd:
 # Ideally this would build as a different user so clincoded only has read
 # permissions
 - set -e
-- if test "%(BACKUPDB)s" = "gene_and_disease_data"
-- then
--   echo "====== USING gene_and_disease_data"
-- else
--   echo "====== USING test data"
-- fi
 - sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - 
 - sudo apt-get update
@@ -126,7 +120,15 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 ##TEMP for inital tests --load test data from test data backup
-- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.4
+#- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.4
+- if test "%(BACKUPDB)s" = "gene_and_disease_data"
+- then
+-   echo "====== USING test plus gene_and_disease_data"
+-   sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_GENES_9.4
+- else
+-   echo "====== USING test data"
+-   sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.4
+- fi
 - /etc/init.d/postgresql stop
 #TEMP for inital tests --commented out
 #- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.4/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.4/main LATEST

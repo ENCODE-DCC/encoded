@@ -48,13 +48,13 @@ def run(wale_s3_prefix, image_id, instance_type, dbrestore,
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     # db_restore_version = "gene_and_disease_data"
     # db_restore_version = "test_data"
-    db_restore_version = dbrestore
+    # db_restore_version = dbrestore
     user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
         'COMMIT': commit,
         'ROLE': role,
-        'BACKUPDB': db_restore_version,
+        'BACKUPDB': dbrestore,
     }
 
     reservation = conn.run_instances(
