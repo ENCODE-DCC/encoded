@@ -9,7 +9,8 @@ var _ = require('underscore');
 
 var Param = module.exports.Param = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        session: React.PropTypes.object
     },
 
     getDefaultProps: function() {
@@ -31,11 +32,11 @@ var Param = module.exports.Param = React.createClass({
         if (xhr) xhr.abort();
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function (nextProps, nextContext) {
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
-            nextProps.session === this.props.session) return;
+            nextContext.session === this.context.session) return;
         this.fetch(nextProps.url);
     },
 
@@ -131,7 +132,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                         key: child.props.name,
                         handleFetch: this.handleFetch,
                         handleFetchStart: this.handleFetchStart,
-                        session: this.props.session
                     }));
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
