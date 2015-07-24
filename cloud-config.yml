@@ -119,7 +119,7 @@ runcmd:
 - chown postgres:postgres /opt/wal-e
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
-##TEMP for inital tests --load test data from test data backup
+##TEMP for inital tests --load test data from test data backup posgres 9.4
 - sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.4
 - /etc/init.d/postgresql stop
 #TEMP for inital tests --commented out
