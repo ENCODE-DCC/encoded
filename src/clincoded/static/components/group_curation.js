@@ -33,7 +33,8 @@ var GroupCuration = React.createClass({
     getInitialState: function() {
         return {
             gdm: {}, // GDM object given in UUID
-            annotation: {} // Annotation object given in UUID
+            annotation: {}, // Annotation object given in UUID
+            group: {} // If we're editing a group, this gets the fleshed-out group object we're editing
         };
     },
 
@@ -48,21 +49,40 @@ var GroupCuration = React.createClass({
         }).catch(parseAndLogError.bind(undefined, 'putRequest'));
     },
 
+    // If a group UUID is given in the query string, load it into the group state variable.
+    loadGroup: function(groupUuid) {
+        this.getRestData(
+            '/group/' + groupUuid
+        ).then(group => {
+            // Received group data; set the current state with it
+            this.setState({group: group});
+            return Promise.resolve();
+        }).catch(function(e) {
+            console.log('GROUP LOAD ERROR=: %o', e);
+            parseAndLogError.bind(undefined, 'getRequest');
+        });
+    },
+
     // After the Group Curation page component mounts, grab the annotation UUID from the query
     // string and retrieve the corresponding annotation from the DB, if it exists.
     // Note, we have to do this after the component mounts because AJAX DB queries can't be
     // done from unmounted components.
     componentDidMount: function() {
         // See if there’s a GDM UUID to retrieve
-        var annotationUuid, gdmUuid;
+        var annotationUuid, gdmUuid, groupUuid;
 
         // Get the 'evidence' and 'gdm' UUIDs from the query string
         annotationUuid = queryKeyValue('evidence', this.props.href);
         gdmUuid = queryKeyValue('gdm', this.props.href);
+        groupUuid = queryKeyValue('group', this.props.href);
 
         if (annotationUuid && gdmUuid) {
             // Query the DB with this UUID, setting the component state if successful.
             this.getGdmAnnotation(gdmUuid, annotationUuid);
+        }
+
+        if (groupUuid) {
+            this.loadGroup(groupUuid);
         }
     },
 
@@ -422,7 +442,7 @@ function capturePmids(s) {
 var GroupName = function() {
     return (
         <div className="row">
-            <Input type="text" ref="groupname" label="Group name:"
+            <Input type="text" ref="groupname" label="Group name:" value={this.state.group.label}
                 error={this.getFormError('groupname')} clearError={this.clrFormErrors.bind(null, 'groupname')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" required />
         </div>
@@ -433,12 +453,20 @@ var GroupName = function() {
 // Common diseases group curation panel. Call with .call(this) to run in the same context
 // as the calling component.
 var GroupCommonDiseases = function() {
+    var group = this.state.group;
+    var orphanetidVal, hpoidVal;
+
+    if (group) {
+        orphanetidVal = group.commonDiagnosis ? group.commonDiagnosis.map(function(disease) { return 'ORPHA' + disease.orphaNumber; }).join() : null;
+        hpoidVal = group.hpoIdInDiagnosis ? group.hpoIdInDiagnosis.map(function(hpoid) { return hpoid.hpoIdInDiagnosis; }).join() : null;
+    }
+
     return (
         <div className="row">
-            <Input type="text" ref="orphanetid" label={<LabelOrphanetId />}
+            <Input type="text" ref="orphanetid" label={<LabelOrphanetId />} value={orphanetidVal}
                 error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
-            <Input type="text" ref="hpoid" label={<LabelHpoId />}
+            <Input type="text" ref="hpoid" label={<LabelHpoId />} value={hpoidVal}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
             <Input type="textarea" ref="phenoterms" label={<LabelPhenoTerms />} rows="5"
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
@@ -683,7 +711,6 @@ var GroupAdditional = function() {
 var GroupViewer = React.createClass({
     render: function() {
         var context = this.props.context;
-        var demographicOutput = groupDemographicsViewer(context);
 
         return (
             <div className="container">
@@ -705,185 +732,175 @@ var GroupViewer = React.createClass({
                                 </dd>
                             </div>
 
-                            {context.hpoIdInDiagnosis && context.hpoIdInDiagnosis.length ?
-                                <div>
-                                    <dt>HPO IDs</dt>
-                                    <dd>{context.hpoIdInDiagnosis.join(', ')}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt>HPO IDs</dt>
+                                <dd>{context.hpoIdInDiagnosis.join(', ')}</dd>
+                            </div>
 
-                            {context.termsInDiagnosis ?
-                                <div>
-                                    <dt>Phenotype Terms</dt>
-                                    <dd>{context.termsInDiagnosis}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt>Phenotype Terms</dt>
+                                <dd>{context.termsInDiagnosis}</dd>
+                            </div>
 
-                            {context.hpoIdInElimination && context.hpoIdInElimination.length ?
-                                <div>
-                                    <dt>Not HPO IDs</dt>
-                                    <dd>{context.hpoIdInElimination.join(', ')}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt>Not HPO IDs</dt>
+                                <dd>{context.hpoIdInElimination.join(', ')}</dd>
+                            </div>
                         </dl>
                     </Panel>
 
-                    {demographicOutput ?
-                        <Panel title="Group — Demographics" panelClassName="panel-data">
-                            <dl className="dl-horizontal">
-                                {demographicOutput.map(function(view) { return view; })}
-                            </dl>
-                        </Panel>
-                    : null}
+                    <Panel title="Group — Demographics" panelClassName="panel-data">
+                        <dl className="dl-horizontal">
+                            <div>
+                                <dt># Males</dt>
+                                <dd>{context.numberOfMale}</dd>
+                            </div>
+
+                            <div>
+                                <dt># Females</dt>
+                                <dd>{context.numberOfFemale}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Country of Origin</dt>
+                                <dd>{context.countryOfOrigin}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Ethnicity</dt>
+                                <dd>{context.ethnicity}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Race</dt>
+                                <dd>{context.race}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Age Range Type</dt>
+                                <dd>{context.ageRangeType}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Age Range</dt>
+                                <dd>{context.ageRangeFrom || context.ageRangeTo ? <span>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</span> : null}</dd>
+                            </div>
+
+                            <div>
+                                <dt>Age Range Unit</dt>
+                                <dd>{context.ageRangeUnit}</dd>
+                            </div>
+                        </dl>
+                    </Panel>
 
                     <Panel title="Group — Information" panelClassName="panel-data">
                         <dl className="dl-horizontal">
-                            {context.totalNumberIndividuals ?
-                                <div>
-                                    <dt>Total number individuals in group</dt>
-                                    <dd>{context.totalNumberIndividuals}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt>Total number individuals in group</dt>
+                                <dd>{context.totalNumberIndividuals}</dd>
+                            </div>
 
-                            {context.numberOfIndividualsWithFamilyInformation ?
-                                <div>
-                                    <dt># individuals with family information</dt>
-                                    <dd>{context.numberOfIndividualsWithFamilyInformation}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt># individuals with family information</dt>
+                                <dd>{context.numberOfIndividualsWithFamilyInformation}</dd>
+                            </div>
 
-                            {context.numberOfIndividualsWithoutFamilyInformation ?
-                                <div>
-                                    <dt># individuals WITHOUT family information</dt>
-                                    <dd>{context.numberOfIndividualsWithoutFamilyInformation}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt># individuals WITHOUT family information</dt>
+                                <dd>{context.numberOfIndividualsWithoutFamilyInformation}</dd>
+                            </div>
 
-                            {context.numberOfIndividualsWithVariantInCuratedGene ?
-                                <div>
-                                    <dt># individuals with variant in gene being curated</dt>
-                                    <dd>{context.numberOfIndividualsWithVariantInCuratedGene}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt># individuals with variant in gene being curated</dt>
+                                <dd>{context.numberOfIndividualsWithVariantInCuratedGene}</dd>
+                            </div>
 
-                            {context.numberOfIndividualsWithoutVariantInCuratedGene ?
-                                <div>
-                                    <dt># individuals without variant in gene being curated</dt>
-                                    <dd>{context.numberOfIndividualsWithoutVariantInCuratedGene}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt># individuals without variant in gene being curated</dt>
+                                <dd>{context.numberOfIndividualsWithoutVariantInCuratedGene}</dd>
+                            </div>
 
-                            {context.numberOfIndividualsWithVariantInOtherGene ?
-                                <div>
-                                    <dt># individuals with variant found in other gene</dt>
-                                    <dd>{context.numberOfIndividualsWithVariantInOtherGene}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt># individuals with variant found in other gene</dt>
+                                <dd>{context.numberOfIndividualsWithVariantInOtherGene}</dd>
+                            </div>
 
-                            {context.otherGenes && context.otherGenes.length ?
-                                <div>
-                                    <dt>Other genes found to have variants in them</dt>
-                                    <dd>{context.otherGenes.map(function(gene) { return gene.symbol; }).join(', ')}</dd>
-                                </div>
-                            : null}
+                            <div>
+                                <dt>Other genes found to have variants in them</dt>
+                                <dd>{context.otherGenes && context.otherGenes.map(function(gene) { return gene.symbol; }).join(', ')}</dd>
+                            </div>
                         </dl>
                     </Panel>
 
                     {context.method && Object.keys(context.method).length ?
                         <Panel title="Group — Methods" panelClassName="panel-data">
                             <dl className="dl-horizontal">
-                                {context.method.previousTesting ?
-                                    <div>
-                                        <dt>Previous testing</dt>
-                                        <dd>{context.method.previousTesting}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Previous testing</dt>
+                                    <dd>{context.method.previousTesting}</dd>
+                                </div>
 
-                                {context.method.previousTestingDescription ?
-                                    <div>
-                                        <dt>Description of previous testing</dt>
-                                        <dd>{context.method.previousTestingDescription}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Description of previous testing</dt>
+                                    <dd>{context.method.previousTestingDescription}</dd>
+                                </div>
 
-                                {context.method.genomeWideStudy ?
-                                    <div>
-                                        <dt>Genome-wide study</dt>
-                                        <dd>{context.method.genomeWideStudy}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Genome-wide study</dt>
+                                    <dd>{context.method.genomeWideStudy}</dd>
+                                </div>
 
-                                {context.method.genotypingMethods && context.method.genotypingMethods.length ?
-                                    <div>
-                                        <dt>Genotyping methods</dt>
-                                        <dd>{context.method.genotypingMethods.join(', ')}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Genotyping methods</dt>
+                                    <dd>{context.method.genotypingMethods.join(', ')}</dd>
+                                </div>
 
-                                {context.method.entireGeneSequenced ?
-                                    <div>
-                                        <dt>Entire gene sequenced</dt>
-                                        <dd>{context.method.entireGeneSequenced}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Entire gene sequenced</dt>
+                                    <dd>{context.method.entireGeneSequenced}</dd>
+                                </div>
 
-                                {context.method.copyNumberAssessed ?
-                                    <div>
-                                        <dt>Copy number assessed</dt>
-                                        <dd>{context.method.copyNumberAssessed}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Copy number assessed</dt>
+                                    <dd>{context.method.copyNumberAssessed}</dd>
+                                </div>
 
-                                {context.method.specificMutationsGenotyped ?
-                                    <div>
-                                        <dt>Specific Mutations Genotyped</dt>
-                                        <dd>{context.method.specificMutationsGenotyped}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Specific Mutations Genotyped</dt>
+                                    <dd>{context.method.specificMutationsGenotyped}</dd>
+                                </div>
 
-                                {context.method.specificMutationsGenotypedMethod ?
-                                    <div>
-                                        <dt>Method by which Specific Mutations Genotyped</dt>
-                                        <dd>{context.method.specificMutationsGenotypedMethod}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Method by which Specific Mutations Genotyped</dt>
+                                    <dd>{context.method.specificMutationsGenotypedMethod}</dd>
+                                </div>
 
-                                {context.method.specificMutationsGenotypedMethod ?
-                                    <div>
-                                        <dt>Additional Information about Group Method</dt>
-                                        <dd>{context.method.additionalInformation}</dd>
-                                    </div>
-                                : null}
+                                <div>
+                                    <dt>Additional Information about Group Method</dt>
+                                    <dd>{context.method.additionalInformation}</dd>
+                                </div>
                             </dl>
                         </Panel>
                     : null}
 
-                    {context.additionalInformation || (context.otherPMIDs && context.otherPMIDs.length) ?
-                        <Panel title="Group — Additional Information" panelClassName="panel-data">
-                            <dl className="dl-horizontal">
-                                {context.additionalInformation ?
-                                    <div>
-                                        <dt>Additional Information about Group</dt>
-                                        <dd>{context.additionalInformation}</dd>
-                                    </div>
-                                : null}
+                    <Panel title="Group — Additional Information" panelClassName="panel-data">
+                        <dl className="dl-horizontal">
+                            <div>
+                                <dt>Additional Information about Group</dt>
+                                <dd>{context.additionalInformation}</dd>
+                            </div>
 
-                                {context.otherPMIDs && context.otherPMIDs.length ?
-                                    <div>
-                                        <dt>Additional Information about Group</dt>
-                                        <dd>{context.otherPMIDs.map(function(article, i) {
-                                            return (
-                                                <span key={i}>
-                                                    {i > 0 ? ', ' : ''}
-                                                    {article.pmid}
-                                                </span>
-                                            );
-                                        })}</dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        </Panel>
-                    : null}
+                            <dt>Other PMID(s) that report evidence about this same group</dt>
+                            <dd>{context.otherPMIDS && context.otherPMIDs.map(function(article, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        {article.pmid}
+                                    </span>
+                                );
+                            })}</dd>
+                        </dl>
+                    </Panel>
                 </div>
             </div>
         );
@@ -891,151 +908,3 @@ var GroupViewer = React.createClass({
 });
 
 globals.content_views.register(GroupViewer, 'group');
-
-
-// Generate a rendering of the Group Demographics panel contents.
-// If no property of the demographics section of the group has
-// any information, this returns null. It otherwise returns an
-// array of React components that can be rendered from a .map loop.
-function groupDemographicsViewer(context) {
-    var i = 0;
-    var output = [];
-
-    output[i++] = (context.numberOfMale ?
-        <div>
-            <dt># Males</dt>
-            <dd>{context.numberOfMale}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.numberOfFemale ?
-        <div>
-            <dt># Females</dt>
-            <dd>{context.numberOfFemale}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.countryOfOrigin ?
-        <div>
-            <dt>Country of Origin</dt>
-            <dd>{context.countryOfOrigin}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ethnicity ?
-        <div>
-            <dt>Ethnicity</dt>
-            <dd>{context.ethnicity}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.race ?
-        <div>
-            <dt>Race</dt>
-            <dd>{context.race}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeType ?
-        <div>
-            <dt>Age Range Type</dt>
-            <dd>{context.ageRangeType}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
-        <div>
-            <dt>Age Range</dt>
-            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeUnit ?
-        <div>
-            <dt>Age Range Unit</dt>
-            <dd>{context.ageRangeUnit}</dd>
-        </div>
-    : null);
-
-    if (_.some(output)) {
-        return output;
-    }
-    return null;
-}
-
-// Generate a rendering of the Group Information panel contents.
-// If no property of the demographics section of the group has
-// any information, this returns null. It otherwise returns an
-// array of React components that can be rendered from a .map loop.
-function groupInformationViewer(context) {
-    var i = 0;
-    var output = [];
-
-    output[i++] = (context.numberOfMale ?
-        <div>
-            <dt># Males</dt>
-            <dd>{context.numberOfMale}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.numberOfFemale ?
-        <div>
-            <dt># Females</dt>
-            <dd>{context.numberOfFemale}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.countryOfOrigin ?
-        <div>
-            <dt>Country of Origin</dt>
-            <dd>{context.countryOfOrigin}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ethnicity ?
-        <div>
-            <dt>Ethnicity</dt>
-            <dd>{context.ethnicity}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.race ?
-        <div>
-            <dt>Race</dt>
-            <dd>{context.race}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.race ?
-        <div>
-            <dt>Race</dt>
-            <dd>{context.race}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeType ?
-        <div>
-            <dt>Age Range Type</dt>
-            <dd>{context.ageRangeType}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
-        <div>
-            <dt>Age Range</dt>
-            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
-        </div>
-    : null);
-
-    output[i++] = (context.ageRangeFrom || context.ageRangeTo ?
-        <div>
-            <dt>Age Range</dt>
-            <dd>{context.ageRangeFrom + ' – ' + context.ageRangeTo}</dd>
-        </div>
-    : null);
-
-    if (_.some(output)) {
-        return output;
-    }
-    return null;
-}

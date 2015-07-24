@@ -94,6 +94,10 @@ var FormMixin = module.exports.FormMixin = {
         }
     },
 
+    setFormValue: function(ref) {
+
+    },
+
     // Get the saved form error for the Input with the given 'ref' value.
     getFormError: function(ref) {
         return this.state.formErrors[ref];

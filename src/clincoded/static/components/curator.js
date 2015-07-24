@@ -119,7 +119,7 @@ var CurationPalette = module.exports.CurationPalette = React.createClass({
                                     <p className="evidence-curation-info">{annotation.owner}</p>
                                     <p>{moment(annotation.dateTime).format('YYYY MMM DD, h:mm a')}</p>
                                 </div>
-                                <a href={'/group/' + group.uuid}>View</a> | <a href={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + annotation.uuid + '&group=' + group.uuid}>Edit</a>
+                                <a href={'/group/' + group.uuid} target="_blank">View</a> | <a href={'/group-curation/?gdm=' + this.props.gdm.uuid + '&evidence=' + annotation.uuid + '&group=' + group.uuid}>Edit</a>
                             </div>
                         );
                     }.bind(this))}
