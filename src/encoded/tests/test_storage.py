@@ -3,7 +3,7 @@ pytestmark = pytest.mark.storage
 
 
 def test_storage_creation(session):
-    from encoded.storage import (
+    from contentbase.storage import (
         PropertySheet,
         CurrentPropertySheet,
         TransactionRecord,
@@ -20,7 +20,7 @@ def test_storage_creation(session):
 
 
 def test_transaction_record(session):
-    from encoded.storage import (
+    from contentbase.storage import (
         Resource,
         PropertySheet,
         TransactionRecord,
@@ -43,7 +43,7 @@ def test_transaction_record(session):
 def test_transaction_record_rollback(session):
     import transaction
     import uuid
-    from encoded.storage import (
+    from contentbase.storage import (
         Resource,
         PropertySheet,
         TransactionRecord,
@@ -65,7 +65,7 @@ def test_transaction_record_rollback(session):
 
 
 def test_current_propsheet(session):
-    from encoded.storage import (
+    from contentbase.storage import (
         CurrentPropertySheet,
         Resource,
         PropertySheet,
@@ -91,7 +91,7 @@ def test_current_propsheet(session):
 
 
 def test_current_propsheet_update(session):
-    from encoded.storage import (
+    from contentbase.storage import (
         CurrentPropertySheet,
         Resource,
         PropertySheet,
@@ -116,7 +116,7 @@ def test_current_propsheet_update(session):
 
 def test_keys(session):
     from sqlalchemy.orm.exc import FlushError
-    from encoded.storage import (
+    from contentbase.storage import (
         Resource,
         Key,
     )

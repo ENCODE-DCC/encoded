@@ -1,10 +1,12 @@
-from ..auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
-from ..contentbase import simple_path_ids
-from ..embedding import embed
-from ..schema_utils import validate
+from contentbase import (
+    UPGRADER,
+)
+from contentbase.schema_utils import validate
+from contentbase.util import simple_path_ids
 
 
 @audit_checker('item', frame='object')
@@ -18,9 +20,9 @@ def audit_item_schema(value, system):
     current_version = properties.get('schema_version', '')
     target_version = context.type_info.schema_version
     if target_version is not None and current_version != target_version:
-        migrator = registry['migrator']
+        upgrader = registry[UPGRADER]
         try:
-            properties = migrator.upgrade(
+            properties = upgrader.upgrade(
                 context.item_type, properties, current_version, target_version,
                 finalize=False, context=context, registry=registry)
         except RuntimeError:
@@ -39,7 +41,7 @@ def audit_item_schema(value, system):
         path = list(error.path)
         if path:
             category += ': ' + '/'.join(path)
-        detail = 'Object {} has schema error {}'.format(value['uuid'], error.message)
+        detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
         yield AuditFailure(category, detail, level='DCC_ACTION')
 
 
@@ -94,10 +96,17 @@ def audit_item_status(value, system):
         linked.update(simple_path_ids(value, schema_path))
 
     for path in linked:
-        linked_value = embed(request, path + '@@object')
+        linked_value = request.embed(path + '@@object')
         if 'status' not in linked_value:
             continue
         if linked_value['status'] == 'disabled':
+            continue
+        if (  # Special case: A revoked file can have a deleted replicate ticket #2938
+            'file' in value['@type'] and
+            value['status'] == 'revoked' and
+            'replicate' in linked_value['@type'] and
+            linked_value['status'] == 'deleted'
+        ):
             continue
         linked_level = STATUS_LEVEL.get(linked_value['status'], 50)
         if linked_level == 0:

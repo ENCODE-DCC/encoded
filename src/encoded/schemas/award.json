@@ -2,7 +2,7 @@
     "title": "Grant",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [ "name"],
+    "required": [ "name", "project"],
     "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -75,6 +75,23 @@
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string"
+        },
+        "viewing_group": {
+            "title": "View access group",
+            "description": "The group that determines which set of data the user has permission to view.",
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "REMC"
+            ]
         }
-    }
- }
+    },
+    "boost_values": {
+        "name": 1.0,
+        "title": 1.0,
+        "project": 1.0,
+        "pi": 1.0
+    },
+    "changelog": "/profiles/changelogs/award.md"
+}

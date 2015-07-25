@@ -1,4 +1,4 @@
-from ..auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
@@ -15,6 +15,12 @@ raw_data_formats = [
     'CEL',
     ]
 
+paired_end_assays = [
+    'RNA-PET',
+    'ChIA-PET',
+    'DNA-PET',
+    ]
+
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
@@ -23,7 +29,7 @@ def audit_file_replicate_match(value, system):
     does.  These tend to get confused when replacing objects.
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'replicate' not in value:
@@ -34,13 +40,13 @@ def audit_file_replicate_match(value, system):
 
     if rep_exp != file_exp:
         detail = 'File {} has a replicate {} in experiment {}'.format(
-            value['accession'],
-            value['replicate']['uuid'],
-            value['replicate']['experiment']['accession'])
+            value['@id'],
+            value['replicate']['@id'],
+            value['replicate']['experiment']['@id'])
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -54,37 +60,37 @@ def audit_file_platform(value, system):
         return
 
     if 'platform' not in value:
-        detail = 'Raw data file {} missing platform information'.format(value['accession'])
+        detail = 'Raw data file {} missing platform information'.format(value['@id'])
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object')
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_read_length(value, system):
     '''
-    A fastq file should have a read_length
+    Reads files should have a read_length
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if value['file_format'] not in ['fastq']:
+    if value['output_type'] != 'reads':
         return
 
     if 'read_length' not in value:
-        detail = 'Fastq file {} missing read_length'.format(value['accession'])
+        detail = 'Reads file {} missing read_length'.format(value['@id'])
         raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
 
 
 @audit_checker('file',
                frame=['dataset', 'dataset.target', 'controlled_by',
                       'controlled_by.dataset'],
-               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'FlyWormChIP'))
+               condition=rfa('ENCODE2', 'ENCODE2-Mouse', 'ENCODE3', 'modERN'))
 def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
@@ -98,7 +104,7 @@ def audit_file_controlled_by(value, system):
 
     if (value['controlled_by'] == []) and (value['file_format'] in ['fastq']):
         detail = 'Fastq file {} from {} requires controlled_by'.format(
-            value['accession'],
+            value['@id'],
             value['dataset']['assay_term_name']
             )
         raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
@@ -111,45 +117,45 @@ def audit_file_controlled_by(value, system):
 
         if control_bs != biosample:
             detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
-                value['accession'],
-                ff['accession'],
+                value['@id'],
+                ff['@id'],
                 control_bs)
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
             return
 
         if ff['file_format'] != value['file_format']:
             detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
-                value['accession'],
+                value['@id'],
                 value['file_format'],
-                ff['accession'],
+                ff['@id'],
                 ff['file_format']
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
 
         if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
             detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
-                value['accession'],
-                ff['accession'],
-                ff['dataset']['accession']
+                value['@id'],
+                ff['@id'],
+                ff['dataset']['@id']
                 )
             raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'FlyWormChIP'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
     Don't bother to check anything but ENCODE3
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] not in ['fastq']:
         return
 
     if 'flowcell_details' not in value or (value['flowcell_details'] == []):
-        detail = 'Fastq file {} is missing flowcell_details'.format(value['accession'])
+        detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
@@ -162,7 +168,7 @@ def audit_paired_with(value, system):
     DISABLING until ticket 1795 is implemented
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'paired_end' not in value:
@@ -173,7 +179,7 @@ def audit_paired_with(value, system):
         paired_with = context.get_rev_links('paired_with')
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
-                value['accession'],
+                value['@id'],
                 paired_with,
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
@@ -181,7 +187,7 @@ def audit_paired_with(value, system):
 
     if 'paired_with' not in value:
         detail = 'File {} has paired_end = {}. It requires a value for paired_with'.format(
-            value['accession'],
+            value['@id'],
             value['paired_end'])
         raise AuditFailure('missing paired_with', detail, level='DCC_ACTION')
 
@@ -191,11 +197,11 @@ def audit_paired_with(value, system):
 @audit_checker('file', frame='object')
 def audit_file_size(value, system):
 
-    if value['status'] in ['deleted', 'replaced', 'uploading']:
+    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
         return
 
     if 'file_size' not in value:
-        detail = 'File {} requires a value for file_size'.format(value['accession'])
+        detail = 'File {} requires a value for file_size'.format(value['@id'])
         raise AuditFailure('missing file_size', detail, level='DCC_ACTION')
 
 
@@ -205,67 +211,34 @@ def audit_file_format_specifications(value, system):
     for doc in value.get('file_format_specifications', []):
         if doc['document_type'] != "file format specification":
             detail = 'File {} has document {} not of type file format specification'.format(
-                value['accession'],
-                doc['uuid']
+                value['@id'],
+                doc['@id']
                 )
             raise AuditFailure('wrong document_type', detail, level='ERROR')
 
 
 @audit_checker('file', frame='object')
-def audit_file_output_type(value, system):
+def audit_file_paired_ended_run_type(value, system):
     '''
-    The differing RFA's will have differeing acceptable output_types
+    Audit to catch those files that were upgraded to have run_type = paired ended
+    resulting from its migration out of replicate but lack the paired_end property
+    to specify which read it is. This audit will also catch the case where run_type
+    = paired-ended but there is no paired_end = 2 due to registeration error.
     '''
 
-    if value.get('status') in ['deleted']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
         return
 
-    undesirable_output_type = [
-        'Base_Overlap_Signal',
-        'enhancers_forebrain',
-        'enhancers_heart',
-        'enhancers_wholebrain',
-        'Excludable',
-        'ExonsDeNovo',
-        'ExonsEnsV65IAcuff',
-        'ExonsGencV10',
-        'ExonsGencV3c',
-        'ExonsGencV7',
-        'FiltTransfrags',
-        'GeneDeNovo',
-        'GeneEnsV65IAcuff',
-        'GeneGencV10',
-        'GeneGencV3c',
-        'GeneGencV7',
-        'Junctions',
-        'library_fraction',
-        'Matrix',
-        'mPepMapGcFt',
-        'mPepMapGcUnFt'
-        'PctSignal'
-        'pepMapGcFt',
-        'pepMapGcUnFt',
-        'PrimerPeaks',
-        'RbpAssocRna',
-        'SumSignal',
-        'TranscriptDeNovo',
-        'TranscriptEnsV65IAcuff',
-        'TranscriptGencV10',
-        'TranscriptGencV3c',
-        'TranscriptGencV7',
-        'Transfrags',
-        'TssGencV3c',
-        'TssGencV7',
-        'TssHmm',
-        'UniformlyProcessedPeakCalls',
-        'Validation',
-        'Valleys',
-        'WaveSignal',
-        ]
+    if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
+        return
 
-    # if value['dataset']['award']['rfa'] != 'ENCODE3':
-    if value['output_type'] in undesirable_output_type:
-            detail = 'File {} has output_type "{}" which is not a standard value'.format(
-                value['accession'],
-                value['output_type'])
-            raise AuditFailure('undesirable output_type', detail, level='DCC_ACTION')
+    if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
+        if 'paired_end' not in value:
+            detail = 'File {} has a paired-ended run_type but is missing its paired_end value'.format(
+                value['@id'])
+            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+
+        if (value['paired_end'] == 1) and 'paired_with' not in value:
+            detail = 'File {} has a paired-ended run_type but is missing a paired_end=2 mate'.format(
+                value['@id'])
+            raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')

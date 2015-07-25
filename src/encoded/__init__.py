@@ -1,24 +1,29 @@
 from future.standard_library import install_aliases
-install_aliases()
+install_aliases()  # NOQA
 import base64
+import codecs
 import json
 import os
-import sys
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
     import subprocess
 from pyramid.config import Configurator
+from pyramid.path import (
+    AssetResolver,
+    caller_package,
+)
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
-from .storage import (
-    Base,
-    DBSession,
-)
-PY2 = sys.version_info.major == 2
 STATIC_MAX_AGE = 0
+
+
+def json_asset(spec, **kw):
+    utf8 = codecs.getreader("utf-8")
+    asset = AssetResolver(caller_package()).resolve(spec)
+    return json.load(utf8(asset.stream()), **kw)
 
 
 def static_resources(config):
@@ -43,17 +48,26 @@ def static_resources(config):
     config.add_view(favicon, route_name='favicon.ico')
 
 
-def configure_engine(settings, test_setup=False):
-    from .renderers import json_renderer
-    engine_url = settings.get('sqlalchemy.url')
-    if not engine_url:
-        # Already setup by test fixture
-        return None
+def changelogs(config):
+    config.add_static_view(
+        'profiles/changelogs', 'schemas/changelogs', cache_max_age=STATIC_MAX_AGE)
+
+
+def configure_engine(settings):
+    from contentbase.json_renderer import json_renderer
+    engine_url = settings['sqlalchemy.url']
     engine_opts = {}
     if engine_url.startswith('postgresql'):
+        if settings.get('indexer_worker'):
+            application_name = 'indexer_worker'
+        elif settings.get('indexer'):
+            application_name = 'indexer'
+        else:
+            application_name = 'app'
         engine_opts = dict(
             isolation_level='REPEATABLE READ',
             json_serializer=json_renderer.dumps,
+            connect_args={'application_name': application_name}
         )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'postgresql':
@@ -61,11 +75,6 @@ def configure_engine(settings, test_setup=False):
         if timeout:
             timeout = int(timeout) * 1000
             set_postgresql_statement_timeout(engine, timeout)
-    if test_setup:
-        return engine
-    if asbool(settings.get('create_tables', False)):
-        Base.metadata.create_all(engine)
-    DBSession.configure(bind=engine)
     return engine
 
 
@@ -87,15 +96,26 @@ def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
             dbapi_connection.commit()
 
 
-def load_sample_data(app):
-    from .tests.sample_data import load_sample
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'IMPORT',
-    }
-    testapp = TestApp(app, environ)
-    load_sample(testapp)
+def configure_dbsession(config):
+    from contentbase import DBSESSION
+    settings = config.registry.settings
+    DBSession = settings.pop(DBSESSION, None)
+    if DBSession is None:
+        engine = configure_engine(settings)
+
+        if asbool(settings.get('create_tables', False)):
+            from contentbase.storage import Base
+            Base.metadata.create_all(engine)
+
+        import contentbase.storage
+        import zope.sqlalchemy
+        from sqlalchemy import orm
+
+        DBSession = orm.scoped_session(orm.sessionmaker(bind=engine))
+        zope.sqlalchemy.register(DBSession)
+        contentbase.storage.register(DBSession)
+
+    config.registry[DBSESSION] = DBSession
 
 
 def load_workbook(app, workbook_filename, docsdir, test=False):
@@ -109,13 +129,10 @@ def load_workbook(app, workbook_filename, docsdir, test=False):
     load_all(testapp, workbook_filename, docsdir, test=test)
 
 
-def load_ontology(config):
-    settings = config.registry.settings
-    path = settings.get('ontology_path')
+def json_from_path(path, default=None):
     if path is None:
-        config.registry['ontology'] = {}
-        return
-    config.registry['ontology'] = json.load(open(path))
+        return default
+    return json.load(open(path))
 
 
 def session(config):
@@ -151,32 +168,11 @@ def main(global_config, **local_config):
     """
     settings = global_config
     settings.update(local_config)
-    config = Configurator(settings=settings)
 
-    config.include(session)
-    config.include('pyramid_tm')
-    configure_engine(settings)
-
-    # Render an HTML page to browsers and a JSON document for API clients
-    config.include('.calculated')
-    config.include('.embedding')
-    config.include('.renderers')
-    config.include('.authentication')
-    config.include('.validation')
-    config.include('.predicates')
-    config.include('.indexing')
-    config.include('.es_storage')
-    config.include('.contentbase')
-    config.include('.server_defaults')
-    config.include('.types')
-    config.include('.views')
-    config.include('.migrator')
-    config.include('.auditor')
-
-    if asbool(settings.get('indexer')) and not PY2:
-        config.include('.mp_indexing')
-
-    settings = config.registry.settings
+    settings['contentbase.jsonld.namespaces'] = json_asset('encoded:schemas/namespaces.json')
+    settings['contentbase.jsonld.terms_namespace'] = 'https://www.encodeproject.org/terms/'
+    settings['contentbase.jsonld.terms_prefix'] = 'encode'
+    settings['contentbase.elasticsearch.index'] = 'encoded'
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
@@ -184,13 +180,38 @@ def main(global_config, **local_config):
         settings['persona.audiences'] += '\nhttp://%s' % hostname
         settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
-    config.include('.persona')
-    config.include('pyramid_multiauth')
+    config = Configurator(settings=settings)
+    from contentbase.elasticsearch import APP_FACTORY
+    config.registry[APP_FACTORY] = main  # used by mp_indexer
+
+    config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
     from pyramid_localroles import LocalRolesAuthorizationPolicy
+    # Override default authz policy set by pyramid_multiauth
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
+    config.include(session)
+    config.include('.persona')
+
+    config.include(configure_dbsession)
+    config.include('contentbase')
+    config.commit()  # commit so search can override listing
+
+    # Render an HTML page to browsers and a JSON document for API clients
+    config.include('.renderers')
+    config.include('.authentication')
+    config.include('.server_defaults')
+    config.include('.types')
+    config.include('.root')
+    config.include('.batch_download')
+    config.include('.visualization')
+
+    if 'elasticsearch.server' in config.registry.settings:
+        config.include('contentbase.elasticsearch')
+        config.include('.search')
 
     config.include(static_resources)
-    config.include(load_ontology)
+    config.include(changelogs)
+
+    config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
@@ -202,11 +223,7 @@ def main(global_config, **local_config):
 
     app = config.make_wsgi_app()
 
-    if asbool(settings.get('load_sample_data', False)):
-        load_sample_data(app)
-
     workbook_filename = settings.get('load_workbook', '')
-
     load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
     if docsdir is not None:

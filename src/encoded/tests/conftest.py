@@ -6,6 +6,11 @@ import pkg_resources
 import pytest
 from pytest import fixture
 
+pytest_plugins = [
+    'encoded.tests.datafixtures',
+    'encoded.tests.layers',
+]
+
 _app_settings = {
     'collection_datastore': 'database',
     'item_datastore': 'database',
@@ -28,7 +33,6 @@ _app_settings = {
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
-    'load_sample_data': False,
     'testing': True,
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
@@ -60,9 +64,11 @@ def engine_url(request):
 
 
 @fixture(scope='session')
-def app_settings(request, server_host_port, connection):
+def app_settings(request, server_host_port, connection, DBSession):
+    from contentbase import DBSESSION
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings[DBSESSION] = DBSession
     return settings
 
 
@@ -136,7 +142,7 @@ def dummy_request(root, registry, app):
 
 
 @fixture(scope='session')
-def app(zsa_savepoints, check_constraints, app_settings):
+def app(app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -150,8 +156,14 @@ def registry(app):
 
 @fixture
 def elasticsearch(registry):
-    from ..indexing import ELASTIC_SEARCH
+    from contentbase.elasticsearch import ELASTIC_SEARCH
     return registry[ELASTIC_SEARCH]
+
+
+@fixture
+def upgrader(registry):
+    from contentbase import UPGRADER
+    return registry[UPGRADER]
 
 
 @fixture
@@ -254,6 +266,16 @@ def indexer_testapp(app, external_tx):
     return TestApp(app, environ)
 
 
+@pytest.fixture
+def embed_testapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'EMBED',
+    }
+    return TestApp(app, environ)
+
+
 @fixture(scope='session')
 def server_host_port():
     from webtest.http import get_free_port
@@ -310,33 +332,42 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request, engine_url):
+def connection(engine_url):
     from encoded import configure_engine
-    from encoded.storage import Base, DBSession
-    from sqlalchemy.orm.scoping import ScopedRegistry
-
-    # ``server`` thread must be in same scope
-    if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
+    from contentbase.storage import Base
 
     engine_settings = {
         'sqlalchemy.url': engine_url,
     }
 
-    engine = configure_engine(engine_settings, test_setup=True)
+    engine = configure_engine(engine_settings)
     connection = engine.connect()
     tx = connection.begin()
     try:
         Base.metadata.create_all(bind=connection)
-        session = DBSession(scope=None, bind=connection)
-        DBSession.registry.set(session)
         yield connection
     finally:
         tx.rollback()
         connection.close()
         engine.dispose()
+
+
+@pytest.fixture(scope='session')
+def _DBSession(connection):
+    import contentbase.storage
+    import zope.sqlalchemy
+    from sqlalchemy import orm
+    # ``server`` thread must be in same scope
+    DBSession = orm.scoped_session(orm.sessionmaker(bind=connection), scopefunc=lambda: 0)
+    zope.sqlalchemy.register(DBSession)
+    contentbase.storage.register(DBSession)
+    return DBSession
+
+
+@pytest.fixture(scope='session')
+def DBSession(_DBSession, zsa_savepoints, check_constraints):
+    return _DBSession
 
 
 @fixture
@@ -345,7 +376,7 @@ def external_tx(request, connection):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     # # The database should be empty unless a data fixture was loaded
-    # from encoded.storage import Base
+    # from contentbase.storage import Base
     # for table in Base.metadata.sorted_tables:
     #     assert connection.execute(table.count()).scalar() == 0
     return tx
@@ -414,24 +445,22 @@ def zsa_savepoints(request, connection):
 
 
 @fixture
-def session(transaction):
+def session(transaction, DBSession):
     """ Returns a setup session
 
     Depends on transaction as storage relies on some interaction there.
     """
-    from encoded.storage import DBSession
     return DBSession()
 
 
 @fixture(scope='session')
-def check_constraints(request, connection):
+def check_constraints(request, connection, _DBSession):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
     '''
-    from encoded.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -452,7 +481,7 @@ def check_constraints(request, connection):
             @transaction.addBeforeCommitHook
             def set_constraints():
                 self.state = 'checking'
-                session = DBSession()
+                session = _DBSession()
                 session.flush()
                 sp = self.connection.begin_nested()
                 try:
@@ -517,8 +546,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
 
 @fixture
-def no_deps(request, connection):
-    from encoded.storage import DBSession
+def no_deps(request, connection, DBSession):
     from sqlalchemy import event
 
     session = DBSession()
@@ -534,253 +562,6 @@ def no_deps(request, connection):
     @request.addfinalizer
     def remove():
         event.remove(session, 'before_flush', check_dependencies)
-
-
-@pytest.fixture
-def labs(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'lab')
-
-
-@pytest.fixture
-def lab(labs):
-    return [l for l in labs if l['name'] == 'myers'][0]
-
-
-@pytest.fixture
-def users(testapp, labs):
-    from . import sample_data
-    return sample_data.load(testapp, 'user')
-
-
-@pytest.fixture
-def wrangler(users):
-    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
-
-
-@pytest.fixture
-def submitter(users, lab):
-    return [u for u in users if lab['@id'] in u['submits_for']][0]
-
-
-@pytest.fixture
-def awards(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'award')
-
-
-@pytest.fixture
-def award(awards):
-    return [a for a in awards if a['name'] == 'Myers'][0]
-
-
-@pytest.fixture
-def sources(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'source')
-
-
-@pytest.fixture
-def source(sources):
-    return [s for s in sources if s['name'] == 'sigma'][0]
-
-
-@pytest.fixture
-def organisms(testapp):
-    from . import sample_data
-    return sample_data.load(testapp, 'organism')
-
-
-@pytest.fixture
-def human(organisms):
-    return [o for o in organisms if o['name'] == 'human'][0]
-
-
-@pytest.fixture
-def mouse(organisms):
-    return [o for o in organisms if o['name'] == 'mouse'][0]
-
-
-@pytest.fixture
-def organism(human):
-    return human
-
-
-@pytest.fixture
-def biosamples(testapp, labs, awards, sources, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'biosample')
-
-
-@pytest.fixture
-def biosample(biosamples):
-    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
-
-
-@pytest.fixture
-def libraries(testapp, labs, awards, biosamples):
-    from . import sample_data
-    return sample_data.load(testapp, 'library')
-
-
-@pytest.fixture
-def library(libraries):
-    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
-
-
-@pytest.fixture
-def experiments(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'experiment')
-
-
-@pytest.fixture
-def experiment(experiments):
-    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
-
-
-@pytest.fixture
-def replicates(testapp, experiments, libraries):
-    from . import sample_data
-    return sample_data.load(testapp, 'replicate')
-
-
-@pytest.fixture
-def replicate(replicates):
-    return replicates[0]
-
-
-@pytest.fixture
-def files(testapp, experiments):
-    from . import sample_data
-    return sample_data.load(testapp, 'file')
-
-
-@pytest.fixture
-def file(files):
-    return [f for f in files if f['accession'] == 'ENCFF000TST'][0]
-
-
-@pytest.fixture
-def antibody_lots(testapp, labs, awards, sources, organisms, targets):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_lot')
-
-
-@pytest.fixture
-def antibody_lot(antibody_lots):
-    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
-
-
-@pytest.fixture
-def targets(testapp, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'target')
-
-
-@pytest.fixture
-def target(targets):
-    return [t for t in targets if t['label'] == 'ATF4'][0]
-
-
-@pytest.fixture
-def antibody_characterizations(testapp, awards, labs, targets, antibody_lots):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_characterization')
-
-
-@pytest.fixture
-def antibody_characterization(antibody_characterizations):
-    return [ac for ac in antibody_characterizations if ac['lab'] == 'myers'][0]
-
-
-@pytest.fixture
-def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_characterizations):
-    from . import sample_data
-    return sample_data.load(testapp, 'antibody_approval')
-
-
-@pytest.fixture
-def antibody_approval(antibody_approvals):
-    return [
-        aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
-
-
-@pytest.fixture
-def rnais(testapp, labs, awards, targets):
-    from . import sample_data
-    return sample_data.load(testapp, 'rnai')
-
-
-@pytest.fixture
-def rnai(rnais):
-    return [r for r in rnais if r['rnai_type'] == 'shRNA'][0]
-
-
-@pytest.fixture
-def constructs(testapp, labs, awards, targets, sources):
-    from . import sample_data
-    return sample_data.load(testapp, 'construct')
-
-
-@pytest.fixture
-def construct(constructs):
-    return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
-
-
-@pytest.fixture
-def datasets(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'dataset')
-
-
-@pytest.fixture
-def dataset(datasets):
-    return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
-
-
-@pytest.fixture
-def publications(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'publication')
-
-
-@pytest.fixture
-def publication(publications):
-    return publications[0]
-
-
-@pytest.fixture
-def documents(testapp, labs, awards):
-    from . import sample_data
-    return sample_data.load(testapp, 'document')
-
-
-@pytest.fixture
-def document(documents):
-    return documents[0]
-
-
-@pytest.fixture
-def biosample_characterizations(testapp, awards, labs, biosamples):
-    from . import sample_data
-    return sample_data.load(testapp, 'biosample_characterization')
-
-
-@pytest.fixture
-def biosample_characterization(biosample_characterizations):
-    return biosample_characterizations[0]
-
-
-@pytest.fixture
-def mouse_donors(testapp, awards, labs, organisms):
-    from . import sample_data
-    return sample_data.load(testapp, 'mouse_donor')
-
-
-@pytest.fixture
-def mouse_donor(mouse_donors):
-    return mouse_donors[0]
 
 
 @pytest.mark.fixture_cost(10)

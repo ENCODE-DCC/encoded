@@ -53,7 +53,7 @@ var FileInput = module.exports.FileInput = React.createClass({
         reader.onloadend = function() {
             var value = {
                 download: file.name,
-                type: file.type,
+                type: file.type || undefined,
                 href: reader.result
             };
             this.props.onChange(value);

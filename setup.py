@@ -39,13 +39,14 @@ requires = [
 
 if sys.version_info.major == 2:
     requires.extend([
+        'backports.functools_lru_cache',
         'subprocess32',
     ])
 
 tests_require = [
-    'behave',
-    'behaving',
     'pytest>=2.4.0',
+    'pytest-bdd',
+    'pytest-splinter',
 ]
 
 setup(
@@ -68,10 +69,12 @@ setup(
     },
     entry_points='''
         [console_scripts]
+        batchupgrade = contentbase.batchupgrade:main
+        create-mapping = contentbase.elasticsearch.create_mapping:main
+
         add-date-created = encoded.commands.add_date_created:main
         check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
-        create-mapping = encoded.commands.create_mapping:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
@@ -84,8 +87,6 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
-        update-keys-links = encoded.commands.update_keys_links:main
-        upgrade = encoded.commands.upgrade:main
 
         [paste.app_factory]
         main = encoded:main

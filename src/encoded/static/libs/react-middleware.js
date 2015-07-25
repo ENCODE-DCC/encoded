@@ -10,7 +10,7 @@ var render = function (Component, body, res) {
     var context = JSON.parse(body);
     var props = {
         context: context,
-        href: res.getHeader('X-href') || context['@id'],
+        href: res.getHeader('X-Request-URL') || context['@id'],
         inline: inline
     };
     var markup;

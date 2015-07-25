@@ -75,12 +75,12 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF002COS", "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF002COS/", "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS", "file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF002COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/", "file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF002COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -103,14 +103,14 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF003COS", "file:ENCFF004COS", "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF003COS/", "file:/files/ENCFF004COS/", "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF003COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF004COS", ["step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF003COS/", ["step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF004COS/", ["step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -132,13 +132,13 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF005COS", "file:ENCFF006COS", "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF005COS/", "file:/files/ENCFF006COS/", "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF005COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF006COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF005COS/", ["step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF006COS/", ["step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -160,13 +160,13 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF008COS", "file:ENCFF008COS", "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF008COS/", "file:/files/ENCFF008COS/", "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ", "file:ENCFF000VUS"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF007COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF008COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF007COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF008COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -188,14 +188,14 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF000VUZ", "file:ENCFF010COS", "file:ENCFF011COS", "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF000VUZ/", "file:/files/ENCFF010COS/", "file:/files/ENCFF011COS/", "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:/files/ENCFF000VUS/,/files/ENCFF000VUZ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ", "file:ENCFF000VUS"])).toBeTruthy();
-            expect(hasParents(graph, "step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS", "file:ENCFF000VUZ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF010COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF011COS", ["step:ENCFF000VUS,ENCFF000VUZ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUS/,/files/ENCFF000VUZ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/", "file:/files/ENCFF000VUZ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF010COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF011COS/", ["step:/files/ENCFF000VUS/,/files/ENCFF000VUZ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -218,13 +218,13 @@ describe('Experiment Graph', function() {
 
         /// VUZ should be missing.
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF002COS", "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(containsNodes(graph, ["file:ENCFF000VUZ"])).toBeFalsy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF002COS/", "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["file:/files/ENCFF000VUZ/"])).toBeFalsy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS", "file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF002COS", ["step:ENCFF000VUQ,ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/", "file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF002COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -272,15 +272,15 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["rep:1", "rep:2", "file:ENCFF000VUQ", "file:ENCFF000VUS", "file:ENCFF003COS", "file:ENCFF004COS",
-                "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["rep:1", "rep:2", "file:/files/ENCFF000VUQ/", "file:/files/ENCFF000VUS/", "file:/files/ENCFF003COS/", "file:/files/ENCFF004COS/",
+                "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", "step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF003COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
-            expect(hasParents(graph, "step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUS"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF004COS", ["step:ENCFF000VUS/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF003COS/", ["step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF004COS/", ["step:/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 
@@ -311,14 +311,14 @@ describe('Experiment Graph', function() {
         });
 
         it('has the right nodes', function() {
-            expect(containsNodes(graph, ["rep:1", "file:ENCFF000VUQ", "file:ENCFF003COS",
-                "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ["rep:1", "file:/files/ENCFF000VUQ/", "file:/files/ENCFF003COS/",
+                "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
             expect(containsNodes(graph, ["rep:2"])).toBeFalsy();
         });
 
         it('has the right relationships between edges and nodes', function() {
-            expect(hasParents(graph, "step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:ENCFF000VUQ"])).toBeTruthy();
-            expect(hasParents(graph, "file:ENCFF003COS", ["step:ENCFF000VUQ/analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, "step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUQ/"])).toBeTruthy();
+            expect(hasParents(graph, "file:/files/ENCFF003COS/", ["step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
         });
     });
 

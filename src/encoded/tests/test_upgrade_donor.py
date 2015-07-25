@@ -63,57 +63,51 @@ def mouse_donor_2(mouse_donor_base):
 
 
 @pytest.fixture
-def mouse_donor_3(root, mouse_donor):
+def mouse_donor_3(root, mouse_donor, publication):
     item = root.get_by_uuid(mouse_donor['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '3',
-        'references': ['PMID:19752085']
+        'references': [publication['identifiers'][0]],
 
     })
     return properties
 
 
-def test_human_donor_upgrade(app, human_donor_1):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
+def test_human_donor_upgrade(upgrader, human_donor_1):
+    value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'in progress'
 
 
-def test_mouse_donor_upgrade_status_encode2(app, mouse_donor_1):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('mouse_donor', mouse_donor_1, target_version='2')
+def test_mouse_donor_upgrade_status_encode2(upgrader, mouse_donor_1):
+    value = upgrader.upgrade('mouse_donor', mouse_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'released'
 
 
-def test_donor_upgrade_status_deleted(app, human_donor_1):
-    migrator = app.registry['migrator']
+def test_donor_upgrade_status_deleted(upgrader, human_donor_1):
     human_donor_1['status'] = 'DELETED'
-    value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
+    value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
 
 
-def test_model_organism_donor_upgrade_(app, mouse_donor_2):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('mouse_donor', mouse_donor_2, target_version='3')
+def test_model_organism_donor_upgrade_(upgrader, mouse_donor_2):
+    value = upgrader.upgrade('mouse_donor', mouse_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert 'sex' not in value
 
 
-def test_human_donor_age(app, human_donor_2):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('human_donor', human_donor_2, target_version='3')
+def test_human_donor_age(upgrader, human_donor_2):
+    value = upgrader.upgrade('human_donor', human_donor_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['age'] == '11'
 
 
-def test_mouse_donor_upgrade_references(root, registry, mouse_donor, mouse_donor_3, publications, threadlocals, dummy_request):
-    migrator = registry['migrator']
+def test_mouse_donor_upgrade_references(root, upgrader, mouse_donor, mouse_donor_3, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(mouse_donor['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('mouse_donor', mouse_donor_3, target_version='4', context=context)
+    value = upgrader.upgrade('mouse_donor', mouse_donor_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
-    assert value['references'] == [publications[3]['uuid']]
+    assert value['references'] == [publication['uuid']]

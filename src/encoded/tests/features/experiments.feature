@@ -3,7 +3,7 @@ Feature: Experiments
 
     Scenario: Table
         When I visit "/experiments/"
-        And I should see an element with the css selector "table.sticky-area > tbody > tr"
+        Then I should see an element with the css selector "table.sticky-area > tbody > tr"
         And I should see at least 9 elements with the css selector "table.sticky-area > tbody > tr"
         When I wait for the table to fully load
         Then I should see an element with the css selector "a[href='/experiments/ENCSR000AES/']"
@@ -37,7 +37,7 @@ Feature: Experiments
 
     Scenario: Filter
         When I visit "/experiments/"
-        And I wait for the table to fully load 
+        And I wait for the table to fully load
         When I fill in "q" with "Chip-seq"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/experiments/ENCSR000ADI/']" within 1 seconds
         And I should see an element with the css selector "tr[hidden] a[href='/experiments/ENCSR000ACY/']"
