@@ -756,19 +756,30 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             // Any files that others derive from get included always
             if (!derivedFromFiles[file['@id']]) {
                 // File isn’t derived from; continue checking
-                if (file.output_category !== 'raw data') {
+                if (file.output_category === 'raw data') {
                     // File is raw data; just remove it
                     file.removed = true;
                 } else {
                     // At this stage, we know it's a process or reference file. Remove from files if
                     // it has mismatched assembly or annotation
+                    console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
                     if (file.assembly && file.genome_annotation) {
-                        filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+                        if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
+                            file.removed = true;
+                        }
+                    } else {
+                        file.removed = true;
                     }
                 }
             }
         });
     }
+
+    console.log('start');
+    files.forEach(function(file) {
+        console.log(file.accession + ':' + file.removed);
+    });
+    console.log('end');
 
     // Add contributing files to the allFiles object that other files derive from.
     // Don't worry about files they derive from; they're not included in the graph.
