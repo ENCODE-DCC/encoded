@@ -68,8 +68,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 });
 
                 // Collect software version titles
-                if (step.software_versions && step.software_versions.length) {
-                    swVersionList = step.software_versions.map(function(version) {
+                if (step.current_version) {
+                    var software_versions = step.current_version.software_versions;
+                    swVersionList = software_versions.map(function(version) {
                         return version.software.title;
                     });
                 }
@@ -257,28 +258,41 @@ globals.content_views.register(Pipeline, 'pipeline');
 
 var AnalysisStep = module.exports.AnalysisStep = React.createClass({
     render: function() {
+        var stepVersions, swVersions;
         var step = this.props.step;
         var node = this.props.node;
-        var softwareVersions = step.current_version && step.current_version.software_versions;
         var typesList = step.analysis_step_types.join(", ");
+
+        // node.metadata.stepVersion is set by the experiment file graph. It's undefined for pipeline graphs.
+        if (node.metadata && node.metadata.stepVersion) {
+            // Get the analysis_step_version that this step came from.
+            swVersions = node.metadata.stepVersion.software_versions;
+        } else {
+            // Get the analysis_step_version array from the step for pipeline graph display.
+            stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
+        }
 
         return (
             <div>
                 <dl className="key-value">
-                    <div data-test="stepname">
-                        <dt>Name</dt>
-                        <dd>{step.title}</dd>
-                    </div>
+                    {swVersions ?
+                        <div data-test="stepversionname">
+                            <dt>Name</dt>
+                            <dd>{step.title + '— Version ' + node.metadata.stepVersion.version}</dd>
+                        </div>
+                    : null}
 
                     <div data-test="steptype">
                         <dt>Step type</dt>
                         <dd>{step.analysis_step_types.join(', ')}</dd>
                     </div>
 
-                    <div data-test="stepname">
-                        <dt>Step name</dt>
-                        <dd>{step.name}</dd>
-                    </div>
+                    {step.aliases && step.aliases.length ?
+                        <div data-test="stepname">
+                            <dt>Step aliases</dt>
+                            <dd>{step.aliases.join(', ')}</dd>
+                        </div>
+                    : null}
 
                     {step.input_file_types && step.input_file_types.length ?
                         <div data-test="inputtypes">
@@ -331,24 +345,54 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                         </div>
                     : null}
 
-                    {softwareVersions && softwareVersions.length ?
+                    {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
                             <dd>
-                                {softwareVersions.map(function(version, i) {
-                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                {swVersions.map(function(version, i) {
                                     return (
                                         <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                            <span className="software">{version.software.name}</span>
+                                            <span className="software">{version.software.title}</span>
                                             {version.version ?
-                                                <span className="version">{versionNum}</span>
+                                                <span className="version">{version.version === 'unknown' ? 'version unknown' : version.version}</span>
                                             : null}
                                         </a>
                                     );
                                 })}
                             </dd>
                         </div>
-                    : null}
+                    :
+                        <div>
+                            {stepVersions && stepVersions.length ?
+                                <div>
+                                    {stepVersions.map(function(version) {
+                                        if (version.software_versions && version.software_versions.length) {
+                                            return (
+                                                <div data-test="swversions">
+                                                    <dt>Version {version.version} — software</dt>
+                                                    <dd>
+                                                        {version.software_versions.map(function(version, i) {
+                                                            var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                                                            return (
+                                                                <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
+                                                                    <span className="software">{version.software.title}</span>
+                                                                    {version.version ?
+                                                                        <span className="version">{versionNum}</span>
+                                                                    : null}
+                                                                </a>
+                                                            );
+                                                        })}
+                                                    </dd>
+                                                </div>
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                                </div>
+                            : null}
+                        </div>
+                    }
 
                     {step.documents && step.documents.length ?
                         <div data-test="documents">
@@ -359,13 +403,6 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                     return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
                                 })}
                             </dd>
-                        </div>
-                    : null}
-
-                    {step.aliases.length ?
-                        <div data-test="aliases">
-                            <dt>Aliases</dt>
-                            <dd>{step.aliases.join(', ')}</dd>
                         </div>
                     : null}
                 </dl>

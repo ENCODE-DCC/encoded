@@ -887,7 +887,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         parentNode: replicateNode,
                         ref: fileAnalysisStep,
                         pipelines: pipelineInfo,
-                        fileId: file['@id']
+                        fileId: file['@id'],
+                        stepVersion: file.analysis_step_version
                     });
                 }
 
@@ -967,6 +968,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
+        console.log(files);
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
