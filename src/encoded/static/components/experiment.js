@@ -968,7 +968,6 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         var data = this.props.data;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
-        console.log(files);
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
@@ -1072,7 +1071,7 @@ var FileDetailView = function(node) {
                             {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
                                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                 return (
-                                    <a href={version.software['@id']} key={i} className="software-version">
+                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
                                         <span className="software">{version.software.name}</span>
                                         {version.version ?
                                             <span className="version">{versionNum}</span>

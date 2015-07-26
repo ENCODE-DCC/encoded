@@ -280,7 +280,12 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>Name</dt>
                             <dd>{step.title + '— Version ' + node.metadata.stepVersion.version}</dd>
                         </div>
-                    : null}
+                    :
+                        <div data-test="stepversionname">
+                            <dt>Name</dt>
+                            <dd>{step.title}</dd>
+                        </div>
+                    }
 
                     <div data-test="steptype">
                         <dt>Step type</dt>
@@ -306,7 +311,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>Output</dt>
                             <dd>{step.output_file_types.map(function(type, i) {
                                 return (
-                                    <span>
+                                    <span key={i}>
                                         {i > 0 ? <span>{','}<br /></span> : null}
                                         {type}
                                     </span>
@@ -336,7 +341,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>QA statistics</dt>
                             <dd>{step.qa_stats_generated.map(function(stat, i) {
                                 return (
-                                    <span>
+                                    <span key={i}>
                                         {i > 0 ? <span>{','}<br /></span> : null}
                                         {stat}
                                     </span>
@@ -368,7 +373,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                     {stepVersions.map(function(version) {
                                         if (version.software_versions && version.software_versions.length) {
                                             return (
-                                                <div data-test="swversions">
+                                                <div data-test="swversions" key={version['@id']}>
                                                     <dt>Version {version.version} — software</dt>
                                                     <dd>
                                                         {version.software_versions.map(function(version, i) {
