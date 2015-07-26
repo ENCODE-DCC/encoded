@@ -38,7 +38,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="data" url={url} etagName="etag" />
                     <EditForm {...this.props} />
                 </fetched.FetchedData>
@@ -49,7 +49,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
 
 var EditForm = module.exports.EditForm = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        navigate: React.PropTypes.func
     },
 
     render: function () {
@@ -148,7 +149,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             erred: erred,
             error: erred ? data : undefined
         });
-        if (!erred) this.props.navigate('');
+        if (!erred) this.context.navigate('');
     }
 });
 

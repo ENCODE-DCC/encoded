@@ -16,10 +16,14 @@ var AuditMixin = audit.AuditMixin;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var url = require('url');
         var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
         return (
             <div className="view-item">
                 <header className="row">
@@ -343,6 +347,10 @@ var FetchedForm = React.createClass({
 
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -353,9 +361,9 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -364,10 +372,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
+                    <FetchedForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         }
@@ -381,6 +389,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 {form}
             </div>
         );
+    },
+    finished: function(data) {
+      var url = data['@graph'][0]['@id'];
+      this.context.navigate(url);
     }
 });
 

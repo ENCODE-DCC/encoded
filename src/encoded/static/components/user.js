@@ -25,7 +25,8 @@ class AccessKeyStore extends ItemStore {
 var AccessKeyTable = React.createClass({
 
     contextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        session_properties: React.PropTypes.object
     },
 
     getInitialState: function() {
@@ -69,7 +70,7 @@ var AccessKeyTable = React.createClass({
     create: function(e) {
         e.preventDefault();
         var item = {};
-        if (this.props.user['@id'] != this.props.session.user_properties['@id']) {
+        if (this.props.user['@id'] != this.context.session_properties.user['@id']) {
             item['user'] = this.props.user['@id'];
         }
         this.store.create('/access-keys/', item);
@@ -163,7 +164,7 @@ var User = module.exports.User = React.createClass({
                     <div className="access-keys">
                         <h3>Access Keys</h3>
                         <div className="panel data-display">
-                            <AccessKeyTable user={context} session={this.props.session} access_keys={context.access_keys} />
+                            <AccessKeyTable user={context} access_keys={context.access_keys} />
                         </div>
                     </div>
                 : ''}
@@ -185,14 +186,23 @@ var ImpersonateUserSchema = ReactForms.schema.Mapping({}, {
 
 
 var ImpersonateUserForm = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         return (
             <div>
                 <h2>Impersonate User</h2>
-                <Form {...this.props} schema={ImpersonateUserSchema} submitLabel="Submit"
-                      method="POST" action="/impersonate-user" />
+                <Form schema={ImpersonateUserSchema} submitLabel="Submit"
+                      method="POST" action="/impersonate-user"
+                      onFinish={this.finished} />
             </div>
         );
+    },
+
+    finished: function(data) {
+        this.context.navigate('/');
     }
 });
 globals.content_views.register(ImpersonateUserForm, 'portal', 'impersonate-user');
