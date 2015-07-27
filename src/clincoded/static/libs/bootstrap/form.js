@@ -94,10 +94,6 @@ var FormMixin = module.exports.FormMixin = {
         }
     },
 
-    setFormValue: function(ref) {
-
-    },
-
     // Get the saved form error for the Input with the given 'ref' value.
     getFormError: function(ref) {
         return this.state.formErrors[ref];
@@ -120,9 +116,23 @@ var FormMixin = module.exports.FormMixin = {
         this.setState({formErrors: errors});
     },
 
+    // Return true if the form's current state shows any Input errors. Return false if no
+    // errors are indicated. This should be called in the render function so that the submit
+    // form function will have had a chance to record any errors.
+    anyFormErrors: function() {
+        var formErrors = Object.keys(this.state.formErrors);
+
+        if (formErrors.length) {
+            return _(formErrors).any(errKey => {
+                return this.state.formErrors[errKey];
+            });
+        }
+        return false;
+    },
+
     // Do form validation on the required fields. Each field checked must have a unique ref,
     // and the boolean 'required' field set if it's required. All the Input's values must
-    // already have been collected with setFormValue. Returns true if all required fields
+    // already have been collected with saveFormValue. Returns true if all required fields
     // have values, or false if any do not. It also sets any empty required Inputs error
     // to the 'Required' message so it's displayed on the next render.
     validateDefault: function() {
@@ -200,6 +210,7 @@ var Input = module.exports.Input = React.createClass({
         return '';
     },
 
+    // Called when any input's value changes from user input
     handleChange: function(e) {
         this.setState({value: e.target.value});
         if (this.props.clearError) {

@@ -372,6 +372,7 @@ var GroupCuration = React.createClass({
     render: function() {
         var annotation = this.state.annotation;
         var gdm = this.state.gdm;
+        var submitErrClass = 'submit-err pull-right' + (this.anyFormErrors() ? '' : ' hidden');
 
         // Get the 'evidence', 'gdm', and 'group' UUIDs from the query string and save them locally.
         this.queryValues.annotationUuid = queryKeyValue('evidence', this.props.href);
@@ -416,6 +417,7 @@ var GroupCuration = React.createClass({
                                             </Panel>
                                         </PanelGroup>
                                         <Input type="submit" inputClassName="btn-primary pull-right" id="submit" title="Save" />
+                                        <div className={submitErrClass}>Please fix errors on the form and resubmit.</div>
                                     </Form>
                                 </div>
                             </div>

@@ -54,3 +54,15 @@ input[type=search] {
     vertical-align: middle;
     text-align: center;
 }
+
+.submit-err {
+    margin-right: 10px;
+    line-height: 32px;
+    font-weight: bold;
+    color: #f22;
+    font-size: 0.9rem;
+
+    &.hidden {
+        display: none;
+    }
+}
