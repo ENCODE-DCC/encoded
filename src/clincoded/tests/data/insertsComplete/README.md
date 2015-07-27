@@ -4,10 +4,13 @@ The scripts used to generate the \*.json files are in the scripts subdirectory. 
 
 Ex:
 ```
-python3 obtain\_external\_data\_files.py --source hgnc
-python create\_gene\_json.py
-python3 obtain\_external\_data\_files.py --source orphanet
-python create\_orphaPhenotype\_json.py
+python3 obtain_external_data_files.py --source hgnc
+python create_gene_json.py
+```
+
+```
+python3 obtain_external_data_files.py --source orphanet
+python create_orphaPhenotype_json.py
 ```
 
 - **gene.json** - 39,446 entries - data grabbed 2015/07/24
