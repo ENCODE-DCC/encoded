@@ -40,16 +40,21 @@ globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
 
 
 var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
+        var logged_in = this.context.session && this.context.session['auth.userid'];
         return (
             <div className={itemClass}>
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Not available</h1>
-                        <p>Please sign in to view this page.</p> 
-                        <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>
+                        {logged_in ? <p>Your account is not allowed to view this page.</p> : <p>Please sign in to view this page.</p>}
+                        {logged_in ? null : <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>}
                     </div>
                 </div>
             </div>
