@@ -99,6 +99,29 @@ var GroupCuration = React.createClass({
             var geneSymbols = captureGenes(this.getFormValue('othergenevariants'));
             var pmids = capturePmids(this.getFormValue('otherpmids'));
 
+            // Check that all HPO terms appear valid
+            var hpoTerms = this.getFormValue('hpoid');
+            if (hpoTerms) {
+                var rawHpoids = _.compact(hpoTerms.toUpperCase().split(','));
+                var hpoids = _.compact(rawHpoids.map(function(id) { return captureHpoid(id); }));
+                if (rawHpoids.length !== hpoids.length) {
+                    formError = true;
+                    this.setFormErrors('hpoid', 'Use HPO IDs, e.g. HP:0000123');
+                }
+            }
+
+            // Check that all NOT HPO terms appear valid
+            hpoTerms = this.getFormValue('hpoid');
+            if (hpoTerms) {
+                var rawNotHpoids = _.compact(hpoTerms.toUpperCase().split(','));
+                var nothpoids = _.compact(rawNotHpoids.map(function(id) { return captureHpoid(id); }));
+                if (rawNotHpoids.length !== nothpoids.length) {
+                    formError = true;
+                    this.setFormErrors('nothpoid', 'Use HPO IDs, e.g. HP:0000123');
+                }
+            }
+
+            // Check that all Orphanet IDs have the proper format (will check for existence later)
             if (!orphaIds || !orphaIds.length) {
                 // No 'orphaXX' found 
                 formError = true;
@@ -462,6 +485,11 @@ function capturePmids(s) {
     return s ? captureBase(s, /(?:^|,|\s*)(\d{1,8})(?=,|\s*|$)/gi) : null;
 }
 
+function captureHpoid(s) {
+    var match = s.match(/^ *(HP:\d{7}) *$/i);
+    return match ? match[1] : null;
+}
+
 
 
 // Group Name group curation panel. Call with .call(this) to run in the same context
@@ -491,17 +519,19 @@ var GroupCommonDiseases = function() {
 
     return (
         <div className="row">
-            <Input type="text" ref="orphanetid" label={<LabelOrphanetId />} value={orphanetidVal}
+            <Input type="text" ref="orphanetid" label={<LabelOrphanetId />} value={orphanetidVal} placeholder="e.g. ORPHA15"
                 error={this.getFormError('orphanetid')} clearError={this.clrFormErrors.bind(null, 'orphanetid')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" required />
-            <Input type="text" ref="hpoid" label={<LabelHpoId />} value={hpoidVal}
+            <Input type="text" ref="hpoid" label={<LabelHpoId />} value={hpoidVal} placeholder="e.g. HP:0010704, HP:0030300"
+                error={this.getFormError('hpoid')} clearError={this.clrFormErrors.bind(null, 'hpoid')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
-            <Input type="textarea" ref="phenoterms" label={<LabelPhenoTerms />} rows="5" value={group.termsInDiagnosis}
+            <Input type="textarea" ref="phenoterms" label="Shared Phenotype(s) (free text):" rows="5" value={group.termsInDiagnosis}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <p className="col-sm-7 col-sm-offset-5">Enter <em>phenotypes that are NOT present in Group</em> if they are specifically noted in the paper.</p>
-            <Input type="text" ref="nothpoid" label={<LabelHpoId not />} value={nothpoidVal}
+            <Input type="text" ref="nothpoid" label={<LabelNotHpoId />} value={nothpoidVal} placeholder="e.g. HP:0010704, HP:0030300"
+                error={this.getFormError('nothpoid')} clearError={this.clrFormErrors.bind(null, 'nothpoid')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" inputClassName="uppercase-input" />
-            <Input type="textarea" ref="notphenoterms" label={<LabelPhenoTerms not />} rows="5" value={group.termsInElimination}
+            <Input type="textarea" ref="notphenoterms" label="Not Phenotype(s) (free text):" rows="5" value={group.termsInElimination}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
         </div>
     );
@@ -511,19 +541,21 @@ var GroupCommonDiseases = function() {
 // HTML labels for inputs follow.
 var LabelOrphanetId = React.createClass({
     render: function() {
-        return <span><a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet</a> common diagnosis:</span>;
+        return <span>Disease in Common (<a href="http://www.orpha.net/" target="_blank" title="Orphanet home page in a new tab">Orphanet</a> term):</span>;
     }
 });
 
-
 // HTML labels for inputs follow.
 var LabelHpoId = React.createClass({
-    propTypes: {
-        not: React.PropTypes.bool
-    },
-
     render: function() {
-        return <span>{this.props.not ? <span span style={{color: 'red'}}>NOT</span> : null} <a href="http://compbio.charite.de/phenexplorer/" target="_blank" title="PhenExplorer home page in a new tab">HPO</a> ID(s):</span>;
+        return <span>Shared Phenotypes (HPO ID(s)); <a href="http://compbio.charite.de/phenexplorer/" target="_blank" title="PhenExplorer home page in a new tab">PhenExplorer</a>):</span>;
+    }
+});
+
+// HTML labels for inputs follow.
+var LabelNotHpoId = React.createClass({
+    render: function() {
+        return <span>NOT Phenotype(s) (HPO ID(s); <a href="http://compbio.charite.de/phenexplorer/" target="_blank" title="PhenExplorer home page in a new tab">PhenExplorer</a>):</span>;
     }
 });
 
@@ -638,12 +670,19 @@ var GroupProbandInfo = function() {
             <Input type="text" ref="indvariantothercount" label="# individuals with variant found in other gene:" format="number" value={group.numberOfIndividualsWithVariantInOtherGene}
                 error={this.getFormError('indvariantothercount')} clearError={this.clrFormErrors.bind(null, 'indvariantothercount')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" required />
-            <Input type="text" ref="othergenevariants" label="Other genes found to have variants in them:" value={othergenevariantsVal}
+            <Input type="text" ref="othergenevariants" label={<LabelOtherGenes />} inputClassName="uppercase-input" value={othergenevariantsVal} placeholder="e.g. DICER1, SMAD3"
                 error={this.getFormError('othergenevariants')} clearError={this.clrFormErrors.bind(null, 'othergenevariants')}
                 labelClassName="col-sm-6 control-label" wrapperClassName="col-sm-6" groupClassName="form-group" />
         </div>
     );
 };
+
+// HTML labels for inputs follow.
+var LabelOtherGenes = React.createClass({
+    render: function() {
+        return <span>Other genes found to have variants in them (<a href="http://www.genenames.org/" title="HGNC home page in a new tab" target="_blank">HGNC</a> symbol):</span>;
+    }
+});
 
 
 // Methods group curation panel. Call with .call(this) to run in the same context
@@ -737,7 +776,7 @@ var GroupAdditional = function() {
         <div className="row">
             <Input type="textarea" ref="additionalinfogroup" label="Additional Information about Group:" rows="5" value={group.additionalInformation}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
-            <Input type="textarea" ref="otherpmids" label="Enter PMID(s) that report evidence about this same group:" rows="5" value={otherpmidsVal}
+            <Input type="textarea" ref="otherpmids" label="Enter PMID(s) that report evidence about this same group:" rows="5" value={otherpmidsVal} placeholder="e.g. 12089445, 21217753"
                 error={this.getFormError('otherpmids')} clearError={this.clrFormErrors.bind(null, 'otherpmids')}
                 labelClassName="col-sm-5 control-label" wrapperClassName="col-sm-7" groupClassName="form-group" />
             <p className="col-sm-7 col-sm-offset-5">
