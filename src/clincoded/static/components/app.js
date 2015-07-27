@@ -20,13 +20,8 @@ var routes = {
 // Site information, including navigation
 var portal = {
     portal_title: 'ClinGen',
-    navMain: [
-        {id: 'dashboard', title: 'Dashboard', url: '/dashboard/'},
-        {id: 'group-curation', title: 'Group Curation', url: '/group-curation/'},
-        {id: 'create-gene-disease', title: 'Create Gene-Disease', url: '/create-gene-disease/'},
-        {id: 'curator', title: 'Curation Central', url: '/curation-central/'}
-    ],
     navUser: [
+        {id: 'dashboard', title: 'Dashboard', url: '/dashboard/'},
         {id: 'account', title: 'Account', url: '/account/'},
         {id: 'loginout', title: 'Login'}
     ]
@@ -162,16 +157,9 @@ var NavbarMain = React.createClass({
     render: function() {
         return (
             <div>
-                <div className="navbar-main-bg"></div>
                 <div className="container">
                     <NavbarUser portal={this.props.portal} session={this.props.session} />
-                    <Navbar styles='navbar-main' brand='ClinGen' brandStyles='portal-brand'>
-                        <Nav styles='navbar-right nav-main' collapse>
-                            {this.props.portal.navMain.map(function(menu) {
-                                return <NavItem key={menu.id} href={menu.url}>{menu.title}</NavItem>;
-                            })}
-                        </Nav>
-                    </Navbar>
+                    <a href="/dashboard" className='navbar-brand'>ClinGen Dashboard</a>
                 </div>
             </div>
         );
