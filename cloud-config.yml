@@ -120,7 +120,6 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 ##TEMP for inital tests --load test data from test data backup
-#- sudo -u clincoded psql clincoded < DEV_TEST_DB_DUMP_9.4
 - if test "%(BACKUPDB)s" = "gene_and_disease_data"
 - then
 -   echo "====== restoring test data plus gene_and_disease_data"
