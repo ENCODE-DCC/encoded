@@ -34,7 +34,7 @@ var Dashboard = React.createClass({
 
     cleanGdmModelName: function(model) {
         // remove (HP:#######) from model name
-        return model.substring(0, model.indexOf('(') - 1);
+        return model.indexOf('(') > -1 ? model.substring(0, model.indexOf('(') - 1) : model;
     },
 
     setUserData: function(props) {
@@ -69,7 +69,7 @@ var Dashboard = React.createClass({
                 var tempDisplayName =  "()";
                 if (temp['owner'] == userid) {
                     tempGdmList.push({
-                        url: temp['uuid'],
+                        uuid: temp['uuid'],
                         gdmGeneDisease: this.cleanGdmGeneDiseaseName(temp['gene']['symbol'], temp['disease']['term']),
                         gdmModel: this.cleanGdmModelName(temp['modeInheritance']),
                         status: temp['status'],
@@ -97,7 +97,6 @@ var Dashboard = React.createClass({
                 var tempDateTime = moment(temp['dateTime']).format( "YYYY MMM DD, h:mm a");
                 switch (temp['@type'][0]) {
                     case 'annotation':
-                    // added to
                         tempUrl = "/curation-central/?gdm=" + pmidGdmMapping[temp['uuid']]['uuid'] + "&pmid=" + temp['article']['pmid'];
                         tempDisplayText = <span><a href={tempUrl}>PMID:{temp['article']['pmid']}</a> added to <strong>{pmidGdmMapping[temp['uuid']]['displayName']}</strong>–<i>{pmidGdmMapping[temp['uuid']]['displayName2']}</i></span>;
                         tempTimestamp = "added " + tempDateTime;
@@ -117,6 +116,7 @@ var Dashboard = React.createClass({
                 }
                 if (display === true) {
                     tempRecentHistory.push({
+                        uuid: temp['uuid'],
                         displayText: tempDisplayText,
                         timestamp: tempTimestamp
                     });
@@ -163,7 +163,7 @@ var Dashboard = React.createClass({
                             {this.state.recentHistory.length > 0 ?
                             <ul>
                                 {this.state.recentHistory.map(function(item) {
-                                    return <li>{item.displayText}; <i>{item.timestamp}</i></li>;
+                                    return <li key={item.uuid}>{item.displayText}; <i>{item.timestamp}</i></li>;
                                 })}
                             </ul>
                             : "You have no activity to display."}
@@ -176,8 +176,8 @@ var Dashboard = React.createClass({
                             <div className="gdm-list">
                                 {this.state.gdmList.map(function(item) {
                                     return (
-                                        <div className="gdm-item">
-                                            <a href={"/curation-central/?gdm=" + item.url}><strong>{item.gdmGeneDisease}</strong>–<i>{item.gdmModel}</i></a><br />
+                                        <div className="gdm-item" key={item.uuid}>
+                                            <a href={"/curation-central/?gdm=" + item.uuid}><strong>{item.gdmGeneDisease}</strong>–<i>{item.gdmModel}</i></a><br />
                                             <strong>Status</strong>: {item.status}<br />
                                             <strong>Creation Date</strong>: {moment(item.dateTime).format( "YYYY MMM DD, h:mm a")}
                                         </div>
