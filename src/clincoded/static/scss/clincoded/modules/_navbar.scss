@@ -5,6 +5,7 @@
 }
 
 .navbar-brand {
+    display: block;
     @extend .navbar-brand;
     @extend .text-hide;
     padding: 0;
