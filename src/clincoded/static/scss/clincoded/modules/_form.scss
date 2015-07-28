@@ -39,19 +39,21 @@ input[type=search] {
 }
 
 .group-age-fromto {
-    display: table;
+    display: block;
     padding-right: 0;
 }
 
 .group-age-input {
-    display: table-cell;
+    display: inline-block;
     width: 45%;
 }
 
 .group-age-inter {
-    display: table-cell;
+    display: inline-block;
+    position: relative;
+    top: 9px;
     width: 10%;
-    vertical-align: middle;
+    vertical-align: top;
     text-align: center;
 }
 

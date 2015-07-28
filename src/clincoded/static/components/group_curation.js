@@ -106,12 +106,12 @@ var GroupCuration = React.createClass({
                 var hpoids = _.compact(rawHpoids.map(function(id) { return captureHpoid(id); }));
                 if (rawHpoids.length !== hpoids.length) {
                     formError = true;
-                    this.setFormErrors('hpoid', 'Use HPO IDs, e.g. HP:0000123');
+                    this.setFormErrors('hpoid', 'HPO IDs must be in the form “HP:NNNNNNN,” where N is a digit');
                 }
             }
 
             // Check that all NOT HPO terms appear valid
-            hpoTerms = this.getFormValue('hpoid');
+            hpoTerms = this.getFormValue('nothpoid');
             if (hpoTerms) {
                 var rawNotHpoids = _.compact(hpoTerms.toUpperCase().split(','));
                 var nothpoids = _.compact(rawNotHpoids.map(function(id) { return captureHpoid(id); }));
@@ -455,13 +455,13 @@ var GroupCuration = React.createClass({
 globals.curator_page.register(GroupCuration, 'curator_page', 'group-curation');
 
 
-function captureBase(s, re) {
+function captureBase(s, re, uppercase) {
     var match, matchResults = [];
 
     do {
         match = re.exec(s);
         if (match) {
-            matchResults.push(match[1]);
+            matchResults.push(uppercase ? match[1].toUpperCase() : match[1]);
         }
     } while(match);
     return matchResults;
@@ -470,13 +470,13 @@ function captureBase(s, re) {
 // Given a string, find all the comma-separated 'orphaXX' occurrences.
 // Return all orpha IDs in an array.
 function captureOrphas(s) {
-    return captureBase(s, /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi);
+    return captureBase(s, /(?:^|,|\s)orpha(\d+)(?=,|\s|$)/gi, true);
 }
 
 // Given a string, find all the comma-separated gene symbol occurrences.
 // Return all gene symbols in an array.
 function captureGenes(s) {
-    return s ? captureBase(s, /(?:^|,|\s*)([a-zA-Z](?:\w)*)(?=,|\s*|$)/gi) : null;
+    return s ? captureBase(s, /(?:^|,|\s*)([a-zA-Z](?:\w)*)(?=,|\s*|$)/gi, true) : null;
 }
 
 // Given a string, find all the comma-separated PMID occurrences.
@@ -486,7 +486,7 @@ function capturePmids(s) {
 }
 
 function captureHpoid(s) {
-    var match = s.match(/^ *(HP:\d{7}) *$/i);
+    var match = s.toUpperCase().match(/^ *(HP:\d{7}) *$/i);
     return match ? match[1] : null;
 }
 
