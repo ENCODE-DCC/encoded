@@ -1,6 +1,8 @@
 #cloud-config
 
-# Must copy private ssl keys manually to /etc/nginx/ssl/*/server.key.
+# $ aws ec2 run-instances --user-data file://nginx.yml --security-groups "ssh-dns" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2
+# Must copy private ssl keys manually to /etc/nginx/ssl/*/server.key then restart nginx.
+# Choose instance size based on network performance required.
 
 apt_sources:
 - source: ppa:nginx/stable
