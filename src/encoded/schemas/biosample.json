@@ -787,6 +787,6 @@
         "constructs.target.label": 1.0,
         "constructs.target.aliases": 1.0,
         "constructs.target.gene_name": 1.0,
-        "award.pi": 1.0
+        "award.pi.title": 1.0
     }
 }
