@@ -695,7 +695,7 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
@@ -808,10 +808,10 @@ var AuditMixin = audit.AuditMixin;
             return (
                     <div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
+                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div>
+                            </div> : ''}
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
