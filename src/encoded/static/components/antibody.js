@@ -157,7 +157,7 @@ var Lot = module.exports.Lot = React.createClass({
                         {context.antigen_description ?
                             <div data-test="antigendescription">
                                 <dt>Antigen description</dt>
-                                <dd>{context.antigen_description}</dd>
+                                <dd className="sentence-case">{context.antigen_description}</dd>
                             </div>
                         : null}
 
