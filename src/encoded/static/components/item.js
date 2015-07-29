@@ -271,7 +271,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required && !p.default) {
+            if (!p.default) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control">{options}</select>;
