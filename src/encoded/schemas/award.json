@@ -91,7 +91,7 @@
         "name": 1.0,
         "title": 1.0,
         "project": 1.0,
-        "pi": 1.0
+        "pi.title": 1.0
     },
     "changelog": "/profiles/changelogs/award.md"
 }
