@@ -98,7 +98,8 @@ var Form = module.exports.Form = React.createClass({
                     schema={this.props.schema}
                     defaultValue={this.props.defaultValue}
                     externalValidation={this.state.externalValidation}
-                    onUpdate={this.handleUpdate} />
+                    onUpdate={this.handleUpdate}
+                    onSubmit={this.save} />
                 <div className="pull-right">
                     <a href="" className="btn btn-default">Cancel</a>
                     {' '}
@@ -124,6 +125,7 @@ var Form = module.exports.Form = React.createClass({
 
     save: function(e) {
         e.preventDefault();
+        e.stopPropagation();
         var value = this.state.value.toJS();
         filterValue(value);
         var method = this.props.method;

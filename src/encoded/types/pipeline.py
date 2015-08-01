@@ -30,6 +30,9 @@ class Pipeline(Item):
         'analysis_steps.current_version.software_versions',
         'analysis_steps.current_version.software_versions.software',
         'analysis_steps.current_version.software_versions.software.references',
+        'analysis_steps.versions',
+        'analysis_steps.versions.software_versions',
+        'analysis_steps.versions.software_versions.software',
         'lab',
         'award.pi.lab',
     ]
@@ -81,6 +84,17 @@ class AnalysisStep(Item):
         if version_objects:
             current = max(version_objects, key=lambda obj: obj['version'])
             return current['@id']
+
+    @calculated_property(schema={
+        "title": "Versions",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "analysis_step_version",
+        },
+    })
+    def versions(self, request, versions):
+        return paths_filtered_by_status(request, versions)
 
 
 @collection(

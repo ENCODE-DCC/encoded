@@ -81,19 +81,30 @@ class ItemWithAttachment(Item):
         download_meta = downloads[prop_name] = {}
 
         try:
-            mime_type_declared, charset, data = parse_data_uri(href)
+            mime_type, charset, data = parse_data_uri(href)
         except (ValueError, TypeError):
             msg = 'Could not parse data URI.'
             raise ValidationFailure('body', [prop_name, 'href'], msg)
         if charset is not None:
             download_meta['charset'] = charset
+
+        # Make sure the file extensions matches the mimetype
+        download_meta['download'] = filename = attachment['download']
+        mime_type_from_filename, _ = mimetypes.guess_type(filename)
+        if mime_type:
+            if not mimetypes_are_equal(mime_type, mime_type_from_filename):
+                raise ValidationFailure(
+                    'body', [prop_name, 'href'],
+                    'Wrong file extension for %s mimetype.' % mime_type)
+        else:
+            mime_type = mime_type_from_filename
+
         # Make sure the mimetype appears to be what the client says it is
         mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
-        if mime_type_declared and not mimetypes_are_equal(
-                mime_type_declared, mime_type_detected):
+        if not mimetypes_are_equal(mime_type, mime_type_detected):
             msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
             raise ValidationFailure('body', [prop_name, 'href'], msg)
-        mime_type = mime_type_declared or mime_type_detected
+
         attachment['type'] = mime_type
         if mime_type is not None:
             download_meta['type'] = mime_type
@@ -106,15 +117,7 @@ class ItemWithAttachment(Item):
         else:
             if mime_type not in allowed_types:
                 raise ValidationFailure(
-                    'body', [prop_name, 'href'], 'Mimetype is not allowed.')
-
-        # Make sure the file extensions matches the mimetype
-        download_meta['download'] = filename = attachment['download']
-        mime_type_from_filename, _ = mimetypes.guess_type(filename)
-        if not mimetypes_are_equal(mime_type, mime_type_from_filename):
-            raise ValidationFailure(
-                'body', [prop_name, 'href'],
-                'Wrong file extension for %s mimetype.' % mime_type)
+                    'body', [prop_name, 'href'], 'Mimetype %s is not allowed.' % mime_type)
 
         # Validate images and store height/width
         major, minor = mime_type.split('/')
