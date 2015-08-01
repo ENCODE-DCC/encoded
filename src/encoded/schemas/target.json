@@ -105,6 +105,10 @@
         "dbxref": {
             "title": "External resources",
             "type": "array"
+        },
+        "gene_name": {
+            "title": "Gene name",
+            "type": "string"
         }
     },
     "boost_values": {

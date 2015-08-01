@@ -6,15 +6,24 @@ var Layout = require('./layout').Layout;
 var ItemPreview = require('./inputs').ItemPreview;
 var ObjectPicker = require('./inputs').ObjectPicker;
 var FileInput = require('./inputs').FileInput;
+var audit = require('./audit');
 var _ = require('underscore');
+
 var cx = require('react/lib/cx');
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var url = require('url');
         var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
         return (
             <div className="view-item">
                 <header className="row">
@@ -35,6 +44,7 @@ var Fallback = module.exports.Fallback = React.createClass({
 
 
 var Item = module.exports.Item = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -50,10 +60,16 @@ var Item = module.exports.Item = React.createClass({
                     <div className="col-sm-12">
                         <h2>{title}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <AuditIndicators context={context} key="biosample-audit" />
+                        </div>
                     </div>
                 </header>
-                <div className="row">
-                    {context.description ? <p className="description">{context.description}</p> : null}
+                <AuditDetail context={context} key="biosample-audit" />
+                <div className="row item-row">
+                    <div className="col-sm-12">
+                        {context.description ? <p className="description">{context.description}</p> : null}
+                    </div>
                     <Panel {...this.props} />
                 </div>
             </div>
@@ -75,8 +91,8 @@ var Panel = module.exports.Panel = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel');
         return (
-            <section className={itemClass}>
-                <div className="container">
+            <section className="col-sm-12">
+                <div className={itemClass}>
                     <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
@@ -157,7 +173,7 @@ var FetchedFieldset = React.createClass({
         var preview, fieldset;
 
         if (this.state.url) {
-            var previewUrl = '/search?mode=picker&@id=' + this.state.url;
+            var previewUrl = this.state.url;
             preview = (
                 <fetched.FetchedData>
                     <fetched.Param name="data" url={previewUrl} />
@@ -245,6 +261,9 @@ var jsonSchemaToFormSchema = function(attrs) {
     } else if (p.type == 'array') {
         props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
+    } else if (p.type == 'boolean') {
+        props.type = 'bool';
+        return ReactForms.schema.Scalar(props);
     } else {
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
@@ -252,7 +271,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required && !p.default) {
+            if (!p.default) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control">{options}</select>;
@@ -284,6 +303,9 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
+        }
+        if (p.formInput == 'textarea') {
+            props.input = <textarea rows="4" />;
         }
         return ReactForms.schema.Scalar(props);
     }
@@ -325,6 +347,10 @@ var FetchedForm = React.createClass({
 
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -335,9 +361,9 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -346,10 +372,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
+                    <FetchedForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         }
@@ -363,6 +389,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 {form}
             </div>
         );
+    },
+    finished: function(data) {
+      var url = data['@graph'][0]['@id'];
+      this.context.navigate(url);
     }
 });
 

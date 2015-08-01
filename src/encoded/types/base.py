@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pyramid.security import (
     ALL_PERMISSIONS,
     Allow,
@@ -6,9 +7,18 @@ from pyramid.security import (
     DENY_ALL,
     Everyone,
 )
-from pyramid.threadlocal import get_current_request
-from .. import contentbase
+from pyramid.traversal import (
+    find_root,
+    traverse,
+)
+import contentbase
 from ..schema_formats import is_accession
+
+
+@lru_cache()
+def _award_viewing_group(award_uuid, root):
+    award = root.get_by_uuid(award_uuid)
+    return award.upgrade_properties().get('viewing_group')
 
 
 ALLOW_EVERYONE_VIEW = [
@@ -19,12 +29,12 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
-ALLOW_AUTHENTICATED_VIEW = [
-    (Allow, Authenticated, 'view'),
+ALLOW_VIEWING_GROUP_VIEW = [
+    (Allow, 'role.viewing_group_member', 'view'),
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
-    (Allow, Authenticated, 'view'),
+    (Allow, 'role.viewing_group_member', 'view'),
     (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
 ]
@@ -37,7 +47,8 @@ ALLOW_CURRENT = [
 ONLY_ADMIN_VIEW = [
     (Allow, 'group.admin', ALL_PERMISSIONS),
     (Allow, 'group.read-only-admin', ['view']),
-    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit']),
+    # Avoid schema validation errors during audit
+    (Allow, 'remoteuser.EMBED', ['view', 'expand', 'audit', 'import_items']),
     (Allow, 'remoteuser.INDEXER', ['view', 'index']),
     DENY_ALL,
 ]
@@ -51,12 +62,12 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
     if include is not None:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') in include
+            if traverse(request.root, path)['context'].__json__(request).get('status') in include
         ]
     else:
         return [
             path for path in paths
-            if request.embed(path, '@@object').get('status') not in exclude
+            if traverse(request.root, path)['context'].__json__(request).get('status') not in exclude
         ]
 
 
@@ -116,11 +127,15 @@ class Item(contentbase.Item):
         'not pursued': ALLOW_CURRENT,
 
         # dataset / experiment
-        'release ready': ALLOW_AUTHENTICATED_VIEW,
+        'release ready': ALLOW_VIEWING_GROUP_VIEW,
         'revoked': ALLOW_CURRENT,
 
         # publication
         'published': ALLOW_CURRENT,
+
+        # pipeline
+        'active': ALLOW_CURRENT,
+        'archived': ALLOW_CURRENT,
     }
 
     @property
@@ -144,6 +159,11 @@ class Item(contentbase.Item):
         if 'lab' in properties:
             lab_submitters = 'submits_for.%s' % properties['lab']
             roles[lab_submitters] = 'role.lab_submitter'
+        if 'award' in properties:
+            viewing_group = _award_viewing_group(properties['award'], find_root(self))
+            if viewing_group is not None:
+                viewing_group_members = 'viewing_group.%s' % viewing_group
+                roles[viewing_group_members] = 'role.viewing_group_member'
         return roles
 
     def unique_keys(self, properties):
@@ -156,39 +176,47 @@ class Item(contentbase.Item):
         return keys
 
 
-def contextless_has_permission(permission):
-    request = get_current_request()
-    return request.has_permission('forms', request.root)
+class SharedItem(Item):
+    ''' An Item visible to all authenticated users while "proposed" or "in progress".
+    '''
+    def __ac_local_roles__(self):
+        roles = {}
+        properties = self.upgrade_properties().copy()
+        if 'lab' in properties:
+            lab_submitters = 'submits_for.%s' % properties['lab']
+            roles[lab_submitters] = 'role.lab_submitter'
+        roles[Authenticated] = 'role.viewing_group_member'
+        return roles
 
 
 @contentbase.calculated_property(context=Item.Collection, category='action')
-def add(item_uri, item_type, has_permission):
-    if has_permission('add') and contextless_has_permission('forms'):
+def add(context, request):
+    if request.has_permission('add') and request.has_permission('forms', request.root):
         return {
             'name': 'add',
             'title': 'Add',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': '{item_uri}#!add'.format(item_uri=item_uri),
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!add'.format(item_uri=request.resource_path(context)),
         }
 
 
 @contentbase.calculated_property(context=Item, category='action')
-def edit(item_uri, item_type, has_permission):
-    if has_permission('edit') and contextless_has_permission('forms'):
+def edit(context, request):
+    if request.has_permission('edit') and request.has_permission('forms', request.root):
         return {
             'name': 'edit',
             'title': 'Edit',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + '#!edit',
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!edit'.format(item_uri=request.resource_path(context)),
         }
 
 
 @contentbase.calculated_property(context=Item, category='action')
-def edit_json(item_uri, item_type, has_permission):
-    if has_permission('edit'):
+def edit_json(context, request):
+    if request.has_permission('edit'):
         return {
             'name': 'edit-json',
             'title': 'Edit JSON',
-            'profile': '/profiles/{item_type}.json'.format(item_type=item_type),
-            'href': item_uri + '#!edit-json',
+            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }

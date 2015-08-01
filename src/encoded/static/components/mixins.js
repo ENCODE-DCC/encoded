@@ -42,6 +42,11 @@ var parseAndLogError = module.exports.parseAndLogError = function (cause, respon
 };
 
 
+var contentTypeIsJSON = module.exports.contentTypeIsJSON = function (content_type) {
+    return (content_type || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
+};
+
+
 module.exports.RenderLess = {
     shouldComponentUpdate: function (nextProps, nextState) {
         var key;
@@ -74,40 +79,37 @@ class Timeout {
 
 module.exports.Persona = {
     childContextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        session: React.PropTypes.object,
+        session_properties: React.PropTypes.object
     },
 
     getChildContext: function() {
         return {
-            fetch: this.fetch
+            fetch: this.fetch,
+            session: this.state.session,
+            session_properties: this.state.session_properties
         };
     },
 
     getInitialState: function () {
         return {
-            loadingComplete: false,
-            session: {}
+            session: null,
+            session_properties: {}
         };
     },
 
     componentDidMount: function () {
         // Login / logout actions must be deferred until persona is ready.
-        this.extractSessionCookie();
-        $script.ready('persona', this.configurePersona);
-    },
-
-    ajaxPrefilter: function (options, original, xhr) {
-        var http_method = options.type;
-        if (http_method === 'GET' || http_method === 'HEAD') return;
-        var session = this.state.session;
-        var userid = session['auth.userid'];
-        if (userid) {
-            // XXX Server should use this to check user is logged in
-            xhr.setRequestHeader('X-Session-Userid', userid);
+        var session_cookie = this.extractSessionCookie()
+        var session = this.parseSessionCookie(session_cookie);
+        if (session['auth.userid']) {
+            this.fetchSessionProperties();
         }
-        if (session._csrft_) {
-            xhr.setRequestHeader('X-CSRF-Token', session._csrft_);
-        }
+        this.setProps({
+            href: window.location.href,
+            session_cookie: session_cookie
+        });
     },
 
     fetch: function (url, options) {
@@ -121,7 +123,7 @@ module.exports.Persona = {
             //    // Server uses this to check user is logged in
             //    headers['X-If-Match-User'] = userid;
             //}
-            if (session._csrft_) {
+            if (session && session._csrft_) {
                 headers['X-CSRF-Token'] = session._csrft_;
             }
         }
@@ -137,33 +139,47 @@ module.exports.Persona = {
             var stats_header = response.headers.get('X-Stats') || '';
             request.server_stats = require('querystring').parse(stats_header);
             request.etag = response.headers.get('ETag');
-            this.extractSessionCookie();
+            var session_cookie = this.extractSessionCookie();
+            if (this.props.session_cookie !== session_cookie) {
+                this.setProps({session_cookie: session_cookie});
+            }
         });
         return request;
     },
 
     extractSessionCookie: function () {
         var cookie = require('cookie-monster');
-        var session_cookie = cookie(document).get('session');
-        if (this.props.session_cookie !== session_cookie) {
-            this.setProps({session_cookie: session_cookie});
-        }
+        return cookie(document).get('session');
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.props.session_cookie !== nextProps.session_cookie) {
-            this.setState({
-                session: this.parseSessionCookie(nextProps.session_cookie)
-            });
+        if (!this.state.session || (this.props.session_cookie !== nextProps.session_cookie)) {
+            var nextState = {};
+            nextState.session = this.parseSessionCookie(nextProps.session_cookie);
+            if (!nextState.session['auth.userid']) {
+                nextState.session_properties = {};
+            } else if (nextState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
+                this.fetchSessionProperties();
+            }
+            this.setState(nextState);
         }
     },
 
     componentDidUpdate: function (prevProps, prevState) {
-        if (prevState.session['auth.userid'] && !this.state.session['auth.userid']) {
-            // Session expired.
-            $script.ready('persona', function () {
-                navigator.id.logout();
-            });
+        var key;
+        if (this.props) {
+            for (key in this.props) {
+                if (this.props[key] !== prevProps[key]) {
+                    console.log('changed props: %s', key);
+                }
+            }
+        }
+        if (this.state) {
+            for (key in this.state) {
+                if (this.state[key] !== prevState[key]) {
+                    console.log('changed state: %s', key);
+                }
+            }
         }
     },
 
@@ -183,20 +199,27 @@ module.exports.Persona = {
         return session || {};
     },
 
-    configurePersona: function () {
-        this._persona_watched = false;
-        navigator.id.watch({
-            loggedInUser: this.state.session['auth.userid'] || null,
-            onlogin: this.handlePersonaLogin,
-            onlogout: this.handlePersonaLogout,
-            onmatch: this.handlePersonaMatch,
-            onready: this.handlePersonaReady
+    fetchSessionProperties: function() {
+        if (this.sessionPropertiesRequest) {
+            return;
+        }
+        this.sessionPropertiesRequest = true;
+        this.fetch('/session-properties', {
+            headers: {'Accept': 'application/json'}
+        })
+        .then(response => {
+            this.sessionPropertiesRequest = null;
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .then(session_properties => {
+            this.setState({session_properties: session_properties});
         });
     },
 
     handlePersonaLogin: function (assertion, retrying) {
-        this._persona_watched = true;
         if (!assertion) return;
+        this.sessionPropertiesRequest = true;
         this.fetch('/login', {
             method: 'POST',
             headers: {
@@ -209,16 +232,18 @@ module.exports.Persona = {
             if (!response.ok) throw response;
             return response.json();
         })
-        .then(session => {
+        .then(session_properties => {
+            this.setState({session_properties: session_properties});
+            this.sessionPropertiesRequest = null;
             var next_url = window.location.href;
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
-            this.navigate(next_url, {replace: true}).then(() => {
-                this.setState({loadingComplete: true});
-            });
+            this.navigate(next_url, {replace: true});
         }, err => {
+            this.sessionPropertiesRequest = null;
             parseError(err).then(data => {
+                // Server session creds might have changed.
                 if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
                         window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
@@ -226,16 +251,24 @@ module.exports.Persona = {
                     }
                 }
                 // If there is an error, show the error messages
-                navigator.id.logout();
                 this.setProps({context: data});
-                this.setState({loadingComplete: true});
             });
         });
     },
 
-    handlePersonaLogout: function () {
-        this._persona_watched = true;
-        console.log("Persona thinks we need to log out");
+    triggerLogin: function (event) {
+        console.log('Logging in (persona) ');
+        if (this.state.session && !this.state.session._csrft_) {
+            this.fetch('/session');
+        }
+        $script.ready('persona', () => {
+            var request_params = {}; // could be site name
+            navigator.id.get(this.handlePersonaLogin, request_params);
+        });
+    },
+
+    triggerLogout: function (event) {
+        console.log('Logging out (persona)');
         var session = this.state.session;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
@@ -258,30 +291,6 @@ module.exports.Persona = {
                 this.setProps({context: data});
             });
         });
-    },
-
-    handlePersonaMatch: function () {
-        this._persona_watched = true;
-        this.setState({loadingComplete: true});
-    },
-
-    handlePersonaReady: function () {
-        console.log('persona ready');
-        // Handle Safari https://github.com/mozilla/persona/issues/3905
-        if (!this._persona_watched) {
-            this.setState({loadingComplete: true});
-        }
-    },
-
-    triggerLogin: function (event) {
-        var request_params = {}; // could be site name
-        console.log('Logging in (persona) ');
-        navigator.id.request(request_params);
-    },
-
-    triggerLogout: function (event) {
-        console.log('Logging out (persona)');
-        navigator.id.logout();
     }
 };
 
@@ -302,7 +311,8 @@ module.exports.HistoryAndTriggers = {
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
     childContextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func
+        adviseUnsavedChanges: React.PropTypes.func,
+        navigate: React.PropTypes.func
     },
 
     adviseUnsavedChanges: function () {
@@ -318,10 +328,16 @@ module.exports.HistoryAndTriggers = {
 
     getChildContext: function() {
         return {
-            adviseUnsavedChanges: this.adviseUnsavedChanges
+            adviseUnsavedChanges: this.adviseUnsavedChanges,
+            navigate: this.navigate
         };
     },
 
+    getDefaultProps: function() {
+        return {
+            slow: false
+        };
+    },
 
     getInitialState: function () {
         return {
@@ -356,9 +372,6 @@ module.exports.HistoryAndTriggers = {
             window.onhashchange = this.onHashChange;
         }
         window.onbeforeunload = this.handleBeforeUnload;
-        if (this.props.href !== window.location.href) {
-            this.setProps({href: window.location.href});
-        }
     },
 
     onHashChange: function (event) {
@@ -431,6 +444,9 @@ module.exports.HistoryAndTriggers = {
 
         // Skip links with a different target
         if (target.getAttribute('target')) return;
+
+        // Skip @@download links
+        if (href.indexOf('/@@download') != -1) return;
 
         // With HTML5 history supported, local navigation is passed
         // through the navigate method.
@@ -523,15 +539,25 @@ module.exports.HistoryAndTriggers = {
             return;
         }
 
+        // options.skipRequest only used by collection search form
+        // options.replace only used handleSubmit, handlePopState, handlePersonaLogin
         options = options || {};
         href = url.resolve(this.props.href, href);
 
+        // Strip url fragment.
+        var fragment = '';
+        var href_hash_pos = href.indexOf('#');
+        if (href_hash_pos > -1) {
+            fragment = href.slice(href_hash_pos);
+            href = href.slice(0, href_hash_pos);
+        }
+
         if (!this.historyEnabled) {
             if (options.replace) {
-                window.location.replace(href);
+                window.location.replace(href + fragment);
             } else {
-                var old_path = window.location.pathname + window.location.search;
-                window.location.assign(href);
+                var old_path = ('' + window.location).split('#')[0];
+                window.location.assign(href + fragment);
                 if (old_path == href) {
                     window.location.reload();
                 }
@@ -545,13 +571,13 @@ module.exports.HistoryAndTriggers = {
             request.abort();
         }
 
-        if (options.replace) {
-            window.history.replaceState(window.state, '', href);
-        } else {
-            window.history.pushState(window.state, '', href);
-        }
         if (options.skipRequest) {
-            this.setProps({href: href});
+            if (options.replace) {
+                window.history.replaceState(window.state, '', href + fragment);
+            } else {
+                window.history.pushState(window.state, '', href + fragment);
+            }
+            this.setProps({href: href + fragment});
             return;
         }
 
@@ -566,7 +592,31 @@ module.exports.HistoryAndTriggers = {
         });
 
         var promise = request.then(response => {
-            if (!response.ok) throw response;
+            // navigate normally to URL of unexpected non-JSON response so back button works.
+            if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
+                if (options.replace) {
+                    window.location.replace(href + fragment);
+                } else {
+                    var old_path = ('' + window.location).split('#')[0];
+                    window.location.assign(href + fragment);
+                    if (old_path == href) {
+                        window.location.reload();
+                    }
+                }
+            }
+            // The URL may have redirected
+            var response_url = response.url || href;
+            if (options.replace) {
+                window.history.replaceState(null, '', response_url + fragment);
+            } else {
+                window.history.pushState(null, '', response_url + fragment);
+            }
+            this.setProps({
+                href: response_url + fragment
+            });
+            if (!response.ok) {
+                throw response;
+            }
             return response.json();
         })
         .catch(parseAndLogError.bind(undefined, 'contextRequest'))
@@ -577,8 +627,7 @@ module.exports.HistoryAndTriggers = {
         }
 
         this.setProps({
-            contextRequest: request,
-            href: href
+            contextRequest: request
         });
         return request;
     },

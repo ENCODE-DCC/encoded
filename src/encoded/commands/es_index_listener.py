@@ -6,7 +6,7 @@ Example.
 """
 
 from webtest import TestApp
-from ..storage import DBSession
+from contentbase import STORAGE
 
 import atexit
 import datetime
@@ -44,6 +44,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         timeout=timeout,
     )
     max_xid = 0
+    DBSession = testapp.app.registry[STORAGE].write.DBSession
     engine = DBSession.bind  # DBSession.bind is configured by app init
     # noqa http://docs.sqlalchemy.org/en/latest/faq.html#how-do-i-get-at-the-raw-dbapi-connection-when-using-an-engine
     connection = engine.pool.unique_connection()
@@ -64,7 +65,8 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     recovery, = cursor.fetchone()
                     if not recovery:
                         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
-                        cursor.execute("""LISTEN "encoded.transaction";""")
+                        cursor.execute("""LISTEN "contentbase.transaction";""")
+                        cursor.execute("""LISTEN "encoded.transaction";""")  # BBB
                         log.debug("Listener connected")
                         listening = True
 

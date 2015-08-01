@@ -106,7 +106,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} id="biosample-audit" />
+                <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">
@@ -215,10 +215,12 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <dd>{context.lab.title}</dd>
                         </div>
 
-                        <div data-test="grant">
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
-                        </div>
+                        {context.award.pi && context.award.pi.lab ?
+                            <div data-test="awardpi">
+                                <dt>Award PI</dt>
+                                <dd>{context.award.pi.lab.title}</dd>
+                            </div>
+                        : null}
 
                         {context.aliases.length ?
                             <div data-test="aliases">

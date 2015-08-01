@@ -1,4 +1,4 @@
-from ..migrator import upgrade_step
+from contentbase import upgrade_step
 from .shared import ENCODE2_AWARDS
 
 

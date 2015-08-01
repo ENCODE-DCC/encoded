@@ -8,7 +8,7 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from .contentbase import LOCATION_ROOT
+from contentbase import ROOT
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 
@@ -92,7 +92,7 @@ class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
 
 def basic_auth_check(username, password, request):
     # We may get called before the context is found and the root set
-    root = request.registry[LOCATION_ROOT]
+    root = request.registry[ROOT]
     collection = root['access-keys']
     try:
         access_key = collection[username]
@@ -111,9 +111,7 @@ def basic_auth_check(username, password, request):
     #if new_hash:
     #    replace_user_hash(user, new_hash)
 
-    principals = ['userid.' + properties['user']]
-
-    return principals
+    return []
 
 
 def generate_user():

@@ -12,10 +12,12 @@ def minitestdata(app, connection):
     }
     testapp = TestApp(app, environ)
 
-    from .sample_data import URL_COLLECTION
-    for item_type in ['organism']:  # , 'source', 'user']:
-        item = URL_COLLECTION[item_type][0]
-        testapp.post_json('/' + item_type, item, status=201)
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    testapp.post_json('/organism', item, status=201)
 
     yield
     tx.rollback()
@@ -32,9 +34,12 @@ def minitestdata2(app, connection):
     }
     testapp = TestApp(app, environ)
 
-    from . import sample_data
-    for item_type in ['organism']:  # , 'source', 'user']:
-        sample_data.load(testapp, item_type)
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    testapp.post_json('/organism', item, status=201)
 
     yield
     tx.rollback()
@@ -46,42 +51,42 @@ def test_fixtures1(testapp):
 
     Still need to inspect the sql log to verify fixture correctness.
     """
-    item_type = 'organism'
-    res = testapp.get('/' + item_type).maybe_follow()
+    res = testapp.get('/organism').maybe_follow()
     items = res.json['@graph']
-    count1 = len(items)
-    assert len(items)
+    assert len(items) == 1
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json('/' + item_type, item, status=422)
+    res = testapp.post_json('/organism', item, status=422)
     assert res.json['errors']
 
-    res = testapp.get('/' + item_type).maybe_follow()
+    res = testapp.get('/organism').maybe_follow()
     items = res.json['@graph']
-    assert len(items)
+    assert len(items) == 1
 
-    from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[item_type][1]
-    testapp.post_json('/' + item_type, item, status=201)
+    item = {
+        'name': 'mouse',
+        'scientific_name': 'Mus musculus',
+        'taxon_id': '10090',
+    }
+    testapp.post_json('/organism', item, status=201)
 
-    res = testapp.get('/' + item_type).maybe_follow()
+    res = testapp.get('/organism').maybe_follow()
     items = res.json['@graph']
-    count2 = len(items)
-    assert count2 == count1 + 1
+    assert len(items) == 2
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json('/' + item_type, item, status=422)
+    res = testapp.post_json('/organism', item, status=422)
     assert res.json['errors']
 
-    res = testapp.get('/' + item_type).maybe_follow()
+    res = testapp.get('/organism').maybe_follow()
     items = res.json['@graph']
-    assert len(items) == count2
+    assert len(items) == 2
 
 
 def test_fixtures2(minitestdata2, testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
     res = testapp.get('/organisms/')
     items = res.json['@graph']
-    assert len(items)
+    assert len(items) == 1

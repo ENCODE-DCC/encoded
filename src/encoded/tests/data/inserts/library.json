@@ -4,13 +4,13 @@
         "aliases": [
             "richard-myers:SL14572"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS000AAA",
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
-        "fragmentation_method": "bioruptor twin",
+        "fragmentation_method": "sonication (Bioruptor Twin)",
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
         "lysis_method": "see document",
@@ -27,13 +27,13 @@
         "aliases": [
             "richard-myers:SL16339"
         ],
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS001AAA",
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
-        "fragmentation_method": "bioruptor twin",
+        "fragmentation_method": "sonication (Bioruptor Twin)",
         "lab": "richard-myers",
         "library_size_selection_method": "SPRI beads AMPURE",
         "lysis_method": "see document",
@@ -56,7 +56,7 @@
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
         ],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_method": "covaris sheering",
+        "fragmentation_method": "shearing (Covaris generic)",
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
@@ -80,7 +80,7 @@
             "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
         ],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
-        "fragmentation_method": "covaris sheering",
+        "fragmentation_method": "shearing (Covaris generic)",
         "lab": "thomas-gingeras",
         "library_size_selection_method": "gel",
         "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
@@ -193,7 +193,7 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
         "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_method": "chemical (part of Illumina TruSeq mRNA Kit)",
+        "fragmentation_method": "chemical (Illumina TruSeq)",
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
@@ -206,12 +206,12 @@
     },
     {
         "accession": "ENCLB072ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication",
+        "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_id": "SO:0000352",
@@ -222,12 +222,12 @@
     },
     {
         "accession": "ENCLB304ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication",
+        "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_id": "SO:0000352",
@@ -238,12 +238,12 @@
     },
     {
         "accession": "ENCLB071ZZZ",
-        "award": "RC2HG005602",
+        "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
-        "fragmentation_method": "sonication",
+        "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
         "library_size_selection_method": "gel",
         "nucleic_acid_term_id": "SO:0000352",
@@ -261,7 +261,7 @@
             "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
         ],
         "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
-        "fragmentation_method": "chemical (part of Illumina TruSeq mRNA Kit)",
+        "fragmentation_method": "chemical (Illumina TruSeq)",
         "lab": "brenton-graveley",
         "library_size_selection_method": "SPRI beads",
         "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
@@ -274,7 +274,7 @@
     },
     {
         "accession": "ENCLB163ZZZ",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
@@ -290,7 +290,7 @@
     {
         "_test": "test -new",
         "accession": "ENCLB158ZZZ",
-        "award": "U54HG004576",
+        "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
@@ -310,7 +310,7 @@
         "documents": [],
         "uuid": "0cbd1597-831a-4628-9cd0-c428b208d259",
         "strand_specificity": false,
-        "fragmentation_method": "covarius",
+        "fragmentation_method": "shearing (Covaris generic)",
         "status": "in progress",
         "nucleic_acid_term_name": "DNA",
         "treatments": [],
@@ -320,19 +320,17 @@
         "lab": "/labs/richard-myers/",
         "depleted_in_term_id": [],
         "size_range": "100-300",
-        "paired_ended": false,
         "biosample": "ENCBS039ENC"
     },
     {
         "accession": "ENCLB723GTS",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "depleted_in_term_id": [],
         "depleted_in_term_name": [],
         "lab": "michael-snyder/",
         "nucleic_acid_term_id": "SO:0000352",
         "nucleic_acid_term_name": "DNA",
-        "paired_ended": false,
         "status": "released",
         "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
@@ -340,12 +338,11 @@
     },
     {
         "accession": "ENCLB209APR",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_id": "SO:0000352",
         "nucleic_acid_term_name": "DNA",
-        "paired_ended": false,
         "status": "released",
         "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",
@@ -353,12 +350,11 @@
     },
     {
         "accession": "ENCLB209APS",
-        "award": "U54HG004558",
+        "award": "ENCODE2",
         "biosample": "ENCBS630AAA",
         "lab": "michael-snyder",
         "nucleic_acid_term_id": "SO:0000352",
         "nucleic_acid_term_name": "DNA",
-        "paired_ended": false,
         "status": "released",
         "strand_specificity": false,
         "submitted_by": "amet.fusce@est.fermentum",

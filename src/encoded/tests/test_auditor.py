@@ -2,19 +2,19 @@ import pytest
 
 
 def raising_checker(value, system):
-    from ..auditor import AuditFailure
+    from contentbase.auditor import AuditFailure
     if not value.get('checker1'):
         raise AuditFailure('testchecker', 'Missing checker1')
 
 
 def returning_checker(value, system):
-    from ..auditor import AuditFailure
+    from contentbase.auditor import AuditFailure
     if not value.get('checker1'):
         return AuditFailure('testchecker', 'Missing checker1')
 
 
 def yielding_checker(value, system):
-    from ..auditor import AuditFailure
+    from contentbase.auditor import AuditFailure
     if not value.get('checker1'):
         yield AuditFailure('testchecker', 'Missing checker1')
 
@@ -29,7 +29,7 @@ def has_condition1(value, system):
     yielding_checker,
 ])
 def auditor(request):
-    from ..auditor import Auditor
+    from contentbase.auditor import Auditor
     auditor = Auditor()
     auditor.add_audit_checker(request.param, 'test')
     return auditor
@@ -37,56 +37,66 @@ def auditor(request):
 
 @pytest.fixture
 def auditor_conditions():
-    from ..auditor import Auditor
+    from contentbase.auditor import Auditor
     auditor = Auditor()
     auditor.add_audit_checker(raising_checker, 'test', has_condition1)
     return auditor
 
 
-def test_audit_pass(auditor, monkeypatch):
+@pytest.fixture
+def dummy_request(registry):
+    from pyramid.testing import DummyRequest
+    _embed = {}
+    request = DummyRequest(registry=registry, _embed=_embed, embed=lambda path: _embed[path])
+    return request
+
+
+def test_audit_pass(auditor, dummy_request):
     value = {'checker1': True}
-    monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
-    errors = auditor.audit(request=None, path='/foo', types='test')
+    dummy_request._embed['/foo/@@embedded'] = value
+    errors = auditor.audit(request=dummy_request, path='/foo/', types='test')
     assert errors == []
 
 
-def test_audit_failure(auditor, monkeypatch):
+def test_audit_failure(auditor, dummy_request):
     value = {}
-    monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
-    error, = auditor.audit(request=None, path='/foo', types='test')
+    dummy_request._embed['/foo/@@embedded'] = value
+    error, = auditor.audit(request=dummy_request, path='/foo/', types='test')
     assert error['detail'] == 'Missing checker1'
     assert error['category'] == 'testchecker'
     assert error['level'] == 0
-    assert error['path'] == '/foo'
+    assert error['path'] == '/foo/'
 
 
-def test_audit_conditions(auditor_conditions, monkeypatch):
+def test_audit_conditions(auditor_conditions, dummy_request):
     value = {}
-    monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
-    assert auditor_conditions.audit(request=None, path='/foo', types='test') == []
+    dummy_request._embed['/foo/@@embedded'] = value
+    assert auditor_conditions.audit(request=dummy_request, path='/foo/', types='test') == []
     value = {'condition1': True}
-    error, = auditor_conditions.audit(request=None, path='/foo', types='test')
+    dummy_request._embed['/foo/@@embedded'] = value
+    error, = auditor_conditions.audit(request=dummy_request, path='/foo/', types='test')
     assert error['detail'] == 'Missing checker1'
     assert error['category'] == 'testchecker'
     assert error['level'] == 0
-    assert error['path'] == '/foo'
+    assert error['path'] == '/foo/'
 
 
-def test_declarative_config(monkeypatch):
+def test_declarative_config(dummy_request):
+    from contentbase.interfaces import AUDITOR
     from pyramid.config import Configurator
     config = Configurator()
-    config.include('..auditor')
+    config.include('contentbase.auditor')
     config.include('.testing_auditor')
     config.commit()
 
-    auditor = config.registry['auditor']
+    auditor = config.registry[AUDITOR]
     value = {'condition1': True}
-    monkeypatch.setattr("encoded.auditor.embed", lambda request, path: value)
-    error, = auditor.audit(request=None, path='/foo', types='testing_auditor')
+    dummy_request._embed['/foo/@@embedded'] = value
+    error, = auditor.audit(request=dummy_request, path='/foo/', types='testing_auditor')
     assert error['detail'] == 'Missing checker1'
     assert error['category'] == 'testchecker'
     assert error['level'] == 0
-    assert error['path'] == '/foo'
+    assert error['path'] == '/foo/'
 
 
 def test_link_target_audit_fail(testapp):

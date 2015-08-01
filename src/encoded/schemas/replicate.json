@@ -22,7 +22,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "antibody": {
             "title": "Antibody",
@@ -57,32 +57,6 @@
             "type": "string",
             "linkTo": "library"
         },
-        "platform": {
-            "title": "Platform",
-            "description": "The measurement device used to collect data.",
-            "comment": "See platform.json for available identifiers.",
-            "type": "string",
-            "permission": "import_items",
-            "linkTo": "platform"
-        },
-        "paired_ended": {
-            "title": "Paired-end sequencing",
-            "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
-            "type": "boolean"
-        },
-        "read_length": {
-            "title": "Read length",
-            "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
-            "comment": "When submitting read length, must submit value for read length units.",
-            "type": "integer"
-        },
-        "read_length_units": {
-            "title": "Read length units",
-            "type": "string",
-            "enum": [
-                "nt"
-            ]
-        },
         "rbns_protein_concentration": {
             "title": "RBNS protein concentration",
             "description": "For use only with RNA Bind-n-Seq replicates to indicate the protein concentration.",
@@ -107,5 +81,24 @@
                 "proposed"
             ]
         }
-    }
+    },
+    "boost_values": {
+        "experiment.accession": 1.0,
+        "experiment.alternate_accessions": 1.0,
+        "aliases": 1.0,
+        "library.biosample.accession": 1.0,
+        "library.biosample.alternate_accessions": 1.0,
+        "library.biosample.aliases": 1.0,
+        "library.biosample.subcellular_fraction_term_name" : 1.0,
+        "library.biosample.donor.accession": 1.0,
+        "library.biosample.donor.alternate_accessions": 1.0,
+        "library.biosample.donor.organism.name": 1.0,
+        "antibody.accession": 1.0,
+        "antibody.alternate_accessions": 1.0,
+        "antibody.lot_id": 1.0,
+        "antibody.lot_id_alias": 1.0,
+        "antibody.product_id": 1.0,
+        "antibody.aliases": 1.0
+    },
+    "changelog": "/profiles/changelogs/replicate.md"
 }

@@ -36,15 +36,6 @@ GZIP_TYPES = [
     "CEL",
     "bam",
     "bed",
-    "bed_bed3",
-    "bed_bed6",
-    "bed_bedLogR",
-    "bed_bedMethyl",
-    "bed_bedRnaElements",
-    "bed_broadPeak",
-    "bed_gappedPeak",
-    "bed_narrowPeak",
-    "bed_peptideMapping",
     "csfasta",
     "csqual",
     "fasta",
@@ -95,39 +86,77 @@ def check_format(item, path):
         chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, item.get('assembly'))
 
     validate_map = {
-        'bam': ['-type=bam', chromInfo],
-        'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
-        'bedLogR': ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
-        'bed_bedLogR': ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
-        'bedMethyl': ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
-        'bed_bedMethyl': ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
-        'bigBed': ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
-        'bigWig': ['-type=bigWig', chromInfo],
-        'broadPeak': ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
-        'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
-        'fasta': ['-type=fasta'],
-        'fastq': ['-type=fastq'],
-        'gappedPeak': ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
-        'bed_gappedPeak': ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
-        'gtf': None,
-        'idat': ['-type=idat'],
-        'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
-        'bed_narrowPeak': ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
-        'rcc': ['-type=rcc'],
-        'tar': None,
-        'tsv': None,
-        '2bit': None,
-        'csfasta': ['-type=csfasta'],
-        'csqual': ['-type=csqual'],
-        'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
-        'CEL': None,
-        'sam': None,
-        'wig': None,
-        'hdf5': None,
-        'gff': None
+        ('fasta', None): ['-type=fasta'],
+        ('fastq', None): ['-type=fastq'],
+        ('bam', None): ['-type=bam', chromInfo],
+        ('bigWig', None): ['-type=bigWig', chromInfo],
+        ('bed', 'bed3'): ['-type=bed3', chromInfo],
+        ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
+        ('bed', 'bed6'): ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
+        ('bigBed', 'bed6'): ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+        ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+        ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+        ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+        ('bigBed', 'bedMethyl'): ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+        ('bed', 'broadPeak'): ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+        ('bigBed', 'broadPeak'): ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+        ('bed', 'gappedPeak'): ['-type=bed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+        ('bigBed', 'gappedPeak'): ['-type=bigBed12+3', chromInfo, '-as=%s/as/gappedPeak.as' % encValData],
+        ('bed', 'narrowPeak'): ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+        ('bigBed', 'narrowPeak'): ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+        ('bed', 'bedRnaElements'): ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
+        ('bigBed', 'bedRnaElements'): ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
+        ('bed', 'bedExonScore'): ['-type=bed6+3', chromInfo, '-as=%s/as/bedExonScore.as' % encValData],
+        ('bigBed', 'bedExonScore'): ['-type=bigBed6+3', chromInfo, '-as=%s/as/bedExonScore.as' % encValData],
+        ('bed', 'bedRrbs'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedRrbs.as' % encValData],
+        ('bigBed', 'bedRrbs'): ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedRrbs.as' % encValData],
+        ('bed', 'enhancerAssay'): ['-type=bed9+1', chromInfo, '-as=%s/as/enhancerAssay.as' % encValData],
+        ('bigBed', 'enhancerAssay'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/enhancerAssay.as' % encValData],
+        ('bed', 'modPepMap'): ['-type=bed9+7', chromInfo, '-as=%s/as/modPepMap.as' % encValData],
+        ('bigBed', 'modPepMap'): ['-type=bigBed9+7', chromInfo, '-as=%s/as/modPepMap.as' % encValData],
+        ('bed', 'pepMap'): ['-type=bed9+7', chromInfo, '-as=%s/as/pepMap.as' % encValData],
+        ('bigBed', 'pepMap'): ['-type=bigBed9+7', chromInfo, '-as=%s/as/pepMap.as' % encValData],
+        ('bed', 'openChromCombinedPeaks'): ['-type=bed9+12', chromInfo, '-as=%s/as/openChromCombinedPeaks.as' % encValData],
+        ('bigBed', 'openChromCombinedPeaks'): ['-type=bigBed9+12', chromInfo, '-as=%s/as/openChromCombinedPeaks.as' % encValData],
+        ('bed', 'peptideMapping'): ['-type=bed6+4', chromInfo, '-as=%s/as/peptideMapping.as' % encValData],
+        ('bigBed', 'peptideMapping'): ['-type=bigBed6+4', chromInfo, '-as=%s/as/peptideMapping.as' % encValData],
+        ('bed', 'shortFrags'): ['-type=bed6+21', chromInfo, '-as=%s/as/shortFrags.as' % encValData],
+        ('bigBed', 'shortFrags'): ['-type=bigBed6+21', chromInfo, '-as=%s/as/shortFrags.as' % encValData],
+        ('bed', 'encode_elements_H3K27ac'): ['-tab', '-type=bed9+1', chromInfo, '-as=%s/as/encode_elements_H3K27ac.as' % encValData],
+        ('bigBed', 'encode_elements_H3K27ac'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/encode_elements_H3K27ac.as' % encValData],
+        ('bed', 'encode_elements_H3K9ac'): ['-tab', '-type=bed9+1', chromInfo, '-as=%s/as/encode_elements_H3K9ac.as' % encValData],
+        ('bigBed', 'encode_elements_H3K9ac'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/encode_elements_H3K9ac.as' % encValData],
+        ('bed', 'encode_elements_H3K4me1'): ['-tab', '-type=bed9+1', chromInfo, '-as=%s/as/encode_elements_H3K4me1.as' % encValData],
+        ('bigBed', 'encode_elements_H3K4me1'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/encode_elements_H3K4me1.as' % encValData],
+        ('bed', 'encode_elements_H3K4me3'): ['-tab', '-type=bed9+1', chromInfo, '-as=%s/as/encode_elements_H3K4me3.as' % encValData],
+        ('bigBed', 'encode_elements_H3K4me3'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/encode_elements_H3K4me3.as' % encValData],
+        ('bed', 'dnase_master_peaks'): ['-tab', '-type=bed9+1', chromInfo, '-as=%s/as/dnase_master_peaks.as' % encValData],
+        ('bigBed', 'dnase_master_peaks'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/dnase_master_peaks.as' % encValData],
+        ('bed', 'encode_elements_dnase_tf'): ['-tab', '-type=bed5+1', chromInfo, '-as=%s/as/encode_elements_dnase_tf.as' % encValData],
+        ('bigBed', 'encode_elements_dnase_tf'): ['-tab', '-type=bigBed5+1', chromInfo, '-as=%s/as/encode_elements_dnase_tf.as' % encValData],
+        ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
+        ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
+        ('rcc', None): ['-type=rcc'],
+        ('idat', None): ['-type=idat'],
+        ('bedpe', None): ['-type=bed3+', chromInfo],
+        ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
+        ('gtf', None): None,
+        ('tar', None): None,
+        ('tsv', None): None,
+        ('csv', None): None,
+        ('2bit', None): None,
+        ('csfasta', None): ['-type=csfasta'],
+        ('csqual', None): ['-type=csqual'],
+        ('CEL', None): None,
+        ('sam', None): None,
+        ('wig', None): None,
+        ('hdf5', None): None,
+        ('gff', None): None
     }
 
-    validate_args = validate_map.get(item['file_format'])
+    validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))
     if validate_args is None:
         return errors
 
@@ -176,7 +205,7 @@ def check_file(item):
             'uploaded %d does not match item %d' % (key.size, item['file_size'])
 
     result = {
-        "accession": item['accession'],
+        "@id": item['@id'],
         "path": path,
         "file_size": key.size,
     }
@@ -244,7 +273,7 @@ def run(output, url, username, password, encValData, bucket, mirror):
     for item, result, errors in imap(check_file, files):
         output.write(json.dumps([item, result, errors]) + '\n')
         if errors:
-            sys.stderr.write(json.dumps([item['accession'], errors]) + '\n')
+            sys.stderr.write(json.dumps([item['@id'], errors]) + '\n')
 
 
 def main():

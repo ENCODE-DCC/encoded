@@ -30,22 +30,36 @@ def submitter_testapp(submitter, app, external_tx, zsa_savepoints):
 
 
 @pytest.fixture
+def viewing_group_member_testapp(viewing_group_member, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, viewing_group_member['uuid'])
+
+
+@pytest.fixture
+def remc_member_testapp(remc_member, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, remc_member['uuid'])
+
+
+@pytest.fixture
 def indexer_testapp(app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, 'INDEXER')
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_wrangler_post_non_lab_collection(wrangler_testapp, item_type):
-    from . import sample_data
-    sample_data.load(wrangler_testapp, item_type)
+def test_wrangler_post_non_lab_collection(wrangler_testapp):
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return wrangler_testapp.post_json('/organism', item, status=201)
 
 
-@pytest.mark.parametrize('item_type', ['organism', 'source'])
-def test_submitter_post_non_lab_collection(submitter_testapp, item_type):
-    from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[item_type][0].copy()
-    del item['uuid']
-    submitter_testapp.post_json('/' + item_type, item, status=403)
+def test_submitter_post_non_lab_collection(submitter_testapp):
+    item = {
+        'name': 'human',
+        'scientific_name': 'Homo sapiens',
+        'taxon_id': '9606',
+    }
+    return submitter_testapp.post_json('/organism', item, status=403)
 
 
 def test_submitter_post_update_experiment(submitter_testapp, lab, award):
@@ -69,33 +83,52 @@ def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
-def test_users_view_details_admin(submitter, testapp):
-    res = testapp.get(submitter['@id'] + '@@details')
+def test_user_view_details_admin(submitter, access_key, testapp):
+    res = testapp.get(submitter['@id'])
     assert 'email' in res.json
+    assert 'access_keys' in res.json
+    assert 'access_key_id' in res.json['access_keys'][0]
 
 
-def test_users_view_details_self(submitter, submitter_testapp):
-    res = submitter_testapp.get(submitter['@id'] + '@@details')
+def test_users_view_details_self(submitter, access_key, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
     assert 'email' in res.json
+    assert 'access_keys' in res.json
+    assert 'access_key_id' in res.json['access_keys'][0]
 
 
 def test_users_view_basic_authenticated(submitter, authenticated_testapp):
     res = authenticated_testapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_view_basic_anon(submitter, anontestapp):
     res = anontestapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_view_basic_indexer(submitter, indexer_testapp):
     res = indexer_testapp.get(submitter['@id'])
     assert 'title' in res.json
     assert 'email' not in res.json
+    assert 'access_keys' not in res.json
 
 
 def test_users_list_denied_authenticated(authenticated_testapp):
     authenticated_testapp.get('/users/', status=403)
+
+
+def test_viewing_group_member_view(viewing_group_member_testapp, experiment):
+    viewing_group_member_testapp.get(experiment['@id'], status=200)
+
+
+def test_remc_member_view_disallowed(remc_member_testapp, experiment):
+    remc_member_testapp.get(experiment['@id'], status=403)
+
+
+def test_remc_member_view_shared(remc_member_testapp, mouse_donor):
+    remc_member_testapp.get(mouse_donor['@id'], status=200)

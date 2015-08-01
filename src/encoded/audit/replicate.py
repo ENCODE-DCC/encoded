@@ -1,22 +1,7 @@
-from ..auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
-
-
-@audit_checker('replicate', frame='object')
-def audit_rep_platform(value, system):
-    '''
-    A replicate should no longer have platforms
-    Should be in the schema.
-    '''
-
-    if 'platform' in value:
-        detail = 'Replicate {} has a platform {}'.format(
-            value['uuid'],
-            value['platform']  # ['name']
-            )
-        raise AuditFailure('replicate with platform', detail, level='DCC_ACTION')
 
 
 @audit_checker('replicate', frame=['experiment'])
@@ -38,7 +23,7 @@ def audit_status_replicate(value, system):
         #  If any of the three cases exist, there is an error
         detail = '{} replicate {} is in {} experiment'.format(
             rep_status,
-            value['uuid'],
+            value['@id'],
             exp_status
             )
         raise AuditFailure('mismatched status', detail, level='DCC_ACTION')

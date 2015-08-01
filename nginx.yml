@@ -1,5 +1,12 @@
 #cloud-config
 
+# $ aws ec2 run-instances --user-data file://nginx.yml --security-groups "ssh-dns" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2
+# Must copy private ssl keys manually to /etc/nginx/ssl/*/server.key then restart nginx.
+# Choose instance size based on network performance required.
+
+apt_sources:
+- source: ppa:nginx/stable
+
 bootcmd:
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 
@@ -9,28 +16,13 @@ output:
 package_upgrade: true
 
 packages:
-- incron
-- nginx-light
+- nginx
 - ntp
-- python-boto
 - unattended-upgrades
 - update-notifier-common
 
 power_state:
   mode: reboot
-
-runcmd:
-- chown ec2upstream /etc/nginx/app-servers.conf
-
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
-
-users:
-- default
-- name: ec2upstream
-  gecos: Automatic nginx upstream servers config
-  inactive: true
-  system: true
 
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
@@ -45,16 +37,13 @@ write_files:
     };
     Unattended-Upgrade::Automatic-Reboot "true";
 
-- path: /etc/cron.d/update-nginx-upstream-servers
+- path: /etc/motd
   content: |
-    * * * * * ec2upstream /usr/local/bin/ec2upstream app production "keepalive 10;" /etc/nginx/app-servers.conf
-
-- path: /etc/incron.d/nginx-auto-reload
-  content: |
-    /etc/nginx/ IN_CLOSE_WRITE,IN_CREATE,IN_DELETE service nginx reload
-
-- path: /etc/nginx/app-servers.conf
-  content: ""
+    #########################################
+    ##         Nginx proxy server          ##
+    ##  For demo instances:                ##
+    ##  ssh <name>.instance.encodedcc.org  ##
+    #########################################
 
 - path: /etc/nginx/nginx.conf
   content: |
@@ -71,35 +60,47 @@ write_files:
         client_max_body_size 500m;
         default_type  application/octet-stream;
         keepalive_timeout  65;
-        ssl_certificate         /etc/nginx/ssl/encodeproject.org/server.crt;
-        ssl_certificate_key     /etc/nginx/ssl/encodeproject.org/server.key;
-        ssl_trusted_certificate /etc/nginx/ssl/encodeproject.org/ca-certs.pem;
         ssl_session_cache  shared:SSL:10m;
         ssl_session_timeout  10m;
-        include app-servers.conf;
+
+        proxy_buffers 8 16k;
+        proxy_send_timeout    5m;
+        proxy_read_timeout    5m;
+        send_timeout    5m;
+
+        upstream test {
+            server v28-test.instance.encodedcc.org;
+            keepalive 10;
+        }
+
         server {
-            listen  80;
+            listen 80;
             location = /robots.txt {
                 proxy_set_header  Host  $host;
                 proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
                 proxy_set_header  X-Forwarded-Proto  $scheme;
-                proxy_set_header  X-Forwarded-Port   $server_port;
                 proxy_pass  http://app;
                 proxy_http_version  1.1;
                 proxy_set_header  Connection  "";
             }
             location / {
+                if ($request_method !~ ^(GET)|(HEAD)$) {
+                    return 405;
+                }
                 return  301  https://$host$request_uri;
             }
         }
+
         server {
-            listen  443 ssl;
+            listen 443 ssl spdy;
+            server_name ~^(?<servername>[^.]+)\.demo\.encodedcc\.org$;
+            ssl_certificate         /etc/nginx/ssl/demo.encodedcc.org/server.chained.crt;
+            ssl_certificate_key     /etc/nginx/ssl/demo.encodedcc.org/server.key;
             location / {
                 proxy_set_header  Host  $host;
                 proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
                 proxy_set_header  X-Forwarded-Proto  $scheme;
-                proxy_set_header  X-Forwarded-Port   $server_port;
-                proxy_pass  http://app;
+                proxy_pass  http://$servername.instance.encodedcc.org;
                 proxy_http_version  1.1;
                 proxy_set_header  Connection  "";
             }
@@ -109,9 +110,87 @@ write_files:
                 proxy_pass $1$is_args$args;
             }
         }
+
+        server {
+            listen 443 ssl spdy;
+            server_name test.encodedcc.org;
+            ssl_certificate         /etc/nginx/ssl/encodedcc.org/server.chained.crt;
+            ssl_certificate_key     /etc/nginx/ssl/encodedcc.org/server.key;
+            location / {
+                proxy_set_header  Host  $host;
+                proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
+                proxy_set_header  X-Forwarded-Proto  $scheme;
+                proxy_pass  http://test;
+                proxy_http_version  1.1;
+                proxy_set_header  Connection  "";
+            }
+            location ~ ^/_proxy/(.*)$ {
+                internal;
+                proxy_buffering off;
+                proxy_pass $1$is_args$args;
+            }
+        }
+
     }
 
-- path: /etc/nginx/ssl/encodedcc.org/server.crt
+- path: /etc/nginx/ssl/demo.encodedcc.org/server.chained.crt
+  content: |
+    -----BEGIN CERTIFICATE-----
+    MIIE5jCCA86gAwIBAgISESHecAX+oi4PvfklhA2E8eZuMA0GCSqGSIb3DQEBCwUA
+    MEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSIwIAYD
+    VQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcyMB4XDTE1MDUyNzIwMTIwM1oX
+    DTE4MDIyMDAwMjI1MlowQjEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRh
+    dGVkMR0wGwYDVQQDDBQqLmRlbW8uZW5jb2RlZGNjLm9yZzCCASIwDQYJKoZIhvcN
+    AQEBBQADggEPADCCAQoCggEBANyvGHCknjVOF5j6x+gYgXKNE9+BUSn7N7Mlzm/2
+    LhdAxPtlaqM9AjAUjlFxXfUdvKHbHYtWH0xbOm60L0MOrplf3Gl7PItoW47sZCmf
+    lqx8Sx6dBeuxommD+9fUDv0D9cEEwGFJkuAY7r8dLo9mxJqxWmQSNt5hD6sgl5/w
+    iADFKMQln5Wv5Mqs2e/Klh9uKx6cpLE1HTjgP2BxSHlGREJLOomd5ydmLkZeJziM
+    7DyNdZMdsA/5mKrba+qozngtjWS7emSbVWjPhhu2hq04wbKUWpxcaz1qGkigiKUZ
+    GlGTx0W8NFUebnmnhjKcDRIhGU8dQZckGyP1CZ8DJX55DrUCAwEAAaOCAcowggHG
+    MA4GA1UdDwEB/wQEAwIFoDBJBgNVHSAEQjBAMD4GBmeBDAECATA0MDIGCCsGAQUF
+    BwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAzBgNV
+    HREELDAqghQqLmRlbW8uZW5jb2RlZGNjLm9yZ4ISZGVtby5lbmNvZGVkY2Mub3Jn
+    MAkGA1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMD4GA1Ud
+    HwQ3MDUwM6AxoC+GLWh0dHA6Ly9jcmwyLmFscGhhc3NsLmNvbS9ncy9nc2FscGhh
+    c2hhMmcyLmNybDCBiQYIKwYBBQUHAQEEfTB7MEIGCCsGAQUFBzAChjZodHRwOi8v
+    c2VjdXJlMi5hbHBoYXNzbC5jb20vY2FjZXJ0L2dzYWxwaGFzaGEyZzJyMS5jcnQw
+    NQYIKwYBBQUHMAGGKWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc2FscGhh
+    c2hhMmcyMB0GA1UdDgQWBBS47gdWM8IejNTRv6adDhBwUYXyyTAfBgNVHSMEGDAW
+    gBT1zdU8CFD5ak86t5faVoPmadJo9zANBgkqhkiG9w0BAQsFAAOCAQEACHHUpNQK
+    lxhjpAG0Xggygx0sjor/D617zK4fW9icKHrqMmCJ/lE1YE3L6ryz7k4DRJNCRYCQ
+    AbnxGVcmutCw8Eo2oQFFtl6X7YBjCgToA9ox9Ep7CpJXeXIQ0GdEj4OicfHI8YCz
+    DZy1S1D1dRBATtGIwSDiBYSEL6L09pH7kw3MpDemtq8SbssFwYDqLKybW19wvb5Q
+    9XvUPHu0DQ47p7s5GLRxveQP2cYwkgR3vFmZFTQWsJjqnVxBZZscJpUuR+2ZjSJ0
+    VkRronsQ4oQFpHI+MJw8/eOhmB7npwS/QTjfQskgeYdtyOttWV9PjC5rhW3if2tG
+    1DiCx6GQEEKZew==
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    MIIETTCCAzWgAwIBAgILBAAAAAABRE7wNjEwDQYJKoZIhvcNAQELBQAwVzELMAkG
+    A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
+    b3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xNDAyMjAxMDAw
+    MDBaFw0yNDAyMjAxMDAwMDBaMEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
+    YWxTaWduIG52LXNhMSIwIAYDVQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcy
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2gHs5OxzYPt+j2q3xhfj
+    kmQy1KwA2aIPue3ua4qGypJn2XTXXUcCPI9A1p5tFM3D2ik5pw8FCmiiZhoexLKL
+    dljlq10dj0CzOYvvHoN9ItDjqQAu7FPPYhmFRChMwCfLew7sEGQAEKQFzKByvkFs
+    MVtI5LHsuSPrVU3QfWJKpbSlpFmFxSWRpv6mCZ8GEG2PgQxkQF5zAJrgLmWYVBAA
+    cJjI4e00X9icxw3A1iNZRfz+VXqG7pRgIvGu0eZVRvaZxRsIdF+ssGSEj4k4HKGn
+    kCFPAm694GFn1PhChw8K98kEbSqpL+9Cpd/do1PbmB6B+Zpye1reTz5/olig4het
+    ZwIDAQABo4IBIzCCAR8wDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8C
+    AQAwHQYDVR0OBBYEFPXN1TwIUPlqTzq3l9pWg+Zp0mj3MEUGA1UdIAQ+MDwwOgYE
+    VR0gADAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3dy5hbHBoYXNzbC5jb20vcmVw
+    b3NpdG9yeS8wMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5nbG9iYWxzaWdu
+    Lm5ldC9yb290LmNybDA9BggrBgEFBQcBAQQxMC8wLQYIKwYBBQUHMAGGIWh0dHA6
+    Ly9vY3NwLmdsb2JhbHNpZ24uY29tL3Jvb3RyMTAfBgNVHSMEGDAWgBRge2YaRQ2X
+    yolQL30EzTSo//z9SzANBgkqhkiG9w0BAQsFAAOCAQEAYEBoFkfnFo3bXKFWKsv0
+    XJuwHqJL9csCP/gLofKnQtS3TOvjZoDzJUN4LhsXVgdSGMvRqOzm+3M+pGKMgLTS
+    xRJzo9P6Aji+Yz2EuJnB8br3n8NA0VgYU8Fi3a8YQn80TsVD1XGwMADH45CuP1eG
+    l87qDBKOInDjZqdUfy4oy9RU0LMeYmcI+Sfhy+NmuCQbiWqJRGXy2UzSWByMTsCV
+    odTvZy84IOgu/5ZR8LrYPZJwR2UcnnNytGAMXOLRc3bgr07i5TelRS+KIz6HxzDm
+    MTh89N1SyvNTBCVXVmaU6Avu5gMUTu79bZRknl7OedSyps9AsUSoPocZXun4IRZZUw==
+    -----END CERTIFICATE-----
+
+- path: /etc/nginx/ssl/encodedcc.org/server.chained.crt
   content: |
     -----BEGIN CERTIFICATE-----
     MIIEqjCCA5KgAwIBAgISESFH862qJGBBFdSR1LumupMAMA0GCSqGSIb3DQEBBQUA
@@ -140,9 +219,6 @@ write_files:
     Mf3ZYm6apbifkmfMZqgOzZoxoW25+/hztzjRxhCMcUNEAdTmTYYvvW91nRyxJ6BM
     hOhSunZJ+HY2HzWPOZO+r8S/XXPw9ZWbIV0xe2JKMwD97/HuweyoQ5MVAjVRoA==
     -----END CERTIFICATE-----
-
-- path: /etc/nginx/ssl/encodedcc.org/ca-certs.pem
-  content: |
     -----BEGIN CERTIFICATE-----
     MIIELzCCAxegAwIBAgILBAAAAAABL07hNwIwDQYJKoZIhvcNAQEFBQAwVzELMAkG
     A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
@@ -169,7 +245,7 @@ write_files:
     +MPpZqmyIJ3E+LgDYqeF0RhjWw==
     -----END CERTIFICATE-----
 
-- path: /etc/nginx/ssl/encodeproject.org/server.crt
+- path: /etc/nginx/ssl/encodeproject.org/server.chained.crt
   content: |
     -----BEGIN CERTIFICATE-----
     MIIE4zCCA8ugAwIBAgISESFNplhyevJ+HsCzWlKQIJ41MA0GCSqGSIb3DQEBCwUA
@@ -200,9 +276,6 @@ write_files:
     CNSLgUamupyKTDhHoeShG8mtepfInVbjQWQbMFcfefSQDOdBlLjPoYRHy7XKa+/r
     w8MyonFB0Q==
     -----END CERTIFICATE-----
-
-- path: /etc/nginx/ssl/encodeproject.org/ca-certs.pem
-  content: |
     -----BEGIN CERTIFICATE-----
     MIIETTCCAzWgAwIBAgILBAAAAAABRE7wNjEwDQYJKoZIhvcNAQELBQAwVzELMAkG
     A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
@@ -231,27 +304,3 @@ write_files:
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
-
-- path: /usr/local/bin/ec2upstream
-  content: |
-    #!/usr/bin/python2
-    """ Automatically create an nginx upstream servers conf snippet from ec2 metadata
-    """
-    import boto.ec2
-    import sys
-    _, name, role, extra, path = sys.argv
-    conn = boto.ec2.connect_to_region('us-west-2')
-    instances = conn.get_only_instances(filters={'instance-state-name': 'running', 'tag:Role': role})
-    servers = '\n'.join(sorted('server %s;' %instance.private_dns_name for instance in instances))
-    conf = '\n'.join([
-        'upstream %s {' % name,
-        servers,
-        extra,
-        '}\n',
-    ])
-    with open(path) as f:
-        existing = f.read()
-    if conf != existing:
-        with open(path, 'w') as f:
-          f.write(conf)
-  permissions: '0755'

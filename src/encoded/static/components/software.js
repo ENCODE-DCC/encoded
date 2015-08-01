@@ -6,19 +6,46 @@ var pipeline = require('./pipeline');
 var fetched = require('./fetched');
 var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
+var audit = require('./audit');
 var _ = require('underscore');
+var url = require('url');
 
 var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
 var PubReferenceList = reference.PubReferenceList;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 
 
 var Software = module.exports.Software = React.createClass({
+    mixins: [AuditMixin],
+
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
 
         var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
+
+        // See if there’s a version number to highlight
+        var highlightVersion;
+        var queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
+        if (queryParsed && Object.keys(queryParsed).length) {
+            // Find the first 'version' query string item, if any
+            var versionKey = _(Object.keys(queryParsed)).find(function(key) {
+                return key === 'version';
+            });
+            if (versionKey) {
+                highlightVersion = queryParsed[versionKey];
+                if (typeof highlightVersion === 'object') {
+                    highlightVersion = highlightVersion[0];
+                }
+            }
+        }
 
         return (
             <div className={itemClass}>
@@ -28,8 +55,10 @@ var Software = module.exports.Software = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
+                        <AuditIndicators audits={context.audit} id="publication-audit" />
                     </div>
                 </header>
+                <AuditDetail context={context} id="publication-audit" />
 
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -74,7 +103,7 @@ var Software = module.exports.Software = React.createClass({
                 {context.versions && context.versions.length ?
                     <div>
                         <h3>Software Versions</h3>
-                        <SoftwareVersionTable items={context.versions} />
+                        <SoftwareVersionTable items={context.versions} highlightVersion={highlightVersion} />
                     </div>
                 : null }
             </div>
@@ -91,7 +120,7 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
         return (
             <div>
                 <h3>Pipelines using software {context.title}</h3>
-                <PipelineTable {...this.props} />
+                <PipelineTable {...this.props} softwareId={context['@id']}/>
             </div>
         );
     }
@@ -100,10 +129,11 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
 
 var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
     render: function() {
+        var props = this.props;
         var rows = {};
-        this.props.items.forEach(function (version) {
+        props.items.forEach(function (version) {
             rows[version['@id']] = (
-                <tr>
+                <tr className={props.highlightVersion === version.version ? 'highlight-row' : null}>
                     <td>
                         {version.downloaded_url ?
                             <a href={version.downloaded_url}>{version.version}</a>
@@ -125,7 +155,7 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
                         </tr>
                     </thead>
                     <tbody>
-                    {rows}
+                        {rows}
                     </tbody>
                     <tfoot>
                     </tfoot>
@@ -137,32 +167,34 @@ var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createCla
 
 
 var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin],
+    mixins: [search.PickerActionsMixin, AuditMixin],
     render: function() {
-        var context = this.props.context;
-        return (<li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Software</p>
-                            {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
-                        </div>
-                        <div className="accession">
-                            <a href={context['@id']}>{context.title}</a>
-                            {context.source_url ? <span className="accession-note"> &mdash; <a href={context.source_url}>source</a></span> : ''}
-                        </div>
+        var result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    {this.renderActions()}
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Software</p>
+                        {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
+                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a>
+                        {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
                     </div>
                     <div className="data-row">
-                        <div>{context.description}</div>
-
-                        {context.software_type && context.software_type.length ?
+                        <div>{result.description}</div>
+                        {result.software_type && result.software_type.length ?
                             <div>
                                 <strong>Software type: </strong>
-                                {context.software_type.join(", ")}
+                                {result.software_type.join(", ")}
                             </div>
                         : null}
 
                     </div>
+                </div>
+                <AuditDetail context={result} id={result['@id']} forcedEditLink />
             </li>
         );
     }

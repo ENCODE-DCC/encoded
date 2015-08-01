@@ -1,4 +1,4 @@
-from ..auditor import (
+from contentbase import (
     AuditFailure,
     audit_checker,
 )
@@ -25,7 +25,7 @@ def audit_antibody_characterization_review(value, system):
 
             if term_id.startswith('NTR:'):
                 detail = 'Antibody_characterization {} contains a New Term Request {} - {}'.format(
-                    value['uuid'],
+                    value['@id'],
                     term_id,
                     term_name
                     )
@@ -33,7 +33,7 @@ def audit_antibody_characterization_review(value, system):
 
             if term_id not in ontology:
                 detail = 'Antibody characterization {} contains a biosample_term_id {} that is not in the ontology'.format(
-                    value['uuid'],
+                    value['@id'],
                     term_id
                     )
                 raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
@@ -41,7 +41,7 @@ def audit_antibody_characterization_review(value, system):
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
                 detail = 'Antibody characterization {} has a mismatched term {} - {} expected {}'.format(
-                    value['uuid'],
+                    value['@id'],
                     term_id,
                     term_name,
                     ontology_term_name)
@@ -102,13 +102,13 @@ def audit_antibody_characterization_target(value, system):
             for investigated_as in antibody_target['investigated_as']:
                 unique_investigated_as.add(investigated_as)
         if 'tag' not in unique_investigated_as:
-            detail = 'Antibody {} is not for a tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['accession'])
+            detail = 'Antibody {} is not for a tagged protein, yet target is investigated_as a recombinant protein'.format(antibody['@id'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else:
             if prefix not in unique_antibody_target:
                 detail = '{} is not found in target list for antibody {}'.format(
                     prefix,
-                    antibody['accession']
+                    antibody['@id']
                     )
                 raise AuditFailure('mismatched tag target', detail, level='ERROR')
     else:
@@ -119,7 +119,7 @@ def audit_antibody_characterization_target(value, system):
         if not target_matches:
             detail = 'Target {} is not found in target list for antibody {}'.format(
                 target['name'],
-                antibody['accession']
+                antibody['@id']
                 )
             raise AuditFailure('mismatched target', detail, level='ERROR')
 

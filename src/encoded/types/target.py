@@ -1,12 +1,10 @@
-from ..schema_utils import (
-    load_schema,
-)
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
-    Item,
+    SharedItem,
 )
 from pyramid.traversal import (
     find_root,
@@ -20,9 +18,9 @@ from pyramid.traversal import (
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
     })
-class Target(Item):
+class Target(SharedItem):
     item_type = 'target'
-    schema = load_schema('target.json')
+    schema = load_schema('encoded:schemas/target.json')
     embedded = ['organism']
 
     def unique_keys(self, properties):

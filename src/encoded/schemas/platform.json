@@ -11,7 +11,6 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
@@ -57,6 +56,9 @@
             "type": "string",
             "format": "uri"
         }
+    },
+    "boost_values": {
+        "term_id": 1.0,
+        "term_name": 1.0
     }
-
 }

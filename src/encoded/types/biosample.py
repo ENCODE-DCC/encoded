@@ -1,9 +1,7 @@
-from ..schema_utils import (
-    load_schema,
-)
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     Item,
@@ -20,7 +18,7 @@ from .base import (
     })
 class Biosample(Item):
     item_type = 'biosample'
-    schema = load_schema('biosample.json')
+    schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
     rev = {
         'characterizations': ('biosample_characterization', 'characterizes'),
@@ -43,6 +41,7 @@ class Biosample(Item):
         'submitted_by',
         'lab',
         'award',
+        'award.pi.lab',
         'source',
         'treatments.protocols.submitted_by',
         'treatments.protocols.lab',
@@ -60,13 +59,14 @@ class Biosample(Item):
         'characterizations.submitted_by',
         'characterizations.award',
         'characterizations.lab',
+        'rnais',
         'rnais.target.organism',
         'rnais.source',
         'rnais.documents.submitted_by',
         'rnais.documents.award',
         'rnais.documents.lab',
         'organism',
-         'references'
+        'references',
     ]
 
     @calculated_property(condition='biosample_term_id', schema={

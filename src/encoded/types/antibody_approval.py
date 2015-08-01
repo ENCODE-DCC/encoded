@@ -1,9 +1,7 @@
-from ..schema_utils import (
-    load_schema,
-)
-from ..contentbase import (
+from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     Item,
@@ -20,7 +18,7 @@ from pyramid.traversal import (
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     })
 class AntibodyApproval(Item):
-    schema = load_schema('antibody_approval.json')
+    schema = load_schema('encoded:schemas/antibody_approval.json')
     item_type = 'antibody_approval'
 
     def unique_keys(self, properties):

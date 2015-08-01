@@ -83,7 +83,7 @@ var AuditMixin = audit.AuditMixin;
                             {result.description}
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -177,7 +177,6 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var columns = this.props.columns;
 
             // Sort the lot reviews by their status according to our predefined order
             // given in the statusOrder array.
@@ -233,11 +232,11 @@ var AuditMixin = audit.AuditMixin;
                             })}
                         </div>
                         <div className="data-row">
-                            <strong>{columns['source.title']['title']}</strong>: {result.source.title}<br />
-                            <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                            <div><strong>Source: </strong>{result.source.title}</div>
+                            <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -248,7 +247,6 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var columns = this.props.columns;
             var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
             var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
@@ -290,53 +288,18 @@ var AuditMixin = audit.AuditMixin;
                             </a>
                         </div>
                         <div className="data-row">
-                            <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
-                            {rnais ?
-                                <div>
-                                    <strong>{columns['rnais.target.label']['title'] + ': '}</strong>
-                                    {rnais}
-                                </div>
-                            : null}
-                            {constructs ?
-                                <div>
-                                    <strong>{columns['constructs.target.label']['title'] + ': '}</strong>
-                                    {constructs}
-                                </div>
-                            : null}
-                            {treatment ?
-                                <div>
-                                    <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {treatment}
-                                </div>
-                            : null}
-                            {mutatedGenes ?
-                                <div>
-                                    <strong>{columns['donor.mutated_gene.label']['title'] + ': '}</strong>
-                                    {mutatedGenes}
-                                </div>
-                            : null}
-                            {result.culture_harvest_date ?
-                                <div>
-                                    <strong>{columns['culture_harvest_date']['title'] + ': '}</strong>
-                                    {result.culture_harvest_date}
-                                </div>
-                            : null}
-                            {result.date_obtained ?
-                                <div>
-                                    <strong>{columns['date_obtained']['title'] + ': '}</strong>
-                                    {result.date_obtained}
-                                </div>
-                            : null}
-                            {synchText ?
-                                <div>
-                                    <strong>Synchronization timepoint: </strong>
-                                    {synchText}
-                                </div>
-                            : null}
-                            <div><strong>{columns['source.title']['title']}</strong>: {result.source.title}</div>
+                            <div><strong>Type: </strong>{result['biosample_type']}</div>
+                            {rnais ?<div><strong>RNAi target: </strong>{rnais}</div> : null}
+                            {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
+                            {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
+                            {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
+                            {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
+                            {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
+                            {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
+                            <div><strong>Source: </strong>{result.source.title}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -348,7 +311,6 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var columns = this.props.columns;
 
             // Make array of scientific names from replicates; remove all duplicates
             var names = _.uniq(result.replicates.map(function(replicate) {
@@ -420,28 +382,22 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             {result.target && result.target.label ?
-                                <div>
-                                    <strong>{columns['target.label']['title'] + ': '}</strong>
-                                    {result.target.label}
-                                </div>
+                                <div><strong>Target: </strong>{result.target.label}</div>
                             : null}
+
                             {treatment ?
-                                <div>
-                                    <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {treatment}
-                                </div>
+                                <div><strong>Treatment: </strong>{treatment}</div>
                             : null}
+
                             {synchronizations && synchronizations.length ?
-                                <div>
-                                    <strong>Synchronization timepoint: </strong>
-                                    {synchronizations.join(', ')}
-                                </div>
+                                <div><strong>Synchronization timepoint: </strong>{synchronizations.join(', ')}</div>
                             : null}
-                            <div><strong>{columns['lab.title']['title']}</strong>: {result.lab.title}</div>
-                            <div><strong>{columns['award.project']['title']}</strong>: {result.award.project}</div>
+
+                            <div><strong>Lab: </strong>{result.lab.title}</div>
+                            <div><strong>Project: </strong>{result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -452,7 +408,6 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var columns = this.props.columns;
             return (
                 <li>
                     <div className="clearfix">
@@ -466,17 +421,12 @@ var AuditMixin = audit.AuditMixin;
                             <a href={result['@id']}>{result['description']}</a>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ?
-                                <div>
-                                    <strong>{columns['dataset_type']['title'] + ': '}</strong>
-                                    {result['dataset_type']}
-                                </div>
-                            : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result.lab.title}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result.award.project}
+                            {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
+                            <div><strong>Lab: </strong>{result.lab.title}</div>
+                            <div><strong>Project: </strong>{result.award.project}</div>
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -487,7 +437,6 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var columns = this.props.columns;
             return (
                 <li>
                     <div className="clearfix">
@@ -503,13 +452,13 @@ var AuditMixin = audit.AuditMixin;
                             </a>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']['title']}</strong>:
+                            <strong>External resources: </strong>
                             {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                                : <em> None submitted</em> }
+                            : <em>None submitted</em> }
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -537,7 +486,7 @@ var AuditMixin = audit.AuditMixin;
                             <Attachment context={result} />
                         </div>
                     </div>
-                    <AuditDetail audits={result.audit} id={this.props.context['@id']} />
+                    <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
                 </li>
             );
         }
@@ -633,6 +582,10 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var facet = this.props.facet;
             var filters = this.props.filters;
+            var title = facet['title'];
+            var field = facet['field'];
+            var total = facet['total'];
+            var termID = title.replace(/\s+/g, '');
             var terms = facet['terms'].filter(function (term) {
                 if (term.key) {
                     for(var filter in filters) {
@@ -646,10 +599,6 @@ var AuditMixin = audit.AuditMixin;
                 }
             });
             var moreTerms = terms.slice(5);
-            var title = facet['title'];
-            var field = facet['field'];
-            var total = facet['total'];
-            var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
             var moreTermSelected = selectedTermCount > 0;
@@ -749,7 +698,7 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
@@ -833,6 +782,7 @@ var AuditMixin = audit.AuditMixin;
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
             var filters = context['filters'];
+            var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
             _.each(facets, function(facet) {
@@ -844,17 +794,31 @@ var AuditMixin = audit.AuditMixin;
                 }
             }.bind(this));
 
+            // See if a specific result type was requested ('type=x')
+            // Satisfied iff exactly one type is in the search
+            if (results.length) {
+                var specificFilter;
+                filters.forEach(function(filter) {
+                    if (filter.field === 'type') {
+                        specificFilter = specificFilter ? '' : filter.term;
+                    }
+                });
+                if (typeof specificFilter === 'string' && specificFilter.length) {
+                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
+                }
+            }
+
             return (
                     <div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
+                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div>
+                            </div> : ''}
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total}
+                                        Showing {results.length} of {total} {label}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
@@ -912,11 +876,16 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var Search = search.Search = React.createClass({
+        contextTypes: {
+            location_href: React.PropTypes.string,
+            navigate: React.PropTypes.func
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var searchBase = url.parse(this.props.href).search || '';
+            var searchBase = url.parse(this.context.location_href).search || '';
             var facetdisplay = context.facets.some(function(facet) {
                 return facet.total > 0;
             });
@@ -924,7 +893,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

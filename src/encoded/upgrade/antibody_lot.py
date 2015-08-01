@@ -1,5 +1,5 @@
-from ..contentbase import CONNECTION
-from ..migrator import upgrade_step
+from contentbase import CONNECTION
+from contentbase import upgrade_step
 from .shared import ENCODE2_AWARDS
 from pyramid.traversal import find_root
 
@@ -48,7 +48,7 @@ def antibody_lot_3_4(value, system):
     root = find_root(context)
     approvals = []
 
-    for link_uuid in connection.get_rev_links(context.model, 'antibody_approval', 'antibody'):
+    for link_uuid in connection.get_rev_links(context.model, 'antibody', 'antibody_approval'):
         approvals.append(root.get_by_uuid(link_uuid))
 
     targets = set()

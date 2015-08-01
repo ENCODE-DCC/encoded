@@ -5,6 +5,7 @@ For the development.ini you must supply the paster app name:
     %(prog)s development.ini --app-name app --init --clear
 
 """
+from pkg_resources import resource_filename
 from pyramid.paster import get_app
 
 import atexit
@@ -13,10 +14,37 @@ import os.path
 import select
 import shutil
 import sys
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
+
 
 EPILOG = __doc__
 
 logger = logging.getLogger(__name__)
+
+
+def nginx_server_process(prefix='', echo=False):
+    args = [
+        os.path.join(prefix, 'nginx'),
+        '-c', resource_filename('encoded', '../../nginx-dev.conf'),
+        '-g', 'daemon off;'
+    ]
+    process = subprocess.Popen(
+        args,
+        close_fds=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+
+    if not echo:
+        process.stdout.close()
+
+    if echo:
+        print('Started: http://localhost:8000')
+
+    return process
 
 
 def main():
@@ -38,7 +66,7 @@ def main():
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
     from encoded.tests import elasticsearch_fixture, postgresql_fixture
-    from encoded.commands import create_mapping
+    from contentbase.elasticsearch import create_mapping
     datadir = os.path.abspath(args.datadir)
     pgdata = os.path.join(datadir, 'pgdata')
     esdata = os.path.join(datadir, 'esdata')
@@ -51,7 +79,8 @@ def main():
 
     postgres = postgresql_fixture.server_process(pgdata, echo=True)
     elasticsearch = elasticsearch_fixture.server_process(esdata, echo=True)
-    processes = [postgres, elasticsearch]
+    nginx = nginx_server_process(echo=True)
+    processes = [postgres, elasticsearch, nginx]
 
     @atexit.register
     def cleanup_process():
