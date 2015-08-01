@@ -249,7 +249,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {treatments ?
                             <div data-test="treatment">
                                 <dt>Treatments</dt>
-                                <dd><BiosampleTreatments biosamples={biosamples} /></dd>
+                                <dd>{BiosampleTreatments(biosamples)}</dd>
                             </div>
                         : null}
 
@@ -611,33 +611,40 @@ var Replicate = module.exports.Replicate = function (props) {
 };
 // Can't be a properzz panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-// Controls the drawing of the file graph for the experiment. It displays both files and
 
 
-var BiosampleTreatments = module.exports.BiosampleTreatments = React.createClass({
-    render: function() {
-        var biosamples = this.props.biosamples;
-        var treatmentTexts = [];
+var BiosampleTreatments = function(biosamples) {
+    var treatmentTexts = [];
 
-        // Build up array of treatment strings
-        if (biosamples && biosamples.length) {
-            biosamples.forEach(function(biosample) {
-                if (biosample.treatments && biosample.treatments.length) {
-                    biosample.treatments.forEach(function(treatment) {
-                        treatmentTexts.push(SingleTreatment(treatment));
-                    });
-                }
-            });
-        }
-
-        // Component output of treatment strings
-        if (treatmentTexts.length) {
-            treatmentTexts = _.uniq(treatmentTexts);
-            return <span className={this.props.classes}>{treatmentTexts.join(', ')}</span>;
-        }
-        return null;
+    // Build up array of treatment strings
+    if (biosamples && biosamples.length) {
+        biosamples.forEach(function(biosample) {
+            if (biosample.treatments && biosample.treatments.length) {
+                biosample.treatments.forEach(function(treatment) {
+                    treatmentTexts.push(SingleTreatment(treatment));
+                });
+            }
+        });
     }
-});
+
+    // Component output of treatment strings
+    if (treatmentTexts.length) {
+        treatmentTexts = _.uniq(treatmentTexts);
+        return (
+            <span>
+                {treatmentTexts.map(function(treatments, i) {
+                    return (
+                        <span key={i}>
+                            {i > 0 ? <span>{','}<br /></span> : null}
+                            {treatments}
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+    return null;
+};
 
 
 

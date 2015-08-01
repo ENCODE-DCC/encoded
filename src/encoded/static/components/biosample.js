@@ -727,7 +727,7 @@ var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
         treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
     }
     return treatmentText;
-}
+};
 
 
 var Treatment = module.exports.Treatment = React.createClass({
