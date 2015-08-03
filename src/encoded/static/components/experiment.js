@@ -659,22 +659,24 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         fileArray.forEach(function(file) {
             var nextFileArray;
 
-            if (!file.removed) {
-                // This file gets included. Include everything it derives from
-                if (file.derived_from && file.derived_from.length) {
-                    console.log('nonremoved: %o', file);
-                    nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
-                    console.log('NEXTFILE 1: %o, %o, %o', nextFileArray, file, allFiles);
-                    processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
-                }
-            } else if (include) {
-                // Unremove the file if this branch is to be included based on files that derive from it
-                file.removed = false;
-                if (file.derived_from && file.derived_from.length) {
-                    console.log('removed: %o', file);
-                    nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
-                    console.log('NEXTFILE 2: %o, %o, %o', nextFileArray, file, allFiles);
-                    processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+            if (file) {
+                if (!file.removed) {
+                    // This file gets included. Include everything it derives from
+                    if (file.derived_from && file.derived_from.length) {
+                        console.log('nonremoved: %o', file);
+                        nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                        console.log('NEXTFILE 1: %o, %o, %o', nextFileArray, file, allFiles);
+                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                    }
+                } else if (include) {
+                    // Unremove the file if this branch is to be included based on files that derive from it
+                    file.removed = false;
+                    if (file.derived_from && file.derived_from.length) {
+                        console.log('removed: %o', file);
+                        nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                        console.log('NEXTFILE 2: %o, %o, %o', nextFileArray, file, allFiles);
+                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                    }
                 }
             }
         });
