@@ -654,6 +654,32 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
+    function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, include) {
+        console.log('FILEARRAY: %o', fileArray);
+        fileArray.forEach(function(file) {
+            var nextFileArray;
+
+            if (!file.removed) {
+                // This file gets included. Include everything it derives from
+                if (file.derived_from && file.derived_from.length) {
+                    console.log('nonremoved: %o', file);
+                    nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                    console.log('NEXTFILE 1: %o, %o, %o', nextFileArray, file, allFiles);
+                    processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                }
+            } else if (include) {
+                // Unremove the file if this branch is to be included based on files that derive from it
+                file.removed = false;
+                if (file.derived_from && file.derived_from.length) {
+                    console.log('removed: %o', file);
+                    nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                    console.log('NEXTFILE 2: %o, %o, %o', nextFileArray, file, allFiles);
+                    processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                }
+            }
+        });
+    }
+
     var jsonGraph; // JSON graph object of entire graph; see graph.js
     var derivedFromFiles = {}; // List of all files that other files derived from
     var allFiles = {}; // All files' accessions as keys
@@ -679,15 +705,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return file['@id'];
     });
 
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect things like used replicates, and used pipelines
     files.forEach(function(file) {
-        // Build an object keyed with all files that other files derive from
-        if (file.derived_from) {
-            file.derived_from.forEach(function(derived_from) {
-                derivedFromFiles[derived_from['@id']] = derived_from;
-            });
-        }
-
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
         if (file.replicate) {
@@ -698,16 +717,16 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             allReplicates[file.replicate.biological_replicate_number].push(file);
         }
 
-        // Note whether any files have an analysis step
+        // Note whether *any* files have an analysis step
         var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
         stepExists = stepExists || !!fileAnalysisStep;
 
-        // Save the pipeline array used for each step used by the file.
+        // Keep track of all used pipeline use by each file's analysis step. Each key is a file @id.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
-        // Build a list of all files in the graph, including contributed files, for convenience
+        // Build a list of all files in the graph keyed by file @id, including contributed files, for convenience
         allFiles[file['@id']] = file;
 
         // Add to the filtering options to generate a <select>
@@ -715,12 +734,25 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
         }
 
-        // Keep track of whether files exist outside replicates
+        // Keep track of whether *any* files exist outside replicates
         fileOutsideReplicate = fileOutsideReplicate || !!file.replicate;
     });
 
-    // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
-    // derivedFromFiles points to derived_from file objects
+    // At this stage, allFiles has all files found; allReplicates has all replicates found; allPipelines has all pipeline arrays found;
+
+    // Build an object keyed with all files that other files derive from. If an experiment has contributed files, these derived_from
+    // files might not exist in the allFiles object yet. In that case, record an empty object in derivedFromFiles just so we know
+    // we’ve seen it once we process contributed files.
+    files.forEach(function(file) {
+        if (file.derived_from) {
+            file.derived_from.forEach(function(derived_from) {
+                // Use a copy of the file object from the allFiles object — the Single Source of Truth.
+                // Note that the derived_from['@id'] might not exist in allFiles if the file is missing
+                // or is a contributed file, which we take care of in a bit. Mark those files with an empty object
+                derivedFromFiles[derived_from['@id']] = allFiles[derived_from['@id']] ? allFiles[derived_from['@id']] : {};
+            });
+        }
+    });
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
@@ -732,12 +764,34 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // don't derive from other files — and that no files derive from them — as removed from the graph.
     files.forEach(function(file) {
         file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
-
-        // If the file's removed, remember it's removed from the derived_From file objects too
-        if (file.removed && derivedFromFiles[file['@id']]) {
-            derivedFromFiles[file['@id']].removed = true;
-        }
     });
+
+    // Remove files based on the filtering options
+    if (filterAssembly && filterAnnotation) {
+        // First remove all raw files, and all other files with mismatched filtering options
+        files.forEach(function(file) {
+            if (file.output_category === 'raw data') {
+                // File is raw data; just remove it
+                file.removed = true;
+            } else {
+                // At this stage, we know it's a process or reference file. Remove from files if
+                // it has mismatched assembly or annotation
+                console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
+                if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
+                    file.removed = true;
+                }
+            }
+        });
+
+        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
+        processFiltering(files, filterAssembly, filterAnnotation, allFiles);
+    }
+
+    console.log('start');
+    files.forEach(function(file) {
+        console.log(file.accession + ':' + file.removed);
+    });
+    console.log('end');
 
     // Remove any replicates containing only removed files from the last step.
     Object.keys(allReplicates).forEach(function(repNum) {
@@ -750,44 +804,18 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Remove files with a mismatched filtering option, unless other files derived from them
-    if (filterAssembly && filterAnnotation) {
-        files.forEach(function(file) {
-            // Any files that others derive from get included always
-            if (!derivedFromFiles[file['@id']]) {
-                // File isn’t derived from; continue checking
-                if (file.output_category === 'raw data') {
-                    // File is raw data; just remove it
-                    file.removed = true;
-                } else {
-                    // At this stage, we know it's a process or reference file. Remove from files if
-                    // it has mismatched assembly or annotation
-                    console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
-                    if (file.assembly && file.genome_annotation) {
-                        if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
-                            file.removed = true;
-                        }
-                    } else {
-                        file.removed = true;
-                    }
-                }
-            }
-        });
-    }
-
-    console.log('start');
-    files.forEach(function(file) {
-        console.log(file.accession + ':' + file.removed);
-    });
-    console.log('end');
-
     // Add contributing files to the allFiles object that other files derive from.
     // Don't worry about files they derive from; they're not included in the graph.
     if (context.contributing_files && context.contributing_files.length) {
         context.contributing_files.forEach(function(file) {
             allContributing[file['@id']] = file;
             if (derivedFromFiles[file['@id']]) {
+                // Add this file to the allFiles object as if it was a file associated with this experiment.
                 allFiles[file['@id']] = file;
+
+                // Now record the actual contributed file in derivedFromFiles.
+                // This entry was a placeholder empty object before.
+                derivedFromFiles[file['@id']] = file;
             }
         });
     }
