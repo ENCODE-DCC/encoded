@@ -63,16 +63,22 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-def get_sort_order():
+def get_sort_order(sort_order=None):
     """
     specifies sort order for elasticsearch results
     """
+    if sort_order is not None:
+        order = {}
+        for field in sort_order:
+            # Should always sort on raw field rather than analyzed field
+            order['embedded.' + field + '.raw'] = sort_order[field]
+        return order
     return {
-        'embedded.date_created': {
+        'embedded.date_created.raw': {
             'order': 'desc',
             'ignore_unmapped': True,
         },
-        'embedded.label': {
+        'embedded.label.raw': {
             'order': 'asc',
             'missing': '_last',
             'ignore_unmapped': True,
@@ -366,7 +372,11 @@ def search(context, request, search_type=None):
 
     # Sorting the files when search term is not specified
     if search_term == '*':
-        query['sort'] = get_sort_order()
+        query['sort'] = [get_sort_order()]
+        if len(doc_types) == 1:
+            type_schema = root[doc_types[0]].type_info.schema
+            if 'sort_by' in type_schema and len(type_schema['sort_by']):
+                query['sort'] = [get_sort_order(type_schema['sort_by'])]
         query['query']['match_all'] = {}
         del query['query']['query_string']
     elif len(doc_types) != 1:
