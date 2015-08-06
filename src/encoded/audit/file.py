@@ -78,7 +78,7 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        raise AuditFailure('missing read_length', detail, level='ERROR')
 
 
 @audit_checker('file',
