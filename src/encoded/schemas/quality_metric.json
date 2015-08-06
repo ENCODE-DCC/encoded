@@ -3,7 +3,7 @@
     "id": "/profiles/quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "files"],
+    "required": ["step_run"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -22,6 +22,19 @@
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
             "linkTo": "analysis_step_run"
-        }
+        },
+        "relates_to": {
+            "title": "Files",
+            "description": "One or more files that this metric either applies to or is calculated from.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "File",
+                "description": "A particular file associated with this quality metric.",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
     }
 }

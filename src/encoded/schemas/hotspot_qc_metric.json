@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,15 +48,15 @@
         },
         "SPOT": {
             "type": "number",
-            "description": ""
+            "description": "SPOT"
         },
         "hotspot tags": {
             "type": "number",
-            "description": ""
+            "description": "Count of read tags in hotspots"
         },
         "total tags": {
             "type": "number",
-            "description": ""
+            "description": "Count of all read tags"
         }
     }
 }

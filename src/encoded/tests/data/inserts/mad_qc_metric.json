@@ -1,0 +1,14 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "RNA-seq",
+        "assay_term_id": "OBI:0001271",
+        "related_to": [ "/files/ENCFF761EEQ", "/files/ENCFF133RSI" ],
+        "MAD of log ratios": 1.377,
+        "Pearson correlation": 0.630935,
+        "SD of log ratios": 1.974,
+        "Spearman correlation": 0.6782071
+    }
+]

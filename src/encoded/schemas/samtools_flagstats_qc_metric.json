@@ -1,5 +1,5 @@
 {
-    "description": "Schema for reporting 'samtools flagstats' quality metric",
+    "description": "Schema for reporting 'samtools --flagstats' quality metric",
     "id": "/profiles/samtools_flagstats_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,95 +48,95 @@
         },
         "diff_chroms": {
             "type": "number",
-            "description": "mate mapped different chr (mapQ>=5)"
+            "description": "flagstats: mate mapped different chr (mapQ>=5)"
         },
         "diff_chroms_qc_failed": {
             "type": "number",
-            "description": "mate mapped different chr (mapQ>=5) - qc failed"
+            "description": "flagstats: mate mapped different chr (mapQ>=5) - qc failed"
         },
         "duplicates": {
             "type": "number",
-            "description": "duplicates"
+            "description": "flagstats: duplicates"
         },
         "duplicates_qc_failed": {
             "type": "number",
-            "description": "duplicates - qc failed"
+            "description": "flagstats: duplicates - qc failed"
         },
         "mapped": {
             "type": "number",
-            "description": "mapped"
+            "description": "flagstats: mapped"
         },
         "mapped_pct": {
             "type": "string",
-            "description": "mapped - percent"
+            "description": "flagstats: mapped - percent"
         },
         "mapped_qc_failed": {
             "type": "number",
-            "description": "mapped - qc failed"
+            "description": "flagstats: mapped - qc failed"
         },
         "paired": {
             "type": "number",
-            "description": "paired"
+            "description": "flagstats: paired"
         },
         "paired_properly": {
             "type": "number",
-            "description": "properly paired"
+            "description": "flagstats: properly paired"
         },
         "paired_properly_pct": {
             "type": "string",
-            "description": "properly paired - percent"
+            "description": "flagstats: properly paired - percent"
         },
         "paired_properly_qc_failed": {
             "type": "number",
-            "description": "properly paired - qc failed"
+            "description": "flagstats: properly paired - qc failed"
         },
         "paired_qc_failed": {
             "type": "number",
-            "description": "paired - qc failed"
+            "description": "flagstats: paired - qc failed"
         },
         "read1": {
             "type": "number",
-            "description": "read1"
+            "description": "flagstats: read1"
         },
         "read1_qc_failed": {
             "type": "number",
-            "description": "read1 - qc failed"
+            "description": "flagstats: read1 - qc failed"
         },
         "read2": {
             "type": "number",
-            "description": "read2"
+            "description": "flagstats: read2"
         },
         "read2_qc_failed": {
             "type": "number",
-            "description": "read2 - qc failed"
+            "description": "flagstats: read2 - qc failed"
         },
         "singletons": {
             "type": "number",
-            "description": "singletons"
+            "description": "flagstats: singletons"
         },
         "singletons_pct": {
             "type": "string",
-            "description": "singletons - percent"
+            "description": "flagstats: singletons - percent"
         },
         "singletons_qc_failed": {
             "type": "number",
-            "description": "singletons - qc failed"
+            "description": "flagstats: singletons - qc failed"
         },
         "total": {
             "type": "number",
-            "description": "total"
+            "description": "flagstats: total"
         },
         "total_qc_failed": {
             "type": "number",
-            "description": "total - qc failed"
+            "description": "flagstats: total - qc failed"
         },
         "with_itself": {
             "type": "number",
-            "description": "with itself and mate mapped"
+            "description": "flagstats: with itself and mate mapped"
         },
         "with_itself_qc_failed": {
             "type": "number",
-            "description": "with itself and mate mapped - qc failed"
+            "description": "flagstats: with itself and mate mapped - qc failed"
         }
     }
 }

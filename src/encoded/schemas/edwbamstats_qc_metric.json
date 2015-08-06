@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,67 +48,67 @@
         },
         "alignedBy": {
             "type": "string",
-            "description": ""
+            "description": "edwBamStats: alignedBy"
         },
         "isPaired": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: isPaired"
         },
         "isSortedByTarget": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: isSortedByTarget"
         },
         "mappedCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: mappedCount"
         },
         "readBaseCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readBaseCount"
         },
         "readCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readCount"
         },
         "readSizeMax": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readSizeMax"
         },
         "readSizeMean": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readSizeMean"
         },
         "readSizeMin": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readSizeMin"
         },
         "readSizeStd": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: readSizeStd"
         },
         "targetBaseCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: targetBaseCount"
         },
         "targetSeqCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: targetSeqCount"
         },
         "u4mReadCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: u4mReadCount"
         },
         "u4mUniquePos": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: u4mUniquePos"
         },
         "u4mUniqueRatio": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: u4mUniqueRatio"
         },
         "uniqueMappedCount": {
             "type": "number",
-            "description": ""
+            "description": "edwBamStats: uniqueMappedCount"
         }
     }
 }

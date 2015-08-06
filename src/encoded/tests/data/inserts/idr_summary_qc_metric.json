@@ -1,0 +1,17 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "RNA-seq",
+        "assay_term_id": "OBI:0001271",
+        "Final parameter values (mu, sigma, rho, and mix)": [ 1.32, 1.02, 0.94, 0.91 ],
+        "IDR cutoff": 0.05,
+        "Initial parameter values (mu, sigma, rho, and mix)": [ 0.1, 1, 0.2, 0.5 ],
+        "Number of peaks passing IDR cutoff": 8479,
+        "Number of reported peaks": 9722,
+        "Percent peaks passing IDR cutoff": 87.2,
+        "Percent reported peaks": 100
+
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "locations": 12768356,
+        "locations per read": 0.851224,
+        "mapped by 1 read": 11250850,
+        "mapped by 2 reads": 1186045,
+        "proportion of 1 read locations": 0.881151,
+        "ratio: 1 read over 2 read locations": 9.486023,
+        "reads": 15000000
+    }
+]

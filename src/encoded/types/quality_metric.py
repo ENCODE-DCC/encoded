@@ -15,55 +15,26 @@ class QualityMetric(Item):
 
 
 @collection(
-    name='mad-cc-lrna-metrics',
+    name='mad-qc-metrics',
     properties={
-        'title': "lRNA Replicate Concordance Metrics",
+        'title': "Replicate Concordance Metrics using Mean Absolute Deviation (MAD)",
         'description': 'A set of QC metrics comparing two quantificiations '
-                       'from (long) RNA-seq replicates',
+                       'from replicates',
     })
-class MadCCLrnaMetric(QualityMetric):
-    item_type = 'mad_cc_lrna_qc_metric'
-    schema = load_schema('encoded:schemas/mad_cc_lrna_qc_metric.json')
-
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        # FIXME workflow_run no longer exists
-        workflow_run = request.embed(step_run, '@@object').get('workflow_run', {})
-        if workflow_run:
-            input_files = request.embed(workflow_run, '@@object')['input_files']
-        else:
-            input_files = []
-        return input_files
+class MadQcMetric(QualityMetric):
+    item_type = 'mad_qc_metric'
+    schema = load_schema('encoded:schemas/mad_qc_metric.json')
 
 
 @collection(
     name='star-qc-metrics',
     properties={
-        'title': "STAR mapping quality metrics",
+        'title': "STAR mapping Quality Metrics",
         'description': 'A set of QC metrics from STAR RNA-seq mapping',
     })
 class StarQcMetric(QualityMetric):
     item_type = 'star_qc_metric'
     schema = load_schema('encoded:schemas/star_qc_metric.json')
-
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
 
 
 @collection(
@@ -85,8 +56,8 @@ class FastqcQcMetric(QualityMetric, ItemWithAttachment):
         },
     })
     def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
+        input_files = request.embed(step_run, '@@object')['input_files']
+        return input_files
 
 
 @collection(
@@ -159,23 +130,111 @@ class ChipSeqFilterQcMetric(QualityMetric):
 
 
 @collection(
-    name='flagstats-qc-metrics',
+    name='samtools-flagstats-qc-metrics',
     properties={
-        'title': "Mapping quality metrics from samtools --flagstats",
-        'description': 'A set of mapping QC metrics from samtools --flagstats',
+        'title': "Mapping Quality Metrics from 'samtools --flagstats'",
+        'description': "A set of mapping QC metrics from 'samtools --flagstats'",
     })
-class FlagstatsQcMetric(QualityMetric):
-    item_type = 'flagstats_qc_metric'
-    schema = load_schema('encoded:schemas/flagstats_qc_metric.json')
+class SamtoolsFlagstatsQcMetric(QualityMetric):
+    item_type = 'samtools_flagstats_qc_metric'
+    schema = load_schema('encoded:schemas/samtools_flagstats_qc_metric.json')
 
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
+
+@collection(
+    name='samtools-stats-qc-metrics',
+    properties={
+        'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
+        'description': "A set of mapping QC metrics from 'samtools --stats'",
     })
-    def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
+class SamtoolsStatsQcMetric(QualityMetric):
+    item_type = 'samtools_stats_qc_metric'
+    schema = load_schema('encoded:schemas/samtools_stats_qc_metric.json')
+
+
+@collection(
+    name='bigwigcorrelate-qc-metrics',
+    properties={
+        'title': "Pearson's Correlation of two bigWig Signal Files.",
+        'description': "A set of signal replicate QC metrics from 'bigWigCorrelate'",
+    })
+class BigwigcorrelateQcMetric(QualityMetric):
+    item_type = 'bigwigcorrelate_qc_metric'
+    schema = load_schema('encoded:schemas/bigwigcorrelate_qc_metric.json')
+
+
+@collection(
+    name='dnase-peak-qc-metrics',
+    properties={
+        'title': "Counts of DNase Regions and Hotspots",
+        'description': 'A set of peak QC metrics for regions and hotspots',
+    })
+class DnasePeakQcMetric(QualityMetric):
+    item_type = 'dnase_peak_qc_metric'
+    schema = load_schema('encoded:schemas/dnase_peak_qc_metric.json')
+
+
+@collection(
+    name='edwbamstats-qc-metrics',
+    properties={
+        'title': "Mapping Quality Metrics from 'edwBamStats'",
+        'description': "A set of mapping QC metrics from 'edwBamStats'",
+    })
+class EdwbamstatsQcMetric(QualityMetric):
+    item_type = 'edwbamstats_qc_metric'
+    schema = load_schema('encoded:schemas/edwbamstats_qc_metric.json')
+
+
+@collection(
+    name='edwcomparepeaks-qc-metrics',
+    properties={
+        'title': "Comparison of two sets of Called Peaks from 'edwComparePeaks'",
+        'description': "A set of peak replicate QC metrics from 'edwComparePeaks'",
+    })
+class EdwcomparepeaksQcMetric(QualityMetric):
+    item_type = 'edwcomparepeaks_qc_metric'
+    schema = load_schema('encoded:schemas/edwcomparepeaks_qc_metric.json')
+
+
+@collection(
+    name='hotspot-qc-metrics',
+    properties={
+        'title': "Peak Quality Metrics from the 'HotSpot' package",
+        'description': "A set of peak QC metrics from the 'HotSpot' package",
+    })
+class HotspotQcMetric(QualityMetric):
+    item_type = 'hotspot_qc_metric'
+    schema = load_schema('encoded:schemas/hotspot_qc_metric.json')
+
+
+@collection(
+    name='idr-summary-qc-metrics',
+    properties={
+        'title': "Irreproducible Discovery Rate (IDR) Summary Quality Metrics",
+        'description': "A set of Peak Replicate QC metrics from 'idr'",
+    })
+class SamtoolsFlagstatsQcMetric(QualityMetric):
+    item_type = 'idr_summary_qc_metric'
+    schema = load_schema('encoded:schemas/idr_summary_qc_metric.json')
+
+
+@collection(
+    name='pbc-qc-metrics',
+    properties={
+        'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
+        'description': 'A set of sampled mapping QC metrics',
+    })
+class PbcQcMetric(QualityMetric):
+    item_type = 'pbc_qc_metric'
+    schema = load_schema('encoded:schemas/pbc_qc_metric.json')
+
+
+@collection(
+    name='phantompeaktooks-spp-qc-metrics',
+    properties={
+        'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
+        'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
+    })
+class PhantompeaktooksSppQcMetric(QualityMetric):
+    item_type = 'phantompeaktooks_spp_qc_metric'
+    schema = load_schema('encoded:schemas/phantompeaktooks_spp_qc_metric.json')
+

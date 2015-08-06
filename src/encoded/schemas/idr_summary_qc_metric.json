@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -55,7 +55,7 @@
             }
         },
         "Final parameter values (mu, sigma, rho, and mix)": {
-            "description": "",
+            "description": "IDR: Final parameter values (mu, sigma, rho, and mix)",
             "type": "array",
             "default": [],
             "items": {
@@ -65,10 +65,10 @@
         },
         "IDR cutoff": {
             "type": "number",
-            "description": ""
+            "description": "IDR: IDR cutoff"
         },
         "Initial parameter values (mu, sigma, rho, and mix)": {
-            "description": "",
+            "description": "IDR: Initial parameter values (mu, sigma, rho, and mix)",
             "type": "array",
             "default": [],
             "items": {
@@ -78,19 +78,19 @@
         },
         "Number of peaks passing IDR cutoff": {
             "type": "number",
-            "description": ""
+            "description": "IDR: Number of peaks passing IDR cutoff"
         },
         "Number of reported peaks": {
             "type": "number",
-            "description": ""
+            "description": "IDR: Number of reported peaks"
         },
         "Percent peaks passing IDR cutoff": {
             "type": "number",
-            "description": ""
+            "description": "IDR: Percent peaks passing IDR cutoff"
         },
         "Percent reported peaks": {
             "type": "string",
-            "description": ""
+            "description": "IDR: Percent reported peaks"
         }
     }
 }

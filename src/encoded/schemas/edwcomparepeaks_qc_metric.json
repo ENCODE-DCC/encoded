@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,23 +48,23 @@
         },
         "aBaseCount": {
             "type": "number",
-            "description": ""
+            "description": "Base count of first file"
         },
         "bBaseCount": {
             "type": "number",
-            "description": ""
+            "description": "Base count of second file"
         },
         "intersectionSize": {
             "type": "number",
-            "description": ""
+            "description": "Size of intersection"
         },
         "iuRatio": {
             "type": "number",
-            "description": ""
+            "description": "Intersection to Union Ratio"
         },
         "unionSize": {
             "type": "number",
-            "description": ""
+            "description": "Size of Union"
         }
     }
 }

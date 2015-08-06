@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,11 +48,11 @@
         },
         "hotspot count": {
             "type": "number",
-            "description": ""
+            "description": "hotspot count"
         },
         "peak count": {
             "type": "number",
-            "description": ""
+            "description": "peak count"
         }
     }
 }

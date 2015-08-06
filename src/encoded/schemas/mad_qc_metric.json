@@ -1,5 +1,5 @@
 {
-    "description": "Schema for reporting the 'Mean Absolute Deviation' (MAD) quality metric",
+    "description": "Schema for reporting Replicate Concordance Metric using Mean Absolute Deviation (MAD)",
     "id": "/profiles/mad_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -56,19 +56,19 @@
         },
         "SD of log ratios": {
             "type": "number",
-            "description": "Standard Deviation of replicate log ratios from RNA-seq quantification"
+            "description": "Standard Deviation of replicate log ratios from quantification"
         },
         "Pearson correlation": {
             "type": "number",
-            "description": "Pearson correlation coefficient of replicates from RNA-seq quantification"
+            "description": "Pearson correlation coefficient of replicates from quantification"
         },
         "Spearman correlation": {
             "type": "number",
-            "description": "Spearman correlation coefficient of replicates from RNA-seq quantification"
+            "description": "Spearman correlation coefficient of replicates from quantification"
         },
         "MAD of log ratios": {
             "type": "number",
-            "description": "Mean-Average-Deviation of replicate log ratios from RNA-seq quantification"
+            "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         }
     }
 }

@@ -1,0 +1,25 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "alignedBy": "bwa",
+        "isPaired": 1,
+        "isSortedByTarget": 0,
+        "mappedCount": 15000000,
+        "readBaseCount": 540000000,
+        "readCount": 15000000,
+        "readSizeMax": 36,
+        "readSizeMean": 36,
+        "readSizeMin": 36,
+        "readSizeStd": 0,
+        "targetBaseCount": 3036320417,
+        "targetSeqCount": 24,
+        "u4mReadCount": 4000000,
+        "u4mUniquePos": 3750719,
+        "u4mUniqueRatio": 0.93768,
+        "uniqueMappedCount": 14976547
+    }
+]

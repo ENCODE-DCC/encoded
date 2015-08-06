@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,31 +48,31 @@
         },
         "locations": {
             "type": "number",
-            "description": ""
+            "description": "locations"
         },
         "locations per read": {
             "type": "number",
-            "description": ""
+            "description": "locations per read"
         },
         "mapped by 1 read": {
             "type": "number",
-            "description": ""
+            "description": "mapped by 1 read"
         },
         "mapped by 2 reads": {
             "type": "number",
-            "description": ""
+            "description": "mapped by 2 reads"
         },
         "proportion of 1 read locations": {
             "type": "number",
-            "description": ""
+            "description": "proportion of 1 read locations"
         },
         "ratio: 1 read over 2 read locations": {
             "type": "number",
-            "description": ""
+            "description": "ratio: 1 read over 2 read locations"
         },
         "reads": {
             "type": "number",
-            "description": ""
+            "description": "reads"
         }
     }
 }

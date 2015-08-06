@@ -1,0 +1,10 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "Pearson's correlation": 0.980518
+    }
+]

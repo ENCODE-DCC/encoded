@@ -1,0 +1,26 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "ChIP data read length": 36,
+        "FDR threshold": 0.01,
+        "Minimum cross-correlation shift": 1500,
+        "Minimum cross-correlation value": 0.1148128,
+        "Normalized Strand cross-correlation coefficient (NSC)": 3.1426,
+        "Phantom Peak Quality Tag": 1,
+        "Phantom peak Correlation": 0.3393863,
+        "Phantom peak location": 45,
+        "Relative Strand cross-correlation Coefficient (RSC)": 1.0954,
+        "Top 3 cross-correlation values": [ 0.360810666311838 ],
+        "Top 3 estimates for fragment length": [ 60 ],
+        "Window half size": 230,
+        "exclusion(max)": -1,
+        "exclusion(min)": -500,
+        "strandshift(max)": 1500,
+        "strandshift(min)": -500,
+        "strandshift(step)": 5
+    }
+]

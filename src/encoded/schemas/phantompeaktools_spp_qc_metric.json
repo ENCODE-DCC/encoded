@@ -20,7 +20,7 @@
             "default": "1"
         },
         "attachment": {
-            "title": "Document file metadata",
+            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
@@ -48,42 +48,42 @@
         },
         "ChIP data read length": {
             "type": "number",
-            "description": ""
+            "description": "SPP: ChIP data read length"
         },
         "FDR threshold": {
             "type": "number",
-            "description": ""
+            "description": "SPP: FDR threshold"
         },
         "Minimum cross-correlation shift": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Minimum cross-correlation shift"
         },
         "Minimum cross-correlation value": {
             "type": "number",
-            "description": ""
+            "description": "SOO: Minimum cross-correlation value"
         },
         "Normalized Strand cross-correlation coefficient (NSC)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Normalized Strand cross-correlation coefficient (NSC)"
         },
         "Phantom Peak Quality Tag": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Phantom Peak Quality Tag"
         },
         "Phantom peak Correlation": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Phantom peak Correlation"
         },
         "Phantom peak location": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Phantom peak location"
         },
         "Relative Strand cross-correlation Coefficient (RSC)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Relative Strand cross-correlation Coefficient (RSC)"
         },
         "Top 3 cross-correlation values": {
-            "description": "",
+            "description": "SPP: Top 3 cross-correlation values",
             "type": "array",
             "default": [],
             "items": {
@@ -92,7 +92,7 @@
             }
         },
         "Top 3 estimates for fragment length": {
-            "description": "",
+            "description": "SPP: Top 3 estimates for fragment length",
             "type": "array",
             "default": [],
             "items": {
@@ -102,27 +102,27 @@
         },
         "Window half size": {
             "type": "number",
-            "description": ""
+            "description": "SPP: Window half size"
         },
         "exclusion(max)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: exclusion(max)"
         },
         "exclusion(min)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: exclusion(min)"
         },
         "strandshift(max)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: strandshift(max)"
         },
         "strandshift(min)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: strandshift(min)"
         },
         "strandshift(step)": {
             "type": "number",
-            "description": ""
+            "description": "SPP: strandshift(step)"
         }
     }
 }

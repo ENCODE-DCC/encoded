@@ -1,0 +1,47 @@
+[
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "diff_chroms": 415398,
+        "diff_chroms_qc_failed": 0,
+        "duplicates": 0,
+        "duplicates_qc_failed": 0,
+        "mapped": 26200548,
+        "mapped_pct": "81.53%",
+        "mapped_qc_failed": 0,
+        "paired": 32136404,
+        "paired_properly": 23805152,
+        "paired_properly_pct": "74.08%",
+        "paired_properly_qc_failed": 0,
+        "paired_qc_failed": 0,
+        "read1": 16068202,
+        "read1_qc_failed": 0,
+        "read2": 16068202,
+        "read2_qc_failed": 0,
+        "singletons": 1247490,
+        "singletons_pct": "3.88%",
+        "singletons_qc_failed": 0,
+        "total": 32136404,
+        "total_qc_failed": 0,
+        "with_itself": 24953058,
+        "with_itself_qc_failed": 0
+
+    },
+    {
+        "status": "released",
+        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
+        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "assay_term_name": "DNase-seq",
+        "assay_term_id": "OBI:0001853",
+        "duplicates": 0,
+        "duplicates_qc_failed": 0,
+        "mapped": 3421023,
+        "mapped_pct": "68.31%",
+        "mapped_qc_failed": 0,
+        "total": 5008100,
+        "total_qc_failed": 0
+    }
+]
