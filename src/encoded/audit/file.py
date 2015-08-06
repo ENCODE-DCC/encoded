@@ -64,7 +64,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse')
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
