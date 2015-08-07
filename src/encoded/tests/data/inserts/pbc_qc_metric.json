@@ -1,10 +1,12 @@
 [
     {
-        "status": "released",
-        "step_run": "39b4ccfe-c700-4ead-972e-71479c03c97e",
-        "uuid": "97a36b88-c956-4c3a-9b6f-c958d2c2c62a",
+        "status": "in progress",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "4393eb59-6d05-4213-8607-dbb0c371990c",
         "assay_term_name": "DNase-seq",
         "assay_term_id": "OBI:0001853",
+        "related_to": [ "9558830f-154f-449f-814b-fd3435417edf" ],
+        "attachment": "generic_from_star_final_out.txt",
         "locations": 12768356,
         "locations per read": 0.851224,
         "mapped by 1 read": 11250850,

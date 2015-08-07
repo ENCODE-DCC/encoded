@@ -15,18 +15,6 @@ class QualityMetric(Item):
 
 
 @collection(
-    name='mad-qc-metrics',
-    properties={
-        'title': "Replicate Concordance Metrics using Mean Absolute Deviation (MAD)",
-        'description': 'A set of QC metrics comparing two quantificiations '
-                       'from replicates',
-    })
-class MadQcMetric(QualityMetric):
-    item_type = 'mad_qc_metric'
-    schema = load_schema('encoded:schemas/mad_qc_metric.json')
-
-
-@collection(
     name='star-qc-metrics',
     properties={
         'title': "STAR mapping Quality Metrics",
@@ -47,18 +35,6 @@ class FastqcQcMetric(QualityMetric, ItemWithAttachment):
     item_type = 'fastqc_qc_metric'
     schema = load_schema('encoded:schemas/fastqc_qc_metric.json')
 
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        input_files = request.embed(step_run, '@@object')['input_files']
-        return input_files
-
 
 @collection(
     name='bismark-qc-metrics',
@@ -69,18 +45,6 @@ class FastqcQcMetric(QualityMetric, ItemWithAttachment):
 class BismarkQcMetric(QualityMetric):
     item_type = 'bismark_qc_metric'
     schema = load_schema('encoded:schemas/bismark_qc_metric.json')
-
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
 
 
 @collection(
@@ -93,18 +57,6 @@ class Encode2ChipSeqQcMetric(QualityMetric):
     item_type = 'encode2_chipseq_qc_metric'
     schema = load_schema('encoded:schemas/encode2_chipseq_qc_metric.json')
 
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
-
 
 @collection(
     name='chipseq-filter-qc-metrics',
@@ -115,40 +67,6 @@ class Encode2ChipSeqQcMetric(QualityMetric):
 class ChipSeqFilterQcMetric(QualityMetric):
     item_type = 'chipseq_filter_qc_metric'
     schema = load_schema('encoded:schemas/chipseq_filter_qc_metric.json')
-
-    @calculated_property(schema={
-        "title": "Applies to",
-        "type": "array",
-        "items": {
-            "type": 'string',
-            "linkTo": "file",
-        },
-    })
-    def applies_to(self, request, step_run):
-        output_files = request.embed(step_run, '@@object')['output_files']
-        return output_files
-
-
-@collection(
-    name='samtools-flagstats-qc-metrics',
-    properties={
-        'title': "Mapping Quality Metrics from 'samtools --flagstats'",
-        'description': "A set of mapping QC metrics from 'samtools --flagstats'",
-    })
-class SamtoolsFlagstatsQcMetric(QualityMetric):
-    item_type = 'samtools_flagstats_qc_metric'
-    schema = load_schema('encoded:schemas/samtools_flagstats_qc_metric.json')
-
-
-@collection(
-    name='samtools-stats-qc-metrics',
-    properties={
-        'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
-        'description': "A set of mapping QC metrics from 'samtools --stats'",
-    })
-class SamtoolsStatsQcMetric(QualityMetric):
-    item_type = 'samtools_stats_qc_metric'
-    schema = load_schema('encoded:schemas/samtools_stats_qc_metric.json')
 
 
 @collection(
@@ -218,6 +136,18 @@ class SamtoolsFlagstatsQcMetric(QualityMetric):
 
 
 @collection(
+    name='mad-qc-metrics',
+    properties={
+        'title': "Replicate Concordance Metrics using Mean Absolute Deviation (MAD)",
+        'description': 'A set of QC metrics comparing two quantificiations '
+                       'from replicates',
+    })
+class MadQcMetric(QualityMetric):
+    item_type = 'mad_qc_metric'
+    schema = load_schema('encoded:schemas/mad_qc_metric.json')
+
+
+@collection(
     name='pbc-qc-metrics',
     properties={
         'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
@@ -237,4 +167,26 @@ class PbcQcMetric(QualityMetric):
 class PhantompeaktooksSppQcMetric(QualityMetric):
     item_type = 'phantompeaktooks_spp_qc_metric'
     schema = load_schema('encoded:schemas/phantompeaktooks_spp_qc_metric.json')
+
+
+@collection(
+    name='samtools-flagstats-qc-metrics',
+    properties={
+        'title': "Mapping Quality Metrics from 'samtools --flagstats'",
+        'description': "A set of mapping QC metrics from 'samtools --flagstats'",
+    })
+class SamtoolsFlagstatsQcMetric(QualityMetric):
+    item_type = 'samtools_flagstats_qc_metric'
+    schema = load_schema('encoded:schemas/samtools_flagstats_qc_metric.json')
+
+
+@collection(
+    name='samtools-stats-qc-metrics',
+    properties={
+        'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
+        'description': "A set of mapping QC metrics from 'samtools --stats'",
+    })
+class SamtoolsStatsQcMetric(QualityMetric):
+    item_type = 'samtools_stats_qc_metric'
+    schema = load_schema('encoded:schemas/samtools_stats_qc_metric.json')
 
