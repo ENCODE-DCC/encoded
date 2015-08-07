@@ -35,6 +35,6 @@
                 "type": "string",
                 "linkTo": "file"
             }
-        },
+        }
     }
 }
