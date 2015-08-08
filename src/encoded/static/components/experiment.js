@@ -691,6 +691,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
     var derivedFromFiles = {}; // List of all files that other files derived from
+    var derivedFromFilesOrg = {}; // List of all files that other files derive from — copy from a file's derived_from field
     var allFiles = {}; // All files' accessions as keys
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
@@ -763,6 +764,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 // Note that the derived_from['@id'] might not exist in allFiles if the file is missing
                 // or is a contributed file, which we take care of in a bit. Mark those files with an empty object
                 derivedFromFiles[derived_from['@id']] = allFiles[derived_from['@id']] ? allFiles[derived_from['@id']] : {};
+                derivedFromFilesOrg[derived_from['@id']] = derived_from;
             });
         }
     });
@@ -840,7 +842,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         if (!(derivedFromFileId in allFiles)) {
             // A file others derive from doesn't exist; check if it's in a replicate or not
             // Note the derived_from file object exists even if it doesn't exist in given files array.
-            var derivedFromFile = derivedFromFiles[derivedFromFileId];
+            var derivedFromFile = derivedFromFilesOrg[derivedFromFileId];
             if (derivedFromFile.replicate) {
                 // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
                 if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
