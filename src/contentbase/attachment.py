@@ -2,21 +2,29 @@ from base64 import b64decode
 from io import BytesIO
 from mimetypes import guess_type
 from PIL import Image
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import (
+    HTTPNotFound,
+    HTTPTemporaryRedirect,
+)
 from pyramid.response import Response
+from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
+    parse_qs,
     quote,
     unquote,
+    urlparse,
 )
 from contentbase import (
     BLOBS,
     Item,
 )
 from .validation import ValidationFailure
+import datetime
 import magic
 import mimetypes
+import pytz
 
 
 def includeme(config):
@@ -130,7 +138,7 @@ class ItemWithAttachment(Item):
             attachment['width'], attachment['height'] = im.size
 
         registry = find_root(self).registry
-        download_meta['blob_id'] = registry[BLOBS].storeBlob(data)
+        registry[BLOBS].store_blob(data, download_meta)
 
         attachment['href'] = '@@download/%s/%s' % (
             prop_name, quote(filename))
@@ -173,11 +181,34 @@ def download(context, request):
     if mimetype is None:
         mimetype = 'application/octet-stream'
 
-    blob = request.registry[BLOBS].getBlob(download_meta['blob_id'])
+    # Proxy or redirect to external blob URL, if possible
+    blob_storage = request.registry[BLOBS]
+    if hasattr(blob_storage, 'get_blob_url'):
+        blob_url = blob_storage.get_blob_url(download_meta)
+        if blob_url is not None:
+            return proxy_or_redirect_to_external_file(request, blob_url)
 
+    # Otherwise serve the blob data ourselves
+    blob = request.registry[BLOBS].getBlob(download_meta)
     headers = {
         'Content-Type': mimetype,
     }
+    return Response(body=blob, headers=headers)
 
-    response = Response(body=blob, headers=headers)
-    return response
+
+def proxy_or_redirect_to_external_file(request, location):
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
+
+    if asbool(request.params.get('soft')):
+        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
+        }
+
+    if proxy:
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+
+    # 307 redirect specifies to keep original method
+    raise HTTPTemporaryRedirect(location=location)

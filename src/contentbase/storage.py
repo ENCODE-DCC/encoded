@@ -27,6 +27,7 @@ from .interfaces import (
     STORAGE,
 )
 from .json_renderer import json_renderer
+import boto
 import json
 import transaction
 import uuid
@@ -35,7 +36,11 @@ import uuid
 def includeme(config):
     registry = config.registry
     registry[STORAGE] = RDBStorage(registry[DBSESSION])
-    registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
+    rdb_blob_storage = RDBBlobStorage(registry[DBSESSION])
+    if registry.settings.get('blob_bucket'):
+        registry[BLOBS] = S3BlobStorage(registry.settings['blob_bucket'], fallback=rdb_blob_storage)
+    else:
+        registry[BLOBS] = rdb_blob_storage
 
 
 Base = declarative_base()
@@ -241,20 +246,45 @@ class RDBBlobStorage(object):
     def __init__(self, DBSession):
         self.DBSession = DBSession
 
-    def storeBlob(self, data, blob_id=None):
-        if blob_id is None:
-            blob_id = uuid.uuid4()
+    def store_blob(self, data, download_meta):
+        blob_id = uuid.uuid4()
         session = self.DBSession()
         blob = Blob(blob_id=blob_id, data=data)
         session.add(blob)
+        download_meta['blob_id'] = blob_id
         return str(blob_id)
 
-    def getBlob(self, blob_id):
+    def get_blob(self, download_meta):
+        blob_id = download_meta['blob_id']
         if isinstance(blob_id, str):
             blob_id = uuid.UUID(blob_id)
         session = self.DBSession()
         blob = session.query(Blob).get(blob_id)
         return blob.data
+
+
+class S3BlobStorage(object):
+    def __init__(self, bucket):
+        self.bucket = bucket
+
+    def store_blob(self, download_meta):
+        pass
+
+    def get_blob_url(self, download_meta):
+        bucket = download_meta.get('bucket')
+        if bucket is None:
+            return
+
+        conn = boto.connect_s3()
+        location = conn.generate_url(
+            36*60*60, bucket=download_meta['bucket'], key=download_meta['key'],
+            response_headers={
+                'response-content-disposition': "attachment; filename=" + download_meta['download'],
+            })
+        return location
+
+    def get_blob(self, download_meta):
+        pass
 
 
 class JSON(types.TypeDecorator):
