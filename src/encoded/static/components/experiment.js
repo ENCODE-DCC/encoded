@@ -654,32 +654,39 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
-    function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, include) {
+    function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
         console.log('FILEARRAY: %o', fileArray);
-        fileArray.forEach(function(file) {
+
+        function getOrigFiles(files) {
+            return files.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+        }
+
+        for (var i = 0; i < fileArray.length; i++) {
+            var file = fileArray[i];
             var nextFileArray;
 
+            console.log('CONSIDERING: ' + (file && file.accession) + ':' + i);
             if (file) {
                 if (!file.removed) {
                     // This file gets included. Include everything it derives from
-                    if (file.derived_from && file.derived_from.length) {
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         console.log('nonremoved: %o', file);
-                        nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                        nextFileArray = getOrigFiles(file.derived_from);
                         console.log('NEXTFILE 1: %o, %o, %o', nextFileArray, file, allFiles);
-                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
                     file.removed = false;
-                    if (file.derived_from && file.derived_from.length) {
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         console.log('removed: %o', file);
-                        nextFileArray = file.derived_from.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+                        nextFileArray = getOrigFiles(file.derived_from);
                         console.log('NEXTFILE 2: %o, %o, %o', nextFileArray, file, allFiles);
-                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, true);
+                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 }
             }
-        });
+        }
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
@@ -706,6 +713,16 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var genFileId = _.memoize(_genFileId, function(file) {
         return file['@id'];
     });
+
+    files = _(files).uniq(function(file) {
+        return file.accession;
+    });
+
+    console.log('start');
+    files.forEach(function(file) {
+        console.log(file.accession + ':' + file.removed);
+    });
+    console.log('end');
 
     // Collect things like used replicates, and used pipelines
     files.forEach(function(file) {
@@ -768,33 +785,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
     });
 
-    // Remove files based on the filtering options
-    if (filterAssembly && filterAnnotation) {
-        // First remove all raw files, and all other files with mismatched filtering options
-        files.forEach(function(file) {
-            if (file.output_category === 'raw data') {
-                // File is raw data; just remove it
-                file.removed = true;
-            } else {
-                // At this stage, we know it's a process or reference file. Remove from files if
-                // it has mismatched assembly or annotation
-                console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
-                if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
-                    file.removed = true;
-                }
-            }
-        });
-
-        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
-        processFiltering(files, filterAssembly, filterAnnotation, allFiles);
-    }
-
-    console.log('start');
-    files.forEach(function(file) {
-        console.log(file.accession + ':' + file.removed);
-    });
-    console.log('end');
-
     // Remove any replicates containing only removed files from the last step.
     Object.keys(allReplicates).forEach(function(repNum) {
         var keepRep = false;
@@ -820,6 +810,29 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 derivedFromFiles[file['@id']] = file;
             }
         });
+    }
+
+    // Remove files based on the filtering options
+    if (filterAssembly && filterAnnotation) {
+        var combinedFiles = _.union(files, context.contributing_files);
+
+        // First remove all raw files, and all other files with mismatched filtering options
+        combinedFiles.forEach(function(file) {
+            if (file.output_category === 'raw data') {
+                // File is raw data; just remove it
+                file.removed = true;
+            } else {
+                // At this stage, we know it's a process or reference file. Remove from files if
+                // it has mismatched assembly or annotation
+                console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
+                if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
+                    file.removed = true;
+                }
+            }
+        });
+
+        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
+        processFiltering(combinedFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
