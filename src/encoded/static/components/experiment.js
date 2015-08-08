@@ -655,17 +655,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
-        console.log('FILEARRAY: %o', fileArray);
+        console.log('FILEARRAY: %o %s', fileArray, include ? 'INC' : 'NOT');
 
         function getOrigFiles(files) {
-            return files.map(function(file) { return (typeof file === 'string') ? allFiles[file] : file; });
+            return files.map(function(file) { return allFiles[file['@id']]; });
         }
 
         for (var i = 0; i < fileArray.length; i++) {
             var file = fileArray[i];
             var nextFileArray;
 
-            console.log('CONSIDERING: ' + (file && file.accession) + ':' + i);
+            console.log('CONSIDERING: ' + (file && file.accession) + ':' + i + ':' + (file.removed ? 'REM' : 'NOT REM'));
             if (file) {
                 if (!file.removed) {
                     // This file gets included. Include everything it derives from
@@ -717,12 +717,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     files = _(files).uniq(function(file) {
         return file.accession;
     });
-
-    console.log('start');
-    files.forEach(function(file) {
-        console.log(file.accession + ':' + file.removed);
-    });
-    console.log('end');
 
     // Collect things like used replicates, and used pipelines
     files.forEach(function(file) {
@@ -834,6 +828,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
         processFiltering(combinedFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
+
+    console.log('start');
+    files.forEach(function(file) {
+        console.log(file.accession + ':' + file.removed);
+    });
+    console.log('end');
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
