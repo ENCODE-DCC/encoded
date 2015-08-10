@@ -3,7 +3,7 @@
     "id": "/profiles/dnase_peak_qc_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run","applies_to"],
+    "required": ["step_run","relates_to"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
