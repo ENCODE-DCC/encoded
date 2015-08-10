@@ -164,9 +164,9 @@ class PbcQcMetric(QualityMetric):
         'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
         'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
     })
-class PhantompeaktooksSppQcMetric(QualityMetric):
-    item_type = 'phantompeaktooks_spp_qc_metric'
-    schema = load_schema('encoded:schemas/phantompeaktooks_spp_qc_metric.json')
+class PhantompeaktoolsSppQcMetric(QualityMetric):
+    item_type = 'phantompeaktools_spp_qc_metric'
+    schema = load_schema('encoded:schemas/phantompeaktools_spp_qc_metric.json')
 
 
 @collection(
