@@ -92,8 +92,8 @@ def check_format(item, path):
         ('bigWig', None): ['-type=bigWig', chromInfo],
         ('bed', 'bed3'): ['-type=bed3', chromInfo],
         ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
-        ('bed', 'bed6'): ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
-        ('bigBed', 'bed6'): ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+        ('bed', 'bed6'): ['-type=bed6', chromInfo],  # if this fails we will drop to bed3+
+        ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],  # if this fails we will drop to bigBed3+
         ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
@@ -140,6 +140,10 @@ def check_format(item, path):
         ('bigBed', 'enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
         ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
         ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
+        ('bed', 'bed6+'): ['-tab', '-type=bed6+', chromInfo],
+        ('bigBed', 'bed6+'): ['-tab', '-type=bigBed6+', chromInfo],
+        ('bed', 'bed9+'): ['-tab', '-type=bed9+', chromInfo],
+        ('bigBed', 'bed9+'): ['-tab', '-type=bigBed9+', chromInfo],
         ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
         ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
         ('rcc', None): ['-type=rcc'],
