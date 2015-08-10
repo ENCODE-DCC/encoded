@@ -835,6 +835,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     files.forEach(function(file) {
         console.log(file.accession + ':' + file.removed);
     });
+    if (context.contributing_files) {
+        context.contributing_files.forEach(function(file) {
+            console.log(file.accession + '::' + file.removed);
+        });
+    }
     console.log('end');
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
@@ -988,17 +993,19 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Add contributing files to the graph
     if (context.contributing_files && context.contributing_files.length) {
         context.contributing_files.forEach(function(file) {
-            var fileId = 'file:' + file['@id'];
+            if (!file.removed) {
+                var fileId = 'file:' + file['@id'];
 
-            // Assemble a single file node; can have file and step nodes in this graph
-            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                type: 'file',
-                shape: 'rect',
-                cornerRadius: 16,
-                ref: file,
-                contributing: true
-            });
+                // Assemble a single file node; can have file and step nodes in this graph
+                jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
+                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
+                    type: 'file',
+                    shape: 'rect',
+                    cornerRadius: 16,
+                    ref: file,
+                    contributing: true
+                });
+            }
         }, this);
     }
 
