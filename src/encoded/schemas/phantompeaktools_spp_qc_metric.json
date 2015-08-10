@@ -88,7 +88,7 @@
             "default": [],
             "items": {
                 "description": "",
-                "type":  "number",
+                "type":  "number"
             }
         },
         "Top 3 estimates for fragment length": {
@@ -97,7 +97,7 @@
             "default": [],
             "items": {
                 "description": "",
-                "type":  "number",
+                "type":  "number"
             }
         },
         "Window half size": {

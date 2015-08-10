@@ -60,7 +60,7 @@
             "default": [],
             "items": {
                 "description": "",
-                "type":  "number",
+                "type":  "number"
             }
         },
         "IDR cutoff": {
@@ -73,7 +73,7 @@
             "default": [],
             "items": {
                 "description": "",
-                "type":  "number",
+                "type":  "number"
             }
         },
         "Number of peaks passing IDR cutoff": {
