@@ -887,7 +887,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         parentNode: replicateNode,
                         ref: fileAnalysisStep,
                         pipelines: pipelineInfo,
-                        fileId: file['@id']
+                        fileId: file['@id'],
+                        stepVersion: file.analysis_step_version
                     });
                 }
 
@@ -1070,7 +1071,7 @@ var FileDetailView = function(node) {
                             {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
                                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                 return (
-                                    <a href={version.software['@id']} key={i} className="software-version">
+                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
                                         <span className="software">{version.software.name}</span>
                                         {version.version ?
                                             <span className="version">{versionNum}</span>
