@@ -28,6 +28,7 @@ from .interfaces import (
 )
 from .json_renderer import json_renderer
 import boto
+import boto.s3.key
 import json
 import transaction
 import uuid
@@ -264,27 +265,44 @@ class RDBBlobStorage(object):
 
 
 class S3BlobStorage(object):
-    def __init__(self, bucket):
-        self.bucket = bucket
+    def __init__(self, bucket, fallback=None):
+        self.conn = boto.connect_s3()
+        self.bucket = self.conn.get_bucket(bucket)
+        self.fallback = fallback
 
-    def store_blob(self, download_meta):
-        pass
+    def store_blob(self, data, download_meta):
+        key = boto.s3.key.Key(self.bucket)
+        key.key = uuid.uuid4()
+        if 'type' in download_meta:
+            key.content_type = download_meta['type']
+        key.set_contents_from_string(data)
+        download_meta['bucket'] = self.bucket.name
+        download_meta['key'] = key.key
 
-    def get_blob_url(self, download_meta):
-        bucket = download_meta.get('bucket')
-        if bucket is None:
+    def get_blob_url(self, download_meta, disposition='inline'):
+        bucket_name = download_meta.get('bucket')
+        if bucket_name is None:
             return
 
-        conn = boto.connect_s3()
-        location = conn.generate_url(
-            36*60*60, bucket=download_meta['bucket'], key=download_meta['key'],
+        location = self.conn.generate_url(
+            36*60*60, method='GET', bucket=bucket_name, key=download_meta['key'],
             response_headers={
-                'response-content-disposition': "attachment; filename=" + download_meta['download'],
+                'response-content-disposition': "{}; filename={}".format(disposition, download_meta['download']),
             })
         return location
 
     def get_blob(self, download_meta):
-        pass
+        bucket_name = download_meta.get('bucket')
+        if bucket_name is None:
+            if self.fallback:
+                return self.fallback.get_blob(download_meta)
+            else:
+                raise Exception('Missing S3 bucket: %s' % download_meta)
+
+        bucket = self.conn.get_bucket(bucket_name)
+        key = boto.s3.key.Key(bucket)
+        key.key = download_meta['key']
+        return key.get_contents_as_string()
 
 
 class JSON(types.TypeDecorator):

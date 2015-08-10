@@ -189,7 +189,7 @@ def download(context, request):
             return proxy_or_redirect_to_external_file(request, blob_url)
 
     # Otherwise serve the blob data ourselves
-    blob = request.registry[BLOBS].getBlob(download_meta)
+    blob = request.registry[BLOBS].get_blob(download_meta)
     headers = {
         'Content-Type': mimetype,
     }
