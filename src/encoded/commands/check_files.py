@@ -90,10 +90,24 @@ def check_format(item, path):
         ('fastq', None): ['-type=fastq'],
         ('bam', None): ['-type=bam', chromInfo],
         ('bigWig', None): ['-type=bigWig', chromInfo],
+        #standard bed formats
         ('bed', 'bed3'): ['-type=bed3', chromInfo],
         ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
-        ('bed', 'bed6'): ['-type=bed6', chromInfo],  # if this fails we will drop to bed3+
-        ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],  # if this fails we will drop to bigBed3+
+        ('bed', 'bed6'): ['-type=bed6', chromInfo],
+        ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],
+        ('bed', 'bed9'): ['-type=bed9', chromInfo],
+        ('bigBed', 'bed9'): ['-type=bigBed9', chromInfo],
+        #extended "bed+" formats, -tab is required to allow for text fields to contain spaces
+        ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
+        ('bed', 'bed6+'): ['-tab', '-type=bed6+', chromInfo],
+        ('bigBed', 'bed6+'): ['-tab', '-type=bigBed6+', chromInfo],
+        ('bed', 'bed9+'): ['-tab', '-type=bed9+', chromInfo],
+        ('bigBed', 'bed9+'): ['-tab', '-type=bigBed9+', chromInfo],
+        #a catch-all shoe-horn (as long as it's tab-delimited)
+        ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
+        #special bed types
         ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
@@ -138,18 +152,11 @@ def check_format(item, path):
         ('bigBed', 'candidate enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/candidate_enhancer_prediction.as' % encValData],
         ('bed', 'enhancer predictions'): ['-type=bed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
         ('bigBed', 'enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
-        ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
-        ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
-        ('bed', 'bed6+'): ['-tab', '-type=bed6+', chromInfo],
-        ('bigBed', 'bed6+'): ['-tab', '-type=bigBed6+', chromInfo],
-        ('bed', 'bed9+'): ['-tab', '-type=bed9+', chromInfo],
-        ('bigBed', 'bed9+'): ['-tab', '-type=bigBed9+', chromInfo],
-        ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
-        ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
-        ('rcc', None): ['-type=rcc'],
-        ('idat', None): ['-type=idat'],
         ('bedpe', None): ['-type=bed3+', chromInfo],
         ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
+        #non-bed types
+        ('rcc', None): ['-type=rcc'],
+        ('idat', None): ['-type=idat'],
         ('gtf', None): None,
         ('tar', None): None,
         ('tsv', None): None,
