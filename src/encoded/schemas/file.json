@@ -169,8 +169,11 @@
                 {
                     "enum": [
                         "bed3",
+                        "bed3+",
                         "bed6",
+                        "bed6+",
                         "bed9",
+                        "bed9+",
                         "bed12",
                         "bedGraph",
                         "bedLogR",
@@ -180,7 +183,9 @@
                         "gappedPeak",
                         "gff2",
                         "gff3",
-                        "narrowPeak"
+                        "narrowPeak",
+                        "candidate enhancer predictions",
+                        "enhancer predictions"
                     ]
                 },
                 {
@@ -354,7 +359,8 @@
                         "male genome index",
                         "spike-in sequence",
 
-                        "enhancer validation"
+                        "enhancer validation",
+                        "semi-automated genome annotation"
 
                     ]
                 },
@@ -665,7 +671,8 @@
         "enhancer validation": "validation",
         "validation": "validation",
         
-        "HMM predicted chromatin state": "annotation"
+        "HMM predicted chromatin state": "annotation",
+        "semi-automated genome annotation": "annotation"
         
     },
     "file_format_file_extension": {
