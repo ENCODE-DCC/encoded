@@ -130,7 +130,7 @@ class HotspotQcMetric(QualityMetric):
         'title': "Irreproducible Discovery Rate (IDR) Summary Quality Metrics",
         'description': "A set of Peak Replicate QC metrics from 'idr'",
     })
-class SamtoolsFlagstatsQcMetric(QualityMetric):
+class IdrSummaryQcMetric(QualityMetric):
     item_type = 'idr_summary_qc_metric'
     schema = load_schema('encoded:schemas/idr_summary_qc_metric.json')
 
