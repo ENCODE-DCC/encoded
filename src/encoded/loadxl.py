@@ -60,7 +60,7 @@ ORDER = [
     'hotspot_qc_metric',
     'idr_summary_qc_metric',
     'pbc_qc_metric',
-    'phantumpeaktools_spp_qc_metric',
+    'phantompeaktools_spp_qc_metric',
     'samtools_stats_qc_metric',
     'image',
     'page',
