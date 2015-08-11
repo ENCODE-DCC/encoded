@@ -12,10 +12,10 @@ def bismark_qc_metric(quality_metric):
 def bismark_qc_metric_1(bismark_qc_metric):
     item = bismark_qc_metric.copy()
     item.update({
-        "step_run": "/analysis-step-runs/1a2e2163-abf9-4770-bca5-33018969810f/"
+        "step_run": "/analysis-step-runs/1a2e2163-abf9-4770-bca5-33018969810f/",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",
         "applies_to": [ "fred", "ethyl", "ricky" ],
-        'schema_version': '1'
+        'schema_version': '1',
     })
     return item
 
