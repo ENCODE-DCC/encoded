@@ -514,6 +514,7 @@
             "type": "string",
             "enum": [
                 "early embryonic",
+                "midembryonic",
                 "late embryonic",
                 "mixed stage (embryonic)",
                 "mixed stage (late embryonic and L1 larva)",
@@ -523,6 +524,7 @@
                 "L3 larva",
                 "L4 larva",
                 "dauer",
+                "L4/young adult",
                 "young adult",
                 "adult"
             ]    
