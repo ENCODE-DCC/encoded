@@ -11,9 +11,12 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
+var biosample = require('./biosample');
+
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
+var SingleTreatment = biosample.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -353,7 +356,7 @@ var AuditMixin = audit.AuditMixin;
 
             // Get the first treatment if it's there
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
-                    result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
+                    result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
 
             return (
                 <li>

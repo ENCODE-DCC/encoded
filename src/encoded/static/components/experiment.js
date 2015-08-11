@@ -12,6 +12,7 @@ var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
+var biosample = require('./biosample');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -26,6 +27,7 @@ var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
+var SingleTreatment = biosample.SingleTreatment;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -89,7 +91,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
-        var treatmentText = [];
+        var treatments;
         var synchText = [];
         var depletedIns = [];
         var mutatedGenes = {};
@@ -97,17 +99,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
-            treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
-                var singleTreatment = '';
-                if (treatment.concentration) {
-                    singleTreatment += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-                }
-                singleTreatment += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-                if (treatment.duration) {
-                    singleTreatment += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-                }
-                return singleTreatment;
-            }));
+            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
             // Collect synchronizations
             if (biosample.synchronization) {
@@ -137,7 +129,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 cellCycles[biosample.phase] = true;
             }
         });
-        treatmentText = treatmentText && _.uniq(treatmentText);
         synchText = synchText && _.uniq(synchText);
         depletedIns = depletedIns && _.uniq(depletedIns);
         var mutatedGeneNames = Object.keys(mutatedGenes);
@@ -255,16 +246,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {treatmentText.length ?
+                        {treatments ?
                             <div data-test="treatment">
-                                <dt>Treatment</dt>
-                                <dd>
-                                    <ul>
-                                        {treatmentText.map(function (treatment) {
-                                            return (<li key={treatment}>{treatment}</li>);
-                                        })}
-                                    </ul>
-                                </dd>
+                                <dt>Treatments</dt>
+                                <dd>{BiosampleTreatments(biosamples)}</dd>
                             </div>
                         : null}
 
@@ -471,6 +456,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     }
     var platformKeys = Object.keys(platforms);
 
+    // If no platforms found in files, get the platform from the first replicate, if it has one
+    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
+        platforms[replicates[0].platform['@id']] = replicates[0].platform;
+    }
+
     return (
         <div className = "panel-assay">
             <h3>Assay details</h3>
@@ -621,7 +611,41 @@ var Replicate = module.exports.Replicate = function (props) {
 };
 // Can't be a properzz panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-// Controls the drawing of the file graph for the experiment. It displays both files and
+
+
+var BiosampleTreatments = function(biosamples) {
+    var treatmentTexts = [];
+
+    // Build up array of treatment strings
+    if (biosamples && biosamples.length) {
+        biosamples.forEach(function(biosample) {
+            if (biosample.treatments && biosample.treatments.length) {
+                biosample.treatments.forEach(function(treatment) {
+                    treatmentTexts.push(SingleTreatment(treatment));
+                });
+            }
+        });
+    }
+
+    // Component output of treatment strings
+    if (treatmentTexts.length) {
+        treatmentTexts = _.uniq(treatmentTexts);
+        return (
+            <span>
+                {treatmentTexts.map(function(treatments, i) {
+                    return (
+                        <span key={i}>
+                            {i > 0 ? <span>{','}<br /></span> : null}
+                            {treatments}
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+    return null;
+};
+
 
 
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files) {
@@ -701,7 +725,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Note whether any files have an analysis step
         var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
         stepExists = stepExists || !!fileAnalysisStep;
-
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
             allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            

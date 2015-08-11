@@ -716,21 +716,30 @@ globals.panel_views.register(FlyWormDonor, 'fly_donor');
 globals.panel_views.register(FlyWormDonor, 'worm_donor');
 
 
+var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
+    var treatmentText = '';
+
+    if (treatment.concentration) {
+        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
+    }
+    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
+    if (treatment.duration) {
+        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
+    }
+    return treatmentText;
+};
+
+
 var Treatment = module.exports.Treatment = React.createClass({
     render: function() {
         var context = this.props.context;
-        var title = '';
-        if (context.concentration) {
-            title += context.concentration + ' ' + context.concentration_units + ' ';
-        }
-        title += context.treatment_term_name + ' (' + context.treatment_term_id + ') ';
-        if (context.duration) {
-            title += 'for ' + context.duration + ' ' + context.duration_units;
-        }
+        var treatmentText = '';
+
+        treatmentText = SingleTreatment(context);
         return (
             <dl className="key-value">
                 <dt>Treatment</dt>
-                <dd>{title}</dd>
+                <dd>{treatmentText}</dd>
 
                 <dt>Type</dt>
                 <dd>{context.treatment_type}</dd>
