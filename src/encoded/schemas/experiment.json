@@ -210,6 +210,26 @@
             "title": "Treatment",
             "type": "string"
         },
+        "replicates.library.biosample.treatments.treatment_term_id": {
+            "title": "Term ID",
+            "type": "string"
+        },
+        "replicates.library.biosample.treatments.concentration": {
+            "title": "Concentration",
+            "type": "number"
+        },
+        "replicates.library.biosample.treatments.concentration_units": {
+            "title": "Concentration units",
+            "type": "string"
+        },
+        "replicates.library.biosample.treatments.duration": {
+            "title": "Duration",
+            "type": "number"
+        },
+        "replicates.library.biosample.treatments.duration_units": {
+            "title": "Duration units",
+            "type": "string"
+        },
         "replicates.library.biosample.synchronization": {
             "title": "Synchronization",
             "type": "string"
