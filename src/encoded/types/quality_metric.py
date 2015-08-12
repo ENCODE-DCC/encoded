@@ -20,7 +20,7 @@ class QualityMetric(Item):
         'title': "STAR mapping Quality Metrics",
         'description': 'A set of QC metrics from STAR RNA-seq mapping',
     })
-class StarQcMetric(QualityMetric):
+class StarQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'star_qc_metric'
     schema = load_schema('encoded:schemas/star_qc_metric.json')
 
@@ -75,7 +75,7 @@ class ChipSeqFilterQcMetric(QualityMetric):
         'title': "Pearson's Correlation of two bigWig Signal Files.",
         'description': "A set of signal replicate QC metrics from 'bigWigCorrelate'",
     })
-class BigwigcorrelateQcMetric(QualityMetric):
+class BigwigcorrelateQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'bigwigcorrelate_qc_metric'
     schema = load_schema('encoded:schemas/bigwigcorrelate_qc_metric.json')
 
@@ -86,7 +86,7 @@ class BigwigcorrelateQcMetric(QualityMetric):
         'title': "Counts of DNase Regions and Hotspots",
         'description': 'A set of peak QC metrics for regions and hotspots',
     })
-class DnasePeakQcMetric(QualityMetric):
+class DnasePeakQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'dnase_peak_qc_metric'
     schema = load_schema('encoded:schemas/dnase_peak_qc_metric.json')
 
@@ -97,7 +97,7 @@ class DnasePeakQcMetric(QualityMetric):
         'title': "Mapping Quality Metrics from 'edwBamStats'",
         'description': "A set of mapping QC metrics from 'edwBamStats'",
     })
-class EdwbamstatsQcMetric(QualityMetric):
+class EdwbamstatsQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'edwbamstats_qc_metric'
     schema = load_schema('encoded:schemas/edwbamstats_qc_metric.json')
 
@@ -108,7 +108,7 @@ class EdwbamstatsQcMetric(QualityMetric):
         'title': "Comparison of two sets of Called Peaks from 'edwComparePeaks'",
         'description': "A set of peak replicate QC metrics from 'edwComparePeaks'",
     })
-class EdwcomparepeaksQcMetric(QualityMetric):
+class EdwcomparepeaksQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'edwcomparepeaks_qc_metric'
     schema = load_schema('encoded:schemas/edwcomparepeaks_qc_metric.json')
 
@@ -119,7 +119,7 @@ class EdwcomparepeaksQcMetric(QualityMetric):
         'title': "Peak Quality Metrics from the 'HotSpot' package",
         'description': "A set of peak QC metrics from the 'HotSpot' package",
     })
-class HotspotQcMetric(QualityMetric):
+class HotspotQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'hotspot_qc_metric'
     schema = load_schema('encoded:schemas/hotspot_qc_metric.json')
 
@@ -130,7 +130,7 @@ class HotspotQcMetric(QualityMetric):
         'title': "Irreproducible Discovery Rate (IDR) Summary Quality Metrics",
         'description': "A set of Peak Replicate QC metrics from 'idr'",
     })
-class IdrSummaryQcMetric(QualityMetric):
+class IdrSummaryQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'idr_summary_qc_metric'
     schema = load_schema('encoded:schemas/idr_summary_qc_metric.json')
 
@@ -142,7 +142,7 @@ class IdrSummaryQcMetric(QualityMetric):
         'description': 'A set of QC metrics comparing two quantificiations '
                        'from replicates',
     })
-class MadQcMetric(QualityMetric):
+class MadQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'mad_qc_metric'
     schema = load_schema('encoded:schemas/mad_qc_metric.json')
 
@@ -153,7 +153,7 @@ class MadQcMetric(QualityMetric):
         'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
     })
-class PbcQcMetric(QualityMetric):
+class PbcQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'pbc_qc_metric'
     schema = load_schema('encoded:schemas/pbc_qc_metric.json')
 
@@ -164,7 +164,7 @@ class PbcQcMetric(QualityMetric):
         'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
         'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
     })
-class PhantompeaktoolsSppQcMetric(QualityMetric):
+class PhantompeaktoolsSppQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'phantompeaktools_spp_qc_metric'
     schema = load_schema('encoded:schemas/phantompeaktools_spp_qc_metric.json')
 
@@ -175,7 +175,7 @@ class PhantompeaktoolsSppQcMetric(QualityMetric):
         'title': "Mapping Quality Metrics from 'samtools --flagstats'",
         'description': "A set of mapping QC metrics from 'samtools --flagstats'",
     })
-class SamtoolsFlagstatsQcMetric(QualityMetric):
+class SamtoolsFlagstatsQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'samtools_flagstats_qc_metric'
     schema = load_schema('encoded:schemas/samtools_flagstats_qc_metric.json')
 
@@ -186,7 +186,7 @@ class SamtoolsFlagstatsQcMetric(QualityMetric):
         'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
         'description': "A set of mapping QC metrics from 'samtools --stats'",
     })
-class SamtoolsStatsQcMetric(QualityMetric):
+class SamtoolsStatsQcMetric(ItemWithAttachment, QualityMetric):
     item_type = 'samtools_stats_qc_metric'
     schema = load_schema('encoded:schemas/samtools_stats_qc_metric.json')
 
