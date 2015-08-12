@@ -31,4 +31,4 @@ def test_bismark_qc_metric_upgrade_1(registry, bismark_qc_metric_1, bigbed):
     from contentbase import UPGRADER
     upgrader = registry[UPGRADER]
     value = upgrader.upgrade('bismark_qc_metric', bismark_qc_metric_1, registry=registry, current_version='1', target_version='2')
-    assert value['relates_to'] == [bigbed['uuid']]
+    assert value['quality_metric_of'] == [bigbed['uuid']]

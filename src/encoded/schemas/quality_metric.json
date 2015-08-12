@@ -23,7 +23,7 @@
             "type": "string",
             "linkTo": "analysis_step_run"
         },
-        "relates_to": {
+        "quality_metric_of": {
             "title": "Files",
             "description": "One or more files that this metric either applies to or is calculated from.",
             "type": "array",

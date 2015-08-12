@@ -8,4 +8,4 @@ def bismark_qc_metric_1_2(value, system):
     # http://redmine.encodedcc.org/issues/3114
     root = system['registry'][ROOT]
     step_run = root.get_by_uuid(value['step_run'])
-    value['relates_to'] = [str(uuid) for uuid in step_run.get_rev_links('output_files')]
+    value['quality_metric_of'] = [str(uuid) for uuid in step_run.get_rev_links('output_files')]
