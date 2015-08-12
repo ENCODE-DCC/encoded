@@ -97,6 +97,7 @@ def check_format(item, path):
         ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],
         ('bed', 'bed9'): ['-type=bed9', chromInfo],
         ('bigBed', 'bed9'): ['-type=bigBed9', chromInfo],
+        ('bedGraph', None): ['-type=bedGraph', chromInfo],
         #extended "bed+" formats, -tab is required to allow for text fields to contain spaces
         ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
         ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
