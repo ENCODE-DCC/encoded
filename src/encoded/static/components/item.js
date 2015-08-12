@@ -140,6 +140,7 @@ var RepeatingItem = React.createClass({
   onRemove: function(e) {
     if (!confirm('Are you sure you want to remove this item?')) {
         e.preventDefault();
+        return;
     }
     if (this.props.onRemove) {
       this.props.onRemove(this.props.name);
