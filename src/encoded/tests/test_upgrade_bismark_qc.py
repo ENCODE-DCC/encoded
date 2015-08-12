@@ -2,27 +2,33 @@ import pytest
 
 
 @pytest.fixture
-def bismark_qc_metric(quality_metric):
+def bigbed(testapp, lab, award, experiment, analysis_step_run):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigBed',
+        'file_format_type': 'bedMethyl',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'methylation state at CpG',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+        'step_run': analysis_step_run['@id'],
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bismark_qc_metric_1(pipeline, analysis_step_run, bigbed):
     return {
         'status': "finished",
         'pipeline': pipeline['uuid'],
+        'step_run': analysis_step_run['uuid'],
+        'schema_version': '1',
     }
 
-@pytest.fixture
-def bismark_qc_metric_1(bismark_qc_metric):
-    item = bismark_qc_metric.copy()
-    item.update({
-        "step_run": "/analysis-step-runs/1a2e2163-abf9-4770-bca5-33018969810f/",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
-        "applies_to": [ "fred", "ethyl", "ricky" ],
-        'schema_version': '1',
-    })
-    return item
 
-
-def test_bismark_qc_metric_upgrade_1(app, bismark_qc_metric_1):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('bismark_qc_metric', bismark_qc_metric_1, target_version='2')
-    assert value.get('relates_to') is not None
-    assert len(value['relates_to']) > 0
-    assert value.get('applies_to') is None
+def test_bismark_qc_metric_upgrade_1(registry, bismark_qc_metric_1, bigbed):
+    from contentbase import UPGRADER
+    upgrader = registry[UPGRADER]
+    value = upgrader.upgrade('bismark_qc_metric', bismark_qc_metric_1, registry=registry, current_version='1', target_version='2')
+    assert value['relates_to'] == [bigbed['uuid']]
