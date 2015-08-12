@@ -5,7 +5,7 @@
         "uuid": "38b4e407-0901-4e82-800e-957efb3570c8",
         "assay_term_name": "RNA-seq",
         "assay_term_id": "OBI:0001271",
-        "related_to": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
+        "relates_to": [ "46e82a90-49e5-4c33-afab-9ec90d65faf3", "e6addc7e-0320-4e11-8351-69e9b9cc08dc" ],
         "attachment": "generic_from_mad_plot.png",
         "Final parameter values (mu, sigma, rho, and mix)": [ 1.32, 1.02, 0.94, 0.91 ],
         "IDR cutoff": 0.05,
@@ -14,6 +14,5 @@
         "Number of reported peaks": 9722,
         "Percent peaks passing IDR cutoff": 87.2,
         "Percent reported peaks": 100
-
     }
 ]

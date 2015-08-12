@@ -89,7 +89,7 @@
             "description": "IDR: Percent peaks passing IDR cutoff"
         },
         "Percent reported peaks": {
-            "type": "string",
+            "type": "number",
             "description": "IDR: Percent reported peaks"
         }
     }
