@@ -91,6 +91,8 @@ class ItemWithAttachment(Item):
         # Make sure the file extensions matches the mimetype
         download_meta['download'] = filename = attachment['download']
         mime_type_from_filename, _ = mimetypes.guess_type(filename)
+        if mime_type_from_filename is None:
+            mime_type_from_filename = 'application/octet-stream'
         if mime_type:
             if not mimetypes_are_equal(mime_type, mime_type_from_filename):
                 raise ValidationFailure(
