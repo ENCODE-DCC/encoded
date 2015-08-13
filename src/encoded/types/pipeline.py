@@ -125,11 +125,11 @@ class AnalysisStepRun(Item):
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step_version.analysis_step',
-        'qc_metrics',
+        'quality_metrics',
         'output_files'
     ]
     rev = {
-        'qc_metrics': ('quality_metric', 'step_run'),
+        'quality_metrics': ('quality_metric', 'step_run'),
         'output_files': ('file', 'step_run')
     }
 
@@ -141,8 +141,8 @@ class AnalysisStepRun(Item):
             "linkFrom": "quality_metric.step_run",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "Output Files",

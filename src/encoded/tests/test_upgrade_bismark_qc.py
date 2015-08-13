@@ -18,7 +18,7 @@ def bigbed(testapp, lab, award, experiment, analysis_step_run):
 
 
 @pytest.fixture
-def bismark_qc_metric_1(pipeline, analysis_step_run, bigbed):
+def bismark_quality_metric_1(pipeline, analysis_step_run, bigbed):
     return {
         'status': "finished",
         'pipeline': pipeline['uuid'],
@@ -27,8 +27,8 @@ def bismark_qc_metric_1(pipeline, analysis_step_run, bigbed):
     }
 
 
-def test_bismark_qc_metric_upgrade_1(registry, bismark_qc_metric_1, bigbed):
+def test_bismark_quality_metric_upgrade_1(registry, bismark_quality_metric_1, bigbed):
     from contentbase import UPGRADER
     upgrader = registry[UPGRADER]
-    value = upgrader.upgrade('bismark_qc_metric', bismark_qc_metric_1, registry=registry, current_version='1', target_version='2')
+    value = upgrader.upgrade('bismark_quality_metric', bismark_quality_metric_1, registry=registry, current_version='1', target_version='2')
     assert value['quality_metric_of'] == [bigbed['uuid']]

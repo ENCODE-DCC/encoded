@@ -79,7 +79,7 @@ class File(Item):
 
     rev = {
         'paired_with': ('file', 'paired_with'),
-        'qc_metrics': ('quality_metric', 'relates_to'),
+        'quality_metrics': ('quality_metric', 'relates_to'),
     }
 
     embedded = [
@@ -97,7 +97,7 @@ class File(Item):
         'analysis_step_version.analysis_step.versions.software_versions.software',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'qc_metrics.step_run.analysis_step_version.analysis_step',
+        'quality_metrics.step_run.analysis_step_version.analysis_step',
     ]
 
     @property
@@ -200,8 +200,8 @@ class File(Item):
             "linkFrom": "quality_metric.relates_to",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "File type",

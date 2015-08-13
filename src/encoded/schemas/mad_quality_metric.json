@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting Replicate Concordance Metric using Mean Absolute Deviation (MAD)",
-    "id": "/profiles/mad_qc_metric.json",
+    "id": "/profiles/mad_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of"],

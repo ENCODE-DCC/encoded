@@ -3,8 +3,8 @@ from contentbase import (
     upgrade_step,
 )
 
-@upgrade_step('bismark_qc_metric', '1', '2')
-def bismark_qc_metric_1_2(value, system):
+@upgrade_step('bismark_quality_metric', '1', '2')
+def bismark_quality_metric_1_2(value, system):
     # http://redmine.encodedcc.org/issues/3114
     root = system['registry'][ROOT]
     step_run = root.get_by_uuid(value['step_run'])

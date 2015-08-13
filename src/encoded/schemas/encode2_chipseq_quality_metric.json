@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting the specific calculation of an quality metrics",
-    "id": "/profiles/encode2_chipseq_qc_metric.json",
+    "id": "/profiles/encode2_chipseq_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run"],

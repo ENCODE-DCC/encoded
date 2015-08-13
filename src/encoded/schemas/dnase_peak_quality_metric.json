@@ -1,6 +1,6 @@
 {
-    "description": "Schema for reporting hotspot 'spot.out' as a quality metric",
-    "id": "/profiles/hotspot_qc_metric.json",
+    "description": "Schema for reporting hotspot and peak counts as a quality metric",
+    "id": "/profiles/dnase_peak_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run","quality_metric_of"],
@@ -46,17 +46,13 @@
                 }
             }
         },
-        "SPOT": {
+        "hotspot count": {
             "type": "number",
-            "description": "SPOT"
+            "description": "hotspot count"
         },
-        "hotspot tags": {
+        "peak count": {
             "type": "number",
-            "description": "Count of read tags in hotspots"
-        },
-        "total tags": {
-            "type": "number",
-            "description": "Count of all read tags"
+            "description": "peak count"
         }
     }
 }

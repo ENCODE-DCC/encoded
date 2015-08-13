@@ -1,9 +1,9 @@
 {
-    "description": "Schema for reporting the 'PCR bottleneck coefficient' (PBC) quality metric",
-    "id": "/profiles/pbc_qc_metric.json",
+    "description": "Schema for reporting hotspot 'spot.out' as a quality metric",
+    "id": "/profiles/hotspot_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run"],
+    "required": ["step_run","quality_metric_of"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -46,33 +46,17 @@
                 }
             }
         },
-        "locations": {
+        "SPOT": {
             "type": "number",
-            "description": "locations"
+            "description": "SPOT"
         },
-        "locations per read": {
+        "hotspot tags": {
             "type": "number",
-            "description": "locations per read"
+            "description": "Count of read tags in hotspots"
         },
-        "mapped by 1 read": {
+        "total tags": {
             "type": "number",
-            "description": "mapped by 1 read"
-        },
-        "mapped by 2 reads": {
-            "type": "number",
-            "description": "mapped by 2 reads"
-        },
-        "proportion of 1 read locations": {
-            "type": "number",
-            "description": "proportion of 1 read locations"
-        },
-        "ratio: 1 read over 2 read locations": {
-            "type": "number",
-            "description": "ratio: 1 read over 2 read locations"
-        },
-        "reads": {
-            "type": "number",
-            "description": "reads"
+            "description": "Count of all read tags"
         }
     }
 }
