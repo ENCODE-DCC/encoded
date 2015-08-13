@@ -863,10 +863,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
-                metricsInfo = file.qc_metrics.map(function(metric) {
+            if (file.quality_metrics && file.quality_metrics.length && file.analysis_step) {
+                metricsInfo = file.quality_metrics.map(function(metric) {
                     var qcId = 'qc:' + metric.uuid;
-                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-quality-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
                 });
             }
 

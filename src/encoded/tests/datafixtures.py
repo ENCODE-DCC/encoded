@@ -402,7 +402,7 @@ def quality_metric(testapp, analysis_step_run):
     item = {
         'step_run': analysis_step_run['@id'],
     }
-    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
+    return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
