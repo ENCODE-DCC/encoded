@@ -15,7 +15,7 @@ class QualityMetric(Item):
 
 
 @collection(
-    name='star-qc-metrics',
+    name='star-quality-metrics',
     properties={
         'title': "STAR mapping Quality Metrics",
         'description': 'A set of QC metrics from STAR RNA-seq mapping',
@@ -26,7 +26,7 @@ class StarQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='fastqc-qc-metrics',
+    name='fastqc-quality-metrics',
     properties={
         'title': "FastQC mapping quality metrics",
         'description': 'A set of QC metrics from FastQC',
@@ -37,7 +37,7 @@ class FastqcQcMetric(QualityMetric, ItemWithAttachment):
 
 
 @collection(
-    name='bismark-qc-metrics',
+    name='bismark-quality-metrics',
     properties={
         'title': "Bismark (WGBS) mapping quality metrics",
         'description': 'A set of QC metrics from Bismark mapping for WGBS',
@@ -48,7 +48,7 @@ class BismarkQcMetric(QualityMetric):
 
 
 @collection(
-    name='encode2-chipseq-qc-metrics',
+    name='encode2-chipseq-quality-metrics',
     properties={
         'title': "Quality metrics for ChIP-seq (ENCODE2)",
         'description': 'A set of QC metrics used for ENCODE2 ChIP-seq experiments',
@@ -59,7 +59,7 @@ class Encode2ChipSeqQcMetric(QualityMetric):
 
 
 @collection(
-    name='chipseq-filter-qc-metrics',
+    name='chipseq-filter-quality-metrics',
     properties={
         'title': "Quality metrics for ChIP-seq (filtering step)",
         'description': 'A set of QC metrics used ChIP-seq experiments (filtering step)',
@@ -70,7 +70,7 @@ class ChipSeqFilterQcMetric(QualityMetric):
 
 
 @collection(
-    name='bigwigcorrelate-qc-metrics',
+    name='bigwigcorrelate-quality-metrics',
     properties={
         'title': "Pearson's Correlation of two bigWig Signal Files.",
         'description': "A set of signal replicate QC metrics from 'bigWigCorrelate'",
@@ -81,7 +81,7 @@ class BigwigcorrelateQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='dnase-peak-qc-metrics',
+    name='dnase-peak-quality-metrics',
     properties={
         'title': "Counts of DNase Regions and Hotspots",
         'description': 'A set of peak QC metrics for regions and hotspots',
@@ -92,7 +92,7 @@ class DnasePeakQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='edwbamstats-qc-metrics',
+    name='edwbamstats-quality-metrics',
     properties={
         'title': "Mapping Quality Metrics from 'edwBamStats'",
         'description': "A set of mapping QC metrics from 'edwBamStats'",
@@ -103,7 +103,7 @@ class EdwbamstatsQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='edwcomparepeaks-qc-metrics',
+    name='edwcomparepeaks-quality-metrics',
     properties={
         'title': "Comparison of two sets of Called Peaks from 'edwComparePeaks'",
         'description': "A set of peak replicate QC metrics from 'edwComparePeaks'",
@@ -114,7 +114,7 @@ class EdwcomparepeaksQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='hotspot-qc-metrics',
+    name='hotspot-quality-metrics',
     properties={
         'title': "Peak Quality Metrics from the 'HotSpot' package",
         'description': "A set of peak QC metrics from the 'HotSpot' package",
@@ -125,7 +125,7 @@ class HotspotQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='idr-summary-qc-metrics',
+    name='idr-summary-quality-metrics',
     properties={
         'title': "Irreproducible Discovery Rate (IDR) Summary Quality Metrics",
         'description': "A set of Peak Replicate QC metrics from 'idr'",
@@ -136,7 +136,7 @@ class IdrSummaryQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='mad-qc-metrics',
+    name='mad-quality-metrics',
     properties={
         'title': "Replicate Concordance Metrics using Mean Absolute Deviation (MAD)",
         'description': 'A set of QC metrics comparing two quantificiations '
@@ -148,7 +148,7 @@ class MadQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='pbc-qc-metrics',
+    name='pbc-quality-metrics',
     properties={
         'title': "Quality Metrics 'PCR Bottleneck Coefficient' (PBC) of Mapping Sample",
         'description': 'A set of sampled mapping QC metrics',
@@ -159,7 +159,7 @@ class PbcQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='phantompeaktooks-spp-qc-metrics',
+    name='phantompeaktooks-spp-quality-metrics',
     properties={
         'title': "Mapping quality metrics from 'phantompeakqualtools run_spp.R'",
         'description': "A set of sampled mapping QC metrics from 'phantompeakqualtools run_spp.R'",
@@ -170,7 +170,7 @@ class PhantompeaktoolsSppQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='samtools-flagstats-qc-metrics',
+    name='samtools-flagstats-quality-metrics',
     properties={
         'title': "Mapping Quality Metrics from 'samtools --flagstats'",
         'description': "A set of mapping QC metrics from 'samtools --flagstats'",
@@ -181,7 +181,7 @@ class SamtoolsFlagstatsQcMetric(ItemWithAttachment, QualityMetric):
 
 
 @collection(
-    name='samtools-stats-qc-metrics',
+    name='samtools-stats-quality-metrics',
     properties={
         'title': "Mapping Quality Metrics from the Summary of 'samtools --stats'",
         'description': "A set of mapping QC metrics from 'samtools --stats'",
