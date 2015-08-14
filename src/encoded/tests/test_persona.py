@@ -87,4 +87,3 @@ def test_impersonate_user(anontestapp, admin, submitter):
     assert res.json['auth.userid'] == submitter['email']
     res = anontestapp.get('/session')
     assert res.json['auth.userid'] == submitter['email']
-
