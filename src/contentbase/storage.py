@@ -265,13 +265,14 @@ class RDBBlobStorage(object):
 
 
 class S3BlobStorage(object):
-    def __init__(self, bucket, fallback=None):
+    def __init__(self, bucket, fallback=None, key_class=boto.s3.key.Key):
         self.conn = boto.connect_s3()
         self.bucket = self.conn.get_bucket(bucket)
         self.fallback = fallback
+        self.key_class = key_class
 
     def store_blob(self, data, download_meta):
-        key = boto.s3.key.Key(self.bucket)
+        key = self.key_class(self.bucket)
         key.key = uuid.uuid4()
         if 'type' in download_meta:
             key.content_type = download_meta['type']
@@ -300,7 +301,7 @@ class S3BlobStorage(object):
                 raise Exception('Missing S3 bucket: %s' % download_meta)
 
         bucket = self.conn.get_bucket(bucket_name)
-        key = boto.s3.key.Key(bucket)
+        key = self.key_class(bucket)
         key.key = download_meta['key']
         return key.get_contents_as_string()
 

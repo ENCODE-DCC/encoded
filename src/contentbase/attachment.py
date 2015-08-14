@@ -197,7 +197,8 @@ def download(context, request):
 
 
 def proxy_or_redirect_to_external_file(request, location):
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
+    host_port = request.host.split(':')[-1] if ':' in request.host else '80'
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers or host_port != request.server_port
 
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
