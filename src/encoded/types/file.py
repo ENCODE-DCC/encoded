@@ -79,7 +79,7 @@ class File(Item):
 
     rev = {
         'paired_with': ('file', 'paired_with'),
-        'quality_metrics': ('quality_metric', 'relates_to'),
+        'quality_metrics': ('quality_metric', 'quality_metric_of'),
     }
 
     embedded = [
@@ -197,7 +197,7 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.relates_to",
+            "linkFrom": "quality_metric.quality_metric_of",
         },
     })
     def quality_metrics(self, request, quality_metrics):
