@@ -5,7 +5,6 @@ from contentbase import (
     collection,
     load_schema,
 )
-from contentbase.attachment import proxy_or_redirect_to_external_file
 from contentbase.schema_utils import schema_validator
 from .base import (
     Item,
@@ -13,13 +12,21 @@ from .base import (
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
+    HTTPTemporaryRedirect,
     HTTPNotFound,
 )
+from pyramid.response import Response
 from pyramid.settings import asbool
 from pyramid.traversal import traverse
 from pyramid.view import view_config
+from urllib.parse import (
+    parse_qs,
+    urlparse,
+)
 import boto
+import datetime
 import json
+import pytz
 import time
 
 
@@ -300,4 +307,16 @@ def download(context, request):
     else:
         raise ValueError(external.get('service'))
 
-    return proxy_or_redirect_to_external_file(request, location)
+    if asbool(request.params.get('soft')):
+        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
+        return {
+            '@type': ['SoftRedirect'],
+            'location': location,
+            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
+        }
+
+    if proxy:
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+
+    # 307 redirect specifies to keep original method
+    raise HTTPTemporaryRedirect(location=location)

@@ -181,12 +181,12 @@ def download(context, request):
     if mimetype is None:
         mimetype = 'application/octet-stream'
 
-    # Proxy or redirect to external blob URL, if possible
+    # If blob is external, serve via proxy using X-Accel-Redirect
     blob_storage = request.registry[BLOBS]
     if hasattr(blob_storage, 'get_blob_url'):
         blob_url = blob_storage.get_blob_url(download_meta)
         if blob_url is not None:
-            return proxy_or_redirect_to_external_file(request, blob_url)
+            return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(blob_url)})
 
     # Otherwise serve the blob data ourselves
     blob = request.registry[BLOBS].get_blob(download_meta)
@@ -194,22 +194,3 @@ def download(context, request):
         'Content-Type': mimetype,
     }
     return Response(body=blob, headers=headers)
-
-
-def proxy_or_redirect_to_external_file(request, location):
-    host_port = request.host.split(':')[-1] if ':' in request.host else '80'
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers or host_port != request.server_port
-
-    if asbool(request.params.get('soft')):
-        expires = int(parse_qs(urlparse(location).query)['Expires'][0])
-        return {
-            '@type': ['SoftRedirect'],
-            'location': location,
-            'expires': datetime.datetime.fromtimestamp(expires, pytz.utc).isoformat(),
-        }
-
-    if proxy:
-        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
-
-    # 307 redirect specifies to keep original method
-    raise HTTPTemporaryRedirect(location=location)
