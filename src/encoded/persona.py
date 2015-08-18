@@ -182,15 +182,20 @@ def impersonate_user(request):
     """As an admin, impersonate a different user."""
     userid = request.validated['userid']
     users = request.registry[COLLECTIONS]['user']
-    if userid not in users:
+
+    try:
+        user = users[userid]
+    except KeyError:
         raise ValidationFailure('body', ['userid'], 'User not found.')
+
+    if user.properties.get('status') != 'current':
+        raise ValidationFailure('body', ['userid'], 'User is not enabled.')
 
     request.session.invalidate()
     request.session.get_csrf_token()
     request.response.headerlist.extend(remember(request, 'mailto.' + userid))
-
-    properties = request.embed('/session-properties', as_user=userid)
+    user_properties = request.embed('/session-properties', as_user=userid)
     if 'auth.userid' in request.session:
-        properties['auth.userid'] = request.session['auth.userid']
+        user_properties['auth.userid'] = request.session['auth.userid']
 
-    return properties
+    return user_properties
