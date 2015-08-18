@@ -6,10 +6,13 @@ Example.
 """
 
 from webtest import TestApp
-from contentbase import STORAGE
-
+from contentbase.interfaces import (
+    ELASTIC_SEARCH,
+    STORAGE,
+)
 import atexit
 import datetime
+import elasticsearch.exceptions
 import json
 import logging
 import os
@@ -43,6 +46,11 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         timestamp=timestamp,
         timeout=timeout,
     )
+
+    # Make sure elasticsearch is up before trying to index.
+    es = testapp.app.registry[ELASTIC_SEARCH]
+    es.info()
+
     max_xid = 0
     DBSession = testapp.app.registry[STORAGE].write.DBSession
     engine = DBSession.bind  # DBSession.bind is configured by app init
@@ -161,9 +169,9 @@ class ErrorHandlingThread(threading.Thread):
         while True:
             try:
                 self._target(*self._args, **self._kwargs)
-            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError) as e:
+            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError, elasticsearch.exceptions.ConnectionError) as e:
                 # Handle database restart
-                log.exception('Database went away')
+                log.warning('Database not there, maybe starting up: %r', e)
                 timestamp = datetime.datetime.now().isoformat()
                 update_status(
                     timestamp=timestamp,
