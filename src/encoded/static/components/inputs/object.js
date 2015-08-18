@@ -32,7 +32,10 @@ var SearchBlockEdit = React.createClass({
 
     componentDidMount: function() {
         // focus the first "Select" button in the search results
-        this.getDOMNode().querySelector('button.btn-primary').focus();
+        var button = this.getDOMNode().querySelector('button.btn-primary');
+        if (button) {
+            button.focus();
+        }
     },
 });
 
