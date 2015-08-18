@@ -6,10 +6,8 @@ Example.
 """
 
 from webtest import TestApp
-from contentbase.interfaces import (
-    ELASTIC_SEARCH,
-    STORAGE,
-)
+from contentbase import STORAGE
+from contentbase.elasticsearch import ELASTIC_SEARCH
 import atexit
 import datetime
 import elasticsearch.exceptions
