@@ -15,12 +15,8 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz nginx python3
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
-
-Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::
-
-    $ brew install python3
 
 Install Node 0.10 from homebrew/versions::
 
@@ -36,40 +32,32 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
+    $ python3.4 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
     $ bin/buildout
 
-If you see a clang error like this::
-
-    clang: error: unknown argument: '-mno-fused-madd' [-Wunused-command-line-argument-hard-error-in-future]
-
-You can try::
-
-    $ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bin/buildout
-
-If it does not exist, set a session key::
-
-    $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
 Step 4: Start the application locally
 
-In one terminal startup the database servers with::
+In one terminal startup the database servers and nginx proxy with::
 
     $ bin/dev-servers development.ini --app-name app --clear --init --load
 
 This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
+An nginx proxy running on port 8000 will be started.
 The servers are started, and finally the test set will be loaded.
 
-In a second terminal, run the app in with::
+In a second terminal, run the app with::
 
     $ bin/pserve development.ini
 
 Indexing will then proceed in a background thread similar to the production setup.
 
-Browse to the interface at http://localhost:6543/.
+Browse to the interface at http://localhost:8000/.
 
-Step 5: Tests
+
+Running tests
+=============
 
 To run specific tests locally::
     
@@ -100,55 +88,21 @@ Or if you need to supply command line arguments::
 
     $ ./node_modules/.bin/jest
 
-Step 6: Database modifications
-
-If you wish a clean db wipe for DEVELOPMENT::
-    
-    $ dropdb encoded
-    ...
-    $ createdb encoded
-    $ pg_ctl -D /usr/local/var/postgres -l pg.log start
-
-Database setup on VMs::
-
-    # service postgresql-9.3 initdb
-    # service postgresql-9.3 start
-    # sudo -u postgres createuser --createdb encoded
-
-Then as the encoded user::
-
-    $ createdb encoded
-
-To dump a postgres database:
-    pg_dump -Fc encoded > FILE_NAME  (as user encoded on demo vm)
-    (FILE_NAME for production is ~/encoded/archive/encoded-YYYYMMDD.dump)
-
-To restore a postgres database:
-    pg_restore -d encoded FILE_NAME (as user encoded on demo vm)
-
-Create ElasticSearch mapping for ENCODE data::
-
-    $ bin/create-mapping production.ini
 
 Notes on SASS/Compass
 =====================
 
-`SASS <http://sass-lang.com/>`_ and `Compass <http://compass-style.org/>`_ are being used. Before running to app, you need to builld the css files by starting 'compass watch' or doing a 'compass compile' (see below).
-
-Installing
-----------
-
-Both can be installed via Ruby gems::
-
-    $ gem install sass
-    $ gem install compass
+We use the `SASS <http://sass-lang.com/>`_ and `Compass <http://compass-style.org/>`_ CSS preprocessors.
+The buildout installs the SASS and Compass utilities and compiles the CSS.
+When changing the SCSS source files you must recompile the CSS using one of the following methods:
 
 Compiling "on the fly"
 ----------------------
 
-Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do::
+Compass can watch for any changes made to .scss files and instantly compile them to .css.
+To start this, from the root of the project (where config.rb is) do::
 
-    $ compass watch
+    $ bin/compass watch
 
 You can specify whether the compiled CSS is minified or not in config.rb. (Currently, it is set to minify.)
 
@@ -157,7 +111,7 @@ Force compiling
 
 ::
 
-    $ compass compile
+    $ bin/compass compile
 
 Again, you can specify whether the compiled CSS is minified or not in config.rb.
 
@@ -165,7 +119,7 @@ Also see the `Compass Command Line Documentation <http://compass-style.org/help/
 
 And of course::
 
-    $ compass help
+    $ bin/compass help
 
 
 SublimeLinter

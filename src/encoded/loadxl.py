@@ -42,17 +42,26 @@ ORDER = [
     'software',
     'software_version',
     'analysis_step',
+    'analysis_step_version',
     'pipeline',
-    'workflow_run',
     'analysis_step_run',
     'file',
-    'star_qc_metric',
-    'bismark_qc_metric',
-    'chipseq_filter_qc_metric',
-    'encode2_chipseq_qc_metric',
-    'fastqc_qc_metric',
-    'flagstats_qc_metric',
-    'mad_cc_lrna_qc_metric',
+    'star_quality_metric',
+    'bismark_quality_metric',
+    'chipseq_filter_quality_metric',
+    'encode2_chipseq_quality_metric',
+    'fastqc_quality_metric',
+    'samtools_flagstats_quality_metric',
+    'mad_quality_metric',
+    'bigwigcorrelate_quality_metric',
+    'dnase_peak_quality_metric',
+    'edwbamstats_quality_metric',
+    'edwcomparepeaks_quality_metric',
+    'hotspot_quality_metric',
+    'idr_summary_quality_metric',
+    'pbc_quality_metric',
+    'phantompeaktools_spp_quality_metric',
+    'samtools_stats_quality_metric',
     'image',
     'page',
 ]
@@ -472,7 +481,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         skip_rows_with_all_falsey_value('test') if test_only else noop,
         skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
-        skip_rows_missing_all_keys('uuid', 'accession', '@id'),
+        skip_rows_missing_all_keys('uuid', 'accession', '@id', 'name'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
@@ -519,9 +528,6 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('related_files', 'possible_controls'),
     ],
-    'workflow_run': [
-        remove_keys('input_files'),
-    ],
     'publication': [
         remove_keys('datasets'),
     ]
@@ -551,9 +557,6 @@ PHASE2_PIPELINES = {
     'dataset': [
         skip_rows_missing_all_keys('related_files'),
     ],
-    'workflow_run': [
-        skip_rows_missing_all_keys('input_files'),
-    ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),
     ]
@@ -565,6 +568,7 @@ def load_all(testapp, filename, docsdir, test=False):
         try:
             source = read_single_sheet(filename, item_type)
         except ValueError:
+            logger.error('Opening %s %s failed.', filename, item_type)
             continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=1)
         process(combine(source, pipeline))

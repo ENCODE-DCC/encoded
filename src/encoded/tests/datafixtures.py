@@ -18,7 +18,9 @@ def admin(testapp):
         'email': 'admin@example.org',
         'groups': ['admin'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -31,7 +33,9 @@ def wrangler(testapp):
         'email': 'wrangler@example.org',
         'groups': ['admin'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -43,7 +47,22 @@ def submitter(testapp, lab, award):
         'submits_for': [lab['@id']],
         'viewing_groups': [award['viewing_group']],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
+
+
+@pytest.fixture
+def access_key(testapp, submitter):
+    description = 'My programmatic key'
+    item = {
+        'user': submitter['@id'],
+        'description': description,
+    }
+    res = testapp.post_json('/access_key', item)
+    result = res.json['@graph'][0].copy()
+    result['secret_access_key'] = res.json['secret_access_key']
+    return result
 
 
 @pytest.fixture
@@ -54,7 +73,9 @@ def viewing_group_member(testapp, award):
         'email': 'viewing_group_member@example.org',
         'viewing_groups': [award['viewing_group']],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -65,7 +86,9 @@ def remc_member(testapp):
         'email': 'remc_member@example.org',
         'viewing_groups': ['REMC'],
     }
-    return testapp.post_json('/user', item).json['@graph'][0]
+    # User @@object view has keys omitted.
+    res = testapp.post_json('/user', item)
+    return testapp.get(res.location).json
 
 
 @pytest.fixture
@@ -312,20 +335,13 @@ def publication(testapp, lab, award):
 
 
 @pytest.fixture
-def pipeline(testapp):
+def pipeline(testapp, lab, award):
     item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
         'title': "Test pipeline",
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
-
-
-@pytest.fixture
-def workflow_run(testapp, pipeline):
-    item = {
-        'pipeline': pipeline['@id'],
-        'status': 'finished',
-    }
-    return testapp.post_json('/workflow_run', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -350,25 +366,33 @@ def software_version(testapp, software):
 
 
 @pytest.fixture
-def analysis_step(testapp, software_version):
+def analysis_step(testapp):
     item = {
         'name': 'fastqc',
         'title': 'fastqc',
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
-        'software_versions': [
-            software_version['@id'],
-        ],
+
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
 
 @pytest.fixture
-def analysis_step_run(testapp, analysis_step, workflow_run):
+def analysis_step_version(testapp, analysis_step, software_version):
     item = {
         'analysis_step': analysis_step['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run(testapp, analysis_step_version):
+    item = {
+        'analysis_step_version': analysis_step_version['@id'],
         'status': 'finished',
-        'workflow_run': workflow_run['@id'],
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 
@@ -378,7 +402,7 @@ def quality_metric(testapp, analysis_step_run):
     item = {
         'step_run': analysis_step_run['@id'],
     }
-    return testapp.post_json('/fastqc_qc_metric', item).json['@graph'][0]
+    return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture

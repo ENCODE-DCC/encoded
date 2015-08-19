@@ -1,6 +1,7 @@
 'use strict';
 
 // Require all components to ensure javascript load ordering
+require('./lib');
 require('./antibody');
 require('./app');
 require('./image');
@@ -29,7 +30,10 @@ require('./testing');
 require('./edit');
 require('./inputs');
 require('./blocks');
+require('./user');
+require('./schema');
 require('./region_search')
 require('./browser')
+
 
 module.exports = require('./app');

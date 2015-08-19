@@ -2,7 +2,7 @@ import urllib3
 import io
 import gzip
 import csv
-from ..embedding import embed
+from ..embed import embed
 from urllib.parse import (
     urlencode,
 )

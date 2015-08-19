@@ -1,16 +1,9 @@
 import pytest
 
-pytest_plugins = 'encoded.tests.bdd'
-
-
-# patch cookie support back into spliter's remote webdriver
-from splinter.driver.webdriver.remote import WebDriver
-from splinter.driver.webdriver.cookie_manager import CookieManager
-old__init__ = WebDriver.__init__
-def __init__(self, *args, **kw):
-    old__init__(self, *args, **kw)
-    self._cookie_manager = CookieManager(self.driver)
-WebDriver.__init__ = __init__
+pytest_plugins = [
+    'encoded.tests.features.browsersteps',
+    'encoded.tests.features.customsteps',
+]
 
 
 @pytest.fixture(scope='session')
@@ -28,11 +21,8 @@ def app(app_settings):
         yield app
 
 
-# Though this is expensive, set up first within browser tests to avoid remote
-# browser timeout
-# XXX Ideally this wouldn't be autouse...
-@pytest.mark.fixture_cost(-1)
-@pytest.yield_fixture(scope='session', autouse=True)
+@pytest.mark.fixture_cost(500)
+@pytest.yield_fixture(scope='session')
 def workbook(app):
     from webtest import TestApp
     environ = {
@@ -52,67 +42,79 @@ def workbook(app):
     # XXX cleanup
 
 
+@pytest.fixture(scope='session')
+def base_url(_server):
+    return _server
+
+
+@pytest.fixture(scope='session')
+def splinter_driver_kwargs(request):
+    return dict(request.config.option.browser_args or ())
+
+
+@pytest.fixture(scope='session')
+def splinter_window_size():
+    # Sauce Labs seems to only support 1024x768.
+    return (1024, 768)
+
+
+# Depend on workbook fixture here to avoid remote browser timeouts.
+@pytest.fixture(scope='session')
+def browser(workbook, session_browser):
+    return session_browser
+
+
 @pytest.yield_fixture(scope='session')
-def admin_user(context, browser):
-    context.browser.visit(context.base_url)  # need to be on domain to set cookie
-    context.browser.cookies.add({'REMOTE_USER': 'TEST'})
+def admin_user(browser, base_url):
+    browser.visit(base_url)  # need to be on domain to set cookie
+    browser.cookies.add({'REMOTE_USER': 'TEST'})
     yield
-    context.browser.cookies.delete('REMOTE_USER')
+    browser.cookies.delete('REMOTE_USER')
 
 
-@pytest.fixture(scope='session', autouse=True)
-def set_webdriver(request, context):
-    context.default_browser = request.config.option.browser
-    context.remote_webdriver = request.config.option.remote_webdriver
-    context.browser_args = dict(request.config.option.browser_args or ())
+@pytest.yield_fixture(scope='session')
+def submitter_user(browser, base_url, admin_user):
+    browser.visit(base_url + '/#!impersonate-user')
+    browser.find_by_name('userid').first.fill('massa.porta@varius.mauris')
+    browser.find_by_text('Submit').first.click()
+    browser.is_text_present('J. Michael Cherry', wait_time=5)
+    yield
+    browser.visit(base_url + '/logout')
 
 
-@pytest.mark.fixture_cost(1000)
-@pytest.fixture(scope='session', autouse=True)
-def browser(context, before_all, set_webdriver):
-    from behaving.web.steps.browser import given_a_browser
-    # context.default_browser = 'remote'
-    given_a_browser(context)
-    context.browser.driver.set_window_size(1024, 768)
+@pytest.fixture
+def pytestbdd_strict_gherkin():
+    return False
 
 
-# These are equivalent to the environment.py hooks
-@pytest.fixture(scope='session', autouse=True)
-def before_all(request, _server, context):
-    import behaving.web
-    behaving.web.setup(context)
-    context.base_url = _server
-    from selenium.common.exceptions import WebDriverException
-
-    @request.addfinalizer
-    def after_all():
-        try:
-            behaving.web.teardown(context)
-        except WebDriverException:
-            pass  # remote webdriver may already have gone away
+# https://github.com/pytest-dev/pytest-bdd/issues/117
 
 
-#@pytest.fixture(scope='function', autouse=True)
-def before_scenario(request, context, scenario):
-    pass
+def write_line(request, when, line):
+    """Write line instantly."""
+    terminal = request.config.pluginmanager.getplugin('terminalreporter')
+    if terminal.verbosity <= 0:
+        return
+    capman = request.config.pluginmanager.getplugin('capturemanager')
+    out, err = capman.suspendcapture()
+    try:
+        request.node.add_report_section(when, 'out', out)
+        request.node.add_report_section(when, 'err', err)
+        terminal.write_line(line)
+    finally:
+        capman.resumecapture()
 
-    @request.addfinalizer
-    def after_scenario():
-        pass
+
+@pytest.mark.trylast
+def pytest_bdd_before_scenario(request, feature, scenario):
+    write_line(request, 'setup', u'Scenario: {scenario.name}'.format(scenario=scenario))
 
 
-@pytest.fixture(scope='subfunction', autouse=True)
-def before_step(request, context, step):
+@pytest.mark.trylast
+def pytest_bdd_step_error(request, feature, scenario, step, step_func, step_func_args, exception):
+    write_line(request, 'call', u'Step: {step.name} FAILED'.format(step=step))
 
-    @request.addfinalizer
-    def after_step():
-        import textwrap
-        if step.status != 'failed':
-            return
-        print('')
-        print("=" * 70)
-        print("  Screenshot URL: %s" % context.browser.url)
-        print("-" * 70)
-        screenshot = context.browser.driver.get_screenshot_as_base64()
-        print('\n'.join(textwrap.wrap('data:image/png;base64,' + screenshot)))
-        print("=" * 70)
+
+@pytest.mark.trylast
+def pytest_bdd_after_step(request, feature, scenario, step, step_func, step_func_args):
+    write_line(request, 'call', u'Step: {step.name} PASSED'.format(step=step))

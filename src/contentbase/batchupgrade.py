@@ -6,18 +6,21 @@ Example:
     %(prog)s production.ini --app-name app
 
 """
+import itertools
 import logging
 import transaction
 from copy import deepcopy
-from contentbase import STORAGE
+from contentbase import (
+    CONNECTION,
+    STORAGE,
+    UPGRADER,
+)
 from pyramid.view import view_config
 from pyramid.traversal import find_resource
+from .schema_utils import validate
 
 EPILOG = __doc__
 logger = logging.getLogger(__name__)
-
-from .schema_utils import validate
-import itertools
 
 
 def includeme(config):
@@ -75,8 +78,8 @@ def update_item(storage, context):
             update = True
     else:
         properties = deepcopy(properties)
-        migrator = context.registry['migrator']
-        properties = migrator.upgrade(
+        upgrader = context.registry[UPGRADER]
+        properties = upgrader.upgrade(
             context.item_type, properties, current_version, target_version,
             context=context, registry=context.registry)
         if 'schema_version' in properties:
@@ -127,7 +130,7 @@ def batch_upgrade(request):
     return {'results': results}
 
 
-def run(config_uri, app_name=None, username=None, types=None, batch_size=500, processes=None):
+def run(config_uri, app_name=None, username=None, types=(), batch_size=500, processes=None):
     # multiprocessing.get_context is Python 3 only.
     from multiprocessing import get_context
     from multiprocessing.pool import Pool
@@ -136,8 +139,8 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
     logging.getLogger('contentbase').setLevel(logging.DEBUG)
 
     testapp = internal_app(config_uri, app_name, username)
-    connection = testapp.app.registry['connection']
-    uuids = [str(uuid) for uuid in connection]
+    connection = testapp.app.registry[CONNECTION]
+    uuids = [str(uuid) for uuid in connection.__iter__(*types)]
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))
 
@@ -182,7 +185,7 @@ def main():
     )
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
-    parser.add_argument('--item-type', dest='types', action='append')
+    parser.add_argument('--item-type', dest='types', action='append', default=[])
     parser.add_argument('--batch-size', type=int, default=500)
     parser.add_argument('--processes', type=int)
     parser.add_argument('--username')

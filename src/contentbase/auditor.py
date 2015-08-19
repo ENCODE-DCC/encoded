@@ -4,15 +4,21 @@ Schema validation allows for checking values within a single object.
 We also need to perform higher order checking between linked objects.
 """
 
-from past.builtins import basestring
 import logging
 import venusian
+from past.builtins import basestring
+from pyramid.view import view_config
+from .calculated import calculated_property
+from .interfaces import AUDITOR
+from .resources import Item
 
 logger = logging.getLogger(__name__)
 
 
 def includeme(config):
-    config.registry['auditor'] = Auditor()
+    config.include('.calculated')
+    config.scan(__name__)
+    config.registry[AUDITOR] = Auditor()
     config.add_directive('add_audit_checker', add_audit_checker)
     config.add_request_method(audit, 'audit')
 
@@ -140,7 +146,7 @@ class Auditor(object):
 
 # Imperative configuration
 def add_audit_checker(config, checker, item_type, condition=None, frame='embedded'):
-    auditor = config.registry['auditor']
+    auditor = config.registry[AUDITOR]
     config.action(None, auditor.add_audit_checker,
                   (checker, item_type, condition, frame))
 
@@ -155,14 +161,14 @@ def audit_checker(item_type, condition=None, frame='embedded'):
             scanner.config.add_audit_checker(
                 checker, item_type, condition, frame)
 
-        venusian.attach(checker, callback, category='auditor')
+        venusian.attach(checker, callback, category=AUDITOR)
         return checker
 
     return decorate
 
 
 def audit(request, types=None, path=None, context=None, **kw):
-    auditor = request.registry['auditor']
+    auditor = request.registry[AUDITOR]
     if path is None:
         path = request.path
     if context is None:
@@ -172,3 +178,70 @@ def audit(request, types=None, path=None, context=None, **kw):
     return auditor.audit(
         request=request, types=types, path=path, root=request.root, context=context,
         registry=request.registry, **kw)
+
+
+# Views
+def traversed_path_ids(request, obj, path):
+    if isinstance(path, basestring):
+        path = path.split('.')
+    if not path:
+        yield obj if isinstance(obj, basestring) else obj['@id']
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj.get(name, None)
+    if value is None:
+        return
+    if not isinstance(value, list):
+        value = [value]
+    for member in value:
+        if remaining and isinstance(member, basestring):
+            member = request.embed(member, '@@object')
+        for item_uri in traversed_path_ids(request, member, remaining):
+            yield item_uri
+
+
+def inherit_audits(request, embedded, embedded_paths):
+    audit_paths = {embedded['@id']}
+    for embedded_path in embedded_paths:
+        audit_paths.update(traversed_path_ids(request, embedded, embedded_path))
+
+    audits = {}
+    for audit_path in audit_paths:
+        result = request.embed(audit_path, '@@audit-self')
+        for audit in result['audit']:
+            if audit['level_name'] in audits:
+                audits[audit['level_name']].append(audit)
+            else:
+                audits[audit['level_name']] = [audit]
+    return audits
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             name='audit-self')
+def item_view_audit_self(context, request):
+    path = request.resource_path(context)
+    types = [context.item_type] + context.base_types
+    return {
+        '@id': path,
+        'audit': request.audit(types=types, path=path),
+    }
+
+
+@view_config(context=Item, permission='audit', request_method='GET',
+             name='audit')
+def item_view_audit(context, request):
+    path = request.resource_path(context)
+    properties = request.embed(path, '@@object')
+    audit = inherit_audits(request, properties, context.audit_inherit or context.embedded)
+    return {
+        '@id': path,
+        'audit': audit,
+    }
+
+
+@calculated_property(context=Item, category='page', name='audit',
+                     condition=lambda request: request.has_permission('audit'))
+def audit_property(context, request):
+    path = request.resource_path(context)
+    return request.embed(path, '@@audit')['audit']

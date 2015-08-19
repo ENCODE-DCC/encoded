@@ -2,13 +2,25 @@
 Change log for file.json
 =========================
 
+Schema version 6
+----------------
+
+* *output_type* was updated to have more accurate terms:
+
+        "mapping": {
+            'minus strand signal of multi-mapped reads': 'minus strand signal of all reads',
+            'plus strand signal of multi-mapped reads': 'plus strand signal of all reads',
+            'signal of multi-mapped reads': 'signal of all reads',
+            'normalized signal of multi-mapped reads': 'normalized signal of all reads'
+        }
+       
 
 Schema version 5
 ----------------
 
 * *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.:
 
-        "run_type": {
+           "run_type": {
             "title": "Run type for sequencing files",
             "description": "Indicates if file is part of a single or paired run",
             "type": "string",

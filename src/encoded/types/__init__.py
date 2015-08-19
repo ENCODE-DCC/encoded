@@ -1,10 +1,8 @@
 from contentbase.attachment import ItemWithAttachment
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from pyramid.traversal import find_root
 from .base import (
@@ -42,6 +40,7 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
+    embedded = ['pi']
 
 
 @collection(

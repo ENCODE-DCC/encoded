@@ -1,10 +1,8 @@
 from pyramid.traversal import find_root
-from contentbase.schema_utils import (
-    load_schema,
-)
 from contentbase import (
     calculated_property,
     collection,
+    load_schema,
 )
 from .base import (
     ALLOW_SUBMITTER_ADD,
@@ -32,21 +30,24 @@ class Experiment(Dataset):
         'files.lab',
         'files.derived_from',
         'files.derived_from.replicate',
-        'files.pipeline',
-        'files.analysis_step',
-        'files.analysis_step.software_versions',
-        'files.analysis_step.software_versions.software',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step.versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
         'files.replicate.library.biosample',
-        'files.qc_metrics',
-        'files.qc_metrics.step_run',
-        'files.qc_metrics.step_run.analysis_step',
+        'files.quality_metrics',
+        'files.quality_metrics.step_run',
+        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'contributing_files.platform',
         'contributing_files.lab',
         'contributing_files.derived_from',
-        'contributing_files.pipeline',
-        'contributing_files.analysis_step',
-        'contributing_files.analysis_step.software_versions',
-        'contributing_files.analysis_step.software_versions.software',
+        'contributing_files.analysis_step_version.analysis_step',
+        'contributing_files.analysis_step_version.analysis_step.pipelines',
+        'contributing_files.analysis_step_version.software_versions',
+        'contributing_files.analysis_step_version.software_versions.software',
         'award.pi.lab',
         'replicates.antibody',
         'replicates.antibody.targets',
@@ -63,8 +64,9 @@ class Experiment(Dataset):
         'replicates.library.biosample.treatments',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'possible_controls',
+        'possible_controls.target',
+        'possible_controls.lab',
         'target.organism',
         'references',
     ]
@@ -95,12 +97,11 @@ class Experiment(Dataset):
         'replicates.library.biosample.pooled_from',
         'replicates.library.spikeins_used',
         'replicates.library.treatments',
-        'replicates.platform',
         'target.organism',
     ]
     rev = Dataset.rev.copy()
     rev.update({
-        'replicates': ('replicate', 'experiment'),
+        'replicates': ('replicate', 'experiment')
     })
 
     @calculated_property(condition='biosample_term_id', schema={
@@ -183,7 +184,6 @@ class Experiment(Dataset):
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
-
 @collection(
     name='replicates',
     acl=ALLOW_SUBMITTER_ADD,
@@ -201,7 +201,6 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
-        'platform',
     ]
 
     def unique_keys(self, properties):

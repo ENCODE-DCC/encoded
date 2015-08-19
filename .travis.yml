@@ -34,7 +34,7 @@ before_install:
 install:
   - npm config set python /usr/bin/python2.7
   - pip install pandas
-  - python bootstrap.py -v 2.3.1 --setuptools-version 15.2
+  - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >
@@ -59,13 +59,16 @@ script:
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=200 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
-      test -f "$SC_PIDFILE" && bin/test -v -v --timeout=200 --remote-webdriver -m "bdd" --tb=short \
-        --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
+      test -f "$SC_PIDFILE" && bin/test -v -v --timeout=200 -m "bdd" --tb=short \
+        --splinter-implicit-wait 10 \
+        --splinter-webdriver remote \
+        --splinter-remote-url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
+        --splinter-socket-timeout 300 \
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
+        --browser-arg-int idleTimeout 300 \
         --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
-        --browser-arg-int wait_time 10 \
-        --browser "$BROWSER"
+        --browser-arg browser "$BROWSER"
     fi
 after_script:
   - >

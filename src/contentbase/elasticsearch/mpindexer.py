@@ -16,6 +16,7 @@ from .indexer import (
     INDEXER,
     Indexer,
 )
+from .interfaces import APP_FACTORY
 
 log = logging.getLogger(__name__)
 
@@ -112,7 +113,7 @@ class MPIndexer(Indexer):
     def __init__(self, registry, processes=None):
         super(MPIndexer, self).__init__(registry)
         self.processes = processes
-        self.initargs = (registry['app_factory'], registry.settings,)
+        self.initargs = (registry[APP_FACTORY], registry.settings,)
 
     @reify
     def pool(self):
@@ -126,16 +127,18 @@ class MPIndexer(Indexer):
     def update_objects(self, request, uuids, xmin, snapshot_id):
         # Ensure that we iterate over uuids in this thread not the pool task handler.
         tasks = [(uuid, xmin, snapshot_id) for uuid in uuids]
-        i = -1
+        errors = []
         try:
-            for i, path in enumerate(self.pool.imap_unordered(
+            for i, error in enumerate(self.pool.imap_unordered(
                     update_object_in_snapshot, tasks, self.chunksize)):
+                if error is not None:
+                    errors.append(error)
                 if (i + 1) % 50 == 0:
-                    log.info('Indexing %s %d', path, i + 1)
+                    log.info('Indexing %d', i + 1)
         except:
             self.shutdown()
             raise
-        return i + 1
+        return errors
 
     def shutdown(self):
         if 'pool' in self.__dict__:

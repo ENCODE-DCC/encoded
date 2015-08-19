@@ -1,4 +1,4 @@
-from contentbase.upgrader import upgrade_step
+from contentbase import upgrade_step
 from pyramid.traversal import find_root
 
 
@@ -170,7 +170,8 @@ def file_3_4(value, system):
     root = find_root(context)
     dataset = root.get_by_uuid(value['dataset']).upgrade_properties()
 
-    value.pop('download_path')
+    if 'download_path' in value:
+        value.pop('download_path')
 
     value['lab'] = dataset['lab']
     value['award'] = dataset['award']
@@ -417,3 +418,19 @@ def file_4_5(value, system):
         md5sum_content_md5sum = system['registry'].get('backfill_2683', {})
         if value['md5sum'] in md5sum_content_md5sum:
             value['content_md5sum'] = md5sum_content_md5sum[value['md5sum']]
+
+
+@upgrade_step('file', '5', '6')
+def file_5_6(value, system):
+    #  http://redmine.encodedcc.org/issues/3019
+
+    import re
+
+    if value.get('output_type') in [
+            'minus strand signal of multi-mapped reads',
+            'plus strand signal of multi-mapped reads',
+            'signal of multi-mapped reads',
+            'normalized signal of multi-mapped reads'
+            ]:
+
+        value['output_type'] = re.sub('multi-mapped', 'all', value['output_type'])

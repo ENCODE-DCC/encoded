@@ -112,7 +112,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "FF"
@@ -169,8 +169,11 @@
                 {
                     "enum": [
                         "bed3",
+                        "bed3+",
                         "bed6",
+                        "bed6+",
                         "bed9",
+                        "bed9+",
                         "bed12",
                         "bedGraph",
                         "bedLogR",
@@ -180,7 +183,9 @@
                         "gappedPeak",
                         "gff2",
                         "gff3",
-                        "narrowPeak"
+                        "narrowPeak",
+                        "candidate enhancer predictions",
+                        "enhancer predictions"
                     ]
                 },
                 {
@@ -307,10 +312,10 @@
                         "alignments",
                         "transcriptome alignments",
 
-                        "minus strand signal of multi-mapped reads",
-                        "plus strand signal of multi-mapped reads",
-                        "signal of multi-mapped reads",
-                        "normalized signal of multi-mapped reads",
+                        "minus strand signal of all reads",
+                        "plus strand signal of all reads",
+                        "signal of all reads",
+                        "normalized signal of all reads",
                         "raw minus strand signal",
                         "raw plus strand signal",
                         "raw signal",
@@ -331,6 +336,7 @@
                         "methylation state at CHG",
                         "methylation state at CHH",
                         "enrichment",
+                        "replication timing profile",
 
                         "hotspots",
                         "long range chromatin interactions",
@@ -343,12 +349,18 @@
                         "predicted forebrain enhancers",
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
+                        "candidate regulatory elements",
                         
                         "genome reference",
                         "genome index",
+                        "female genome reference",
+                        "female genome index",
+                        "male genome reference",
+                        "male genome index",
                         "spike-in sequence",
 
-                        "enhancer validation"
+                        "enhancer validation",
+                        "semi-automated genome annotation"
 
                     ]
                 },
@@ -389,7 +401,7 @@
 
                         "predicted transcription start sites",
                         "optimal idr thresholded peaks",
-                        "conserved idr thresholded peaks",
+                        "conservative idr thresholded peaks",
 
                         "validation",
 
@@ -584,10 +596,10 @@
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
 
-        "minus strand signal of multi-mapped reads": "signal",
-        "plus strand signal of multi-mapped reads": "signal",
-        "signal of multi-mapped reads": "signal",
-        "normalized signal of multi-mapped reads": "signal",
+        "minus strand signal of all reads": "signal",
+        "plus strand signal of all reads": "signal",
+        "signal of all reads": "signal",
+        "normalized signal of all reads": "signal",
         "raw minus strand signal": "signal",
         "raw plus strand signal": "signal",
         "raw signal": "signal",
@@ -619,6 +631,7 @@
         "unfiltered modified peptide quantification": "quantification",
         "filtered peptide quantification": "quantification",
         "unfiltered peptide quantification": "quantification",
+        "replication timing profile": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
@@ -636,16 +649,21 @@
         "sequence uniqueness": "annotation",
         "blacklisted regions": "annotation",
         "optimal idr thresholded peaks": "annotation",
-        "conserved idr thresholded peaks": "annotation",
+        "conservative idr thresholded peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
         "predicted enhancers": "annotation",
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
-                
+        "candidate regulatory elements": "annotation",
+
         "genome index": "reference",
         "genome reference": "reference",
+        "female genome reference": "reference",
+        "female genome index": "reference",
+        "male genome reference": "reference",
+        "male genome index": "reference",
         "primer sequence": "reference",
         "spike-in sequence": "reference",
         "reference": "reference",
@@ -653,7 +671,8 @@
         "enhancer validation": "validation",
         "validation": "validation",
         
-        "HMM predicted chromatin state": "annotation"
+        "HMM predicted chromatin state": "annotation",
+        "semi-automated genome annotation": "annotation"
         
     },
     "file_format_file_extension": {

@@ -4,7 +4,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "title", "analysis_step_types", "software_versions", "input_file_types"],
+    "required": ["name", "title", "analysis_step_types", "input_file_types"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases", "name"],
     "mixinProperties": [
@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "title": "Name",
@@ -59,16 +59,6 @@
                  ]
              }
         },
-        "software_versions": {
-            "title": "Software version",
-            "description": "The software version used in the analysis.",
-            "type": "array",
-            "items": {
-                "comment": "See software_version.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "software_version"
-            }
-        },
         "input_file_types": {
             "title": "Input file types",
             "description": "The file types used as input for the analysis.",
@@ -85,10 +75,10 @@
                     "reporter code counts",
                     "alignments",
                     "transcriptome alignments",
-                    "minus strand signal of multi-mapped reads",
-                    "plus strand signal of multi-mapped reads",
-                    "signal of multi-mapped reads",
-                    "normalized signal of multi-mapped reads",
+                    "minus strand signal of all reads",
+                    "plus strand signal of all reads",
+                    "signal of all reads",
+                    "normalized signal of all reads",
                     "raw minus strand signal",
                     "raw plus strand signal",
                     "raw signal",
@@ -106,6 +96,7 @@
                     "methylation state at CHG",
                     "methylation state at CHH",
                     "enrichment",
+                    "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
                     "peaks",
@@ -116,17 +107,23 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
+                    "candidate regulatory elements",
                     "genome reference",
                     "genome index",
+                    "female genome reference",
+                    "female genome index",
+                    "male genome reference",
+                    "male genome index",
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks",
+                    "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
-                    "replicated peaks"
+                    "replicated peaks",
+                    "bed"
                 ]
             }
         },
@@ -146,10 +143,10 @@
                     "reporter code counts",
                     "alignments",
                     "transcriptome alignments",
-                    "minus strand signal of multi-mapped reads",
-                    "plus strand signal of multi-mapped reads",
-                    "signal of multi-mapped reads",
-                    "normalized signal of multi-mapped reads",
+                    "minus strand signal of all reads",
+                    "plus strand signal of all reads",
+                    "signal of all reads",
+                    "normalized signal of all reads",
                     "raw minus strand signal",
                     "raw plus strand signal",
                     "raw signal",
@@ -167,6 +164,7 @@
                     "methylation state at CHG",
                     "methylation state at CHH",
                     "enrichment",
+                    "replication timing profile",
                     "hotspots",
                     "long range chromatin interactions",
                     "peaks",
@@ -177,17 +175,23 @@
                     "predicted forebrain enhancers",
                     "predicted heart enhancers",
                     "predicted wholebrain enhancers",
+                    "candidate regulatory elements",
                     "genome reference",
                     "genome index",
+                    "female genome reference",
+                    "female genome index",
+                    "male genome reference",
+                    "male genome index",
                     "spike-in sequence",
                     "reference genes",
                     "blacklisted regions",
                     "predicted transcription start sites",
                     "optimal idr thresholded peaks",
-                    "conserved idr thresholded peaks",
+                    "conservative idr thresholded peaks",
                     "signal p-value",
                     "fold change over control",
-                    "replicated peaks"
+                    "replicated peaks",
+                    "bigBed"
                 ]
             }
         },

@@ -95,7 +95,8 @@ var lookup_column = function (result, column) {
 
     var Table = module.exports.Table = React.createClass({
         contextTypes: {
-            fetch: React.PropTypes.func
+            fetch: React.PropTypes.func,
+            location_href: React.PropTypes.string
         },
 
 
@@ -106,14 +107,14 @@ var lookup_column = function (result, column) {
         },
 
         getInitialState: function () {
-            var state = this.extractParams(this.props);
+            var state = this.extractParams(this.props, this.context);
             state.columns = this.guessColumns(this.props);
             state.data = new Data([]);  // Tables may be long so render empty first
             state.communicating = true;
             return state;
         },
 
-        componentWillReceiveProps: function (nextProps) {
+        componentWillReceiveProps: function (nextProps, nextContext) {
             var updateData = false;
             if (nextProps.context !== this.props.context) {
                 updateData = true;
@@ -128,14 +129,14 @@ var lookup_column = function (result, column) {
                 var columns = this.guessColumns(nextProps);
                 this.extractData(nextProps, columns);
             }
-            if (nextProps.href !== this.props.href) {
-                this.extractParams(nextProps);
+            if (nextContext.location_href !== this.context.location_href) {
+                this.extractParams(nextProps, nextContext);
             }
 
         },
 
-        extractParams: function(props) {
-            var params = url.parse(props.href, true).query;
+        extractParams: function(props, context) {
+            var params = url.parse(context.location_href, true).query;
             var sorton = parseInt(params.sorton, 10);
             if (isNaN(sorton)) {
                 sorton = props.defaultSortOn;
@@ -219,11 +220,10 @@ var lookup_column = function (result, column) {
                     if (!response.ok) throw response;
                     return response.json();
                 })
-                .catch(parseAndLogError.bind(undefined, 'allRequest'))
                 .then(data => {
                     self.extractData({context: data});
                     self.setState({communicating: false});
-                });
+                }, parseAndLogError.bind(undefined, 'allRequest'));
                 this.setState({
                     allRequest: request,
                     communicating: true
@@ -242,7 +242,7 @@ var lookup_column = function (result, column) {
             this.state.searchTerm = searchTerm;
             var titles = context.columns || {};
             var data = this.state.data;
-            var params = url.parse(this.props.href, true).query;
+            var params = url.parse(this.context.location_href, true).query;
             var total = context.count || data.rows.length;
             data.sort(sortOn, reversed);
             var self = this;

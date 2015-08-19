@@ -4,12 +4,12 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.traversal import resource_path
-from . import (
+from .interfaces import (
     AfterModified,
     BeforeModified,
     Created,
-    simple_path_ids,
 )
+from .util import simple_path_ids
 import transaction
 
 

@@ -44,9 +44,9 @@ if sys.version_info.major == 2:
     ])
 
 tests_require = [
-    'behave',
-    'behaving',
     'pytest>=2.4.0',
+    'pytest-bdd',
+    'pytest-splinter',
 ]
 
 setup(
