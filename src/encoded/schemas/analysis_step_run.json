@@ -3,7 +3,7 @@
     "id": "/profiles/analysis_step_run.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysis_step", "status"],
+    "required": ["analysis_step_version", "status"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -15,19 +15,13 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
-        "analysis_step": {
-            "title": "Analysis Step",
+        "analysis_step_version": {
+            "title": "Analysis Step Version",
             "description": "Reference to template step in pipeline",
             "type": "string",
-            "linkTo": "analysis_step"        
-        },
-        "workflow_run": {
-            "title": "Workflow Run",
-            "description": "Reference executed workflow_run objects",
-            "type": "string",
-            "linkTo": "workflow_run"
+            "linkTo": "analysis_step_version"
         },
         "dx_applet_details": {
             "title": "DNA Nexus applet details",

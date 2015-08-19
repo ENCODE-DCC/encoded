@@ -21,6 +21,10 @@ var AuditMixin = audit.AuditMixin;
 var Software = module.exports.Software = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -29,7 +33,7 @@ var Software = module.exports.Software = React.createClass({
 
         // See if there’s a version number to highlight
         var highlightVersion;
-        var queryParsed = this.props.href && url.parse(this.props.href, true).query;
+        var queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
         if (queryParsed && Object.keys(queryParsed).length) {
             // Find the first 'version' query string item, if any
             var versionKey = _(Object.keys(queryParsed)).find(function(key) {
@@ -116,7 +120,7 @@ var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion
         return (
             <div>
                 <h3>Pipelines using software {context.title}</h3>
-                <PipelineTable {...this.props} />
+                <PipelineTable {...this.props} softwareId={context['@id']}/>
             </div>
         );
     }

@@ -1,6 +1,8 @@
 from elasticsearch.exceptions import (
     ConflictError,
+    ConnectionError,
     NotFoundError,
+    TransportError,
 )
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
@@ -8,6 +10,7 @@ from contentbase import DBSESSION
 from contentbase.storage import (
     TransactionRecord,
 )
+from urllib3.exceptions import ReadTimeoutError
 from .interfaces import (
     ELASTIC_SEARCH,
     INDEXER,
@@ -15,6 +18,7 @@ from .interfaces import (
 import datetime
 import logging
 import pytz
+import time
 
 
 log = logging.getLogger(__name__)
@@ -78,7 +82,7 @@ def index(request):
 
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
-        invalidated = all_uuids(request.root, types)
+        invalidated = list(all_uuids(request.root, types))
     else:
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
@@ -124,7 +128,7 @@ def index(request):
             '_source': False,
         })
         if res['hits']['total'] > SEARCH_MAX:
-            invalidated = all_uuids(request.root)
+            invalidated = list(all_uuids(request.root))
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
@@ -139,7 +143,8 @@ def index(request):
             )
 
     if not dry_run:
-        result['indexed'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
+        result['errors'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
+        result['indexed'] = len(invalidated)
         if record:
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
@@ -176,37 +181,54 @@ class Indexer(object):
         self.index = registry.settings['contentbase.elasticsearch.index']
 
     def update_objects(self, request, uuids, xmin, snapshot_id):
-        i = -1
+        errors = []
         for i, uuid in enumerate(uuids):
-            path = self.update_object(request, uuid, xmin)
-
+            error = self.update_object(request, uuid, xmin)
+            if error is not None:
+                errors.append(error)
             if (i + 1) % 50 == 0:
-                log.info('Indexing %s %d', path, i + 1)
+                log.info('Indexing %d', i + 1)
 
-        return i + 1
+        return errors
 
     def update_object(self, request, uuid, xmin):
         try:
             result = request.embed('/%s/@@index-data' % uuid, as_user='INDEXER')
-        except Exception:
-            log.warning('Error indexing %s', uuid, exc_info=True)
-            return uuid
-
-        doctype = result['object']['@type'][0]
-        try:
-            self.es.index(
-                index=self.index, doc_type=doctype, body=result,
-                id=str(uuid), version=xmin, version_type='external_gte',
-                request_timeout=30,
-            )
         except StatementError:
             # Can't reconnect until invalid transaction is rolled back
             raise
-        except ConflictError:
-            log.warning('Conflict indexing %s at version %d', uuid, xmin, exc_info=True)
-        except Exception:
-            log.warning('Error indexing %s', uuid, exc_info=True)
-        return result['object']['@id']
+        except Exception as e:
+            log.error('Error rendering /%s/@@index-data', uuid, exc_info=True)
+            timestamp = datetime.datetime.now().isoformat()
+            return {'error': repr(e), 'timestamp': timestamp, 'uuid': str(uuid)}
+
+        last_exc = None
+        for backoff in [0, 10, 20, 40, 80]:
+            time.sleep(backoff)
+            try:
+                self.es.index(
+                    index=self.index, doc_type=result['item_type'], body=result,
+                    id=str(uuid), version=xmin, version_type='external_gte',
+                    request_timeout=30,
+                )
+            except StatementError:
+                # Can't reconnect until invalid transaction is rolled back
+                raise
+            except ConflictError:
+                log.warning('Conflict indexing %s at version %d', uuid, xmin)
+                return
+            except (ConnectionError, ReadTimeoutError, TransportError) as e:
+                log.warning('Retryable error indexing %s: %r', uuid, e)
+                last_exc = repr(e)
+            except Exception as e:
+                log.error('Error indexing %s', uuid, exc_info=True)
+                last_exc = repr(e)
+                break
+            else:
+                return
+
+        timestamp = datetime.datetime.now().isoformat()
+        return {'error': last_exc, 'timestamp': timestamp, 'uuid': str(uuid)}
 
     def shutdown(self):
         pass

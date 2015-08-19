@@ -12,19 +12,6 @@ def auth_header(access_key):
 
 
 @pytest.fixture
-def access_key(testapp, submitter):
-    description = 'My programmatic key'
-    item = {
-        'user': submitter['@id'],
-        'description': description,
-    }
-    res = testapp.post_json('/access_key', item)
-    result = res.json['@graph'][0].copy()
-    result['secret_access_key'] = res.json['secret_access_key']
-    return result
-
-
-@pytest.fixture
 def no_login_submitter(testapp, lab, award):
     item = {
         'first_name': 'ENCODE',
@@ -49,12 +36,6 @@ def no_login_access_key(testapp, no_login_submitter):
     result = res.json['@graph'][0].copy()
     result['secret_access_key'] = res.json['secret_access_key']
     return result
-
-
-def test_access_key_current_user(anontestapp, access_key):
-    headers = {'Authorization': auth_header(access_key)}
-    res = anontestapp.get('/@@current-user', headers=headers)
-    assert res.json['submits_for']
 
 
 def test_access_key_get(anontestapp, access_key):
@@ -89,6 +70,25 @@ def test_access_key_principals(anontestapp, execute_counter, access_key, submitt
         'userid.%s' % submitter['uuid'],
         'viewing_group.ENCODE',
     ]
+
+
+def test_access_key_self_create(anontestapp, access_key, submitter):
+    extra_environ = {'REMOTE_USER': str(submitter['email'])}
+    res = anontestapp.post_json(
+        '/access_key/', {}, extra_environ=extra_environ
+        )
+    access_key_id = res.json['access_key_id']
+    headers = {
+        'Authorization': basic_auth(access_key_id, res.json['secret_access_key']),
+    }
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
+
+
+def test_access_key_submitter_cannot_create_for_someone_else(anontestapp, submitter):
+    extra_environ = {'REMOTE_USER': str(submitter['email'])}
+    anontestapp.post_json(
+        '/access_key/', {'user': 'BOGUS'}, extra_environ=extra_environ, status=422)
 
 
 def test_access_key_reset(anontestapp, access_key, submitter):
@@ -134,7 +134,7 @@ def test_access_key_edit(anontestapp, access_key):
     assert res.json['description'] == NEW_DESCRIPTION
 
 
-@pytest.mark.parametrize('frame', ['', 'raw', 'edit', 'object', 'embedded'])
+@pytest.mark.parametrize('frame', ['', 'raw', 'edit', 'object', 'embedded', 'page'])
 def test_access_key_view_hides_secret_access_key_hash(testapp, access_key, frame):
     query = '?frame=' + frame if frame else ''
     res = testapp.get(access_key['@id'] + query)

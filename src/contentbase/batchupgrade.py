@@ -130,7 +130,7 @@ def batch_upgrade(request):
     return {'results': results}
 
 
-def run(config_uri, app_name=None, username=None, types=None, batch_size=500, processes=None):
+def run(config_uri, app_name=None, username=None, types=(), batch_size=500, processes=None):
     # multiprocessing.get_context is Python 3 only.
     from multiprocessing import get_context
     from multiprocessing.pool import Pool
@@ -140,7 +140,7 @@ def run(config_uri, app_name=None, username=None, types=None, batch_size=500, pr
 
     testapp = internal_app(config_uri, app_name, username)
     connection = testapp.app.registry[CONNECTION]
-    uuids = [str(uuid) for uuid in connection]
+    uuids = [str(uuid) for uuid in connection.__iter__(*types)]
     transaction.abort()
     logger.info('Total items: %d' % len(uuids))
 
@@ -185,7 +185,7 @@ def main():
     )
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
-    parser.add_argument('--item-type', dest='types', action='append')
+    parser.add_argument('--item-type', dest='types', action='append', default=[])
     parser.add_argument('--batch-size', type=int, default=500)
     parser.add_argument('--processes', type=int)
     parser.add_argument('--username')

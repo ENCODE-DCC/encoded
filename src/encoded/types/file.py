@@ -79,7 +79,7 @@ class File(Item):
 
     rev = {
         'paired_with': ('file', 'paired_with'),
-        'qc_metrics': ('quality_metric', 'files'),
+        'quality_metrics': ('quality_metric', 'quality_metric_of'),
     }
 
     embedded = [
@@ -90,11 +90,14 @@ class File(Item):
         'lab',
         'derived_from',
         'submitted_by',
-        'pipeline',
-        'analysis_step',
-        'analysis_step.software_versions',
-        'analysis_step.software_versions.software',
-        'qc_metrics.step_run.analysis_step',
+        'analysis_step_version.analysis_step',
+        'analysis_step_version.analysis_step.pipelines',
+        'analysis_step_version.analysis_step.versions',
+        'analysis_step_version.analysis_step.versions.software_versions',
+        'analysis_step_version.analysis_step.versions.software_versions.software',
+        'analysis_step_version.software_versions',
+        'analysis_step_version.software_versions.software',
+        'quality_metrics.step_run.analysis_step_version.analysis_step',
     ]
 
     @property
@@ -162,29 +165,17 @@ class File(Item):
             return "nt"
 
     @calculated_property(schema={
-        "title": "Pipeline",
+        "title": "Analysis Step Version",
         "type": "string",
-        "linkTo": "pipeline"
+        "linkTo": "analysis_step_version"
     })
-    def pipeline(self, root, request, step_run=None):
+    def analysis_step_version(self, request, root, step_run=None):
         if step_run is None:
             return
-        workflow_uuid = traverse(root, step_run)['context'].__json__(request).get('workflow_run')
-        if workflow_uuid is None:
-            return
-        pipeline_uuid = root[workflow_uuid].__json__(request).get('pipeline')
-        if pipeline_uuid is None:
-            return
-        return request.resource_path(root[pipeline_uuid])
-
-    @calculated_property(schema={
-        "title": "Analysis Step",
-        "type": "string",
-        "linkTo": "analysis_step"
-    })
-    def analysis_step(self, request, step_run=None):
-        if step_run is not None:
-            return request.embed(step_run, '@@object').get('analysis_step')
+        step_run_obj = traverse(root, step_run)['context']
+        step_version_uuid = step_run_obj.__json__(request).get('analysis_step_version')
+        if step_version_uuid is not None:
+            return request.resource_path(root[step_version_uuid])
 
     @calculated_property(schema={
         "title": "Output category",
@@ -206,11 +197,11 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.analysis_step_run",
+            "linkFrom": "quality_metric.quality_metric_of",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "File type",

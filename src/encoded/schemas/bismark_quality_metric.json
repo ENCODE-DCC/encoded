@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting the specific calculation of an quality metrics",
-    "id": "/profiles/bismark_qc_metric.json",
+    "id": "/profiles/bismark_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run"],
@@ -17,7 +17,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "Sequences analysed in total": {
             "type": "number",

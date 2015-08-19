@@ -16,10 +16,14 @@ var AuditMixin = audit.AuditMixin;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var url = require('url');
         var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
         return (
             <div className="view-item">
                 <header className="row">
@@ -136,6 +140,7 @@ var RepeatingItem = React.createClass({
   onRemove: function(e) {
     if (!confirm('Are you sure you want to remove this item?')) {
         e.preventDefault();
+        return;
     }
     if (this.props.onRemove) {
       this.props.onRemove(this.props.name);
@@ -267,7 +272,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p['enum']) {
             var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required && !p.default) {
+            if (!p.default) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control">{options}</select>;
@@ -299,6 +304,9 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
+        }
+        if (p.formInput == 'textarea') {
+            props.input = <textarea rows="4" />;
         }
         return ReactForms.schema.Scalar(props);
     }
@@ -340,6 +348,10 @@ var FetchedForm = React.createClass({
 
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -350,9 +362,9 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -361,10 +373,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
+                    <FetchedForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         }
@@ -378,6 +390,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 {form}
             </div>
         );
+    },
+    finished: function(data) {
+      var url = data['@graph'][0]['@id'];
+      this.context.navigate(url);
     }
 });
 

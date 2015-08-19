@@ -12,6 +12,7 @@ var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
+var biosample = require('./biosample');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -26,6 +27,7 @@ var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
+var SingleTreatment = biosample.SingleTreatment;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -89,7 +91,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
-        var treatmentText = [];
+        var treatments;
         var synchText = [];
         var depletedIns = [];
         var mutatedGenes = {};
@@ -97,17 +99,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
-            treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
-                var singleTreatment = '';
-                if (treatment.concentration) {
-                    singleTreatment += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-                }
-                singleTreatment += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-                if (treatment.duration) {
-                    singleTreatment += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-                }
-                return singleTreatment;
-            }));
+            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
             // Collect synchronizations
             if (biosample.synchronization) {
@@ -137,7 +129,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 cellCycles[biosample.phase] = true;
             }
         });
-        treatmentText = treatmentText && _.uniq(treatmentText);
         synchText = synchText && _.uniq(synchText);
         depletedIns = depletedIns && _.uniq(depletedIns);
         var mutatedGeneNames = Object.keys(mutatedGenes);
@@ -255,16 +246,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {treatmentText.length ?
+                        {treatments ?
                             <div data-test="treatment">
-                                <dt>Treatment</dt>
-                                <dd>
-                                    <ul>
-                                        {treatmentText.map(function (treatment) {
-                                            return (<li key={treatment}>{treatment}</li>);
-                                        })}
-                                    </ul>
-                                </dd>
+                                <dt>Treatments</dt>
+                                <dd>{BiosampleTreatments(biosamples)}</dd>
                             </div>
                         : null}
 
@@ -380,7 +365,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </span>
                 : null }
 
-                <FetchedData loadingComplete={this.props.loadingComplete}>
+                <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
                     <ExperimentGraph context={context} />
                 </FetchedData>
@@ -396,10 +381,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
                 : null}
 
-                {context.control_for && context.control_for.length ?
-                    <ControllingExperiments {...this.props} url={experiments_url} />
-                : null}
-
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
             </div>
         );
     }
@@ -420,7 +402,7 @@ var ControllingExperiments = React.createClass({
 
                 <div>
                     <h3>Experiments with {context.accession} as a control:</h3>
-                    <ExperimentTable {...this.props} items={context.control_for} limit={5} total={context.control_for.length} />
+                    <ExperimentTable {...this.props} limit={5} />
                 </div>
             </div>
         );
@@ -473,6 +455,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         });
     }
     var platformKeys = Object.keys(platforms);
+
+    // If no platforms found in files, get the platform from the first replicate, if it has one
+    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
+        platforms[replicates[0].platform['@id']] = replicates[0].platform;
+    }
 
     return (
         <div className = "panel-assay">
@@ -624,7 +611,41 @@ var Replicate = module.exports.Replicate = function (props) {
 };
 // Can't be a properzz panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-// Controls the drawing of the file graph for the experiment. It displays both files and
+
+
+var BiosampleTreatments = function(biosamples) {
+    var treatmentTexts = [];
+
+    // Build up array of treatment strings
+    if (biosamples && biosamples.length) {
+        biosamples.forEach(function(biosample) {
+            if (biosample.treatments && biosample.treatments.length) {
+                biosample.treatments.forEach(function(treatment) {
+                    treatmentTexts.push(SingleTreatment(treatment));
+                });
+            }
+        });
+    }
+
+    // Component output of treatment strings
+    if (treatmentTexts.length) {
+        treatmentTexts = _.uniq(treatmentTexts);
+        return (
+            <span>
+                {treatmentTexts.map(function(treatments, i) {
+                    return (
+                        <span key={i}>
+                            {i > 0 ? <span>{','}<br /></span> : null}
+                            {treatments}
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+    return null;
+};
+
 
 
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files) {
@@ -714,15 +735,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             allReplicates[file.replicate.biological_replicate_number].push(file);
         }
 
-        // Track all the pipelines used for each step that's part of a pipeline.
-        if (file.pipeline && file.pipeline.analysis_steps) {
-            file.pipeline.analysis_steps.forEach(function(step) {
-                allPipelines[step] = file.pipeline;
-            });
+        // Note whether any files have an analysis step
+        var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+        stepExists = stepExists || !!fileAnalysisStep;
+        // Save the pipeline array used for each step used by the file.
+        if (fileAnalysisStep) {
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
         }
-
-        // Note whether any files have analysis steps.
-        stepExists = stepExists || !!file.analysis_step;
 
         // Build a list of all files in the graph, including contributed files, for convenience
         allFiles[file['@id']] = file;
@@ -875,11 +894,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
-            if (file.analysis_step) {
+            var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (fileAnalysisStep) {
                 // Make an ID and label for the step
-                stepId = 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
-                label = file.analysis_step.analysis_step_types;
-                pipelineInfo = allPipelines[file.analysis_step['@id']];
+                stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
+                label = fileAnalysisStep.analysis_step_types;
+                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
                 error = false;
             } else if (derivedFileIds(file)) {
                 // File derives from others, but no analysis step; make dummy step
@@ -901,9 +921,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         shape: 'rect',
                         cornerRadius: 4,
                         parentNode: replicateNode,
-                        ref: file.analysis_step,
-                        pipeline: pipelineInfo,
-                        fileId: file['@id']
+                        ref: fileAnalysisStep,
+                        pipelines: pipelineInfo,
+                        fileId: file['@id'],
+                        stepVersion: file.analysis_step_version
                     });
                 }
 
@@ -1079,14 +1100,14 @@ var FileDetailView = function(node) {
                     </div>
                 : null}
 
-                {selectedFile.step_run ?
+                {selectedFile.analysis_step_version ?
                     <div>
                         <dt>Software</dt>
                         <dd>
-                            {selectedFile.analysis_step.software_versions.map(function(version, i) {
+                            {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
                                 var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                                 return (
-                                    <a href={version.software['@id']} key={i} className="software-version">
+                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
                                         <span className="software">{version.software.name}</span>
                                         {version.version ?
                                             <span className="version">{versionNum}</span>

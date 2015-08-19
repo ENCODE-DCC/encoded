@@ -64,13 +64,13 @@ def schema_mapping(name, schema):
                 properties[k] = mapping
         return {
             'type': 'object',
+            'include_in_all': False,
             'properties': properties,
         }
 
     if type_ == ["number", "string"]:
         return {
             'type': 'string',
-            'include_in_all': False,
             'copy_to': [],
             'index': 'not_analyzed',
             'fields': {
@@ -78,13 +78,11 @@ def schema_mapping(name, schema):
                     'type': 'float',
                     'copy_to': '',
                     'ignore_malformed': True,
-                    'include_in_all': False,
                     'copy_to': []
                 },
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -92,13 +90,11 @@ def schema_mapping(name, schema):
     if type_ in ['string', 'boolean']:
         return {
             'type': 'string',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -106,13 +102,11 @@ def schema_mapping(name, schema):
     if type_ == 'number':
         return {
             'type': 'float',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -120,13 +114,11 @@ def schema_mapping(name, schema):
     if type_ == 'integer':
         return {
             'type': 'long',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -212,7 +204,6 @@ def es_mapping(mapping):
                     'path_match': "principals_allowed.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -222,7 +213,6 @@ def es_mapping(mapping):
                     'path_match': "unique_keys.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -232,7 +222,6 @@ def es_mapping(mapping):
                     'path_match': "links.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -241,17 +230,14 @@ def es_mapping(mapping):
         'properties': {
             'uuid': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'tid': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'item_type': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'embedded': mapping,
@@ -435,7 +421,7 @@ def type_mapping(types, item_type, embed=True):
             new_mapping = new_mapping[prop]['properties']
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        new_mapping[last].pop('include_in_all', None)
+        new_mapping[last]['include_in_all'] = True
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:

@@ -11,9 +11,12 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
+var biosample = require('./biosample');
+
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
+var SingleTreatment = biosample.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -353,7 +356,7 @@ var AuditMixin = audit.AuditMixin;
 
             // Get the first treatment if it's there
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
-                    result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
+                    result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
 
             return (
                 <li>
@@ -695,7 +698,7 @@ var AuditMixin = audit.AuditMixin;
             }
             return (
                 <div className="box facets">
-                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
@@ -808,10 +811,10 @@ var AuditMixin = audit.AuditMixin;
             return (
                     <div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
+                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div>
+                            </div> : ''}
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
@@ -873,11 +876,16 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var Search = search.Search = React.createClass({
+        contextTypes: {
+            location_href: React.PropTypes.string,
+            navigate: React.PropTypes.func
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var searchBase = url.parse(this.props.href).search || '';
+            var searchBase = url.parse(this.context.location_href).search || '';
             var facetdisplay = context.facets.some(function(facet) {
                 return facet.total > 0;
             });
@@ -885,7 +893,7 @@ var AuditMixin = audit.AuditMixin;
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

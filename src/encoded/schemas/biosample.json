@@ -514,6 +514,7 @@
             "type": "string",
             "enum": [
                 "early embryonic",
+                "midembryonic",
                 "late embryonic",
                 "mixed stage (embryonic)",
                 "mixed stage (late embryonic and L1 larva)",
@@ -523,6 +524,7 @@
                 "L3 larva",
                 "L4 larva",
                 "dauer",
+                "L4/young adult",
                 "young adult",
                 "adult"
             ]    
@@ -781,6 +783,12 @@
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "references.title": 1.0,
-        "rnais.product_id": 1.0
+        "rnais.product_id": 1.0,
+        "rnais.target.label": 1.0,
+        "rnais.target.aliases": 1.0,
+        "constructs.target.label": 1.0,
+        "constructs.target.aliases": 1.0,
+        "constructs.target.gene_name": 1.0,
+        "award.pi.title": 1.0
     }
 }

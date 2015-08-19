@@ -29,7 +29,7 @@ def audit_file_replicate_match(value, system):
     does.  These tend to get confused when replacing objects.
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'replicate' not in value:
@@ -46,7 +46,7 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -64,13 +64,13 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['output_type'] != 'reads':
@@ -78,7 +78,7 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        raise AuditFailure('missing read_length', detail, level='ERROR')
 
 
 @audit_checker('file',
@@ -90,7 +90,7 @@ def audit_file_controlled_by(value, system):
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
@@ -148,7 +148,7 @@ def audit_file_flowcells(value, system):
     Don't bother to check anything but ENCODE3
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] not in ['fastq']:
@@ -168,7 +168,7 @@ def audit_paired_with(value, system):
     DISABLING until ticket 1795 is implemented
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if 'paired_end' not in value:
@@ -197,7 +197,7 @@ def audit_paired_with(value, system):
 @audit_checker('file', frame='object')
 def audit_file_size(value, system):
 
-    if value['status'] in ['deleted', 'replaced', 'uploading']:
+    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
         return
 
     if 'file_size' not in value:

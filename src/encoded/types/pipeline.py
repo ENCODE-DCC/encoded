@@ -25,14 +25,14 @@ class Pipeline(Item):
         'documents.lab',
         'documents.submitted_by',
         'analysis_steps',
-        'analysis_steps.parents',
-        'analysis_steps.parents.software_versions',
-        'analysis_steps.parents.software_versions.software',
-        'analysis_steps.parents.software_versions.software.references',
         'analysis_steps.documents',
-        'analysis_steps.software_versions',
-        'analysis_steps.software_versions.software',
-        'analysis_steps.software_versions.software.references',
+        'analysis_steps.pipelines',
+        'analysis_steps.current_version.software_versions',
+        'analysis_steps.current_version.software_versions.software',
+        'analysis_steps.current_version.software_versions.software.references',
+        'analysis_steps.versions',
+        'analysis_steps.versions.software_versions',
+        'analysis_steps.versions.software_versions.software',
         'lab',
         'award.pi.lab',
     ]
@@ -49,11 +49,69 @@ class AnalysisStep(Item):
     item_type = 'analysis_step'
     schema = load_schema('encoded:schemas/analysis_step.json')
     name_key = 'name'
+    rev = {
+        'pipelines': ('pipeline', 'analysis_steps'),
+        'versions': ('analysis_step_version', 'analysis_step')
+    }
     embedded = [
-        'software_versions',
-        'software_versions.software',
+        'current_version',
+        'current_version.software_versions',
+        'current_version.software_versions.software',
         'parents'
     ]
+
+    @calculated_property(schema={
+        "title": "Pipelines",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "pipeline",
+        },
+    })
+    def pipelines(self, request, pipelines):
+        return paths_filtered_by_status(request, pipelines)
+
+    @calculated_property(schema={
+        "title": "Current version",
+        "type": "string",
+        "linkTo": "analysis_step_version",
+    })
+    def current_version(self, request, versions):
+        version_objects = [
+            request.embed(path, '@@object')
+            for path in paths_filtered_by_status(request, versions)
+        ]
+        if version_objects:
+            current = max(version_objects, key=lambda obj: obj['version'])
+            return current['@id']
+
+    @calculated_property(schema={
+        "title": "Versions",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "analysis_step_version",
+        },
+    })
+    def versions(self, request, versions):
+        return paths_filtered_by_status(request, versions)
+
+
+@collection(
+    name='analysis-step-versions',
+    properties={
+        'title': 'Analysis step versions',
+        'description': 'Listing of Analysis Step Versions',
+    })
+class AnalysisStepVersion(Item):
+    item_type = 'analysis_step_version'
+    schema = load_schema('encoded:schemas/analysis_step_version.json')
+
+    def unique_keys(self, properties):
+        keys = super(AnalysisStepVersion, self).unique_keys(properties)
+        value = u'{analysis_step}/{version}'.format(**properties)
+        keys.setdefault('analysis_step_version:analysis_step_version', []).append(value)
+        return keys
 
 
 @collection(
@@ -66,13 +124,12 @@ class AnalysisStepRun(Item):
     item_type = 'analysis_step_run'
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
-        'analysis_step',
-        'workflow_run',
-        'qc_metrics',
+        'analysis_step_version.analysis_step',
+        'quality_metrics',
         'output_files'
     ]
     rev = {
-        'qc_metrics': ('quality_metric', 'step_run'),
+        'quality_metrics': ('quality_metric', 'step_run'),
         'output_files': ('file', 'step_run')
     }
 
@@ -84,8 +141,8 @@ class AnalysisStepRun(Item):
             "linkFrom": "quality_metric.step_run",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "Output Files",
@@ -97,20 +154,6 @@ class AnalysisStepRun(Item):
     })
     def output_files(self, request, output_files):
         return paths_filtered_by_status(request, output_files)
-
-
-@collection(
-    name='workflow-runs',
-    properties={
-        'title': 'Workflow runs',
-        'description': 'Listing of (DNANexus) Workflow Runs'
-    })
-class WorkflowRun(Item):
-    item_type = 'workflow_run'
-    schema = load_schema('encoded:schemas/workflow_run.json')
-    embedded = [
-        'pipeline'
-    ]
 
 
 @collection(

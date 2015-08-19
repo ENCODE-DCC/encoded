@@ -42,10 +42,6 @@ var portal = {
 };
 
 
-var user_actions = [
-    {id: 'signout', title: 'Sign out', trigger: 'logout'}
-];
-
 // See https://github.com/facebook/react/issues/2323
 var Title = React.createClass({
     render: function() {
@@ -67,14 +63,13 @@ var App = React.createClass({
     mixins: [mixins.Persona, mixins.HistoryAndTriggers],
     triggers: {
         login: 'triggerLogin',
+        profile: 'triggerProfile',
         logout: 'triggerLogout',
     },
 
     getInitialState: function() {
         return {
             errors: [],
-            portal: portal,
-            user_actions: user_actions,
             dropdownComponent: undefined
         };
     },
@@ -82,15 +77,64 @@ var App = React.createClass({
     // Dropdown context using React context mechanism.
     childContextTypes: {
         dropdownComponent: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func
+        listActionsFor: React.PropTypes.func,
+        currentResource: React.PropTypes.func,
+        location_href: React.PropTypes.string,
+        onDropdownChange: React.PropTypes.func,
+        portal: React.PropTypes.object
     },
 
     // Retrieve current React context
     getChildContext: function() {
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
-            onDropdownChange: this.handleDropdownChange // Function to process dropdown state change
+            listActionsFor: this.listActionsFor,
+            currentResource: this.currentResource,
+            location_href: this.props.href,
+            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
+            portal: portal
         };
+    },
+
+    listActionsFor: function(category) {
+        if (category === 'context') {
+            var context = this.currentResource();
+            var name = this.currentAction();
+            var context_actions = [];
+            Array.prototype.push.apply(context_actions, context.actions || []);
+            if (!name && context.default_page) {
+                context = context.default_page;
+                var actions = context.actions || [];
+                for (var i = 0; i < actions.length; i++) {
+                    var action = actions[i];
+                    if (action.href[0] == '#') {
+                        action.href = context['@id'] + action.href;
+                    }
+                    context_actions.push(action);
+                }
+            }
+            return context_actions;
+        }
+        if (category === 'user') {
+            return this.state.session_properties.user_actions || [];
+        }
+        if (category === 'global_sections') {
+            return portal.global_sections;
+        }
+    },
+
+    currentResource: function() {
+        return this.props.context;
+    },
+
+    currentAction: function() {
+        var href_url = url.parse(this.props.href);
+        var hash = href_url.hash || '';
+        var name;
+        if (hash.slice(0, 2) === '#!') {
+            name = hash.slice(2);
+        }
+        return name;
     },
 
     // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
@@ -125,32 +169,15 @@ var App = React.createClass({
         var content;
         var context = this.props.context;
         var href_url = url.parse(this.props.href);
-        var hash = href_url.hash || '';
-        var name;
-        var context_actions = [];
-        if (hash.slice(0, 2) === '#!') {
-            name = hash.slice(2);
-        }
         // Switching between collections may leave component in place
         var key = context && context['@id'];
+        var current_action = this.currentAction()
+        if (!current_action && context.default_page) {
+            context = context.default_page;
+        }
         if (context) {
-            Array.prototype.push.apply(context_actions, context.actions || []);
-            if (!name && context.default_page) {
-                context = context.default_page;
-                var actions = context.actions || [];
-                for (var i = 0; i < actions.length; i++) {
-                    var action = actions[i];
-                    if (action.href[0] == '#') {
-                        action.href = context['@id'] + action.href;
-                    }
-                    context_actions.push(action);
-                }
-            }
-
-            var ContentView = globals.content_views.lookup(context, name);
-            content = <ContentView {...this.props} context={context}
-                loadingComplete={this.state.loadingComplete} session={this.state.session}
-                portal={this.state.portal} navigate={this.navigate} />;
+            var ContentView = globals.content_views.lookup(context, current_action);
+            content = <ContentView context={context} />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
@@ -208,10 +235,7 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <NavBar href={this.props.href} portal={this.state.portal}
-                                        context_actions={context_actions}
-                                        user_actions={this.state.user_actions} session={this.state.session}
-                                        loadingComplete={this.state.loadingComplete} />
+                                <NavBar />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>
