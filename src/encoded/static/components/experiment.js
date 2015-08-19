@@ -707,12 +707,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             });
 
             // File is derived; collect any QC info that applies to this file
-            if (file.step_run && file.step_run.qc_metrics) {
+            if (file.quality_metrics) {
                 var matchingQc = [];
 
-                // Search file's step_run's qc_metrics array to find one with an applies_to field referring to this file.
-                file.step_run.qc_metrics.forEach(function(metric) {
-                    var matchingFile = _(metric.applies_to).find(function(appliesFile) {
+                // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
+                file.quality_metrics.forEach(function(metric) {
+                    var matchingFile = _(metric.quality_metric_of).find(function(appliesFile) {
                         return file['@id'] === appliesFile;
                     });
                     if (matchingFile) {
@@ -876,7 +876,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (fileQcMetrics[file['@id']] && fileQcMetrics[file['@id']].length && file.analysis_step) {
+            if (fileQcMetrics[file['@id']] && fileQcMetrics[file['@id']].length && file.step_run) {
                 metricsInfo = fileQcMetrics[file['@id']].map(function(metric) {
                     var qcId = genQcId(metric, file);
                     return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
