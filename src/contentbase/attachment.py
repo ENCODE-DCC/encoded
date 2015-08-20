@@ -1,4 +1,5 @@
 from base64 import b64decode
+from hashlib import md5
 from io import BytesIO
 from mimetypes import guess_type
 from PIL import Image
@@ -7,7 +8,6 @@ from pyramid.httpexceptions import (
     HTTPTemporaryRedirect,
 )
 from pyramid.response import Response
-from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
@@ -21,10 +21,8 @@ from contentbase import (
     Item,
 )
 from .validation import ValidationFailure
-import datetime
 import magic
 import mimetypes
-import pytz
 
 
 def includeme(config):
@@ -136,6 +134,14 @@ class ItemWithAttachment(Item):
             im = Image.open(stream)
             im.verify()
             attachment['width'], attachment['height'] = im.size
+
+        # Validate md5 sum
+        md5sum = md5(data).hexdigest()
+        if 'md5sum' in attachment and attachment['md5sum'] != md5sum:
+            raise ValidationFailure(
+                'body', [prop_name, 'md5sum'], 'MD5 checksum does not match uploaded data.')
+        else:
+            attachment['md5sum'] = md5sum
 
         registry = find_root(self).registry
         registry[BLOBS].store_blob(data, download_meta)
