@@ -88,6 +88,7 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
+        migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
 
         [paste.app_factory]
         main = encoded:main

@@ -263,6 +263,10 @@ class RDBBlobStorage(object):
         blob = session.query(Blob).get(blob_id)
         return blob.data
 
+    def delete_blob(self, download_meta):
+        session = self.DBSession()
+        session.query(Blob).filter_by(blob_id=download_meta['blob_id']).delete()
+
 
 class S3BlobStorage(object):
     def __init__(self, bucket, fallback=None, key_class=boto.s3.key.Key):
@@ -272,6 +276,9 @@ class S3BlobStorage(object):
         self.key_class = key_class
 
     def store_blob(self, data, download_meta):
+        if 'bucket' not in download_meta:
+            self.fallback.delete_blob(download_meta)
+
         key = self.key_class(self.bucket)
         key.key = uuid.uuid4()
         if 'type' in download_meta:
