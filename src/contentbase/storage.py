@@ -276,7 +276,7 @@ class S3BlobStorage(object):
         self.key_class = key_class
 
     def store_blob(self, data, download_meta):
-        if 'bucket' not in download_meta:
+        if 'bucket' not in download_meta and self.fallback is not None:
             self.fallback.delete_blob(download_meta)
 
         key = self.key_class(self.bucket)
