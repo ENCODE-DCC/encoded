@@ -28,7 +28,6 @@ from .interfaces import (
 )
 from .json_renderer import json_renderer
 import boto
-import boto.s3.key
 import json
 import transaction
 import uuid
@@ -271,12 +270,11 @@ class RDBBlobStorage(object):
 
 
 class S3BlobStorage(object):
-    def __init__(self, bucket, fallback=None, read_profile_name=None, store_profile_name=None, key_class=boto.s3.key.Key):
+    def __init__(self, bucket, fallback=None, read_profile_name=None, store_profile_name=None):
         self.store_conn = boto.connect_s3(profile_name=store_profile_name)
         self.read_conn = boto.connect_s3(profile_name=read_profile_name)
         self.bucket = self.store_conn.get_bucket(bucket)
         self.fallback = fallback
-        self.key_class = key_class
 
     def store_blob(self, data, download_meta, blob_id=None):
         if blob_id is None:
@@ -285,8 +283,7 @@ class S3BlobStorage(object):
         else:
             key = self.bucket.get_key(blob_id)
         if key is None:
-            key = self.key_class(self.bucket)
-            key.key = blob_id
+            key = self.bucket.new_key(blob_id)
             if 'type' in download_meta:
                 key.content_type = download_meta['type']
             key.set_contents_from_string(data)
@@ -314,8 +311,7 @@ class S3BlobStorage(object):
                 raise Exception('Missing S3 bucket: %s' % download_meta)
 
         bucket = self.read_conn.get_bucket(bucket_name)
-        key = self.key_class(bucket)
-        key.key = download_meta['key']
+        key = bucket.get_key(download_meta['key'], validate=False)
         return key.get_contents_as_string()
 
 

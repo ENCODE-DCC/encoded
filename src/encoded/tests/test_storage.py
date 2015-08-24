@@ -153,10 +153,9 @@ def test_S3BlobStorage(mocker):
     mocker.patch('boto.connect_s3')
     bucket = 'test'
     fake_key = mocker.Mock()
-    def FakeKey(bucket):
-        return fake_key
-    storage = S3BlobStorage(bucket, key_class=FakeKey)
+    storage = S3BlobStorage(bucket)
     storage.bucket.name = bucket
+    storage.bucket.new_key.return_value = fake_key
 
     download_meta = {'download': 'test.txt'}
     storage.store_blob('data', download_meta)
@@ -164,9 +163,11 @@ def test_S3BlobStorage(mocker):
     assert 'key' in download_meta
     fake_key.set_contents_from_string.assert_called_once_with('data')
 
+    storage.bucket.get_key.return_value = fake_key
     fake_key.get_contents_as_string.return_value = 'data'
     data = storage.get_blob(download_meta)
     assert data == 'data'
+    storage.bucket.get_key.assert_called_once_with(download_meta['key'], validate=False)
 
     storage.read_conn.generate_url.return_value = 'http://testurl'
     url = storage.get_blob_url(download_meta)
