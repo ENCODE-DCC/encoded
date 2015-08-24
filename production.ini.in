@@ -3,6 +3,7 @@ use = config:base.ini#app
 session.secret = %(here)s/session-secret.b64
 file_upload_bucket = ${file_upload_bucket}
 blob_bucket = ${blob_bucket}
+blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
 
 [composite:indexer]

@@ -39,7 +39,11 @@ def includeme(config):
     registry[STORAGE] = RDBStorage(registry[DBSESSION])
     rdb_blob_storage = RDBBlobStorage(registry[DBSESSION])
     if registry.settings.get('blob_bucket'):
-        registry[BLOBS] = S3BlobStorage(registry.settings['blob_bucket'], fallback=rdb_blob_storage)
+        registry[BLOBS] = S3BlobStorage(
+            registry.settings['blob_bucket'], fallback=rdb_blob_storage,
+            read_profile_name=registry.settings.get('blob_read_profile_name'),
+            store_profile_name=registry.settings.get('blob_store_profile_name'),
+        )
     else:
         registry[BLOBS] = rdb_blob_storage
 
@@ -267,9 +271,10 @@ class RDBBlobStorage(object):
 
 
 class S3BlobStorage(object):
-    def __init__(self, bucket, fallback=None, key_class=boto.s3.key.Key):
-        self.conn = boto.connect_s3()
-        self.bucket = self.conn.get_bucket(bucket)
+    def __init__(self, bucket, fallback=None, read_profile_name=None, store_profile_name=None, key_class=boto.s3.key.Key):
+        self.store_conn = boto.connect_s3(profile_name=store_profile_name)
+        self.read_conn = boto.connect_s3(profile_name=read_profile_name)
+        self.bucket = self.store_conn.get_bucket(bucket)
         self.fallback = fallback
         self.key_class = key_class
 
@@ -293,7 +298,7 @@ class S3BlobStorage(object):
         if bucket_name is None:
             return
 
-        location = self.conn.generate_url(
+        location = self.read_conn.generate_url(
             36*60*60, method='GET', bucket=bucket_name, key=download_meta['key'],
             response_headers={
                 'response-content-disposition': "{}; filename={}".format(disposition, download_meta['download']),
@@ -308,7 +313,7 @@ class S3BlobStorage(object):
             else:
                 raise Exception('Missing S3 bucket: %s' % download_meta)
 
-        bucket = self.conn.get_bucket(bucket_name)
+        bucket = self.read_conn.get_bucket(bucket_name)
         key = self.key_class(bucket)
         key.key = download_meta['key']
         return key.get_contents_as_string()

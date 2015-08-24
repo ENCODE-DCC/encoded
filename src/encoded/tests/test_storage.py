@@ -168,10 +168,10 @@ def test_S3BlobStorage(mocker):
     data = storage.get_blob(download_meta)
     assert data == 'data'
 
-    storage.conn.generate_url.return_value = 'http://testurl'
+    storage.read_conn.generate_url.return_value = 'http://testurl'
     url = storage.get_blob_url(download_meta)
     assert url == 'http://testurl'
-    storage.conn.generate_url.assert_called_once_with(
+    storage.read_conn.generate_url.assert_called_once_with(
         129600, method='GET', bucket='test', key=download_meta['key'],
         response_headers={
             'response-content-disposition': 'inline; filename=test.txt'
