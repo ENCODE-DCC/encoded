@@ -141,7 +141,7 @@ class ItemWithAttachment(Item):
             raise ValidationFailure(
                 'body', [prop_name, 'md5sum'], 'MD5 checksum does not match uploaded data.')
         else:
-            attachment['md5sum'] = md5sum
+            download_meta['md5sum'] = attachment['md5sum'] = md5sum
 
         registry = find_root(self).registry
         registry[BLOBS].store_blob(data, download_meta)

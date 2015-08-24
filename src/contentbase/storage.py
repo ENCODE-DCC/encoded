@@ -247,13 +247,15 @@ class RDBBlobStorage(object):
     def __init__(self, DBSession):
         self.DBSession = DBSession
 
-    def store_blob(self, data, download_meta):
-        blob_id = uuid.uuid4()
+    def store_blob(self, data, download_meta, blob_id=None):
+        if blob_id is None:
+            blob_id = uuid.uuid4()
+        elif isinstance(blob_id, str):
+            blob_id = uuid.UUID(blob_id)
         session = self.DBSession()
         blob = Blob(blob_id=blob_id, data=data)
         session.add(blob)
-        download_meta['blob_id'] = blob_id
-        return str(blob_id)
+        download_meta['blob_id'] = str(blob_id)
 
     def get_blob(self, download_meta):
         blob_id = download_meta['blob_id']
@@ -263,10 +265,6 @@ class RDBBlobStorage(object):
         blob = session.query(Blob).get(blob_id)
         return blob.data
 
-    def delete_blob(self, download_meta):
-        session = self.DBSession()
-        session.query(Blob).filter_by(blob_id=download_meta['blob_id']).delete()
-
 
 class S3BlobStorage(object):
     def __init__(self, bucket, fallback=None, key_class=boto.s3.key.Key):
@@ -275,17 +273,20 @@ class S3BlobStorage(object):
         self.fallback = fallback
         self.key_class = key_class
 
-    def store_blob(self, data, download_meta):
-        if 'bucket' not in download_meta and self.fallback is not None:
-            self.fallback.delete_blob(download_meta)
-
-        key = self.key_class(self.bucket)
-        key.key = uuid.uuid4()
-        if 'type' in download_meta:
-            key.content_type = download_meta['type']
-        key.set_contents_from_string(data)
+    def store_blob(self, data, download_meta, blob_id=None):
+        if blob_id is None:
+            blob_id = str(uuid.uuid4())
+            key = None
+        else:
+            key = self.bucket.get_key(blob_id)
+        if key is None:
+            key = self.key_class(self.bucket)
+            key.key = blob_id
+            if 'type' in download_meta:
+                key.content_type = download_meta['type']
+            key.set_contents_from_string(data)
         download_meta['bucket'] = self.bucket.name
-        download_meta['key'] = key.key
+        download_meta['key'] = blob_id
 
     def get_blob_url(self, download_meta, disposition='inline'):
         bucket_name = download_meta.get('bucket')

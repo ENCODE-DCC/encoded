@@ -5,6 +5,8 @@ Move attachment blobs to S3.
 import copy
 import logging
 import transaction
+import uuid
+from hashlib import md5
 from pyramid.paster import get_app
 from pyramid.threadlocal import manager
 from pyramid.testing import DummyRequest
@@ -12,7 +14,10 @@ from contentbase.interfaces import (
     BLOBS,
     DBSESSION
 )
-from contentbase.storage import PropertySheet
+from contentbase.storage import (
+    Blob,
+    PropertySheet,
+)
 
 EPILOG = __doc__
 
@@ -34,8 +39,11 @@ def run(app):
             # Re-writing the blob while the S3BlobStorage is in use
             # will move it to S3.
             data = blob_storage.get_blob(download_meta)
-            blob_storage.store_blob(data, download_meta)
+            blob_id = download_meta.pop('blob_id')
+            download_meta['md5sum'] = md5(data).hexdigest()
+            blob_storage.store_blob(data, download_meta, blob_id=blob_id)
             sheet.properties = properties
+            session.query(Blob).filter_by(blob_id=uuid.UUID(blob_id)).delete()
             logger.info('Updated %s' % sheet.sid)
 
 
