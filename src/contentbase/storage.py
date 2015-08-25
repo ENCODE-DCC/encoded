@@ -273,7 +273,7 @@ class S3BlobStorage(object):
     def __init__(self, bucket, fallback=None, read_profile_name=None, store_profile_name=None):
         self.store_conn = boto.connect_s3(profile_name=store_profile_name)
         self.read_conn = boto.connect_s3(profile_name=read_profile_name)
-        self.bucket = self.store_conn.get_bucket(bucket)
+        self.bucket = self.store_conn.get_bucket(bucket, validate=False)
         self.fallback = fallback
 
     def store_blob(self, data, download_meta, blob_id=None):
