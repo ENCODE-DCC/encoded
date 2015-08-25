@@ -179,8 +179,14 @@ def test_S3BlobStorage(mocker):
 
 def test_S3BlobStorage_get_blob_url_for_non_s3_file(mocker):
     from contentbase.storage import S3BlobStorage
-    storage = S3BlobStorage(bucket='test')
+    mocker.patch('boto.connect_s3')
+    bucket = 'test'
+    storage = S3BlobStorage(bucket)
+    storage.bucket.name = bucket
     download_meta = {'blob_id': 'blob_id'}
+    storage.read_conn.generate_url.return_value = 'http://testurl'
     url = storage.get_blob_url(download_meta)
-    assert 'test' in url
-    assert 'blob_id' in url
+    assert url == 'http://testurl'
+    storage.read_conn.generate_url.assert_called_once_with(
+        129600, method='GET', bucket='test', key=download_meta['blob_id']
+    )
