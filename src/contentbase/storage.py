@@ -36,15 +36,14 @@ import uuid
 def includeme(config):
     registry = config.registry
     registry[STORAGE] = RDBStorage(registry[DBSESSION])
-    rdb_blob_storage = RDBBlobStorage(registry[DBSESSION])
     if registry.settings.get('blob_bucket'):
         registry[BLOBS] = S3BlobStorage(
-            registry.settings['blob_bucket'], fallback=rdb_blob_storage,
+            registry.settings['blob_bucket'],
             read_profile_name=registry.settings.get('blob_read_profile_name'),
             store_profile_name=registry.settings.get('blob_store_profile_name'),
         )
     else:
-        registry[BLOBS] = rdb_blob_storage
+        registry[BLOBS] = RDBBlobStorage(registry[DBSESSION])
 
 
 Base = declarative_base()
@@ -270,11 +269,10 @@ class RDBBlobStorage(object):
 
 
 class S3BlobStorage(object):
-    def __init__(self, bucket, fallback=None, read_profile_name=None, store_profile_name=None):
+    def __init__(self, bucket, read_profile_name=None, store_profile_name=None):
         self.store_conn = boto.connect_s3(profile_name=store_profile_name)
         self.read_conn = boto.connect_s3(profile_name=read_profile_name)
         self.bucket = self.store_conn.get_bucket(bucket, validate=False)
-        self.fallback = fallback
 
     def store_blob(self, data, download_meta, blob_id=None):
         if blob_id is None:
@@ -290,29 +288,24 @@ class S3BlobStorage(object):
         download_meta['bucket'] = self.bucket.name
         download_meta['key'] = blob_id
 
-    def get_blob_url(self, download_meta, disposition='inline'):
-        bucket_name = download_meta.get('bucket')
-        if bucket_name is None:
-            return
+    def _get_bucket_key(self, download_meta):
+        # Assume files have been migrated
+        if 'bucket' in download_meta:
+            return download_meta['bucket'], download_meta['key']
+        else:
+            return self.bucket.name, download_meta['blob_id']
 
+    def get_blob_url(self, download_meta):
+        bucket_name, key = self._get_bucket_key(download_meta)
         location = self.read_conn.generate_url(
-            36*60*60, method='GET', bucket=bucket_name, key=download_meta['key'],
-            response_headers={
-                'response-content-disposition': "{}; filename={}".format(disposition, download_meta['download']),
-            })
+            36*60*60, method='GET', bucket=bucket_name, key=key)
         return location
 
     def get_blob(self, download_meta):
-        bucket_name = download_meta.get('bucket')
-        if bucket_name is None:
-            if self.fallback:
-                return self.fallback.get_blob(download_meta)
-            else:
-                raise Exception('Missing S3 bucket: %s' % download_meta)
-
-        bucket = self.read_conn.get_bucket(bucket_name)
-        key = bucket.get_key(download_meta['key'], validate=False)
-        return key.get_contents_as_string()
+        bucket_name, key = self._get_bucket_key(download_meta)
+        bucket = self.read_conn.get_bucket(bucket_name, validate=False)
+        key_obj = bucket.get_key(key, validate=False)
+        return key_obj.get_contents_as_string()
 
 
 class JSON(types.TypeDecorator):

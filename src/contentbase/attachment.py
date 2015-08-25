@@ -191,8 +191,7 @@ def download(context, request):
     blob_storage = request.registry[BLOBS]
     if hasattr(blob_storage, 'get_blob_url'):
         blob_url = blob_storage.get_blob_url(download_meta)
-        if blob_url is not None:
-            return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(blob_url)})
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(blob_url)})
 
     # Otherwise serve the blob data ourselves
     blob = request.registry[BLOBS].get_blob(download_meta)

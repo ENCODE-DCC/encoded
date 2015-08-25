@@ -173,29 +173,14 @@ def test_S3BlobStorage(mocker):
     url = storage.get_blob_url(download_meta)
     assert url == 'http://testurl'
     storage.read_conn.generate_url.assert_called_once_with(
-        129600, method='GET', bucket='test', key=download_meta['key'],
-        response_headers={
-            'response-content-disposition': 'inline; filename=test.txt'
-        }
+        129600, method='GET', bucket='test', key=download_meta['key']
     )
 
 
 def test_S3BlobStorage_get_blob_url_for_non_s3_file(mocker):
     from contentbase.storage import S3BlobStorage
-    mocker.patch('boto.connect_s3')
     storage = S3BlobStorage(bucket='test')
-    download_meta = {}
+    download_meta = {'blob_id': 'blob_id'}
     url = storage.get_blob_url(download_meta)
-    assert url is None
-
-
-def test_S3BlobStorage_get_blob_fallback_for_non_s3_file(mocker):
-    from contentbase.storage import S3BlobStorage
-    mocker.patch('boto.connect_s3')
-    fallback_storage = mocker.Mock()
-    fallback_storage.get_blob.return_value = 'data'
-    storage = S3BlobStorage(bucket='test', fallback=fallback_storage)
-    download_meta = {}
-    data = storage.get_blob(download_meta)
-    assert data == 'data'
-    fallback_storage.get_blob.assert_called_once_with(download_meta)
+    assert 'test' in url
+    assert 'blob_id' in url
