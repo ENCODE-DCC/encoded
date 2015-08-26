@@ -46,6 +46,7 @@ if sys.version_info.major == 2:
 tests_require = [
     'pytest>=2.4.0',
     'pytest-bdd',
+    'pytest-mock',
     'pytest-splinter',
 ]
 
@@ -89,6 +90,7 @@ setup(
         update-file-status = encoded.commands.update_file_status:main
         file-indexer = encoded.commands.file_indexer:main
         annotation-indexer = encoded.commands.annotation_indexer:main
+        migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
 
         [paste.app_factory]
         main = encoded:main

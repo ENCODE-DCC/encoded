@@ -30,6 +30,7 @@ def test_download_create(testapp, testing_download):
     assert res.json['attachment']['type'] == 'image/png'
     assert res.json['attachment']['width'] == 5
     assert res.json['attachment']['height'] == 5
+    assert res.json['attachment']['md5sum'] == 'b60ab2708daec7685f3d412a5e05191a'
     url = testing_download + '/' + res.json['attachment']['href']
     res = testapp.get(url)
     assert res.content_type == 'image/png'
@@ -96,5 +97,15 @@ def test_download_create_wrong_extension(testapp):
     item = {'attachment': {
         'download': 'red-dot.jpg',
         'href': RED_DOT,
+    }}
+    testapp.post_json(url, item, status=422)
+
+
+def test_download_create_w_wrong_md5sum(testapp):
+    url = '/testing-downloads/'
+    item = {'attachment': {
+        'download': 'red-dot.jpg',
+        'href': RED_DOT,
+        'md5sum': 'deadbeef',
     }}
     testapp.post_json(url, item, status=422)

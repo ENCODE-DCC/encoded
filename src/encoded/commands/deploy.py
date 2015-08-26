@@ -3,6 +3,7 @@ from boto.ec2.blockdevicemapping import (
     BlockDeviceType,
 )
 import boto.ec2
+import boto.exception
 import getpass
 import re
 import subprocess
@@ -81,7 +82,10 @@ def run(wale_s3_prefix, image_id, instance_type,
         sys.stdout.write('.')
         sys.stdout.flush()
         time.sleep(1)
-        instance.update()
+        try:
+            instance.update()
+        except boto.exception.EC2ResponseError:
+            pass
     print('')
     print(instance.state)
 
