@@ -1070,5 +1070,22 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "6800d05f-7213-48b1-9ad8-254c73c5b83f"
+    },
+    {
+        "email": "gabdank@stanford.edu",
+        "first_name": "Idan",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Gabdank",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "98fb23d3-0d79-4c3d-981d-01539e6589f1"
     }
 ]
