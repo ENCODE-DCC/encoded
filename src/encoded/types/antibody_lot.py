@@ -141,18 +141,20 @@ class AntibodyLot(SharedItem):
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
     organisms = set()
+    antibody_targets = list()
+
+    is_control = False
+    for t in targets:
+        target = request.embed(t, '@@object')
+        if 'control' in target['investigated_as']:
+            is_control = True
+
+        organism = target['organism']
+        organisms.add(organism)
+        antibody_targets.append(target)
 
     if not characterizations:
         # If there are no characterizations, then default to awaiting lab characterization.
-        is_control = False
-        for t in targets:
-            target = request.embed(t, '@@object')
-            if 'control' in target['investigated_as']:
-                is_control = True
-
-            organism = target['organism']
-            organisms.add(organism)
-
         return [{
             'biosample_term_name': 'not specified',
             'biosample_term_id': 'NTR:00000000',
@@ -259,6 +261,10 @@ def lot_reviews(characterizations, targets, request):
             # Get the organism information from the lane, not from the target since there are lanes
             lane_organism = lane_review['organism']
 
+            # Need to track the entire set of organisms characterized in the lanes, not just
+            # those that are compliant for the histone modification standards check.
+            #organisms.add(lane_organism)
+
             new_review = {
                 'biosample_term_name': lane_review['biosample_term_name'],
                 'biosample_term_id': lane_review['biosample_term_id'],
@@ -326,19 +332,48 @@ def lot_reviews(characterizations, targets, request):
     if histone_mod_target:
         # Review of antibodies against histone modifications are treated differently.
         # There should be at least 3 compliant cell types for eligibility for use
-        num_compliant_celltypes = 0
+        # (Feb 2014 standards)
+        #
+        # August 2015 standards removed the requirement for 3 compliant cell types,
+        # the antibody only needs to be characterized in the species it is to be used in.
+
         for char_review in char_reviews.values():
             if char_review['status'] == 'compliant':
                 char_review['status'] = 'awaiting lab characterization'
-                num_compliant_celltypes += 1
 
-        if num_compliant_celltypes >= 3 and compliant_secondary:
-            return [{
+        not_characterized_organisms = organisms.symmetric_difference(histone_organisms)
+        common_organisms = histone_organisms.intersection(organisms)
+        not_characterized_targets = set()
+        characterized_targets = set()
+
+        if not_characterized_organisms:
+            for not_characterized_organism in not_characterized_organisms:
+                for target in antibody_targets:
+                    if not_characterized_organism in target['organism']:
+                        not_characterized_targets.add(target['@id'])
+                    else:
+                        characterized_targets.add(target['@id'])
+        else:
+            for target in antibody_targets:
+                characterized_targets.add(target['@id'])
+
+        if common_organisms and compliant_secondary:
+            output = [{
                 'biosample_term_name': 'all cell types and tissues',
                 'biosample_term_id': 'NTR:00000000',
-                'organisms': sorted(histone_organisms),
-                'targets': sorted(review_targets),
+                'organisms': sorted(common_organisms),
+                'targets': sorted(characterized_targets),
                 'status': 'eligible for new data'
-            }]
+                }]
+
+            if not_characterized_organisms:
+                output.append({
+                    'biosample_term_name': 'all cell types and tissues',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organisms': sorted(not_characterized_organisms),
+                    'targets': sorted(not_characterized_targets),
+                    'status': 'awaiting lab characterization'
+                    })
+            return output
 
     return list(char_reviews.values())

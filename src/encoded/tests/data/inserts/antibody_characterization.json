@@ -348,6 +348,14 @@
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
                 "lane_status": "compliant"
+            },
+            {
+                "organism": "mouse",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "MEL cell line",
+                "biosample_term_id": "EFO:0003971",
+                "lane_status": "not compliant"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
