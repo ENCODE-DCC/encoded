@@ -36,7 +36,7 @@ def show_upload_credentials(request=None, context=None, status=None):
     return request.has_permission('edit', context)
 
 
-def external_creds(bucket, key, name):
+def external_creds(bucket, key, name, profile_name=None):
     policy = {
         'Version': '2012-10-17',
         'Statement': [
@@ -47,7 +47,7 @@ def external_creds(bucket, key, name):
             }
         ]
     }
-    conn = boto.connect_sts(profile_name='encoded-files-upload')
+    conn = boto.connect_sts(profile_name=profile_name)
     token = conn.get_federation_token(name, policy=json.dumps(policy))
     # 'access_key' 'secret_key' 'expiration' 'session_token'
     credentials = token.credentials.to_dict()
@@ -230,7 +230,8 @@ class File(Item):
                 accession_or_external=accession_or_external,
                 time=time.time(), **properties)[:32]  # max 32 chars
 
-            sheets['external'] = external_creds(bucket, key, name)
+            profile_name = registry.settings.get('file_upload_profile_name')
+            sheets['external'] = external_creds(bucket, key, name, profile_name)
         return super(File, cls).create(registry, uuid, properties, sheets)
 
 
@@ -265,7 +266,8 @@ def post_upload(context, request):
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
         time=time.time(), **properties)  # max 32 chars
-    creds = external_creds(bucket, key, name)
+    profile_name = request.registry.settings.get('file_upload_profile_name')
+    creds = external_creds(bucket, key, name, profile_name)
 
     registry = request.registry
     registry.notify(BeforeModified(context, request))
