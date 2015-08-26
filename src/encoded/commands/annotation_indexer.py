@@ -1,8 +1,7 @@
 import logging
-import pandas as pd
 import requests
 from pyramid.paster import get_app
-from ..indexing import ELASTIC_SEARCH
+from contentbase.elasticsearch import ELASTIC_SEARCH
 from elasticsearch.exceptions import (
     RequestError,
 )
@@ -52,12 +51,17 @@ def human_annotations(es):
     """
     Generates JSON from TSV files
     """
-    data_frame = pd.read_csv(_HGNC_FILE, delimiter='\t')
-    records = data_frame.where(pd.notnull(data_frame), None).T.to_dict()
-    results = [records[it] for it in records]
     species = ' (homo sapiens)'
     counter = 0
-    for i, r in enumerate(results):
+    response = requests.get(_HGNC_FILE)
+    header = []
+    for row in response.content.decode('utf-8').split('\n'):
+        # skipping header row
+        if counter == 0:
+            header = row.split('\t')
+            counter += 1
+            continue
+        r = dict(zip(header, row.split('\t')))
         if r['Ensembl Gene ID'] is None:
             continue
         r['annotations'] = []
@@ -66,8 +70,8 @@ def human_annotations(es):
                       r['Approved Symbol'] + species,
                       r['Ensembl Gene ID'] + species,
                       r['HGNC ID'] + species],
-            'payload': {'id': i}
-            }
+            'payload': {'id': counter}
+        }
 
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None:
@@ -77,7 +81,8 @@ def human_annotations(es):
         # Adding Entrez gene id if there exists one to autocomplete
         if 'Entrez Gene ID' in r:
             if isinstance(r['Entrez Gene ID'], float):
-                r['name_suggest']['input'].append(str(int(r['Entrez Gene ID'])) + ' (Gene ID)')
+                r['name_suggest']['input'].append(
+                    str(int(r['Entrez Gene ID'])) + ' (Gene ID)')
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
@@ -89,7 +94,6 @@ def human_annotations(es):
         else:
             annotation = get_annotation()
             if 'assembly_name' not in response:
-                print(response)
                 continue
             annotation['assembly_name'] = response['assembly_name']
             annotation['chromosome'] = response['seq_region_name']
@@ -107,22 +111,26 @@ def human_annotations(es):
                 assembly_mapper(location, response['species'],
                                 'GRCh38', 'GRCh37')
             r['annotations'].append(ann)
-        es.index(index=index, doc_type=doc_type, body=r, id=i)
-        counter = i
-    return counter
+        es.index(index=index, doc_type=doc_type, body=r, id=counter)
+        counter += 1
 
 
-def all_annotations(es, counter):
+def all_annotations(es):
     """
     Mouse, C Elegans, Drosophila annotations are handled here
     """
     urls = [_MOUSE_FILE, _DM_FILE, _CE_FILE]
-    results = []
+    counter = 0
     for url in urls:
-        data_frame = pd.read_csv(url, delimiter='\t')
-        records = data_frame.where(pd.notnull(data_frame), None).T.to_dict()
-        results = results + [records[it] for it in records]
-        for r in results:
+        response = requests.get(_HGNC_FILE)
+        header = []
+        for row in response.content.decode('utf-8').split('\n'):
+            # skipping header row
+            if counter == 0:
+                header = row.split('\t')
+                counter += 1
+                continue
+            r = dict(zip(header, row.split('\t')))
             if 'Chromosome Name' not in r:
                 continue
             counter += 1
@@ -188,6 +196,7 @@ def all_annotations(es, counter):
 
 
 def create_index(es):
+    ''' Create annotations index '''
     try:
         es.indices.create(index=index)
     except RequestError:
@@ -217,7 +226,10 @@ def create_index(es):
 
 
 def main():
-    ''' Indexes Bed files are loaded to elasticsearch '''
+    '''
+    Get annotations from multiple sources
+    This helps to implement autocomplete for region search
+    '''
 
     import argparse
     parser = argparse.ArgumentParser(
@@ -237,9 +249,12 @@ def main():
     logging.getLogger('encoded').setLevel(logging.DEBUG)
     app = get_app(args.config_uri, args.app_name)
     es = app.registry[ELASTIC_SEARCH]
-    create_index(es)
-    counter = human_annotations(es)
-    all_annotations(es, counter)
+    try:
+        create_index(es)
+    except:
+        pass
+    else:
+        human_annotations(es)
 
 
 if __name__ == '__main__':

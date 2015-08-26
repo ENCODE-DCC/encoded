@@ -85,7 +85,10 @@ def get_file(es, properties):
             chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
             if isinstance(start, int) and isinstance(end, int):
                 if chrom in file_data:
-                    file_data[chrom].append({'start': start + 1, 'end': end + 1})
+                    file_data[chrom].append({
+                        'start': start + 1,
+                        'end': end + 1
+                    })
                 else:
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
     for key in file_data:
@@ -95,8 +98,10 @@ def get_file(es, properties):
         }
         if not es.indices.exists(key):
             es.indices.create(index=key)
-            es.indices.put_mapping(index=key, doc_type='hg19', body=get_mapping())
-        es.index(index=key, doc_type=properties['assembly'], body=doc, id=properties['uuid'])
+            es.indices.put_mapping(index=key, doc_type='hg19',
+                                   body=get_mapping())
+        es.index(index=key, doc_type=properties['assembly'],
+                 body=doc, id=properties['uuid'])
 
 
 @view_config(route_name='file_index', request_method='POST', permission="index")
