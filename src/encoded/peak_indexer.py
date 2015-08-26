@@ -2,12 +2,12 @@ import urllib3
 import io
 import gzip
 import csv
-from ..embed import embed
+from contentbase.embed import embed
 from urllib.parse import (
     urlencode,
 )
 from pyramid.view import view_config
-from .interfaces import ELASTIC_SEARCH
+from contentbase.elasticsearch import ELASTIC_SEARCH
 
 
 def includeme(config):
