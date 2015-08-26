@@ -9,6 +9,24 @@ from urllib.parse import (
 from pyramid.view import view_config
 from contentbase.elasticsearch import ELASTIC_SEARCH
 
+# Assays and corresponding file types that are being indexed
+_INDEXED_DATA = {
+    'ChIP-seq': {
+        'output_type': ['optimal idr thresholded peaks'],
+    },
+    'DNase-seq': {
+        'file_type': ['bed narrowPeak']
+    },
+    'eCLIP': {
+        'file_type': ['bed narrowPeak']
+    }
+}
+
+# Species and references being indexed
+_SPECIES = {
+    'Homo sapiens': ['hg19']
+}
+
 
 def includeme(config):
     config.add_route('file_index', '/file_index')
@@ -89,22 +107,17 @@ def file_index(request):
     params = {
         'type': ['experiment'],
         'status': ['released'],
-        'assay_term_name': ['ChIP-seq', 'DNase-seq'],
-        'replicates.library.biosample.donor.organism.scientific_name': ['Homo sapiens'],
+        'assay_term_name': [assay for assay in _INDEXED_DATA],
+        'replicates.library.biosample.donor.organism.scientific_name':
+        [organism for organism in _SPECIES],
         'field': ['files.href', 'files.assembly', 'files.uuid',
-                  'files.output_type', 'files.file_format_type',
-                  'files.file_format', 'assay_term_name'],
+                  'files.output_type', 'files.file_type', 'assay_term_name'],
         'limit': ['all']
     }
     path = '/search/?%s' % urlencode(params, True)
     for properties in embed(request, path, as_user=True)['@graph']:
         for f in properties['files']:
-            # This is totally hack to restrict number of files indexed.
-            if f['file_format'] == 'bed':
-                if properties['assay_term_name'] == 'ChIP-seq' and \
-                        f['output_type'] == 'optimal idr thresholded peaks':
+            for k, v in _INDEXED_DATA[properties['assay_term_name']].items():
+                if k in f and f[k] in v:
                     get_file(es, f)
-                elif properties['assay_term_name'] == 'DNase-seq' and \
-                        'file_format_type' in f and \
-                        f['file_format_type'] == 'narrowPeak':
-                    get_file(es, f)
+                    break
