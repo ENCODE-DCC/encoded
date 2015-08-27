@@ -251,7 +251,7 @@ def lot_reviews(characterizations, targets, request):
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
-    histone_organisms = set()
+    characterized_organisms = set()
 
     for primary in primary_chars:
         if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
@@ -260,10 +260,6 @@ def lot_reviews(characterizations, targets, request):
         for lane_review in primary.get('characterization_reviews', []):
             # Get the organism information from the lane, not from the target since there are lanes
             lane_organism = lane_review['organism']
-
-            # Need to track the entire set of organisms characterized in the lanes, not just
-            # those that are compliant for the histone modification standards check.
-            #organisms.add(lane_organism)
 
             new_review = {
                 'biosample_term_name': lane_review['biosample_term_name'],
@@ -290,7 +286,8 @@ def lot_reviews(characterizations, targets, request):
 
                         # Keep track of compliant organisms for histones and we
                         # will fill them in after going through all the lanes
-                        histone_organisms.add(lane_organism)
+                        if lane_organism in organisms:
+                            characterized_organisms.add(lane_organism)
 
                 if pending_secondary:
                     new_review['status'] = 'pending dcc review'
@@ -341,8 +338,7 @@ def lot_reviews(characterizations, targets, request):
             if char_review['status'] == 'compliant':
                 char_review['status'] = 'awaiting lab characterization'
 
-        not_characterized_organisms = organisms.symmetric_difference(histone_organisms)
-        common_organisms = histone_organisms.intersection(organisms)
+        not_characterized_organisms = organisms.symmetric_difference(characterized_organisms)
         not_characterized_targets = set()
         characterized_targets = set()
 
@@ -357,11 +353,11 @@ def lot_reviews(characterizations, targets, request):
             for target in antibody_targets:
                 characterized_targets.add(target['@id'])
 
-        if common_organisms and compliant_secondary:
+        if characterized_organisms and compliant_secondary:
             output = [{
                 'biosample_term_name': 'all cell types and tissues',
                 'biosample_term_id': 'NTR:00000000',
-                'organisms': sorted(common_organisms),
+                'organisms': sorted(characterized_organisms),
                 'targets': sorted(characterized_targets),
                 'status': 'eligible for new data'
                 }]
