@@ -62,7 +62,8 @@ var SearchForm = React.createClass({
         onAutocompleteChosenChange: React.PropTypes.func,
         onAutocompleteFocusChange: React.PropTypes.func,
         autocompleteHidden: React.PropTypes.bool,
-        onAutocompleteHiddenChange: React.PropTypes.func
+        onAutocompleteHiddenChange: React.PropTypes.func,
+        location_href: React.PropTypes.string
     },
 
     handleChange: function(e) {
@@ -105,7 +106,8 @@ var SearchForm = React.createClass({
     },
 
     render: function() {
-        var id = url.parse(this.props.href, true);
+        var context = this.props.context;
+        var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
         return (
             <div className="adv-search-form">
@@ -134,6 +136,10 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         e.stopPropagation();
         e.preventDefault();
     },
+    contextTypes: {
+        location_href: React.PropTypes.string,
+        navigate: React.PropTypes.func
+    },
     render: function() {
         var context = this.props.context;
         var results = context['@graph'];
@@ -141,9 +147,9 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var notification = context['notification'];
         var assembly = ['hg19'];
         var files = [];
-        var id = url.parse(this.props.href, true);
+        var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
-        var searchBase = url.parse(this.props.href).search || '';
+        var searchBase = url.parse(this.context.location_href).search || '';
         var filters = context['filters'];
         var facets = context['facets'];
         return (

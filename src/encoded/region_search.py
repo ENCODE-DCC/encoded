@@ -156,8 +156,6 @@ def region_search(context, request):
                     for f in item['files']:
                         if 'file_format' in f and f['file_format'] == 'bigBed':
                             new_files.append(f)
-                        '''
-                        #TODO This part of the code will be enabled once we have derived_from relationships
                         if 'derived_from' in f:
                             derived_files = []
                             for derived_file in f['derived_from']:
@@ -166,7 +164,7 @@ def region_search(context, request):
                                     item['highlight'].append(derived_file['uuid'])
                             if len(derived_files):
                                 f['derived_from'] = derived_files
-                                new_files.append(f)'''
+                                new_files.append(f)
                     item['files'] = new_files
                     if len(item['files']) > 0:
                         new_results.append(item)
