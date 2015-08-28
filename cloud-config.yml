@@ -80,7 +80,6 @@ packages:
 - python3.4-dev
 - python-software-properties
 - python-virtualenv
-- python3-pip
 - ruby-dev
 - unattended-upgrades
 - update-notifier-common
