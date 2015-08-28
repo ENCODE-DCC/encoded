@@ -4,12 +4,12 @@
   "dependencies": {
     "brace": {
       "version": "0.3.0",
-      "from": "https://registry.npmjs.org/brace/-/brace-0.3.0.tgz",
+      "from": "brace@>=0.3.0 <0.4.0",
       "resolved": "https://registry.npmjs.org/brace/-/brace-0.3.0.tgz",
       "dependencies": {
         "w3c-blob": {
           "version": "0.0.1",
-          "from": "https://registry.npmjs.org/w3c-blob/-/w3c-blob-0.0.1.tgz",
+          "from": "w3c-blob@0.0.1",
           "resolved": "https://registry.npmjs.org/w3c-blob/-/w3c-blob-0.0.1.tgz"
         }
       }
@@ -1357,7 +1357,7 @@
     },
     "cookie-monster": {
       "version": "0.0.7",
-      "from": "https://registry.npmjs.org/cookie-monster/-/cookie-monster-0.0.7.tgz",
+      "from": "cookie-monster@0.0.7",
       "resolved": "https://registry.npmjs.org/cookie-monster/-/cookie-monster-0.0.7.tgz"
     },
     "d3": {
@@ -3047,17 +3047,17 @@
     },
     "node-ckeditor": {
       "version": "4.3.2",
-      "from": "https://registry.npmjs.org/node-ckeditor/-/node-ckeditor-4.3.2.tgz",
+      "from": "node-ckeditor@>=4.3.2 <5.0.0",
       "resolved": "https://registry.npmjs.org/node-ckeditor/-/node-ckeditor-4.3.2.tgz"
     },
     "react": {
       "version": "0.12.2",
-      "from": "https://registry.npmjs.org/react/-/react-0.12.2.tgz",
+      "from": "react@>=0.12.2 <0.13.0",
       "resolved": "https://registry.npmjs.org/react/-/react-0.12.2.tgz"
     },
     "react-bootstrap": {
       "version": "0.15.1",
-      "from": "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-0.15.1.tgz",
+      "from": "react-bootstrap@>=0.15.1 <0.16.0",
       "resolved": "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-0.15.1.tgz"
     },
     "react-forms": {
@@ -3418,7 +3418,7 @@
               "dependencies": {
                 "base62": {
                   "version": "0.1.1",
-                  "from": "https://registry.npmjs.org/base62/-/base62-0.1.1.tgz",
+                  "from": "base62@0.1.1",
                   "resolved": "https://registry.npmjs.org/base62/-/base62-0.1.1.tgz"
                 },
                 "esprima-fb": {
@@ -3428,7 +3428,7 @@
                 },
                 "source-map": {
                   "version": "0.1.31",
-                  "from": "https://registry.npmjs.org/source-map/-/source-map-0.1.31.tgz",
+                  "from": "source-map@0.1.31",
                   "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.1.31.tgz",
                   "dependencies": {
                     "amdefine": {
@@ -3446,22 +3446,22 @@
     },
     "scriptjs": {
       "version": "2.5.7",
-      "from": "https://registry.npmjs.org/scriptjs/-/scriptjs-2.5.7.tgz",
+      "from": "scriptjs@>=2.5.7 <3.0.0",
       "resolved": "https://registry.npmjs.org/scriptjs/-/scriptjs-2.5.7.tgz"
     },
     "shivie8": {
       "version": "1.0.0",
-      "from": "https://registry.npmjs.org/shivie8/-/shivie8-1.0.0.tgz",
+      "from": "shivie8@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/shivie8/-/shivie8-1.0.0.tgz"
     },
     "source-map-support": {
       "version": "0.2.10",
-      "from": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.2.10.tgz",
+      "from": "source-map-support@>=0.2.7 <0.3.0",
       "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.2.10.tgz",
       "dependencies": {
         "source-map": {
           "version": "0.1.32",
-          "from": "https://registry.npmjs.org/source-map/-/source-map-0.1.32.tgz",
+          "from": "source-map@0.1.32",
           "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.1.32.tgz",
           "dependencies": {
             "amdefine": {
@@ -3475,7 +3475,7 @@
     },
     "subprocess-middleware": {
       "version": "0.1.0",
-      "from": "https://registry.npmjs.org/subprocess-middleware/-/subprocess-middleware-0.1.0.tgz",
+      "from": "subprocess-middleware@>=0.1.0 <0.2.0",
       "resolved": "https://registry.npmjs.org/subprocess-middleware/-/subprocess-middleware-0.1.0.tgz"
     },
     "through": {
@@ -3485,7 +3485,7 @@
     },
     "underscore": {
       "version": "1.8.3",
-      "from": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
+      "from": "underscore@>=1.6.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz"
     },
     "watchify": {
