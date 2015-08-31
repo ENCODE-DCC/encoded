@@ -1403,7 +1403,7 @@
     },
     "dalliance": {
       "version": "0.13.0",
-      "from": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require",
+      "from": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require-label",
       "resolved": "git://github.com/ENCODE-DCC/dalliance.git#1ec3f2de69c5782afc2d67b2fa4ad2753b0ecfb2",
       "dependencies": {
         "jszlib": {
