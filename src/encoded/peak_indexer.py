@@ -124,5 +124,6 @@ def file_index(request):
         for f in properties['files']:
             for k, v in _INDEXED_DATA[properties['assay_term_name']].items():
                 if k in f and f[k] in v:
-                    get_file(es, f)
-                    break
+                    if 'file_format' in f and f['file_format'] == 'bed':
+                        get_file(es, f)
+                        break
