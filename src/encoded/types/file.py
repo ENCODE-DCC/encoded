@@ -165,6 +165,43 @@ class File(Item):
             return "nt"
 
     @calculated_property(schema={
+        "title": "Biological replicates",
+        "type": "array",
+        "items": {
+            "title": "Biological replicate number",
+            "description": "The identifying number of each relevant biological replicate",
+            "type": "string"  # maybe we  want an integer
+        }
+    })
+    def biological_replicates(self, request, root, dataset=None, replicate=None, derived_from=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            replicate_biorep = replicate_obj.__json__(request).get('biological_replicate_number')
+            return [replicate_biorep]
+        elif derived_from is None:
+            return []
+        else:
+            new_array = []
+            for item in derived_from:
+                item_obj = traverse(root, item)['context']
+                item_dataset = item_obj.__json__(request).get('dataset')
+                item_replicate = item_obj.__json__(request).get('replicate')
+                item_bioreps = item_obj.__json__(request).get('biological_replicates')
+                item_derived_from = item_obj.__json__(request).get('derived_from')
+                if item_dataset == dataset:
+                    if item_bioreps is not None:
+                        new_array = new_array + item_bioreps
+                    elif item_replicate is not None:
+                        item_replicate_obj = traverse(root, item_replicate)['context']
+                        item_biorep = item_replicate_obj.__json__(request).get('biological_replicate_number')
+                        new_array.append(item_biorep)
+                    #elif item_derived_from is not None:
+                        # oh my this is recursive and I need help
+                        # I want to keep going up the tree
+
+            return set(new_array)
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "type": "string",
         "linkTo": "analysis_step_version"

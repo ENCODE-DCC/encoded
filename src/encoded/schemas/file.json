@@ -481,15 +481,6 @@
             "type": "string",
             "linkTo": "replicate"
         },
-        "calculated_biological_replicate": {
-            "title": "Biological replicate array",
-            "description": "The calculated biological replicate numbers for this file.",
-            "type": "array",
-            "items": {
-                    "comment": "Pooled replicates are represented as a list",
-                    "type": "string"
-                    }
-        },
         "assembly": {
             "title": "Mapping assembly",
             "description": "Genome assembly that files were mapped to.",
