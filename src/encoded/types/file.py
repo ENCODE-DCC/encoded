@@ -298,12 +298,14 @@ def download(context, request):
 
     proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
+    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
+
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         location = conn.generate_url(
             36*60*60, request.method, external['bucket'], external['key'],
-            force_http=proxy, response_headers={
+            force_http=proxy or use_download_proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
@@ -319,6 +321,11 @@ def download(context, request):
 
     if proxy:
         return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+
+    # We don't use X-Accel-Redirect here so that client behaviour is similar for
+    # both aws and non-aws users.
+    if use_download_proxy:
+        location = request.registry.settings.get('download_proxy', '') + str(location)
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)
