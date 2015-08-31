@@ -178,28 +178,17 @@ class File(Item):
             replicate_obj = traverse(root, replicate)['context']
             replicate_biorep = replicate_obj.__json__(request).get('biological_replicate_number')
             return [replicate_biorep]
-        elif derived_from is None:
-            return []
-        else:
+        elif derived_from is not None:
             new_array = []
             for item in derived_from:
                 item_obj = traverse(root, item)['context']
                 item_dataset = item_obj.__json__(request).get('dataset')
-                item_replicate = item_obj.__json__(request).get('replicate')
                 item_bioreps = item_obj.__json__(request).get('biological_replicates')
-                item_derived_from = item_obj.__json__(request).get('derived_from')
-                if item_dataset == dataset:
-                    if item_bioreps is not None:
-                        new_array = new_array + item_bioreps
-                    elif item_replicate is not None:
-                        item_replicate_obj = traverse(root, item_replicate)['context']
-                        item_biorep = item_replicate_obj.__json__(request).get('biological_replicate_number')
-                        new_array.append(item_biorep)
-                    #elif item_derived_from is not None:
-                        # oh my this is recursive and I need help
-                        # I want to keep going up the tree
-
-            return set(new_array)
+                if item_dataset == dataset and item_bioreps is not None:
+                    new_array.extend(item_bioreps)
+            return list(set(new_array))
+        else:
+            return []
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
