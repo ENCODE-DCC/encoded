@@ -116,7 +116,8 @@ def file_index(request):
         'replicates.library.biosample.donor.organism.scientific_name':
         [organism for organism in _SPECIES],
         'field': ['files.href', 'files.assembly', 'files.uuid',
-                  'files.output_type', 'files.file_type', 'assay_term_name'],
+                  'files.output_type', 'files.file_type',
+                  'files.file_format', 'assay_term_name'],
         'limit': ['all']
     }
     path = '/search/?%s' % urlencode(params, True)
