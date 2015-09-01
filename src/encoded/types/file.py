@@ -186,7 +186,7 @@ class File(Item):
         "items": {
             "title": "Biological replicate number",
             "description": "The identifying number of each relevant biological replicate",
-            "type": "string"  # maybe we  want an integer
+            "type": "integer",
         }
     })
     def biological_replicates(self, request, registry, root, replicate=None):
