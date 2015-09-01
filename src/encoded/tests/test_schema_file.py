@@ -2,43 +2,56 @@ import pytest
 
 
 @pytest.fixture
-def file_no_replicate(experiment, award, lab):
-    return {
-        'dataset': experiment['uuid'],
-        'lab': lab['uuid'],
-        'award': award['uuid'],
+def file_no_replicate(testapp, experiment, award, lab):
+    item = {
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
         'file_format': 'bam',
         'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
-        'output_type': 'alignments'
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
     }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def file_with_replicate(file_no_replicate, replicate):
-    item = file_no_replicate.copy()
-    item.update({
-        'replicate': replicate['uuid'],
-        'uuid': '46e82a90-49e6-4c33-afab-9ac90d89faf3'
-    })
-    return item
+def file_with_replicate(testapp, experiment, award, lab, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'md5sum': 'e003cd204df36d93dd070ef0712b8eed',
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
 @pytest.fixture
-def file_with_derived(file_no_replicate, file_with_replicate):
-    item = file_no_replicate.copy()
-    item.update({
-        'derived_from': [file_with_replicate['uuid']]
-    })
-    return item
+def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'file_format': 'bam',
+        'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
+        'output_type': 'alignments',
+        'status': 'in progress',  # avoid s3 upload codepath
+        'derived_from': [file_with_replicate['@id']],
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
 
 
-#def test_file_post(testapp, file_no_replicate):
-#    testapp.post_json('/file', file_no_replicate)
+def test_file_post(file_no_replicate):
+    assert file_no_replicate['biological_replicates'] == []
 
 
-#def test_file_with_replicate_post(testapp, file_with_replicate):
-#    testapp.post_json('/file', file_with_replicate)
+def test_file_with_replicate_post(file_with_replicate):
+    assert file_with_replicate['biological_replicates'] == [1]
 
 
-#def test_file_with_derived_from_post(testapp, file_with_derived):
-#    testapp.post_json('/file', file_with_derived)
+def test_file_with_derived_from_post(testapp, file_with_derived):
+    assert file_with_derived['biological_replicates'] == [1]
