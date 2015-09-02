@@ -13,7 +13,10 @@ from contentbase.interfaces import (
     BLOBS,
     DBSESSION
 )
-from contentbase.storage import PropertySheet
+from contentbase.storage import (
+    PropertySheet,
+    RDBBlobStorage,
+)
 
 EPILOG = __doc__
 
@@ -26,6 +29,7 @@ def run(app):
     manager.push({'request': dummy_request, 'registry': app.registry})
     session = app.registry[DBSESSION]()
     blob_storage = app.registry[BLOBS]
+    rdb_blobs = RDBBlobStorage(app.registry[DBSESSION])
 
     for sheet in session.query(PropertySheet).filter(PropertySheet.name == 'downloads'):
         # Copy the properties so sqlalchemy realizes it changed after it's mutated
@@ -34,7 +38,7 @@ def run(app):
         if 'bucket' not in download_meta:
             # Re-writing the blob while the S3BlobStorage is in use
             # will move it to S3.
-            data = blob_storage.get_blob(download_meta)
+            data = rdb_blobs.get_blob(download_meta)
             blob_id = download_meta.pop('blob_id')
             download_meta['md5sum'] = md5(data).hexdigest()
             blob_storage.store_blob(data, download_meta, blob_id=blob_id)

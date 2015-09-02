@@ -1,6 +1,7 @@
 from contentbase import (
     AfterModified,
     BeforeModified,
+    CONNECTION,
     calculated_property,
     collection,
     load_schema,
@@ -63,6 +64,21 @@ def external_creds(bucket, key, name, profile_name=None):
         'key': key,
         'upload_credentials': credentials,
     }
+
+
+def property_closure(request, propname, root_uuid):
+    # Must avoid cycles
+    conn = request.registry[CONNECTION]
+    seen = set()
+    remaining = {str(root_uuid)}
+    while remaining:
+        seen.update(remaining)
+        next_remaining = set()
+        for uuid in remaining:
+            obj = conn.get_by_uuid(uuid)
+            next_remaining.update(obj.__json__(request).get(propname, ()))
+        remaining = next_remaining - seen
+    return seen
 
 
 @collection(
@@ -163,6 +179,36 @@ class File(Item):
     def read_length_units(self, read_length=None):
         if read_length is not None:
             return "nt"
+
+    @calculated_property(schema={
+        "title": "Biological replicates",
+        "type": "array",
+        "items": {
+            "title": "Biological replicate number",
+            "description": "The identifying number of each relevant biological replicate",
+            "type": "integer",
+        }
+    })
+    def biological_replicates(self, request, registry, root, replicate=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
+            return [replicate_biorep]
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        bioreps = {
+            conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']
+            for uuid in replicates
+        }
+        return sorted(bioreps)
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
@@ -298,12 +344,14 @@ def download(context, request):
 
     proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
+    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
+
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         location = conn.generate_url(
             36*60*60, request.method, external['bucket'], external['key'],
-            force_http=proxy, response_headers={
+            force_http=proxy or use_download_proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
@@ -319,6 +367,11 @@ def download(context, request):
 
     if proxy:
         return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+
+    # We don't use X-Accel-Redirect here so that client behaviour is similar for
+    # both aws and non-aws users.
+    if use_download_proxy:
+        location = request.registry.settings.get('download_proxy', '') + str(location)
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

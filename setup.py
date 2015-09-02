@@ -18,6 +18,7 @@ requires = [
     'humanfriendly',
     'jsonschema',
     'loremipsum',
+    'netaddr',
     'passlib',
     'psutil',
     'pyramid',
