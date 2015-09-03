@@ -37,20 +37,23 @@ module.exports.GenomeBrowser = React.createClass({
                     var reg = region.split(':');
                     browser.chr = reg[0].substring(3, reg[0].length);
                     var positions = reg[1].split('-');
+                    for (var i = 0; i < positions.length; i++) {
+                      positions[i] = parseInt(positions[i].replace(/\,/g,""));
+                    }
                     if(positions.length > 1) {
-                        if (parseInt(positions[0]) > 10000) {
-                            browser.viewStart = parseInt(positions[0]) - 10000;
+                        if (positions[0] > 10000) {
+                            browser.viewStart = positions[0] - 10000;
                         } else {
                           browser.viewStart = 1;
                         }
-                        browser.viewEnd = parseInt(positions[1]) + 10000;
+                        browser.viewEnd = positions[1] + 10000;
                     } else {
-                      if (parseInt(positions[0]) > 10000) {
-                          browser.viewStart = parseInt(positions[0]) - 10000;
+                      if (positions[0] > 10000) {
+                          browser.viewStart = positions[0] - 10000;
                       } else {
                         browser.viewStart = 1;
                       }
-                      browser.viewEnd = parseInt(positions[0]) + 10000;
+                      browser.viewEnd = positions[0] + 10000;
                     }
                 }
                 browser.sources = [

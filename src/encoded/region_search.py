@@ -35,7 +35,10 @@ _FACETS = [
     ('assay_term_name', {'title': 'Assay'}),
     ('biosample_term_name', {'title': 'Biosample term'}),
     ('target.label', {'title': 'Target'}),
-    ('Organism', {'title': 'replicates.library.biosample.donor.organism.scientific_name'})
+    ('Organism', {
+        'title': 'replicates.library.biosample.donor.organism.scientific_name'
+    }),
+    ('Organ', {'title': 'replicates.library.biosample.organ_slims'})
 ]
 
 
@@ -83,6 +86,45 @@ def get_peak_query(start, end):
     }
 
 
+def sanitize_coordinates(term):
+    terms = term.split(':')
+    chromosome = terms[0]
+    positions = terms[1].split('-')
+    if len(positions) > 0 and len(positions) == 1:
+        start = end = positions[0].replace(',', '')
+    elif len(positions) == 2:
+        start = positions[0].replace(',', '')
+        end = positions[1].replace(',', '')
+    return chromosome, start, end
+
+
+def get_derived_files(results, file_uuids):
+    ''' Associate bed and bigBed files to draw tracks '''
+
+    new_results = []
+    for item in results:
+        item['highlight'] = []
+        new_files = []
+        for f in item['files']:
+            if 'file_format' not in f or f['file_format'] != 'bigBed':
+                continue
+            if 'derived_from' in f:
+                derived_files = []
+                for derived_file in f['derived_from']:
+                    if derived_file['uuid'] in file_uuids:
+                        derived_files.append(derived_file)
+                        item['highlight'].append({
+                            derived_file['accession']: f['accession']
+                        })
+                if len(derived_files):
+                    f['derived_from'] = derived_files
+                    new_files.append(f)
+        item['files'] = new_files
+        if len(item['files']) > 0:
+            new_results.append(item)
+    return new_results
+
+
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
     """
@@ -102,25 +144,18 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     term = request.params.get('region', '*')
     annotation = request.params.get('annotation', '*')
-    assembly = request.params.get('assembly', '*')
-    if assembly == '*':
-        assembly = 'hg19'
+    assembly = request.params.get('assembly', 'hg19')
     if term != '*' and assembly != '*':
-        terms = term.split(':')
-        if len(terms) < 2:
+        if len(term.split(':')) < 2:
             result['notification'] = 'Please enter valid coordinates'
             return result
-        chromosome = terms[0]
-        positions = terms[1].split('-')
-        if len(positions) > 0 and len(positions) == 1:
-            start = end = positions[0]
-        elif len(positions) == 2:
-            start = positions[0]
-            end = positions[1]
+        chromosome, start, end = sanitize_coordinates(term)
         try:
-            peak_results = es.search(body=get_peak_query(start, end), index=chromosome,
-                                     doc_type=assembly, size=99999)
-        except Exception as e:
+            peak_results = es.search(body=get_peak_query(start, end),
+                                     index=chromosome,
+                                     doc_type=assembly,
+                                     size=99999)
+        except Exception:
             result['notification'] = 'Please enter valid coordinates'
             return result
         file_uuids = []
@@ -143,31 +178,12 @@ def region_search(context, request):
             used_filters['files.uuid'] = file_uuids
             set_facets(_FACETS, used_filters, query, principals)
             es_results = es.search(
-                body=query,
-                index='encoded', doc_type='experiment', size=10
+                body=query, index='encoded', doc_type='experiment', size=10
             )
             load_results(request, es_results, result)
             load_facets(es_results, _FACETS, result)
             if len(result['@graph']):
-                new_results = []
-                for item in result['@graph']:
-                    item['highlight'] = []
-                    new_files = []
-                    for f in item['files']:
-                        if 'file_format' in f and f['file_format'] == 'bigBed':
-                            new_files.append(f)
-                        if 'derived_from' in f:
-                            derived_files = []
-                            for derived_file in f['derived_from']:
-                                if derived_file['uuid'] in file_uuids:
-                                    derived_files.append(derived_file)
-                                    item['highlight'].append(derived_file['uuid'])
-                            if len(derived_files):
-                                f['derived_from'] = derived_files
-                                new_files.append(f)
-                    item['files'] = new_files
-                    if len(item['files']) > 0:
-                        new_results.append(item)
+                new_results = get_derived_files(result['@graph'], file_uuids)
                 if len(new_results) > 0:
                     result['total'] = es_results['hits']['total']
                     result['notification'] = 'Success'
