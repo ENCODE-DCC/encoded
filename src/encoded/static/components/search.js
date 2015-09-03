@@ -358,6 +358,14 @@ var AuditMixin = audit.AuditMixin;
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
 
+            var highlights;
+            if(result.highlights)
+            {
+              hightlights = (result.highlights.map(function(highlight) {
+                return (highlight.bed + ' ' + highlight.bigBed);
+              }));
+            }
+
             return (
                 <li>
                     <div className="clearfix">
@@ -395,6 +403,14 @@ var AuditMixin = audit.AuditMixin;
 
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             <div><strong>Project: </strong>{result.award.project}</div>
+                            {result['highlights'] ?
+                                <div>
+                                  <strong>
+                                    Peak found in bed file(s) and equivalent bigBed file(s):
+                                  </strong>
+                                  {highlights}
+                                </div>
+                            : null}
                         </div>
                     </div>
                     <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />

@@ -124,7 +124,7 @@ def get_derived_files(results, file_uuids):
 
     new_results = []
     for item in results:
-        item['highlight'] = []
+        item['highlights'] = []
         new_files = []
         for f in item['files']:
             if 'file_format' not in f or f['file_format'] not in ['bigBed', 'bed']:
@@ -134,7 +134,7 @@ def get_derived_files(results, file_uuids):
                     # handling bed files derived from bigBed files
                     for derived_file in f['derived_from']:
                         if derived_file['file_format'] == 'bigBed':
-                            item['highlight'].append({
+                            item['highlights'].append({
                                 'bed': f['accession'],
                                 'bigBed': derived_file['accession']
                             })
@@ -143,7 +143,7 @@ def get_derived_files(results, file_uuids):
                     # Handing bigbed files derived from bed files
                     for derived_file in f['derived_from']:
                         if derived_file['uuid'] in file_uuids:
-                            item['highlight'].append({
+                            item['highlights'].append({
                                 'bed': derived_file['accession'],
                                 'bigBed': f['accession']
                             })
