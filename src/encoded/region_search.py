@@ -233,6 +233,8 @@ def region_search(context, request):
                 chromosome, start, end = get_rsid_coordinates(term)
             elif term.startswith('ens'):
                 chromosome, start, end = get_ensemblid_coordinates(term)
+            elif annotation != '*':
+                chromosome, start, end = get_annotation_coordinates(es, annotation)
             else:
                 result['notification'] = 'Please enter valid coordinates'
                 return result
