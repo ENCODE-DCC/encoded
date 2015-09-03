@@ -127,19 +127,27 @@ def get_derived_files(results, file_uuids):
         item['highlight'] = []
         new_files = []
         for f in item['files']:
-            if 'file_format' not in f or f['file_format'] != 'bigBed':
+            if 'file_format' not in f or f['file_format'] not in ['bigBed', 'bed']:
                 continue
             if 'derived_from' in f:
-                derived_files = []
-                for derived_file in f['derived_from']:
-                    if derived_file['uuid'] in file_uuids:
-                        derived_files.append(derived_file)
-                        item['highlight'].append({
-                            derived_file['accession']: f['accession']
-                        })
-                if len(derived_files):
-                    f['derived_from'] = derived_files
-                    new_files.append(f)
+                if f['uuid'] in file_uuids:
+                    # handling bed files derived from bigBed files
+                    for derived_file in f['derived_from']:
+                        if derived_file['file_format'] == 'bigBed':
+                            item['highlight'].append({
+                                'bed': f['accession'],
+                                'bigBed': derived_file['accession']
+                            })
+                            new_files.append(derived_file)
+                else:
+                    # Handing bigbed files derived from bed files
+                    for derived_file in f['derived_from']:
+                        if derived_file['uuid'] in file_uuids:
+                            item['highlight'].append({
+                                'bed': derived_file['accession'],
+                                'bigBed': f['accession']
+                            })
+                            new_files.append(f)
         item['files'] = new_files
         if len(item['files']) > 0:
             new_results.append(item)
