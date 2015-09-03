@@ -244,7 +244,7 @@ def region_search(context, request):
             elif annotation != '*':
                 chromosome, start, end = get_annotation_coordinates(es, annotation)
             else:
-                result['notification'] = 'Please enter valid coordinates'
+                result['notification'] = 'Please enter valid coordinates or select annotation'
                 return result
         else:
             chromosome, start, end = sanitize_coordinates(term)
@@ -258,6 +258,10 @@ def region_search(context, request):
     if chromosome == '' or start == '' or end == '':
         result['notification'] = 'No annotations found'
         return result
+    else:
+        result['region'] = '{chr}:{start}-{end}'.format(
+            chr=chromosome, start=start, end=end
+        )
 
     # Search for peaks for the coordinates we got
     try:
@@ -297,17 +301,9 @@ def region_search(context, request):
         if len(result['@graph']):
             new_results = get_derived_files(result['@graph'], file_uuids)
             if len(new_results) > 0:
-                result['total'] = es_results['hits']['total']
+                result['total'] = len(new_results)
                 result['notification'] = 'Success'
             result['@graph'] = new_results
-    params = request.query_string.split('&')
-    url = ''
-    for param in params:
-        if param.startswith('region'):
-            url = url + param + chromosome + ':' + str(start) + '-' + str(end)
-        else:
-            url = url + param
-    result['@id'] = '/region-search/?' + url
     return result
 
 

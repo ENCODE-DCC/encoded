@@ -535,7 +535,14 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + term;
+                var temp_href = this.props.searchBase;
+                var fragment;
+                if (temp_href.indexOf("#!") > -1) {
+                  var fragments = temp_href.split("#!")
+                  temp_href = fragments[0];
+                  fragment = fragments[1];
+                }
+                href = temp_href + field + '=' + term + "#!" + fragment;
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
