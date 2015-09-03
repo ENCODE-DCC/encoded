@@ -10,6 +10,7 @@ from .search import (
     load_facets
 )
 from collections import OrderedDict
+import requests
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
@@ -145,12 +146,62 @@ def get_derived_files(results, file_uuids):
     return new_results
 
 
+def assembly_mapper(location, species, input_assembly, output_assembly):
+    # All others
+    new_url = _ENSEMBL_URL + 'map/' + species + '/' \
+        + input_assembly + '/' + location + '/' + output_assembly \
+        + '/?content-type=application/json'
+    try:
+        new_response = requests.get(new_url).json()
+    except:
+        return('', '', '')
+    else:
+        if not len(new_response['mappings']):
+            return('', '', '')
+        data = new_response['mappings'][0]['mapped']
+        chromosome = 'chr' + data['seq_region_name']
+        start = data['start']
+        end = data['end']
+        return(chromosome, start, end)
+
+
 def get_rsid_coordinates(id):
-    pass
+    url = '{ensembl}variation/human/{id}?content-type=application/json'.format(
+        ensembl=_ENSEMBL_URL,
+        id=id
+    )
+    try:
+        new_response = requests.get(url).json()
+    except:
+        return('', '', '')
+    else:
+        if not len(new_response['mappings']):
+            return('', '', '')
+        for mapping in new_response['mappings']:
+            if mapping['assembly_name'] == 'GRCh38':
+                location = mapping['location']
+        return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
 
 def get_ensemblid_coordinates(id):
-    pass
+    url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
+        ensembl=_ENSEMBL_URL,
+        id=id
+    )
+    try:
+        response = requests.get(url).json()
+    except:
+        return('', '', '')
+    else:
+        if response['assembly_name'] == 'GRCh38':
+            location = '{chr}:{start}-{end}'.format(
+                chr=response['seq_region_name'],
+                start=response['start'],
+                end=response['end']
+            )
+        else:
+            return('', '', '')
+        return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
 
 @view_config(route_name='region-search', request_method='GET', permission='search')
@@ -177,10 +228,10 @@ def region_search(context, request):
     assembly = request.params.get('assembly', 'hg19')
     if term != '*' and assembly != '*':
         if len(term.split(':')) < 2:
-            term = term.lowercase()
+            term = term.lower()
             if term.startswith('rs'):
                 chromosome, start, end = get_rsid_coordinates(term)
-            elif term.startswith('ensembl'):
+            elif term.startswith('ens'):
                 chromosome, start, end = get_ensemblid_coordinates(term)
             else:
                 result['notification'] = 'Please enter valid coordinates'
@@ -189,12 +240,16 @@ def region_search(context, request):
             chromosome, start, end = sanitize_coordinates(term)
     elif annotation != '*':
         chromosome, start, end = get_annotation_coordinates(es, annotation)
-        if chromosome == '':
-            result['notification'] = 'Please enter valid coordinates'
-            return result
     else:
         result['notification'] = 'Please enter valid coordinates'
         return result
+
+    # Check if there are valid coordinates
+    if chromosome == '' or start == '' or end == '':
+        result['notification'] = 'No annotations found'
+        return result
+
+    # Search for peaks for the coordinates we got
     try:
         peak_results = es.search(body=get_peak_query(start, end),
                                  index=chromosome,
@@ -211,6 +266,8 @@ def region_search(context, request):
     result_fields = load_columns(request, ['experiment'], result)
     result_fields = result_fields.union(_REGION_FIELDS)
     result['notification'] = 'No results found'
+
+    # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
         query = get_filtered_query('', [], result_fields, principals)
         del query['query']
