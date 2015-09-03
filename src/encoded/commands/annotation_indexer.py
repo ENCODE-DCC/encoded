@@ -68,7 +68,6 @@ def human_annotations(es):
         r['name_suggest'] = {
             'input': [r['Approved Name'] + species,
                       r['Approved Symbol'] + species,
-                      r['Ensembl Gene ID'] + species,
                       r['HGNC ID'] + species],
             'payload': {'id': counter}
         }

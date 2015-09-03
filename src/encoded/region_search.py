@@ -11,6 +11,8 @@ from .search import (
 )
 from collections import OrderedDict
 
+_ENSEMBL_URL = 'http://rest.ensembl.org/'
+
 _ASSEMBLY_MAPPER = {
     'GRCh38': 'hg20',
     'GRCh37': 'hg19',
@@ -98,6 +100,24 @@ def sanitize_coordinates(term):
     return chromosome, start, end
 
 
+def get_annotation_coordinates(es, id):
+    ''' Gets annotation coordinates from annotation index in ES '''
+
+    chromosome, start, end  = '', '', ''
+    try:
+        es_results = es.get(index='annotations', doc_type='default', id=id)
+    except:
+        return chromosome, start, end
+    else:
+        annotations = es_results['_source']['annotations']
+        for annotation in annotations:
+            if annotation['assembly_name'] == 'GRCh37':
+                chromosome = 'chr%s' % (annotation['chromosome'])
+                start = annotation['start']
+                end = annotation['end']
+    return chromosome, start, end
+
+
 def get_derived_files(results, file_uuids):
     ''' Associate bed and bigBed files to draw tracks '''
 
@@ -125,6 +145,14 @@ def get_derived_files(results, file_uuids):
     return new_results
 
 
+def get_rsid_coordinates(id):
+    pass
+
+
+def get_ensemblid_coordinates(id):
+    pass
+
+
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
     """
@@ -143,56 +171,76 @@ def region_search(context, request):
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     term = request.params.get('region', '*')
+    if term == '':
+        term = '*'
     annotation = request.params.get('annotation', '*')
     assembly = request.params.get('assembly', 'hg19')
     if term != '*' and assembly != '*':
         if len(term.split(':')) < 2:
-            result['notification'] = 'Please enter valid coordinates'
-            return result
-        chromosome, start, end = sanitize_coordinates(term)
-        try:
-            peak_results = es.search(body=get_peak_query(start, end),
-                                     index=chromosome,
-                                     doc_type=assembly,
-                                     size=99999)
-        except Exception:
-            result['notification'] = 'Please enter valid coordinates'
-            return result
-        file_uuids = []
-        for hit in peak_results['hits']['hits']:
-            if hit['_id']not in file_uuids:
-                file_uuids.append(hit['_id'])
-        file_uuids = list(set(file_uuids))
-        result_fields = load_columns(request, ['experiment'], result)
-        result_fields = result_fields.union(_REGION_FIELDS)
-        result['notification'] = 'No results found'
-        if len(file_uuids):
-            query = get_filtered_query('', [], result_fields, principals)
-            del query['query']
-            query['filter']['and']['filters'].append({
-                'terms': {
-                    'embedded.files.uuid': file_uuids
-                }
-            })
-            used_filters = set_filters(request, query, result)
-            used_filters['files.uuid'] = file_uuids
-            set_facets(_FACETS, used_filters, query, principals)
-            es_results = es.search(
-                body=query, index='encoded', doc_type='experiment', size=10
-            )
-            load_results(request, es_results, result)
-            load_facets(es_results, _FACETS, result)
-            if len(result['@graph']):
-                new_results = get_derived_files(result['@graph'], file_uuids)
-                if len(new_results) > 0:
-                    result['total'] = es_results['hits']['total']
-                    result['notification'] = 'Success'
-                result['@graph'] = new_results
+            term = term.lowercase()
+            if term.startswith('rs'):
+                chromosome, start, end = get_rsid_coordinates(term)
+            elif term.startswith('ensembl'):
+                chromosome, start, end = get_ensemblid_coordinates(term)
+            else:
+                result['notification'] = 'Please enter valid coordinates'
+                return result
+        else:
+            chromosome, start, end = sanitize_coordinates(term)
     elif annotation != '*':
-        # got to handle gene names, IDs and other annotations here
-        result['notification'] = 'Annotations are not yet handled'
+        chromosome, start, end = get_annotation_coordinates(es, annotation)
+        if chromosome == '':
+            result['notification'] = 'Please enter valid coordinates'
+            return result
     else:
         result['notification'] = 'Please enter valid coordinates'
+        return result
+    try:
+        peak_results = es.search(body=get_peak_query(start, end),
+                                 index=chromosome,
+                                 doc_type=assembly,
+                                 size=99999)
+    except Exception:
+        result['notification'] = 'Please enter valid coordinates'
+        return result
+    file_uuids = []
+    for hit in peak_results['hits']['hits']:
+        if hit['_id']not in file_uuids:
+            file_uuids.append(hit['_id'])
+    file_uuids = list(set(file_uuids))
+    result_fields = load_columns(request, ['experiment'], result)
+    result_fields = result_fields.union(_REGION_FIELDS)
+    result['notification'] = 'No results found'
+    if len(file_uuids):
+        query = get_filtered_query('', [], result_fields, principals)
+        del query['query']
+        query['filter']['and']['filters'].append({
+            'terms': {
+                'embedded.files.uuid': file_uuids
+            }
+        })
+        used_filters = set_filters(request, query, result)
+        used_filters['files.uuid'] = file_uuids
+        set_facets(_FACETS, used_filters, query, principals)
+        es_results = es.search(
+            body=query, index='encoded', doc_type='experiment', size=10
+        )
+        load_results(request, es_results, result)
+        load_facets(es_results, _FACETS, result)
+        if len(result['@graph']):
+            new_results = get_derived_files(result['@graph'], file_uuids)
+            if len(new_results) > 0:
+                result['total'] = es_results['hits']['total']
+                result['notification'] = 'Success'
+            result['@graph'] = new_results
+    params = request.query_string.split('&')
+    url = ''
+    for param in params:
+        if param.startswith('region'):
+            url = url + param + chromosome + ':' + str(start) + '-' + str(end)
+        else:
+            url = url + param
+    result['@id'] = '/region-search/?' + url
     return result
 
 

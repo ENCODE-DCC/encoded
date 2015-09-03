@@ -48,7 +48,7 @@ var AutocompleteBox = React.createClass({
     }
 });
 
-var SearchForm = React.createClass({
+var AdvSearch = React.createClass({
     getInitialState: function() {
         return {
             disclosed: false,
@@ -66,6 +66,10 @@ var SearchForm = React.createClass({
         location_href: React.PropTypes.string
     },
 
+    handleDiscloseClick: function(e) {
+        this.setState({disclosed: !this.state.disclosed});
+    },
+
     handleChange: function(e) {
         this.newSearchTerm = e.target.value;
         this.context.onAutocompleteHiddenChange(false);
@@ -75,7 +79,7 @@ var SearchForm = React.createClass({
 
     handleAutocompleteClick: function(term, id, name) {
         var newTerms = {};
-        var inputNode = this.refs.regionid.getDOMNode();
+        var inputNode = this.refs.annotation.getDOMNode();
 
         inputNode.value = this.newSearchTerm = term;
         newTerms[name] = id;
@@ -109,19 +113,33 @@ var SearchForm = React.createClass({
         var context = this.props.context;
         var id = url.parse(this.context.location_href, true);
         var region = id.query['region'] || '';
+
         return (
             <div className="adv-search-form">
-                <form role="form" autoComplete="off" aria-labeledby="tab1">
-                    <div className="form-group col-md-4">
-                        <input type="hidden" name="genome" value="hg19" />
-                        {Object.keys(this.state.terms).map(function(key) {
-                            return <input type="hidden" name={key} value={this.state.terms[key]} />;
-                        }, this)}
-                        <input type="text" className="form-control" placeholder="Enter coordinates in the format: chrx:start-end"
-                            ref="region" name="region" defaultValue={region} key={region} />
-                    </div>
-                    <div className="form-group col-md-2">
-                        <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" />
+                <form id="panel1" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
+                    <div className="row">
+                        <div className="form-group col-md-8">
+                            <input type="hidden" name="genome" value="hg19" />
+                            {Object.keys(this.state.terms).map(function(key) {
+                                return <input type="hidden" name={key} value={this.state.terms[key]} />;
+                            }, this)}
+                            <input type="text" className="form-control" placeholder="Enter one of chrx:start-end, RSID, Ensembl ID"
+                                ref="region" name="region" key={region} />
+                            <label> -- OR -- </label>
+                            <input ref="annotation" type="text" className="form-control" onChange={this.handleChange}
+                                onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)}
+                                placeholder="Enter any one of Gene name, Symbol, Synonyms, Gene ID, HGNC ID" />
+                            {this.state.searchTerm ?
+                                <FetchedData loadingComplete={true}>
+                                    <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} hide={this.context.autocompleteHidden} handleClick={this.handleAutocompleteClick} />
+                                </FetchedData>
+                            : null}
+                        </div>
+                        <div className="form-group col-md-2">
+                            <label htmlFor="spacing">&nbsp;</label>
+                            <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" />
+                        </div>
                     </div>
                 </form>
             </div>
@@ -154,8 +172,8 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var facets = context['facets'];
         return (
           <div>
-              <h3>Search ENCODE data by region</h3>
-              <SearchForm {...this.props} />
+              <h2>Region search</h2>
+              <AdvSearch {...this.props} />
               {results.length ?
                   <div className="panel data-display main-panel">
                       <div className="row">
