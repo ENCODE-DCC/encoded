@@ -552,13 +552,13 @@ var AuditMixin = audit.AuditMixin;
                 href = selected;
             } else {
                 var temp_href = this.props.searchBase;
-                var fragment;
                 if (temp_href.indexOf("#!") > -1) {
                   var fragments = temp_href.split("#!")
-                  temp_href = fragments[0];
-                  fragment = fragments[1];
+                  href = fragments[0] + field + '=' + term + "#!" + fragment[1];
                 }
-                href = temp_href + field + '=' + term + "#!" + fragment;
+                else {
+                  href = temp_href + field + '=' + term
+                }
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>

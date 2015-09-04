@@ -210,6 +210,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                            onClick={this.onFilter}>Browser view</a>
                                   </span>
                               </h4>
+                              <hr />
                               <ul className="nav result-table" id="result-table">
                                   {results.map(function (result) {
                                       return Listing({context:result, columns: columns, key: result['@id']});
@@ -269,6 +270,7 @@ var BrowserView = module.exports.BrowserView = React.createClass({
                                        onClick={this.onFilter}>List view</a>
                                 </span>
                               </h4>
+                              <hr />
                               {results.map(function(result){
                                     files.push.apply(files, result['files'])
                               })}
