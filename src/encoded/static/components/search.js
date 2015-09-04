@@ -361,7 +361,7 @@ var AuditMixin = audit.AuditMixin;
             var highlights;
             if(result.highlights)
             {
-              hightlights = (result.highlights.map(function(highlight) {
+              highlights = (result.highlights.map(function(highlight) {
                 return (highlight.bed + ' ' + highlight.bigBed);
               }));
             }
