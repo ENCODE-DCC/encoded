@@ -180,13 +180,13 @@ def get_rsid_coordinates(id):
         id=id
     )
     try:
-        new_response = requests.get(url).json()
+        response = requests.get(url).json()
     except:
         return('', '', '')
     else:
-        if not len(new_response['mappings']):
+        if 'mappings' not in response:
             return('', '', '')
-        for mapping in new_response['mappings']:
+        for mapping in response['mappings']:
             if mapping['assembly_name'] == 'GRCh38':
                 location = mapping['location']
         return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
