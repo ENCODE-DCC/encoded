@@ -546,13 +546,17 @@ var AuditMixin = audit.AuditMixin;
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
             var selected = termSelected(term, field, filters);
+            var temp_href = this.context.location_href;
             var href;
             if (selected && !this.props.canDeselect) {
                 href = null;
             } else if (selected) {
-                href = selected;
+                if (temp_href.indexOf("#!") > -1) {
+                  href = selected + "#!browser"
+                } else {
+                  href = selected;
+                }
             } else {
-                var temp_href = this.context.location_href;
                 if (temp_href.indexOf("#!") > -1) {
                   href = this.props.searchBase + field + '=' + term + "#!browser"
                 } else {
