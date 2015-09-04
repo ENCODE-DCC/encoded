@@ -204,11 +204,10 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                           : null}
                                       </span>
                                     }
-                                  &nbsp;
                                   <span className="pull-right">
                                       <a rel="nofollow" className="btn btn-info btn-sm"
                                            href={searchBase + '#!browser'}
-                                           onClick={this.onFilter}>Browser view</a>
+                                           onClick={this.onFilter}>Browser view</a>&nbsp;
                                   </span>
                               </h4>
                               <hr />
