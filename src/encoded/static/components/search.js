@@ -530,6 +530,9 @@ var AuditMixin = audit.AuditMixin;
     }
 
     var Term = search.Term = React.createClass({
+        contextTypes: {
+            location_href: React.PropTypes.string
+        },
         render: function () {
             var filters = this.props.filters;
             var term = this.props.term['key'];
