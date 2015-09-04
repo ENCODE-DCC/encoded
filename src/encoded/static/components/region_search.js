@@ -191,7 +191,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                       <span className="pull-right">
                                           <a rel="nofollow" className="btn btn-info btn-sm"
                                                href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                               onClick={this.onFilter}>View All</a>
+                                               onClick={this.onFilter}>View All</a>&nbsp;
                                       </span>
                                   :
                                       <span>
@@ -199,7 +199,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                               <span className="pull-right">
                                                   <a className="btn btn-info btn-sm"
                                                      href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                     onClick={this.onFilter}>View 10</a>
+                                                     onClick={this.onFilter}>View 10</a>&nbsp;
                                               </span>
                                           : null}
                                       </span>

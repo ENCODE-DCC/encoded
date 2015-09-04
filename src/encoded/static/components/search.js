@@ -362,7 +362,7 @@ var AuditMixin = audit.AuditMixin;
             if(result.highlights)
             {
               highlights = (result.highlights.map(function(highlight) {
-                return (highlight.bed + ' ' + highlight.bigBed);
+                return (highlight.bed + ' - ' + highlight.bigBed);
               }));
             }
 
@@ -405,9 +405,7 @@ var AuditMixin = audit.AuditMixin;
                             <div><strong>Project: </strong>{result.award.project}</div>
                             {result['highlights'] ?
                                 <div>
-                                  <strong>
-                                    Peak found in bed file(s) and equivalent bigBed file(s):
-                                  </strong>
+                                  <strong>Peak found in bed file(s) and equivalent bigBed file(s): </strong>
                                   {highlights}
                                 </div>
                             : null}
@@ -551,13 +549,12 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                var temp_href = this.props.searchBase;
+                var temp_href = url.parse(this.context.location_href).search || '';
                 if (temp_href.indexOf("#!") > -1) {
                   var fragments = temp_href.split("#!")
                   href = fragments[0] + field + '=' + term + "#!" + fragment[1];
-                }
-                else {
-                  href = temp_href + field + '=' + term
+                } else {
+                  href = this.props.searchBase + field + '=' + term
                 }
             }
             return (
