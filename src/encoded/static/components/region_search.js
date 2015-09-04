@@ -171,6 +171,8 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
         var filters = context['filters'];
         var facets = context['facets'];
+        var total = context['total'];
+        console.log(context);
         return (
           <div>
               <h2>Region search</h2>
@@ -183,7 +185,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>Showing {results.length} of {context.total}</h4>
+                              <h4>Showing {results.length} of {total}</h4>
                               {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                   <span className="pull-right">
                                       <a rel="nofollow" className="btn btn-info btn-sm"
@@ -244,6 +246,7 @@ var BrowserView = module.exports.BrowserView = React.createClass({
         var trimmedSearchBase = searchBase.replace(/[\?|\#]!browser/, "");
         var filters = context['filters'];
         var facets = context['facets'];
+        var total = context['total'];
         return (
           <div>
               <h2>Region search</h2>
@@ -256,7 +259,7 @@ var BrowserView = module.exports.BrowserView = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>Showing 10 of {context.total}</h4>
+                              <h4>Showing 10 of {total}</h4>
                               <span className="pull-right">
                                   <a className="btn btn-info btn-sm"
                                      href={trimmedSearchBase}
