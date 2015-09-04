@@ -311,8 +311,8 @@ def region_search(context, request):
         if len(result['@graph']):
             new_results = get_derived_files(result['@graph'], file_uuids)
             if len(new_results) > 0:
-                result['total'] = len(new_results)
                 result['notification'] = 'Success'
+            result['total'] = es_results['hits']['total']
             result['@graph'] = new_results
     return result
 
