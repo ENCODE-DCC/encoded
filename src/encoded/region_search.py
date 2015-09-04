@@ -265,7 +265,6 @@ def region_search(context, request):
     else:
         result['notification'] = 'Please enter valid coordinates'
         return result
-    import pdb; pdb.set_trace()
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
         result['notification'] = 'No annotations found'
