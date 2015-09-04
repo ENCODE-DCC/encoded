@@ -37,10 +37,10 @@ _FACETS = [
     ('assay_term_name', {'title': 'Assay'}),
     ('biosample_term_name', {'title': 'Biosample term'}),
     ('target.label', {'title': 'Target'}),
-    ('Organism', {
-        'title': 'replicates.library.biosample.donor.organism.scientific_name'
+    ('replicates.library.biosample.donor.organism.scientific_name', {
+        'title': 'Organism'
     }),
-    ('Organ', {'title': 'replicates.library.biosample.organ_slims'})
+    ('organ_slims', {'title': 'Organ'})
 ]
 
 
