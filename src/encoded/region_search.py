@@ -31,7 +31,7 @@ _REGION_FIELDS = [
     'embedded.files.file_format',
     'embedded.files.assembly',
     'embedded.files.output_type',
-    'embedded.files.derived_from.uuid'
+    'embedded.files.derived_from'
 ]
 
 _FACETS = [
@@ -288,13 +288,13 @@ def region_search(context, request):
         if hit['_id']not in file_uuids:
             file_uuids.append(hit['_id'])
     file_uuids = list(set(file_uuids))
-    result_fields = load_columns(request, ['experiment'], result)
-    result_fields = result_fields.union(_REGION_FIELDS)
+    #result_fields = load_columns(request, ['experiment'], result)
+    #result_fields = result_fields.union(_REGION_FIELDS)
     result['notification'] = 'No results found'
 
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
-        query = get_filtered_query('', [], result_fields, principals)
+        query = get_filtered_query('', [], set(), principals)
         del query['query']
         query['filter']['and']['filters'].append({
             'terms': {
