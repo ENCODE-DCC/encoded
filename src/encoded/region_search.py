@@ -111,11 +111,13 @@ def get_annotation_coordinates(es, id):
     else:
         annotations = es_results['_source']['annotations']
         for annotation in annotations:
-            if annotation['assembly_name'] == 'GRCh37':
-                chromosome = 'chr%s' % (annotation['chromosome'])
-                start = annotation['start']
-                end = annotation['end']
-    return chromosome, start, end
+            if annotation['assembly_name'] == 'GRCh38':
+                location = '{chr}:{start}-{end}'.format(
+                    chr=annotation['chromosome'],
+                    start=annotation['start'],
+                    end=annotation['end']
+                )
+    return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
 
 
 def get_derived_files(results, file_uuids):
@@ -263,7 +265,7 @@ def region_search(context, request):
     else:
         result['notification'] = 'Please enter valid coordinates'
         return result
-
+    import pdb; pdb.set_trace()
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
         result['notification'] = 'No annotations found'
