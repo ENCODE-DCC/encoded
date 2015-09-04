@@ -554,8 +554,7 @@ var AuditMixin = audit.AuditMixin;
             } else {
                 var temp_href = this.context.location_href;
                 if (temp_href.indexOf("#!") > -1) {
-                  var fragments = temp_href.split("#!")
-                  href = fragments[0] + field + '=' + term + "#!" + fragments[1];
+                  href = this.props.searchBase + field + '=' + term + "#!browser"
                 } else {
                   href = this.props.searchBase + field + '=' + term
                 }
