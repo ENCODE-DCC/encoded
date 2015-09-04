@@ -2,7 +2,6 @@ from pyramid.view import view_config
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from .search import (
-    load_columns,
     load_results,
     set_filters,
     set_facets,
