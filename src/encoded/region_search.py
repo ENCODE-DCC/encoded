@@ -232,14 +232,14 @@ def region_search(context, request):
     term = request.params.get('region', '*')
 
     # handling limit
-    size = request.params.get('limit', 10)
+    size = request.params.get('limit', 25)
     if size in ('all', ''):
         size = 99999
     else:
         try:
             size = int(size)
         except ValueError:
-            size = 10
+            size = 25
     if term == '':
         term = '*'
 

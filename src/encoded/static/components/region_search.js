@@ -195,11 +195,11 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                       </span>
                                   :
                                       <span>
-                                          {results.length > 10 ?
+                                          {results.length > 25 ?
                                               <span className="pull-right">
                                                   <a className="btn btn-info btn-sm"
                                                      href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                     onClick={this.onFilter}>View 10</a>
+                                                     onClick={this.onFilter}>View 25</a>
                                               </span>
                                           : null}
                                       </span>
