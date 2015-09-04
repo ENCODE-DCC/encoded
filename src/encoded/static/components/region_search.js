@@ -185,29 +185,31 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>Showing {results.length} of {total}</h4>
-                              {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                              <h4>
+                                  Showing {results.length} of {total}
+                                  {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                      <span className="pull-right">
+                                          <a rel="nofollow" className="btn btn-info btn-sm"
+                                               href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                               onClick={this.onFilter}>View All</a>
+                                      </span>
+                                  :
+                                      <span>
+                                          {results.length > 10 ?
+                                              <span className="pull-right">
+                                                  <a className="btn btn-info btn-sm"
+                                                     href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
+                                                     onClick={this.onFilter}>View 10</a>
+                                              </span>
+                                          : null}
+                                      </span>
+                                    }
                                   <span className="pull-right">
                                       <a rel="nofollow" className="btn btn-info btn-sm"
-                                           href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                           onClick={this.onFilter}>View All</a>
+                                           href={searchBase + '#!browser'}
+                                           onClick={this.onFilter}>Browser view</a>
                                   </span>
-                              :
-                                  <span>
-                                      {results.length > 10 ?
-                                          <span className="pull-right">
-                                              <a className="btn btn-info btn-sm"
-                                                 href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                 onClick={this.onFilter}>View 10</a>
-                                          </span>
-                                      : null}
-                                  </span>
-                              }
-                              <span className="pull-right">
-                                  <a rel="nofollow" className="btn btn-info btn-sm"
-                                       href={searchBase + '#!browser'}
-                                       onClick={this.onFilter}>Browser view</a>
-                              </span>
+                              </h4>
                               <ul className="nav result-table" id="result-table">
                                   {results.map(function (result) {
                                       return Listing({context:result, columns: columns, key: result['@id']});
@@ -259,12 +261,14 @@ var BrowserView = module.exports.BrowserView = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>Showing 10 of {total}</h4>
-                              <span className="pull-right">
-                                  <a className="btn btn-info btn-sm"
-                                     href={trimmedSearchBase}
-                                     onClick={this.onFilter}>List view</a>
-                              </span>
+                              <h4>
+                                Showing {results.length} of {total}
+                                <span className="pull-right">
+                                    <a className="btn btn-info btn-sm"
+                                       href={trimmedSearchBase}
+                                       onClick={this.onFilter}>List view</a>
+                                </span>
+                              </h4>
                               {results.map(function(result){
                                     files.push.apply(files, result['files'])
                               })}
