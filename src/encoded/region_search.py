@@ -230,8 +230,19 @@ def region_search(context, request):
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     term = request.params.get('region', '*')
+
+    # handling limit
+    size = request.params.get('limit', 25)
+    if size in ('all', ''):
+        size = 99999
+    else:
+        try:
+            size = int(size)
+        except ValueError:
+            size = 10
     if term == '':
         term = '*'
+
     annotation = request.params.get('annotation', '*')
     assembly = request.params.get('assembly', 'hg19')
     if term != '*' and assembly != '*':
@@ -294,7 +305,7 @@ def region_search(context, request):
         used_filters['files.uuid'] = file_uuids
         set_facets(_FACETS, used_filters, query, principals)
         es_results = es.search(
-            body=query, index='encoded', doc_type='experiment', size=10
+            body=query, index='encoded', doc_type='experiment', size=size
         )
         load_results(request, es_results, result)
         load_facets(es_results, _FACETS, result)

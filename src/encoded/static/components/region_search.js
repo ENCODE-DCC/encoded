@@ -124,7 +124,7 @@ var AdvSearch = React.createClass({
                                 return <input type="hidden" name={key} value={this.state.terms[key]} />;
                             }, this)}
                             <input type="text" className="form-control" placeholder="Enter one of chrx:start-end, RSID, Ensembl ID"
-                                ref="region" name="region" key={region} />
+                                ref="region" name="region" default={region} key={region} />
                             <label> -- OR -- </label>
                             <input ref="annotation" type="text" className="form-control" onChange={this.handleChange}
                                 onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)}
@@ -168,6 +168,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var id = url.parse(this.context.location_href, true);
         var region = context['region'] || '';
         var searchBase = url.parse(this.context.location_href).search || '';
+        var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
         var filters = context['filters'];
         var facets = context['facets'];
         return (
@@ -183,6 +184,23 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
                               <h4>Showing {results.length} of {context.total}</h4>
+                              {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                  <span className="pull-right">
+                                      <a rel="nofollow" className="btn btn-info btn-sm"
+                                           href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
+                                           onClick={this.onFilter}>View All</a>
+                                  </span>
+                              :
+                                  <span>
+                                      {results.length > 10 ?
+                                          <span className="pull-right">
+                                              <a className="btn btn-info btn-sm"
+                                                 href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
+                                                 onClick={this.onFilter}>View 10</a>
+                                          </span>
+                                      : null}
+                                  </span>
+                              }
                               <span className="pull-right">
                                   <a rel="nofollow" className="btn btn-info btn-sm"
                                        href={searchBase + '#!browser'}
@@ -238,7 +256,7 @@ var BrowserView = module.exports.BrowserView = React.createClass({
                                   searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                           </div>
                           <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>Showing 30 of {context.total}</h4>
+                              <h4>Showing 10 of {context.total}</h4>
                               <span className="pull-right">
                                   <a className="btn btn-info btn-sm"
                                      href={trimmedSearchBase}
