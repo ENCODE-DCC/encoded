@@ -46,7 +46,7 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -64,7 +64,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
@@ -78,7 +78,7 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        raise AuditFailure('missing read_length', detail, level='ERROR')
 
 
 @audit_checker('file',

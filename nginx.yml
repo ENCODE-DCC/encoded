@@ -97,6 +97,10 @@ write_files:
             ssl_certificate         /etc/nginx/ssl/demo.encodedcc.org/server.chained.crt;
             ssl_certificate_key     /etc/nginx/ssl/demo.encodedcc.org/server.key;
             location / {
+                # Normalize duplicate slashes
+                if ($request ~ ^(GET|HEAD)\s([^?]*)//(.*)\sHTTP/[0-9.]+$) {
+                    return 301 $2/$3;
+                }
                 proxy_set_header  Host  $host;
                 proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
                 proxy_set_header  X-Forwarded-Proto  $scheme;
@@ -117,6 +121,10 @@ write_files:
             ssl_certificate         /etc/nginx/ssl/encodedcc.org/server.chained.crt;
             ssl_certificate_key     /etc/nginx/ssl/encodedcc.org/server.key;
             location / {
+                # Normalize duplicate slashes
+                if ($request ~ ^(GET|HEAD)\s([^?]*)//(.*)\sHTTP/[0-9.]+$) {
+                    return 301 $2/$3;
+                }
                 proxy_set_header  Host  $host;
                 proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
                 proxy_set_header  X-Forwarded-Proto  $scheme;

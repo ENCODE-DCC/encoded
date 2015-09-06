@@ -1,6 +1,6 @@
 {
     "description": "Schema for reporting the specific calculation of an quality metrics",
-    "id": "/profiles/encode2_chipseq_qc_metric.json",
+    "id": "/profiles/mad_cc_lrna_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run"],
@@ -11,6 +11,7 @@
         { "$ref": "quality_metric.json#/properties" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
    ],
@@ -26,7 +27,19 @@
             "type": "number",
             "description": ""
         },
-        "SPOT": {
+        "PBC1": {
+            "type": "number",
+            "description": ""
+        },
+        "PBC2": {
+            "type": "number",
+            "description": ""
+        },
+         "fragment length": {
+            "type": "number",
+            "description": ""
+        },
+       "NRF": {
             "type": "number",
             "description": ""
         }

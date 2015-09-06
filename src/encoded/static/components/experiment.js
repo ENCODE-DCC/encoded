@@ -12,6 +12,7 @@ var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
+var biosample = require('./biosample');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -26,6 +27,7 @@ var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
+var SingleTreatment = biosample.SingleTreatment;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -89,7 +91,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
-        var treatmentText = [];
+        var treatments;
         var synchText = [];
         var depletedIns = [];
         var mutatedGenes = {};
@@ -97,17 +99,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
-            treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
-                var singleTreatment = '';
-                if (treatment.concentration) {
-                    singleTreatment += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-                }
-                singleTreatment += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-                if (treatment.duration) {
-                    singleTreatment += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-                }
-                return singleTreatment;
-            }));
+            treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
             // Collect synchronizations
             if (biosample.synchronization) {
@@ -137,7 +129,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 cellCycles[biosample.phase] = true;
             }
         });
-        treatmentText = treatmentText && _.uniq(treatmentText);
         synchText = synchText && _.uniq(synchText);
         depletedIns = depletedIns && _.uniq(depletedIns);
         var mutatedGeneNames = Object.keys(mutatedGenes);
@@ -255,16 +246,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {treatmentText.length ?
+                        {treatments ?
                             <div data-test="treatment">
-                                <dt>Treatment</dt>
-                                <dd>
-                                    <ul>
-                                        {treatmentText.map(function (treatment) {
-                                            return (<li key={treatment}>{treatment}</li>);
-                                        })}
-                                    </ul>
-                                </dd>
+                                <dt>Treatments</dt>
+                                <dd>{BiosampleTreatments(biosamples)}</dd>
                             </div>
                         : null}
 
@@ -471,6 +456,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     }
     var platformKeys = Object.keys(platforms);
 
+    // If no platforms found in files, get the platform from the first replicate, if it has one
+    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
+        platforms[replicates[0].platform['@id']] = replicates[0].platform;
+    }
+
     return (
         <div className = "panel-assay">
             <h3>Assay details</h3>
@@ -623,6 +613,41 @@ var Replicate = module.exports.Replicate = function (props) {
 //globals.panel_views.register(Replicate, 'replicate');
 
 
+var BiosampleTreatments = function(biosamples) {
+    var treatmentTexts = [];
+
+    // Build up array of treatment strings
+    if (biosamples && biosamples.length) {
+        biosamples.forEach(function(biosample) {
+            if (biosample.treatments && biosample.treatments.length) {
+                biosample.treatments.forEach(function(treatment) {
+                    treatmentTexts.push(SingleTreatment(treatment));
+                });
+            }
+        });
+    }
+
+    // Component output of treatment strings
+    if (treatmentTexts.length) {
+        treatmentTexts = _.uniq(treatmentTexts);
+        return (
+            <span>
+                {treatmentTexts.map(function(treatments, i) {
+                    return (
+                        <span key={i}>
+                            {i > 0 ? <span>{','}<br /></span> : null}
+                            {treatments}
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+    return null;
+};
+
+
+
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
@@ -655,7 +680,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
-        console.log('FILEARRAY: %o %s', fileArray, include ? 'INC' : 'NOT');
 
         function getOrigFiles(files) {
             return files.map(function(file) { return allFiles[file['@id']]; });
@@ -665,23 +689,18 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var file = fileArray[i];
             var nextFileArray;
 
-            console.log('CONSIDERING: ' + (file && file.accession) + ':' + i + ':' + (file.removed ? 'REM' : 'NOT REM'));
             if (file) {
                 if (!file.removed) {
                     // This file gets included. Include everything it derives from
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        console.log('nonremoved: %o', file);
                         nextFileArray = getOrigFiles(file.derived_from);
-                        console.log('NEXTFILE 1: %o, %o, %o', nextFileArray, file, allFiles);
                         processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
                     file.removed = false;
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        console.log('removed: %o', file);
                         nextFileArray = getOrigFiles(file.derived_from);
-                        console.log('NEXTFILE 2: %o, %o, %o', nextFileArray, file, allFiles);
                         processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 }
@@ -715,6 +734,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return file['@id'];
     });
 
+    // We sometimes get repeated files in the file list; get rid of repeats.
     files = _(files).uniq(function(file) {
         return file.accession;
     });
@@ -734,7 +754,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Note whether *any* files have an analysis step
         var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
         stepExists = stepExists || !!fileAnalysisStep;
-
         // Keep track of all used pipeline use by each file's analysis step. Each key is a file @id.
         if (fileAnalysisStep) {
             allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
@@ -831,17 +850,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         processFiltering(combinedFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
 
-    console.log('start');
-    files.forEach(function(file) {
-        console.log(file.accession + ':' + file.removed);
-    });
-    if (context.contributing_files) {
-        context.contributing_files.forEach(function(file) {
-            console.log(file.accession + '::' + file.removed);
-        });
-    }
-    console.log('end');
-
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
         if (!(derivedFromFileId in allFiles)) {
@@ -927,10 +935,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (file.qc_metrics && file.qc_metrics.length && file.analysis_step) {
-                metricsInfo = file.qc_metrics.map(function(metric) {
+            if (file.quality_metrics && file.quality_metrics.length && file.analysis_step) {
+                metricsInfo = file.quality_metrics.map(function(metric) {
                     var qcId = 'qc:' + metric.uuid;
-                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-quality-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
                 });
             }
 

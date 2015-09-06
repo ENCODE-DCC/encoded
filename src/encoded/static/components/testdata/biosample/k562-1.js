@@ -21,7 +21,7 @@ module.exports = {
     "starting_amount": 100000.0,
     "starting_amount_units": "cells/ml",
     "submitted_by": require('../submitter'),
-    "treatments": [],
+    "treatments": [require('../treatment/CHEBI34730')],
     "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
     "uuid": "2ee883ef-b0dd-4305-a69b-d881de132795"
 };
