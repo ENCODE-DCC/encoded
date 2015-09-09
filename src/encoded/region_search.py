@@ -89,15 +89,21 @@ def get_peak_query(start, end):
 
 
 def sanitize_coordinates(term):
+    ''' Sanitize the input string and return coordinates '''
+
+    if term.count(':') != 1 or term.count('-') > 1:
+        return ('', '', '')
     terms = term.split(':')
     chromosome = terms[0]
     positions = terms[1].split('-')
-    if len(positions) > 0 and len(positions) == 1:
+    if len(positions) == 1:
         start = end = positions[0].replace(',', '')
     elif len(positions) == 2:
         start = positions[0].replace(',', '')
         end = positions[1].replace(',', '')
-    return chromosome, start, end
+    if start.isdigit() and end.isdigit():
+        return (chromosome, start, end)
+    return ('', '', '')
 
 
 def get_annotation_coordinates(es, id):
