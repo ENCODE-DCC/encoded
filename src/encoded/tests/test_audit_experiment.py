@@ -72,9 +72,19 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
-def histone_target(testapp, organism):
+def fly_organism(testapp):
     item = {
-        'organism': organism['uuid'],
+        'taxon_id': "7227",
+        'name': "dmelanogaster",
+        'scientific_name': "Drosophila melanogaster"
+    }
+    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def histone_target(testapp, fly_organism):
+    item = {
+        'organism': fly_organism['uuid'],
         'label': 'Histone',
         'investigated_as': ['histone modification']
     }
@@ -271,8 +281,8 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
 
 def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-    target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
+                                                'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -281,14 +291,14 @@ def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_repli
     assert any(error['category'] == 'not eligible antibody' for error in errors_list)
 
 
-def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2):
+def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, fly_organism, base_antibody_characterization1, base_antibody_characterization2):
     base_antibody['targets'] = [histone_target['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id'], 'characterization_reviews': [{'lane': 3, 'organism': fly_organism['uuid'], 'biosample_term_name': 'head', 'biosample_term_id': 'UBERON:0000033', 'biosample_type': 'tissue', 'lane_status': 'not compliant'}]})
     testapp.patch_json(base_antibody_characterization2['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-    histone_target['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067',
+                                                'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': histone_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -305,6 +315,7 @@ def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing biosample_type' for error in errors_list)
+
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
