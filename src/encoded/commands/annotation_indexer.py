@@ -79,7 +79,7 @@ def human_annotations(es):
 
         # Adding Entrez gene id if there exists one to autocomplete
         if 'Entrez Gene ID' in r:
-            if isinstance(r['Entrez Gene ID'], float):
+            if r['Entrez Gene ID'].isdigit():
                 r['name_suggest']['input'].append(
                     str(int(r['Entrez Gene ID'])) + ' (Gene ID)')
 
