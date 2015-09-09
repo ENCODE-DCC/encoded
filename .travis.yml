@@ -5,8 +5,12 @@ cache:
     - eggs
     - .npm
 addons:
-  apt_packages:
-  - graphviz
+  apt:
+    sources:
+      - elasticsearch-1.7
+    packages:
+      - elasticsearch
+      - graphviz
 env:
   global:
     - secure: |-
