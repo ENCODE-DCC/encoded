@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/files/ENCFF001REL/",
-    "@type": ["file", "item"],
+    "@type": ["File", "Item"],
     "accession": "ENCFF001REL",
     "alternate_accessions": [],
     "dataset": "/experiments/ENCSR000AES/",

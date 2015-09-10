@@ -1,8 +1,8 @@
 module.exports = {
     "@id": "/sources/aviva/",
     "@type": [  
-        "source",
-        "item"
+        "Source",
+        "Item"
     ],
     "status": "current",
     "uuid": "fa701215-07e6-4ffe-a8f4-20356d66f3e0",

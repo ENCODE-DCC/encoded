@@ -14,7 +14,7 @@ describe("Server rendering", function () {
     var home_url = "http://localhost/";
     var home = {
         "@id": "/",
-        "@type": ["portal"],
+        "@type": ["Portal"],
         "portal_title": "ENCODE",
         "title": "Home"
     };

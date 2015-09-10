@@ -1,9 +1,9 @@
 module.exports = {  
     "@id": "/antibody-characterizations/769cbffe-bb59-4d68-a073-367a6fdd0cef/",
     "@type":[  
-        "antibody_characterization",
-        "characterization",
-        "item"
+        "AntibodyCharacterization",
+        "Characterization",
+        "Item"
     ],
     "submitted_by": {},
     "documents":[],
