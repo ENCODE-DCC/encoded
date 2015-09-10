@@ -4,14 +4,14 @@ jest.dontMock('../registry');
 jest.dontMock('underscore');
 var Registry = require('../registry');
 
-var test_obj = {'@type': ['test', 'item']};
-var specific_obj = {'@type': ['specific', 'item']};
-var other_obj = {'@type': ['other']};
+var test_obj = {'@type': ['Test', 'Item']};
+var specific_obj = {'@type': ['Specific', 'Item']};
+var other_obj = {'@type': ['Other']};
 
 var views = [
-    {for_: 'item'},
-    {for_: 'specific'},
-    {name: 'named', for_: 'item'}
+    {for_: 'Item'},
+    {for_: 'Specific'},
+    {name: 'named', for_: 'Item'}
 ];
 
 var make_one = function () {
@@ -29,8 +29,8 @@ describe("The registry library", function() {
 
     it("is able to lookup views for item in order of specificity", function() {
         var registry = make_one();
-        expect(registry.lookup(test_obj).for_).toBe('item');
-        expect(registry.lookup(specific_obj).for_).toBe('specific');
+        expect(registry.lookup(test_obj).for_).toBe('Item');
+        expect(registry.lookup(specific_obj).for_).toBe('Specific');
     });
 
     it("is able to lookup named views for item", function() {
