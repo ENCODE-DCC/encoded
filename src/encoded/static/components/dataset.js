@@ -134,7 +134,7 @@ var Dataset = module.exports.Dataset = React.createClass({
     }
 });
 
-globals.content_views.register(Dataset, 'dataset');
+globals.content_views.register(Dataset, 'Dataset');
 
 
 var unreleased_files_url = module.exports.unreleased_files_url = function (context) {

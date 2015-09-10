@@ -67,4 +67,4 @@ var Target = module.exports.Target = React.createClass({
     }
 });
 
-globals.content_views.register(Target, 'target');
+globals.content_views.register(Target, 'Target');

@@ -31,7 +31,7 @@ var lookup_column = function (result, column) {
         }
     });
 
-    globals.content_views.register(Collection, 'collection');
+    globals.content_views.register(Collection, 'Collection');
 
 
     class Cell {

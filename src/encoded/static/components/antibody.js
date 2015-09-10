@@ -194,7 +194,7 @@ var Lot = module.exports.Lot = React.createClass({
     }
 });
 
-globals.content_views.register(Lot, 'antibody_lot');
+globals.content_views.register(Lot, 'AntibodyLot');
 
 
 var Documents = React.createClass({
@@ -342,7 +342,7 @@ var Characterization = module.exports.Characterization = React.createClass({
     }
 });
 
-globals.panel_views.register(Characterization, 'antibody_characterization');
+globals.panel_views.register(Characterization, 'AntibodyCharacterization');
 
 
 var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
@@ -413,4 +413,4 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     }
 });
 
-globals.panel_views.register(AntibodyStatus, 'antibody_lot');
+globals.panel_views.register(AntibodyStatus, 'AntibodyLot');

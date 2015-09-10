@@ -110,7 +110,7 @@ var Software = module.exports.Software = React.createClass({
         );
     }
 });
-globals.content_views.register(Software, 'software');
+globals.content_views.register(Software, 'Software');
 
 // Commenting out until pipelines are used.
 
@@ -199,4 +199,4 @@ var Listing = React.createClass({
         );
     }
 });
-globals.listing_views.register(Listing, 'software');
+globals.listing_views.register(Listing, 'Software');

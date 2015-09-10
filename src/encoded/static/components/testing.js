@@ -11,4 +11,4 @@ var TestingRenderErrorPanel = module.exports.TestingRenderErrorPanel = React.cre
     }
 });
 
-globals.panel_views.register(TestingRenderErrorPanel, 'testing_render_error');
+globals.panel_views.register(TestingRenderErrorPanel, 'TestingRenderError');

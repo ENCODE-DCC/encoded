@@ -368,7 +368,7 @@ var Form = module.exports.Form = React.createClass({
     },
 
     receive: function (data) {
-        var erred = (data['@type'] || []).indexOf('error') > -1;
+        var erred = (data['@type'] || []).indexOf('Error') > -1;
         if (erred) {
             return this.showErrors(data);
         } else {
