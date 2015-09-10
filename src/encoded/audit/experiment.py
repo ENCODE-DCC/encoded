@@ -457,11 +457,10 @@ def audit_experiment_antibody_eligible(value, system):
             continue
 
         biosample = lib['biosample']
-        #organism = biosample['organism']['name']
         organism = biosample['organism']['@id']
 
-# We only want the audit raised if the organism in lot reviews matches that of the biosample
-# and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
+        # We only want the audit raised if the organism in lot reviews matches that of the biosample
+        # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
 
         if 'histone modification' in target['investigated_as']:
             for lot_review in antibody['lot_reviews']:
@@ -470,7 +469,7 @@ def audit_experiment_antibody_eligible(value, system):
                         if organism == lot_organism:
                             detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
                             yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
-                            continue
+
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
