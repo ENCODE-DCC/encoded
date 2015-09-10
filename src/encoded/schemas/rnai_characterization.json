@@ -25,7 +25,7 @@
         "characterizes": {
             "title": "RNAi characterized",
             "comment": "See rnai.json for available identifiers.",
-            "linkTo": "rnai"
+            "linkTo": "RNAi"
         },
         "characterization_method": {
             "title": "Method",

@@ -83,7 +83,7 @@
                 "description": "Document that describes the construct.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "target_genomic_coordinates": {
@@ -131,7 +131,7 @@
                         "description": "Other member of the TALEN pair",
                         "comment": "See identifyingProperties in talen.json for valid identifiers",
                         "type": "string",
-                        "linkTo": "talen"
+                        "linkTo": "TALEN"
                     },
                     "edit_type": {
                         "title": "Edit type",

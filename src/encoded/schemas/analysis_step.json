@@ -216,7 +216,7 @@
                 "description": "A precusor step.",
                 "comment": "See analysis_step.json for available identifiers.",
                 "type": "string",
-                "linkTo": "analysis_step"
+                "linkTo": "AnalysisStep"
             }
         },
         "documents": {
@@ -228,7 +228,7 @@
                 "description": "A document that provides additional information about the pipeline.",
                 "type": "string",
                 "comment": "See document.json for available identifiers.",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         }
     }

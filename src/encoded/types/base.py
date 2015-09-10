@@ -195,7 +195,7 @@ def add(context, request):
         return {
             'name': 'add',
             'title': 'Add',
-            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!add'.format(item_uri=request.resource_path(context)),
         }
 
@@ -206,7 +206,7 @@ def edit(context, request):
         return {
             'name': 'edit',
             'title': 'Edit',
-            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!edit'.format(item_uri=request.resource_path(context)),
         }
 
@@ -217,6 +217,6 @@ def edit_json(context, request):
         return {
             'name': 'edit-json',
             'title': 'Edit JSON',
-            'profile': '/profiles/{context.item_type}.json'.format(context=context),
+            'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }
