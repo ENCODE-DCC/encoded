@@ -1,20 +1,13 @@
 import logging
 import requests
-from pyramid.paster import get_app
-from contentbase.elasticsearch import ELASTIC_SEARCH
-from elasticsearch.exceptions import (
-    RequestError,
-)
-
-index = 'annotations'
-doc_type = 'default'
+import json
 
 EPILOG = __doc__
+
 _HGNC_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/human/hgnc_dump_03-30-2015.tsv'
 _MOUSE_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/mouse/mouse.txt'
 _DM_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/drosophila/dm.txt'
 _CE_FILE = 'https://s3-us-west-1.amazonaws.com/encoded-build/annotations/worm/c_elegans.txt'
-_JSON_ANNOTATION_FILE = ''
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 _GENEINFO_URL = 'http://mygene.info/v2/gene/'
 
@@ -52,40 +45,47 @@ def human_annotations(es):
     Generates JSON from TSV files
     """
     species = ' (homo sapiens)'
-    counter = 0
     response = requests.get(_HGNC_FILE)
     header = []
+    annotations = []
     for row in response.content.decode('utf-8').split('\n'):
-        # skipping header row
-        if counter == 0:
+
+        # Populating headers and skipping header row
+        if len(header) == 0:
             header = row.split('\t')
-            counter += 1
             continue
+
         r = dict(zip(header, row.split('\t')))
+
+        # Ensembl ID is used to grab annotations for different references
         if r['Ensembl Gene ID'] is None:
             continue
-        r['annotations'] = []
+
+        # Annotations are keyed by Gene ID in ES
+        if 'Entrez Gene ID' not in r:
+            continue
+
+        # Assumption: payload.id and id should always be same
         r['name_suggest'] = {
             'input': [r['Approved Name'] + species,
-                      r['Approved Symbol'] + species,
-                      r['HGNC ID'] + species],
-            'payload': {'id': counter}
+                      r['Approved Symbol'] + species],
+            'payload': {'id': r['HGNC ID']}
         }
+        r['id'] = r['HGNC ID']
+
+        if r['Entrez Gene ID'].isdigit():
+            r['Entrez Gene ID'] = int(r['Entrez Gene ID'])
 
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
             synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
             r['name_suggest']['input'] = r['name_suggest']['input'] + synonyms
 
-        # Adding Entrez gene id if there exists one to autocomplete
-        if 'Entrez Gene ID' in r:
-            if r['Entrez Gene ID'].isdigit():
-                r['name_suggest']['input'].append(
-                    str(int(r['Entrez Gene ID'])) + ' (Gene ID)')
-
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
             id=r['Ensembl Gene ID'])
+
+        r['annotations'] = []
         try:
             response = requests.get(url).json()
         except:
@@ -110,92 +110,100 @@ def human_annotations(es):
                 assembly_mapper(location, response['species'],
                                 'GRCh38', 'GRCh37')
             r['annotations'].append(ann)
-        es.index(index=index, doc_type=doc_type, body=r, id=counter)
-        counter += 1
+        annotations.append(r)
+    return annotations
 
 
-def all_annotations(es):
+def mouse_annotations(mouse_file):
     """
-    Mouse, C Elegans, Drosophila annotations are handled here
+    Updates and get JSON file for mouse annotations
     """
-    urls = [_MOUSE_FILE, _DM_FILE, _CE_FILE]
-    counter = 0
-    for url in urls:
-        response = requests.get(_HGNC_FILE)
-        header = []
-        for row in response.content.decode('utf-8').split('\n'):
-            # skipping header row
-            if counter == 0:
-                header = row.split('\t')
-                counter += 1
-                continue
-            r = dict(zip(header, row.split('\t')))
-            if 'Chromosome Name' not in r:
-                continue
-            counter += 1
-            r['annotations'] = []
-            annotation = get_annotation()
-            if url == _MOUSE_FILE:
-                species = ' (mus musculus)'
-                r['name_suggest'] = {
-                    'input': [r['Ensembl Gene ID'] + species],
-                    'payload': {'id': counter}
-                }
-                if 'MGI symbol' in r and r['MGI symbol'] is not None:
-                    r['name_suggest']['input'].append(r['MGI symbol'] + species)
-                if 'MGI ID' in r and r['MGI ID'] is not None:
-                    r['name_suggest']['input'].append(r['MGI ID'] + species)
-                annotation['assembly_name'] = 'GRCm38'
-                mm9_url = '{geneinfo}{ensembl}?fields=genomic_pos_mm9'.format(
-                    geneinfo=_GENEINFO_URL,
-                    ensembl=r['Ensembl Gene ID']
-                )
-                try:
-                    response = requests.get(mm9_url).json()
-                except:
-                    continue
-                else:
-                    if 'genomic_pos_mm9' in response and isinstance(response['genomic_pos_mm9'], dict):
-                            ann = get_annotation()
-                            ann['assembly_name'] = 'GRCm37'
-                            ann['chromosome'] = response['genomic_pos_mm9']['chr']
-                            ann['start'] = response['genomic_pos_mm9']['start']
-                            ann['end'] = response['genomic_pos_mm9']['end']
-                            r['annotations'].append(ann)
-            elif url == _DM_FILE:
-                species = ' (drosophila melanogaster)'
-                r['name_suggest'] = {
-                    'input': [r['Associated Gene Name'] + species,
-                              r['Ensembl Gene ID'] + species],
-                    'payload': {'id': counter}
-                }
-                if 'Ensembl Gene ID.1' in r:
-                    r['name_suggest']['input'].append(r['Ensembl Gene ID.1'] + species)
-                annotation['assembly_name'] = 'BDGP6'
-            else:
-                species = ' (c. elegans)'
-                r['name_suggest'] = {
-                    'input': [r['Associated Gene Name'] + species,
-                              r['Ensembl Gene ID'] + species],
-                    'payload': {'id': counter}
-                }
-                annotation['assembly_name'] = 'WBcel235'
+    annotations = []
+    response = requests.get(mouse_file)
+    header = []
+    for row in response.content.decode('utf-8').split('\n'):
+        # skipping header row
+        if len(header) == 0:
+            header = row.split('\t')
+            continue
 
-            # Adding Entrez gene id if there exists one to autocomplete
-            if 'EntrezGene ID' in r:
-                if isinstance(r['EntrezGene ID'], float):
-                    r['name_suggest']['input'].append(str(int(r['EntrezGene ID'])) + ' (Gene ID)')
+        r = dict(zip(header, row.split('\t')))
+        if 'Chromosome Name' not in r:
+            continue
 
-            annotation['chromosome'] = r['Chromosome Name']
-            annotation['start'] = r['Gene Start (bp)']
-            annotation['end'] = r['Gene End (bp)']
-            r['annotations'].append(annotation)
-            del r['Chromosome Name'], r['Gene Start (bp)'], r['Gene End (bp)']
-            es.index(index=index, doc_type=doc_type, body=r, id=counter)
+        r['annotations'] = []
+        species = ' (mus musculus)'
+        r['name_suggest'] = {
+            'input': [],
+            'payload': {'id': r['Ensembl Gene ID']}
+        }
+        r['id'] = r['Ensembl Gene ID']
+
+        if 'MGI symbol' in r and r['MGI symbol'] is not None:
+            r['name_suggest']['input'].append(r['MGI symbol'] + species)
+
+        r['annotations'].append({
+            'assembly_name': 'GRCm38',
+            'chromosome': r['Chromosome Name'],
+            'start': r['Gene Start (bp)'],
+            'end': r['Gene End (bp)']
+        })
+
+        mm9_url = '{geneinfo}{ensembl}?fields=genomic_pos_mm9'.format(
+            geneinfo=_GENEINFO_URL,
+            ensembl=r['Ensembl Gene ID']
+        )
+        try:
+            response = requests.get(mm9_url).json()
+        except:
+            continue
+        else:
+            if 'genomic_pos_mm9' in response and isinstance(response['genomic_pos_mm9'], dict):
+                    ann = get_annotation()
+                    ann['assembly_name'] = 'GRCm37'
+                    ann['chromosome'] = response['genomic_pos_mm9']['chr']
+                    ann['start'] = response['genomic_pos_mm9']['start']
+                    ann['end'] = response['genomic_pos_mm9']['end']
+                    r['annotations'].append(ann)
+        annotations.append(r)
+    return annotations
 
 
-def create_index(es):
-    ''' Create annotations index '''
+def other_annotations(file, species, assembly):
+    """
+    Generates C. elegans and drosophila annotaions
+    """
+    annotations = []
+    response = requests.get(file)
+    header = []
+    for row in response.content.decode('utf-8').split('\n'):
+        # skipping header row
+        if len(header) == 0:
+            header = row.split('\t')
+            continue
+
+        r = dict(zip(header, row.split('\t')))
+        if 'Chromosome Name' not in r or 'Ensembl Gene ID' not in r:
+            continue
+
+        r['annotations'] = []
+        annotation = get_annotation()
+
+        r['name_suggest'] = {
+            'input': [r['Associated Gene Name'] + species],
+            'payload': {'id': r['Ensembl Gene ID']}
+        }
+        r['id'] = r['Ensembl Gene ID']
+        annotation['assembly_name'] = assembly
+        annotation['chromosome'] = r['Chromosome Name']
+        annotation['start'] = r['Gene Start (bp)']
+        annotation['end'] = r['Gene End (bp)']
+        r['annotations'].append(annotation)
+        annotations.append(r)
+    return annotations
+
+
+'''def create_index(es):
     try:
         es.indices.create(index=index)
     except RequestError:
@@ -221,7 +229,7 @@ def create_index(es):
     except:
         print("Could not create mapping for the collection %s", doc_type)
     else:
-        es.indices.refresh(index=index)
+        es.indices.refresh(index=index)'''
 
 
 def main():
@@ -235,25 +243,19 @@ def main():
         description="Index data in Elastic Search", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--app-name', help="Pyramid app name in configfile")
-    parser.add_argument('--reload-json', help="Generates JSON files if 'true' \
-    is supplied.", action='store_true', default=False)
-    parser.add_argument('config_uri', help="path to configfile")
-    args = parser.parse_args()
-
     logging.basicConfig()
-    app = args.app_name
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
-    app = get_app(args.config_uri, args.app_name)
-    es = app.registry[ELASTIC_SEARCH]
-    try:
-        create_index(es)
-    except:
-        pass
-    else:
-        human_annotations(es)
+
+    annotations = other_annotations(_DM_FILE, ' (D. melanogaster)', 'BDGP6') +\
+        other_annotations(_CE_FILE, ' (C. elegans)', 'WBcel235') + \
+        mouse_annotations(_MOUSE_FILE) + \
+        human_annotations(_HGNC_FILE)
+
+    # Create annotations JSON file
+    with open('annotations.json', 'w') as outfile:
+        json.dump(annotations, outfile)
 
 
 if __name__ == '__main__':
