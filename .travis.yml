@@ -78,4 +78,5 @@ after_script:
         "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID" > /dev/null
       echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
       kill $(cat "$SC_PIDFILE")
+      wait $(cat "$SC_PIDFILE")
     fi

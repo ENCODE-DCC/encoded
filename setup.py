@@ -18,6 +18,7 @@ requires = [
     'humanfriendly',
     'jsonschema',
     'loremipsum',
+    'netaddr',
     'passlib',
     'psutil',
     'pyramid',
@@ -46,6 +47,7 @@ if sys.version_info.major == 2:
 tests_require = [
     'pytest>=2.4.0',
     'pytest-bdd',
+    'pytest-mock',
     'pytest-splinter',
 ]
 
@@ -87,6 +89,7 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
+        migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
 
         [paste.app_factory]
         main = encoded:main
