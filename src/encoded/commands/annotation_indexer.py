@@ -237,17 +237,11 @@ def main():
     Get annotations from multiple sources
     This helps to implement autocomplete for region search
     '''
-
     import argparse
     parser = argparse.ArgumentParser(
-        description="Index data in Elastic Search", epilog=EPILOG,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description="Generate annotations JSON file for multiple species",
+        epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    logging.basicConfig()
-
-    # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
-
     annotations = other_annotations(_DM_FILE, ' (D. melanogaster)', 'BDGP6') +\
         other_annotations(_CE_FILE, ' (C. elegans)', 'WBcel235') + \
         mouse_annotations(_MOUSE_FILE) + \
