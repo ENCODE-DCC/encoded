@@ -1,6 +1,6 @@
 #cloud-config
 
-# $ aws ec2 run-instances --user-data file://nginx.yml --security-groups "ssh-dns" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2
+# $ aws --profile production ec2 run-instances --user-data file://nginx.yml --security-groups "ssh-http-https" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2 --network-interfaces '[{"DeviceIndex":1,"NetworkInterfaceId":"eni-9fbe3dc4"},{"DeviceIndex":2,"NetworkInterfaceId":"eni-f1bf3caa"}]'
 # Must copy private ssl keys manually to /etc/nginx/ssl/*/server.key then restart nginx.
 # Choose instance size based on network performance required.
 
@@ -16,13 +16,24 @@ output:
 package_upgrade: true
 
 packages:
-- nginx
+- curl
+- dnsmasq
+- nginx-full
 - ntp
 - unattended-upgrades
 - update-notifier-common
 
 power_state:
   mode: reboot
+
+runcmd:
+- mkdir -p /etc/nginx/ssl
+#- tar -zxf ssl.tgz --directory /etc/nginx/ssl
+# Generate a new (takes a few minutes.)
+- openssl dhparam 2048 -out /etc/nginx/ssl/dhparam.pem
+- chmod 600 /etc/nginx/ssl/dhparam.pem
+- curl -o /etc/nginx/nginx.conf https://raw.githubusercontent.com/ENCODE-DCC/encoded/master/encode-proxy-nginx.conf
+- sed -i.bak s/171.67.205./172.31.0./g /etc/nginx/nginx.conf
 
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
@@ -37,6 +48,20 @@ write_files:
     };
     Unattended-Upgrade::Automatic-Reboot "true";
 
+- path: /etc/network/interfaces.d/eth1.cfg
+  content: |
+    auto eth1
+    iface eth1 inet dhcp
+      post-up ip rule add from 172.31.0.70 lookup 201
+      post-up ip route add default via 172.31.0.1 dev eth1 table 201
+
+- path: /etc/network/interfaces.d/eth2.cfg
+  content: |
+    auto eth2
+    iface eth2 inet dhcp
+      post-up ip rule add from 172.31.0.78 lookup 202
+      post-up ip route add default via 172.31.0.1 dev eth2 table 202
+
 - path: /etc/motd
   content: |
     #########################################
@@ -44,271 +69,6 @@ write_files:
     ##  For demo instances:                ##
     ##  ssh <name>.instance.encodedcc.org  ##
     #########################################
-
-- path: /etc/nginx/nginx.conf
-  content: |
-    user www-data;
-    worker_processes  auto;
-    worker_rlimit_nofile 8192;
-    events {
-        worker_connections  2048;
-    }
-    http {
-        resolver 172.31.0.2;  # AWS VPC DNS Server
-        resolver_timeout 5s;
-        include  mime.types;
-        client_max_body_size 500m;
-        default_type  application/octet-stream;
-        keepalive_timeout  65;
-        ssl_session_cache  shared:SSL:10m;
-        ssl_session_timeout  10m;
-
-        proxy_buffers 8 16k;
-        proxy_send_timeout    5m;
-        proxy_read_timeout    5m;
-        send_timeout    5m;
-
-        upstream test {
-            server v28-test.instance.encodedcc.org;
-            keepalive 10;
-        }
-
-        server {
-            listen 80;
-            location = /robots.txt {
-                proxy_set_header  Host  $host;
-                proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
-                proxy_set_header  X-Forwarded-Proto  $scheme;
-                proxy_pass  http://app;
-                proxy_http_version  1.1;
-                proxy_set_header  Connection  "";
-            }
-            location / {
-                if ($request_method !~ ^(GET)|(HEAD)$) {
-                    return 405;
-                }
-                return  301  https://$host$request_uri;
-            }
-        }
-
-        server {
-            listen 443 ssl spdy;
-            server_name ~^(?<servername>[^.]+)\.demo\.encodedcc\.org$;
-            ssl_certificate         /etc/nginx/ssl/demo.encodedcc.org/server.chained.crt;
-            ssl_certificate_key     /etc/nginx/ssl/demo.encodedcc.org/server.key;
-            location / {
-                # Normalize duplicate slashes
-                if ($request ~ ^(GET|HEAD)\s([^?]*)//(.*)\sHTTP/[0-9.]+$) {
-                    return 301 $2/$3;
-                }
-                proxy_set_header  Host  $host;
-                proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
-                proxy_set_header  X-Forwarded-Proto  $scheme;
-                proxy_pass  http://$servername.instance.encodedcc.org;
-                proxy_http_version  1.1;
-                proxy_set_header  Connection  "";
-            }
-            location ~ ^/_proxy/(.*)$ {
-                internal;
-                proxy_buffering off;
-                proxy_pass $1$is_args$args;
-            }
-        }
-
-        server {
-            listen 443 ssl spdy;
-            server_name test.encodedcc.org;
-            ssl_certificate         /etc/nginx/ssl/encodedcc.org/server.chained.crt;
-            ssl_certificate_key     /etc/nginx/ssl/encodedcc.org/server.key;
-            location / {
-                # Normalize duplicate slashes
-                if ($request ~ ^(GET|HEAD)\s([^?]*)//(.*)\sHTTP/[0-9.]+$) {
-                    return 301 $2/$3;
-                }
-                proxy_set_header  Host  $host;
-                proxy_set_header  X-Forwarded-For    $proxy_add_x_forwarded_for;
-                proxy_set_header  X-Forwarded-Proto  $scheme;
-                proxy_pass  http://test;
-                proxy_http_version  1.1;
-                proxy_set_header  Connection  "";
-            }
-            location ~ ^/_proxy/(.*)$ {
-                internal;
-                proxy_buffering off;
-                proxy_pass $1$is_args$args;
-            }
-        }
-
-    }
-
-- path: /etc/nginx/ssl/demo.encodedcc.org/server.chained.crt
-  content: |
-    -----BEGIN CERTIFICATE-----
-    MIIE5jCCA86gAwIBAgISESHecAX+oi4PvfklhA2E8eZuMA0GCSqGSIb3DQEBCwUA
-    MEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSIwIAYD
-    VQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcyMB4XDTE1MDUyNzIwMTIwM1oX
-    DTE4MDIyMDAwMjI1MlowQjEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRh
-    dGVkMR0wGwYDVQQDDBQqLmRlbW8uZW5jb2RlZGNjLm9yZzCCASIwDQYJKoZIhvcN
-    AQEBBQADggEPADCCAQoCggEBANyvGHCknjVOF5j6x+gYgXKNE9+BUSn7N7Mlzm/2
-    LhdAxPtlaqM9AjAUjlFxXfUdvKHbHYtWH0xbOm60L0MOrplf3Gl7PItoW47sZCmf
-    lqx8Sx6dBeuxommD+9fUDv0D9cEEwGFJkuAY7r8dLo9mxJqxWmQSNt5hD6sgl5/w
-    iADFKMQln5Wv5Mqs2e/Klh9uKx6cpLE1HTjgP2BxSHlGREJLOomd5ydmLkZeJziM
-    7DyNdZMdsA/5mKrba+qozngtjWS7emSbVWjPhhu2hq04wbKUWpxcaz1qGkigiKUZ
-    GlGTx0W8NFUebnmnhjKcDRIhGU8dQZckGyP1CZ8DJX55DrUCAwEAAaOCAcowggHG
-    MA4GA1UdDwEB/wQEAwIFoDBJBgNVHSAEQjBAMD4GBmeBDAECATA0MDIGCCsGAQUF
-    BwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAzBgNV
-    HREELDAqghQqLmRlbW8uZW5jb2RlZGNjLm9yZ4ISZGVtby5lbmNvZGVkY2Mub3Jn
-    MAkGA1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMD4GA1Ud
-    HwQ3MDUwM6AxoC+GLWh0dHA6Ly9jcmwyLmFscGhhc3NsLmNvbS9ncy9nc2FscGhh
-    c2hhMmcyLmNybDCBiQYIKwYBBQUHAQEEfTB7MEIGCCsGAQUFBzAChjZodHRwOi8v
-    c2VjdXJlMi5hbHBoYXNzbC5jb20vY2FjZXJ0L2dzYWxwaGFzaGEyZzJyMS5jcnQw
-    NQYIKwYBBQUHMAGGKWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc2FscGhh
-    c2hhMmcyMB0GA1UdDgQWBBS47gdWM8IejNTRv6adDhBwUYXyyTAfBgNVHSMEGDAW
-    gBT1zdU8CFD5ak86t5faVoPmadJo9zANBgkqhkiG9w0BAQsFAAOCAQEACHHUpNQK
-    lxhjpAG0Xggygx0sjor/D617zK4fW9icKHrqMmCJ/lE1YE3L6ryz7k4DRJNCRYCQ
-    AbnxGVcmutCw8Eo2oQFFtl6X7YBjCgToA9ox9Ep7CpJXeXIQ0GdEj4OicfHI8YCz
-    DZy1S1D1dRBATtGIwSDiBYSEL6L09pH7kw3MpDemtq8SbssFwYDqLKybW19wvb5Q
-    9XvUPHu0DQ47p7s5GLRxveQP2cYwkgR3vFmZFTQWsJjqnVxBZZscJpUuR+2ZjSJ0
-    VkRronsQ4oQFpHI+MJw8/eOhmB7npwS/QTjfQskgeYdtyOttWV9PjC5rhW3if2tG
-    1DiCx6GQEEKZew==
-    -----END CERTIFICATE-----
-    -----BEGIN CERTIFICATE-----
-    MIIETTCCAzWgAwIBAgILBAAAAAABRE7wNjEwDQYJKoZIhvcNAQELBQAwVzELMAkG
-    A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
-    b3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xNDAyMjAxMDAw
-    MDBaFw0yNDAyMjAxMDAwMDBaMEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
-    YWxTaWduIG52LXNhMSIwIAYDVQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcy
-    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2gHs5OxzYPt+j2q3xhfj
-    kmQy1KwA2aIPue3ua4qGypJn2XTXXUcCPI9A1p5tFM3D2ik5pw8FCmiiZhoexLKL
-    dljlq10dj0CzOYvvHoN9ItDjqQAu7FPPYhmFRChMwCfLew7sEGQAEKQFzKByvkFs
-    MVtI5LHsuSPrVU3QfWJKpbSlpFmFxSWRpv6mCZ8GEG2PgQxkQF5zAJrgLmWYVBAA
-    cJjI4e00X9icxw3A1iNZRfz+VXqG7pRgIvGu0eZVRvaZxRsIdF+ssGSEj4k4HKGn
-    kCFPAm694GFn1PhChw8K98kEbSqpL+9Cpd/do1PbmB6B+Zpye1reTz5/olig4het
-    ZwIDAQABo4IBIzCCAR8wDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8C
-    AQAwHQYDVR0OBBYEFPXN1TwIUPlqTzq3l9pWg+Zp0mj3MEUGA1UdIAQ+MDwwOgYE
-    VR0gADAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3dy5hbHBoYXNzbC5jb20vcmVw
-    b3NpdG9yeS8wMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5nbG9iYWxzaWdu
-    Lm5ldC9yb290LmNybDA9BggrBgEFBQcBAQQxMC8wLQYIKwYBBQUHMAGGIWh0dHA6
-    Ly9vY3NwLmdsb2JhbHNpZ24uY29tL3Jvb3RyMTAfBgNVHSMEGDAWgBRge2YaRQ2X
-    yolQL30EzTSo//z9SzANBgkqhkiG9w0BAQsFAAOCAQEAYEBoFkfnFo3bXKFWKsv0
-    XJuwHqJL9csCP/gLofKnQtS3TOvjZoDzJUN4LhsXVgdSGMvRqOzm+3M+pGKMgLTS
-    xRJzo9P6Aji+Yz2EuJnB8br3n8NA0VgYU8Fi3a8YQn80TsVD1XGwMADH45CuP1eG
-    l87qDBKOInDjZqdUfy4oy9RU0LMeYmcI+Sfhy+NmuCQbiWqJRGXy2UzSWByMTsCV
-    odTvZy84IOgu/5ZR8LrYPZJwR2UcnnNytGAMXOLRc3bgr07i5TelRS+KIz6HxzDm
-    MTh89N1SyvNTBCVXVmaU6Avu5gMUTu79bZRknl7OedSyps9AsUSoPocZXun4IRZZUw==
-    -----END CERTIFICATE-----
-
-- path: /etc/nginx/ssl/encodedcc.org/server.chained.crt
-  content: |
-    -----BEGIN CERTIFICATE-----
-    MIIEqjCCA5KgAwIBAgISESFH862qJGBBFdSR1LumupMAMA0GCSqGSIb3DQEBBQUA
-    MC4xETAPBgNVBAoTCEFscGhhU1NMMRkwFwYDVQQDExBBbHBoYVNTTCBDQSAtIEcy
-    MB4XDTEzMDYwMzIzNTcxNVoXDTE2MDYwMzIzNTcxNVowPTEhMB8GA1UECxMYRG9t
-    YWluIENvbnRyb2wgVmFsaWRhdGVkMRgwFgYDVQQDDA8qLmVuY29kZWRjYy5vcmcw
-    ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDW0QBYwx+2vN3UF88fld5i
-    gxkeLAifZ1iwA1OVI4NgBG1kHZtV6y6vsVho4h40OrIp1xfehAC95Mj02P4fwW0u
-    UARJ6XNYgpacQu8cQ4OVt1oK6S4VhfRSv1na1J0ceDUSq20aS5Pdv5N2aZhh5yxN
-    MR0g5aAaaWCgamF86NqWeT+Aa7sDFl2344+brlqws1kDZ2Q2X/fpchXR5xEXoKpm
-    Mc1wgJvHHEJ+GjiQiEpCFPLl64skRTDeBDZCC/dyeiHqH4buyxduHaiCO075y8B3
-    7bH7bFc/JLeJ3tVB7B4Ht2S4V1Tm3fdtjLA0CBqJ9ZifoMfLMqp+XiOSi05jmR/j
-    AgMBAAGjggGxMIIBrTAOBgNVHQ8BAf8EBAMCBaAwSQYDVR0gBEIwQDA+BgZngQwB
-    AgEwNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVw
-    b3NpdG9yeS8wKQYDVR0RBCIwIIIPKi5lbmNvZGVkY2Mub3Jngg1lbmNvZGVkY2Mu
-    b3JnMAkGA1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMDoG
-    A1UdHwQzMDEwL6AtoCuGKWh0dHA6Ly9jcmwyLmFscGhhc3NsLmNvbS9ncy9nc2Fs
-    cGhhZzIuY3JsMH8GCCsGAQUFBwEBBHMwcTA8BggrBgEFBQcwAoYwaHR0cDovL3Nl
-    Y3VyZTIuYWxwaGFzc2wuY29tL2NhY2VydC9nc2FscGhhZzIuY3J0MDEGCCsGAQUF
-    BzABhiVodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NhbHBoYWcyMB0GA1Ud
-    DgQWBBSJoxd9W+ZS37JLppCXvXRltu0uajAfBgNVHSMEGDAWgBQU6hlV8A4NMsYf
-    dDO3jmYaTBIxHjANBgkqhkiG9w0BAQUFAAOCAQEAB2rJy83hohyaHxyrW9M3LO1C
-    5EGrckZ8qkWioLq3Bm9dfFLkZ1yuc3miXMPxYaWGUpbX2JqRjm2808WHOb0Z07dC
-    /ehnNUeH5Gnd5eigbMDce7q8PmJhr/QRt79qDrfh3Yck4sB+QFhWlRXEa+vRPkvm
-    /8xkn1uCjKeEHe1F1i+tKm9G9stJHAjcpH92qi5l/u2pdzxzBWc7ubBcZRCGM6dN
-    Mf3ZYm6apbifkmfMZqgOzZoxoW25+/hztzjRxhCMcUNEAdTmTYYvvW91nRyxJ6BM
-    hOhSunZJ+HY2HzWPOZO+r8S/XXPw9ZWbIV0xe2JKMwD97/HuweyoQ5MVAjVRoA==
-    -----END CERTIFICATE-----
-    -----BEGIN CERTIFICATE-----
-    MIIELzCCAxegAwIBAgILBAAAAAABL07hNwIwDQYJKoZIhvcNAQEFBQAwVzELMAkG
-    A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
-    b3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xMTA0MTMxMDAw
-    MDBaFw0yMjA0MTMxMDAwMDBaMC4xETAPBgNVBAoTCEFscGhhU1NMMRkwFwYDVQQD
-    ExBBbHBoYVNTTCBDQSAtIEcyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-    AQEAw/BliN8b3caChy/JC7pUxmM/RnWsSxQfmHKLHBD/CalSbi9l32WEP1+Bstjx
-    T9fwWrvJr9Ax3SZGKpme2KmjtrgHxMlx95WE79LqH1Sg5b7kQSFWMRBkfR5jjpxx
-    XDygLt5n3MiaIPB1yLC2J4Hrlw3uIkWlwi80J+zgWRJRsx4F5Tgg0mlZelkXvhpL
-    OQgSeTObZGj+WIHdiAxqulm0ryRPYeDK/Bda0jxyq6dMt7nqLeP0P5miTcgdWPh/
-    UzWO1yKIt2F2CBMTaWawV1kTMQpwgiuT1/biQBXQHQFyxxNYalrsGYkWPODIjYYq
-    +jfwNTLd7OX+gI73BWe0i0J1NQIDAQABo4IBIzCCAR8wDgYDVR0PAQH/BAQDAgEG
-    MBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFBTqGVXwDg0yxh90M7eOZhpM
-    EjEeMEUGA1UdIAQ+MDwwOgYEVR0gADAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3
-    dy5hbHBoYXNzbC5jb20vcmVwb3NpdG9yeS8wMwYDVR0fBCwwKjAooCagJIYiaHR0
-    cDovL2NybC5nbG9iYWxzaWduLm5ldC9yb290LmNybDA9BggrBgEFBQcBAQQxMC8w
-    LQYIKwYBBQUHMAGGIWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL3Jvb3RyMTAf
-    BgNVHSMEGDAWgBRge2YaRQ2XyolQL30EzTSo//z9SzANBgkqhkiG9w0BAQUFAAOC
-    AQEABjBCm89JAn6J6fWDWj0C87yyRt5KUO65mpBz2qBcJsqCrA6ts5T6KC6y5kk/
-    UHcOlS9o82U8nxTyaGCStvwEDfakGKFpYA3jnWhbvJ4LOFmNIdoj+pmKCbkfpy61
-    VWxH50Hs5uJ/r1VEOeCsdO5l0/qrUUgw8T53be3kD0CY7kd/jbZYJ82Sb2AjzAKb
-    WSh4olGd0Eqc5ZNemI/L7z/K/uCvpMlbbkBYpZItvV1lVcW/fARB2aS1gOmUYAIQ
-    OGoICNdTHC2Tr8kTe9RsxDrE+4CsuzpOVHrNTrM+7fH8EU6f9fMUvLmxMc72qi+l
-    +MPpZqmyIJ3E+LgDYqeF0RhjWw==
-    -----END CERTIFICATE-----
-
-- path: /etc/nginx/ssl/encodeproject.org/server.chained.crt
-  content: |
-    -----BEGIN CERTIFICATE-----
-    MIIE4zCCA8ugAwIBAgISESFNplhyevJ+HsCzWlKQIJ41MA0GCSqGSIb3DQEBCwUA
-    MEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSIwIAYD
-    VQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcyMB4XDTE0MDgxNDE0MTIwMloX
-    DTE5MDgwMjA4MzIwOFowQTEhMB8GA1UECxMYRG9tYWluIENvbnRyb2wgVmFsaWRh
-    dGVkMRwwGgYDVQQDDBMqLmVuY29kZXByb2plY3Qub3JnMIIBIjANBgkqhkiG9w0B
-    AQEFAAOCAQ8AMIIBCgKCAQEA0my8uZHliNNN4KImPynAnKQQ8MTrYNCN6JN9C15C
-    9v2uu6EXn3PW7OyF2eJAUqOqUKG/sHPyzf9Jp1CcIw22WbGDD8FDIYvprYdjvSSt
-    h6ShlZm8+rkk+g25urKE7/mQiMrUTdg/llqxRYY98YQtNp4MTV7JPlcIcq/57Irj
-    jzBbVhPo820FfZ1iofSmEPnnf15qwYH5NhUhPq6sBNJqkSg7iVKC+ITooeqLe0hq
-    pGOBdDJA6ILrGlOMSUImm10rGq45w2fXsJVf3F7Hw9p7RoDSUy3BQk97GFs0gD9m
-    fLZ5pruOW55xlvkQe4+UdidI3g4EwRSnVDG9aEuBffQlmQIDAQABo4IByDCCAcQw
-    DgYDVR0PAQH/BAQDAgWgMEkGA1UdIARCMEAwPgYGZ4EMAQIBMDQwMgYIKwYBBQUH
-    AgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMDEGA1Ud
-    EQQqMCiCEyouZW5jb2RlcHJvamVjdC5vcmeCEWVuY29kZXByb2plY3Qub3JnMAkG
-    A1UdEwQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMD4GA1UdHwQ3
-    MDUwM6AxoC+GLWh0dHA6Ly9jcmwyLmFscGhhc3NsLmNvbS9ncy9nc2FscGhhc2hh
-    MmcyLmNybDCBiQYIKwYBBQUHAQEEfTB7MEIGCCsGAQUFBzAChjZodHRwOi8vc2Vj
-    dXJlMi5hbHBoYXNzbC5jb20vY2FjZXJ0L2dzYWxwaGFzaGEyZzJyMS5jcnQwNQYI
-    KwYBBQUHMAGGKWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc2FscGhhc2hh
-    MmcyMB0GA1UdDgQWBBT5PoW5JtzbVbDOhu9o90EolbOpMDAfBgNVHSMEGDAWgBT1
-    zdU8CFD5ak86t5faVoPmadJo9zANBgkqhkiG9w0BAQsFAAOCAQEAhhfPVGnDrnqm
-    qf8lEafl93f7CgWJIrMvjnF+GRhR8MEdIjnwytu7zpzKAodUpQb7zBoLS3SSj0vw
-    cA5gvYNUUf/feeq+uOcsVPaEG4eqUV6GbZNJwj4DC/t7cccAkEGqk0vh6hzuhPlP
-    gfyUmF+ISpRH9mTEPMyPcFtt/fF0nwj2ZnNwNHdORNgpTjf6aWVhwMnn+G4RGkDc
-    t1kIpDY5ElYyRGmQulTwiPdsMPv3lUkRcgYWtNiEUtwyBtY5YpNjdBHtdNY0PwjZ
-    CNSLgUamupyKTDhHoeShG8mtepfInVbjQWQbMFcfefSQDOdBlLjPoYRHy7XKa+/r
-    w8MyonFB0Q==
-    -----END CERTIFICATE-----
-    -----BEGIN CERTIFICATE-----
-    MIIETTCCAzWgAwIBAgILBAAAAAABRE7wNjEwDQYJKoZIhvcNAQELBQAwVzELMAkG
-    A1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNVBAsTB1Jv
-    b3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xNDAyMjAxMDAw
-    MDBaFw0yNDAyMjAxMDAwMDBaMEwxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9i
-    YWxTaWduIG52LXNhMSIwIAYDVQQDExlBbHBoYVNTTCBDQSAtIFNIQTI1NiAtIEcy
-    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2gHs5OxzYPt+j2q3xhfj
-    kmQy1KwA2aIPue3ua4qGypJn2XTXXUcCPI9A1p5tFM3D2ik5pw8FCmiiZhoexLKL
-    dljlq10dj0CzOYvvHoN9ItDjqQAu7FPPYhmFRChMwCfLew7sEGQAEKQFzKByvkFs
-    MVtI5LHsuSPrVU3QfWJKpbSlpFmFxSWRpv6mCZ8GEG2PgQxkQF5zAJrgLmWYVBAA
-    cJjI4e00X9icxw3A1iNZRfz+VXqG7pRgIvGu0eZVRvaZxRsIdF+ssGSEj4k4HKGn
-    kCFPAm694GFn1PhChw8K98kEbSqpL+9Cpd/do1PbmB6B+Zpye1reTz5/olig4het
-    ZwIDAQABo4IBIzCCAR8wDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8C
-    AQAwHQYDVR0OBBYEFPXN1TwIUPlqTzq3l9pWg+Zp0mj3MEUGA1UdIAQ+MDwwOgYE
-    VR0gADAyMDAGCCsGAQUFBwIBFiRodHRwczovL3d3dy5hbHBoYXNzbC5jb20vcmVw
-    b3NpdG9yeS8wMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5nbG9iYWxzaWdu
-    Lm5ldC9yb290LmNybDA9BggrBgEFBQcBAQQxMC8wLQYIKwYBBQUHMAGGIWh0dHA6
-    Ly9vY3NwLmdsb2JhbHNpZ24uY29tL3Jvb3RyMTAfBgNVHSMEGDAWgBRge2YaRQ2X
-    yolQL30EzTSo//z9SzANBgkqhkiG9w0BAQsFAAOCAQEAYEBoFkfnFo3bXKFWKsv0
-    XJuwHqJL9csCP/gLofKnQtS3TOvjZoDzJUN4LhsXVgdSGMvRqOzm+3M+pGKMgLTS
-    xRJzo9P6Aji+Yz2EuJnB8br3n8NA0VgYU8Fi3a8YQn80TsVD1XGwMADH45CuP1eG
-    l87qDBKOInDjZqdUfy4oy9RU0LMeYmcI+Sfhy+NmuCQbiWqJRGXy2UzSWByMTsCV
-    odTvZy84IOgu/5ZR8LrYPZJwR2UcnnNytGAMXOLRc3bgr07i5TelRS+KIz6HxzDm
-    MTh89N1SyvNTBCVXVmaU6Avu5gMUTu79bZRknl7OedSyps9AsUSoPocZXun4IRZZUw==
-    -----END CERTIFICATE-----
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
