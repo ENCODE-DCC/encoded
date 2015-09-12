@@ -1,8 +1,13 @@
 #cloud-config
 
-# $ aws --profile production ec2 run-instances --user-data file://nginx.yml --security-groups "ssh-http-https" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2 --network-interfaces '[{"DeviceIndex":1,"NetworkInterfaceId":"eni-9fbe3dc4"},{"DeviceIndex":2,"NetworkInterfaceId":"eni-f1bf3caa"}]'
-# Must copy private ssl keys manually to /etc/nginx/ssl/*/server.key then restart nginx.
+# Launch instance with network interfaces configured to the local IP addresses we references in the config.
+# $ aws --profile production ec2 run-instances --user-data file://nginx.yml --iam-instance-profile Name="proxy" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2 --placement AvailabilityZone=us-west-2c --network-interfaces '[{"DeviceIndex": 0, "Groups": ["sg-4ae7be2f"], "SubnetId": "subnet-201d1766", "PrivateIpAddresses": [{"PrivateIpAddress": "172.31.2.70", "Primary": true}, {"PrivateIpAddress": "172.31.2.78", "Primary": false}]}]'
+
 # Choose instance size based on network performance required.
+
+# After boot associate elastic ip addresses with the private ip addresses
+# $ aws --profile production ec2 associate-address --region us-west-2 --public-ip 52.11.61.187 --private-ip-address 172.31.2.70 --allow-reassociation --instance-id <instance-id>
+# $ aws --profile production ec2 associate-address --region us-west-2 --public-ip 52.88.20.43 --private-ip-address 172.31.2.78 --allow-reassociation --instance-id <instance-id>
 
 apt_sources:
 - source: ppa:nginx/stable
@@ -16,6 +21,7 @@ output:
 package_upgrade: true
 
 packages:
+- awscli
 - curl
 - dnsmasq
 - nginx-full
@@ -27,13 +33,15 @@ power_state:
   mode: reboot
 
 runcmd:
+- aws --region us-west-2 s3 cp s3://encoded-conf-proxy/ssl.tgz ssl.tgz
 - mkdir -p /etc/nginx/ssl
-#- tar -zxf ssl.tgz --directory /etc/nginx/ssl
+- tar -zxf ssl.tgz --directory /etc/nginx/ssl
 # Generate a new (takes a few minutes.)
 - openssl dhparam 2048 -out /etc/nginx/ssl/dhparam.pem
 - chmod 600 /etc/nginx/ssl/dhparam.pem
 - curl -o /etc/nginx/nginx.conf https://raw.githubusercontent.com/ENCODE-DCC/encoded/master/encode-proxy-nginx.conf
-- sed -i.bak s/171.67.205./172.31.0./g /etc/nginx/nginx.conf
+# The final octets of the local IP addresses configured above match the public IPs
+- sed -i.bak s/171.67.205./172.31.2./g /etc/nginx/nginx.conf
 
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
@@ -48,20 +56,6 @@ write_files:
     };
     Unattended-Upgrade::Automatic-Reboot "true";
 
-- path: /etc/network/interfaces.d/eth1.cfg
-  content: |
-    auto eth1
-    iface eth1 inet dhcp
-      post-up ip rule add from 172.31.0.70 lookup 201
-      post-up ip route add default via 172.31.0.1 dev eth1 table 201
-
-- path: /etc/network/interfaces.d/eth2.cfg
-  content: |
-    auto eth2
-    iface eth2 inet dhcp
-      post-up ip rule add from 172.31.0.78 lookup 202
-      post-up ip route add default via 172.31.0.1 dev eth2 table 202
-
 - path: /etc/motd
   content: |
     #########################################
@@ -69,6 +63,13 @@ write_files:
     ##  For demo instances:                ##
     ##  ssh <name>.instance.encodedcc.org  ##
     #########################################
+
+- path: /etc/network/interfaces.d/eth0.cfg
+  content: |
+    # The primary network interface
+    auto eth0
+    iface eth0 inet dhcp
+        post-up ip addr add 172.31.2.78/20 dev eth0
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
