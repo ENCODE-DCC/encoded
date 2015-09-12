@@ -477,7 +477,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             {humanFileSize(file.file_size)}
                         </td>
                         <td>{file.file_type}</td>
-                        <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                        <td>{file.biological_replicates.join(', ')}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
@@ -501,7 +501,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         </td>
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
-                        <td>{file.replicate ? file.replicate.biological_replicate_number : null}</td>
+                        <td>{file.biological_replicates.join(', ')}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.assembly}</td>
                         <td>{file.genome_annotation}</td>
@@ -574,7 +574,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate<i className={cellClassProc.bio_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'tech_replicate')}>Technical replicate<i className={cellClassProc.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>
