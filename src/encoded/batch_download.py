@@ -50,7 +50,7 @@ _tsv_mapping = OrderedDict([
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
     ('Biosample Age', ['files.replicate.library.biosample.age_display']),
-    ('Biological replicate', ['files.replicate.biological_replicate_number']),
+    ('Biological replicate(s)', ['files.biological_replicates']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Read length', ['files.read_length']),
     ('Run type', ['files.run_type']),
