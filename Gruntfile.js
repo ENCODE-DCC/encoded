@@ -50,6 +50,20 @@ module.exports = function(grunt) {
                     }],
                 ],
             },
+            dalliance: {
+                dest: './src/encoded/static/build/dalliance.js',
+                require: [
+                    'dalliance'
+                ],
+                plugin: [
+                    ['minifyify', {
+                        map: 'dalliance.js.map',
+                        output: './src/encoded/static/build/dalliance.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
+                ],
+            },
             inline: {
                 dest: './src/encoded/static/build/inline.js',
                 src: [

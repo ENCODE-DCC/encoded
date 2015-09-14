@@ -12,8 +12,10 @@ var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
+var browser = require('./browser');
 var biosample = require('./biosample');
 
+var GenomeBrowser = browser.GenomeBrowser;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
@@ -343,6 +345,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                         : null}
                     </dl>
                 </div>
+
+                {context.visualize_ucsc && context.status == "released" ?
+                    <div className="panel data-display">
+                        <GenomeBrowser files={context.files} assembly={context.assembly} />
+                    </div>
+                : null}
 
                 {AssayDetails({context: context, replicates: replicates})}
 
@@ -727,7 +735,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         stepExists = stepExists || !!fileAnalysisStep;
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
         // Build a list of all files in the graph, including contributed files, for convenience

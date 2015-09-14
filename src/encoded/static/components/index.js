@@ -32,5 +32,6 @@ require('./inputs');
 require('./blocks');
 require('./user');
 require('./schema');
+require('./browser');
 
 module.exports = require('./app');
