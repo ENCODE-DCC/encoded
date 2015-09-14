@@ -208,10 +208,8 @@ var ExperimentsUsingAntibody = React.createClass({
                     <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
                 </span>
 
-                <div>
-                    <h3>Experiments using antibody {context.accession}</h3>
-                    <ExperimentTable {...this.props} limit={5} />
-                </div>
+                <ExperimentTable {...this.props} limit={5}
+                    title={'Experiments using antibody ' + context.accession} />
             </div>
         );
     }

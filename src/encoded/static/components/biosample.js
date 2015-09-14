@@ -398,26 +398,14 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingBiosample} />
+                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentTable}
+                              title={'Experiments using biosample ' + context.accession} />
             </div>
         );
     }
 });
 
 globals.content_views.register(Biosample, 'biosample');
-
-
-var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Experiments using biosample {context.accession}</h3>
-                <ExperimentTable {...this.props} />
-            </div>
-        );
-    }
-});
 
 
 var MaybeLink = React.createClass({
