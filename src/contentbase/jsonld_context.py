@@ -294,11 +294,3 @@ def jsonld_term(context, request):
         return ontology['defines'][term]
     except KeyError:
         raise HTTPNotFound(term)
-
-
-# @subscriber(BeforeRender)  # disable for now
-def add_jsonld_context(event):
-    request = event['request']
-    value = event.rendering_val
-    if ('@id' in value or '@graph' in value) and '@context' not in value:
-        value['@context'] = request.route_path('jsonld_context')

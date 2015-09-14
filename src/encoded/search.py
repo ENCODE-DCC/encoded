@@ -288,6 +288,7 @@ def search(context, request, search_type=None):
     root = request.root
     types = request.registry[TYPES]
     result = {
+        '@context': request.route_path('jsonld_context'),
         '@id': '/search/' + ('?' + request.query_string if request.query_string else ''),
         '@type': ['search'],
         'title': 'Search',

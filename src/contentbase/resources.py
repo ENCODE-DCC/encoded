@@ -41,6 +41,10 @@ class Resource(object):
     def jsonld_id(self, request):
         return request.resource_path(self)
 
+    @calculated_property(name='@context', category='page')
+    def jsonld_context(self, request):
+        return request.route_path('jsonld_context')
+
     @calculated_property(category='page')
     def actions(self, request):
         actions = calculate_properties(self, request, category='action')
