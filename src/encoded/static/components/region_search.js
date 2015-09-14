@@ -2,7 +2,6 @@
 var React = require('react');
 var globals = require('./globals');
 var fetched = require('./fetched');
-var browser = require('./browser');
 var TabbedArea = require('react-bootstrap').TabbedArea;
 var TabPane = require('react-bootstrap').TabPane;
 var url = require('url');
