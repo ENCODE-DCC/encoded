@@ -32,8 +32,7 @@ require('./inputs');
 require('./blocks');
 require('./user');
 require('./schema');
-require('./region_search')
-require('./browser')
+require('./region_search');
 
 
 module.exports = require('./app');

@@ -12,7 +12,6 @@ var FacetList = search.FacetList;
 var Facet = search.Facet;
 var TextFilter = search.TextFilter;
 var Listing = search.Listing;
-var GenomeBrowser = browser.GenomeBrowser;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 
@@ -204,11 +203,6 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                           : null}
                                       </span>
                                     }
-                                  <span className="pull-right">
-                                      <a rel="nofollow" className="btn btn-info btn-sm"
-                                           href={searchBase + '#!browser'}
-                                           onClick={this.onFilter}>Browser view</a>&nbsp;
-                                  </span>
                               </h4>
                               <hr />
                               <ul className="nav result-table" id="result-table">
@@ -225,64 +219,4 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
     }
 });
 
-var BrowserView = module.exports.BrowserView = React.createClass({
-    onFilter: function(e) {
-        var search = e.currentTarget.getAttribute('href');
-        this.props.onChange(search);
-        e.stopPropagation();
-        e.preventDefault();
-    },
-    contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
-    },
-    render: function() {
-        var context = this.props.context;
-        var results = context['@graph'];
-        var columns = context['columns'];
-        var notification = context['notification'];
-        var assembly = ['hg19'];
-        var files = [];
-        var id = url.parse(this.context.location_href, true);
-        var region = context['region'] || '';
-        var searchBase = url.parse(this.context.location_href).search || '';
-        var trimmedSearchBase = searchBase.replace(/[\?|\#]!browser/, "");
-        var filters = context['filters'];
-        var facets = context['facets'];
-        var total = context['total'];
-        return (
-          <div>
-              <h2>Region search</h2>
-              <AdvSearch {...this.props} />
-              {results.length ?
-                  <div className="panel data-display main-panel">
-                      <div className="row">
-                          <div className="col-sm-5 col-md-4 col-lg-3">
-                              <FacetList {...this.props} facets={facets} filters={filters}
-                                  searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                          </div>
-                          <div className="col-sm-7 col-md-8 col-lg-9 search-list">
-                              <h4>
-                                Showing {results.length} of {total}
-                                <span className="pull-right">
-                                    <a className="btn btn-info btn-sm"
-                                       href={trimmedSearchBase}
-                                       onClick={this.onFilter}>List view</a>
-                                </span>
-                              </h4>
-                              <hr />
-                              {results.map(function(result){
-                                    files.push.apply(files, result['files'])
-                              })}
-                              <GenomeBrowser region={region} files={files} assembly={assembly} />
-                          </div>
-                      </div>
-                  </div>
-              :<h4>{notification}</h4>}
-          </div>
-        );
-    }
-});
-
 globals.content_views.register(RegionSearch, 'region-search');
-globals.content_views.register(BrowserView, 'region-search', 'browser')

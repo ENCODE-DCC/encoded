@@ -1401,23 +1401,6 @@
         }
       }
     },
-    "dalliance": {
-      "version": "0.13.0",
-      "from": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require",
-      "resolved": "git://github.com/ENCODE-DCC/dalliance.git#1ec3f2de69c5782afc2d67b2fa4ad2753b0ecfb2",
-      "dependencies": {
-        "jszlib": {
-          "version": "0.2.1",
-          "from": "git://github.com/dasmoth/jszlib.git",
-          "resolved": "git://github.com/dasmoth/jszlib.git#4e562c7b88749f3e1e402737ddef5f96bf0906c6"
-        },
-        "es6-promise": {
-          "version": "0.1.2",
-          "from": "es6-promise@>=0.1.1 <0.2.0",
-          "resolved": "https://registry.npmjs.org/es6-promise/-/es6-promise-0.1.2.tgz"
-        }
-      }
-    },
     "domready": {
       "version": "0.3.0",
       "from": "domready@>=0.3.0 <0.4.0",
