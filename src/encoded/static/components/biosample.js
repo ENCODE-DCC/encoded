@@ -3,6 +3,7 @@ var React = require('react');
 var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
+var collection = require('./collection');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
@@ -21,6 +22,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
+var Table = collection.Table;
 
 
 var Panel = function (props) {
@@ -433,66 +435,87 @@ var MaybeLink = React.createClass({
 });
 
 
+var donor_biosample_columns = {
+    accession: {title: 'Accession'},
+    biosample_type: {title: 'Type'},
+    biosample_term_name: {title: 'Term'},
+    description: {title: 'Description'},
+};
+
+
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
         return (
-            <dl className="key-value">
-                <div data-test="accession">
-                    <dt>Accession</dt>
-                    <dd>{context.accession}</dd>
-                </div>
-
-                {context.aliases.length ?
-                    <div data-test="aliases">
-                        <dt>Aliases</dt>
-                        <dd>{context.aliases.join(", ")}</dd>
+            <div>
+                <dl className="key-value">
+                    <div data-test="accession">
+                        <dt>AccessionASDF</dt>
+                        <dd>{context.accession}</dd>
                     </div>
-                : null}
 
-                {context.organism.scientific_name ?
-                    <div data-test="species">
-                        <dt>Species</dt>
-                        <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                    </div>
-                : null}
+                    {context.aliases.length ?
+                        <div data-test="aliases">
+                            <dt>Aliases</dt>
+                            <dd>{context.aliases.join(", ")}</dd>
+                        </div>
+                    : null}
 
-                {context.life_stage ?
-                    <div data-test="life-stage">
-                        <dt>Life stage</dt>
-                        <dd className="sentence-case">{context.life_stage}</dd>
-                    </div>
-                : null}
+                    {context.organism.scientific_name ?
+                        <div data-test="species">
+                            <dt>Species</dt>
+                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                        </div>
+                    : null}
 
-                {context.age ?
-                    <div data-test="age">
-                        <dt>Age</dt>
-                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
-                    </div>
-                : null}
+                    {context.life_stage ?
+                        <div data-test="life-stage">
+                            <dt>Life stage</dt>
+                            <dd className="sentence-case">{context.life_stage}</dd>
+                        </div>
+                    : null}
 
-                {context.sex ?
-                    <div data-test="sex">
-                        <dt>Sex</dt>
-                        <dd className="sentence-case">{context.sex}</dd>
-                    </div>
-                : null}
+                    {context.age ?
+                        <div data-test="age">
+                            <dt>Age</dt>
+                            <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                        </div>
+                    : null}
 
-                {context.health_status ?
-                    <div data-test="health-status">
-                        <dt>Health status</dt>
-                        <dd className="sentence-case">{context.health_status}</dd>
-                    </div>
-                : null}
+                    {context.sex ?
+                        <div data-test="sex">
+                            <dt>Sex</dt>
+                            <dd className="sentence-case">{context.sex}</dd>
+                        </div>
+                    : null}
 
-                {context.ethnicity ?
-                    <div data-test="ethnicity">
-                        <dt>Ethnicity</dt>
-                        <dd className="sentence-case">{context.ethnicity}</dd>
+                    {context.health_status ?
+                        <div data-test="health-status">
+                            <dt>Health status</dt>
+                            <dd className="sentence-case">{context.health_status}</dd>
+                        </div>
+                    : null}
+
+                    {context.ethnicity ?
+                        <div data-test="ethnicity">
+                            <dt>Ethnicity</dt>
+                            <dd className="sentence-case">{context.ethnicity}</dd>
+                        </div>
+                    : null}
+                </dl>
+
+                {!biosample ?
+                    <div>
+                        <h2>Biosamples from this donor</h2>
+                        <fetched.FetchedData>
+                            <fetched.Param name="context" url={biosamples_url} />
+                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
+                        </fetched.FetchedData>
                     </div>
-                : null}
-            </dl>
+                : ''}
+            </div>
         );
     }
 });
@@ -512,86 +535,100 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
             donorUrlDomain = donorUrl.hostname || '';
         }
 
+        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
+
         return (
-            <dl className="key-value">
-                <div data-test="accession">
-                    <dt>Accession</dt>
-                    <dd>{context.accession}</dd>
-                </div>
-
-                {context.aliases.length ?
-                    <div data-test="aliases">
-                        <dt>Aliases</dt>
-                        <dd>{context.aliases.join(", ")}</dd>
+            <div>
+                <dl className="key-value">
+                    <div data-test="accession">
+                        <dt>Accession</dt>
+                        <dd>{context.accession}</dd>
                     </div>
-                : null}
 
-                {context.organism.scientific_name ?
-                    <div data-test="organism">
-                        <dt>Species</dt>
-                        <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
-                    </div>
-                : null}
-
-                {context.genotype ?
-                    <div data-test="genotype">
-                        <dt>Genotype</dt>
-                        <dd>{context.genotype}</dd>
-                    </div>
-                : null}
-
-                {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
-                    <div data-test="mutatedgene">
-                        <dt>Mutated gene</dt>
-                        <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
-                    </div>
-                : null}
-
-                {biosample && biosample.sex ?
-                    <div data-test="sex">
-                        <dt>Sex</dt>
-                        <dd className="sentence-case">{biosample.sex}</dd>
-                    </div>
-                : null}
-
-                {biosample && biosample.health_status ?
-                    <div data-test="health-status">
-                        <dt>Health status</dt>
-                        <dd className="sentence-case">{biosample.health_status}</dd>
-                    </div>
-                : null}
-
-                {donorUrlDomain ?
-                    <div data-test="mutatedgene">
-                        <dt>Strain reference</dt>
-                        <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
-                    </div>
-                : null}
-
-                {context.strain_background ?
-                    <div data-test="strain-background">
-                        <dt>Strain background</dt>
-                        <dd className="sentence-case">{context.strain_background}</dd>
-                    </div>
-                : null}
-
-                {context.strain_name ?
-                    <div data-test="strain-name">
-                        <dt>Strain name</dt>
-                        <dd>{context.strain_name}</dd>
-                    </div>
-                : null}
-
-                {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                    <section className="multi-columns-row">
-                        <hr />
-                        <h4>Characterizations</h4>
-                        <div className="row multi-columns-row">
-                            {biosample.donor.characterizations.map(Panel)}
+                    {context.aliases.length ?
+                        <div data-test="aliases">
+                            <dt>Aliases</dt>
+                            <dd>{context.aliases.join(", ")}</dd>
                         </div>
-                    </section>
-                : null}
-            </dl>
+                    : null}
+
+                    {context.organism.scientific_name ?
+                        <div data-test="organism">
+                            <dt>Species</dt>
+                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                        </div>
+                    : null}
+
+                    {context.genotype ?
+                        <div data-test="genotype">
+                            <dt>Genotype</dt>
+                            <dd>{context.genotype}</dd>
+                        </div>
+                    : null}
+
+                    {context.mutated_gene && biosample && biosample.donor && biosample.donor.mutated_gene && biosample.donor.mutated_gene.label ?
+                        <div data-test="mutatedgene">
+                            <dt>Mutated gene</dt>
+                            <dd><a href={context.mutated_gene}>{biosample.donor.mutated_gene.label}</a></dd>
+                        </div>
+                    : null}
+
+                    {biosample && biosample.sex ?
+                        <div data-test="sex">
+                            <dt>Sex</dt>
+                            <dd className="sentence-case">{biosample.sex}</dd>
+                        </div>
+                    : null}
+
+                    {biosample && biosample.health_status ?
+                        <div data-test="health-status">
+                            <dt>Health status</dt>
+                            <dd className="sentence-case">{biosample.health_status}</dd>
+                        </div>
+                    : null}
+
+                    {donorUrlDomain ?
+                        <div data-test="mutatedgene">
+                            <dt>Strain reference</dt>
+                            <dd><a href={biosample.donor.url}>{donorUrlDomain}</a></dd>
+                        </div>
+                    : null}
+
+                    {context.strain_background ?
+                        <div data-test="strain-background">
+                            <dt>Strain background</dt>
+                            <dd className="sentence-case">{context.strain_background}</dd>
+                        </div>
+                    : null}
+
+                    {context.strain_name ?
+                        <div data-test="strain-name">
+                            <dt>Strain name</dt>
+                            <dd>{context.strain_name}</dd>
+                        </div>
+                    : null}
+
+                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                        <section className="multi-columns-row">
+                            <hr />
+                            <h4>Characterizations</h4>
+                            <div className="row multi-columns-row">
+                                {biosample.donor.characterizations.map(Panel)}
+                            </div>
+                        </section>
+                    : null}
+                </dl>
+
+                {!biosample ?
+                    <div>
+                        <h2>Biosamples from this strain</h2>
+                        <fetched.FetchedData>
+                            <fetched.Param name="context" url={biosamples_url} />
+                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
+                        </fetched.FetchedData>
+                    </div>
+                : ''}
+            </div>
         );
     }
 });
@@ -616,6 +653,8 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
         }
+
+        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
 
         return (
             <div>
@@ -706,6 +745,16 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     </section>
                 : null}
+
+                {!biosample ?
+                    <div>
+                        <h2>Biosamples from this strain</h2>
+                        <fetched.FetchedData>
+                            <fetched.Param name="context" url={biosamples_url} />
+                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
+                        </fetched.FetchedData>
+                    </div>
+                : ''}
 
             </div>
         );

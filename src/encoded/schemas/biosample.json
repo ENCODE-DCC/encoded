@@ -639,6 +639,10 @@
             "title": "Accession",
             "type": "string"
         },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
         "age": {
             "title": "Age",
             "type": "string"
