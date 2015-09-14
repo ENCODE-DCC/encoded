@@ -85,7 +85,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^cgc:.+"
+                "pattern": "^cgc:.+$"
             }
         }
     }
