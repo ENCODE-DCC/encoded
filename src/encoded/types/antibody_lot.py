@@ -239,19 +239,26 @@ def lot_reviews(characterizations, targets, request):
     compliant_secondary = False
     not_compliant_secondary = False
     pending_secondary = False
+    exempted_secondary = False
 
     for secondary in secondary_chars:
         if secondary['status'] == 'compliant':
             compliant_secondary = True
             break
+        elif secondary['status'] == 'exempt from standards':
+            exempted_secondary = True
+            break
         elif secondary['status'] == 'pending dcc review':
             pending_secondary = True
         elif secondary['status'] == 'not compliant':
             not_compliant_secondary = True
+        else:
+            pass
 
     # Now check the primaries and update their status accordingly
     char_reviews = {}
     characterized_organisms = set()
+    exempted_organisms = set()
 
     for primary in primary_chars:
         if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
@@ -277,21 +284,29 @@ def lot_reviews(characterizations, targets, request):
             elif lane_review['lane_status'] == 'not compliant':
                 if not_compliant_secondary:
                     new_review['status'] = 'not eligible for new data'
+            elif lane_review['lane_status'] == 'exempt from standards':
+                if not histone_mod_target:
+                    if compliant_secondary or exempted_secondary:
+                        new_review['status'] = 'eligible for new data (via exemption)'
+                else:
+                    if lane_organism in organisms:
+                        exempted_organisms.add(lane_organism)
             elif lane_review['lane_status'] == 'compliant':
-                if compliant_secondary:
-                    if not histone_mod_target:
+                if not histone_mod_target:
+                    if compliant_secondary:
                         new_review['status'] = 'eligible for new data'
+                    elif exempted_secondary:
+                        new_review['status'] = 'eligible for new data (via exemption)'
                     else:
-                        new_review['status'] = 'compliant'
-
-                        # Keep track of compliant organisms for histones and we
-                        # will fill them in after going through all the lanes
-                        if lane_organism in organisms:
-                            characterized_organisms.add(lane_organism)
+                        pass
+                    # Keep track of compliant organisms for histones and we
+                    # will fill them in after going through all the lanes
+                else:
+                    if lane_organism in organisms:
+                        characterized_organisms.add(lane_organism)
 
                 if pending_secondary:
                     new_review['status'] = 'pending dcc review'
-
             else:
                 # For all other cases, can keep the awaiting status
                 pass
@@ -307,8 +322,10 @@ def lot_reviews(characterizations, targets, request):
                 continue
 
             status_ranking = {
-                'eligible for new data': 4,
-                'compliant': 3,
+                'eligible for new data': 6,
+                'eligible for new data (via exemption)': 5,
+                'compliant': 4,
+                'exempt from standards': 3,
                 'pending dcc review': 2,
                 'awaiting lab characterization': 1,
                 'not compliant': 0,
@@ -334,13 +351,11 @@ def lot_reviews(characterizations, targets, request):
         # August 2015 standards removed the requirement for 3 compliant cell types,
         # the antibody only needs to be characterized in the species it is to be used in.
 
-        for char_review in char_reviews.values():
-            if char_review['status'] == 'compliant':
-                char_review['status'] = 'awaiting lab characterization'
-
-        not_characterized_organisms = organisms.symmetric_difference(characterized_organisms)
+        just_exempted_organisms = exempted_organisms.difference(characterized_organisms)
+        not_characterized_organisms = organisms.symmetric_difference(characterized_organisms.union(exempted_organisms))
         not_characterized_targets = set()
         characterized_targets = set()
+        output = list()
 
         if not_characterized_organisms:
             for not_characterized_organism in not_characterized_organisms:
@@ -353,23 +368,42 @@ def lot_reviews(characterizations, targets, request):
             for target in antibody_targets:
                 characterized_targets.add(target['@id'])
 
-        if characterized_organisms and compliant_secondary:
-            output = [{
-                'biosample_term_name': 'all cell types and tissues',
-                'biosample_term_id': 'NTR:00000000',
-                'organisms': sorted(characterized_organisms),
-                'targets': sorted(characterized_targets),
-                'status': 'eligible for new data'
-                }]
-
-            if not_characterized_organisms:
+        if just_exempted_organisms:
+            if compliant_secondary or exempted_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
                     'biosample_term_id': 'NTR:00000000',
-                    'organisms': sorted(not_characterized_organisms),
-                    'targets': sorted(not_characterized_targets),
-                    'status': 'awaiting lab characterization'
-                    })
-            return output
+                    'organisms': sorted(just_exempted_organisms),
+                    'targets': sorted(characterized_targets),
+                    'status': 'eligible for new data (via exemption)'
+                })
+
+        if characterized_organisms:
+            if compliant_secondary:
+                output.append({
+                    'biosample_term_name': 'all cell types and tissues',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organisms': sorted(characterized_organisms),
+                    'targets': sorted(characterized_targets),
+                    'status': 'eligible for new data'
+                })
+            if exempted_secondary:
+                output.append({
+                    'biosample_term_name': 'all cell types and tissues',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organisms': sorted(characterized_organisms),
+                    'targets': sorted(characterized_targets),
+                    'status': 'eligible for new data (via exemption)'
+                })
+        if not_characterized_organisms:
+            output.append({
+                'biosample_term_name': 'all cell types and tissues',
+                'biosample_term_id': 'NTR:00000000',
+                'organisms': sorted(not_characterized_organisms),
+                'targets': sorted(not_characterized_targets),
+                'status': 'awaiting lab characterization'
+            })
+
+        return output
 
     return list(char_reviews.values())
