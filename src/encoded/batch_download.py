@@ -128,7 +128,9 @@ def metadata_tsv(context, request):
                         if len(temp):
                             new_values = [t[7:-1] for t in temp]
                             temp = new_values
-                    data_row.append(', '.join(list(set(temp))))
+                    data = list(set(temp))
+                    data.sort()
+                    data_row.append(', '.join(data))
                 rows.append(data_row)
     fout = io.StringIO()
     writer = csv.writer(fout, delimiter='\t')
