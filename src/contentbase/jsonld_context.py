@@ -4,7 +4,10 @@ from pyramid.events import (
 )
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
-from urllib.parse import urlparse
+from urllib.parse import (
+    quote,
+    urlparse,
+)
 from .util import ensurelist
 
 
@@ -190,7 +193,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
         if '@reverse' in prop_ld:
             continue
         if '@id' not in prop_ld:
-            prop_ld['@id'] = '%s:%s' % (prefix, name)
+            prop_ld['@id'] = '%s:%s' % (prefix, quote(name, safe=''))
 
         subschema.get('items', subschema)
         if '@type' in prop_ld:
@@ -247,7 +250,7 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
             continue
 
         prop_ld = {
-            '@id': subschema.get('@id', term_path + name),
+            '@id': subschema.get('@id', term_path + quote(name, safe='')),
             '@type': 'rdf:Property',
             'rdfs:domain': term_path + item_type,
         }
