@@ -359,6 +359,9 @@
                         "male genome index",
                         "spike-in sequence",
 
+                        "optimal idr thresholded peaks",
+                        "conservative idr thresholded peaks",
+
                         "enhancer validation",
                         "semi-automated genome annotation"
 
@@ -400,8 +403,6 @@
                         "reference",
 
                         "predicted transcription start sites",
-                        "optimal idr thresholded peaks",
-                        "conservative idr thresholded peaks",
 
                         "validation",
 
