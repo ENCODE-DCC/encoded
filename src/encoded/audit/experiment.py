@@ -69,6 +69,11 @@ def audit_experiment_replicated(value, system):
     '''
     if value['status'] not in ['released', 'release ready', 'ready for review']:
         return
+    '''
+    Excluding single cell isolation experiments from the replication requirement
+    '''
+    if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
+        return
 
     num_bio_reps = set()
     for rep in value['replicates']:

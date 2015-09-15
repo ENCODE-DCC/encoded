@@ -49,7 +49,6 @@ def base_replicate(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
-
 @pytest.fixture
 def base_target(testapp, organism):
     item = {
@@ -219,15 +218,25 @@ def test_audit_experiment_target(testapp, base_experiment):
     assert any(error['category'] == 'missing target' for error in errors_list)
 
 
-def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'biological_replicate_number': 3})
-    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})
+def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):    
+    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})      
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'unreplicated experiment' for error in errors_list)
+
+
+def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate, base_library):
+    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})    
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'single cell isolation followed by RNA-seq'})    
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
