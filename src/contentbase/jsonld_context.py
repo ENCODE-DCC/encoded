@@ -92,14 +92,14 @@ def make_jsonld_context(event):
         }
 
     # These are broken definitions
-    defines['BrokenPropertyOrClass'] = {
+    BROKEN = {
         '@id': prefix + ':BrokenPropertyOrClass',
         'owl:unionOf': [
             'rdf:Property',
             'rdfs:Class',
         ],
         '@type': 'owl:Class',
-    },
+    }
 
     MERGED_PROPS = [
         'rdfs:subClassOf',
@@ -144,6 +144,7 @@ def make_jsonld_context(event):
 
             if existing['@type'] != definition['@type']:
                 existing['@type'] = prefix + ':BrokenPropertyOrClass'
+                defines['BrokenPropertyOrClass'] = BROKEN
 
             for prop in MERGED_TYPES:
                 if prop not in definition:
