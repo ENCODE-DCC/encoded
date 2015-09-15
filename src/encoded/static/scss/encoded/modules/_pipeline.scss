@@ -158,3 +158,11 @@ g.edgePath {
     background-position: 0 -22px;
     background-size: 36px 44px;
 }
+
+.pipeline-node-qc-metric {
+    circle {
+        stroke-width: 2px;
+        stroke: #a0a0a0;
+        fill: #80ffc0;
+    }
+}
