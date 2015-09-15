@@ -4,7 +4,10 @@ from pyramid.events import (
 )
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
-from urllib.parse import urlparse
+from urllib.parse import (
+    quote,
+    urlparse,
+)
 from .util import ensurelist
 
 
@@ -92,14 +95,14 @@ def make_jsonld_context(event):
         }
 
     # These are broken definitions
-    defines['BrokenPropertyOrClass'] = {
+    BROKEN = {
         '@id': prefix + ':BrokenPropertyOrClass',
         'owl:unionOf': [
             'rdf:Property',
             'rdfs:Class',
         ],
         '@type': 'owl:Class',
-    },
+    }
 
     MERGED_PROPS = [
         'rdfs:subClassOf',
@@ -144,6 +147,7 @@ def make_jsonld_context(event):
 
             if existing['@type'] != definition['@type']:
                 existing['@type'] = prefix + ':BrokenPropertyOrClass'
+                defines['BrokenPropertyOrClass'] = BROKEN
 
             for prop in MERGED_TYPES:
                 if prop not in definition:
@@ -177,6 +181,9 @@ def context_from_schema(schema, prefix, item_type, base_types):
         jsonld_context[type_name] = '%s:%s' % (prefix, type_name)
 
     for name, subschema in schema.get('properties', {}).items():
+        if name.startswith('@'):
+            continue
+
         if '@id' in subschema and subschema['@id'] is None:
             jsonld_context[name] = None
             continue
@@ -186,7 +193,7 @@ def context_from_schema(schema, prefix, item_type, base_types):
         if '@reverse' in prop_ld:
             continue
         if '@id' not in prop_ld:
-            prop_ld['@id'] = '%s:%s' % (prefix, type_name)
+            prop_ld['@id'] = '%s:%s' % (prefix, quote(name, safe=''))
 
         subschema.get('items', subschema)
         if '@type' in prop_ld:
@@ -234,13 +241,16 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
     }
 
     for name, subschema in schema.get('properties', {}).items():
+        if name.startswith('@'):
+            continue
+
         if '@id' in subschema and subschema['@id'] is None:
             continue
         if '@reverse' in subschema:
             continue
 
         prop_ld = {
-            '@id': subschema.get('@id', term_path + name),
+            '@id': subschema.get('@id', term_path + quote(name, safe='')),
             '@type': 'rdf:Property',
             'rdfs:domain': term_path + item_type,
         }
