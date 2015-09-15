@@ -197,10 +197,11 @@ def check_file(item):
 
     result = None
     errors = {}
-    r = requests.head(
-        urljoin(CONFIG['url'], item['@id'] + '@@download'),
+    r = requests.get(
+        urljoin(CONFIG['url'], item['@id'] + '@@upload'),
         auth=(CONFIG['username'], CONFIG['password']), headers=HEADERS)
-    path = urlparse(r.headers['Location']).path[1:]
+    upload_url = r.json()['@graph'][0]['upload_credentials']['upload_url']
+    path = urlparse(upload_url).path[1:]
     local_path = CONFIG['mirror'] + path
 
     key = BUCKET.get_key(path)
