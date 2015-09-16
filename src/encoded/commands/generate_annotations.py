@@ -80,7 +80,7 @@ def human_annotations(es):
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
             synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
-            doc['name_suggest']['input'] = r['name_suggest']['input'] + synonyms
+            doc['name_suggest']['input'] = doc['name_suggest']['input'] + synonyms
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
