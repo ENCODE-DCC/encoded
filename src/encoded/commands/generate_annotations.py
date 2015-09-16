@@ -66,12 +66,13 @@ def human_annotations(es):
             continue
 
         # Assumption: payload.id and id should always be same
-        r['name_suggest'] = {
+        doc = {'annotations': []}
+        doc['name_suggest'] = {
             'input': [r['Approved Name'] + species,
                       r['Approved Symbol'] + species],
             'payload': {'id': r['HGNC ID']}
         }
-        r['id'] = r['HGNC ID']
+        doc['id'] = r['HGNC ID']
 
         if r['Entrez Gene ID'].isdigit():
             r['Entrez Gene ID'] = int(r['Entrez Gene ID'])
@@ -79,13 +80,12 @@ def human_annotations(es):
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
             synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
-            r['name_suggest']['input'] = r['name_suggest']['input'] + synonyms
+            doc['name_suggest']['input'] = r['name_suggest']['input'] + synonyms
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
             id=r['Ensembl Gene ID'])
 
-        r['annotations'] = []
         try:
             response = requests.get(url).json()
         except:
@@ -98,7 +98,7 @@ def human_annotations(es):
             annotation['chromosome'] = response['seq_region_name']
             annotation['start'] = response['start']
             annotation['end'] = response['end']
-            r['annotations'].append(annotation)
+            doc['annotations'].append(annotation)
 
             # Get GRcH37 annotation
             location = response['seq_region_name'] \
@@ -109,8 +109,15 @@ def human_annotations(es):
             ann['chromosome'], ann['start'], ann['end'] = \
                 assembly_mapper(location, response['species'],
                                 'GRCh38', 'GRCh37')
-            r['annotations'].append(ann)
-        annotations.append(r)
+            doc['annotations'].append(ann)
+        annotations.append({
+            "index": {
+                "_index": "annotations",
+                "_type": "default",
+                "_id": doc['id']
+            }
+        })
+        annotations.append(doc)
     return annotations
 
 
@@ -131,18 +138,18 @@ def mouse_annotations(mouse_file):
         if 'Chromosome Name' not in r:
             continue
 
-        r['annotations'] = []
+        doc = {'annotations': []}
         species = ' (mus musculus)'
-        r['name_suggest'] = {
+        doc['name_suggest'] = {
             'input': [],
             'payload': {'id': r['Ensembl Gene ID']}
         }
-        r['id'] = r['Ensembl Gene ID']
+        doc['id'] = r['Ensembl Gene ID']
 
         if 'MGI symbol' in r and r['MGI symbol'] is not None:
-            r['name_suggest']['input'].append(r['MGI symbol'] + species)
+            doc['name_suggest']['input'].append(r['MGI symbol'] + species)
 
-        r['annotations'].append({
+        doc['annotations'].append({
             'assembly_name': 'GRCm38',
             'chromosome': r['Chromosome Name'],
             'start': r['Gene Start (bp)'],
@@ -164,8 +171,15 @@ def mouse_annotations(mouse_file):
                     ann['chromosome'] = response['genomic_pos_mm9']['chr']
                     ann['start'] = response['genomic_pos_mm9']['start']
                     ann['end'] = response['genomic_pos_mm9']['end']
-                    r['annotations'].append(ann)
-        annotations.append(r)
+                    doc['annotations'].append(ann)
+        annotations.append({
+            "index": {
+                "_index": "annotations",
+                "_type": "default",
+                "_id": doc['id']
+            }
+        })
+        annotations.append(doc)
     return annotations
 
 
@@ -186,50 +200,28 @@ def other_annotations(file, species, assembly):
         if 'Chromosome Name' not in r or 'Ensembl Gene ID' not in r:
             continue
 
-        r['annotations'] = []
+        doc = {'annotations': []}
         annotation = get_annotation()
 
-        r['name_suggest'] = {
+        doc['name_suggest'] = {
             'input': [r['Associated Gene Name'] + species],
             'payload': {'id': r['Ensembl Gene ID']}
         }
-        r['id'] = r['Ensembl Gene ID']
+        doc['id'] = r['Ensembl Gene ID']
         annotation['assembly_name'] = assembly
         annotation['chromosome'] = r['Chromosome Name']
         annotation['start'] = r['Gene Start (bp)']
         annotation['end'] = r['Gene End (bp)']
-        r['annotations'].append(annotation)
-        annotations.append(r)
-    return annotations
-
-
-'''def create_index(es):
-    try:
-        es.indices.create(index=index)
-    except RequestError:
-        es.indices.delete(index=index)
-        es.indices.create(index=index)
-
-    mapping = {
-        'properties': {
-            'name_suggest': {
-                'type': 'completion',
-                'index_analyzer': 'standard',
-                'search_analyzer': 'standard',
-                'payloads': True
+        doc['annotations'].append(annotation)
+        annotations.append({
+            "index": {
+                "_index": "annotations",
+                "_type": "default",
+                "_id": doc['id']
             }
-        }
-    }
-    try:
-        es.indices.put_mapping(
-            index=index,
-            doc_type=doc_type,
-            body={doc_type: mapping}
-        )
-    except:
-        print("Could not create mapping for the collection %s", doc_type)
-    else:
-        es.indices.refresh(index=index)'''
+        })
+        annotations.append(doc)
+    return annotations
 
 
 def main():
@@ -243,9 +235,9 @@ def main():
         epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     annotations = other_annotations(_DM_FILE, ' (D. melanogaster)', 'BDGP6') +\
-        other_annotations(_CE_FILE, ' (C. elegans)', 'WBcel235') + \
-        mouse_annotations(_MOUSE_FILE) + \
-        human_annotations(_HGNC_FILE)
+        other_annotations(_CE_FILE, ' (C. elegans)', 'WBcel235') +\
+        human_annotations(_HGNC_FILE) +\
+        mouse_annotations(_MOUSE_FILE)
 
     # Create annotations JSON file
     with open('annotations.json', 'w') as outfile:

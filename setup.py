@@ -90,7 +90,8 @@ setup(
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
         file-indexer = encoded.commands.file_indexer:main
-        annotation-indexer = encoded.commands.annotation_indexer:main
+        generate-annotations = encoded.commands.generate_annotations:main
+        index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
 
         [paste.app_factory]
