@@ -714,12 +714,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
-        if (file.replicate) {
-            if (!allReplicates[file.replicate.biological_replicate_number]) {
+        if (file.biological_replicates && file.biological_replicates.length == 1) {
+            var biological_replicate_number = file.biological_replicates[0]
+            if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
-                allReplicates[file.replicate.biological_replicate_number] = [];
+                allReplicates[biological_replicate_number] = [];
             }
-            allReplicates[file.replicate.biological_replicate_number].push(file);
+            allReplicates[biological_replicate_number].push(file);
         }
 
         // Note whether any files have an analysis step
@@ -1054,8 +1055,15 @@ var FileDetailView = function(node) {
 
                 {selectedFile.replicate ?
                     <div data-test="replicate">
-                        <dt>Associated replicates</dt>
+                        <dt>Associated replicates (bio, tech)</dt>
                         <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                    </div>
+                : null}
+
+                { selectedFile.biological_replicates && !selectedFile.replicate ?
+                    <div data-test="replicate">
+                        <dt>Biological Replicate(s)</dt>
+                        <dd>{'(' + selectedFile.biological_replicates.join(', ') + ')'}</dd>
                     </div>
                 : null}
 
