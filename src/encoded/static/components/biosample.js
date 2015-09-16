@@ -19,7 +19,6 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
-var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var Table = collection.Table;
@@ -34,6 +33,35 @@ var Panel = function (props) {
     }
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView {...props} />;
+};
+
+
+var RelatedItems = React.createClass({
+
+    getDefaultProps: function() {
+        return {Component: Table};
+    },
+
+    render: function() {
+        var Component = this.props.Component;
+        var context = this.props.context;
+        if (context === undefined) return null;
+        if (!context['@graph'].length) return null;
+        return (
+            <section>
+                <h3>{this.props.title}</h3>
+                <Component {...this.props} location_href={this.props.url} context={context} items={context['@graph']} />
+            </section>
+        );
+    }
+});
+
+
+var biosample_columns = {
+    accession: {title: 'Accession'},
+    biosample_type: {title: 'Type'},
+    biosample_term_name: {title: 'Term'},
+    description: {title: 'Description'},
 };
 
 
@@ -82,8 +110,6 @@ var Biosample = module.exports.Biosample = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
-        var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
         return (
             <div className={itemClass}>
@@ -400,26 +426,37 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingBiosample} />
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid} />
+                    <RelatedItems
+                        title={'Experiments using biosample ' + context.accession}
+                        Component={ExperimentTable} />
+                </fetched.FetchedData>
+
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={'/search?type=biosample&part_of.uuid=' + context.uuid} />
+                    <RelatedItems title="Biosamples that are part of this biosample"
+                                  columns={biosample_columns} />
+                </fetched.FetchedData>
+
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={'/search?type=biosample&derived_from.uuid=' + context.uuid} />
+                    <RelatedItems title="Biosamples that are derived from this biosample"
+                                  columns={biosample_columns} />
+                </fetched.FetchedData>
+
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={'/search?type=biosample&pooled_from.uuid=' + context.uuid} />
+                    <RelatedItems title="Biosamples that are pooled from this biosample"
+                                  columns={biosample_columns} />
+                </fetched.FetchedData>
+
             </div>
         );
     }
 });
 
 globals.content_views.register(Biosample, 'biosample');
-
-
-var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Experiments using biosample {context.accession}</h3>
-                <ExperimentTable {...this.props} />
-            </div>
-        );
-    }
-});
 
 
 var MaybeLink = React.createClass({
@@ -435,19 +472,10 @@ var MaybeLink = React.createClass({
 });
 
 
-var donor_biosample_columns = {
-    accession: {title: 'Accession'},
-    biosample_type: {title: 'Type'},
-    biosample_term_name: {title: 'Term'},
-    description: {title: 'Description'},
-};
-
-
 var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
-        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
         return (
             <div>
                 <dl className="key-value">
@@ -507,13 +535,10 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 </dl>
 
                 {!biosample ?
-                    <div>
-                        <h2>Biosamples from this donor</h2>
-                        <fetched.FetchedData>
-                            <fetched.Param name="context" url={biosamples_url} />
-                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
-                        </fetched.FetchedData>
-                    </div>
+                    <fetched.FetchedData>
+                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
+                        <RelatedItems title="Biosamples from this donor" columns={biosample_columns} />
+                    </fetched.FetchedData>
                 : ''}
             </div>
         );
@@ -534,8 +559,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
         }
-
-        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
 
         return (
             <div>
@@ -620,13 +643,10 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 </dl>
 
                 {!biosample ?
-                    <div>
-                        <h2>Biosamples from this strain</h2>
-                        <fetched.FetchedData>
-                            <fetched.Param name="context" url={biosamples_url} />
-                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
-                        </fetched.FetchedData>
-                    </div>
+                    <fetched.FetchedData>
+                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
+                        <RelatedItems title="Biosamples from this strain" columns={biosample_columns} />
+                    </fetched.FetchedData>
                 : ''}
             </div>
         );
@@ -653,8 +673,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
             var donorUrl = url.parse(biosample.donor.url);
             donorUrlDomain = donorUrl.hostname || '';
         }
-
-        var biosamples_url = '/search/?type=biosample&donor.uuid=' + context.uuid;
 
         return (
             <div>
@@ -747,13 +765,10 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                 : null}
 
                 {!biosample ?
-                    <div>
-                        <h2>Biosamples from this strain</h2>
-                        <fetched.FetchedData>
-                            <fetched.Param name="context" url={biosamples_url} />
-                            <Table location_href={biosamples_url} columns={donor_biosample_columns} />
-                        </fetched.FetchedData>
-                    </div>
+                    <fetched.FetchedData>
+                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
+                        <RelatedItems title="Biosamples from this strain" columns={biosample_columns} />
+                    </fetched.FetchedData>
                 : ''}
 
             </div>

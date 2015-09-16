@@ -125,7 +125,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
-                        handleFetchStart: this.handleFetchStart,
                     }));
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
