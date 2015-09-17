@@ -185,7 +185,9 @@
                         "gff3",
                         "narrowPeak",
                         "candidate enhancer predictions",
-                        "enhancer predictions"
+                        "enhancer predictions",
+                        "tss peak",
+                        "idr peak"
                     ]
                 },
                 {

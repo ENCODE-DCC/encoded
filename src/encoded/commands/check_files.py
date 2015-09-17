@@ -153,6 +153,12 @@ def check_format(item, path):
         ('bigBed', 'candidate enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/candidate_enhancer_prediction.as' % encValData],
         ('bed', 'enhancer predictions'): ['-type=bed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
         ('bigBed', 'enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
+        ('bed', 'idr peak'): ['-type=bed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bigBed', 'idr peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bed', 'tss peak'): ['-type=bed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+        ('bigBed', 'tss peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+
+
         ('bedpe', None): ['-type=bed3+', chromInfo],
         ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
         #non-bed types
