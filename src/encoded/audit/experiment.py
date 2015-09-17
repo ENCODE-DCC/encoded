@@ -89,6 +89,41 @@ def audit_experiment_replicated(value, system):
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
+def audit_experiment_technical_replicates_same_library(value, system):
+    '''
+    Make sure technical replicates have diferent libraries associated with them, given 
+    the biological replicate number is same, while technical replicate number is different
+    '''    
+    
+    message = []
+    biological_replicates_dict = {}
+
+    for rep in value['replicates']:
+        bio_rep_num = rep['biological_replicate_number']
+        tech_rep_num = rep['technical_replicate_number']
+        if 'library' not in rep: # check if we are supposed to raise an ERROR in this case
+            detail = 'Replicate {} in a {} assay requires a library'.format(
+                rep['@id'],
+                value['assay_term_name']
+                )
+            raise AuditFailure('missing library', detail, level='ERROR')        
+        else: 
+            library = rep['library']
+            message.append(library['accession'])
+            if not bio_rep_num in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num]=[]            
+            if library['accession'] in biological_replicates_dict[bio_rep_num]:               
+                detail = 'Experiment {} has different technical replicates associated with the same library'.format(value['@id'])
+                raise AuditFailure('misuse of technical replication', detail, level='ERROR')
+            else:
+                biological_replicates_dict[bio_rep_num].append(library['accession'])
+
+    
+    
+
+        
+
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_documents(value, system):
     '''
     Experiments should have documents.  Protocol documents or some sort of document.

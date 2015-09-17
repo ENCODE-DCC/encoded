@@ -39,12 +39,20 @@ def base_library(testapp, lab, award, base_biosample):
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
 
-
 @pytest.fixture
 def base_replicate(testapp, base_experiment):
     item = {
         'biological_replicate_number': 1,
         'technical_replicate_number': 1,
+        'experiment': base_experiment['@id'],
+    }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def base_replicate_two(testapp, base_experiment):
+    item = {
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 2,
         'experiment': base_experiment['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
@@ -216,6 +224,20 @@ def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, b
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'unreplicated experiment' for error in errors_list)
+
+def test_audit_experiment_technical_replicates_same_library(testapp, base_experiment, base_replicate, base_replicate_two, base_library):   
+    #testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})      
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_replicate_two['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id'],base_replicate_two['@id']]})    
+    res = testapp.get(base_experiment['@id'] + '@@index-data')    
+
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+
+    assert any(error['category'] == 'misuse of technical replication' for error in errors_list)
 
 
 def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate, base_library):
