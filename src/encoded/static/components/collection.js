@@ -151,7 +151,7 @@ var lookup_column = function (result, column) {
         },
 
         guessColumns: function (props) {
-            var column_list = props.context.columns;
+            var column_list = props.columns || props.context.columns;
             var columns = [];
             if (!column_list || Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
