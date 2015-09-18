@@ -860,7 +860,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var pipelineInfo;
             var error;
             var fileId = 'file:' + file['@id'];
-            var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
+            var replicateNode = ( file.biological_replicates && file.biological_replicates.length==1 )? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
