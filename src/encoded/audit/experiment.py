@@ -90,12 +90,6 @@ def audit_experiment_replicated(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_technical_replicates_same_library(value, system):
-    '''
-    Make sure technical replicates have diferent libraries associated with them, given 
-    the biological replicate number is same, while technical replicate number is different
-    '''    
-    
-    message = []
     biological_replicates_dict = {}
 
     for rep in value['replicates']:
@@ -108,8 +102,7 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 )
             raise AuditFailure('missing library', detail, level='ERROR')        
         else: 
-            library = rep['library']
-            message.append(library['accession'])
+            library = rep['library']            
             if not bio_rep_num in biological_replicates_dict:
                 biological_replicates_dict[bio_rep_num]=[]            
             if library['accession'] in biological_replicates_dict[bio_rep_num]:               

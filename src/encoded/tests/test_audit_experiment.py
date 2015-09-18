@@ -226,7 +226,6 @@ def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, b
     assert any(error['category'] == 'unreplicated experiment' for error in errors_list)
 
 def test_audit_experiment_technical_replicates_same_library(testapp, base_experiment, base_replicate, base_replicate_two, base_library):   
-    #testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})      
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_replicate_two['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id'],base_replicate_two['@id']]})    
