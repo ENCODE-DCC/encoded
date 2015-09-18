@@ -90,28 +90,27 @@ def audit_experiment_replicated(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample.donor' ])
 def audit_experiment_isogeneity(value, system):
-    ## first record all the data and then make your validation. The data to be collected
-    ## is bio_rep_num, tech_rep_nu, donor_accession, donor_sex, donor_age
-    ## after gathering thi sinformation, you want to be able to go through all technical replicates of the same
-    ## biological replicate and make sure there was no technical hetrogeneity
-    ## if there was raise and ERROR
-    ## if there was not - we can take any of the technical replicates as a representative for this biological replicate.
-    ## after finishing to check isogeneity between technical replicates we can move to the list of biological replicate representatives constructed 
-    ## during traversal of the technical replicates
 
     biological_rep_donors_dict = {}
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
-        #print (rep.keys())
-        #print (rep['library']['biosample'].keys())
-        rep_donor = rep['library']['biosample']['donor']
-        #print (donor)
+
+        # check is we have to throw an error in case one of the library, bisoamle, donor are missing
+        if 'library' not in rep:
+            continue
+        lib = rep['library']
+        if 'biosample' not in lib:
+            continue
+        biosample = lib['biosample']
+        if 'donor' not in biosample:
+            continue
+
+        rep_donor = biosample['donor']
         if not bio_rep_num in biological_rep_donors_dict:
             biological_rep_donors_dict[bio_rep_num]={}
         biological_rep_donors_dict[bio_rep_num][tech_rep_num]=rep_donor
-    #print (biological_rep_donors_dict)
-    #print ("----------|||||||||||||||||||||||||||-----------------")
+
     # validating technical replicates isogeneity
     for tech_rep_dict_key in biological_rep_donors_dict.keys():
         donorsList = []
@@ -122,15 +121,23 @@ def audit_experiment_isogeneity(value, system):
             for tech_donor in donorsList:
                 if initialDonor['accession']!=tech_donor['accession']:
                     detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                    raise AuditFailure('Non-isogenic technical replicates', detail, level='ERROR')
+                    raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
                 if 'age' in initialDonor:
                     if (not 'age' in tech_donor) or (initialDonor['age']!=tech_donor['age']):
                         detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('Non-isogenic technical replicates', detail, level='ERROR')
+                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
+                else:
+                    if ('age' in tech_donor):
+                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
                 if 'sex' in initialDonor:
                     if (not 'sex' in tech_donor) or (initialDonor['sex']!=tech_donor['sex']):
                         detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('Non-isogenic technical replicates', detail, level='ERROR')    
+                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')   
+                else:
+                    if ('sex' in tech_donor):
+                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')   
 
     #validating bilogical replicates isogeneity
     bio_reps = []
@@ -144,15 +151,23 @@ def audit_experiment_isogeneity(value, system):
     for repli in bio_reps:
         if initialDonor['accession']!=repli['accession']:
             detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-            raise AuditFailure('Non-isogenic biological replicates,', detail, level='DCC_ACTION')
+            raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
         if 'age' in initialDonor:
             if (not 'age' in repli) or (initialDonor['age']!=repli['age']):
                 detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('Non-isogenic biological replicates', detail, level='DCC_ACTION')
+                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
+        else:
+            if  ('age' in repli):
+                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
+                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')   
         if 'sex' in initialDonor:
             if (not 'sex' in repli) or (initialDonor['sex']!=repli['sex']):
                 detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('Non-isogenic biologial replicates', detail, level='DCC_ACTION')    
+                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
+        else:
+            if  ('sex' in repli):
+                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
+                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')   
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
