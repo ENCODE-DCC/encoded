@@ -46,6 +46,19 @@ var makeValidationResult = function(validation) {
 };
 
 
+var ReadOnlyField = React.createClass({
+    render: function() {
+        var value = this.props.value;
+        return (
+            <div>
+                <ReactForms.Label label={value.node.props.get('label')} />
+                <span>{value.value}</span>
+            </div>
+        );
+    },
+});
+
+
 var RepeatingItem = React.createClass({
 
   render: function() {
@@ -154,7 +167,8 @@ var jsonSchemaToFormSchema = function(attrs) {
         p = attrs.jsonNode,
         props = attrs.props,
         id = attrs.id,
-        skip = attrs.skip || [];
+        skip = attrs.skip || [],
+        readonly = p.readonly || attrs.readonly || false;
     if (props === undefined) {
         props = {};
     }
@@ -182,16 +196,22 @@ var jsonSchemaToFormSchema = function(attrs) {
                 schemas: schemas,
                 jsonNode: p.properties[name],
                 props: subprops,
+                readonly: readonly,
             });
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
+        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
+                                                        noAddButton={readonly} noRemoveButton={readonly} />;
+        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items, readonly: readonly}));
     } else if (p.type == 'boolean') {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
     } else {
+        if (readonly || p.readonly) {
+            props.component = ReadOnlyField;
+            return ReactForms.schema.Scalar(props);
+        }
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
             props.validate = function(schema, value) { return (typeof value == 'string') ? value.match(p.pattern) : true; };
