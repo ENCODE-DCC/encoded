@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
 var audit = require('./audit');
@@ -11,6 +12,7 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var JSONSchemaForm = form.JSONSchemaForm;
+var Table = collection.Table;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
@@ -173,3 +175,48 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
 
 globals.content_views.register(ItemEdit, 'item', 'edit');
 globals.content_views.register(ItemEdit, 'collection', 'add');
+
+
+var FetchedRelatedItems = React.createClass({
+    getDefaultProps: function() {
+        return {Component: Table};
+    },
+
+    render: function() {
+        var {Component, context, title, url, ...props} = this.props;
+        if (context === undefined) return null;
+        var items = context['@graph'];
+        if (!items.length) return null;
+        var total = context['total'];
+
+        return (
+            <section>
+                <span className="pull-right">
+                    Displaying {items.length} of {total}{' '}
+                    {items.length < total ? <a className="btn btn-info btn-sm" href={url}>View all</a> : ''}
+                </span>
+                <h3>{title}</h3>
+                <Component {...props} context={context} items={items} showControls={false} />
+            </section>
+        );
+    },
+
+});
+
+
+var RelatedItems = module.exports.RelatedItems = React.createClass({
+    getDefaultProps: function() {
+        return {limit: 5};
+    },
+
+    render: function() {
+        var limited_url = this.props.url + '&limit=' + this.props.limit;
+        var unlimited_url = this.props.url + '&limit=all';
+        return (
+            <fetched.FetchedData>
+                <fetched.Param name="context" url={limited_url} />
+                <FetchedRelatedItems {...this.props} url={unlimited_url} />
+            </fetched.FetchedData>
+        );
+    },
+});

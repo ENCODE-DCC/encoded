@@ -6,15 +6,8 @@ var parseAndLogError = require('./mixins').parseAndLogError;
 var closest = require('../libs/closest');
 var offset = require('../libs/offset');
 var fetched = require('./fetched');
-var inputs = require('./inputs');
-var layout = require('./layout');
 var ga = require('google-analytics');
 var _ = require('underscore');
-
-var Layout = layout.Layout;
-var ItemPreview = inputs.ItemPreview;
-var ObjectPicker = inputs.ObjectPicker;
-var FileInput = inputs.FileInput;
 
 
 var filterValue = function(value) {
@@ -94,6 +87,7 @@ var FetchedFieldset = React.createClass({
 
     render: function() {
         var ReactForms = require('react-forms');
+        var inputs = require('./inputs');
         var schema = this.props.schema;
         var value = this.props.value;
         var externalValidation = value.externalValidation;
@@ -108,7 +102,7 @@ var FetchedFieldset = React.createClass({
             preview = (
                 <fetched.FetchedData>
                     <fetched.Param name="data" url={previewUrl} />
-                    <ItemPreview />
+                    <inputs.ItemPreview />
                 </fetched.FetchedData>
             );
             fieldset = (
@@ -155,6 +149,7 @@ var FetchedFieldset = React.createClass({
 
 var jsonSchemaToFormSchema = function(attrs) {
     var ReactForms = require('react-forms');
+    var inputs = require('./inputs');
     var schemas = attrs.schemas,
         p = attrs.jsonNode,
         props = attrs.props,
@@ -167,10 +162,11 @@ var jsonSchemaToFormSchema = function(attrs) {
     if (p.description) props.hint = p.description;
     if (p.type == 'object') {
         if (p.formInput == 'file') {
-            props.input = <FileInput />;
+            props.input = <inputs.FileInput />;
             return ReactForms.schema.Scalar(props);
         } else if (p.formInput == 'layout') {
-            props.input = <Layout editable={true} />;
+            var layout = require('./layout');
+            props.input = <layout.Layout editable={true} />;
             return ReactForms.schema.Scalar(props);
         } else {
             props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} />;
@@ -209,8 +205,9 @@ var jsonSchemaToFormSchema = function(attrs) {
         }
         if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
+            var inputs = require('./inputs');
             props.input = (
-                <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
+                <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
             );
         } else if (p.linkFrom) {
             // Backrefs have a linkFrom property in the form

@@ -4,12 +4,12 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
-var fetched = require('./fetched');
+var item = require('./item');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;
-var FetchedItems = fetched.FetchedItems;
+var RelatedItems = item.RelatedItems;
 
 var Target = module.exports.Target = React.createClass({
     render: function() {
@@ -36,7 +36,6 @@ var Target = module.exports.Target = React.createClass({
                 geneLink = baseUrl + baseName;
             }
         }
-        var experiments_url = '/search/?type=experiment&target.uuid=' + context.uuid;
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
@@ -60,8 +59,9 @@ var Target = module.exports.Target = React.createClass({
                     </dd>
                 </dl>
 
-                <FetchedItems url={experiments_url} Component={ExperimentTable}
-                              title={'Experiments using target ' + context.label} />
+                <RelatedItems title={'Experiments using target ' + context.label}
+                              url={'/search/?type=experiment&target.uuid=' + context.uuid}
+                              Component={ExperimentTable} />
             </div>
         );
     }

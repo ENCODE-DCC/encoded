@@ -102,7 +102,8 @@ var lookup_column = function (result, column) {
 
         getDefaultProps: function () {
             return {
-                defaultSortOn: 0
+                defaultSortOn: 0,
+                showControls: true,
             };
         },
 
@@ -305,7 +306,7 @@ var lookup_column = function (result, column) {
                 <div className="table-responsive">            
                     <table className={table_class + " table table-striped table-hover table-panel"}>
                         <thead className="sticky-header">
-                            <tr className="nosort table-controls">
+                            {this.props.showControls ? <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>
                                     {loading_or_total}
                                     {actions}
@@ -320,7 +321,7 @@ var lookup_column = function (result, column) {
                                         <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                     </form>
                                 </th>
-                            </tr>
+                            </tr> : ''}
                             <tr className="col-headers">
                                 {headers}
                             </tr>

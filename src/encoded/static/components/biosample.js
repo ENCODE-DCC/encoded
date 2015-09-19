@@ -3,14 +3,13 @@ var React = require('react');
 var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
-var collection = require('./collection');
 var globals = require('./globals');
 var dataset = require('./dataset');
-var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var image = require('./image');
+var item = require('./item');
 var reference = require('./reference');
 
 var DbxrefList = dbxref.DbxrefList;
@@ -21,7 +20,7 @@ var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
-var Table = collection.Table;
+var RelatedItems = item.RelatedItems;
 
 
 var Panel = function (props) {
@@ -34,26 +33,6 @@ var Panel = function (props) {
     var PanelView = globals.panel_views.lookup(props.context);
     return <PanelView {...props} />;
 };
-
-
-var RelatedItems = React.createClass({
-
-    getDefaultProps: function() {
-        return {Component: Table};
-    },
-
-    render: function() {
-        var {Component, context, title, url, ...props} = this.props;
-        if (context === undefined) return null;
-        if (!context['@graph'].length) return null;
-        return (
-            <section>
-                <h3>{title}</h3>
-                <Component {...props} location_href={url} context={context} items={context['@graph']} />
-            </section>
-        );
-    }
-});
 
 
 var biosample_columns = {
@@ -425,30 +404,22 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid} />
-                    <RelatedItems
-                        title={'Experiments using biosample ' + context.accession}
-                        Component={ExperimentTable} />
-                </fetched.FetchedData>
+                <RelatedItems
+                    title={'Experiments using biosample ' + context.accession}
+                    url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
+                    Component={ExperimentTable} />
 
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={'/search?type=biosample&part_of.uuid=' + context.uuid} />
-                    <RelatedItems title="Biosamples that are part of this biosample"
-                                  columns={biosample_columns} />
-                </fetched.FetchedData>
+                <RelatedItems title="Biosamples that are part of this biosample"
+                              url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
+                              columns={biosample_columns} />
 
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={'/search?type=biosample&derived_from.uuid=' + context.uuid} />
-                    <RelatedItems title="Biosamples that are derived from this biosample"
-                                  columns={biosample_columns} />
-                </fetched.FetchedData>
+                <RelatedItems title="Biosamples that are derived from this biosample"
+                              url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
+                              columns={biosample_columns} />
 
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={'/search?type=biosample&pooled_from.uuid=' + context.uuid} />
-                    <RelatedItems title="Biosamples that are pooled from this biosample"
-                                  columns={biosample_columns} />
-                </fetched.FetchedData>
+                <RelatedItems title="Biosamples that are pooled from this biosample"
+                              url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
+                              columns={biosample_columns} />
 
             </div>
         );
@@ -480,7 +451,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 <dl className="key-value">
                     <div data-test="accession">
                         <dt>Accession</dt>
-                        <dd><a href={context['@id']}>{context.accession}</a></dd>
+                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                     </div>
 
                     {context.aliases.length ?
@@ -534,10 +505,9 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 </dl>
 
                 {!biosample ?
-                    <fetched.FetchedData>
-                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
-                        <RelatedItems title="Biosamples from this donor" columns={biosample_columns} />
-                    </fetched.FetchedData>
+                    <RelatedItems title="Biosamples from this donor"
+                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
+                                  columns={biosample_columns} />
                 : ''}
             </div>
         );
@@ -564,7 +534,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 <dl className="key-value">
                     <div data-test="accession">
                         <dt>Accession</dt>
-                        <dd><a href={context['@id']}>{context.accession}</a></dd>
+                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                     </div>
 
                     {context.aliases.length ?
@@ -642,10 +612,9 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 </dl>
 
                 {!biosample ?
-                    <fetched.FetchedData>
-                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
-                        <RelatedItems title="Biosamples from this strain" columns={biosample_columns} />
-                    </fetched.FetchedData>
+                    <RelatedItems title="Biosamples from this strain"
+                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
+                                  columns={biosample_columns} />
                 : ''}
             </div>
         );
@@ -678,7 +647,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                 <dl className="key-value">
                     <div data-test="accession">
                         <dt>Accession</dt>
-                        <dd><a href={context['@id']}>{context.accession}</a></dd>
+                        <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
                     </div>
 
                     {context.aliases.length ?
@@ -764,10 +733,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                 : null}
 
                 {!biosample ?
-                    <fetched.FetchedData>
-                        <fetched.Param name="context" url={'/search/?type=biosample&donor.uuid=' + context.uuid} />
-                        <RelatedItems title="Biosamples from this strain" columns={biosample_columns} />
-                    </fetched.FetchedData>
+                    <RelatedItems title="Biosamples from this strain"
+                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
+                                  columns={biosample_columns} />
                 : ''}
 
             </div>
