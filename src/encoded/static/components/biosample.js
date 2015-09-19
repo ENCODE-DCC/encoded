@@ -43,14 +43,13 @@ var RelatedItems = React.createClass({
     },
 
     render: function() {
-        var Component = this.props.Component;
-        var context = this.props.context;
+        var {Component, context, title, url, ...props} = this.props;
         if (context === undefined) return null;
         if (!context['@graph'].length) return null;
         return (
             <section>
-                <h3>{this.props.title}</h3>
-                <Component {...this.props} location_href={this.props.url} context={context} items={context['@graph']} />
+                <h3>{title}</h3>
+                <Component {...props} location_href={url} context={context} items={context['@graph']} />
             </section>
         );
     }

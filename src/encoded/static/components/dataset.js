@@ -162,9 +162,6 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
 });
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
-    getDefaultProps: function() {
-        return {title: 'Experiments'};
-    },
 
     render: function() {
         var experiments;
@@ -181,7 +178,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <div>
-                <h3>{this.props.title}</h3>
+                {this.props.title ? <h3>{this.props.title}</h3> : ''}
                 <div className="table-responsive">
                     <table className="table table-panel table-striped table-hover">
                         <thead>
