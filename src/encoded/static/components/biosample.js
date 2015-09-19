@@ -479,8 +479,8 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
             <div>
                 <dl className="key-value">
                     <div data-test="accession">
-                        <dt>AccessionASDF</dt>
-                        <dd>{context.accession}</dd>
+                        <dt>Accession</dt>
+                        <dd><a href={context['@id']}>{context.accession}</a></dd>
                     </div>
 
                     {context.aliases.length ?
@@ -564,7 +564,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 <dl className="key-value">
                     <div data-test="accession">
                         <dt>Accession</dt>
-                        <dd>{context.accession}</dd>
+                        <dd><a href={context['@id']}>{context.accession}</a></dd>
                     </div>
 
                     {context.aliases.length ?
@@ -678,7 +678,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                 <dl className="key-value">
                     <div data-test="accession">
                         <dt>Accession</dt>
-                        <dd>{context.accession}</dd>
+                        <dd><a href={context['@id']}>{context.accession}</a></dd>
                     </div>
 
                     {context.aliases.length ?
