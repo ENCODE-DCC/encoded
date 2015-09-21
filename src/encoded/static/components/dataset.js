@@ -477,7 +477,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             {humanFileSize(file.file_size)}
                         </td>
                         <td>{file.file_type}</td>
-                        <td>{file.biological_replicates.sort(function(a,b){ return a - b }).join(', ')}</td>
+                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b }).join(', ') : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
@@ -501,7 +501,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         </td>
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
-                        <td>{file.biological_replicates.sort(function(a,b){ return a - b }).join(', ')}</td>
+                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b }).join(', '): null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.assembly}</td>
                         <td>{file.genome_annotation}</td>
