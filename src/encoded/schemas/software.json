@@ -99,6 +99,7 @@
                 "title": "Used by",
                 "type": "string",
                 "enum": [
+                    "modERN",
                     "ENCODE",
                     "mouseENCODE",
                     "modENCODE",

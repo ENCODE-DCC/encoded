@@ -39,6 +39,9 @@
                  "title": "Type",
                  "type": "string",
                  "enum": [
+                     "pooling",
+                     "depth normalization",
+                     "signal normalization",
                      "genome indexing",
                      "genome segmentation",
                      "fastq concatenation",

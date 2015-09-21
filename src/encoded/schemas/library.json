@@ -110,6 +110,20 @@
                 "linkTo": "document"
             }
         },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^GEO:(GSM|GSE)\\d+$"
+            }
+        },
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
