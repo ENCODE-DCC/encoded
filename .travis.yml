@@ -5,8 +5,9 @@ cache:
     - eggs
     - .npm
 addons:
-  apt_packages:
-  - graphviz
+  apt:
+    packages:
+      - graphviz
 env:
   global:
     - secure: |-
@@ -17,7 +18,7 @@ env:
         WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
-    - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
+    - PATH="$HOME/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
     - python: "2.7"
@@ -27,7 +28,9 @@ matrix:
     - python: "3.4"
       env: BROWSER=
 before_install:
-  - whereis elasticsearch
+  - mkdir $HOME/elasticsearch
+  - curl https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.tar.gz | tar -zx --strip-components=1 --directory=$HOME/elasticsearch
+  - which elasticsearch
   - postgres --version
   - initdb --version
   - elasticsearch -v
