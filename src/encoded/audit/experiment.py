@@ -424,6 +424,7 @@ def audit_experiment_biosample_term(value, system):
         'target',
         'replicates',
         'replicates.antibody',
+        'replicates.antibody.lot_reviews'
         'replicates.antibody.lot_reviews.organisms',
         'replicates.library',
         'replicates.library.biosample',
@@ -462,21 +463,19 @@ def audit_experiment_antibody_eligible(value, system):
             continue
 
         biosample = lib['biosample']
-        organism = biosample['organism']['name']
+        organism = biosample['organism']['@id']
+
+        # We only want the audit raised if the organism in lot reviews matches that of the biosample
+        # and if is not eligible for new data. Otherwise, it doesn't apply and we shouldn't raise a stink
 
         if 'histone modification' in target['investigated_as']:
             for lot_review in antibody['lot_reviews']:
-                if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000'):
-                    organism_match = False
+                if (lot_review['status'] == 'awaiting lab characterization'):
                     for lot_organism in lot_review['organisms']:
-                        if organism == lot_organism['name']:
-                            organism_match = True
-                    if not organism_match:
-                        detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                        yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
-                else:
-                    detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                    yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+                        if organism == lot_organism:
+                            detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
+                            yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
