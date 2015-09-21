@@ -62,6 +62,20 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(bloomington|dssc):.+$"
+            }
         }
     }
 }

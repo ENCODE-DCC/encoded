@@ -21,6 +21,7 @@ controlRequiredAssayList = [
     'RIP-seq',
     'RAMPAGE',
     'CAGE',
+    'single cell isolation followed by RNA-seq',
     'shRNA knockdown followed by RNA-seq'
     ]
 
