@@ -168,7 +168,8 @@ var jsonSchemaToFormSchema = function(attrs) {
         props = attrs.props,
         id = attrs.id,
         skip = attrs.skip || [],
-        readonly = p.readonly || attrs.readonly || false;
+        readonly = p.readonly || attrs.readonly || false,
+        showReadOnly = attrs.showReadOnly;
     if (props === undefined) {
         props = {};
     }
@@ -189,6 +190,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         for (name in p.properties) {
             if (name == 'uuid' || name == 'schema_version') continue;
             if (p.properties[name].calculatedProperty) continue;
+            if (!showReadOnly && p.properties[name].readonly) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
             var subprops = {required: required};
@@ -197,13 +199,19 @@ var jsonSchemaToFormSchema = function(attrs) {
                 jsonNode: p.properties[name],
                 props: subprops,
                 readonly: readonly,
+                showReadOnly: showReadOnly,
             });
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
         props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
                                                         noAddButton={readonly} noRemoveButton={readonly} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items, readonly: readonly}));
+        return ReactForms.schema.List(props, jsonSchemaToFormSchema({
+            schemas: schemas,
+            jsonNode: p.items,
+            readonly: readonly,
+            showReadOnly: showReadOnly,
+        }));
     } else if (p.type == 'boolean') {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
@@ -461,6 +469,10 @@ var Form = module.exports.Form = React.createClass({
 
 var JSONSchemaForm = module.exports.JSONSchemaForm = React.createClass({
 
+    getDefaultProps: function() {
+        return {showReadOnly: true};
+    },
+
     getInitialState: function() {
         var type = this.props.type;
         var schemas = this.props.schemas;
@@ -468,7 +480,8 @@ var JSONSchemaForm = module.exports.JSONSchemaForm = React.createClass({
             schema: jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: schemas[type],
-                id: this.props.id
+                id: this.props.id,
+                showReadOnly: this.props.showReadOnly,
             }),
             value: this.props.context || jsonSchemaToDefaultValue(schemas[type]),
         };

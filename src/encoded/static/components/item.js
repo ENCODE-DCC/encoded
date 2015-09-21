@@ -140,7 +140,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             form = (
                 <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <JSONSchemaForm {...this.props} context={null} type={type} action={action} method="POST" onFinish={this.finished} />
+                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished}
+                                    showReadOnly={false} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
