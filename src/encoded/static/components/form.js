@@ -48,11 +48,22 @@ var makeValidationResult = function(validation) {
 
 var ReadOnlyField = React.createClass({
     render: function() {
-        var value = this.props.value;
+        var value;
+        if (this.props.preview) {
+            var url = this.props.value.value;
+            value = (
+                <fetched.FetchedData>
+                    <fetched.Param name="data" url={url} />
+                    <ItemPreview />
+                </fetched.FetchedData>
+            );
+        } else {
+            value = this.props.value.value;
+        }
         return (
             <div>
-                <ReactForms.Label label={value.node.props.get('label')} />
-                <span>{value.value}</span>
+                <ReactForms.Label label={this.props.value.node.props.get('label')} />
+                <span>{value}</span>
             </div>
         );
     },
@@ -217,7 +228,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         return ReactForms.schema.Scalar(props);
     } else {
         if (readonly || p.readonly) {
-            props.component = ReadOnlyField;
+            props.component = <ReadOnlyField preview={p.linkTo}/>;
             return ReactForms.schema.Scalar(props);
         }
         if (props.required) props.component = <ReactForms.Field className="required" />;
