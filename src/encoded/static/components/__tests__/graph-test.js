@@ -68,7 +68,7 @@ describe('Experiment Graph', function() {
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
             graph = assembleGraph(context_graph, '', files);
         });
-
+        console.log("graph done");
         it('Has the correct number of nodes and edges', function() {
             expect(graph.nodes.length).toEqual(4);
             expect(graph.edges.length).toEqual(3);
