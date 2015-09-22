@@ -280,7 +280,10 @@ def generate_batch_hubs(context, request):
         # if files.file_format is a input param
         if 'files.file_format' in param_list:
             params['files.file_format'] = param_list['files.file_format']
-            path = '/search/?%s' % urlencode(params, True)
+            if 'region' in param_list:
+                path = '/region-search/?%s' % urlencode(params, True)
+            else:
+                path = '/search/?%s' % urlencode(params, True)
             for result in request.embed(path, as_user=True)['@graph']:
                 if 'files' in result:
                     for f in result['files']:
