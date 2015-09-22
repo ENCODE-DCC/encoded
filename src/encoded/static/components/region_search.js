@@ -170,7 +170,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var filters = context['filters'];
         var facets = context['facets'];
         var total = context['total'];
-        console.log(context);
+        var batch_hub_disabled = total > 500;
         return (
           <div>
               <h2>Region search</h2>
