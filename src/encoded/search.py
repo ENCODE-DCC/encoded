@@ -332,11 +332,14 @@ def search(context, request, search_type=None):
         if '*' in doc_types:
             doc_types = []
 
-        # handling invalid item types
-        bad_types = [t for t in doc_types if t not in root.by_item_type]
+        # Check for invalid types including abstract types
+        bad_types = [t for t in doc_types if t not in types or not hasattr(types[t], 'item_type')]
         if bad_types:
             result['notification'] = "Invalid type: %s" ', '.join(bad_types)
             return result
+
+        # Normalize to item_type
+        doc_types = [types[name].item_type for name in doc_types]
     else:
         doc_types = [search_type]
 
@@ -350,13 +353,14 @@ def search(context, request, search_type=None):
                          'software']
     else:
         for item_type in doc_types:
+            ti = types[item_type]
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items() if k != 'type' and v != item_type
+                for k, v in request.params.items() if not (k == 'type' and types[v] is ti)
             ])
             result['filters'].append({
                 'field': 'type',
-                'term': item_type,
+                'term': ti.item_type,
                 'remove': '{}?{}'.format(request.path, qs)
             })
 

@@ -134,5 +134,8 @@ class TypesTool(object):
 
         return ti
 
+    def __contains__(self, name):
+        return name in self.all
+
     def __getitem__(self, name):
         return self.all[name]
