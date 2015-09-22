@@ -184,6 +184,9 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
+        "derived_from": [
+            "ENCFF001MWZ", "ENCFF001MXA"
+        ],
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSig.bigWig",
         "uuid": "1050b698-f505-4ce5-96e5-6909e3a2acc7"
     },

@@ -58,10 +58,8 @@
         },
         "comment": {
             "title": "Comment",
-            "description": "Additional information pertaining to the characterization.",
-            "type": "string",
-            "default": "",
-            "permission": "review"
+            "description": "Additional information pertaining to the characterization that the submitter wishes to disclose.",
+            "type": "string"
         }
     }
 }
