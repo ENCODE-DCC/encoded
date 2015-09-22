@@ -41,7 +41,8 @@ _FACETS = [
     ('replicates.library.biosample.donor.organism.scientific_name', {
         'title': 'Organism'
     }),
-    ('organ_slims', {'title': 'Organ'})
+    ('organ_slims', {'title': 'Organ'}),
+    ('assembly', {'title': 'Genome assembly'})
 ]
 
 
