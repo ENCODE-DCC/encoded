@@ -102,7 +102,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'dataset': file_exp2['uuid'],
         'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
-        'md5sum': '100d8c998f00b204e9800998ecf8427e',
+        'md5sum': '100d8c998f00b204e9800908ecf8428c',
         'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -112,13 +112,23 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
 
 
 def test_audit_paired_with(testapp, file1):
-    testapp.patch_json(file1['@id'] + '?validate=false', {'paired_end': '2'})
+    testapp.patch_json(file1['@id'], {'paired_end': '1'})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with' for error in errors_list)
+
+
+def test_audit_mismatched_paired_with(testapp, file1, file4):
+    testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched paired_with' for error in errors_list)
 
 
 def test_audit_file_size(testapp, file1):
