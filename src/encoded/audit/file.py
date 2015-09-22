@@ -22,6 +22,7 @@ paired_end_assays = [
     ]
 
 
+
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
@@ -255,3 +256,87 @@ def audit_file_paired_ended_run_type(value, system):
             detail = 'File {} has a paired-ended run_type but is missing a paired_end=2 mate'.format(
                 value['@id'])
             raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')
+
+
+@audit_checker('file', frame=['quality_metrics',
+                              'analysis_step_version',
+                              'analysis_step_version.analysis_step',
+                              'analysis_step_version.analysis_step.pipelines'],
+               condition=rfa('ENCODE3'))
+def audit_file_read_depth(value, system):
+    '''
+    An alignment file from the ENCODE Processing Pipeline should have read depth
+    in accordance with the criteria
+    '''   
+    
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['file_format'] != 'bam':
+        return
+
+    if value['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    quality_metrics = value.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
+            value['@id'])
+        yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+        return
+
+    read_depth = 0
+    
+    for metric in quality_metrics:
+        if "uniqueMappedCount" in metric:
+            read_depth = metric['uniqueMappedCount']            
+            continue
+        else:
+            if 'Uniquely mapped reads number' in metric:
+                read_depth = metric['Uniquely mapped reads number']
+                continue
+    if read_depth == 0:
+        detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
+            value['@id'])
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        return
+
+    read_depth_criteria = {
+        'Small RNA-seq single-end pipeline': 50000000,
+        'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
+        'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
+        'RAMPAGE (paired-end, stranded)': 30000000,
+        'ChIP-seq of histone modifications': 45000000,
+    }
+
+    if 'analysis_step_version' not in value:
+        detail = 'ENCODE Processed alignment file {} has no analysis step version'.format(
+                value['@id'])
+        yield AuditFailure('missing analysis step version', detail, level='DCC_ACTION') 
+        return
+    if 'analysis_step' not in value['analysis_step_version']:
+        detail = 'ENCODE Processed alignment file {} has no analysis step in {}'.format(
+                value['@id'],
+                value['analysis_step_version']['@id'])
+        yield AuditFailure('missing analysis step', detail, level='DCC_ACTION')    
+        return
+    if 'pipelines' not in value['analysis_step_version']['analysis_step']:
+    	detail = 'ENCODE Processed alignment file {} has no pipelines in {}'.format(
+                value['@id'],
+                value['analysis_step_version']['analysis_step']['@id'])
+    	yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+    	return
+    
+    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+		
+        if pipeline['title'] not in read_depth_criteria:
+            return
+        if read_depth < read_depth_criteria[pipeline['title']]:
+            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                value['@id'],
+                read_depth, 
+                pipeline['title'],
+                read_depth_criteria[pipeline['title']])
+            yield AuditFailure('not sufficient read depth', detail, level='ERROR')
+            return
