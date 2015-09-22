@@ -111,11 +111,11 @@ def sanitize_coordinates(term):
 def get_annotation_coordinates(es, id):
     ''' Gets annotation coordinates from annotation index in ES '''
 
-    chromosome, start, end  = '', '', ''
+    chromosome, start, end = '', '', ''
     try:
         es_results = es.get(index='annotations', doc_type='default', id=id)
     except:
-        return chromosome, start, end
+        return (chromosome, start, end)
     else:
         annotations = es_results['_source']['annotations']
         for annotation in annotations:
@@ -203,7 +203,7 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    term = request.params.get('region', '*')
+    region = request.params.get('region', '*')
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -214,30 +214,28 @@ def region_search(context, request):
             size = int(size)
         except ValueError:
             size = 25
-    if term == '':
-        term = '*'
+    if region == '':
+        region = '*'
 
+    assembly = request.params.get('genome', '*')
     annotation = request.params.get('annotation', '*')
-    assembly = request.params.get('assembly', 'hg19')
-    if term != '*' and assembly != '*':
-        if len(term.split(':')) < 2:
-            term = term.lower()
-            if term.startswith('rs'):
-                chromosome, start, end = get_rsid_coordinates(term)
-            elif term.startswith('ens'):
-                chromosome, start, end = get_ensemblid_coordinates(term)
-            elif annotation != '*':
-                chromosome, start, end = get_annotation_coordinates(es, annotation)
-            else:
-                result['notification'] = 'Please enter valid coordinates or select annotation'
-                return result
+    if annotation != '*':
+        chromosome, start, end = get_annotation_coordinates(es, region)
+    elif region != '*':
+        region = region.lower()
+        if region.startswith('rs'):
+            chromosome, start, end = get_rsid_coordinates(region)
+        elif region.startswith('ens'):
+            chromosome, start, end = get_ensemblid_coordinates(region)
+        elif region.startswith('chr'):
+            chromosome, start, end = sanitize_coordinates(region)
         else:
-            chromosome, start, end = sanitize_coordinates(term)
-    elif annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation)
+            result['notification'] = 'Please select valid annotation or enter coordinates'
+            return result
     else:
         result['notification'] = 'Please enter valid coordinates'
         return result
+
     # Check if there are valid coordinates
     if chromosome == '' or start == '' or end == '':
         result['notification'] = 'No annotations found'
@@ -315,7 +313,7 @@ def suggest(context, request):
         }
     }
     try:
-        results = es.suggest(index='annotations', body=query)
+        results = es.suggest(index='annotaions', body=query)
     except:
         return {}
     else:

@@ -49,7 +49,6 @@ def human_annotations(es):
     header = []
     annotations = []
     for row in response.content.decode('utf-8').split('\n'):
-
         # Populating headers and skipping header row
         if len(header) == 0:
             header = row.split('\t')
@@ -69,7 +68,9 @@ def human_annotations(es):
         doc = {'annotations': []}
         doc['name_suggest'] = {
             'input': [r['Approved Name'] + species,
-                      r['Approved Symbol'] + species],
+                      r['Approved Symbol'] + species,
+                      r['HGNC ID'],
+                      r['Entrez Gene ID'] + ' (Gene ID)'],
             'payload': {'id': r['HGNC ID']}
         }
         doc['id'] = r['HGNC ID']
@@ -148,6 +149,9 @@ def mouse_annotations(mouse_file):
 
         if 'MGI symbol' in r and r['MGI symbol'] is not None:
             doc['name_suggest']['input'].append(r['MGI symbol'] + species)
+
+        if 'MGI ID' in r and r['MGI ID'] is not None:
+            doc['name_suggest']['input'].append(r['MGI ID'] + species)
 
         doc['annotations'].append({
             'assembly_name': 'GRCm38',

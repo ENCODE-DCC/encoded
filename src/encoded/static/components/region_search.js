@@ -57,8 +57,6 @@ var AdvSearch = React.createClass({
 
     contextTypes: {
         autocompleteTermChosen: React.PropTypes.bool,
-        onAutocompleteChosenChange: React.PropTypes.func,
-        onAutocompleteFocusChange: React.PropTypes.func,
         autocompleteHidden: React.PropTypes.bool,
         onAutocompleteHiddenChange: React.PropTypes.func,
         location_href: React.PropTypes.string
@@ -70,9 +68,6 @@ var AdvSearch = React.createClass({
 
     handleChange: function(e) {
         this.newSearchTerm = e.target.value;
-        this.context.onAutocompleteHiddenChange(false);
-        this.context.onAutocompleteChosenChange(false);
-        // Now let the timer update the search terms state when it gets around to it.
     },
 
     handleAutocompleteClick: function(term, id, name) {
@@ -80,16 +75,11 @@ var AdvSearch = React.createClass({
         var inputNode = this.refs.annotation.getDOMNode();
 
         inputNode.value = this.newSearchTerm = term;
+        console.log(inputNode);
         newTerms[name] = id;
         this.setState({terms: newTerms});
-        this.context.onAutocompleteHiddenChange(true);
-        this.context.onAutocompleteChosenChange(true);
         inputNode.focus();
         // Now let the timer update the terms state when it gets around to it.
-    },
-
-    handleFocus: function(focused) {
-        this.context.onAutocompleteFocusChange(focused);
     },
 
     componentDidMount: function() {
@@ -102,7 +92,7 @@ var AdvSearch = React.createClass({
     },
 
     tick: function() {
-        if (!this.context.autocompleteHidden && (this.newSearchTerm !== this.state.searchTerm)) {
+        if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({searchTerm: this.newSearchTerm});
         }
     },
@@ -121,21 +111,16 @@ var AdvSearch = React.createClass({
                             {Object.keys(this.state.terms).map(function(key) {
                                 return <input type="hidden" name={key} value={this.state.terms[key]} />;
                             }, this)}
-                            <input type="text" className="form-control" placeholder="Enter one of chrx:start-end, RSID, Ensembl ID"
-                                ref="region" name="region" default={region} key={region} />
-                            <label> -- OR -- </label>
-                            <input ref="annotation" type="text" className="form-control" onChange={this.handleChange}
-                                onFocus={this.handleFocus.bind(null,true)} onBlur={this.handleFocus.bind(null,false)}
+                            <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange}
                                 placeholder="Enter any one of Gene name, Symbol, Synonyms, Gene ID, HGNC ID" />
                             {this.state.searchTerm ?
                                 <FetchedData loadingComplete={true}>
                                     <Param name="auto" url={'/suggest/?q=' + this.state.searchTerm} />
-                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} hide={this.context.autocompleteHidden} handleClick={this.handleAutocompleteClick} />
+                                    <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                 </FetchedData>
                             : null}
                         </div>
                         <div className="form-group col-md-2">
-                            <label htmlFor="spacing">&nbsp;</label>
                             <input type="submit" value="Search" className="btn btn-sm btn-info adv-search-submit" />
                         </div>
                     </div>
