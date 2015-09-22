@@ -175,7 +175,8 @@
                     "pilot phase publication",
                     "model organism biology",
                     "tutorial",
-                    "genomic annotations"
+                    "genomic annotations",
+                    "production"
                 ]
             }      
         },
@@ -190,6 +191,7 @@
                 "ENCODE",
                 "mouseENCODE",
                 "modENCODE",
+                "Roadmap",
                 "community"
                 ]
             }

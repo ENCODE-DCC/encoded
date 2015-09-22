@@ -20,7 +20,10 @@
         "nucleic_acid_starting_quantity_units": "cell-equivalent",
         "size_range": "100-300",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290"
+        "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
+        "dbxrefs": [
+            "GEO:GSM433174"
+        ]
     },
     {
         "accession": "ENCLB310ZZZ",
