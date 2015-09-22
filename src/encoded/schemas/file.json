@@ -186,8 +186,8 @@
                         "narrowPeak",
                         "candidate enhancer predictions",
                         "enhancer predictions",
-                        "tss peak",
-                        "idr peak"
+                        "tss_peak",
+                        "idr_peak"
                     ]
                 },
                 {
