@@ -201,7 +201,15 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                               </span>
                                           : null}
                                       </span>
-                                    }
+                                  }
+
+                                  {context['batch_hub'] ?
+                                      <span className="pull-right">
+                                          <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
+                                             href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
+                                      </span>
+                                  :null}
+
                               </h4>
                               <hr />
                               <ul className="nav result-table" id="result-table">

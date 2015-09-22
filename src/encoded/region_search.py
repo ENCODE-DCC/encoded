@@ -6,7 +6,8 @@ from .search import (
     set_filters,
     set_facets,
     get_filtered_query,
-    load_facets
+    load_facets,
+    hgConnect
 )
 from collections import OrderedDict
 import requests
@@ -124,41 +125,6 @@ def get_annotation_coordinates(es, id):
                     end=annotation['end']
                 )
     return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
-
-
-def get_derived_files(results, file_uuids):
-    ''' Associate bed and bigBed files to draw tracks '''
-
-    new_results = []
-    for item in results:
-        item['highlights'] = []
-        new_files = []
-        for f in item['files']:
-            if 'file_format' not in f or f['file_format'] not in ['bigBed', 'bed']:
-                continue
-            if 'derived_from' in f:
-                if f['uuid'] in file_uuids:
-                    # handling bed files derived from bigBed files
-                    for derived_file in f['derived_from']:
-                        if derived_file['file_format'] == 'bigBed':
-                            item['highlights'].append({
-                                'bed': f['accession'],
-                                'bigBed': derived_file['accession']
-                            })
-                            new_files.append(derived_file)
-                else:
-                    # Handing bigbed files derived from bed files
-                    for derived_file in f['derived_from']:
-                        if derived_file['uuid'] in file_uuids:
-                            item['highlights'].append({
-                                'bed': derived_file['accession'],
-                                'bigBed': f['accession']
-                            })
-                            new_files.append(f)
-        item['files'] = new_files
-        if len(item['files']) > 0:
-            new_results.append(item)
-    return new_results
 
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
@@ -294,8 +260,6 @@ def region_search(context, request):
         if hit['_id']not in file_uuids:
             file_uuids.append(hit['_id'])
     file_uuids = list(set(file_uuids))
-    #result_fields = load_columns(request, ['experiment'], result)
-    #result_fields = result_fields.union(_REGION_FIELDS)
     result['notification'] = 'No results found'
 
     # if more than one peak found return the experiments with those peak files
@@ -316,11 +280,13 @@ def region_search(context, request):
         load_results(request, es_results, result)
         load_facets(es_results, _FACETS, result)
         if len(result['@graph']):
-            new_results = get_derived_files(result['@graph'], file_uuids)
-            if len(new_results) > 0:
-                result['notification'] = 'Success'
+            result['notification'] = 'Success'
             result['total'] = es_results['hits']['total']
-            result['@graph'] = new_results
+            search_params = request.query_string.replace('&', ',,')
+            hub = request.route_url('batch_hub',
+                                    search_params=search_params,
+                                    txt='hub.txt')
+            result['batch_hub'] = hgConnect + hub
     return result
 
 
