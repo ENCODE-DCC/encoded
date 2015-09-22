@@ -434,7 +434,7 @@ def audit_experiment_biosample_term(value, system):
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
-    if value['status'] in ['deleted', 'proposed']:
+    if value['status'] in ['deleted', 'proposed', 'preliminary']:
         return
 
     if value.get('assay_term_name') not in targetBasedAssayList:
@@ -484,7 +484,7 @@ def audit_experiment_antibody_eligible(value, system):
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
                     for lot_organism in lot_review['organisms']:
-                        eligible_biosample = (lot_review['biosample_term_id'], lot_organism['name'])
+                        eligible_biosample = (lot_review['biosample_term_id'], lot_organism['@id'])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
