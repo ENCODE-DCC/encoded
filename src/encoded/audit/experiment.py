@@ -91,31 +91,32 @@ def audit_experiment_replicated(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_technical_replicates_same_library(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
     biological_replicates_dict = {}
 
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
-        if 'library' not in rep: # check if we are supposed to raise an ERROR in this case
+        if 'library' not in rep: 
             detail = 'Replicate {} in a {} assay requires a library'.format(
                 rep['@id'],
                 value['assay_term_name']
                 )
-            raise AuditFailure('missing library', detail, level='ERROR')        
+            raise AuditFailure('missing library', detail, level='DCC ACTION')        
         else: 
             library = rep['library']            
             if not bio_rep_num in biological_replicates_dict:
                 biological_replicates_dict[bio_rep_num]=[]            
             if library['accession'] in biological_replicates_dict[bio_rep_num]:               
                 detail = 'Experiment {} has different technical replicates associated with the same library'.format(value['@id'])
-                raise AuditFailure('misuse of technical replication', detail, level='ERROR')
+                raise AuditFailure('misuse of technical replication', detail, level='DCC_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
     
-    
-
-        
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_documents(value, system):
