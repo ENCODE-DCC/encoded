@@ -80,9 +80,11 @@ def index(request):
         'last_xmin': last_xmin,
     }
 
+    flush = False
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
         invalidated = list(all_uuids(request.root, types))
+        flush = True
     else:
         txns = session.query(TransactionRecord).filter(
             TransactionRecord.xid >= last_xmin,
@@ -129,6 +131,7 @@ def index(request):
         })
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.root))
+            flush = True
         else:
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
@@ -149,6 +152,9 @@ def index(request):
             es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
         es.indices.refresh(index=INDEX)
+
+        if flush:
+            es.indices.flush_synced(index=INDEX)  # Faster recovery on ES restart
 
     if first_txn is not None:
         result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)

@@ -181,6 +181,7 @@
                         "image/gif",
                         "text/html",
                         "image/png",
+                        "image/svs",
                         "text/autosql"
                     ]
                 },
