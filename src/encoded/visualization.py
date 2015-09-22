@@ -263,6 +263,10 @@ def generate_batch_hubs(context, request):
     txt = request.matchdict['txt']
     param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
+    view = 'search'
+    if 'region' in param_list:
+        view = 'region-search'
+
     if len(request.matchdict) == 3:
 
         # Should generate a HTML page for requests other than trackDb.txt
@@ -280,10 +284,7 @@ def generate_batch_hubs(context, request):
         # if files.file_format is a input param
         if 'files.file_format' in param_list:
             params['files.file_format'] = param_list['files.file_format']
-            if 'region' in param_list:
-                path = '/region-search/?%s' % urlencode(params, True)
-            else:
-                path = '/search/?%s' % urlencode(params, True)
+            path = '/%s/?%s' % (view, urlencode(params, True))
             for result in request.embed(path, as_user=True)['@graph']:
                 if 'files' in result:
                     for f in result['files']:
@@ -291,7 +292,7 @@ def generate_batch_hubs(context, request):
                             results.append(result)
                         break
         else:
-            path = '/search/?%s' % urlencode(params, True)
+            path = '/%s/?%s' % (view, urlencode(params, True))
             results = request.embed(path, as_user=True)['@graph']
         trackdb = ''
         for i, experiment in enumerate(results):
@@ -306,7 +307,7 @@ def generate_batch_hubs(context, request):
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        path = '/search/?%s' % urlencode(param_list, True)
+        path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:
