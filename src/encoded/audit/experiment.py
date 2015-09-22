@@ -97,6 +97,7 @@ def audit_experiment_isogeneity(value, system):
         tech_rep_num = rep['technical_replicate_number']
 
         # check is we have to throw an error in case one of the library, bisoamle, donor are missing
+        # we can either throw an error, or keep gathering information for anything that has library associated
         if 'library' not in rep:
             continue
         lib = rep['library']
@@ -138,8 +139,11 @@ def audit_experiment_isogeneity(value, system):
                     if ('sex' in tech_donor):
                         detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
                         raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')   
+    
+    # if no exception was raised untill now, it means that technical replicates are isogenic per 
+    # given biological replicate
+    # validating bilogical replicates isogeneity
 
-    #validating bilogical replicates isogeneity
     bio_reps = []
     for tech_rep_dict_key in biological_rep_donors_dict.keys():
         for tech_rep_donor_key in biological_rep_donors_dict[tech_rep_dict_key].keys():
