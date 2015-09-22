@@ -13,5 +13,6 @@ module.exports = {
     "status": "released",
     "submitted_by": "amet.fusce@est.fermentum",
     "submitted_file_name": "hg19/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878Ebf1sc137065StdAlnRep1.bam",
+    "biological_replicates": [ 2 ],
     "uuid": "054165db-7b03-452e-9b5a-ea7599248e6b"
 };
