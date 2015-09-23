@@ -747,11 +747,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
-    console.log("check derived from ");
     files.forEach(function(file) {
         file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
-        console.log(file['@id']);
-        if (file.removed) { console.log("File removed");}
         // If the file's removed, remember it's removed from the derived_From file objects too
         if (file.removed && derivedFromFiles[file['@id']]) {
             derivedFromFiles[file['@id']].removed = true;
@@ -865,7 +862,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var replicateNode = ( file.biological_replicates && file.biological_replicates.length==1 )? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
             var metricsInfo;
 
-            console.log(file['@id']);
             // Add QC metrics info from the file to the list to generate the nodes later
             if (file.quality_metrics && file.quality_metrics.length && file.analysis_step) {
                 metricsInfo = file.quality_metrics.map(function(metric) {
@@ -875,7 +871,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }
 
             // Add file to the graph as a node
-            console.log(replicateNode);
             jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
                 cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
                 type: 'file',
@@ -884,7 +879,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 parentNode: replicateNode,
                 ref: file
             }, metricsInfo);
-            console.log("Node added "+jsonGraph.nodes.length);
             // If the file has an analysis step, prepare it for graph insertion
             var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (fileAnalysisStep) {
@@ -948,7 +942,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }, this);
     }
 
-    console.log(jsonGraph);
     return jsonGraph;
 };
 
@@ -1060,15 +1053,19 @@ var FileDetailView = function(node) {
 
                 {selectedFile.replicate ?
                     <div data-test="replicate">
-                        <dt>Associated replicates (bio, tech)</dt>
-                        <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                        <dt>Biological Replicate(s)</dt>
+                        <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
+                        <dt>Technical Replicate</dt>
+                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : null}
 
                 { selectedFile.biological_replicates && !selectedFile.replicate ?
                     <div data-test="replicate">
                         <dt>Biological Replicate(s)</dt>
-                        <dd>{'(' + selectedFile.biological_replicates.join(', ') + ')'}</dd>
+                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
+                        <dt>Technical Replicate</dt>
+                        <dd>{'-'}</dd>
                     </div>
                 : null}
 
