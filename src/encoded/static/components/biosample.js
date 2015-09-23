@@ -503,12 +503,6 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                         </div>
                     : null}
                 </dl>
-
-                {!biosample ?
-                    <RelatedItems title="Biosamples from this donor"
-                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                                  columns={biosample_columns} />
-                : ''}
             </div>
         );
     }
@@ -610,12 +604,6 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         </section>
                     : null}
                 </dl>
-
-                {!biosample ?
-                    <RelatedItems title="Biosamples from this strain"
-                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                                  columns={biosample_columns} />
-                : ''}
             </div>
         );
     }
@@ -732,12 +720,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     </section>
                 : null}
 
-                {!biosample ?
-                    <RelatedItems title="Biosamples from this strain"
-                                  url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                                  columns={biosample_columns} />
-                : ''}
-
             </div>
         );
     }
@@ -745,6 +727,47 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
 
 globals.panel_views.register(FlyWormDonor, 'fly_donor');
 globals.panel_views.register(FlyWormDonor, 'worm_donor');
+
+
+var Donor = module.exports.Donor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'view-item');
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <ul className="breadcrumb">
+                            <li>Donors</li>
+                            <li className="active"><em>{context.organism.scientific_name}</em></li>
+                        </ul>
+                        <h2>{context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="panel data-display">
+                    {Panel(context)}
+                </div>
+
+                <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
+                              url={'/search/?type=biosample&donor.uuid=' + context.uuid}
+                              columns={biosample_columns} />
+
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(Donor, 'donor');
+
 
 
 var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
