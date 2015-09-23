@@ -403,6 +403,8 @@
                         "reference",
 
                         "predicted transcription start sites",
+                        "minus strand transcription start sites",
+                        "plus strand transcription start sites",
 
                         "validation",
 
