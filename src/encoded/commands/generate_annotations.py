@@ -57,9 +57,11 @@ def human_annotations(es):
         r = dict(zip(header, row.split('\t')))
 
         # Ensembl ID is used to grab annotations for different references
-        if r['Ensembl Gene ID'] is None:
+        if 'Ensembl Gene ID' not in r:
             continue
-
+        elif r['Ensembl Gene ID'] is None:
+            continue
+            
         # Annotations are keyed by Gene ID in ES
         if 'Entrez Gene ID' not in r:
             continue
