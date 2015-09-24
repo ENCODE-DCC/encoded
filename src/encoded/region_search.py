@@ -255,7 +255,7 @@ def region_search(context, request):
     # Search for peaks for the coordinates we got
     try:
         peak_results = es.search(body=get_peak_query(start, end),
-                                 index=chromosome.upper(),
+                                 index=chromosome,
                                  doc_type=assembly,
                                  size=99999)
     except Exception:
