@@ -222,7 +222,7 @@ def region_search(context, request):
 
     assembly = request.params.get('genome', '*')
     reference = ''
-    for regular_name, ucsc_name in _ASSEMBLY_MAPPER.iteritems():
+    for regular_name, ucsc_name in _ASSEMBLY_MAPPER.items():
         if ucsc_name == assembly:
             reference = regular_name
     annotation = request.params.get('annotation', '*')
