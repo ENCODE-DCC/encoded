@@ -119,7 +119,7 @@ def get_annotation_coordinates(es, id, assembly):
     else:
         annotations = es_results['_source']['annotations']
         for annotation in annotations:
-            if annotation['assembly_name'] == assembly':
+            if annotation['assembly_name'] == assembly:
                 return (annotation['chromosome'], annotation['start'], annotation['end'])
         for annotation in annotations:
             if annotation['assembly_name'] == 'GRCh38':
