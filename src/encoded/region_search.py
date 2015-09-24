@@ -255,11 +255,11 @@ def region_search(context, request):
     # Search for peaks for the coordinates we got
     try:
         peak_results = es.search(body=get_peak_query(start, end),
-                                 index=chromosome,
+                                 index=chromosome.upper(),
                                  doc_type=assembly,
                                  size=99999)
     except Exception:
-        result['notification'] = 'No results found'
+        result['notification'] = 'Please enter valid coordinates'
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
