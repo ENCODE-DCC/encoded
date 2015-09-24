@@ -91,22 +91,13 @@ def audit_experiment_replicated(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_technical_replicates_same_library(value, system):
-
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
     biological_replicates_dict = {}
-
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
-        if 'library' not in rep: 
-            detail = 'Replicate {} in a {} assay requires a library'.format(
-                rep['@id'],
-                value['assay_term_name']
-                )
-            raise AuditFailure('missing library', detail, level='DCC ACTION')        
-        else: 
+        if 'library' in rep:         
             library = rep['library']            
             if not bio_rep_num in biological_replicates_dict:
                 biological_replicates_dict[bio_rep_num]=[]            
@@ -115,6 +106,35 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 raise AuditFailure('misuse of technical replication', detail, level='DCC_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
+
+@audit_checker('experiment', frame=['replicates', 'replicates.library','replicates.library.biosample' ])
+def audit_experiment_replicates_biosample(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    biological_replicates_dict = {}
+    biosamples_list = []
+    for rep in value['replicates']:
+        bio_rep_num = rep['biological_replicate_number']
+        tech_rep_num = rep['technical_replicate_number']
+        if 'library' in rep and 'biosample' in rep['library']:         
+            biosample = rep['library']['biosample'] 
+
+            if not bio_rep_num in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num]=biosample['accession']
+                if biosample['accession'] in biosamples_list:
+                    detail = 'Experiment {} has multiple biological replicates associated with the same biosample {}'.format(
+                        value['@id'],
+                        biosample['@id'])
+                    raise AuditFailure('biological replicates with identical biosample', detail, level='DCC_ACTION')
+                else:
+                    biosamples_list.append(biosample['accession'])
+
+            else:     
+                if biosample['accession'] !=  biological_replicates_dict[bio_rep_num]:
+                    detail = 'Experiment {} has technical replicates associated with the different biosamples'.format(
+                        value['@id'])
+                    raise AuditFailure('technical replicates with not identical biosample', detail, level='DCC_ACTION')
+
 
     
 
