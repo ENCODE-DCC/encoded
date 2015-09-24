@@ -185,7 +185,9 @@
                         "gff3",
                         "narrowPeak",
                         "candidate enhancer predictions",
-                        "enhancer predictions"
+                        "enhancer predictions",
+                        "tss_peak",
+                        "idr_peak"
                     ]
                 },
                 {
@@ -403,6 +405,8 @@
                         "reference",
 
                         "predicted transcription start sites",
+                        "minus strand transcription start sites",
+                        "plus strand transcription start sites",
 
                         "validation",
 
