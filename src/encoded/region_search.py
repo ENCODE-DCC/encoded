@@ -220,7 +220,7 @@ def region_search(context, request):
     assembly = request.params.get('genome', '*')
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, region)
+        chromosome, start, end = get_annotation_coordinates(es, annotation)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
