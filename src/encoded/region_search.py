@@ -248,14 +248,14 @@ def region_search(context, request):
         result['notification'] = 'No annotations found'
         return result
     else:
-        result['region'] = '{chr}:{start}-{end}'.format(
+        result['coordinates'] = '{chr}:{start}-{end}'.format(
             chr=chromosome, start=start, end=end
         )
 
     # Search for peaks for the coordinates we got
     try:
         peak_results = es.search(body=get_peak_query(start, end),
-                                 index=chromosome,
+                                 index=chromosome.lower(),
                                  doc_type=assembly,
                                  size=99999)
     except Exception:
