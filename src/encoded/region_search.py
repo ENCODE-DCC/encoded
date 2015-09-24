@@ -108,7 +108,7 @@ def sanitize_coordinates(term):
     return ('', '', '')
 
 
-def get_annotation_coordinates(es, id):
+def get_annotation_coordinates(es, id, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
 
     chromosome, start, end = '', '', ''
@@ -118,6 +118,9 @@ def get_annotation_coordinates(es, id):
         return (chromosome, start, end)
     else:
         annotations = es_results['_source']['annotations']
+        for annotation in annotations:
+            if annotation['assembly_name'] == assembly':
+                return (annotation['chromosome'], annotation['start'], annotation['end'])
         for annotation in annotations:
             if annotation['assembly_name'] == 'GRCh38':
                 location = '{chr}:{start}-{end}'.format(
@@ -218,9 +221,13 @@ def region_search(context, request):
         region = '*'
 
     assembly = request.params.get('genome', '*')
+    reference = ''
+    for regular_name, ucsc_name in _ASSEMBLY_MAPPER.iteritems():
+        if ucsc_name == assembly:
+            reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        chromosome, start, end = get_annotation_coordinates(es, annotation)
+        chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
         if region.startswith('rs'):
@@ -252,7 +259,7 @@ def region_search(context, request):
                                  doc_type=assembly,
                                  size=99999)
     except Exception:
-        result['notification'] = 'Please enter valid coordinates'
+        result['notification'] = 'No results found'
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
