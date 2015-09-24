@@ -313,7 +313,7 @@ def suggest(context, request):
         }
     }
     try:
-        results = es.suggest(index='annotaions', body=query)
+        results = es.suggest(index='annotations', body=query)
     except:
         return {}
     else:
