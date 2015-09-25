@@ -3,6 +3,7 @@ from contentbase import (
     audit_checker,
 )
 from .conditions import rfa
+import json
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -261,7 +262,9 @@ def audit_file_paired_ended_run_type(value, system):
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',
                               'analysis_step_version.analysis_step',
-                              'analysis_step_version.analysis_step.pipelines'],
+                              'analysis_step_version.analysis_step.pipelines',
+                              'replicate',
+                              'replicate.experiment'],
                condition=rfa('ENCODE3'))
 def audit_file_read_depth(value, system):
     '''
@@ -278,6 +281,17 @@ def audit_file_read_depth(value, system):
     if value['lab'] != '/labs/encode-processing-pipeline/':
         return
 
+    ''' 
+    exclude bams from Tophat
+    '''
+    if 'notes' in value:
+        notesDictionary = json.loads(value['notes'])
+        if 'software_versions' in notesDictionary:
+            for version in notesDictionary['software_versions']:
+                if version['software']=='TopHat':
+                    return
+
+    
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
@@ -328,15 +342,58 @@ def audit_file_read_depth(value, system):
     	yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
     	return
     
+    '''
+    Finding out if that is shRNA or single Cell to be treated differently
+    '''
+    shRNAFlag = False
+    singleCellFlag = False
+    
+    #shRNA knockdown followed by RNA-seq
+
+    if 'replicate' in value and 'experiment' in value['replicate']:
+        if value['replicate']['experiment']['assay_term_name']=='shRNA knockdown followed by RNA-seq':
+            shRNAFlag = True
+        if value['replicate']['experiment']['assay_term_name']=='single cell isolation followed by RNA-seq':
+            singleCellFlag=True
+    #yield AuditFailure('ZOPA ZOPA ZOPA', str(shRNAFlag)+" while the name was:>"+value['replicate']['experiment']['assay_term_name']+"<", level='ERROR')
+    #return
+    '''
+    Add different treatment for these cases
+    '''
+    
+    read_depth_special = {
+        'shRNA knockdown followed by RNA-seq':20000000,
+        'single cell isolation followed by RNA-seq':20000000
+    }
+   
+           
+
+
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
 		
-        if pipeline['title'] not in read_depth_criteria:
+        if pipeline['title'] not in read_depth_criteria: 
             return
-        if read_depth < read_depth_criteria[pipeline['title']]:
+        if (singleCellFlag==True) and read_depth<read_depth_special['single cell isolation followed by RNA-seq']:
+            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                    value['@id'],
+                    read_depth, 
+                    pipeline['title'],
+                    read_depth_criteria[pipeline['title']])
+            yield AuditFailure('* insufficient read depth', detail, level='ERROR')
+            return
+        if (shRNAFlag==True) and read_depth<read_depth_special['shRNA knockdown followed by RNA-seq']:
+            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                    value['@id'],
+                    read_depth, 
+                    pipeline['title'],
+                    read_depth_criteria[pipeline['title']])
+            yield AuditFailure('* insufficient read depth', detail, level='ERROR')
+            return
+        if (read_depth < read_depth_criteria[pipeline['title']]):
             detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
                 value['@id'],
                 read_depth, 
                 pipeline['title'],
                 read_depth_criteria[pipeline['title']])
-            yield AuditFailure('not sufficient read depth', detail, level='ERROR')
+            yield AuditFailure('insufficient read depth', detail, level='ERROR')
             return
