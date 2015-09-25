@@ -6,7 +6,10 @@ cache:
     - .npm
 addons:
   apt:
+    sources:
+      - elasticsearch-1.7
     packages:
+      - elasticsearch
       - graphviz
 env:
   global:
@@ -18,7 +21,7 @@ env:
         WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
-    - PATH="$HOME/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
+    - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
     - python: "2.7"
@@ -28,16 +31,13 @@ matrix:
     - python: "3.4"
       env: BROWSER=
 before_install:
-  - mkdir $HOME/elasticsearch
-  - curl https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.tar.gz | tar -zx --strip-components=1 --directory=$HOME/elasticsearch
-  - which elasticsearch
   - postgres --version
   - initdb --version
   - elasticsearch -v
   - nvm install 4
   - node --version
-install:
   - npm config set python /usr/bin/python2.7
+install:
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
