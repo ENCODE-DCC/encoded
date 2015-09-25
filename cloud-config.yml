@@ -122,9 +122,7 @@ packages:
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- nodejs-dev
-- nodejs-legacy
-- npm
+- nodejs
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
