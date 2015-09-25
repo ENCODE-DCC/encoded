@@ -34,6 +34,8 @@ before_install:
   - postgres --version
   - initdb --version
   - elasticsearch -v
+  - nvm install 4
+  - node --version
 install:
   - npm config set python /usr/bin/python2.7
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
