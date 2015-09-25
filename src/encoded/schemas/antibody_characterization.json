@@ -29,7 +29,7 @@
                             "minItems": 1
                         },
                         "status": {
-                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                            "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
                         }
                     }
                 },
@@ -37,7 +37,7 @@
                     "not": {
                         "properties": {
                             "status": {
-                               "enum": ["pending dcc review", "compliant", "not compliant" ]
+                               "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
                             }
                         }
                     }
@@ -73,10 +73,18 @@
                     }
                 },
                 {
+                    "required": ["comment", "notes", "reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["exempt from standards"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "status": {
-                                "enum": ["compliant", "not compliant", "not reviewed"]
+                                "enum": ["compliant", "not compliant", "not reviewed", "exempt from standards"]
                             }
                         }
                     }
@@ -124,6 +132,7 @@
                 "not compliant",
                 "not reviewed",
                 "not submitted for review by lab",
+                "exempt from standards",
                 "deleted"
             ]
         },
@@ -157,7 +166,8 @@
                         "enum" : [
                             "pending dcc review",
                             "compliant",
-                            "not compliant"
+                            "not compliant",
+                            "exempt from standards"
                         ]
                     },
                     "biosample_term_id": {
