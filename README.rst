@@ -17,11 +17,7 @@ Step 2: Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz nginx python3
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
-
-Install Node 0.10 from homebrew/versions::
-
-    $ brew tap homebrew/versions
-    $ brew install node010
+    $ brew install node
 
 If you need to update dependencies::
 
