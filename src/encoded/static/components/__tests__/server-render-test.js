@@ -27,6 +27,7 @@ describe("Server rendering", function () {
         var markup = '<!DOCTYPE html>\n' + React.renderToString(server_app);
         var parser = new DOMParser();
         document = parser.parseFromString(markup, 'text/html');
+        window.location.href = home_url;
     });
 
     it("renders the application to html", function () {
