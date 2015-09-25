@@ -10,7 +10,7 @@ ENCODE Metadata Database
 
 Step 1: Verify that homebrew is working properly::
 
-    $ brew doctor
+    $ sudo brew doctor
 
 
 Step 2: Install or update dependencies::
@@ -28,7 +28,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python3.4 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
+    $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
     $ bin/buildout
 
 
