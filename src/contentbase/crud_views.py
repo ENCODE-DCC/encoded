@@ -53,7 +53,7 @@ def update_children(context, request, propname_children):
 
     for propname, children in propname_children.items():
         link_type, link_attr = schema_rev_links[propname]
-        child_collection = collections.by_item_type[link_type]
+        child_collection = collections[link_type]
         found = set()
 
         # Add or update children included in properties
