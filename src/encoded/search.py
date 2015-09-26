@@ -290,7 +290,7 @@ def search(context, request, search_type=None):
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': '/search/' + ('?' + request.query_string if request.query_string else ''),
-        '@type': ['search'],
+        '@type': ['Search'],
         'title': 'Search',
         'facets': [],
         '@graph': [],
@@ -453,7 +453,7 @@ def collection_view_listing_es(context, request):
     if request.datastore != 'elasticsearch':
         return collection_view_listing_db(context, request)
 
-    result = search(context, request, context.item_type)
+    result = search(context, request, context.type_info.item_type)
 
     if len(result['@graph']) < result['total']:
         params = [(k, v) for k, v in request.params.items() if k != 'limit']
