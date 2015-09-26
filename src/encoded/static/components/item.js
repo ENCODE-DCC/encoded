@@ -77,7 +77,7 @@ var Item = module.exports.Item = React.createClass({
     }
 });
 
-globals.content_views.register(Item, 'item');
+globals.content_views.register(Item, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -100,7 +100,7 @@ var Panel = module.exports.Panel = React.createClass({
     }
 });
 
-globals.panel_views.register(Panel, 'item');
+globals.panel_views.register(Panel, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -114,7 +114,7 @@ var title = module.exports.title = function (props) {
     return context.title || context.name || context.accession || context['@id'];
 };
 
-globals.listing_titles.register(title, 'item');
+globals.listing_titles.register(title, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -133,8 +133,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
         var action, form, schemaUrl, type;
-        if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
-            type = context['@type'][0].substr(0, context['@type'][0].length - 11);
+        if (context['@type'][0].indexOf('Collection') !== -1) {  // add form
+            type = context['@type'][0].substr(0, context['@type'][0].length - 10);
             title = title + ': Add';
             action = context['@id'];
             form = (
@@ -173,8 +173,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
     }
 });
 
-globals.content_views.register(ItemEdit, 'item', 'edit');
-globals.content_views.register(ItemEdit, 'collection', 'add');
+globals.content_views.register(ItemEdit, 'Item', 'edit');
+globals.content_views.register(ItemEdit, 'Collection', 'add');
 
 
 var FetchedRelatedItems = React.createClass({

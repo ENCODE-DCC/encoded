@@ -49,7 +49,7 @@ var Publication = module.exports.Panel = React.createClass({
     }
 });
 
-globals.content_views.register(Publication, 'publication');
+globals.content_views.register(Publication, 'Publication');
 
 
 var Citation = module.exports.Citation = React.createClass({
@@ -238,4 +238,4 @@ var Listing = React.createClass({
     }
 });
 
-globals.listing_views.register(Listing, 'publication');
+globals.listing_views.register(Listing, 'Publication');

@@ -39,7 +39,7 @@
              "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "Lab"
         },
         "protocols": {
             "title": "Protocol documents",
@@ -51,7 +51,7 @@
                 "description": "A document that describes the treatment protocol.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "dbxrefs": {

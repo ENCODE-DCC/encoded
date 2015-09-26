@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/biosamples/ENCBS087RNA/",
-    "@type": ["biosample", "item"],
+    "@type": ["Biosample", "Item"],
     "accession": "ENCBS087RNA",
     "aliases": ["thomas-gingeras:K562-1"],
     "award": "/awards/U54HG007005/",

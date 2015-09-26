@@ -426,7 +426,7 @@ var Biosample = module.exports.Biosample = React.createClass({
     }
 });
 
-globals.content_views.register(Biosample, 'biosample');
+globals.content_views.register(Biosample, 'Biosample');
 
 
 var MaybeLink = React.createClass({
@@ -508,7 +508,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
     }
 });
 
-globals.panel_views.register(HumanDonor, 'human_donor');
+globals.panel_views.register(HumanDonor, 'HumanDonor');
 
 
 var MouseDonor = module.exports.MouseDonor = React.createClass({
@@ -609,7 +609,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
     }
 });
 
-globals.panel_views.register(MouseDonor, 'mouse_donor');
+globals.panel_views.register(MouseDonor, 'MouseDonor');
 
 
 var FlyWormDonor = module.exports.FlyDonor = React.createClass({
@@ -725,8 +725,8 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     }
 });
 
-globals.panel_views.register(FlyWormDonor, 'fly_donor');
-globals.panel_views.register(FlyWormDonor, 'worm_donor');
+globals.panel_views.register(FlyWormDonor, 'FlyDonor');
+globals.panel_views.register(FlyWormDonor, 'WormDonor');
 
 
 var Donor = module.exports.Donor = React.createClass({
@@ -766,7 +766,7 @@ var Donor = module.exports.Donor = React.createClass({
     }
 });
 
-globals.content_views.register(Donor, 'donor');
+globals.content_views.register(Donor, 'Donor');
 
 
 
@@ -802,7 +802,7 @@ var Treatment = module.exports.Treatment = React.createClass({
     }
 });
 
-globals.panel_views.register(Treatment, 'treatment');
+globals.panel_views.register(Treatment, 'Treatment');
 
 
 var Construct = module.exports.Construct = React.createClass({
@@ -889,7 +889,7 @@ var Construct = module.exports.Construct = React.createClass({
     }
 });
 
-globals.panel_views.register(Construct, 'construct');
+globals.panel_views.register(Construct, 'Construct');
 
 
 var RNAi = module.exports.RNAi = React.createClass({
@@ -919,7 +919,7 @@ var RNAi = module.exports.RNAi = React.createClass({
     }
 });
 
-globals.panel_views.register(RNAi, 'rnai');
+globals.panel_views.register(RNAi, 'RNAi');
 
 
 var Document = module.exports.Document = React.createClass({
@@ -1050,6 +1050,6 @@ var Document = module.exports.Document = React.createClass({
     }
 });
 
-globals.panel_views.register(Document, 'document');
-globals.panel_views.register(Document, 'biosample_characterization');
-globals.panel_views.register(Document, 'donor_characterization');
+globals.panel_views.register(Document, 'Document');
+globals.panel_views.register(Document, 'BiosampleCharacterization');
+globals.panel_views.register(Document, 'DonorCharacterization');

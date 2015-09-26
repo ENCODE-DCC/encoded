@@ -214,7 +214,7 @@
             "items": {
                     "comment": "See document.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "document"
+                    "linkTo": "Document"
                     }
         },
         "md5sum": {
@@ -241,7 +241,7 @@
             "description": "The measurement device used to collect data.",
             "comment": "See platform.json for available identifiers.",
             "type": "string",
-            "linkTo": "platform"
+            "linkTo": "Platform"
         },
         "read_length": {
             "title": "Read length",
@@ -442,7 +442,7 @@
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
                     }
         },
         "controlled_by": {
@@ -452,7 +452,7 @@
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
             }
         },
         "supercedes": {
@@ -462,7 +462,7 @@
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
             }
         },
         "paired_with": {
@@ -470,21 +470,21 @@
             "description": "The file that corresponds with this file.",
             "comment": "See file.json for a list of available identifiers.",
             "type": "string",
-            "linkTo": "file"
+            "linkTo": "File"
         },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
             "comment": "For experiments, see experiment.json for available identifiers. For datasets, see dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["experiment", "dataset"]
+            "linkTo": ["Experiment", "Dataset"]
         },
         "replicate": {
             "title": "Replicate",
             "description": "The experimental replicate designation for the file.",
             "comment": "See replicate.json for available identifiers.",
             "type": "string",
-            "linkTo": "replicate"
+            "linkTo": "Replicate"
         },
         "assembly": {
             "title": "Mapping assembly",
@@ -559,7 +559,7 @@
             "description": "The run instance of the step the file was generated from.",
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
-             "linkTo": "analysis_step_run"
+             "linkTo": "AnalysisStepRun"
         }
     },
     "columns": {

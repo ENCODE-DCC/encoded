@@ -50,8 +50,8 @@ class AnalysisStep(Item):
     schema = load_schema('encoded:schemas/analysis_step.json')
     name_key = 'name'
     rev = {
-        'pipelines': ('pipeline', 'analysis_steps'),
-        'versions': ('analysis_step_version', 'analysis_step')
+        'pipelines': ('Pipeline', 'analysis_steps'),
+        'versions': ('AnalysisStepVersion', 'analysis_step')
     }
     embedded = [
         'current_version',
@@ -138,7 +138,7 @@ class AnalysisStepRun(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.step_run",
+            "linkFrom": "QualityMetric.step_run",
         },
     })
     def quality_metrics(self, request, quality_metrics):
@@ -149,7 +149,7 @@ class AnalysisStepRun(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkFrom": "file.step_run",
+            "linkFrom": "File.step_run",
         },
     })
     def output_files(self, request, output_files):

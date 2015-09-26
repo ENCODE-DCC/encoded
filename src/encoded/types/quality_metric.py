@@ -10,8 +10,7 @@ from .base import (
 
 
 class QualityMetric(Item):
-    item_type = 'quality_metric'
-    base_types = ['quality_metric'] + Item.base_types
+    base_types = ['QualityMetric'] + Item.base_types
 
 
 @collection(

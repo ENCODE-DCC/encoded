@@ -92,7 +92,7 @@ class Construct(Item):
     schema = load_schema('encoded:schemas/construct.json')
     # XXX 'vector_name' as key?
     rev = {
-        'characterizations': ('construct_characterization', 'characterizes'),
+        'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
     embedded = ['target']
 
@@ -115,12 +115,12 @@ class Construct(Item):
         'title': 'TALENs',
         'description': 'Listing of TALEN Constructs',
     })
-class Talen(Item):
+class TALEN(Item):
     item_type = 'talen'
     schema = load_schema('encoded:schemas/talen.json')
     name_key = 'name'
     rev = {
-        'characterizations': ('construct_characterization', 'characterizes'),
+        'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
     embedded = ['lab', 'submitted_by']
 
@@ -196,7 +196,7 @@ class RNAi(Item):
     schema = load_schema('encoded:schemas/rnai.json')
     embedded = ['source', 'documents', 'target']
     rev = {
-        'characterizations': ('rnai_characterization', 'characterizes'),
+        'characterizations': ('RNAiCharacterization', 'characterizes'),
     }
 
     @calculated_property(schema={
@@ -253,7 +253,7 @@ class Software(Item):
         'versions'
     ]
     rev = {
-        'versions': ('software_version', 'software')
+        'versions': ('SoftwareVersion', 'software')
     }
 
     @calculated_property(schema={

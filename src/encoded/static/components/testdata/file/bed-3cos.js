@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/files/ENCFF003COS/",
-    "@type": ["file", "item"],
+    "@type": ["File", "Item"],
     "accession": "ENCFF003COS",
     "award": "ENCODE2",
     "dataset": require('../experiment'),

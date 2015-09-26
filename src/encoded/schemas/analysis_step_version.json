@@ -29,7 +29,7 @@
             "title": "Analysis Step",
             "description": "Reference to template step in pipeline",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "AnalysisStep"
         },
         "software_versions": {
             "title": "Software version",
@@ -38,7 +38,7 @@
             "items": {
                 "comment": "See software_version.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "software_version"
+                "linkTo": "SoftwareVersion"
             }
         }
     }

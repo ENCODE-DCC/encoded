@@ -40,7 +40,7 @@
                         "enum": ["whole organisms"]
                     },
                     "organism": {
-                        "linkTo": "organism",
+                        "linkTo": "Organism",
                         "linkEnum": [
                             "7745b647-ff15-4ff3-9ced-b897d4e2983c"
                         ]
@@ -51,7 +51,7 @@
         "fly_life_stage": {
             "properties": {
                 "organism": {
-                    "linkTo": "organism",
+                    "linkTo": "Organism",
                     "linkEnum": [
                         "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                         "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -67,7 +67,7 @@
         "fly_synchronization_stage": {
             "properties": {
                 "organism": {
-                    "linkTo": "organism",
+                    "linkTo": "Organism",
                     "linkEnum": [
                         "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                         "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -83,7 +83,7 @@
         "worm_synchronization_stage": {
             "properties": {
                 "organism": {
-                    "linkTo": "organism",
+                    "linkTo": "Organism",
                     "linkEnum": [
                         "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
                         "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
@@ -97,7 +97,7 @@
         "worm_life_stage": {
             "properties": {
                 "organism": {
-                    "linkTo": "organism",
+                    "linkTo": "Organism",
                     "linkEnum": [
                         "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
                         "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
@@ -111,7 +111,7 @@
         "mouse_life_stage": {
             "properties": {
                 "organism": {
-                    "linkTo": "organism",
+                    "linkTo": "Organism",
                     "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
                 }
             }
@@ -140,7 +140,7 @@
                 "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
                 "comment": "See contstruct.json for available identifiers.",
                 "type":  "string",
-                "linkTo": "construct"
+                "linkTo": "Construct"
             }
         },
         "rnais": {
@@ -153,7 +153,7 @@
                 "description": "RNAi vector stably or transiently transfected.",
                 "comment": "See rnai.json for available identifiers.",
                 "type":  "string",
-                "linkTo": "rnai"
+                "linkTo": "RNAi"
             }
         },
         "talens": {
@@ -166,7 +166,7 @@
                 "description": "TALEN used to modify the biosample",
                 "comment": "See talen.json for valid identifiers.",
                 "type": "string",
-                "linkTo": "talen"
+                "linkTo": "TALEN"
             }
         },
         "treatments": {
@@ -177,7 +177,7 @@
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
                 "type": "string",
-                "linkTo": "treatment"
+                "linkTo": "Treatment"
             }
         },
         "dbxrefs": {
@@ -204,20 +204,20 @@
                 "description": "A document that describes the biosample preparation.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "donor": {
             "title": "Donor",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "donor"
+            "linkTo": "Donor"
         },
         "organism": {
             "title": "Organism",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
-            "linkTo": "organism"
+            "linkTo": "Organism"
         },
         "passage_number": {
             "title": "Passage number",
@@ -287,7 +287,7 @@
             "description": "A biosample that the sample derives from via a construct or treatment.",
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
-            "linkTo": "biosample"
+            "linkTo": "Biosample"
         },
         "pooled_from": {
             "title": "Pooled from",
@@ -298,7 +298,7 @@
                 "description": "A biosample from which an aliquot was taken to form the biosample.",
                 "comment": "See biosample.json for available identifiers.",
                 "type": "string",
-                "linkTo": "biosample"
+                "linkTo": "Biosample"
             }
         },
         "part_of": {
@@ -306,7 +306,7 @@
             "description": "A biosample from which a discrete component was taken. That component is this biosample.",
             "comment": "See biosamples.json for available identifiers.",
             "type": "string",
-            "linkTo": "biosample"
+            "linkTo": "Biosample"
         },
         "note": {
             "title": "Note",

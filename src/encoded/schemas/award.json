@@ -64,7 +64,7 @@
             "description": "Principle Investigator of the grant.",
             "comment": "See user.json for available identifiers.",
             "type": "string",
-            "linkTo": "user"
+            "linkTo": "User"
         },
         "rfa": {
             "title": "Phase",
