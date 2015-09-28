@@ -291,6 +291,9 @@ def test_missing_quality_metrics(testapp, file5):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+        print (error_type)
+        for e in (errors[error_type]):
+            print (e)
     assert any(error['category'] == 'missing quality metrics' for error in errors_list)
 
 
@@ -300,21 +303,27 @@ def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step
     errors_list = []
     for error_type in errors:       
         errors_list.extend(errors[error_type])
+        print (error_type)
+        for e in (errors[error_type]):
+            print (e)
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
-def test_missing_quality_metrics_tophat_exclusion(testapp, file5):
-    testapp.patch_json(file5['@id'], {'notes':'{"software_versions": [{"version": {"align-tophat-pe.sh": "1.0.1"}, "software": "DX applet"}, {"version": "v2.0.8", "software": "TopHat"}, {"version": "v1.0 xwei 04/07/2014", "software": "tophat_bam_xsA_tag_fix.pl"}, {"version": "0.1.19-96b5f2294a", "software": "samtools"}, {"version": "2.1.0", "software": "bowtie2"}], "dx_project_name": "ENCODE - Production runs", "notes_version": "5", "workflow_run": "/workflow-runs/dnanexus:analysis-BbJq1v80J6Z4K71VXvBFK1J4", "dx-id": "file-BbP2qK005FYPqY4gZQ1BFG0Q", "dx-createdBy": {"job": "job-BbJq1v80J6Z4K71VXvBFK1JJ", "executable": "applet-BbBKKx80VBPxV67GxZfxX1Qb", "user": "user-tdreszer"}, "dx_cost": "$63.91", "dx_project_id": "project-BbF4J2Q0J6Z0q4K79k9V5fv0"}'})
-    res = testapp.get(file5['@id'] + '@@index-data')
+
+def test_missing_quality_metrics_tophat_exclusion(testapp, file6,bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+    testapp.patch_json(software['@id'],{'title':'TopHat'})
+    res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])       
+        errors_list.extend(errors[error_type]) 
+        print (error_type)
+        for e in (errors[error_type]):
+            print (e)      
     assert all(error['category'] != 'missing quality metrics' for error in errors_list)
 
-def test_audit_file_read_depth_inclusion_of_shRNA(testapp, replicate,file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
     testapp.patch_json(file_exp['@id'],{'assay_term_name':'shRNA knockdown followed by RNA-seq'})
-    testapp.patch_json(replicate['@id'],{'experiment':file_exp['@id']})
-    testapp.patch_json(file6['@id'],{'replicate':replicate['@id']})
+    testapp.patch_json(file6['@id'],{'dataset':file_exp['@id']})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -323,4 +332,4 @@ def test_audit_file_read_depth_inclusion_of_shRNA(testapp, replicate,file_exp,fi
         print (error_type)
         for e in (errors[error_type]):
             print (e)
-    assert any(error['category'] == '* insufficient read depth' for error in errors_list)
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
