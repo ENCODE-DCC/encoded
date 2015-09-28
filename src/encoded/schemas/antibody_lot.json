@@ -83,7 +83,7 @@
             "description": "The organism the antibody was grown in.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
-            "linkTo": "organism"
+            "linkTo": "Organism"
         },
         "isotype": {
             "title": "Isotype",
@@ -149,7 +149,7 @@
                 "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
                 "comment": "See target.json for available identifiers.",
                 "type": "string",
-                "linkTo": "target"
+                "linkTo": "Target"
             }
         },
         "url": {

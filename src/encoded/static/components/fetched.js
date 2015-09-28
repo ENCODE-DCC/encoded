@@ -125,7 +125,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
-                        handleFetchStart: this.handleFetchStart,
                     }));
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
@@ -148,7 +147,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         }
 
         var errors = params.map(param => this.state[param.props.name])
-            .filter(obj => obj && (obj['@type'] || []).indexOf('error') > -1);
+            .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         if (errors.length) {
             return (

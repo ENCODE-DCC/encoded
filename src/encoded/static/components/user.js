@@ -174,7 +174,7 @@ var User = module.exports.User = React.createClass({
 });
 
 
-globals.content_views.register(User, 'user');
+globals.content_views.register(User, 'User');
 
 
 var ImpersonateUserSchema = ReactForms.schema.Mapping({}, {
@@ -205,4 +205,4 @@ var ImpersonateUserForm = React.createClass({
         this.context.navigate('/');
     }
 });
-globals.content_views.register(ImpersonateUserForm, 'portal', 'impersonate-user');
+globals.content_views.register(ImpersonateUserForm, 'Portal', 'impersonate-user');

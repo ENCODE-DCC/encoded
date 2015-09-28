@@ -1,8 +1,8 @@
 module.exports = {  
     "@id": "/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/",
     "@type": [
-        "document",
-        "item"
+        "Document",
+        "Item"
     ],
     "status": "in progress",
     "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d",

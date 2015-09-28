@@ -101,7 +101,7 @@
             "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
             "comment": "Only admins are allowed to set or update this value.",
             "permission": "import_items",
-            "linkTo": "user",
+            "linkTo": "User",
             "type": "string",
             "linkEnum": [
                 "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
@@ -117,7 +117,7 @@
         "characterizes": {
             "title": "Antibody characterized",
             "comment": "See antibody_lot.json for available identifiers.",
-            "linkTo": "antibody_lot"
+            "linkTo": "AntibodyLot"
         },
         "status": {
             "title": "Approval status",
@@ -151,7 +151,7 @@
                         "title": "Organism",
                         "comment": "See organism.json for available identifiers.",
                         "type": "string",
-                        "linkTo": "organism"
+                        "linkTo": "Organism"
                     },
                     "lane": {
                         "title": "Lane",
@@ -204,7 +204,7 @@
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "target"
+            "linkTo": "Target"
         },
         "primary_characterization_method": {
             "title": "Primary method",

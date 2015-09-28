@@ -94,8 +94,8 @@ class File(Item):
     name_key = 'accession'
 
     rev = {
-        'paired_with': ('file', 'paired_with'),
-        'quality_metrics': ('quality_metric', 'quality_metric_of'),
+        'paired_with': ('File', 'paired_with'),
+        'quality_metrics': ('QualityMetric', 'quality_metric_of'),
     }
 
     embedded = [
@@ -243,7 +243,7 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.quality_metric_of",
+            "linkFrom": "QualityMetric.quality_metric_of",
         },
     })
     def quality_metrics(self, request, quality_metrics):

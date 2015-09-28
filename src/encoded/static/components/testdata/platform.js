@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/platforms/NTR%3A0000007",
-    "@type": ["platform", "item"],
+    "@type": ["Platform", "Item"],
     "dbxrefs": [
         "UCSC-ENCODE-cv:Illumina_HiSeq_2000",
         "GEO:GPL11154",

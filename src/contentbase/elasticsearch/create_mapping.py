@@ -389,11 +389,7 @@ def type_mapping(types, item_type, embed=True):
                 s = subschema
                 continue
 
-            ref_types = set(ref_types)
-            abstract = [t for t in ref_types if t in types.abstract]
-            for t in abstract:
-                ref_types.update(types.abstract[t].subtypes)
-            concrete = [t for t in ref_types if t in types.types]
+            concrete = {subtype for name in ref_types for subtype in types[name].subtypes}
 
             s = {}
             for t in concrete:
@@ -451,7 +447,7 @@ def run(app, collections=None, dry_run=False):
         else:
             doc_type = collection_name
             collection = registry[COLLECTIONS].by_item_type[collection_name]
-            mapping = type_mapping(registry[TYPES], collection.item_type)
+            mapping = type_mapping(registry[TYPES], collection.type_info.item_type)
 
         if mapping is None:
             continue  # Testing collections

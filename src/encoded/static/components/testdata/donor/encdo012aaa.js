@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/mouse-donors/ENCDO012AAA/",
-    "@type": ["mouse_donor", "donor", "item"],
+    "@type": ["MouseDonor", "Donor", "Item"],
     "accession": "ENCDO012AAA",
     "award": "U41HG006992",
     "lab": "j-michael-cherry",

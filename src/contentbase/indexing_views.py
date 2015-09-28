@@ -52,7 +52,7 @@ def item_index_data(context, request):
         'audit': audit,
         'embedded': embedded,
         'embedded_uuids': sorted(request._embedded_uuids),
-        'item_type': context.item_type,
+        'item_type': context.type_info.item_type,
         'linked_uuids': sorted(request._linked_uuids),
         'links': links,
         'object': object,
