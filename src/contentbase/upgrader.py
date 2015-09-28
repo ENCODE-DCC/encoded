@@ -1,14 +1,18 @@
-from contentbase.interfaces import UPGRADER
+from contentbase.interfaces import (
+    TYPES,
+    UPGRADER,
+)
 from pkg_resources import parse_version
 from pyramid.interfaces import (
     PHASE1_CONFIG,
-    PHASE2_CONFIG,
 )
+from .interfaces import PHASE2_5_CONFIG
 import venusian
 
 
 def includeme(config):
-    config.registry[UPGRADER] = Upgrader()
+    config.include('.typeinfo')
+    config.registry[UPGRADER] = Upgrader(config.registry)
     config.add_directive('add_upgrade', add_upgrade)
     config.add_directive('add_upgrade_step', add_upgrade_step)
     config.add_directive('set_upgrade_finalizer', set_upgrade_finalizer)
@@ -37,7 +41,8 @@ class VersionTooHigh(UpgradeError):
 class Upgrader(object):
     """ Upgrade manager
     """
-    def __init__(self):
+    def __init__(self, registry):
+        self.types = registry[TYPES]
         self.schema_upgraders = {}
         self.default_finalizer = None
 
@@ -49,8 +54,9 @@ class Upgrader(object):
         schema_upgrader = SchemaUpgrader(schema_name, version, finalizer)
         self.schema_upgraders[schema_name] = schema_upgrader
 
-    def upgrade(self, schema_name, value,
+    def upgrade(self, type_, value,
                 current_version='', target_version=None, **kw):
+        schema_name = self.types[type_].name
         schema_upgrader = self.schema_upgraders[schema_name]
         return schema_upgrader.upgrade(
             value, current_version, target_version, **kw)
@@ -144,38 +150,44 @@ class UpgradeStep(object):
 
 # Imperative configuration
 
-def add_upgrade(config, schema_name, version, finalizer=None):
+def add_upgrade(config, type_, version, finalizer=None):
     if finalizer is not None:
-        config.set_upgrade_finalizer(schema_name, finalizer)
+        config.set_upgrade_finalizer(type_, finalizer)
 
     def callback():
+        types = config.registry[TYPES]
+        ti = types[type_]
         upgrader = config.registry[UPGRADER]
-        upgrader.add_upgrade(schema_name, version)
+        upgrader.add_upgrade(ti.name, version)
 
     config.action(
-        ('add_upgrade', schema_name),
-        callback, order=PHASE2_CONFIG)
+        ('add_upgrade', type_),
+        callback, order=PHASE2_5_CONFIG)
 
 
-def add_upgrade_step(config, schema_name, step, source='', dest=None):
+def add_upgrade_step(config, type_, step, source='', dest=None):
 
     def callback():
+        types = config.registry[TYPES]
+        ti = types[type_]
         upgrader = config.registry[UPGRADER]
-        upgrader[schema_name].add_upgrade_step(step, source, dest)
+        upgrader[ti.name].add_upgrade_step(step, source, dest)
 
     config.action(
-        ('add_upgrade_step', schema_name, parse_version(source)),
+        ('add_upgrade_step', type_, parse_version(source)),
         callback)
 
 
-def set_upgrade_finalizer(config, schema_name, finalizer):
+def set_upgrade_finalizer(config, type_, finalizer):
 
     def callback():
+        types = config.registry[TYPES]
+        ti = types[type_]
         upgrader = config.registry[UPGRADER]
-        upgrader[schema_name].finalizer = finalizer
+        upgrader[ti.name].finalizer = finalizer
 
     config.action(
-        ('set_upgrade_finalizer', schema_name),
+        ('set_upgrade_finalizer', type_),
         callback)
 
 

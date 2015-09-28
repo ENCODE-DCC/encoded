@@ -68,7 +68,6 @@ describe('Experiment Graph', function() {
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
             graph = assembleGraph(context_graph, '', files);
         });
-
         it('Has the correct number of nodes and edges', function() {
             expect(graph.nodes.length).toEqual(4);
             expect(graph.edges.length).toEqual(3);
@@ -254,8 +253,8 @@ describe('Experiment Graph', function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000REP';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            files[0].replicate = files[2].replicate = files[2].derived_from[0].replicate = require('../testdata/replicate/human');
-            files[1].replicate = files[3].replicate = files[3].derived_from[0].replicate = require('../testdata/replicate/mouse');
+            files[0].biological_replicates = files[2].biological_replicates = [ 1 ];
+            files[1].biological_replicates = files[3].biological_replicates = [ 2 ];
 
             graph = assembleGraph(context_graph, '', files, true);
         });
@@ -285,7 +284,7 @@ describe('Experiment Graph', function() {
     });
 
     // Two files derive from one file each through a shared step. Each file and derived from files in a replicate.
-    // Total of two replicates with three ndoes each
+    // Total of two replicates with three nodes each
     describe('Two graphs in two replicates; one derived-from missing', function() {
         var experimentGraph, graph, files;
     
@@ -293,8 +292,10 @@ describe('Experiment Graph', function() {
             var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000RPM';
             context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            files[0].replicate = files[1].replicate = files[1].derived_from[0].replicate = require('../testdata/replicate/human');
-            files[2].replicate = files[2].derived_from[0].replicate = require('../testdata/replicate/mouse');
+            //files[0].replicate = files[1].replicate = files[1].derived_from[0].replicate = require('../testdata/replicate/human');
+            //files[2].replicate = files[2].derived_from[0].replicate = require('../testdata/replicate/mouse');
+            files[0].biological_replicates = files[1].biological_replicates = files[1].derived_from[0].biological_replicates = [ 1 ];
+            files[2].biological_replicates = files[2].derived_from[0].biological_replicates = [ 2 ];
 
             graph = assembleGraph(context_graph, '', files, true);
         });

@@ -80,7 +80,7 @@ def update_item(storage, context):
         properties = deepcopy(properties)
         upgrader = context.registry[UPGRADER]
         properties = upgrader.upgrade(
-            context.item_type, properties, current_version, target_version,
+            context.type_info.name, properties, current_version, target_version,
             context=context, registry=context.registry)
         if 'schema_version' in properties:
             del properties['schema_version']
@@ -109,7 +109,7 @@ def batch_upgrade(request):
         sp = session.begin_nested()
         try:
             item = find_resource(root, uuid)
-            item_type = item.item_type
+            item_type = item.type_info.item_type
             update, errors = update_item(storage, item)
         except Exception:
             logger.exception('Error updating: /%s/%s', item_type, uuid)

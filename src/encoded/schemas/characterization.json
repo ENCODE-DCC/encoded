@@ -50,7 +50,7 @@
                 "description": "A document that provides additional information on the characterization.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "status": {

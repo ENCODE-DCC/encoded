@@ -31,7 +31,7 @@
             "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "target"
+            "linkTo": "Target"
         },
         "dataset_type": {
             "title": "Type",
@@ -67,7 +67,7 @@
                 "description": "An experiment that contains files that can serve as a scientific control for this experiment.",
                 "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
-                "linkTo": "experiment"
+                "linkTo": "Experiment"
             }
         }
     },

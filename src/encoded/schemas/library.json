@@ -53,7 +53,7 @@
                 "description": "A specific spike-ins type dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "dataset"
+                "linkTo": "Dataset"
             }
         },
         "biosample": {
@@ -61,7 +61,7 @@
             "description": "The biosample that nucleic acid was isolated from to generate the library.",
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
-            "linkTo": "biosample"
+            "linkTo": "Biosample"
         },
         "product_id": {
             "description": "The product identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
@@ -107,7 +107,7 @@
                 "description": "A document that describe the preparation of the library. ",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "dbxrefs": {
@@ -250,7 +250,7 @@
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
                 "type": "string",
-                "linkTo": "treatment"
+                "linkTo": "Treatment"
             }
         },
         "depleted_in_term_name": {

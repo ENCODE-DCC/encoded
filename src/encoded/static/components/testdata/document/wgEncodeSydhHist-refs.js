@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/documents/302689be-b110-40b6-8912-cc9d934b002e/",
-    "@type": ["document", "item"],
+    "@type": ["Document", "Item"],
     "aliases": [
         "ENCODE:Snyder_Histone_Mouse_protocol"
     ],

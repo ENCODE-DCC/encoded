@@ -2,10 +2,14 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
+var dataset = require('./dataset');
 var dbxref = require('./dbxref');
+var item = require('./item');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var ExperimentTable = dataset.ExperimentTable;
+var RelatedItems = item.RelatedItems;
 
 var Target = module.exports.Target = React.createClass({
     render: function() {
@@ -54,9 +58,13 @@ var Target = module.exports.Target = React.createClass({
                         : <em>None submitted</em> }
                     </dd>
                 </dl>
+
+                <RelatedItems title={'Experiments using target ' + context.label}
+                              url={'/search/?type=experiment&target.uuid=' + context.uuid}
+                              Component={ExperimentTable} />
             </div>
         );
     }
 });
 
-globals.content_views.register(Target, 'target');
+globals.content_views.register(Target, 'Target');

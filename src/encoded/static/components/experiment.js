@@ -387,7 +387,7 @@ var Experiment = module.exports.Experiment = React.createClass({
     }
 });
 
-globals.content_views.register(Experiment, 'experiment');
+globals.content_views.register(Experiment, 'Experiment');
 
 
 var ControllingExperiments = React.createClass({
@@ -400,10 +400,9 @@ var ControllingExperiments = React.createClass({
                     <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
                 </span>
 
-                <div>
-                    <h3>Experiments with {context.accession} as a control:</h3>
-                    <ExperimentTable {...this.props} limit={5} />
-                </div>
+                <ExperimentTable
+                    {...this.props} limit={5}
+                    title={'Experiments with ' + context.accession + ' as a control:'} />
             </div>
         );
     }
@@ -610,7 +609,7 @@ var Replicate = module.exports.Replicate = function (props) {
     );
 };
 // Can't be a properzz panel as the control must be passed in.
-//globals.panel_views.register(Replicate, 'replicate');
+//globals.panel_views.register(Replicate, 'Replicate');
 
 
 var BiosampleTreatments = function(biosamples) {
@@ -714,12 +713,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
-        if (file.replicate) {
-            if (!allReplicates[file.replicate.biological_replicate_number]) {
+        if (file.biological_replicates && file.biological_replicates.length == 1) {
+            var biological_replicate_number = file.biological_replicates[0]
+            if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
-                allReplicates[file.replicate.biological_replicate_number] = [];
+                allReplicates[biological_replicate_number] = [];
             }
-            allReplicates[file.replicate.biological_replicate_number].push(file);
+            allReplicates[biological_replicate_number].push(file);
         }
 
         // Note whether any files have an analysis step
@@ -734,7 +734,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         allFiles[file['@id']] = file;
 
         // Keep track of whether files exist outside replicates
-        fileOutsideReplicate = fileOutsideReplicate || !!file.replicate;
+        fileOutsideReplicate = fileOutsideReplicate || !!file.biological_replicates.length > 1;
     });
     // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
     // derivedFromFiles points to derived_from file objects
@@ -744,12 +744,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         console.warn('No graph: no files have step runs');
         return null;
     }
-
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
     files.forEach(function(file) {
         file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
-
         // If the file's removed, remember it's removed from the derived_From file objects too
         if (file.removed && derivedFromFiles[file['@id']]) {
             derivedFromFiles[file['@id']].removed = true;
@@ -779,21 +777,22 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
+    // Not sure if this is covered in test cases
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
         if (!(derivedFromFileId in allFiles)) {
             // A file others derive from doesn't exist; check if it's in a replicate or not
             // Note the derived_from file object exists even if it doesn't exist in given files array.
             var derivedFromFile = derivedFromFiles[derivedFromFileId];
-            if (derivedFromFile.replicate) {
+            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length == 1) {
                 // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
-                if (allReplicates[derivedFromFile.replicate.biological_replicate_number]) {
-                    allReplicates[derivedFromFile.replicate.biological_replicate_number].forEach(function(file) {
+                if (allReplicates[derivedFromFile.biological_replicates[0]]) {
+                    allReplicates[derivedFromFile.biological_replicates[0]].forEach(function(file) {
                         file.removed = true;
                     });
                 }
 
                 // Indicate that this replicate is not to be rendered
-                allReplicates[derivedFromFile.replicate.biological_replicate_number] = [];
+                allReplicates[derivedFromFile.biological_replicates[0]] = [];
             } else {
                 // Missing derived-from file not in a replicate; don't draw any graph
                 abortGraph = abortGraph || true;
@@ -859,7 +858,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var pipelineInfo;
             var error;
             var fileId = 'file:' + file['@id'];
-            var replicateNode = file.replicate ? jsonGraph.getNode('rep:' + file.replicate.biological_replicate_number) : null;
+            var replicateNode = ( file.biological_replicates && file.biological_replicates.length==1 )? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
             var metricsInfo;
 
             // Add QC metrics info from the file to the list to generate the nodes later
@@ -879,7 +878,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 parentNode: replicateNode,
                 ref: file
             }, metricsInfo);
-
             // If the file has an analysis step, prepare it for graph insertion
             var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (fileAnalysisStep) {
@@ -1054,8 +1052,19 @@ var FileDetailView = function(node) {
 
                 {selectedFile.replicate ?
                     <div data-test="replicate">
-                        <dt>Associated replicates</dt>
-                        <dd>{'(' + selectedFile.replicate.biological_replicate_number + ', ' + selectedFile.replicate.technical_replicate_number + ')'}</dd>
+                        <dt>Biological Replicate(s)</dt>
+                        <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
+                        <dt>Technical Replicate</dt>
+                        <dd>{selectedFile.replicate.technical_replicate_number}</dd>
+                    </div>
+                : null}
+
+                { selectedFile.biological_replicates && !selectedFile.replicate ?
+                    <div data-test="replicate">
+                        <dt>Biological Replicate(s)</dt>
+                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
+                        <dt>Technical Replicate</dt>
+                        <dd>{'-'}</dd>
                     </div>
                 : null}
 
@@ -1130,7 +1139,7 @@ var FileDetailView = function(node) {
     }
 };
 
-globals.graph_detail.register(FileDetailView, 'file');
+globals.graph_detail.register(FileDetailView, 'File');
 
 
 var QcDetailsView = function(metrics) {
