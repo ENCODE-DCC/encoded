@@ -319,7 +319,7 @@ def test_audit_experiment_technical_replicates_same_library(testapp, base_experi
     for error_type in errors:
         errors_list.extend(errors[error_type])
 
-    assert any(error['category'] == 'misuse of technical replication' for error in errors_list)
+    assert any(error['category'] == 'biological replicates with identical library' for error in errors_list)
 
 def test_audit_experiment_biological_replicates_biosample(testapp, base_experiment,base_biosample, library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})

@@ -103,7 +103,7 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 biological_replicates_dict[bio_rep_num]=[]            
             if library['accession'] in biological_replicates_dict[bio_rep_num]:               
                 detail = 'Experiment {} has different technical replicates associated with the same library'.format(value['@id'])
-                raise AuditFailure('misuse of technical replication', detail, level='DCC_ACTION')
+                raise AuditFailure('biological replicates with identical library', detail, level='DCC_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
