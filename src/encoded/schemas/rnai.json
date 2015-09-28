@@ -42,7 +42,7 @@
             "description": "The name of the gene whose expression or product is modified by the RNAi construct.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "target"
+            "linkTo": "Target"
         },
         "vector_backbone_name": {
             "title": "Backbone name",
@@ -59,7 +59,7 @@
                 "description": "A document that describes the RNAi construct.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "rnai_sequence": {

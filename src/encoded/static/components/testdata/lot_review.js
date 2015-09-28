@@ -11,8 +11,8 @@
                     "taxon_id":"9606",
                     "@id":"/organisms/human/",
                     "@type":[  
-                        "organism",
-                        "item"
+                        "Organism",
+                        "Item"
                     ],
                     "uuid":"7745b647-ff15-4ff3-9ced-b897d4e2983c"
                 }
@@ -33,8 +33,8 @@
                         "taxon_id":"9606",
                         "@id":"/organisms/human/",
                         "@type":[  
-                            "organism",
-                            "item"
+                            "Organism",
+                            "Item"
                         ],
                         "uuid":"7745b647-ff15-4ff3-9ced-b897d4e2983c"
                     },
@@ -53,8 +53,8 @@
                     ],
                     "@id":"/targets/HNRNPA1-human/",
                     "@type":[  
-                        "target",
-                        "item"
+                        "Target",
+                        "Item"
                     ],
                     "gene_name":"HNRNPA1",
                     "name":"HNRNPA1-human"

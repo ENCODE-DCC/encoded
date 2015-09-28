@@ -12,6 +12,7 @@ UPGRADER = 'upgrader'
 
 # Constants
 PHASE1_5_CONFIG = -15
+PHASE2_5_CONFIG = -5
 
 
 # Events
@@ -31,3 +32,8 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+class AfterUpgrade(object):
+    def __init__(self, object):
+        self.object = object

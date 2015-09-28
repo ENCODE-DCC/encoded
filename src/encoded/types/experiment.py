@@ -23,7 +23,7 @@ import datetime
 class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
-    base_types = [Dataset.item_type] + Dataset.base_types
+    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.lab',
         'files.platform',
@@ -101,7 +101,7 @@ class Experiment(Dataset):
     ]
     rev = Dataset.rev.copy()
     rev.update({
-        'replicates': ('replicate', 'experiment')
+        'replicates': ('Replicate', 'experiment')
     })
 
     @calculated_property(condition='biosample_term_id', schema={
@@ -178,7 +178,7 @@ class Experiment(Dataset):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "replicate.experiment",
+            "linkFrom": "Replicate.experiment",
         },
     })
     def replicates(self, request, replicates):

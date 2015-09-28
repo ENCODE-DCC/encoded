@@ -11,7 +11,7 @@ from contentbase.attachment import ItemWithAttachment
 
 
 class Characterization(ItemWithAttachment, Item):
-    base_types = ['characterization'] + Item.base_types
+    base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
 
 

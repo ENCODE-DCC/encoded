@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/experiments/ENCSR999NOF/",
-    "@type": ["experiment", "dataset", "item"],
+    "@type": ["Experiment", "Dataset", "Item"],
     "accession": "ENCSR999NOF",
     "aliases": [],
     "assay_term_id": "OBI:0001271",

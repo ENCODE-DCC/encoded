@@ -21,7 +21,7 @@
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
-            "linkTo": "analysis_step_run"
+            "linkTo": "AnalysisStepRun"
         },
         "quality_metric_of": {
             "title": "Files",
@@ -33,7 +33,7 @@
                 "description": "A particular file associated with this quality metric.",
                 "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "file"
+                "linkTo": "File"
             }
         }
     }

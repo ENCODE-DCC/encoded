@@ -10,7 +10,7 @@ module.exports = {
     "status": "released",
     "uuid": "30ca86a0-1c09-11e4-8c21-0800200c9a66",
     "@type": [
-        "software",
-        "item"
+        "Software",
+        "Item"
     ]
 };

@@ -1,3 +1,6 @@
+from contentbase import (
+    TYPES,
+)
 from pyramid.events import (
     ApplicationCreated,
     subscriber,
@@ -27,7 +30,7 @@ def includeme(config):
 def make_jsonld_context(event):
     app = event.app
     registry = app.registry
-    root = app.root_factory(app)
+    types = registry[TYPES]
     jsonld_base = registry.settings['contentbase.jsonld.terms_namespace']
     prefix = registry.settings['contentbase.jsonld.terms_prefix']
     term_path = urlparse(jsonld_base).path
@@ -66,17 +69,17 @@ def make_jsonld_context(event):
         'rdfs:seeAlso': {
             '@type': '@id',
         },
-        'portal': prefix + ':portal',
-        'search': prefix + ':search',
-        'collection': prefix + ':collection',
+        'portal': prefix + ':Portal',
+        'search': prefix + ':Search',
+        'collection': prefix + ':Collection',
     }
 
-    for name, collection in root.by_item_type.items():
-        if name.startswith('testing_'):
+    for item_type, type_info in types.by_item_type.items():
+        if item_type.startswith('testing_'):
             continue
-        schema = collection.type_info.schema
+        schema = type_info.schema
         context.update(context_from_schema(
-            schema, prefix, collection.item_type, collection.type_info.base_types))
+            schema, prefix, type_info.name, type_info.base_types))
 
     namespaces = registry.settings.get('contentbase.jsonld.namespaces', {})
     context.update(namespaces)
@@ -88,7 +91,7 @@ def make_jsonld_context(event):
     }
 
     defines = ontology['defines'] = {}
-    for type_name in ['item', 'collection', 'portal', 'search']:
+    for type_name in ['Item', 'Collection', 'Portal', 'Search']:
         defines[type_name] = {
             '@id': term_path + type_name,
             '@type': 'rdfs:Class',
@@ -117,12 +120,12 @@ def make_jsonld_context(event):
         'rdfs:domain',
     ]
 
-    for name, collection in root.by_item_type.items():
-        if name.startswith('testing_'):
+    for item_type, type_info in types.by_item_type.items():
+        if item_type.startswith('testing_'):
             continue
-        schema = collection.type_info.schema
+        schema = type_info.schema
         iter_defs = ontology_from_schema(
-            schema, prefix, term_path, collection.item_type, collection.type_info.base_types)
+            schema, prefix, term_path, item_type, type_info.name, type_info.base_types)
 
         for definition in iter_defs:
             if definition['@id'].startswith(term_path):
@@ -174,10 +177,10 @@ def make_jsonld_context(event):
     app.registry['contentbase.jsonld.context'] = ontology
 
 
-def context_from_schema(schema, prefix, item_type, base_types):
+def context_from_schema(schema, prefix, class_name, base_types):
     jsonld_context = {}
 
-    for type_name in base_types + [item_type, item_type + '_collection']:
+    for type_name in base_types + [class_name, class_name + 'Collection']:
         jsonld_context[type_name] = '%s:%s' % (prefix, type_name)
 
     for name, subschema in schema.get('properties', {}).items():
@@ -219,9 +222,9 @@ def context_from_schema(schema, prefix, item_type, base_types):
     return jsonld_context
 
 
-def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
+def ontology_from_schema(schema, prefix, term_path, item_type, class_name, base_types):
     yield {
-        '@id': term_path + item_type,
+        '@id': term_path + class_name,
         '@type': 'rdfs:Class',
         'rdfs:subClassOf': [term_path + type_name for type_name in base_types],
         'rdfs:seeAlso': '/profiles/{item_type}.json'.format(item_type=item_type)
@@ -231,13 +234,13 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
         yield {
             '@id': term_path + base_type,
             '@type': 'rdfs:Class',
-            'rdfs:subClassOf': term_path + 'item',
+            'rdfs:subClassOf': term_path + 'Item',
         }
 
     yield {
-        '@id': term_path + item_type + '_collection',
+        '@id': term_path + class_name + 'Collection',
         '@type': 'rdfs:Class',
-        'rdfs:subClassOf': [term_path + 'collection'],
+        'rdfs:subClassOf': [term_path + 'Collection'],
     }
 
     for name, subschema in schema.get('properties', {}).items():
@@ -252,7 +255,7 @@ def ontology_from_schema(schema, prefix, term_path, item_type, base_types):
         prop_ld = {
             '@id': subschema.get('@id', term_path + quote(name, safe='')),
             '@type': 'rdf:Property',
-            'rdfs:domain': term_path + item_type,
+            'rdfs:domain': term_path + class_name,
         }
 
         if 'rdfs:subPropertyOf' in subschema:
@@ -294,11 +297,3 @@ def jsonld_term(context, request):
         return ontology['defines'][term]
     except KeyError:
         raise HTTPNotFound(term)
-
-
-# @subscriber(BeforeRender)  # disable for now
-def add_jsonld_context(event):
-    request = event['request']
-    value = event.rendering_val
-    if ('@id' in value or '@graph' in value) and '@context' not in value:
-        value['@context'] = request.route_path('jsonld_context')

@@ -24,7 +24,7 @@
             "description": "Unique name of the software package.",
             "comment": "See software.json for available identifiers.",
             "type": "string",
-            "linkTo": "software"
+            "linkTo": "Software"
         },
         "version": {
             "title": "Version",

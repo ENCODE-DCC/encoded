@@ -14,7 +14,7 @@ describe("Server rendering", function () {
     var home_url = "http://localhost/";
     var home = {
         "@id": "/",
-        "@type": ["portal"],
+        "@type": ["Portal"],
         "portal_title": "ENCODE",
         "title": "Home"
     };
@@ -27,6 +27,7 @@ describe("Server rendering", function () {
         var markup = '<!DOCTYPE html>\n' + React.renderToString(server_app);
         var parser = new DOMParser();
         document = parser.parseFromString(markup, 'text/html');
+        window.location.href = home_url;
     });
 
     it("renders the application to html", function () {

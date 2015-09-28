@@ -52,4 +52,4 @@ var SchemaPage = module.exports.SchemaPage = React.createClass({
         );
     }
 });
-globals.content_views.register(SchemaPage, 'jsonschema');
+globals.content_views.register(SchemaPage, 'JSONSchema');
