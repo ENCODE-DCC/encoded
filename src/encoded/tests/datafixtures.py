@@ -425,7 +425,6 @@ def biosample_characterization(testapp, award, lab, biosample, attachment):
     }
     return testapp.post_json('/biosample_characterization', item).json['@graph'][0]
 
-
 @pytest.fixture
 def mouse_donor(testapp, award, lab, mouse):
     item = {

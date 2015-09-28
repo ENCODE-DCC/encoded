@@ -89,90 +89,168 @@ def audit_experiment_replicated(value, system):
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library.biosample.donor' ])
+@audit_checker('experiment', frame=['replicates', 'replicates.library.biosample','replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
 
-    biological_rep_donors_dict = {}
+    biological_rep_biosample_dict = {}
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
 
         # check is we have to throw an error in case one of the library, bisoamle, donor are missing
         # we can either throw an error, or keep gathering information for anything that has library associated
+
         if 'library' not in rep:
             continue
         lib = rep['library']
         if 'biosample' not in lib:
+            # THROW DCC ACTION in LIBRARY AUDIT TEST
             continue
         biosample = lib['biosample']
         if 'donor' not in biosample:
-            continue
+            continue # already checked at biosample
+            
 
-        rep_donor = biosample['donor']
-        if not bio_rep_num in biological_rep_donors_dict:
-            biological_rep_donors_dict[bio_rep_num]={}
-        biological_rep_donors_dict[bio_rep_num][tech_rep_num]=rep_donor
-
-    # validating technical replicates isogeneity
-    for tech_rep_dict_key in biological_rep_donors_dict.keys():
+        if not bio_rep_num in biological_rep_biosample_dict:
+            biological_rep_biosample_dict[bio_rep_num]={}
+        biological_rep_biosample_dict[bio_rep_num][tech_rep_num]=biosample
+        
+    ''' 
+    To allow validation of biological replicates - first make sure technical replicates are from the same donor
+    '''
+    for tech_rep_dict_key in biological_rep_biosample_dict.keys():
         donorsList = []
-        for tech_rep_donor_key in biological_rep_donors_dict[tech_rep_dict_key].keys():
-            donorsList.append(biological_rep_donors_dict[tech_rep_dict_key][tech_rep_donor_key])
+        for tech_rep_donor_key in biological_rep_biosample_dict[tech_rep_dict_key].keys():
+            donorsList.append(biological_rep_biosample_dict[tech_rep_dict_key][tech_rep_donor_key]['donor'])
         if len(donorsList)>1:
             initialDonor = donorsList[0]
             for tech_donor in donorsList:
                 if initialDonor['accession']!=tech_donor['accession']:
-                    detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                    raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
+                    detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+                    raise AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')
+                #STOP HERE
+
                 if 'age' in initialDonor:
                     if (not 'age' in tech_donor) or (initialDonor['age']!=tech_donor['age']):
-                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
+                        detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')
                 else:
                     if ('age' in tech_donor):
-                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')
+                        detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')
                 if 'sex' in initialDonor:
                     if (not 'sex' in tech_donor) or (initialDonor['sex']!=tech_donor['sex']):
-                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')   
+                        detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')   
                 else:
                     if ('sex' in tech_donor):
-                        detail = 'Experiment {} has non-isogenic technical replicates'.format(value['@id'])
-                        raise AuditFailure('heterogenic technical replicates', detail, level='ERROR')   
+                        detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+                        raise AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')   
     
-    # if no exception was raised untill now, it means that technical replicates are isogenic per 
-    # given biological replicate
-    # validating bilogical replicates isogeneity
-
-    bio_reps = []
-    for tech_rep_dict_key in biological_rep_donors_dict.keys():
-        for tech_rep_donor_key in biological_rep_donors_dict[tech_rep_dict_key].keys():
-            bio_rep = biological_rep_donors_dict[tech_rep_dict_key][tech_rep_donor_key]
+    '''
+    Now we can proceed to biological replicates validation
+    '''
+    bio_reps_biosamples = []
+    for tech_rep_dict_key in biological_rep_biosample_dict.keys():
+        for tech_rep_donor_key in biological_rep_biosample_dict[tech_rep_dict_key].keys():
+            bio_rep_biosample = biological_rep_biosample_dict[tech_rep_dict_key][tech_rep_donor_key]
             break
-        bio_reps.append(bio_rep)
-        
-    initialDonor = bio_reps[0]
-    for repli in bio_reps:
-        if initialDonor['accession']!=repli['accession']:
-            detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-            raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
-        if 'age' in initialDonor:
-            if (not 'age' in repli) or (initialDonor['age']!=repli['age']):
-                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
-        else:
-            if  ('age' in repli):
-                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')   
-        if 'sex' in initialDonor:
-            if (not 'sex' in repli) or (initialDonor['sex']!=repli['sex']):
-                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')
-        else:
-            if  ('sex' in repli):
-                detail = 'Experiment {} has non-isogenic biological replicates'.format(value['@id'])
-                raise AuditFailure('heterogenic biological replicates', detail, level='DCC_ACTION')   
+        bio_reps_biosamples.append(bio_rep_biosample) #adding donor
+
+    '''
+    In the bio_reps we have a list of representative bilogical donors
+    Now we can check different things for humans or model organisms
+    '''    
+    initialBiosample = bio_reps_biosamples[0]
+    initialOrganism = initialBiosample['donor']['organism']
+    initialAccession = initialBiosample['donor']['accession']
+    
+    
+    if initialOrganism['scientific_name']=='Homo sapiens': #dealing with humans for now
+        for biosample_entry in bio_reps_biosamples:
+            if biosample_entry['donor']['accession'] != initialAccession: # we have mismatched biological replicates
+
+                if 'sex' in biosample_entry and 'age' in biosample_entry: # now we have to figure out if there is a match in age/sex
+                    
+                    sexes = [biosample_entry['sex'],initialBiosample['sex']]
+                    ages = [biosample_entry['age'],initialBiosample['age']]
+
+                    agesKnownFlag = False
+                    sexesKnownFlag = False
+
+                    if 'unknown' not in ages:
+                        agesKnownFlag = True
+                    if 'unknown' not in sexes and 'mixed' not in 'sexes':
+                        sexesKnownFlag = True
+
+                    if agesKnownFlag==False and sexesKnownFlag==False:
+                        detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are not matched'.format(
+                                    value['@id'],
+                                    initialBiosample['@id'],
+                                    biosample_entry['@id'])
+                        raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+
+                    else:
+                        if agesKnownFlag==True and sexesKnownFlag==False:
+                            if biosample_entry['age']==initialBiosample['age'] and biosample_entry['age_units']==initialBiosample['age_units']:
+                                detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex property is not matched'.format(
+                                    value['@id'],
+                                    initialBiosample['@id'],
+                                    biosample_entry['@id'])
+                                raise AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
+                            else:
+                                detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are not matched'.format(
+                                    value['@id'],
+                                    initialBiosample['@id'],
+                                    biosample_entry['@id'])
+                                raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+                        else:
+                            if agesKnownFlag==False and sexesKnownFlag==True:
+                                if biosample_entry['sex']==initialBiosample['sex']:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, age property is not matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, matched sex', detail, level='DCC_ACTION')
+                                else:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are not matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+                            else: # both sex and age are known
+                                if biosample_entry['age']==initialBiosample['age'] and biosample_entry['age_units']==initialBiosample['age_units'] and biosample_entry['sex']==initialBiosample['sex']:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, matched sex and age', detail, level='DCC_ACTION')
+                                if biosample_entry['age']!=initialBiosample['age'] and biosample_entry['sex']==initialBiosample['sex']:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, age property is not matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, matched sex', detail, level='DCC_ACTION')
+
+                                if biosample_entry['age']==initialBiosample['age'] and biosample_entry['age_units']==initialBiosample['age_units'] and biosample_entry['sex']!=initialBiosample['sex']:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex property is not matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
+                                if biosample_entry['age']!=initialBiosample['age'] and biosample_entry['sex']!=initialBiosample['sex']:
+                                    detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are not matched'.format(
+                                        value['@id'],
+                                        initialBiosample['@id'],
+                                        biosample_entry['@id'])
+                                    raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+                else:
+                    # mention anisogenic donor accessions
+                    detail = 'In experiment {} the biosample {} is missing sex and age properties'.format(
+                        value['@id'],
+                        biosample_entry['@id'])
+                    raise AuditFailure('missing properties in biosample', detail, level='DCC ACTION')
+    else: #model organism 
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
