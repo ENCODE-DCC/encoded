@@ -291,9 +291,6 @@ def test_missing_quality_metrics(testapp, file5):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        print (error_type)
-        for e in (errors[error_type]):
-            print (e)
     assert any(error['category'] == 'missing quality metrics' for error in errors_list)
 
 
@@ -303,9 +300,6 @@ def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step
     errors_list = []
     for error_type in errors:       
         errors_list.extend(errors[error_type])
-        print (error_type)
-        for e in (errors[error_type]):
-            print (e)
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
@@ -316,9 +310,6 @@ def test_missing_quality_metrics_tophat_exclusion(testapp, file6,bam_quality_met
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type]) 
-        print (error_type)
-        for e in (errors[error_type]):
-            print (e)      
     assert all(error['category'] != 'missing quality metrics' for error in errors_list)
 
 def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
@@ -329,7 +320,4 @@ def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_q
     errors_list = []
     for error_type in errors:       
         errors_list.extend(errors[error_type])
-        print (error_type)
-        for e in (errors[error_type]):
-            print (e)
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
