@@ -281,14 +281,6 @@ def audit_file_read_depth(value, system):
     if value['lab'] != '/labs/encode-processing-pipeline/':
         return
 
-    quality_metrics = value.get('quality_metrics')
-
-    if (quality_metrics is None) or (quality_metrics == []):
-        detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
-            value['@id'])
-        raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
-
-   
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has no analysis step version'.format(
                 value['@id'])
@@ -324,7 +316,13 @@ def audit_file_read_depth(value, system):
     for record in value['analysis_step_version']['software_versions']:        
         if record['software']['title']=='TopHat':
             return
+            
+    quality_metrics = value.get('quality_metrics')
 
+    if (quality_metrics is None) or (quality_metrics == []):
+        detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
+            value['@id'])
+        raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
     read_depth = 0
     
     for metric in quality_metrics:
