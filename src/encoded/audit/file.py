@@ -339,7 +339,7 @@ def audit_file_read_depth(value, system):
         raise AuditFailure('missing read depth', detail, level='DCC_ACTION')
         
     read_depth_criteria = {
-        'Small RNA-seq single-end pipeline': 50000000,
+        'Small RNA-seq single-end pipeline': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
         'RAMPAGE (paired-end, stranded)': 30000000,
