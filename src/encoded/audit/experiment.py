@@ -160,7 +160,9 @@ def audit_experiment_isogeneity(value, system):
                     return biological_mismatched_sex(value, initialBiosample, biosample_entry)
                 if ageMatchBoolean == False and sexMatchedBoolean == False:
                     return biological_mismatched_sex_age(value, initialBiosample, biosample_entry)
-                
+            else:
+                return biological_mismatched_sex_age(value, initialBiosample, biosample_entry)
+                    
 def isMatchedAge(biosample_one, biosample_two):
     age_1 = biosample_one['age']
     age_2 = biosample_two['age']    
