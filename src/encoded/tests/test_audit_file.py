@@ -120,20 +120,6 @@ def encode_lab(testapp):
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
 @pytest.fixture
-def file5(file_exp2, award, encode_lab, testapp):
-    item = {
-        'dataset': file_exp2['uuid'],
-        'file_format': 'bam',
-        'file_size': 3,
-        'md5sum': '100d8c998f00b204e9800998ecf8428z',
-        'output_type': 'alignments',
-        'award': award['uuid'],
-        'lab': encode_lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/file', item, status=201).json['@graph'][0]
-
-@pytest.fixture
 def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
     item = {
         'dataset': file_exp2['uuid'],
@@ -285,8 +271,8 @@ def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     assert any(error['category'] == 'missing mate pair' for error in errors_list)
 
 
-def test_missing_quality_metrics(testapp, file5):
-    res = testapp.get(file5['@id'] + '@@index-data')
+def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+    res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
@@ -303,7 +289,7 @@ def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
-def test_missing_quality_metrics_tophat_exclusion(testapp, file6,bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
     testapp.patch_json(software['@id'],{'title':'TopHat'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
