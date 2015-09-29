@@ -184,6 +184,134 @@ class Experiment(Dataset):
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(schema={
+        "title": "Replication type",
+        "description":"Calculated field for experiment object that indicates the biological replicates type",
+        "type": "array",
+        "items":{
+            "type":"string",
+        }
+    })
+    #    "enum": [
+    #        "sex-matched",
+    #        "age-matched",
+    #        "anisogenic",
+    #        "isogenic",
+    #        "anisogenic technical replicates"
+    #    ]
+    #})
+    def replication_type(self, request, replicates=None):
+        bio_tech_biosample_dict = {}
+        
+        for x in replicates:
+            replicateObject = request.embed(x, '@@object')
+            
+            biol_rep_num = replicateObject['biological_replicate_number']
+            tech_rep_num = replicateObject['technical_replicate_number']        
+            if 'library' in replicateObject:
+                libraryObject = request.embed(replicateObject['library'], '@@object')
+                if 'biosample' in libraryObject:
+                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                    #######################################################################################
+                    # VERY IMPORTANT CONDITION, ASIDE THE FACT OF REPLICATES WITH NO LIBRARIES ASSOCIATED #
+                    #######################################################################################
+                    if 'age' in biosampleObject and 'sex' in biosampleObject:
+                        if not biol_rep_num in bio_tech_biosample_dict:
+                            bio_tech_biosample_dict[biol_rep_num]={}
+                        bio_tech_biosample_dict[biol_rep_num][tech_rep_num]=biosampleObject
+
+        '''
+        First we have ot make sure the technical replicates are isogenic - in order to be able ot pick the representative biological replicate
+        '''
+        for biol_rep_key in bio_tech_biosample_dict.keys():
+            donorsList = []
+            for tech_rep_key in bio_tech_biosample_dict[biol_rep_key].keys():
+                sample = bio_tech_biosample_dict[biol_rep_key][tech_rep_key]
+                if 'donor' in sample:
+                    donorObject = request.embed(sample['donor'], '@@object')
+                    donorsList.append(donorObject['accession'])
+            if (len(donorsList)>1):
+                initialDonorAccession = donorsList[0]
+                for accessionNumber in donorsList:
+                    if accessionNumber != initialDonorAccession:
+                        return ["unisogenic technical replicates"] # talk with Sricket about the return value in case of anisogenic technical replicates
+
+        '''
+        Second create a list of biological replicates representatives
+        '''
+
+        bio_reps = []
+        for biol_rep_key in bio_tech_biosample_dict.keys():   
+            for tech_rep_key in bio_tech_biosample_dict[biol_rep_key].keys(): 
+                bio_reps.append(bio_tech_biosample_dict[biol_rep_key][tech_rep_key])
+                break
+        
+        if len(bio_reps)==0:
+            return []
+
+
+
+
+        initialBiosample = bio_reps[0]
+        initialDonor = request.embed(initialBiosample['donor'], '@@object')
+        initialOrganism = request.embed(initialDonor['organism'], '@@object')
+        initialAccession = initialDonor['accession']
+
+        humanFlag = False
+        if initialOrganism['scientific_name']=='Homo sapiens':
+            humanFlag = True 
+
+
+        listOfReturns =[]
+        for biosample_entry in bio_reps:
+            currentDonor = request.embed(biosample_entry['donor'], '@@object')
+            currentAccession = currentDonor['accession']
+            if currentAccession != initialAccession: # biological replicates with different donors
+                
+                matchedAgeFlag = False
+                age_1 = initialBiosample['age']
+                age_2 = biosample_entry['age'] 
+                if age_1 != 'unknown' and 'age_2' != 'unknown':                    
+                    age_1_units = initialBiosample['age_units']
+                    age_2_units = biosample_entry['age_units']
+                    if age_1_units == age_2_units and age_1 == age_2:
+                        matchedAgeFlag = True
+
+                matchedSexFlag = False
+                sex_1 = initialBiosample['sex']
+                sex_2 = biosample_entry['sex'] 
+                if sex_1 != 'unknown' and sex_2 != 'unknown':
+                    if (sex_1 == sex_2 and sex_1 != 'mixed') or (sex_1 == sex_2 and sex_1 == 'mixed' and humanFlag == False):
+                        matchedSexFlag = True
+
+                
+
+                returnValue = "isogenic"
+                if matchedAgeFlag==True and matchedSexFlag==True:
+                    returnValue =  "anisogenic, sex and age matched"
+                if matchedAgeFlag==True and matchedSexFlag==False:
+                    returnValue = "anisogenic, age matched"
+                if matchedAgeFlag==False and matchedSexFlag==True:
+                    returnValue = "anisogenic, sex matched"
+                if matchedAgeFlag==False and matchedSexFlag==False:
+                    returnValue = "anisogenic"
+                
+                if returnValue != "isogenic":
+                    if len(listOfReturns)==0:
+                        listOfReturns.append(returnValue)
+                    else:
+                        if len(listOfReturns)>0 and returnValue not in listOfReturns:
+                            listOfReturns.append(returnValue)
+        
+        if len(listOfReturns)>0:
+            return listOfReturns
+        return ["isogenic biological replicates"]
+
+
+         
+    
+
+
 @collection(
     name='replicates',
     acl=ALLOW_SUBMITTER_ADD,
