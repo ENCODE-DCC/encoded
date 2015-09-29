@@ -40,6 +40,11 @@
                         "text/plain"
                     ]
                 },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
                 "size": {
                     "title": "File size",
                     "type": "integer"
