@@ -5,9 +5,9 @@ var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
 var dataset = require('./dataset');
-var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var item = require('./item');
 var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
@@ -16,10 +16,10 @@ var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
-var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
 var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
+var RelatedItems = item.RelatedItems;
 
 
 var Lot = module.exports.Lot = React.createClass({
@@ -55,9 +55,6 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
-        // To search list of linked experiments
-        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -189,33 +186,15 @@ var Lot = module.exports.Lot = React.createClass({
                     {characterizations}
                 </div>
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingAntibody} />
+                <RelatedItems title={'Experiments using antibody ' + context.accession}
+                              url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
+                              Component={ExperimentTable} />
             </div>
         );
     }
 });
 
-globals.content_views.register(Lot, 'antibody_lot');
-
-
-var ExperimentsUsingAntibody = React.createClass({
-    render: function () {
-        var context = this.props.context;
-
-        return (
-            <div>
-                <span className="pull-right">
-                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
-                </span>
-
-                <div>
-                    <h3>Experiments using antibody {context.accession}</h3>
-                    <ExperimentTable {...this.props} limit={5} />
-                </div>
-            </div>
-        );
-    }
-});
+globals.content_views.register(Lot, 'AntibodyLot');
 
 
 var Documents = React.createClass({
@@ -363,7 +342,7 @@ var Characterization = module.exports.Characterization = React.createClass({
     }
 });
 
-globals.panel_views.register(Characterization, 'antibody_characterization');
+globals.panel_views.register(Characterization, 'AntibodyCharacterization');
 
 
 var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
@@ -434,4 +413,4 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     }
 });
 
-globals.panel_views.register(AntibodyStatus, 'antibody_lot');
+globals.panel_views.register(AntibodyStatus, 'AntibodyLot');

@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/analysis-step-versions/871a52b2-6874-4927-98c6-1d0b74bbc194/",
-    "@type": ["analysis_step_version", "item"],
+    "@type": ["AnalysisStepVersion", "Item"],
     "status": "released",
     "aliases": [],
     "schema_version": "1",

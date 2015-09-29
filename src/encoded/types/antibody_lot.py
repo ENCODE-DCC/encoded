@@ -20,7 +20,7 @@ class AntibodyLot(SharedItem):
     schema = load_schema('encoded:schemas/antibody_lot.json')
     name_key = 'accession'
     rev = {
-        'characterizations': ('antibody_characterization', 'characterizes'),
+        'characterizations': ('AntibodyCharacterization', 'characterizes'),
     }
     embedded = [
         'source',
@@ -69,7 +69,7 @@ class AntibodyLot(SharedItem):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "antibody_characterization.characterizes",
+            "linkFrom": "AntibodyCharacterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

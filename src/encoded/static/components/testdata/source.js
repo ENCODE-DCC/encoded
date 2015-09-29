@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/sources/atcc/",
-    "@type": ["source", "item"],
+    "@type": ["Source", "Item"],
     "aliases": [],
     "description": "American Type Culture Collection (ATCC)",
     "name": "atcc",

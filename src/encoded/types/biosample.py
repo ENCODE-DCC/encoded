@@ -21,7 +21,7 @@ class Biosample(Item):
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
     rev = {
-        'characterizations': ('biosample_characterization', 'characterizes'),
+        'characterizations': ('BiosampleCharacterization', 'characterizes'),
     }
     embedded = [
         'donor',
@@ -212,7 +212,7 @@ class Biosample(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "biosample_characterization.characterizes",
+            "linkFrom": "BiosampleCharacterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

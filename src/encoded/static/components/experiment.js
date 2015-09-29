@@ -387,7 +387,7 @@ var Experiment = module.exports.Experiment = React.createClass({
     }
 });
 
-globals.content_views.register(Experiment, 'experiment');
+globals.content_views.register(Experiment, 'Experiment');
 
 
 var ControllingExperiments = React.createClass({
@@ -400,10 +400,9 @@ var ControllingExperiments = React.createClass({
                     <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
                 </span>
 
-                <div>
-                    <h3>Experiments with {context.accession} as a control:</h3>
-                    <ExperimentTable {...this.props} limit={5} />
-                </div>
+                <ExperimentTable
+                    {...this.props} limit={5}
+                    title={'Experiments with ' + context.accession + ' as a control:'} />
             </div>
         );
     }
@@ -610,7 +609,7 @@ var Replicate = module.exports.Replicate = function (props) {
     );
 };
 // Can't be a properzz panel as the control must be passed in.
-//globals.panel_views.register(Replicate, 'replicate');
+//globals.panel_views.register(Replicate, 'Replicate');
 
 
 var BiosampleTreatments = function(biosamples) {
@@ -1140,7 +1139,7 @@ var FileDetailView = function(node) {
     }
 };
 
-globals.graph_detail.register(FileDetailView, 'file');
+globals.graph_detail.register(FileDetailView, 'File');
 
 
 var QcDetailsView = function(metrics) {

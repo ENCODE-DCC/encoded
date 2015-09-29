@@ -252,7 +252,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         );
     }
 });
-globals.content_views.register(Pipeline, 'pipeline');
+globals.content_views.register(Pipeline, 'Pipeline');
 
 
 
@@ -431,7 +431,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     }
 };
 
-globals.graph_detail.register(StepDetailView, 'step');
+globals.graph_detail.register(StepDetailView, 'Step');
 
 
 var Listing = React.createClass({
@@ -485,7 +485,7 @@ var Listing = React.createClass({
         );
     }
 });
-globals.listing_views.register(Listing, 'pipeline');
+globals.listing_views.register(Listing, 'Pipeline');
 
 
 var PipelineTable = module.exports.PipelineTable = React.createClass({

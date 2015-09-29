@@ -14,7 +14,7 @@ var parseError = module.exports.parseError = function (response) {
         return Promise.resolve({
             status: 'error',
             title: response.message,
-            '@type': ['ajax_error', 'error']
+            '@type': ['AjaxError', 'Error']
         });
     }
     var content_type = response.headers.get('Content-Type') || '';
@@ -26,7 +26,7 @@ var parseError = module.exports.parseError = function (response) {
         status: 'error',
         title: response.statusText,
         code: response.status,
-        '@type': ['ajax_error', 'error']
+        '@type': ['AjaxError', 'Error']
     });
 };
 

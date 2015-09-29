@@ -34,7 +34,7 @@
             "description": "Organism bearing the target.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
-            "linkTo": "organism"
+            "linkTo": "Organism"
         },
         "gene_name": {
             "title": "Gene name",

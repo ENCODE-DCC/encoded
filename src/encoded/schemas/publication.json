@@ -100,7 +100,7 @@
                 "description": "A datasets referred to by the publication.",
                 "comment": "See dataset.json for available identifiers.",
                 "type":  "string",
-                "linkTo": "dataset"
+                "linkTo": "Dataset"
             }
         },
         "supplementary_data": {

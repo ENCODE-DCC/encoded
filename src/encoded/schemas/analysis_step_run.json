@@ -21,7 +21,7 @@
             "title": "Analysis Step Version",
             "description": "Reference to template step in pipeline",
             "type": "string",
-            "linkTo": "analysis_step_version"
+            "linkTo": "AnalysisStepVersion"
         },
         "dx_applet_details": {
             "title": "DNA Nexus applet details",
