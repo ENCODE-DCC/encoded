@@ -30,7 +30,7 @@ _SPECIES = {
 
 def includeme(config):
     config.add_route('bulk_file_indexer', '/bulk_file_indexer')
-    config.add_route('index_file', '/index-file')
+    config.add_route('index_file', '/index_file')
     config.scan(__name__)
 
 
@@ -95,7 +95,7 @@ def get_assay_term_name(request, accession):
     return None
 
 
-@view_config(route_name='index-file', request_method='POST', permission="index")
+@view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(context, request):
     """
     Indexes bed files in elasticsearch index

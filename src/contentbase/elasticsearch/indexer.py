@@ -232,7 +232,7 @@ class Indexer(object):
                 break
             else:
                 if result['item_type'] == 'file':
-                    request.embed('%s/@@index-file', uuid, as_user='INDEXER')
+                    request.embed('%s/@@index_file', uuid, as_user='INDEXER')
                 return
 
         timestamp = datetime.datetime.now().isoformat()
