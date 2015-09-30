@@ -30,7 +30,7 @@ _SPECIES = {
 
 def includeme(config):
     config.add_route('bulk_file_indexer', '/bulk_file_indexer')
-    config.add_route('index_file', '/index_file')
+    config.add_route('index_file', '/index-file')
     config.scan(__name__)
 
 
