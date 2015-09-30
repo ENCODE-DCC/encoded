@@ -8,6 +8,7 @@ from urllib.parse import (
 )
 from pyramid.view import view_config
 from contentbase.elasticsearch import ELASTIC_SEARCH
+from contentbase.resources import Item
 
 # hashmap of assays and corresponding file types that are being indexed
 _INDEXED_DATA = {
@@ -89,7 +90,7 @@ def get_assay_term_name(request, accession):
     return None
 
 
-@view_config(route_name='index_file', request_method='POST', permission="index")
+@view_config(context=Item, route_name='index_file', request_method='POST', permission="index")
 def index_file(context, request):
     """
     Indexes bed files in elasticsearch index
