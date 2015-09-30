@@ -227,6 +227,10 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
+        # for now we are only indexing human data
+        if assembly != 'hg19':
+            result['notification'] = 'No results found'
+            return result
         chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
