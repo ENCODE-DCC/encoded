@@ -95,37 +95,37 @@ def get_assay_term_name(request, accession):
     return None
 
 
-@view_config(route_name='index_file', request_method='POST', permission="index")
-def index_file(request, props):
+@view_config(route_name='index-file', request_method='POST', permission="index")
+def index_file(context, request):
     """
     Indexes bed files in elasticsearch index
     """
 
     # if file doesn't have dataset then just don't index
-    if 'dataset' not in props:
+    if 'dataset' not in context:
         return
 
     # If no status or not released just return
-    if 'status' not in props and props['status'] is not 'released':
+    if 'status' not in context and context['status'] is not 'released':
         return
 
     # Guard if assay_term_name doesn't exist
-    assay_term_name = get_assay_term_name(request, props['dataset'])
+    assay_term_name = get_assay_term_name(request, context['dataset'])
     if assay_term_name is None:
         return
 
     # We are only certain bed files for given assays. This validates them.
     flag = False
     for k, v in _INDEXED_DATA[assay_term_name].items():
-        if k in props and props[k] in v:
-            if 'file_format' in props and props['file_format'] == 'bed':
+        if k in context and context[k] in v:
+            if 'file_format' in context and context['file_format'] == 'bed':
                 flag = True
                 break
     if not flag:
         return
 
     es = request.registry.get(ELASTIC_SEARCH, None)
-    url = 'https://www.encodeproject.org' + props['href']
+    url = 'https://www.encodeproject.org' + context['href']
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
     r = http.request('GET', url)
@@ -147,15 +147,15 @@ def index_file(request, props):
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
     for key in file_data:
         doc = {
-            'uuid': props['uuid'],
+            'uuid': context['uuid'],
             'positions': file_data[key]
         }
         if not es.indices.exists(key):
             es.indices.create(index=key, body=index_settings())
             es.indices.put_mapping(index=key, doc_type='hg19',
                                    body=get_mapping())
-        es.index(index=key, doc_type=props['assembly'], body=doc,
-                 id=props['uuid'])
+        es.index(index=key, doc_type=context['assembly'], body=doc,
+                 id=context['uuid'])
 
 
 @view_config(route_name='bulk_file_indexer', request_method='POST', permission="index")
@@ -180,4 +180,4 @@ def bulk_file_indexer(request):
     path = '/search/?%s' % urlencode(params, True)
     for properties in embed(request, path, as_user=True)['@graph']:
         for f in properties['files']:
-            index_file(request, f)
+            index_file(f, request)
