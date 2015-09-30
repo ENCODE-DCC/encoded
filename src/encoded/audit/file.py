@@ -369,11 +369,20 @@ def audit_file_read_depth(value, system):
         if pipeline['title'] not in read_depth_criteria: 
             return
         if ((singleCellFlag==True) and read_depth<read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag==True) and read_depth<read_depth_special['shRNA knockdown followed by RNA-seq']):
-            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+            if shRNAFlag==True:
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
                     value['@id'],
                     read_depth, 
                     pipeline['title'],
-                    read_depth_criteria[pipeline['title']])
+                    read_depth_special['shRNA knockdown followed by RNA-seq'])
+            else:
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                    value['@id'],
+                    read_depth, 
+                    pipeline['title'],
+                    read_depth_special['single cell isolation followed by RNA-seq'])
+
+            
             raise AuditFailure('insufficient read depth', detail, level='ERROR')
             
                    
