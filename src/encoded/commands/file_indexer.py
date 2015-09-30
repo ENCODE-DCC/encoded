@@ -15,7 +15,7 @@ def run(app, record=False):
         'REMOTE_USER': 'INDEXER',
     }
     testapp = TestApp(app, environ)
-    testapp.post_json('/file_index', {'last_xmin': None})
+    testapp.post_json('/bulk_file_indexer', {'last_xmin': None})
 
 
 def main():

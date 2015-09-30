@@ -9,7 +9,7 @@ from urllib.parse import (
 from pyramid.view import view_config
 from contentbase.elasticsearch import ELASTIC_SEARCH
 
-# Assays and corresponding file types that are being indexed
+# hashmap of assays and corresponding file types that are being indexed
 _INDEXED_DATA = {
     'ChIP-seq': {
         'output_type': ['optimal idr thresholded peaks'],
@@ -29,7 +29,8 @@ _SPECIES = {
 
 
 def includeme(config):
-    config.add_route('file_index', '/file_index')
+    config.add_route('bulk_file_indexer', '/bulk_file_indexer')
+    config.add_route('index_file', '/index_file')
     config.scan(__name__)
 
 
@@ -69,9 +70,62 @@ def get_mapping():
     }
 
 
-def get_file(es, properties):
-    url = 'https://www.encodedcc.org' + properties['href']
-    print("Indexing file - " + url)
+def index_settings():
+    return {
+        'index': {
+            'number_of_shards': 1
+        }
+    }
+
+
+def get_assay_term_name(request, accession):
+    '''
+    Input file accession and returns assay_term_name of the experiment the file
+    belongs to
+    '''
+    params = {
+        'type': ['experiment'],
+        'accession': accession.split('/')[2],
+        'field': ['assay_term_name'],
+    }
+    path = '/search/?%s' % urlencode(params, True)
+    results = embed(request, path, as_user=True)['@graph']
+    if len(results) > 0:
+        return results[0]['assay_term_name']
+    return None
+
+
+@view_config(route_name='index_file', request_method='POST', permission="index")
+def index_file(request, props):
+    """
+    Indexes bed files in elasticsearch index
+    """
+
+    # if file doesn't have dataset then just don't index
+    if 'dataset' not in props:
+        return
+
+    # If no status or not released just return
+    if 'status' not in props and props['status'] is not 'released':
+        return
+
+    # Guard if assay_term_name doesn't exist
+    assay_term_name = get_assay_term_name(request, props['dataset'])
+    if assay_term_name is None:
+        return
+
+    # We are only certain bed files for given assays. This validates them.
+    flag = False
+    for k, v in _INDEXED_DATA[assay_term_name].items():
+        if k in props and props[k] in v:
+            if 'file_format' in props and props['file_format'] == 'bed':
+                flag = True
+                break
+    if not flag:
+        return
+
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    url = 'https://www.encodeproject.org' + props['href']
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
     r = http.request('GET', url)
@@ -93,22 +147,25 @@ def get_file(es, properties):
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
     for key in file_data:
         doc = {
-            'uuid': properties['uuid'],
+            'uuid': props['uuid'],
             'positions': file_data[key]
         }
         if not es.indices.exists(key):
-            es.indices.create(index=key)
+            es.indices.create(index=key, body=index_settings())
             es.indices.put_mapping(index=key, doc_type='hg19',
                                    body=get_mapping())
-        es.index(index=key, doc_type=properties['assembly'],
-                 body=doc, id=properties['uuid'])
+        es.index(index=key, doc_type=props['assembly'], body=doc,
+                 id=props['uuid'])
 
 
-@view_config(route_name='file_index', request_method='POST', permission="index")
-def file_index(request):
-    '''Indexes bed files in ENCODE'''
+@view_config(route_name='bulk_file_indexer', request_method='POST', permission="index")
+def bulk_file_indexer(request):
+    '''
+    Utility view to index all bed files in elasticsearch
+    TODO: This should be removed once peak indexer is integrated with real time
+    indexing.
+    '''
 
-    es = request.registry.get(ELASTIC_SEARCH, None)
     params = {
         'type': ['experiment'],
         'status': ['released'],
@@ -116,15 +173,11 @@ def file_index(request):
         'replicates.library.biosample.donor.organism.scientific_name':
         [organism for organism in _SPECIES],
         'field': ['files.href', 'files.assembly', 'files.uuid',
-                  'files.output_type', 'files.file_type',
-                  'files.file_format', 'assay_term_name'],
+                  'files.output_type', 'files.file_type', 'files.file_format',
+                  'assay_term_name', 'files.status', 'files.dataset'],
         'limit': ['all']
     }
     path = '/search/?%s' % urlencode(params, True)
     for properties in embed(request, path, as_user=True)['@graph']:
         for f in properties['files']:
-            for k, v in _INDEXED_DATA[properties['assay_term_name']].items():
-                if k in f and f[k] in v:
-                    if 'file_format' in f and f['file_format'] == 'bed':
-                        get_file(es, f)
-                        break
+            index_file(request, f)

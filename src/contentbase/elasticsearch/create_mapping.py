@@ -127,6 +127,7 @@ def schema_mapping(name, schema):
 def index_settings():
     return {
         'index': {
+            'number_of_shards': 1,
             'analysis': {
                 'filter': {
                     'substring': {
