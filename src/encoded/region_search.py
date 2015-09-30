@@ -120,7 +120,9 @@ def get_annotation_coordinates(es, id, assembly):
         annotations = es_results['_source']['annotations']
         for annotation in annotations:
             if annotation['assembly_name'] == assembly:
-                return ('chr' + annotation['chromosome'], annotation['start'], annotation['end'])
+                return ('chr' + annotation['chromosome'],
+                        annotation['start'],
+                        annotation['end'])
         for annotation in annotations:
             if annotation['assembly_name'] == 'GRCh38':
                 location = '{chr}:{start}-{end}'.format(
@@ -128,7 +130,8 @@ def get_annotation_coordinates(es, id, assembly):
                     start=annotation['start'],
                     end=annotation['end']
                 )
-    return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
+                return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
+        return ('', '', '')
 
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
@@ -227,10 +230,6 @@ def region_search(context, request):
             reference = regular_name
     annotation = request.params.get('annotation', '*')
     if annotation != '*':
-        # for now we are only indexing human data
-        if assembly != 'hg19':
-            result['notification'] = 'No results found'
-            return result
         chromosome, start, end = get_annotation_coordinates(es, annotation, reference)
     elif region != '*':
         region = region.lower()
