@@ -83,15 +83,9 @@ def get_assay_term_name(request, accession):
     Input file accession and returns assay_term_name of the experiment the file
     belongs to
     '''
-    params = {
-        'type': ['experiment'],
-        'accession': accession.split('/')[2],
-        'field': ['assay_term_name'],
-    }
-    path = '/search/?%s' % urlencode(params, True)
-    results = embed(request, path, as_user=True)['@graph']
-    if len(results) > 0:
-        return results[0]['assay_term_name']
+    context = request.embed(accession)
+    if 'assay_term_name' in context:
+        return context['assay_term_name']
     return None
 
 
