@@ -743,7 +743,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
         if (file.biological_replicates && file.biological_replicates.length == 1) {
-            var biological_replicate_number = file.biological_replicates[0]
+            var biological_replicate_number = file.biological_replicates[0];
             if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
                 allReplicates[biological_replicate_number] = [];
@@ -768,7 +768,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
 
         // Keep track of whether *any* files exist outside replicates
-        fileOutsideReplicate = fileOutsideReplicate || !!file.biological_replicates.length > 1;
+        fileOutsideReplicate = fileOutsideReplicate || file.biological_replicates.length > 1;
     });
 
     // At this stage, allFiles has all files found; allReplicates has all replicates found; allPipelines has all pipeline arrays found;
