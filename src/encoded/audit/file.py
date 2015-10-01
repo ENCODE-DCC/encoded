@@ -265,7 +265,7 @@ def audit_file_paired_ended_run_type(value, system):
                               'analysis_step_version.software_versions',
                               'analysis_step_version.software_versions.software',
                               'dataset'],
-               condition=rfa('ENCODE3'))
+               condition=rfa(['ENCODE3','ENCODE'])
 def audit_file_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
@@ -348,7 +348,7 @@ def audit_file_read_depth(value, system):
 
     read_depth_special = {
         'shRNA knockdown followed by RNA-seq':20000000,
-        'single cell isolation followed by RNA-seq':5000000
+        'single cell isolation followed by RNA-seq':15000000
     }
 
    
