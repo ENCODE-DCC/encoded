@@ -231,8 +231,6 @@ class Indexer(object):
                 last_exc = repr(e)
                 break
             else:
-                if result['item_type'] == 'file':
-                    request.embed('/%s/@@index_file' % uuid, as_user='INDEXER')
                 return
 
         timestamp = datetime.datetime.now().isoformat()

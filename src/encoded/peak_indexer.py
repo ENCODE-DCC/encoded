@@ -96,20 +96,16 @@ def index_file(context, request):
     Indexes bed files in elasticsearch index
     """
 
-    # if file doesn't have dataset then just don't index
-    if 'dataset' not in context:
+    if 'file' not in context['@type'] or 'dataset' not in context:
         return
 
-    # If no status or not released just return
     if 'status' not in context and context['status'] is not 'released':
         return
 
-    # Guard if assay_term_name doesn't exist
     assay_term_name = get_assay_term_name(request, context['dataset'])
     if assay_term_name is None:
         return
 
-    # We are only certain bed files for given assays. This validates them.
     flag = False
     for k, v in _INDEXED_DATA[assay_term_name].items():
         if k in context and context[k] in v:
