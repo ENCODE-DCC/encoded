@@ -12,7 +12,7 @@ Feature: Targets
 
     Scenario: Detail page
         When I visit "/targets/ADNP-human/"
-        Then I should see an element with the css selector ".view-item.type-target"
+        Then I should see an element with the css selector ".view-item.type-Target"
 
         When I click the link to "http://www.uniprot.org/uniprot/Q9H2P0"
         Then the browser's URL should contain "www.uniprot.org"
@@ -21,4 +21,4 @@ Feature: Targets
 
         When I go back
         Then the browser's URL should contain "/targets/"
-        And I should see an element with the css selector ".view-item.type-target"
+        And I should see an element with the css selector ".view-item.type-Target"

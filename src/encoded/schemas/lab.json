@@ -33,7 +33,7 @@
             "description": "Principle Investigator of the lab.",
             "comment": "See user.json for available identifiers.",
             "type": "string",
-            "linkTo": "user"
+            "linkTo": "User"
         },
         "awards": {
             "title": "Grants",
@@ -45,7 +45,7 @@
                 "description": "A grant associated with the lab.",
                 "comment": "See award.json for available identifiers.",
                 "type": "string",
-                "linkTo": "award"
+                "linkTo": "Award"
             }
         },
         "institute_label": {

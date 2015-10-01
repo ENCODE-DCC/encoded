@@ -153,6 +153,12 @@ def check_format(item, path):
         ('bigBed', 'candidate enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/candidate_enhancer_prediction.as' % encValData],
         ('bed', 'enhancer predictions'): ['-type=bed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
         ('bigBed', 'enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
+        ('bed', 'idr_peak'): ['-type=bed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bigBed', 'idr_peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bed', 'tss_peak'): ['-type=bed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+        ('bigBed', 'tss_peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+
+
         ('bedpe', None): ['-type=bed3+', chromInfo],
         ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
         #non-bed types
@@ -197,10 +203,11 @@ def check_file(item):
 
     result = None
     errors = {}
-    r = requests.head(
-        urljoin(CONFIG['url'], item['@id'] + '@@download'),
+    r = requests.get(
+        urljoin(CONFIG['url'], item['@id'] + '@@upload'),
         auth=(CONFIG['username'], CONFIG['password']), headers=HEADERS)
-    path = urlparse(r.headers['Location']).path[1:]
+    upload_url = r.json()['@graph'][0]['upload_credentials']['upload_url']
+    path = urlparse(upload_url).path[1:]
     local_path = CONFIG['mirror'] + path
 
     key = BUCKET.get_key(path)

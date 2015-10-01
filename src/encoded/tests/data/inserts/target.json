@@ -156,6 +156,16 @@
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
     {
+    "dbxref": [
+        "UniProtKB:P84228"
+    ],
+    "investigated_as": ["histone modification"],
+    "label": "H3K9ac",
+    "organism": "mouse",
+    "status": "current",
+    "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
+    },
+    {
         "dbxref": [
             "ENSEMBL:ENSG00000135486",
             "GeneID:3178",

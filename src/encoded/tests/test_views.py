@@ -312,7 +312,7 @@ def test_antibody_redirect(testapp, antibody_approval):
     res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
     assert 'antibody' in res.json
     res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
-    assert res.json['@type'] == ['antibody_lot', 'item']
+    assert res.json['@type'] == ['AntibodyLot', 'Item']
 
 
 def test_jsonld_context(testapp):

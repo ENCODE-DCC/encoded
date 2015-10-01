@@ -50,7 +50,7 @@
                 "description": "A document that provides additional information on the characterization.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "status": {
@@ -58,10 +58,8 @@
         },
         "comment": {
             "title": "Comment",
-            "description": "Additional information pertaining to the characterization.",
-            "type": "string",
-            "default": "",
-            "permission": "review"
+            "description": "Additional information pertaining to the characterization that the submitter wishes to disclose.",
+            "type": "string"
         }
     }
 }

@@ -142,7 +142,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     receive: function (data) {
-        var erred = (data['@type'] || []).indexOf('error') > -1;
+        var erred = (data['@type'] || []).indexOf('Error') > -1;
         this.setState({
             data: data,
             communicating: false,
@@ -154,4 +154,4 @@ var EditForm = module.exports.EditForm = React.createClass({
 });
 
 
-globals.content_views.register(ItemEdit, 'item', 'edit-json');
+globals.content_views.register(ItemEdit, 'Item', 'edit-json');

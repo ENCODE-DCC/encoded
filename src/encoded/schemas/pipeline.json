@@ -57,7 +57,7 @@
                 "description": "A particular computational analysis step used by the pipeline.",
                 "comment": "See analysis_step.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "analysis_step"
+                "linkTo": "AnalysisStep"
             }
         },
         "source_url": {
@@ -75,7 +75,7 @@
                 "description": "A document that provides additional information about the pipeline.",
                 "type": "string",
                 "comment": "See document.json for available identifiers.",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         }
     },

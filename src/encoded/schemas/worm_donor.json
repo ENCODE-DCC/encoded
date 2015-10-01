@@ -39,7 +39,7 @@
             "description": "The strain used for backcrossing.",
             "comment": "For worm strains, see worm_donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "worm_donor"
+            "linkTo": "WormDonor"
         },
         "documents": {
             "title": "Strain documents",
@@ -51,7 +51,7 @@
                 "description": "A document that describes the strain and/or its generation.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "organism":{ 
@@ -73,6 +73,20 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^cgc:.+$"
+            }
         }
     }
 }
