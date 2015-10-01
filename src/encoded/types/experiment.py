@@ -210,10 +210,11 @@ class Experiment(Dataset):
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     #######################################################################################
-                    # VERY IMPORTANT CONDITION, ASIDE THE FACT OF REPLICATES WITH NO LIBRARIES ASSOCIATED #
-                    # NOT INCLUDING IN THE CALCULATED VALUE REPLICATES WITHOUT AGE AND SEX                #
-                    # SHOULD ADD AUDIT FOR THAT                                                           #
-                    #######################################################################################
+                    # VERY IMPORTANT CONDITION:                                                           #
+                    # 1. REPLICATES WIT NO LIBRARIES WILL BE CAUGHT BY AUDIT                              #
+                    # 2. ANY BIOSAMPLE WILL HAVE SEX AND AGE - BECAUSE IDAN WILL FIX THE CALCULATED VALUE #
+                    # SEE TICKET NEMBER 3291. THE VALUES WILL BE UNKNOWN IN CASE WE DONT HAVE INFO        #                                                       
+                    #######################################################################################                            
                     if 'age' in biosampleObject and 'sex' in biosampleObject:
                         if not biol_rep_num in bio_tech_biosample_dict:
                             bio_tech_biosample_dict[biol_rep_num]={}
@@ -233,10 +234,10 @@ class Experiment(Dataset):
                 initialDonorAccession = donorsList[0]
                 for accessionNumber in donorsList:
                     if accessionNumber != initialDonorAccession:
-                        #######################################################################################
-                        # talk with Sricket about the return value in case of anisogenic technical replicates #
-                        #######################################################################################
-                        return "anisogenic technical replicates" 
+                        ####################################################################################################################
+                        # DISCUSSED WITH CRICKET AND DECIDED TO RETURN NONE - SIMPLY BECAUSE IT WILL LOOK BETTER THAN UNKNOWN FOR THE USER #
+                        ####################################################################################################################
+                        return None
 
         '''
         Second create a list of biological replicates representatives
@@ -304,7 +305,7 @@ class Experiment(Dataset):
                 return "anisogenic"
             else:
                 if 2 in listOfReturns:
-                    return "anisigenic, mathced-age"
+                    return "anisogenic, age-mathced"
                 else:
                     if 3 in listOfReturns:
                         return "anisogenic, sex-matched"

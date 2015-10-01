@@ -92,7 +92,12 @@ def audit_experiment_replicated(value, system):
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample','replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
 
+
+    if len(value['replicates'])==0:
+        return 
+
     biological_rep_biosample_dict = {}
+
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
@@ -637,7 +642,7 @@ def audit_experiment_antibody_eligible(value, system):
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
 
 '''
-TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT
+#TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT
 @audit_checker('experiment',frame='object')
 def audit_experiment_calculated_replicate_type(value, system):
     raise AuditFailure('zopa-zopa-zopa',value['replication_type'], level='DCC_ACTION')

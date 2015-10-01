@@ -580,13 +580,25 @@ def test_audit_experiment_isogenic_biological_replicates(testapp, base_experimen
     assert all(error['category'] != 'anisogenic biological replicates, matched sex and age' for error in errors_list)
 
 '''
-TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT  
+def test_audit_experiment_isogenic_no_replicates(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'replicates': []})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])       
+        for x in  errors[error_type]:
+            print (x)
+    assert all(error['category'] == 'anisogenic biological replicates, matched sex and age' for error in errors_list)
+
+
+#TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT  
 def test_audit_experiment_calculated_replicate_type(testapp, base_experiment, donor_1, donor_2,
     biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_2_1 ):
-    testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '54' })
+    testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '23' })
     testapp.patch_json(donor_2['@id'], {'age_units': 'year', 'age': '54' })
     testapp.patch_json(donor_1['@id'], {'sex': 'female' })
-    testapp.patch_json(donor_2['@id'], {'sex': 'female' })    
+    testapp.patch_json(donor_2['@id'], {'sex': 'unknown' })    
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
 
