@@ -114,8 +114,9 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                     if result.get('indexed', 0):
                         update_status(result=result)
                         log.info(result)
-                    for uuid in result['updated']:
-                        testapp.post_json('/%s/@@index_file' % uuid)
+                        updated = result.get('updated', []):
+                            for uuid in updated:
+                                testapp.post_json('/%s/@@index_file' % uuid)
                 update_status(
                     status='waiting',
                     timestamp=timestamp,
