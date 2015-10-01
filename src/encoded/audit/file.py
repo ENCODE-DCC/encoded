@@ -265,7 +265,7 @@ def audit_file_paired_ended_run_type(value, system):
                               'analysis_step_version.software_versions',
                               'analysis_step_version.software_versions.software',
                               'dataset'],
-               condition=rfa(['ENCODE3','ENCODE'])
+               condition=rfa('ENCODE3','ENCODE'))
 def audit_file_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
