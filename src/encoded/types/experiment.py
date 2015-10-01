@@ -187,7 +187,7 @@ class Experiment(Dataset):
     @calculated_property(schema={
         "title": "Replication type",
         "description":"Calculated field for experiment object that indicates the biological replicates type",
-        "type": "array",
+        "type": "string",
         "enum": [
             "anisogenic, sex-matched",
             "anisogenic, age-matched",
