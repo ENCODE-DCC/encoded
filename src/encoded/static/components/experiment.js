@@ -914,7 +914,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
             jsonGraph.addNode('rep:' + replicateNum, 'Replicate ' + replicateNum, {
                 cssClass: 'pipeline-replicate',
-                type: 'rep',
+                type: 'Rep',
                 shape: 'rect',
                 cornerRadius: 0
             });
@@ -945,7 +945,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             // Add file to the graph as a node
             jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
                 cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
-                type: 'file',
+                type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
@@ -975,7 +975,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 if (!jsonGraph.getNode(stepId)) {
                     jsonGraph.addNode(stepId, label, {
                         cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
-                        type: 'step',
+                        type: 'Step',
                         shape: 'rect',
                         cornerRadius: 4,
                         parentNode: replicateNode,
@@ -1006,7 +1006,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 // Assemble a single file node; can have file and step nodes in this graph
                 jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
                     cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                    type: 'file',
+                    type: 'File',
                     shape: 'rect',
                     cornerRadius: 16,
                     ref: file,
