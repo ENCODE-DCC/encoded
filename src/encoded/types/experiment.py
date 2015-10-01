@@ -249,9 +249,6 @@ class Experiment(Dataset):
         if len(bio_reps)==0:
             return []
 
-
-
-
         initialBiosample = bio_reps[0]
         initialDonor = request.embed(initialBiosample['donor'], '@@object')
         initialOrganism = request.embed(initialDonor['organism'], '@@object')
@@ -306,10 +303,6 @@ class Experiment(Dataset):
         if len(listOfReturns)>0:
             return listOfReturns
         return ["isogenic biological replicates"]
-
-
-         
-    
 
 
 @collection(
