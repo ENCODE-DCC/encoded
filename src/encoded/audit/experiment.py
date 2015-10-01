@@ -122,7 +122,10 @@ def audit_experiment_isogeneity(value, system):
         if len(donorsList)>1:
             initialDonor = donorsList[0]
             for tech_donor in donorsList:
-                if initialDonor['accession']!=tech_donor['accession']:                    
+                if initialDonor['accession']!=tech_donor['accession']:  
+                    #######################################################################################
+                    # talk with Sricket about the return value in case of anisogenic technical replicates #
+                    #######################################################################################                  
                     raise technical_failure(value)
     
     '''
@@ -206,28 +209,28 @@ def biological_matched_sex_age(value, biosample_one, biosample_two):
         value['@id'],
         biosample_one['@id'],
         biosample_two['@id'])
-    raise AuditFailure('anisogenic biological replicates, matched sex and age', detail, level='DCC_ACTION')
+    yield AuditFailure('anisogenic biological replicates, matched sex and age', detail, level='DCC_ACTION')
 
 def biological_mismatched_sex_age(value, biosample_one, biosample_two):
     detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex and age properties are not matched'.format(
         value['@id'],
         biosample_one['@id'],
         biosample_two['@id'])
-    raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+    yield AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
 
 def biological_mismatched_sex(value, biosample_one, biosample_two):
     detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, sex property is not matched'.format(
         value['@id'],
         biosample_one['@id'],
         biosample_two['@id'])
-    raise AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
+    yield AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
 
 def biological_mismatched_age(value, biosample_one, biosample_two):
     detail = 'In experiment {} the biological replicates for biosamples {} and {} are anisogenic, age property is not matched'.format(
         value['@id'],
         biosample_one['@id'],
         biosample_two['@id'])
-    raise AuditFailure('anisogenic biological replicates, matched sex', detail, level='DCC_ACTION')
+    yield AuditFailure('anisogenic biological replicates, matched sex', detail, level='DCC_ACTION')
 
 
 
@@ -633,3 +636,9 @@ def audit_experiment_antibody_eligible(value, system):
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
 
+'''
+TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT
+@audit_checker('experiment',frame='object')
+def audit_experiment_calculated_replicate_type(value, system):
+    raise AuditFailure('zopa-zopa-zopa',value['replication_type'], level='DCC_ACTION')
+'''

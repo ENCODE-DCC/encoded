@@ -188,18 +188,15 @@ class Experiment(Dataset):
         "title": "Replication type",
         "description":"Calculated field for experiment object that indicates the biological replicates type",
         "type": "array",
-        "items":{
-            "type":"string",
-        }
+        "enum": [
+            "anisogenic, sex-matched",
+            "anisogenic, age-matched",
+            "anisogenic, sex-matched age-matched",
+            "anisogenic",
+            "isogenic",
+            "anisogenic technical replicates"
+        ]
     })
-    #    "enum": [
-    #        "sex-matched",
-    #        "age-matched",
-    #        "anisogenic",
-    #        "isogenic",
-    #        "anisogenic technical replicates"
-    #    ]
-    #})
     def replication_type(self, request, replicates=None):
         bio_tech_biosample_dict = {}
         
@@ -214,6 +211,8 @@ class Experiment(Dataset):
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     #######################################################################################
                     # VERY IMPORTANT CONDITION, ASIDE THE FACT OF REPLICATES WITH NO LIBRARIES ASSOCIATED #
+                    # NOT INCLUDING IN THE CALCULATED VALUE REPLICATES WITHOUT AGE AND SEX                #
+                    # SHOULD ADD AUDIT FOR THAT                                                           #
                     #######################################################################################
                     if 'age' in biosampleObject and 'sex' in biosampleObject:
                         if not biol_rep_num in bio_tech_biosample_dict:
@@ -234,12 +233,14 @@ class Experiment(Dataset):
                 initialDonorAccession = donorsList[0]
                 for accessionNumber in donorsList:
                     if accessionNumber != initialDonorAccession:
-                        return ["unisogenic technical replicates"] # talk with Sricket about the return value in case of anisogenic technical replicates
+                        #######################################################################################
+                        # talk with Sricket about the return value in case of anisogenic technical replicates #
+                        #######################################################################################
+                        return "anisogenic technical replicates" 
 
         '''
         Second create a list of biological replicates representatives
         '''
-
         bio_reps = []
         for biol_rep_key in bio_tech_biosample_dict.keys():   
             for tech_rep_key in bio_tech_biosample_dict[biol_rep_key].keys(): 
@@ -281,19 +282,17 @@ class Experiment(Dataset):
                     if (sex_1 == sex_2 and sex_1 != 'mixed') or (sex_1 == sex_2 and sex_1 == 'mixed' and humanFlag == False):
                         matchedSexFlag = True
 
-                
-
-                returnValue = "isogenic"
+                returnValue = 0
                 if matchedAgeFlag==True and matchedSexFlag==True:
-                    returnValue =  "anisogenic, sex and age matched"
+                    returnValue =  1 # 
                 if matchedAgeFlag==True and matchedSexFlag==False:
-                    returnValue = "anisogenic, age matched"
+                    returnValue =  2 # unmatched sex
                 if matchedAgeFlag==False and matchedSexFlag==True:
-                    returnValue = "anisogenic, sex matched"
+                    returnValue =  3 # unmatched age
                 if matchedAgeFlag==False and matchedSexFlag==False:
-                    returnValue = "anisogenic"
+                    return "anisogenic"
                 
-                if returnValue != "isogenic":
+                if returnValue != 0: 
                     if len(listOfReturns)==0:
                         listOfReturns.append(returnValue)
                     else:
@@ -301,9 +300,17 @@ class Experiment(Dataset):
                             listOfReturns.append(returnValue)
         
         if len(listOfReturns)>0:
-            return listOfReturns
-        return ["isogenic biological replicates"]
-
+            if 2 in listOfReturns and 3 in listOfReturns:
+                return "anisogenic"
+            else:
+                if 2 in listOfReturns:
+                    return "anisigenic, mathced-age"
+                else:
+                    if 3 in listOfReturns:
+                        return "anisogenic, sex-matched"
+                    else:
+                        return "anisogenic, sex-matched and age-matched"
+        return "isogenic"
 
 @collection(
     name='replicates',
