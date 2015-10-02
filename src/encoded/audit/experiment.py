@@ -92,7 +92,6 @@ def audit_experiment_replicated(value, system):
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample','replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
 
-
     if len(value['replicates'])==0:
         return 
 
@@ -115,7 +114,9 @@ def audit_experiment_isogeneity(value, system):
         if not bio_rep_num in biological_rep_biosample_dict:
             biological_rep_biosample_dict[bio_rep_num]={}
         biological_rep_biosample_dict[bio_rep_num][tech_rep_num]=biosample
-        
+     
+    if len(biological_rep_biosample_dict.keys())<1:
+        return   
     ''' 
     To allow validation of biological replicates - first make sure technical replicates are from the same donor
     '''
