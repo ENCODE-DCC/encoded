@@ -1,9 +1,10 @@
-$indicator-eligible:    #00e500;
-$indicator-pending:     #33aaff;
-$indicator-noteligible: #cc0700;
-$indicator-awaiting:    #ebe310;
-$indicator-notreviewed: #1475c9;
-$indicator-notpursued:  #d0d0d0;
+$indicator-eligible:        #00e500;
+$indicator-eligible-exempt: #e38000;
+$indicator-pending:         #33aaff;
+$indicator-noteligible:     #cc0700;
+$indicator-awaiting:        #ebe310;
+$indicator-notreviewed:     #1475c9;
+$indicator-notpursued:      #d0d0d0;
 
 $document-figure-width: 130px;
 $document-figure-height: 130px;
@@ -345,6 +346,9 @@ $characterization-figure-height: 200px;
     // NOT REVIEWED (red)
     .#{$item}.status-not-reviewed         { background-color: #a0a0a0; }
     .#{$item}.status-not-reviewed[href]    { background-color: darken(#a0a0a0, 10%); }
+    // NOT REVIEWED (orange)
+    .#{$item}.status-exempt-from-standards         { background-color: $indicator-eligible-exempt; }
+    .#{$item}.status-exempt-from-standards[href]    { background-color: darken($indicator-eligible-exempt, 10%); }
 
     // Experiment (Dataset) and Biosample states
     // IN PROGRESS (blue)
@@ -391,6 +395,7 @@ $characterization-figure-height: 200px;
 
 // Status indicator glyph colors
 .indicator.status-eligible-for-new-data { color: $indicator-eligible; }
+.indicator.status-eligible-for-new-data-via-exemption { color: $indicator-eligible-exempt; }
 .indicator.status-pending-dcc-review { color: $indicator-pending; }
 .indicator.status-not-eligible-for-new-data { color: $indicator-noteligible; }
 .indicator.status-awaiting-lab-characterization { color: $indicator-awaiting; }
