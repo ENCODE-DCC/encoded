@@ -295,6 +295,7 @@ describe('Experiment Graph', function() {
             //files[0].replicate = files[1].replicate = files[1].derived_from[0].replicate = require('../testdata/replicate/human');
             //files[2].replicate = files[2].derived_from[0].replicate = require('../testdata/replicate/mouse');
             files[0].biological_replicates = files[1].biological_replicates = files[1].derived_from[0].biological_replicates = [ 1 ];
+            files[2].derived_from = [require('../testdata/file/bam-vus')];
             files[2].biological_replicates = files[2].derived_from[0].biological_replicates = [ 2 ];
 
             graph = assembleGraph(context_graph, '', files);

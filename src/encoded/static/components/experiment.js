@@ -842,7 +842,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             } else {
                 // At this stage, we know it's a process or reference file. Remove from files if
                 // it has mismatched assembly or annotation
-                console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
                 if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
                     file.removed = true;
                 }
@@ -860,7 +859,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             // A file others derive from doesn't exist; check if it's in a replicate or not
             // Note the derived_from file object exists even if it doesn't exist in given files array.
             var derivedFromFile = derivedFromFilesOrg[derivedFromFileId];
-            if (derivedFromFile.replicate) {
+            if (derivedFromFile.biological_replicates) {
                 // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
                 if (allReplicates[derivedFromFile.biological_replicates[0]]) {
                     allReplicates[derivedFromFile.biological_replicates[0]].forEach(function(file) {
