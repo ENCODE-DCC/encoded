@@ -763,8 +763,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         allFiles[file['@id']] = file;
 
         // Add to the filtering options to generate a <select>
-        if (file.output_category !== 'raw data' && file.assembly && file.genome_annotation) {
-            filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+        if (file.output_category !== 'raw data' && file.assembly) {
+            if (file.genome_annotation) {
+                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+            } else {
+                filterOptions[file.assembly] = file.assembly;
+            }
         }
 
         // Keep track of whether *any* files exist outside replicates
@@ -827,7 +831,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     // Remove files based on the filtering options
-    if (filterAssembly && filterAnnotation) {
+    if (filterAssembly) {
         var combinedFiles = _.union(files, context.contributing_files);
 
         // First remove all raw files, and all other files with mismatched filtering options
@@ -839,7 +843,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 // At this stage, we know it's a process or reference file. Remove from files if
                 // it has mismatched assembly or annotation
                 console.log(file.accession + ':' + file.assembly + '-' + file.genome_annotation + '::' + filterAssembly + ';;' + filterAnnotation);
-                if (file.assembly !== filterAssembly || file.genome_annotation !== filterAnnotation) {
+                if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
                     file.removed = true;
                 }
             }
@@ -1016,7 +1020,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }, this);
     }
 
-    // Attack filtering options, if any, to the graph.
+    // Attach filtering options, if any, to the graph.
     if (filterOptions && Object.keys(filterOptions).length) {
         jsonGraph.filterOptions = filterOptions;
     }
@@ -1090,7 +1094,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                         {filterOptions && Object.keys(filterOptions).length ?
                             <div className="form-inline">
                                 <select className="form-control" defaultValue="default" onChange={this.handleFilterChange}>
-                                    <option value="default" key="title">All</option>
+                                    <option value="default" key="title">All Assemblies and Annotations</option>
                                     <option disabled="disabled"></option>
                                     {Object.keys(filterOptions).map(function(option) {
                                         return (
