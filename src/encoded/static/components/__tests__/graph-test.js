@@ -256,7 +256,7 @@ describe('Experiment Graph', function() {
             files[0].biological_replicates = files[2].biological_replicates = [ 1 ];
             files[1].biological_replicates = files[3].biological_replicates = [ 2 ];
 
-            graph = assembleGraph(context_graph, '', files, true);
+            graph = assembleGraph(context_graph, '', files);
         });
 
         it('Has the correct number of nodes and edges', function() {
@@ -297,7 +297,7 @@ describe('Experiment Graph', function() {
             files[0].biological_replicates = files[1].biological_replicates = files[1].derived_from[0].biological_replicates = [ 1 ];
             files[2].biological_replicates = files[2].derived_from[0].biological_replicates = [ 2 ];
 
-            graph = assembleGraph(context_graph, '', files, true);
+            graph = assembleGraph(context_graph, '', files);
         });
 
         it('Has the correct number of nodes and edges', function() {
