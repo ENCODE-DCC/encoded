@@ -2,13 +2,21 @@ import urllib3
 import io
 import gzip
 import csv
-from contentbase.embed import embed
-from urllib.parse import (
-    urlencode,
-)
 from pyramid.view import view_config
-from contentbase.elasticsearch import ELASTIC_SEARCH
-from contentbase.resources import Item
+from elasticsearch.exceptions import (
+    NotFoundError
+)
+from contentbase import DBSESSION
+from contentbase.storage import (
+    TransactionRecord,
+)
+from contentbase.elasticsearch.interfaces import (
+    ELASTIC_SEARCH,
+    INDEXER,
+)
+from contentbase.elasticsearch.indexer import all_uuids
+
+SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 # hashmap of assays and corresponding file types that are being indexed
 _INDEXED_DATA = {
@@ -79,7 +87,7 @@ def index_settings():
     }
 
 
-def get_assay_term_name(request, accession):
+def get_assay_term_name(accession, request):
     '''
     Input file accession and returns assay_term_name of the experiment the file
     belongs to
@@ -90,19 +98,18 @@ def get_assay_term_name(request, accession):
     return None
 
 
-@view_config(context=Item, route_name='index_file', request_method='POST', permission="index")
-def index_file(context, request):
+def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
-
+    context = request.embed(uuid)
     if 'file' not in context['@type'] or 'dataset' not in context:
         return
 
     if 'status' not in context and context['status'] is not 'released':
         return
 
-    assay_term_name = get_assay_term_name(request, context['dataset'])
+    assay_term_name = get_assay_term_name(context['dataset'], request)
     if assay_term_name is None:
         return
 
@@ -149,26 +156,104 @@ def index_file(context, request):
                  id=context['uuid'])
 
 
-@view_config(route_name='bulk_file_indexer', request_method='POST', permission="index")
-def bulk_file_indexer(request):
-    '''
-    Utility view to index all bed files in elasticsearch
-    TODO: This should be removed once peak indexer is integrated with real time
-    indexing.
-    '''
+@view_config(route_name='index_file', request_method='POST', permission="index")
+def index_file(request):
+    INDEX = request.registry.settings['contentbase.elasticsearch.index']
+    # Setting request.datastore here only works because routed views are not traversed.
+    request.datastore = 'database'
+    dry_run = request.json.get('dry_run', False)
+    recovery = request.json.get('recovery', False)
+    es = request.registry[ELASTIC_SEARCH]
 
-    params = {
-        'type': ['experiment'],
-        'status': ['released'],
-        'assay_term_name': [assay for assay in _INDEXED_DATA],
-        'replicates.library.biosample.donor.organism.scientific_name':
-        [organism for organism in _SPECIES],
-        'field': ['files.href', 'files.assembly', 'files.uuid',
-                  'files.output_type', 'files.file_type', 'files.file_format',
-                  'assay_term_name', 'files.status', 'files.dataset'],
-        'limit': ['all']
+    session = request.registry[DBSESSION]()
+    connection = session.connection()
+    # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
+    if recovery:
+        # Not yet possible to export a snapshot on a standby server:
+        # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
+        query = connection.execute(
+            "SET TRANSACTION ISOLATION LEVEL READ COMMITTED, READ ONLY;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
+        )
+    else:
+        query = connection.execute(
+            "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();"
+        )
+    # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
+    # which is not available in recovery.
+    result, = query.fetchall()
+    xmin, snapshot_id = result  # lowest xid that is still in progress
+
+    first_txn = None
+    last_xmin = None
+    if 'last_xmin' in request.json:
+        last_xmin = request.json['last_xmin']
+    else:
+        try:
+            status = es.get(index=INDEX, doc_type='meta', id='indexing')
+        except NotFoundError:
+            pass
+        else:
+            last_xmin = status['_source']['xmin']
+
+    result = {
+        'xmin': xmin,
+        'last_xmin': last_xmin,
     }
-    path = '/search/?%s' % urlencode(params, True)
-    for properties in embed(request, path, as_user=True)['@graph']:
-        for f in properties['files']:
-            index_file(f, request)
+    if last_xmin is None:
+        result['types'] = types = request.json.get('types', None)
+        invalidated = list(all_uuids(request.root, types))
+    else:
+        txns = session.query(TransactionRecord).filter(
+            TransactionRecord.xid >= last_xmin,
+        )
+
+        invalidated = set()
+        updated = set()
+        renamed = set()
+        max_xid = 0
+        txn_count = 0
+        for txn in txns.all():
+            txn_count += 1
+            max_xid = max(max_xid, txn.xid)
+            if first_txn is None:
+                first_txn = txn.timestamp
+            else:
+                first_txn = min(first_txn, txn.timestamp)
+            renamed.update(txn.data.get('renamed', ()))
+            updated.update(txn.data.get('updated', ()))
+
+        result['txn_count'] = txn_count
+        if txn_count == 0:
+            return result
+
+        es.indices.refresh(index=INDEX)
+        res = es.search(index=INDEX, size=SEARCH_MAX, body={
+            'filter': {
+                'or': [
+                    {
+                        'terms': {
+                            'embedded_uuids': updated,
+                            '_cache': False,
+                        },
+                    },
+                    {
+                        'terms': {
+                            'linked_uuids': renamed,
+                            '_cache': False,
+                        },
+                    },
+                ],
+            },
+            '_source': False,
+        })
+        if res['hits']['total'] > SEARCH_MAX:
+            invalidated = list(all_uuids(request.root))
+        else:
+            referencing = {hit['_id'] for hit in res['hits']['hits']}
+            invalidated = referencing | updated
+    if not dry_run:
+        for uuid in invalidated:
+            index_peaks(uuid, request)
+    return result
