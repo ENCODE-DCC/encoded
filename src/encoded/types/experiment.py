@@ -220,6 +220,10 @@ class Experiment(Dataset):
                             bio_tech_biosample_dict[biol_rep_num]={}
                         bio_tech_biosample_dict[biol_rep_num][tech_rep_num]=biosampleObject
 
+
+        # if the number of biological replicates is < 2 Nothing to report here
+        if len(bio_tech_biosample_dict.keys())<2:
+            return None
         '''
         First we have ot make sure the technical replicates are isogenic - in order to be able ot pick the representative biological replicate
         '''
