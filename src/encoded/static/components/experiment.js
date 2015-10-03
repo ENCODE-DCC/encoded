@@ -852,6 +852,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         processFiltering(combinedFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
 
+    // See if removing files by filtering have emptied a replicate.
+    if (Object.keys(allReplicates).length) {
+        Object.keys(allReplicates).forEach(function(replicateId) {
+            console.log(allReplicates[replicateId]);
+        });
+    }
+
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
     // Not sure if this is covered in test cases
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
