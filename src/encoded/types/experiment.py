@@ -309,7 +309,7 @@ class Experiment(Dataset):
                 return "anisogenic"
             else:
                 if 2 in listOfReturns:
-                    return "anisogenic, age-mathced"
+                    return "anisogenic, age-matched"
                 else:
                     if 3 in listOfReturns:
                         return "anisogenic, sex-matched"
