@@ -1000,6 +1000,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         ref: fileAnalysisStep,
                         pipelines: pipelineInfo,
                         fileId: file['@id'],
+                        fileAccession: file.accession,
                         stepVersion: file.analysis_step_version
                     });
                 }
