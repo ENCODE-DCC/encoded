@@ -855,7 +855,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // See if removing files by filtering have emptied a replicate.
     if (Object.keys(allReplicates).length) {
         Object.keys(allReplicates).forEach(function(replicateId) {
-            console.log(allReplicates[replicateId]);
+            var emptied = _(allReplicates[replicateId]).all(function(file) {
+                return file.removed;
+            });
+
+            // If all files removed from a replicate, remove the replicate
+            if (emptied) {
+                allReplicates[replicateId] = [];
+            }
+
         });
     }
 
@@ -1077,8 +1085,13 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     handleFilterChange: function(e) {
-        var filters = e.target.selectedOptions[0].value.split('-');
-        this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
+        var value = e.target.selectedOptions[0].value;
+        if (value !== 'default') {
+            var filters = value.split('-');
+            this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
+        } else {
+            this.setState({selectedAssembly: '', selectedAnnotation: ''});
+        }
     },
 
     render: function() {
