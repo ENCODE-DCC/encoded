@@ -164,6 +164,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
+        var anisogenic = context.replication_type ? (context.replication_type !== 'isogenic') : false;
+
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // XXX This makes no sense.
@@ -196,10 +199,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
-                        </div>
+                        {context.replication_type ?
+                            <div data-test="replicationtype">
+                                <dt>Replication type</dt>
+                                <dd>{context.replication_type}</dd>
+                            </div>
+                        : null}
 
                         {biosamples.length || context.biosample_term_name ?
                             <div data-test="biosample-summary">
@@ -356,7 +361,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 {replicates.map(function (replicate, index) {
-                    return Replicate({replicate: replicate, key: index});
+                    return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
                 })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
@@ -564,7 +569,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var paired_end = replicate.paired_ended;
     return (
         <div className="panel-replicate" key={props.key}>
-            <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
+            <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <div data-test="techreplicate">
                     <dt>Technical replicate</dt>
