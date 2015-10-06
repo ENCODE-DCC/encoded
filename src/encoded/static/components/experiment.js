@@ -567,6 +567,28 @@ var Replicate = module.exports.Replicate = function (props) {
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
+
+    // Build biosample summary string
+    var summary, organismName, lifeAge;
+    if (biosample) {
+        var organismName = biosample.organism.scientific_name ? biosample.organism.scientific_name : biosample.organism.name;
+
+        var lifeAge = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+        if (biosample.age && biosample.age != 'unknown') {
+            lifeAge += (lifeAge ? ' ' : '') + biosample.age;
+            lifeAge += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
+        }
+
+        // Make an array of all the organism summary info to make it easy to comma separate
+        summary = _.compact([
+            biosample.biosample_term_name ? biosample.biosample_term_name : null,
+            biosample.depleted_in_term_name ? ('missing ' + biosample.depleted_in_term_name) : null,
+            biosample.donor && biosample.donor.mutated_gene ? ('mutated gene: ' + biosample.donor.mutated_gene) : null,
+            biosample.subcellular_fraction_term_name ? ('subcellular fraction: ' + biosample.subcellular_fraction_term_name) : null,
+            biosample.phase ? ('cell-cycle phase:' + biosample.phase) : ''
+        ]);
+    }
+
     return (
         <div className="panel-replicate" key={props.key}>
             <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
@@ -604,7 +626,17 @@ var Replicate = module.exports.Replicate = function (props) {
                             <dd>
                                 <a href={biosample['@id']}>
                                     {biosample.accession}
-                                </a>{' '}-{' '}{biosample.biosample_term_name}
+                                </a>
+                                {summary.length ? (' – ' + summary.join(', ')) : null}
+                                {organismName || lifeAge ?
+                                    <span>
+                                        {' ('}
+                                        {organismName ? <i>{organismName}</i> : null}
+                                        {organismName && lifeAge ? ', ' : ''}
+                                        {lifeAge ? <span>{lifeAge}</span> : null}
+                                        {')'}
+                                    </span>
+                                : null}
                             </dd>
                         : null}
                     </div>
