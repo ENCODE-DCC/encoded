@@ -49,7 +49,7 @@ describe('Experiment Page', function() {
         });
 
         it('has proper biosample summary for no-biosample case (code adds space always)', function() {
-            expect(defDescs[1].textContent).toEqual('K562');
+            expect(defDescs[1].textContent).toEqual('K562 ');
         });
 
         it('has proper links in dbxrefs key-value', function() {
