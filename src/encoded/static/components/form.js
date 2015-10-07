@@ -227,10 +227,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
     } else {
-        if (readonly || p.readonly) {
-            props.component = <ReadOnlyField preview={p.linkTo}/>;
-            return ReactForms.schema.Scalar(props);
-        }
+        var disabled = (readonly || p.readonly);
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
             props.validate = function(schema, value) { return (typeof value == 'string') ? value.match(p.pattern) : true; };
@@ -240,13 +237,14 @@ var jsonSchemaToFormSchema = function(attrs) {
             if (!p.default) {
                 options = [<option value={null} />].concat(options);
             }
-            props.input = <select className="form-control">{options}</select>;
+            props.input = <select className="form-control" disabled={disabled}>{options}</select>;
         }
         if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
             var inputs = require('./inputs');
             props.input = (
-                <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
+                <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo}
+                                     restrictions={restrictions} disabled={disabled} />
             );
         } else if (p.linkFrom) {
             // Backrefs have a linkFrom property in the form
@@ -267,12 +265,13 @@ var jsonSchemaToFormSchema = function(attrs) {
             var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
             defaultValue[linkProp] = id;
             return ReactForms.schema.Scalar({component: component, defaultValue: defaultValue});
-        }
-        if (p.type == 'integer' || p.type == 'number') {
+        } else if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
-        }
-        if (p.formInput == 'textarea') {
-            props.input = <textarea rows="4" />;
+            props.input = <input type="number" disabled={disabled} />;
+        } else if (p.formInput == 'textarea') {
+            props.input = <textarea rows="4" disabled={disabled} />;
+        } else {
+            props.input = <input type="text" disabled={disabled} />;
         }
         return ReactForms.schema.Scalar(props);
     }
