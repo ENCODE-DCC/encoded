@@ -561,6 +561,88 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 };
 
 
+// Return a summary of the given biosamples as a string
+var biosampleSummary = function(biosamples) {
+    var organismNames = [];
+    var lifeAges = [];
+    var depletedIns = {};
+    var mutatedGenes = {};
+    var subcellularTerms = {};
+    var cellCycles = {};
+    var fullSummary;
+
+    biosamples.forEach(function(biosample) {
+        // Collect names of biosample characteristics
+        if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+            biosample.depleted_in_term_name.forEach(function(depletedIn) {
+                depletedIns[depletedIn] = true;
+            });
+        }
+        if (biosample.donor && biosample.donor.mutated_gene) {
+            mutatedGenes[biosample.donor.mutated_gene.label] = true;
+        }
+        if (biosample.subcellular_fraction_term_name) {
+            subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+        }
+        if (biosample.phase) {
+            cellCycles[biosample.phase] = true;
+        }
+
+        // Collect organism scientific names
+        if (biosample.organism.scientific_name) {
+            organismNames.push(biosample.organism.scientific_name);
+        }
+
+        // Collect strings with non-'unknown', non-empty life_stage, age, age_units, and sex concatenated
+        var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+        if (biosample.age && biosample.age != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
+            lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
+        }
+        if (biosample.sex && biosample.sex != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.sex;
+        }
+        if (lifeAgeString) {
+            lifeAges.push(lifeAgeString);
+        }
+    });
+
+    // Make summary strings of each kind of biosample data
+    var nameKeys = Object.keys(depletedIns);
+    var depletedInSummary = nameKeys.length ? 'missing: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(mutatedGenes);
+    var mutatedGeneSummary = nameKeys.length ? 'mutated gene: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(subcellularTerms);
+    var subcellularTermSummary = nameKeys.length ? 'subcellular fraction: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(cellCycles);
+    var cellCycleSummary = nameKeys.length ? 'cell-cycle phase: ' + nameKeys.join('/') : '';
+
+    // Combine all summary strings
+    var summary = _.compact([depletedInSummary, mutatedGeneSummary, subcellularTermSummary, cellCycleSummary]).join(', ');
+
+    // Combine all name and life/age/sex strings
+    if (organismNames.length || lifeAges.length) {
+        fullSummary = (
+            <span>
+                {summary}
+                {'('}
+                {organismNames.map(function(name, i) {
+                    if (i === 0) {
+                        return (<em key={name}>{name}</em>);
+                    } else {
+                        return (<span key={name}>{' and '}<em>{name}</em></span>);
+                    }
+                })}
+                {lifeAges.length ? ', ' + lifeAges.join(' and ') : ''}
+                {')'}
+            </span>
+        );
+    }
+
+    return fullSummary;
+};
+
+
 var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var concentration = replicate.rbns_protein_concentration;
