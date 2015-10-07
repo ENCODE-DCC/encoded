@@ -227,6 +227,17 @@ def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, b
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'unreplicated experiment' for error in errors_list)
 
+def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, base_replicate, base_library):    
+    testapp.patch_json(base_experiment['@id'], {'status': 'release ready'}) 
+    testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        for e in errors[error_type]:
+            print (e)
+    assert any(error['category'] == 'replicate with no library' for error in errors_list)
 
 def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'release ready'})    
