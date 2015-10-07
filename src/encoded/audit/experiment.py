@@ -90,7 +90,7 @@ def audit_experiment_replicated(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_replicates_with_no_libraries(value, system):
-    if value['status'] in ['deleted']:
+    if value['status'] in ['deleted','replaced','revoked']:
         return
     if len(value['replicates'])==0:
         return 
