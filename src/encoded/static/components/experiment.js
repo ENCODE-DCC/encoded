@@ -378,7 +378,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} />
+                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
                     </div>
                 : null }
 
@@ -571,9 +571,9 @@ var Replicate = module.exports.Replicate = function (props) {
     // Build biosample summary string
     var summary, organismName, lifeAge;
     if (biosample) {
-        var organismName = biosample.organism.scientific_name ? biosample.organism.scientific_name : biosample.organism.name;
+        organismName = biosample.organism.scientific_name ? biosample.organism.scientific_name : biosample.organism.name;
 
-        var lifeAge = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+        lifeAge = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
         if (biosample.age && biosample.age != 'unknown') {
             lifeAge += (lifeAge ? ' ' : '') + biosample.age;
             lifeAge += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
@@ -751,7 +751,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
         if (file.biological_replicates && file.biological_replicates.length == 1) {
-            var biological_replicate_number = file.biological_replicates[0]
+            var biological_replicate_number = file.biological_replicates[0];
             if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
                 allReplicates[biological_replicate_number] = [];
@@ -771,7 +771,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         allFiles[file['@id']] = file;
 
         // Keep track of whether files exist outside replicates
-        fileOutsideReplicate = fileOutsideReplicate || !!file.biological_replicates.length > 1;
+        fileOutsideReplicate = fileOutsideReplicate || file.biological_replicates.length > 1;
     });
     // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
     // derivedFromFiles points to derived_from file objects

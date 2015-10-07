@@ -136,6 +136,23 @@
         "uuid": "16ea501d-7b73-4ce4-9926-de570fe70e92"
     },
     {
+        "accession": "ENCFF002MWZ",
+        "assembly": "mm9",
+        "award":"U41HG006992",
+        "dataset": "ENCSR001ADI",
+        "date_created": "2013-04-18",
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "db26f3cb885ebe9fc84a99ba9104de80",
+        "output_type": "alignments",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "status": "released",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k04me3IggyaleAlnRep1.bam",
+        "uuid": "4afadd6f-fd80-4298-9231-ad27c0a0bbea"
+    },
+    {
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
         "award":"U41HG006992",
@@ -245,6 +262,28 @@
         "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc"
     },
     {
+        "accession": "ENCFF002MXF",
+        "award":"U41HG006992",
+        "dataset": "ENCSR001ADI",
+        "date_created": "2013-04-18",
+        "file_format": "fastq",
+        "flowcell_details":
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
+        "lab":"j-michael-cherry",
+        "md5sum": "5fce47e031a0af4b67d356b5bd4c348a",
+        "output_type": "reads",
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "status": "released",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
+        "uuid": "82364e20-eea2-4007-928f-7717c46f4533"
+    },
+    {
         "accession": "ENCFF001MXH",
         "award":"U41HG006992",
         "dataset": "ENCSR000ADI",
@@ -288,6 +327,29 @@
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
         "uuid": "1b18dab4-50be-4a1d-9b95-5e9fd840c8fb"
+    },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF002RDZ",
+        "award":"U41HG006992",
+        "dataset": "ENCSR001ADI",
+        "date_created": "2013-06-13",
+        "file_format": "fastq",
+        "flowcell_details":
+        [{
+            "flowcell": "C1WA6ACXX",
+            "lane": "3",
+            "machine": "HWI-ST382"
+        }],
+        "lab":"j-michael-cherry",
+        "md5sum": "3a35713488522b0ea8a4d9635b5afa41",
+        "output_type": "reads",
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "status": "in progress",
+        "submitted_by": "risus.fermentum@vel.at",
+        "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
+        "uuid": "56f0acd2-48a6-4d8f-a421-baf4a53e9e55"
     },
     {
         "_project": "encode3",
