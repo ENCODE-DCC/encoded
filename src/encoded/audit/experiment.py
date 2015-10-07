@@ -644,10 +644,3 @@ def audit_experiment_antibody_eligible(value, system):
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
-
-'''
-#TESTING PURPOSES FOR CALCULATED VALUE DEVELOPMENT
-@audit_checker('experiment',frame='object')
-def audit_experiment_calculated_replicate_type(value, system):
-    raise AuditFailure('zopa-zopa-zopa',value['replication_type'], level='DCC_ACTION')
-'''

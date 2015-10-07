@@ -187,15 +187,7 @@ class Experiment(Dataset):
     @calculated_property(schema={
         "title": "Replication type",
         "description":"Calculated field for experiment object that indicates the biological replicates type",
-        "type": "string",
-        "enum": [
-            "anisogenic, sex-matched",
-            "anisogenic, age-matched",
-            "anisogenic, sex-matched age-matched",
-            "anisogenic",
-            "isogenic",
-            "anisogenic technical replicates"
-        ]
+        "type": "string"
     })
     def replication_type(self, request, replicates=None):
         bio_tech_biosample_dict = {}
@@ -211,7 +203,7 @@ class Experiment(Dataset):
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     #######################################################################################
                     # VERY IMPORTANT CONDITION:                                                           #
-                    # 1. REPLICATES WIT NO LIBRARIES WILL BE CAUGHT BY AUDIT                              #
+                    # 1. REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (3268)                      #
                     # 2. ANY BIOSAMPLE WILL HAVE SEX AND AGE - BECAUSE IDAN WILL FIX THE CALCULATED VALUE #
                     # SEE TICKET NEMBER 3291. THE VALUES WILL BE UNKNOWN IN CASE WE DONT HAVE INFO        #                                                       
                     #######################################################################################                            
