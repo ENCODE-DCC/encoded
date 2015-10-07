@@ -92,6 +92,9 @@ def audit_experiment_replicated(value, system):
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample','replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
 
+    if value['status'] in ['deleted']:
+        return
+        
     if len(value['replicates'])==0:
         return 
 
