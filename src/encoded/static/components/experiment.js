@@ -383,7 +383,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
