@@ -684,6 +684,10 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var FacetList = search.FacetList = React.createClass({
+        getDefaultProps: function() {
+            return {orientation: 'vertical'};
+        },
+
         render: function() {
             var term = this.props.term;
             var facets = this.props.facets;
@@ -698,7 +702,7 @@ var AuditMixin = audit.AuditMixin;
                 }).length;
             }
             return (
-                <div className="box facets">
+                <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {

@@ -220,3 +220,64 @@ form.table-filter {
         }
     }
 }
+
+// note the position of the inner span isn't calculated correctly yet
+$rotated-th-height: 130px;
+$rotated-th-width: 20px;
+$rotated-th-angle: 30deg;
+
+th.rotate30 {
+    height: $rotated-th-height;
+    width: $rotated-th-width;
+    min-width: $rotated-th-width;
+    max-width: $rotated-th-width;
+    position: relative;
+    vertical-align: bottom;
+    padding: 0 !important;
+    border: none !important;
+    > div {
+        position: relative;
+        top: 0;
+        left: $rotated-th-height * tan($rotated-th-angle) / 2;
+        height: 100%;
+        transform: skew(-$rotated-th-angle, 0deg);
+        background-color: #ddd;
+        border-left: solid 1px #fff;
+        border-right: solid 1px #fff;
+        > span {
+            transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
+            position: absolute;
+            bottom: 59px;
+            left: -57px;
+            display: inline-block;
+            width: $rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle);
+            text-align: left;
+            line-height: .8;
+        }
+    }
+}
+th.rotate90 {
+    vertical-align: top;
+    > div {
+        position: relative;
+        > span {
+            position: absolute;
+            transform: rotate(-90deg);
+            transform-origin: left bottom 0;
+            top: 80px;
+            left: 16px;        
+        }
+    }
+}
+table.matrix {
+    width: 100%;
+    th {
+        text-align: right;
+        padding: 0 .5em;
+    }
+    td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 0 !important;
+    }
+}

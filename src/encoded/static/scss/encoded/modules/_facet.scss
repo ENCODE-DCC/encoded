@@ -5,6 +5,15 @@
     overflow: hidden;
 }
 
+.facets.horizontal {
+    display: table;
+    width: 100%;
+    .facet {
+        display: table-cell;
+        padding: 0 10px;
+    }
+}
+
 .facets h5 {
     margin: 2px 0;
 }

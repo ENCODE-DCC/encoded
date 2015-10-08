@@ -505,7 +505,7 @@ def matrix(context, request):
         '@context': request.route_path('jsonld_context'),
         '@id': request.resource_path(context, 'matrix') + ('?' + request.query_string if request.query_string else ''),
         '@type': ['Matrix'],
-        'title': context.type_info.schema['title'],
+        'title': context.type_info.schema['title'] + ' Matrix',
         'facets': [],
         'filters': [],
         'notification': '',
@@ -548,26 +548,49 @@ def matrix(context, request):
     set_facets(facets, used_filters, query, principals)
 
     # Group results in 2 dimensions
+    matrix_terms = []
+    for q_field, q_terms in used_filters.items():
+        matrix_terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
+    matrix_terms.append(
+        {'terms': {'principals_allowed.view': principals}}
+    )
     x_grouping = matrix['x']['group_by']
     y_grouping = matrix['y']['group_by']
     query['aggs']['matrix'] = {
-        "terms": {
-            "field": 'embedded.' + y_grouping + '.raw',
+        "filter": {
+            "bool": {
+                "must": matrix_terms,
+            }
         },
         "aggs": {
+            "y": {
+                "terms": {
+                    "field": 'embedded.' + y_grouping + '.raw',
+                    "order": {"_term": "asc"},
+                },
+                "aggs": {
+                    "x": {
+                        "terms": {
+                            "field": 'embedded.' + x_grouping + '.raw',
+                            "order": {"_term": "asc"},
+                        },
+                    },
+                },
+            },
             "x": {
                 "terms": {
                     "field": 'embedded.' + x_grouping + '.raw',
+                    "order": {"_term": "asc"},
                 },
             },
-        },
+        }
     }
 
     # Execute the query
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, search_type='count')
 
-    # Format facets and matrix for results
+    # Format facets for results
     aggregations = es_results['aggregations']
     for field, facet in facets:
         agg_name = field.replace('.', '-')
@@ -582,9 +605,15 @@ def matrix(context, request):
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })
-    result['matrix']['y']['buckets'] = aggregations['matrix']['buckets']
+
+    # Format matrix for results
+    result['matrix']['y'].update(aggregations['matrix']['y'])
+    for y_bucket in result['matrix']['y']['buckets']:
+        y_bucket['x'] = {x_bucket['key']: x_bucket['doc_count'] for x_bucket in y_bucket['x']['buckets']}
+    result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
+    # XXX need to add type filter to query string
     result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD

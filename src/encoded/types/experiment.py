@@ -281,6 +281,7 @@ class Experiment(Dataset):
                 'replicates.library.biosample.biosample_type',
             ],
             'group_by': 'biosample_term_name',
+            'label': 'Biosample',
         },
         'x': {
             'facets': [
@@ -290,6 +291,7 @@ class Experiment(Dataset):
                 'files.file_type',
             ],
             'group_by': 'assay_term_name',
+            'label': 'Assay',
         },
     }
 
