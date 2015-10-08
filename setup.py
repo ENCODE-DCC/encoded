@@ -101,7 +101,7 @@ setup(
         [paste.composite_factory]
         indexer = encoded.commands.es_index_listener:composite
 
-        [paste.file_composite_factory]
+        [paste.composite_file_factory]
         fileindexer = encoded.commands.es_file_index_listener:composite
 
         [paste.filter_app_factory]
