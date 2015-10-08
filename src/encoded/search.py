@@ -589,6 +589,7 @@ def matrix(context, request):
                 "terms": {
                     "field": 'embedded.' + x_grouping + '.raw',
                     "order": {"_term": "asc"},
+                    "size": 0,  # no limit
                 },
             },
         }
