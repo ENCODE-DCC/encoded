@@ -90,7 +90,6 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
-        file-indexer = encoded.commands.file_indexer:main
         generate-annotations = encoded.commands.generate_annotations:main
         index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
@@ -101,7 +100,7 @@ setup(
         [paste.composite_factory]
         indexer = encoded.commands.es_index_listener:composite
 
-        [paste.file_composite_factory]
+        [paste.composite_factory]
         fileindexer = encoded.commands.es_file_index_listener:composite
 
         [paste.filter_app_factory]
