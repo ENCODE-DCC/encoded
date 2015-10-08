@@ -132,3 +132,11 @@ def test_remc_member_view_disallowed(remc_member_testapp, experiment):
 
 def test_remc_member_view_shared(remc_member_testapp, mouse_donor):
     remc_member_testapp.get(mouse_donor['@id'], status=200)
+
+
+def test_submitter_patch_lab_disallowed(submitter, other_lab, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
+    lab = {'lab': other_lab['@id']}
+    submitter_testapp.patch_json(res.json['@id'], lab, status=403)
+
+
