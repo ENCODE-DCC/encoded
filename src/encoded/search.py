@@ -545,6 +545,9 @@ def matrix(context, request):
 
     # Setting filters
     used_filters = set_filters(request, query, result)
+    # We don't actually need filters in the request,
+    # since we're only counting and the aggregations have their own filters
+    del query['filter']
 
     # Adding facets to the query
     facets = schema['facets'].items()
