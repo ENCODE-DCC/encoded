@@ -2,6 +2,10 @@
 
 jest.autoMockOff();
 
+// Fixes https://github.com/facebook/jest/issues/78
+jest.dontMock('react');
+jest.dontMock('underscore');
+
 require('whatwg-fetch');
 require('es6-promise').polyfill();
 
