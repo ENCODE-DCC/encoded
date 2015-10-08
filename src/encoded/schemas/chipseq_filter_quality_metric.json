@@ -1,6 +1,6 @@
 {
-    "description": "Schema for reporting the specific calculation of an quality metrics",
-    "id": "/profiles/mad_cc_lrna_quality_metric.json",
+    "description": "Schema for reporting ChIP library complexity and cross-correlation quality metrics",
+    "id": "/profiles/chipseq_filter_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["step_run"],
