@@ -73,7 +73,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
                                                 <div><span>{context.matrix.y.label.toUpperCase()}</span></div>
                                             </th>
-                                            <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{context.total} results</h3></th>
+                                            <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{context.matrix.doc_count} results</h3></th>
                                             {x_buckets.map(xb => <th className="rotate30"><div><span>{xb.key}</span></div></th>)}
                                             <th className="rotate30" style={{width: "40%"}}></th>
                                         </tr>

@@ -616,6 +616,7 @@ def matrix(context, request):
         })
 
     # Format matrix for results
+    result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
     result['matrix']['y'].update(aggregations['matrix']['y'])
     for y_bucket in result['matrix']['y']['buckets']:
         y_bucket['x'] = {x_bucket['key']: x_bucket['doc_count'] for x_bucket in y_bucket['x']['buckets']}
