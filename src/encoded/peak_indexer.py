@@ -11,7 +11,7 @@ from contentbase.storage import (
     TransactionRecord,
 )
 from contentbase.elasticsearch.indexer import all_uuids
-from contentbase.elasticsearch import (
+from contentbase.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )

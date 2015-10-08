@@ -1,5 +1,8 @@
 from pyramid.view import view_config
-from contentbase.elasticsearch import ELASTIC_SEARCH
+from contentbase.elasticsearch.interfaces import (
+    ELASTIC_SEARCH,
+    SNP_SEARCH_ES,
+)
 from pyramid.security import effective_principals
 from .search import (
     load_results,
@@ -209,6 +212,7 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
+    snp_es = request.registry[SNP_SEARCH_ES]
     region = request.params.get('region', '*')
 
     # handling limit
@@ -257,10 +261,10 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     try:
-        peak_results = es.search(body=get_peak_query(start, end),
-                                 index=chromosome.lower(),
-                                 doc_type=assembly,
-                                 size=99999)
+        peak_results = snp_es.search(body=get_peak_query(start, end),
+                                     index=chromosome.lower(),
+                                     doc_type=assembly,
+                                     size=99999)
     except Exception:
         result['notification'] = 'Please enter valid coordinates'
         return result
