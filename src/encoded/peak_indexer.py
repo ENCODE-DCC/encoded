@@ -2,6 +2,7 @@ import urllib3
 import io
 import gzip
 import csv
+import logging
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
@@ -16,6 +17,8 @@ from contentbase.elasticsearch.interfaces import (
     SNP_SEARCH_ES,
 )
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
+log = logging.getLogger(__name__)
+
 
 # hashmap of assays and corresponding file types that are being indexed
 _INDEXED_DATA = {
@@ -101,7 +104,7 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
     context = request.embed(uuid)
-    if 'file' not in context['@type'] or 'dataset' not in context:
+    if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
     if 'status' not in context and context['status'] is not 'released':
@@ -112,16 +115,16 @@ def index_peaks(uuid, request):
         return
 
     flag = False
-    for k, v in _INDEXED_DATA[assay_term_name].items():
+    for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
+        import pdb; pdb.set_trace()
         if k in context and context[k] in v:
             if 'file_format' in context and context['file_format'] == 'bed':
                 flag = True
                 break
     if not flag:
         return
-
-    es = request.registry.get(SNP_SEARCH_ES, None)
     urllib3.disable_warnings()
+    es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     comp = io.BytesIO()
@@ -156,7 +159,6 @@ def index_peaks(uuid, request):
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
-    # Setting request.datastore here only works because routed views are not traversed.
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     recovery = request.json.get('recovery', False)
@@ -164,10 +166,7 @@ def index_file(request):
 
     session = request.registry[DBSESSION]()
     connection = session.connection()
-    # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     if recovery:
-        # Not yet possible to export a snapshot on a standby server:
-        # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
         query = connection.execute(
             "SET TRANSACTION ISOLATION LEVEL READ COMMITTED, READ ONLY;"
             "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
@@ -177,8 +176,6 @@ def index_file(request):
             "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;"
             "SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();"
         )
-    # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
-    # which is not available in recovery.
     result, = query.fetchall()
     xmin, snapshot_id = result  # lowest xid that is still in progress
 
