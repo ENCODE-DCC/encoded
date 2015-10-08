@@ -9,8 +9,8 @@ accession_factory = ${accession_factory}
 [composite:indexer]
 use = config:base.ini#indexer
 
-[composite:file_indexer]
-use = config:base.ini#file_indexer
+[composite:fileindexer]
+use = config:base.ini#fileindexer
 
 [pipeline:main]
 pipeline =
