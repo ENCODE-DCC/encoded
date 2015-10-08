@@ -1,11 +1,16 @@
 'use strict';
 var React = require('react');
+var color = require('color');
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
 
 var FacetList = search.FacetList;
+var TextFilter = search.TextFilter;
+
+
+var HIGHLIGHT_COLOR = color('#4e7294');
 
 
 var Matrix = module.exports.Matrix = React.createClass({
@@ -17,35 +22,42 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     render: function() {
         var context = this.props.context;
-        var searchBase = url.parse(this.context.location_href).search || '';
+        var parsed_url = url.parse(this.context.location_href);
+        var searchBase = parsed_url.search || '';
+        searchBase = searchBase ? searchBase + '&' : searchBase + '?';
         var notification = context['notification'];
         if (context.matrix.y.buckets) {
             var x_facets = _.filter(context.facets, f => _.contains(context.matrix.x.facets, f.field));
             var y_facets = _.filter(context.facets, f => _.contains(context.matrix.y.facets, f.field));
             var x_buckets = context.matrix.x.buckets;
             var y_buckets = context.matrix.y.buckets;
+            // find max bucket count
+            var max_count = _.max(y_buckets.map(yb => _.max(_.values(yb.x))));
 
             return (
                 <div>
-                    <header className="row">
-                        <div className="col-sm-12">
-                            <h2>{context.title}</h2>
-                        </div>
-                    </header>
                     <div className="panel data-display main-panel">
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
-                                XXX add text filter
+                                <div className="row">
+                                    <div className="col-sm-11">
+                                        <h3>{context.title}</h3>
+                                        <TextFilter filters={context.filters} searchBase={searchBase} onChange={this.onChange} />
+                                        {context.filters.length ? <a href={parsed_url.pathname}>
+                                            <i className="icon icon-times-circle-o"></i> Clear all filters
+                                        </a> : ''}
+                                    </div>
+                                </div>
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0}}>
                                 <FacetList facets={x_facets} filters={context.filters} orientation="horizontal"
-                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                                           searchBase={searchBase} onFilter={this.onFilter} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
                                 <FacetList facets={y_facets} filters={context.filters}
-                                           searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                                           searchBase={searchBase} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0}}>
                                 <table className="matrix">
@@ -68,7 +80,13 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         {y_buckets.map(function(yb, i) {
                                             return <tr>
                                                 <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
-                                                {x_buckets.map(xb => <td style={{border: "solid 1px #f9f9f9"}}>{yb.x[xb.key] || ''}</td>)}
+                                                {x_buckets.map(function(xb) {
+                                                    var value = yb.x[xb.key];
+                                                    var color = HIGHLIGHT_COLOR.clone();
+                                                    // scale color between white and 60% lightness
+                                                    color.lightness(60 + (1 - value / max_count) * 40);
+                                                    return <td style={{border: "solid 1px #f9f9f9", backgroundColor: color.hexString()}}>{value || ''}</td>;
+                                                })}
                                                 <td></td>
                                             </tr>;
                                         })}
@@ -89,6 +107,10 @@ var Matrix = module.exports.Matrix = React.createClass({
         this.context.navigate(search);
         e.stopPropagation();
         e.preventDefault();
+    },
+
+    onChange: function(href) {
+        this.context.navigate(href);        
     }
 
 });

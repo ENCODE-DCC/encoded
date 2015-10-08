@@ -635,7 +635,7 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    var TextFilter = React.createClass({
+    var TextFilter = search.TextFilter = React.createClass({
 
         getValue: function(props) {
             var filter = this.props.filters.filter(function(f) {

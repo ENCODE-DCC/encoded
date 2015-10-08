@@ -162,7 +162,7 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'mode', 'searchTerm',
+        if field in ['type', 'limit', 'mode',
                      'format', 'frame', 'datastore', 'field']:
             continue
 
@@ -176,6 +176,9 @@ def set_filters(request, query, result):
             'term': term,
             'remove': '{}?{}'.format(request.path, qs)
         })
+
+        if field == 'searchTerm':
+            continue
 
         # Add filter to query
         if field.startswith('audit'):
