@@ -102,7 +102,7 @@ setup(
         indexer = encoded.commands.es_index_listener:composite
 
         [paste.file_composite_factory]
-        file_indexer = encoded.commands.es_file_index_listener:composite
+        fileindexer = encoded.commands.es_file_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app
