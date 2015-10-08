@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "brace": "^0.3.0",
+    "ckeditor": "file:node_shims/ckeditor",
     "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
     "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
@@ -45,7 +46,9 @@
     "es5-shim": "^4.0.3",
     "es6-promise": "^2.0.1",
     "form-serialize": "^0.6.0",
+    "google-analytics": "file:node_shims/google-analytics",
     "html5shiv": "^3.7.2",
+    "immutable": "^3.7.5",
     "jquery": "^1.11.1",
     "marked": "^0.3.3",
     "node-ckeditor": "^4.3.2",
