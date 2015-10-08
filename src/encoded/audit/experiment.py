@@ -337,7 +337,9 @@ def audit_experiment_spikeins(value, system):
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
-@audit_checker('experiment', frame='object')
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
