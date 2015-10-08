@@ -77,8 +77,15 @@ def get_filtered_query(term, search_fields, result_fields, principals):
     }
 
 
-def sanitize_search_string(text):
-    return sanitize_search_string_re.sub(r'\\\g<0>', text)
+def prepare_search_term(request):
+    search_term = request.params.get('searchTerm', '*')
+    if search_term != '*':
+        search_term = sanitize_search_string_re.sub(r'\\\g<0>', search_term.strip())
+        search_term_array = search_term.split()
+        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
+            del search_term_array[-1]
+            search_term = ' '.join(search_term_array)
+    return search_term
 
 
 def get_sort_order(sort_order=None):
@@ -271,7 +278,7 @@ def set_facets(facets, used_filters, query, principals):
         }
 
 
-def load_results(request, es_results, result):
+def format_results(request, es_results, result):
     """
     Loads results to pass onto UI
     """
@@ -296,6 +303,29 @@ def load_results(request, es_results, result):
                 for key in hit['highlight']:
                     item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
             result['@graph'].append(item)
+
+
+def search_result_actions(request, doc_types, es_results):
+    actions = {}
+
+    # generate batch hub URL for experiments
+    if doc_types == ['experiment'] and any(
+            facet['doc_count'] > 0
+            for facet in es_results['aggregations']['assembly']['assembly']['buckets']):
+        search_params = request.query_string.replace('&', ',,')
+        hub = request.route_url('batch_hub',
+                                search_params=search_params,
+                                txt='hub.txt')
+        actions['batch_hub'] = hgConnect + hub
+
+    # generate batch download URL for experiments
+    if doc_types == ['experiment']:
+        actions['batch_download'] = request.route_url(
+            'batch_download',
+            search_params=request.query_string
+        )
+
+    return actions
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
@@ -332,13 +362,7 @@ def search(context, request, search_type=None):
         except ValueError:
             size = 25
 
-    search_term = request.params.get('searchTerm', '*')
-    if search_term != '*':
-        search_term = sanitize_search_string(search_term.strip())
-        search_term_array = search_term.split()
-        if search_term_array[len(search_term_array) - 1] in ['AND', 'NOT', 'OR']:
-            del search_term_array[-1]
-            search_term = ' '.join(search_term_array)
+    search_term = prepare_search_term(request)
 
     # Handling whitespaces in the search term
     if not search_term:
@@ -440,25 +464,11 @@ def search(context, request, search_type=None):
                 'total': facet_results[agg_name]['doc_count']
             })
 
-    # generate batch hub URL for experiments
-    if doc_types == ['experiment'] and any(
-            facet['doc_count'] > 0
-            for facet in es_results['aggregations']['assembly']['assembly']['buckets']):
-        search_params = request.query_string.replace('&', ',,')
-        hub = request.route_url('batch_hub',
-                                search_params=search_params,
-                                txt='hub.txt')
-        result['batch_hub'] = hgConnect + hub
+    # Add batch actions
+    result.update(search_result_actions(request, doc_types, es_results))
 
-    # generate batch download URL for experiments
-    if doc_types == ['experiment']:
-        result['batch_download'] = request.route_url(
-            'batch_download',
-            search_params=request.query_string
-        )
-
-    # Moved to a seperate method to make code readable
-    load_results(request, es_results, result)
+    # Format results for JSON-LD
+    format_results(request, es_results, result)
 
     # Adding total
     result['total'] = es_results['hits']['total']
@@ -480,4 +490,107 @@ def collection_view_listing_es(context, request):
         params.append(('limit', 'all'))
         result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
 
+    return result
+
+
+@view_config(context=Collection, name='matrix', request_method='GET', permission='search')
+def matrix(context, request):
+    """
+    Return search results aggregated by x and y buckets for building a matrix display.
+    """
+    type_info = context.type_info
+    schema = type_info.schema
+
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.resource_path(context, 'matrix') + ('?' + request.query_string if request.query_string else ''),
+        '@type': ['Matrix'],
+        'title': context.type_info.schema['title'],
+        'facets': [],
+        'filters': [],
+        'notification': '',
+    }
+
+    if not hasattr(type_info.factory, 'matrix'):
+        result['notification'] = 'No matrix configured for this type'
+        return result
+    matrix = result['matrix'] = type_info.factory.matrix.copy()
+
+    principals = effective_principals(request)
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['contentbase.elasticsearch.index']
+
+    search_term = prepare_search_term(request)
+
+    # Handling whitespaces in the search term
+    if not search_term:
+        result['notification'] = 'Please enter search term'
+        return result
+
+    doc_types = [context.type_info.item_type]
+    search_fields, highlights = get_search_fields(request, doc_types)
+
+    # Builds filtered query which supports multiple facet selection
+    query = get_filtered_query(search_term,
+                               search_fields,
+                               [],
+                               principals)
+
+    if search_term == '*':
+        query['query']['match_all'] = {}
+        del query['query']['query_string']
+
+    # Setting filters
+    used_filters = set_filters(request, query, result)
+
+    # Adding facets to the query
+    facets = schema['facets'].items()
+    set_facets(facets, used_filters, query, principals)
+
+    # Group results in 2 dimensions
+    x_grouping = matrix['x']['group_by']
+    y_grouping = matrix['y']['group_by']
+    query['aggs']['matrix'] = {
+        "terms": {
+            "field": 'embedded.' + y_grouping + '.raw',
+        },
+        "aggs": {
+            "x": {
+                "terms": {
+                    "field": 'embedded.' + x_grouping + '.raw',
+                },
+            },
+        },
+    }
+
+    # Execute the query
+    es_results = es.search(body=query, index=es_index,
+                           doc_type=doc_types or None, search_type='count')
+
+    # Format facets and matrix for results
+    aggregations = es_results['aggregations']
+    for field, facet in facets:
+        agg_name = field.replace('.', '-')
+        if agg_name not in aggregations:
+            continue
+        terms = aggregations[agg_name][agg_name]['buckets']
+        if len(terms) < 2:
+            continue
+        result['facets'].append({
+            'field': field,
+            'title': facet['title'],
+            'terms': terms,
+            'total': aggregations[agg_name]['doc_count']
+        })
+    result['matrix']['y']['buckets'] = aggregations['matrix']['buckets']
+
+    # Add batch actions
+    result.update(search_result_actions(request, doc_types, es_results))
+
+    # Format results for JSON-LD
+    format_results(request, es_results, result)
+
+    # Adding total
+    result['total'] = es_results['hits']['total']
+    result['notification'] = 'Success' if result['total'] else 'No results found'
     return result

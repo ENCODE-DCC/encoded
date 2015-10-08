@@ -273,6 +273,26 @@ class Experiment(Dataset):
         if not matchedAgeFlag and not matchedSexFlag:
             return 'anisogenic'
 
+    matrix = {
+        'y': {
+            'facets': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'organ_slims',
+                'replicates.library.biosample.biosample_type',
+            ],
+            'group_by': 'biosample_term_name',
+        },
+        'x': {
+            'facets': [
+                'assay_term_name',
+                'target.investigated_as',
+                'month_released',
+                'files.file_type',
+            ],
+            'group_by': 'assay_term_name',
+        },
+    }
+
 
 @collection(
     name='replicates',
