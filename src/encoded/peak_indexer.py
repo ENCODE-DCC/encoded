@@ -10,12 +10,11 @@ from contentbase import DBSESSION
 from contentbase.storage import (
     TransactionRecord,
 )
-from contentbase.elasticsearch.interfaces import (
-    ELASTIC_SEARCH,
-    INDEXER,
-)
 from contentbase.elasticsearch.indexer import all_uuids
-
+from contentbase.elasticsearch import (
+    ELASTIC_SEARCH,
+    SNP_SEARCH_ES,
+)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 # hashmap of assays and corresponding file types that are being indexed
@@ -38,7 +37,6 @@ _SPECIES = {
 
 
 def includeme(config):
-    config.add_route('bulk_file_indexer', '/bulk_file_indexer')
     config.add_route('index_file', '/index_file')
     config.scan(__name__)
 
@@ -122,7 +120,7 @@ def index_peaks(uuid, request):
     if not flag:
         return
 
-    es = request.registry.get(ELASTIC_SEARCH, None)
+    es = request.registry.get(SNP_SEARCH_ES, None)
     url = 'https://www.encodeproject.org' + context['href']
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
