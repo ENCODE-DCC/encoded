@@ -44,6 +44,11 @@
                     "title": "File size",
                     "type": "integer"
                 },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
                 "width": {
                     "title": "Image width",
                     "type": "integer"
