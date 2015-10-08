@@ -173,6 +173,42 @@ class Experiment(Dataset):
     def month_released(self, date_released):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay category",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def category_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['category']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay type",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def type_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['types']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay objective",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def objective_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['objectives']
+        return []
+
     @calculated_property(schema={
         "title": "Replicates",
         "type": "array",
@@ -183,6 +219,7 @@ class Experiment(Dataset):
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
+
 
 @collection(
     name='replicates',

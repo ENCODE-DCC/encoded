@@ -25,6 +25,8 @@ IntersectionOf = OWLNS["intersectionOf"]
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
+HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
+ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
 DEFAULT_LANGUAGE = "en"
 
 developental_slims = {
@@ -103,6 +105,37 @@ organ_slims = {
     'UBERON:0002370': 'thymus',
     'UBERON:0000478': 'extraembryonic structure'
 }
+
+category_slims = {
+ 'OBI:0000634': 'DNA methylation profiling',
+ 'OBI:0000424': 'transcription profiling',
+ 'OBI:0000435': 'genotyping',
+ 'OBI:0000615': 'proteomics',
+ 'OBI:0001916': 'replication',
+ 'OBI:0001398': "protein and DNA interaction"
+}
+
+objective_slims = {
+ 'OBI:0000218': 'cellular feature identification objective',
+ 'OBI:0001691': 'cellular structure feature identification objective',
+ 'OBI:0001916': 'DNA replication identification objective',
+ 'OBI:0001917': 'chromosome conformation identification objective',
+ 'OBI:0001234': 'epigenetic modification identification objective',
+ 'OBI:0001331': 'transcription profiling identification objective',
+ 'OBI:0001690': 'molecular function identification objective',
+ 'OBI:0000268': 'organism feature identification objective',
+ 'OBI:0001623': 'organism identification objective',
+ 'OBI:0001398': 'protein and DNA interaction identification objective',
+ 'OBI:0001854': 'protein and RNA interaction identification objective'
+}
+
+type_slims = {
+ 'OBI:0001700': 'immunoprecipitation assay',
+ 'OBI:0000424': 'transcription profiling assay',
+ 'OBI:0000634': 'DNA methylation profiling assay',
+ 'OBI:0000435': 'genotyping assay'
+}
+
 
 
 class Inspector(object):
@@ -385,6 +418,12 @@ def getSlims(goid, terms, slimType):
         slimTerms = organ_slims
     elif slimType == 'system':
         slimTerms = system_slims
+    elif slimType == 'category':
+        slimTerms = category_slims
+    elif slimType == 'objective':
+        slimTerms = objective_slims
+    elif slimType == 'type':
+        slimTerms = type_slims
     for slimTerm in slimTerms:
         if slimType == 'developmental':
             if slimTerm in terms[goid]['closure_with_develops_from']:
@@ -401,14 +440,19 @@ def getTermStructure():
         'name': '',
         'parents': [],
         'part_of': [],
+        'has_part': [],
         'develops_from': [],
+        'achieves_planned_objective': [],
         'organs': [],
         'closure': [],
         'slims': [],
         'data': [],
         'closure_with_develops_from': [],
         'data_with_develops_from': [],
-        'synonyms': []
+        'synonyms': [],
+        'category': [],
+        'types': [],
+        'objectives': []
     }
 
 
@@ -480,6 +524,14 @@ def main():
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
                                         terms[term_id]['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == HAS_PART:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        terms[term_id]['has_part'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == ACHIEVES_PLANNED_OBJECTIVE:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        terms[term_id]['achieves_planned_objective'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
                     else:
                         terms[term_id]['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
                 
@@ -489,7 +541,7 @@ def main():
                     except:
                         pass
     for term in terms:
-        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']))
+        terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']) | set(terms[term]['has_part']) | set(terms[term]['achieves_planned_objective']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
@@ -507,10 +559,14 @@ def main():
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
+        terms[term]['category'] = getSlims(term, terms, 'category')
+        terms[term]['objectives'] = getSlims(term, terms, 'objective')
+        terms[term]['types'] = getSlims(term, terms, 'type')
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
     for term in terms:
         del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['has_part'], terms[term]['achieves_planned_objective']
         del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
 
     with open('ontology.json', 'w') as outfile:
