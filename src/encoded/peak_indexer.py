@@ -121,10 +121,9 @@ def index_peaks(uuid, request):
         return
 
     es = request.registry.get(SNP_SEARCH_ES, None)
-    url = 'https://www.encodeproject.org' + context['href']
     urllib3.disable_warnings()
     http = urllib3.PoolManager()
-    r = http.request('GET', url)
+    r = http.request('GET', request.host_url + context['href'])
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
