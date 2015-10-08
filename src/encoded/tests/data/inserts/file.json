@@ -914,7 +914,24 @@
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
-
+    },
+    {
+        "status": "uploaded",
+        "submitted_file_name": "ENCSR765JPC-0-500/ENCFF504RKHENCFF431TKZ_CG_bismark.bed.gz",
+        "uuid": "06abb2f0-8499-4d44-9844-1e22433df46d",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "md5sum": "b3ea22dcf867c134cc0e81740242372d",
+        "accession": "ENCFF691MGJ",
+        "file_format": "tsv",
+        "award": "/awards/U54HG006998/",
+        "dataset": "/experiments/ENCSR765JPC/",
+        "flowcell_details": [],
+        "alternate_accessions": [],
+        "file_size": 370148294,
+        "output_type": "methylation state at CpG",
+        "lab": "/labs/richard-myers/",
+        "assembly": "hg19",
+        "aliases": []
     },
     {
         "status": "uploaded",
