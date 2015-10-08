@@ -240,11 +240,13 @@ th.rotate30 {
         top: 0;
         left: $rotated-th-height * tan($rotated-th-angle) / 2;
         height: 100%;
+        -webkit-transform: skew(-$rotated-th-angle, 0deg);
         transform: skew(-$rotated-th-angle, 0deg);
         background-color: #ddd;
         border-left: solid 1px #fff;
         border-right: solid 1px #fff;
         > span {
+            -webkit-transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
             transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
             position: absolute;
             bottom: 59px;
@@ -262,7 +264,9 @@ th.rotate90 {
         position: relative;
         > span {
             position: absolute;
+            -webkit-transform: rotate(-90deg);
             transform: rotate(-90deg);
+            -webkit-transform-origin: left bottom 0;
             transform-origin: left bottom 0;
             top: 80px;
             left: 16px;        
