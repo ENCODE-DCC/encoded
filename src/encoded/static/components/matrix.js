@@ -59,7 +59,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                 <FacetList facets={y_facets} filters={context.filters}
                                            searchBase={searchBase} onFilter={this.onFilter} />
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0}}>
+                            <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0, overflow: 'auto'}}>
                                 <table className="matrix">
                                     <tbody>
                                         <tr>
@@ -71,11 +71,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             <th rowSpan={y_buckets.length + 1}
                                                 className="rotate90"
                                                 style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
-                                                <div><span>{context.matrix.y.label.toUpperCase()}</span></div>
+                                                <div style={{width: 15}}><span>{context.matrix.y.label.toUpperCase()}</span></div>
                                             </th>
                                             <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{context.matrix.doc_count} results</h3></th>
                                             {x_buckets.map(xb => <th className="rotate30"><div><span>{xb.key}</span></div></th>)}
-                                            <th className="rotate30" style={{width: "40%"}}></th>
+                                            <th className="rotate30" style={{width: "20%"}}></th>
                                         </tr>
                                         {y_buckets.map(function(yb, i) {
                                             return <tr>
