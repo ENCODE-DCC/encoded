@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/files/ENCFF000VUQ/",
-    "@type": ["file", "item"],
+    "@type": ["File", "Item"],
     "accession": "ENCFF000VUQ",
     "assembly": "hg19",
     "award": "U54HG004558",

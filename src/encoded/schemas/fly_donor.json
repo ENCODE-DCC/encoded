@@ -38,7 +38,7 @@
                 "description": "A document that describes the strain and/or its generation.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
-                "linkTo": "document"
+                "linkTo": "Document"
             }
         },
         "organism":{ 

@@ -37,7 +37,7 @@
             "comment": "See lab.json for available identifiers.",
             "permission": "import-items",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "Lab"
         },
         "submits_for": {
             "title": "Submits for",
@@ -50,7 +50,7 @@
                 "description": "A lab user is authorized to submit for.",
                 "comment": "See lab.json for available identifiers.",
                 "type": "string",
-                "linkTo": "lab"
+                "linkTo": "Lab"
             }
         },
         "groups": {

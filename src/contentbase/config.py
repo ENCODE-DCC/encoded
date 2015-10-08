@@ -45,8 +45,8 @@ def collection(name, **kw):
 
     def set_collection(config, Collection, name, Item, **kw):
         registry = config.registry
-        registry[TYPES].register(Item.item_type, Item)
-        collection = Collection(registry, name, Item.item_type, **kw)
+        ti = registry[TYPES].register(Item)
+        collection = Collection(registry, name, ti, **kw)
         registry[COLLECTIONS].register(name, collection)
 
     def decorate(Item):
@@ -68,5 +68,6 @@ class CollectionsTool(dict):
 
     def register(self, name, value):
         self[name] = value
-        self[value.item_type] = value
-        self.by_item_type[value.item_type] = value
+        self[value.type_info.name] = value
+        self[value.type_info.item_type] = value
+        self.by_item_type[value.type_info.item_type] = value

@@ -53,7 +53,7 @@ class Connection(object):
             return default
 
         try:
-            Item = self.types[model.item_type].factory
+            Item = self.types.by_item_type[model.item_type].factory
         except KeyError:
             raise UnknownItemTypeError(model.item_type)
 
@@ -80,7 +80,7 @@ class Connection(object):
             return cached
 
         try:
-            Item = self.types[model.item_type].factory
+            Item = self.types.by_item_type[model.item_type].factory
         except KeyError:
             raise UnknownItemTypeError(model.item_type)
 
@@ -89,18 +89,23 @@ class Connection(object):
         self.item_cache[uuid] = item
         return item
 
-    def get_rev_links(self, model, rel, *item_types):
+    def get_rev_links(self, model, rel, *types):
+        item_types = [self.types[t].item_type for t in types]
         return self.storage.get_rev_links(model, rel, *item_types)
 
-    def __iter__(self, *item_types):
-        if not item_types:
-            item_types = self.types.types.keys()
+    def __iter__(self, *types):
+        if not types:
+            item_types = self.types.by_item_type.keys()
+        else:
+            item_types = [self.types[t].item_type for t in types]
         for uuid in self.storage.__iter__(*item_types):
             yield uuid
 
-    def __len__(self, *item_types):
-        if not item_types:
-            item_types = self.types.types.keys()
+    def __len__(self, *types):
+        if not types:
+            item_types = self.types.by_item_type.keys()
+        else:
+            item_types = [self.types[t].item_type for t in types]
         return self.storage.__len__(*item_types)
 
     def __getitem__(self, uuid):
@@ -109,8 +114,9 @@ class Connection(object):
             raise KeyError(uuid)
         return item
 
-    def create(self, item_type, uuid):
-        return self.storage.create(item_type, uuid)
+    def create(self, type_, uuid):
+        ti = self.types[type_]
+        return self.storage.create(ti.item_type, uuid)
 
     def update(self, model, properties, sheets=None, unique_keys=None, links=None):
         self.storage.update(model, properties, sheets, unique_keys, links)

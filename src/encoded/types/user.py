@@ -42,7 +42,7 @@ class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
     rev = {
-        'access_keys': ('access_key', 'user'),
+        'access_keys': ('AccessKey', 'user'),
     }
     embedded = (
         'lab',
@@ -65,7 +65,7 @@ class User(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "access_key.user",
+            "linkFrom": "AccessKey.user",
         },
     })
     def access_keys(self, request, access_keys):

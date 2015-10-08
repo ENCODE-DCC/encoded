@@ -22,14 +22,14 @@
             "title": "Antibody",
             "comment": "See antibody_lot.json for available identifiers.",
             "type": "string",
-            "linkTo": "antibody_lot"
+            "linkTo": "AntibodyLot"
         },
         "target": {
             "title": "Target",
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "target"
+            "linkTo": "Target"
         },
         "characterizations": {
             "title": "Characterizations",
@@ -41,7 +41,7 @@
                 "description": "An antibody characterization under review.",
                 "comment": "See antibody_characterization.json for available identifiers.",
                 "type": "string",
-                "linkTo": "antibody_characterization"
+                "linkTo": "AntibodyCharacterization"
             }
         },
         "status": {

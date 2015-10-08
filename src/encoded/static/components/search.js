@@ -88,7 +88,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Item, 'item');
+    globals.listing_views.register(Item, 'Item');
 
     // Display one antibody status indicator
     var StatusIndicator = React.createClass({
@@ -241,7 +241,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Antibody, 'antibody_lot');
+    globals.listing_views.register(Antibody, 'AntibodyLot');
 
     var Biosample = module.exports.Biosample = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
@@ -304,7 +304,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Biosample, 'biosample');
+    globals.listing_views.register(Biosample, 'Biosample');
 
 
     var Experiment = module.exports.Experiment = React.createClass({
@@ -402,7 +402,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Experiment, 'experiment');
+    globals.listing_views.register(Experiment, 'Experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
@@ -431,7 +431,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Dataset, 'dataset');
+    globals.listing_views.register(Dataset, 'Dataset');
 
     var Target = module.exports.Target = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
@@ -463,7 +463,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Target, 'target');
+    globals.listing_views.register(Target, 'Target');
 
 
     var Image = module.exports.Image = React.createClass({
@@ -491,7 +491,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Image, 'image');
+    globals.listing_views.register(Image, 'Image');
 
 
     // If the given term is selected, return the href for the term
@@ -901,4 +901,4 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    globals.content_views.register(Search, 'search');
+    globals.content_views.register(Search, 'Search');

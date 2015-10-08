@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/replicates/30a3e114-139a-4297-9287-4f23d2754c25/",
-    "@type": ["replicate", "item"],
+    "@type": ["Replicate", "Item"],
     "aliases": [],
     "biological_replicate_number": 1,
     "experiment": "/experiments/ENCSR999NOF/",

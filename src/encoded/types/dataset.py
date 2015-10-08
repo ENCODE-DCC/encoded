@@ -64,7 +64,7 @@ class Dataset(Item):
     ]
     name_key = 'accession'
     rev = {
-        'original_files': ('file', 'dataset'),
+        'original_files': ('File', 'dataset'),
     }
 
     @calculated_property(schema={
@@ -72,7 +72,7 @@ class Dataset(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "file.dataset",
+            "linkFrom": "File.dataset",
         },
     })
     def original_files(self, request, original_files):

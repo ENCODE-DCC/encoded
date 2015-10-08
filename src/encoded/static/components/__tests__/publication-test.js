@@ -138,7 +138,7 @@ describe('Publication', function() {
         });
 
         it('has a supplementary data panel with two items', function() {
-            var supdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'type-publication').getDOMNode();
+            var supdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'type-Publication').getDOMNode();
             var item = supdata.querySelector('[data-test="supplementarydata"]');
             var itemSection = item.getElementsByTagName('section');
             expect(itemSection.length).toEqual(2);
