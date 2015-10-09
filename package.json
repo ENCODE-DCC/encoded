@@ -34,8 +34,7 @@
     "minifyify": "^6.2.0",
     "moment": "^2.8.2",
     "reactify": "^1.0.0",
-    "through": "^2.3.4",
-    "watchify": "^2.2.1"
+    "through": "^2.3.4"
   },
   "dependencies": {
     "brace": "^0.3.0",
