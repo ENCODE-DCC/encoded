@@ -2,6 +2,13 @@
 
 /* jshint strict: false */
 require('source-map-support').install();
+
+if (process.env.NODE_ENV === undefined) {
+    require("babel-core/register")({
+      only: ['react-forms', 'src/encoded/static'],
+    });
+}
+
 require('./libs/react-patches');
 
 var argv = process.argv.slice(process.execArgv.length + 2);
