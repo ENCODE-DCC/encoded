@@ -12,6 +12,8 @@ module.exports = function(grunt) {
         return '../../' + p;
     }
 
+    var NODE_ENV = process.env.NODE_ENV || 'development';
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
@@ -27,7 +29,7 @@ module.exports = function(grunt) {
                         map: 'brace.js.map',
                         output: './src/encoded/static/build/brace.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
                         map: 'dagre.js.map',
                         output: './src/encoded/static/build/dagre.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -67,7 +69,7 @@ module.exports = function(grunt) {
                         map: '/static/build/inline.js.map',
                         output: './src/encoded/static/build/inline.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -94,15 +96,16 @@ module.exports = function(grunt) {
                 ],
                 transform: [
                     [{sourceMap: true, loose: "all", optional: ["spec.protoToAssign"]}, 'babelify'],
+                    [{sourceMap: true, loose: "all", optional: ["spec.protoToAssign"], global: true, only: ['react-forms']}, 'babelify'],
                     'brfs',
-                    'envify',
+                    [require('envify/custom')({NODE_ENV: NODE_ENV})],
                 ],
                 plugin: [
                     ['minifyify', {
                         map: 'bundle.js.map',
                         output: './src/encoded/static/build/bundle.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV === 'production'},
                     }],
                 ],
             },
@@ -115,15 +118,16 @@ module.exports = function(grunt) {
                 },
                 transform: [
                     [{sourceMap: true}, 'babelify'],
+                    [{sourceMap: true, global: true, only: ['react-forms']}, 'babelify'],
                     'brfs',
-                    'envify',
+                    [require('envify/custom')({NODE_ENV: NODE_ENV})],
                 ],
                 plugin: [
                     ['minifyify', {map:
                         'renderer.js.map',
                         output: './src/encoded/static/build/renderer.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV === 'production'},
                     }],
                 ],
                 external: [
