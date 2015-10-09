@@ -714,7 +714,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
         if (file.biological_replicates && file.biological_replicates.length == 1) {
-            var biological_replicate_number = file.biological_replicates[0]
+            var biological_replicate_number = file.biological_replicates[0];
             if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
                 allReplicates[biological_replicate_number] = [];
@@ -734,7 +734,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         allFiles[file['@id']] = file;
 
         // Keep track of whether files exist outside replicates
-        fileOutsideReplicate = fileOutsideReplicate || !!file.biological_replicates.length > 1;
+        fileOutsideReplicate = fileOutsideReplicate || file.biological_replicates.length > 1;
     });
     // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
     // derivedFromFiles points to derived_from file objects
@@ -807,6 +807,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return null;
     }
 
+    // Check whether all files have been removed
+    abortGraph = _(allFiles).all(function(file) {
+        return file.removed;
+    });
+    if (abortGraph) {
+        console.warn('No graph: all files removed');
+        return null;
+    }
+
     // Check for other conditions in which to abort graph drawing
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
@@ -841,7 +850,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         if (allReplicates[replicateNum] && allReplicates[replicateNum].length) {
             jsonGraph.addNode('rep:' + replicateNum, 'Replicate ' + replicateNum, {
                 cssClass: 'pipeline-replicate',
-                type: 'rep',
+                type: 'Rep',
                 shape: 'rect',
                 cornerRadius: 0
             });
@@ -872,7 +881,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             // Add file to the graph as a node
             jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
                 cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
-                type: 'file',
+                type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
@@ -902,7 +911,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 if (!jsonGraph.getNode(stepId)) {
                     jsonGraph.addNode(stepId, label, {
                         cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
-                        type: 'step',
+                        type: 'Step',
                         shape: 'rect',
                         cornerRadius: 4,
                         parentNode: replicateNode,
@@ -932,7 +941,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             // Assemble a single file node; can have file and step nodes in this graph
             jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
                 cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                type: 'file',
+                type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 ref: file,
