@@ -926,11 +926,13 @@
         "award": "/awards/U54HG006998/",
         "dataset": "/experiments/ENCSR765JPC/",
         "flowcell_details": [],
+        "derived_from": ["ENCFF434GXF"],
         "alternate_accessions": [],
         "file_size": 370148294,
         "output_type": "methylation state at CpG",
         "lab": "/labs/richard-myers/",
         "assembly": "hg19",
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
         "aliases": []
     },
     {
