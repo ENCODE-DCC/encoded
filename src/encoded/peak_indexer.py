@@ -116,7 +116,6 @@ def index_peaks(uuid, request):
 
     flag = False
     for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
-        import pdb; pdb.set_trace()
         if k in context and context[k] in v:
             if 'file_format' in context and context['file_format'] == 'bed':
                 flag = True
