@@ -155,7 +155,6 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('browserify', function (watch) {
         var browserify = require('browserify');
-        var watchify = require('watchify');
         var _ = grunt.util._;
         var path = require('path');
         var fs = require('fs');
@@ -169,7 +168,7 @@ module.exports = function(grunt) {
 
         var b = browserify(options);
         if (watch) {
-            b = watchify(b);
+            b = require('watchify')(b);
         }
 
         var i;
