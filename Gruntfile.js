@@ -1,5 +1,4 @@
 'use strict';
-var reactify = require('./reactify');
 
 module.exports = function(grunt) {
     var path = require('path');
@@ -60,7 +59,6 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -76,6 +74,10 @@ module.exports = function(grunt) {
             browser: {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
+                    'es5-shim',
+                    'es5-shim/es5-sham',
+                    'babel-core/polyfill',
+                    'html5shiv/dist/html5shiv',
                     './src/encoded/static/libs/compat.js', // The shims should execute first
                     './src/encoded/static/libs/sticky_header.js',
                     './src/encoded/static/libs/respond.js',
@@ -91,7 +93,7 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
+                    [{sourceMap: true, loose: "all", optional: ["spec.protoToAssign"]}, 'babelify'],
                     'brfs',
                     'envify',
                 ],
@@ -112,7 +114,7 @@ module.exports = function(grunt) {
                     detectGlobals: false,
                 },
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{sourceMap: true}, 'babelify'],
                     'brfs',
                     'envify',
                 ],
