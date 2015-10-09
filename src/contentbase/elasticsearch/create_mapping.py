@@ -415,6 +415,7 @@ def type_mapping(types, item_type, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
+        new_mapping[last]['boost'] = boost_values.get(value, 1.0)
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
         new_mapping[last]['include_in_all'] = True
