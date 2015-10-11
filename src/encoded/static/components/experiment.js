@@ -848,7 +848,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         var file = allFiles[fileId];
 
         // A file derives from a file that's been removed from the graph
-        if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length){
+        if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length) {
             // A file still in the graph derives from others. See if any of the files it derives from have been removed
             // or are missing.
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
@@ -858,7 +858,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
 
         // No files exist outside replicates, and all replicates are removed
-        abortGraph = abortGraph || (fileOutsideReplicate && _(Object.keys(allReplicates)).all(function(replicateNum) {
+        var replicateIds = Object.keys(allReplicates);
+        abortGraph = abortGraph || (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
             return !allReplicates[replicateNum].length;
         }));
 
