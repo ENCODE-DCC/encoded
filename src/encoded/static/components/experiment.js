@@ -702,12 +702,51 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return file['@id'];
     });
 
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect all files keyed by their ID as a single source of truth for files.
+    // Every reference to a file object should get it from this object. Also serves
+    // to de-dup the file array since there can be repeated files in it.
     files.forEach(function(file) {
-        // Build an object keyed with all files that other files derive from
-        if (file.derived_from) {
+        if (!allFiles[file['@id']]) {
+            allFiles[file['@id']] = file;
+        }
+    });
+
+    // Add contributing files to the allFiles object that other files derive from.
+    // Don't worry about files they derive from; they're not included in the graph.
+    // If an allFiles entry already exists for the file, it gets overwritten so that
+    // allFiles and allContributingFiles point at the same object.
+    if (context.contributing_files && context.contributing_files.length) {
+        context.contributing_files.forEach(function(file) {
+            if (allFiles[file['@id']]) {
+                // Contributing file already existed in file array for some reason; use its existing file object
+                allContributing[file['@id']] = allFiles[file['@id']];
+            } else {
+                // Seeing contributed file for the first time; save it in both allFiles and allContributingFiles
+                allFiles[file['@id']] = allContributing[file['@id']] = file;
+            }
+        });
+    }
+
+    // Collect derived_from files, used replicates, and used pipelines
+    Object.keys(allFiles).forEach(function(fileId) {
+        var file = allFiles[fileId];
+
+        // Build an object keyed with all files that other files derive from. If the file is contributed,
+        // we don't care about its derived_from because we don't render that.
+        if (!allContributing[fileId] && file.derived_from && file.derived_from.length) {
             file.derived_from.forEach(function(derived_from) {
-                derivedFromFiles[derived_from['@id']] = derived_from;
+                var derivedFromId = derived_from['@id'];
+                var derivedFile = allFiles[derivedFromId];
+                if (!derivedFile) {
+                    // The derived-from file wasn't in the given file list. Copy the file object from the file's
+                    // derived_from so we can examine it later -- and mark it as missing.
+                    derivedFromFiles[derivedFromId] = derived_from;
+                    derived_from.missing = true;
+                } else if (!derivedFromFiles[derivedFromId]) {
+                    // The derived-from file was in the given file list, so record the derived-from file in derivedFromFiles.
+                    // ...that is, unless the derived-from file has already been seen. Just move on if it has.
+                    derivedFromFiles[derivedFromId] = derivedFile;
+                }
             });
         }
 
@@ -724,92 +763,80 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Note whether any files have an analysis step
         var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-        stepExists = stepExists || !!fileAnalysisStep;
+        stepExists = stepExists || fileAnalysisStep;
+
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
             allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
         }
 
-        // Build a list of all files in the graph, including contributed files, for convenience
-        allFiles[file['@id']] = file;
-
-        // Keep track of whether files exist outside replicates
-        fileOutsideReplicate = fileOutsideReplicate || file.biological_replicates.length > 1;
+        // Keep track of whether files exist outside replicates. That could mean it has no replicate information,
+        // or it has more than one replicate.
+        fileOutsideReplicate = fileOutsideReplicate || (file.biological_replicates && file.biological_replicates.length !== 1);
     });
-    // At this stage, allFiles and allReplicates points to file objects; allPipelines points to pipelines.
-    // derivedFromFiles points to derived_from file objects
+    // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
+    // allPipelines points to pipelines.
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
         console.warn('No graph: no files have step runs');
         return null;
     }
+
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
-    files.forEach(function(file) {
-        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[file['@id']];
-        // If the file's removed, remember it's removed from the derived_From file objects too
-        if (file.removed && derivedFromFiles[file['@id']]) {
-            derivedFromFiles[file['@id']].removed = true;
-        }
+    Object.keys(allFiles).forEach(function(fileId) {
+        var file = allFiles[fileId];
+
+        // File gets removed if doesn’t derive from other files AND no files derive from it.
+        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
     });
 
     // Remove any replicates containing only removed files from the last step.
     Object.keys(allReplicates).forEach(function(repNum) {
-        var keepRep = false;
-        allReplicates[repNum].forEach(function(file) {
-            keepRep = keepRep || !file.removed;
+        var onlyRemovedFiles = _(allReplicates[repNum]).all(function(file) {
+            return file.removed && file.missing === true;
         });
-        if (!keepRep) {
+        if (onlyRemovedFiles) {
             allReplicates[repNum] = [];
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            allContributing[file['@id']] = file;
-            if (derivedFromFiles[file['@id']]) {
-                allFiles[file['@id']] = file;
-            }
-        });
-    }
-
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
     // Not sure if this is covered in test cases
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
-        if (!(derivedFromFileId in allFiles)) {
-            // A file others derive from doesn't exist; check if it's in a replicate or not
+        var derivedFromFile = derivedFromFiles[derivedFromFileId];
+        if (derivedFromFile.removed || derivedFromFile.missing) {
+            // A file others derive from doesn't exist or was removed; check if it's in a replicate or not
             // Note the derived_from file object exists even if it doesn't exist in given files array.
-            var derivedFromFile = derivedFromFiles[derivedFromFileId];
-            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length == 1) {
+            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length === 1) {
                 // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
-                if (allReplicates[derivedFromFile.biological_replicates[0]]) {
-                    allReplicates[derivedFromFile.biological_replicates[0]].forEach(function(file) {
+                var derivedFromRep = derivedFromFile.biological_replicates[0];
+                if (allReplicates[derivedFromRep]) {
+                    allReplicates[derivedFromRep].forEach(function(file) {
                         file.removed = true;
                     });
                 }
 
-                // Indicate that this replicate is not to be rendered
-                allReplicates[derivedFromFile.biological_replicates[0]] = [];
+                // Now remove the replicate
+                allReplicates[derivedFromRep] = [];
             } else {
-                // Missing derived-from file not in a replicate; don't draw any graph
+                // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
                 abortGraph = abortGraph || true;
                 abortFileId = derivedFromFileId;
             }
-        } // else the derived_from file is in files array; normal case
+        } // else the derived_from file is in files array (allFiles object); normal case
     });
 
     // Don't draw anything if a file others derive from outside a replicate doesn't exist
     if (abortGraph) {
-        console.warn('No graph: derived_from file outside replicate missing [' + abortFileId + ']');
+        console.warn('No graph: derived_from file outside replicate (or in multiple replicates) missing [' + abortFileId + ']');
         return null;
     }
 
     // Check whether all files have been removed
-    abortGraph = _(allFiles).all(function(file) {
-        return file.removed;
+    abortGraph = _(Object.keys(allFiles)).all(function(fileId) {
+        return allFiles[fileId].removed;
     });
     if (abortGraph) {
         console.warn('No graph: all files removed');
@@ -821,9 +848,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         var file = allFiles[fileId];
 
         // A file derives from a file that's been removed from the graph
-        if (file.derived_from && !file.removed && !(file['@id'] in allContributing)) {
+        if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length){
+            // A file still in the graph derives from others. See if any of the files it derives from have been removed
+            // or are missing.
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
-                return !(derivedFromFile['@id'] in allFiles);
+                var orgDerivedFromFile = derivedFromFiles[derivedFromFile['@id']];
+                return orgDerivedFromFile.missing || orgDerivedFromFile.removed;
             });
         }
 
