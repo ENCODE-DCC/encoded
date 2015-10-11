@@ -160,6 +160,23 @@ def audit_file_flowcells(value, system):
 
 
 @audit_checker('file', frame=['paired_with'],)
+def audit_run_type(value, system):
+    '''
+    A fastq file or a fasta file need to specify run_type.
+    This was attempted to be a dependancy and didn't happen.
+    '''
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'run_type' not in value:
+        detail = 'File {} has file_format {}. It requires a value for run_type'.format(
+            value['@id'],
+            value['file_format'])
+        raise AuditFailure('missing run_type', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker('file', frame=['paired_with'],)
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
