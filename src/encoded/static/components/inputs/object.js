@@ -90,7 +90,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
             searchParams += '&searchTerm=' + encodeURIComponent(this.state.search);
         }
         return (
-            <div className="item-picker">
+            <div className={"item-picker" + (this.props.disabled ? ' disabled' : '')}>
                 <div className="item-picker-preview" style={{display: 'inline-block', width: 'calc(100% - 120px)'}}>
                     {url ?
                         <fetched.FetchedData>
@@ -99,13 +99,16 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
                         </fetched.FetchedData> : ''}
                     {!url ? <input value={this.state.searchInput} ref="input" type="text"
                                    placeholder="Enter a search term (accession, uuid, alias, ...)"
-                                   onChange={this.handleInput} onBlur={this.handleSearch} onKeyDown={this.handleInput} /> : ''}
+                                   onChange={this.handleInput} onBlur={this.handleSearch} onKeyDown={this.handleInput}
+                                   disabled={this.props.disabled} /> : ''}
                     {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
                 </div>
-                <div className="pull-right">
-                    <a className="clear" href="#" ref="clear" onClick={this.handleClear}><i className="icon icon-times"></i></a>
-                    {' '}<button className={"btn btn-primary" + (this.state.browsing ? ' active' : '')} onClick={this.handleBrowse}>Browse&hellip;</button>
-                </div>
+                {!this.props.disabled &&
+                    <div className="pull-right">
+                        <a className="clear" href="#" ref="clear" onClick={this.handleClear}><i className="icon icon-times"></i></a>
+                        {' '}<button className={"btn btn-primary" + (this.state.browsing ? ' active' : '')} onClick={this.handleBrowse}>Browse&hellip;</button>
+                    </div>
+                }
                 {this.state.browsing ? 
                     <fetched.FetchedData>
                         <fetched.Param name="context" url={'/search/' + searchParams} />
