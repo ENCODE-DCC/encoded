@@ -218,6 +218,7 @@
         "output_type": "signal of all reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "status": "released",
+        "derived_from": [ "ENCFF001MXA" ],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSigIII.bigWig",
         "uuid": "8af32b39-f97f-4979-9c21-728b0b8a2112"
