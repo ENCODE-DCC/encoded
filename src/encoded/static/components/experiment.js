@@ -921,7 +921,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
                 metricsInfo = fileQcMetrics[fileId].map(function(metric) {
                     var qcId = genQcId(metric, file);
-                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric, parent: file};
                 });
             }
 
@@ -1188,22 +1188,26 @@ globals.graph_detail.register(FileDetailView, 'File');
 var QcDetailsView = function(metrics) {
     // QC metrics properties to NOT display.
     var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+    var sortedKeys = Object.keys(metrics.ref).sort();
 
     if (metrics) {
         return (
-            <dl className="key-value-flex">
-                {Object.keys(metrics.ref).map(function(key) {
-                    if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
-                        return(
-                            <div key={key}>
-                                <dt>{key}</dt>
-                                <dd>{metrics.ref[key]}</dd>
-                            </div>
-                        );
-                    }
-                    return null;
-                })}
-            </dl>
+            <div>
+                <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
+                <dl className="key-value-flex">
+                    {sortedKeys.map(function(key) {
+                        if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
+                            return(
+                                <div key={key}>
+                                    <dt>{key}</dt>
+                                    <dd>{metrics.ref[key]}</dd>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                </dl>
+            </div>
         );
     } else {
         return null;
