@@ -3,6 +3,8 @@ Dependency tracking and invalidation
 
 Keeping elasticsearch in sync.
 
+The /_indexer wsgi app (es_index_listener.py) drives the incremental indexing process. When a new transaction is notified by postgres (or after 60 seconds) it calls the /index view (indexer.py) which works out what needs to be reindexed. The actual reindexing happens in parallel in multiprocessing subprocesses (mpindexer.py.)
+
 When rendering a response, we record the set of embedded_uuids and linked_uuids used.
 
 * ``embedded_uuids`` are those objects embedded into the response or whose properties have been consulted in rendering of the response. Any change to one of these objects should cause an invalidation. (See ``Item.__json__``.)

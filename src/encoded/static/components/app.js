@@ -24,7 +24,7 @@ var portal = {
             {id: 'pipelines', title: 'Pipelines', url: '/pipelines'},
             {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
         ]},
-        {id: 'about', title: 'About ENCODE', children: [
+        {id: 'about', title: 'About', children: [
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
             {id: 'news', title: 'News', url: '/news'},
             {id: 'publications', title: 'Publications', url: '/publications'},

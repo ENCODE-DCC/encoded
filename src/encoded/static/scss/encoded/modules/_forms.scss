@@ -140,6 +140,10 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	> .btn {
 		margin-left: 1em;
 	}
+	&.disabled {
+	    cursor: not-allowed;
+	    background-color: $input-bg-disabled;
+	}
 }
 
 .collapsible {

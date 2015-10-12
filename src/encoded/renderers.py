@@ -37,7 +37,12 @@ def includeme(config):
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory',
         under='.renderers.fix_request_method_tween_factory')
-    config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
+
+    config.add_tween(
+        '.renderers.debug_page_or_json'
+        if config.registry.settings['pyramid.reload_templates']
+        else '.renderers.page_or_json',
+        under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
     config.scan(__name__)
 
@@ -248,5 +253,14 @@ page_or_json = SubprocessTween(
     after_transform=after_transform,
     reload_process=reload_process,
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
+    env=node_env,
+)
+
+
+debug_page_or_json = SubprocessTween(
+    should_transform=should_transform,
+    after_transform=after_transform,
+    reload_process=reload_process,
+    args=['node', resource_filename(__name__, 'static/server.js')],
     env=node_env,
 )
