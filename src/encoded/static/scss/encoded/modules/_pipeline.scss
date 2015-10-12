@@ -165,4 +165,19 @@ g.edgePath {
         stroke: #a0a0a0;
         fill: #80ffc0;
     }
+
+    text {
+        fill: #000;
+    }
+
+    &.active {
+        circle {
+            stroke: #404040;
+            fill: darken(#80ffc0, 50%);
+        }
+
+        text {
+            fill: #fff;
+        }
+    }
 }

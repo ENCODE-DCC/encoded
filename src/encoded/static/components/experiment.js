@@ -902,7 +902,9 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
 
     // Go through each file (released or unreleased) to add it and associated steps to the graph
-    files.forEach(function(file) {
+    Object.keys(allFiles).forEach(function(fileId) {
+        var file = allFiles[fileId];
+
         // Only add files derived from others, or that others derive from,
         // and that aren't part of a removed replicate
         if (!file.removed) {
@@ -910,89 +912,76 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var label;
             var pipelineInfo;
             var error;
-            var fileId = 'file:' + file['@id'];
-            var replicateNode = ( file.biological_replicates && file.biological_replicates.length==1 )? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
+            var fileNodeId = 'file:' + file['@id'];
+            var replicateNode = (file.biological_replicates && file.biological_replicates.length === 1 ) ? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
             var metricsInfo;
+            var fileContributed = allContributing[fileId];
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (fileQcMetrics[file['@id']] && fileQcMetrics[file['@id']].length && file.step_run) {
-                metricsInfo = fileQcMetrics[file['@id']].map(function(metric) {
+            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
+                metricsInfo = fileQcMetrics[fileId].map(function(metric) {
                     var qcId = genQcId(metric, file);
                     return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
                 });
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
+            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
+                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: file
             }, metricsInfo);
-            // If the file has an analysis step, prepare it for graph insertion
-            var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-            if (fileAnalysisStep) {
-                // Make an ID and label for the step
-                stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
-                label = fileAnalysisStep.analysis_step_types;
-                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                error = false;
-            } else if (derivedFileIds(file)) {
-                // File derives from others, but no analysis step; make dummy step
-                stepId = 'error:' + derivedFileIds(file);
-                label = 'Software unknown';
-                pipelineInfo = null;
-                error = true;
-            } else {
-                // No analysis step and no derived_from; don't add a step
-                stepId = '';
-            }
 
-            if (stepId) {
-                // Add the step to the graph only if we haven't for this derived-from set already
-                if (!jsonGraph.getNode(stepId)) {
-                    jsonGraph.addNode(stepId, label, {
-                        cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
-                        type: 'Step',
-                        shape: 'rect',
-                        cornerRadius: 4,
-                        parentNode: replicateNode,
-                        ref: fileAnalysisStep,
-                        pipelines: pipelineInfo,
-                        fileId: file['@id'],
-                        stepVersion: file.analysis_step_version
-                    });
+            // If the file has an analysis step, prepare it for graph insertion
+            if (!fileContributed) {
+                var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+                if (fileAnalysisStep) {
+                    // Make an ID and label for the step
+                    stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
+                    label = fileAnalysisStep.analysis_step_types;
+                    pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+                    error = false;
+                } else if (derivedFileIds(file)) {
+                    // File derives from others, but no analysis step; make dummy step
+                    stepId = 'error:' + derivedFileIds(file);
+                    label = 'Software unknown';
+                    pipelineInfo = null;
+                    error = true;
+                } else {
+                    // No analysis step and no derived_from; don't add a step
+                    stepId = '';
                 }
 
-                // Connect the file to the step, and the step to the derived_from files
-                jsonGraph.addEdge(stepId, fileId);
-                file.derived_from.forEach(function(derived) {
-                    if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
-                        jsonGraph.addEdge('file:' + derived['@id'], stepId);
+                if (stepId) {
+                    // Add the step to the graph only if we haven't for this derived-from set already
+                    if (!jsonGraph.getNode(stepId)) {
+                        jsonGraph.addNode(stepId, label, {
+                            cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
+                            type: 'Step',
+                            shape: 'rect',
+                            cornerRadius: 4,
+                            parentNode: replicateNode,
+                            ref: fileAnalysisStep,
+                            pipelines: pipelineInfo,
+                            fileId: fileId,
+                            stepVersion: file.analysis_step_version
+                        });
                     }
-                });
+
+                    // Connect the file to the step, and the step to the derived_from files.
+                    jsonGraph.addEdge(stepId, fileNodeId);
+                    file.derived_from.forEach(function(derived) {
+                        if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
+                            jsonGraph.addEdge('file:' + derived['@id'], stepId);
+                        }
+                    });
+                }
             }
         }
     }, this);
-
-    // Add contributing files to the graph
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            var fileId = 'file:' + file['@id'];
-
-            // Assemble a single file node; can have file and step nodes in this graph
-            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                type: 'File',
-                shape: 'rect',
-                cornerRadius: 16,
-                ref: file,
-                contributing: true
-            });
-        }, this);
-    }
 
     return jsonGraph;
 };
@@ -1195,8 +1184,10 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
+// Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
-    var reserved = ['uuid', 'assay_term_name', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+    // QC metrics properties to NOT display.
+    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
 
     if (metrics) {
         return (
@@ -1204,7 +1195,7 @@ var QcDetailsView = function(metrics) {
                 {Object.keys(metrics.ref).map(function(key) {
                     if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
                         return(
-                            <div>
+                            <div key={key}>
                                 <dt>{key}</dt>
                                 <dd>{metrics.ref[key]}</dd>
                             </div>
