@@ -110,6 +110,80 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
+@pytest.fixture
+def encode_lab(testapp):
+    item = {
+        'name': 'encode-processing-pipeline',
+        'title': 'ENCODE Processing Pipeline',
+        'status': 'current'
+        }
+    return testapp.post_json('/lab', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'file_format': 'bam',
+        'file_size': 3,
+        'md5sum': '100d8c998f00b204e9800998ecf8428b',
+        'output_type': 'alignments',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def bam_quality_metric(testapp, analysis_step_run_bam, file6):
+
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of':[file6['@id']],
+        'uniqueMappedCount':1000
+    }
+
+    return testapp.post_json('/edwbamstats_quality_metric', item).json['@graph'][0]
+
+@pytest.fixture
+def analysis_step_bam(testapp):
+    item = {
+        'name': 'bamqc',
+        'title': 'bamqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation']
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+@pytest.fixture
+def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "ChIP-seq of histone modifications",
+        'analysis_steps': [analysis_step_bam['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+@pytest.fixture
+def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
+    item = {
+        'analysis_step': analysis_step_bam['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_bam(testapp, analysis_step_version_bam):
+    item = {
+        'analysis_step_version': analysis_step_version_bam['@id'],
+        'status': 'finished',
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
 
 def test_audit_paired_with(testapp, file1):
     testapp.patch_json(file1['@id'], {'paired_end': '1'})
@@ -195,3 +269,41 @@ def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing mate pair' for error in errors_list)
+
+
+def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing quality metrics' for error in errors_list)
+
+
+def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:       
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+    testapp.patch_json(software['@id'],{'title':'TopHat'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type]) 
+    assert all(error['category'] != 'missing quality metrics' for error in errors_list)
+
+def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+    testapp.patch_json(file_exp['@id'],{'assay_term_name':'shRNA knockdown followed by RNA-seq'})
+    testapp.patch_json(file6['@id'],{'dataset':file_exp['@id']})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:       
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
