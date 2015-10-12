@@ -1070,7 +1070,7 @@ var FileDetailView = function(node) {
         }
         var dateString = !!selectedFile.date_created && moment.utc(selectedFile.date_created).format('YYYY-MM-DD');
         return (
-            <dl className="key-value-flex">
+            <dl className="key-value">
                 {selectedFile.file_format ?
                     <div data-test="format">
                         <dt>Format</dt>
