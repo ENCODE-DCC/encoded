@@ -72,8 +72,9 @@ g.cluster {
         stroke: #c0c0c0;
     }
 
-    tspan {
-        @include font-size(1);
+    text {
+        font-size: $font-size-base; // Don't use rems; maintain size on mobile
+        fill: #000;
     }
 }
 
@@ -159,7 +160,7 @@ g.edgePath {
     background-size: 36px 44px;
 }
 
-.pipeline-node-qc-metric {
+g.pipeline-node-qc-metric {
     circle {
         stroke-width: 2px;
         stroke: #a0a0a0;
@@ -167,6 +168,8 @@ g.edgePath {
     }
 
     text {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: bold;
         fill: #000;
     }
 
