@@ -121,7 +121,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^GEO:(GSM|GSE)\\d+$"
+                "pattern": "^GEO:GSM\\d+$"
             }
         },
         "nucleic_acid_starting_quantity": {
