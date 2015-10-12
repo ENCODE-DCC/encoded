@@ -10,15 +10,17 @@ def includeme(config):
     config.scan(__name__)
 
 
-def _filtered_schema(collection, request):
+def _annotated_schema(collection, request):
     schema = collection.type_info.schema.copy()
     schema['@type'] = ['JSONSchema']
 
     properties = OrderedDict()
+    # add a 'readonly' flag to fields that the current user cannot write
     for k, v in schema['properties'].items():
         if 'permission' in v:
             if not request.has_permission(v['permission'], collection):
-                continue
+                v = v.copy()
+                v['readonly'] = True
         properties[k] = v
     schema['properties'] = properties
     return schema
@@ -33,7 +35,7 @@ def schema(context, request):
     except KeyError:
         raise HTTPNotFound(type_name)
 
-    return _filtered_schema(collection, request)
+    return _annotated_schema(collection, request)
 
 
 @view_config(route_name='schemas', request_method='GET')
@@ -42,5 +44,5 @@ def schemas(context, request):
     schemas = {}
     for collection in collections.by_item_type.values():
         name = collection.type_info.name
-        schemas[name] = _filtered_schema(collection, request)
+        schemas[name] = _annotated_schema(collection, request)
     return schemas

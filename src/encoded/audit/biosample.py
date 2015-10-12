@@ -94,7 +94,6 @@ def audit_biosample_culture_date(value, system):
             value['culture_start_date'])
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
-
 @audit_checker('biosample', frame=['organism', 'donor', 'donor.organism', 'donor.mutated_gene', 'donor.mutated_gene.organism'])
 def audit_biosample_donor(value, system):
     '''

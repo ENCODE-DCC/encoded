@@ -142,7 +142,7 @@ var Search = React.createClass({
         return (
             <form className="navbar-form navbar-right" action="/search/">
                 <div className="search-wrapper">
-                    <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search ENCODE" 
+                    <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search..." 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
                 </div>
             </form>
