@@ -46,6 +46,30 @@ var makeValidationResult = function(validation) {
 };
 
 
+var ReadOnlyField = React.createClass({
+    render: function() {
+        var value;
+        if (this.props.preview) {
+            var url = this.props.value.value;
+            value = (
+                <fetched.FetchedData>
+                    <fetched.Param name="data" url={url} />
+                    <ItemPreview />
+                </fetched.FetchedData>
+            );
+        } else {
+            value = this.props.value.value;
+        }
+        return (
+            <div>
+                <ReactForms.Label label={this.props.value.node.props.get('label')} />
+                <span>{value}</span>
+            </div>
+        );
+    },
+});
+
+
 var RepeatingItem = React.createClass({
 
   render: function() {
@@ -154,7 +178,9 @@ var jsonSchemaToFormSchema = function(attrs) {
         p = attrs.jsonNode,
         props = attrs.props,
         id = attrs.id,
-        skip = attrs.skip || [];
+        skip = attrs.skip || [],
+        readonly = p.readonly || attrs.readonly || false,
+        showReadOnly = attrs.showReadOnly;
     if (props === undefined) {
         props = {};
     }
@@ -175,6 +201,7 @@ var jsonSchemaToFormSchema = function(attrs) {
         for (name in p.properties) {
             if (name == 'uuid' || name == 'schema_version') continue;
             if (p.properties[name].calculatedProperty) continue;
+            if (!showReadOnly && p.properties[name].readonly) continue;
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
             var subprops = {required: required};
@@ -182,16 +209,25 @@ var jsonSchemaToFormSchema = function(attrs) {
                 schemas: schemas,
                 jsonNode: p.properties[name],
                 props: subprops,
+                readonly: readonly,
+                showReadOnly: showReadOnly,
             });
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
+        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
+                                                        noAddButton={readonly} noRemoveButton={readonly} />;
+        return ReactForms.schema.List(props, jsonSchemaToFormSchema({
+            schemas: schemas,
+            jsonNode: p.items,
+            readonly: readonly,
+            showReadOnly: showReadOnly,
+        }));
     } else if (p.type == 'boolean') {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
     } else {
+        var disabled = (readonly || p.readonly);
         if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
             props.validate = function(schema, value) { return (typeof value == 'string') ? value.match(p.pattern) : true; };
@@ -201,13 +237,14 @@ var jsonSchemaToFormSchema = function(attrs) {
             if (!p.default) {
                 options = [<option value={null} />].concat(options);
             }
-            props.input = <select className="form-control">{options}</select>;
+            props.input = <select className="form-control" disabled={disabled}>{options}</select>;
         }
         if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
             var inputs = require('./inputs');
             props.input = (
-                <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
+                <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo}
+                                     restrictions={restrictions} disabled={disabled} />
             );
         } else if (p.linkFrom) {
             // Backrefs have a linkFrom property in the form
@@ -228,12 +265,13 @@ var jsonSchemaToFormSchema = function(attrs) {
             var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
             defaultValue[linkProp] = id;
             return ReactForms.schema.Scalar({component: component, defaultValue: defaultValue});
-        }
-        if (p.type == 'integer' || p.type == 'number') {
+        } else if (p.type == 'integer' || p.type == 'number') {
             props.type = 'number';
-        }
-        if (p.formInput == 'textarea') {
-            props.input = <textarea rows="4" />;
+            props.input = <input type="number" disabled={disabled} />;
+        } else if (p.formInput == 'textarea') {
+            props.input = <textarea rows="4" disabled={disabled} />;
+        } else {
+            props.input = <input type="text" disabled={disabled} />;
         }
         return ReactForms.schema.Scalar(props);
     }
@@ -441,6 +479,10 @@ var Form = module.exports.Form = React.createClass({
 
 var JSONSchemaForm = module.exports.JSONSchemaForm = React.createClass({
 
+    getDefaultProps: function() {
+        return {showReadOnly: true};
+    },
+
     getInitialState: function() {
         var type = this.props.type;
         var schemas = this.props.schemas;
@@ -448,7 +490,8 @@ var JSONSchemaForm = module.exports.JSONSchemaForm = React.createClass({
             schema: jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: schemas[type],
-                id: this.props.id
+                id: this.props.id,
+                showReadOnly: this.props.showReadOnly,
             }),
             value: this.props.context || jsonSchemaToDefaultValue(schemas[type]),
         };

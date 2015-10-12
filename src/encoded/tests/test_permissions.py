@@ -132,3 +132,51 @@ def test_remc_member_view_disallowed(remc_member_testapp, experiment):
 
 def test_remc_member_view_shared(remc_member_testapp, mouse_donor):
     remc_member_testapp.get(mouse_donor['@id'], status=200)
+
+
+def test_submitter_patch_lab_disallowed(submitter, other_lab, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
+    lab = {'lab': other_lab['@id']}
+    submitter_testapp.patch_json(res.json['@id'], lab, status=422)  # is that the right status?
+
+
+def test_wrangler_patch_lab_allowed(submitter, other_lab, wrangler_testapp):
+    res = wrangler_testapp.get(submitter['@id'])
+    lab = {'lab': other_lab['@id']}
+    wrangler_testapp.patch_json(res.json['@id'], lab, status=200)
+
+
+def test_submitter_patch_submits_for_disallowed(submitter, other_lab, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
+    submits_for = {'submits_for': res.json['submits_for'] + [other_lab['@id']]}
+    submitter_testapp.patch_json(res.json['@id'], submits_for, status=422)
+
+
+def test_wrangler_patch_submits_for_allowed(submitter, other_lab, wrangler_testapp):
+    res = wrangler_testapp.get(submitter['@id'])
+    submits_for = {'submits_for': res.json['submits_for'] + [other_lab['@id']]}
+    wrangler_testapp.patch_json(res.json['@id'], submits_for, status=200)
+
+
+def test_submitter_patch_groups_disallowed(submitter, other_lab, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
+    groups = {'groups': res.json['groups'] + ['admin']}
+    submitter_testapp.patch_json(res.json['@id'], groups, status=422)
+
+
+def test_wrangler_patch_groups_allowed(submitter, other_lab, wrangler_testapp):
+    res = wrangler_testapp.get(submitter['@id'])
+    groups = {'groups': res.json['groups'] + ['admin']}
+    wrangler_testapp.patch_json(res.json['@id'], groups, status=200)
+
+
+def test_submitter_patch_viewing_groups_disallowed(submitter, other_lab, submitter_testapp):
+    res = submitter_testapp.get(submitter['@id'])
+    vgroups = {'viewing_groups': res.json['viewing_groups'] + ['GGR']}
+    submitter_testapp.patch_json(res.json['@id'], vgroups, status=422)
+
+
+def test_wrangler_patch_viewing_groups_disallowed(submitter, other_lab, wrangler_testapp):
+    res = wrangler_testapp.get(submitter['@id'])
+    vgroups = {'viewing_groups': res.json['viewing_groups'] + ['GGR']}
+    wrangler_testapp.patch_json(res.json['@id'], vgroups, status=200)

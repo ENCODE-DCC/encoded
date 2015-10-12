@@ -119,33 +119,80 @@ class Biosample(Item):
 
     @calculated_property(schema={
         "title": "Sex",
-        "type": "string",
+        "type": "string"
     })
-    def sex(self, request, donor=None, model_organism_sex=None):
-        if model_organism_sex is not None:
-            return model_organism_sex
-        if donor is not None:
-            return request.embed(donor, '@@object').get('sex')
+    def sex(self, request, donor=None, model_organism_sex=None, organism=None):        
+        humanFlag = False
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+            if organismObject['scientific_name']=='Homo sapiens':
+                humanFlag = True
+
+        if humanFlag == True:
+            if donor is not None:# try to get the sex from the donor
+                donorObject = request.embed(donor, '@@object')
+                if 'sex' in donorObject:
+                    return donorObject['sex']
+                else:
+                    return 'unknown'
+            else:
+                return 'unknown'
+        else:
+            if model_organism_sex is not None:
+                return model_organism_sex
+            else:
+                return 'unknown'
 
     @calculated_property(schema={
         "title": "Age",
-        "type": "string",
+        "type": "string"
     })
-    def age(self, request, donor=None, model_organism_age=None):
-        if model_organism_age is not None:
-            return model_organism_age
-        if donor is not None:
-            return request.embed(donor, '@@object').get('age')
+    def age(self, request, donor=None, model_organism_age=None, organism=None):
+        humanFlag = False
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+            if organismObject['scientific_name']=='Homo sapiens':
+                humanFlag = True
 
+        if humanFlag == True:
+            if donor is not None:# try to get the age from the donor
+                donorObject = request.embed(donor, '@@object')
+                if 'age' in donorObject:
+                    return donorObject['age']
+                else:
+                    return 'unknown'
+            else:
+                return 'unknown'
+        else:
+            if model_organism_age is not None:
+                return model_organism_age
+            else:
+                return 'unknown'
+    
     @calculated_property(schema={
         "title": "Age units",
         "type": "string",
     })
-    def age_units(self, request, donor=None, model_organism_age_units=None):
-        if model_organism_age_units is not None:
+    def age_units(self, request, donor=None, model_organism_age_units=None, organism=None):
+        humanFlag = False
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+            if organismObject['scientific_name']=='Homo sapiens':
+                humanFlag = True
+
+        if humanFlag == True:
+            if donor is not None:# try to get the age_units from the donor
+                donorObject = request.embed(donor, '@@object')
+                if 'age_units' in donorObject:
+                    return donorObject['age_units']
+                else:
+                    return None
+            else:
+                return None
+        else:
             return model_organism_age_units
-        if donor is not None:
-            return request.embed(donor, '@@object').get('age_units')
+
+        
 
     @calculated_property(schema={
         "title": "Health status",
