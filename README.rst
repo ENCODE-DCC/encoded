@@ -74,7 +74,7 @@ Run the Pyramid tests with::
 
 Run the Browser tests with::
 
-    $ bin/test -m bdd -v -v
+    $ bin/test -m bdd -v --splinter-webdriver chrome
 
 Run the Javascript tests with::
 
