@@ -104,6 +104,7 @@
             "linkTo": "User",
             "type": "string",
             "linkEnum": [
+                "98fb23d3-0d79-4c3d-981d-01539e6589f1",
                 "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
                 "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
                 "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
