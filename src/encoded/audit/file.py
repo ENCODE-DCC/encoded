@@ -159,7 +159,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame=['paired_with'],)
+@audit_checker('file', frame='object',)
 def audit_run_type(value, system):
     '''
     A fastq file or a fasta file need to specify run_type.
@@ -167,6 +167,9 @@ def audit_run_type(value, system):
     '''
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['file_format'] not in ['fastq', 'fasta']:
         return
 
     if 'run_type' not in value:
