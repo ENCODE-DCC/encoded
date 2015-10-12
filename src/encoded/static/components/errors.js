@@ -16,7 +16,7 @@ var Error = module.exports.Error = React.createClass({
     }
 });
 
-globals.content_views.register(Error, 'error');
+globals.content_views.register(Error, 'Error');
 
 
 var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({

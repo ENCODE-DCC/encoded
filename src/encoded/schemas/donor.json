@@ -28,7 +28,7 @@
             "description": "Organism of the donor.",
             "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
-            "linkTo": "organism"
+            "linkTo": "Organism"
         },
         "url": {
             "title": "URL",

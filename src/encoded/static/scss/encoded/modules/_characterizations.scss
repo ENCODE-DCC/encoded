@@ -95,7 +95,7 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-document.view-detail {
+.type-Document.view-detail {
     padding: 0;
 
     figure {
@@ -112,8 +112,8 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-characterization.view-detail {
-    @extend .type-document.view-detail;
+.type-Characterization.view-detail {
+    @extend .type-Document.view-detail;
 
     header {
         margin: 0 15px;
@@ -153,27 +153,27 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-characterization.view-detail.status-compliant {
+.type-Characterization.view-detail.status-compliant {
     @include status-colors($state-success-bg, $state-success-text);
 }
 
-.type-characterization.view-detail.status-not-compliant,
-.type-document.view-detail.status-deleted {
+.type-Characterization.view-detail.status-not-compliant,
+.type-Document.view-detail.status-deleted {
     @include status-colors($state-danger-bg, $state-danger-text);
 }
 
-.type-characterization.view-detail.status-pending-dcc-review {
+.type-Characterization.view-detail.status-pending-dcc-review {
     @include status-colors($state-info-bg, $state-info-text);
 }
 
-.type-characterization.view-detail.status-in-progress,
-.type-characterization.view-detail.status-not-submitted-for-review-by-lab,
-.type-characterization.view-detail.status-not-reviewed,
-.type-document.view-detail.status-none {
+.type-Characterization.view-detail.status-in-progress,
+.type-Characterization.view-detail.status-not-submitted-for-review-by-lab,
+.type-Characterization.view-detail.status-not-reviewed,
+.type-Document.view-detail.status-none {
     @include status-colors($bg: #f7f7f9, $text: #333);
 }
 
-.type-characterization.view-detail.type-antibody_characterization {
+.type-Characterization.view-detail.type-AntibodyCharacterization {
     padding-top: 0;
     padding-left: 0;
     padding-right: 0;
@@ -564,7 +564,7 @@ $characterization-figure-height: 200px;
     word-break: break-all;
 }
 
-.type-document {
+.type-Document {
     @include type-panel($document-figure-width, $document-figure-height);
 
     .panel-body {
@@ -572,7 +572,7 @@ $characterization-figure-height: 200px;
     }
 }
 
-.type-characterization {
+.type-Characterization {
     @include type-panel($document-figure-width, $document-figure-height);
 
     .panel-body {
@@ -580,7 +580,7 @@ $characterization-figure-height: 200px;
     }
 }
 
-.type-characterization.type-antibody_characterization {
+.type-Characterization.type-AntibodyCharacterization {
     @include type-panel($characterization-figure-width, $characterization-figure-height);
 }
 

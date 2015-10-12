@@ -1,17 +1,18 @@
 from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
+from .interfaces import COLLECTIONS
 
 
 def includeme(config):
     config.add_route('schemas', '/profiles/')
-    config.add_route('schema', '/profiles/{item_type}.json')
+    config.add_route('schema', '/profiles/{type_name}.json')
     config.scan(__name__)
 
 
 def _filtered_schema(collection, request):
     schema = collection.type_info.schema.copy()
-    schema['@type'] = ['jsonschema']
+    schema['@type'] = ['JSONSchema']
 
     properties = OrderedDict()
     for k, v in schema['properties'].items():
@@ -25,18 +26,21 @@ def _filtered_schema(collection, request):
 
 @view_config(route_name='schema', request_method='GET')
 def schema(context, request):
-    item_type = request.matchdict['item_type']
+    type_name = request.matchdict['type_name']
+    collections = request.registry[COLLECTIONS]
     try:
-        collection = context.by_item_type[item_type]
+        collection = collections[type_name]
     except KeyError:
-        raise HTTPNotFound(item_type)
+        raise HTTPNotFound(type_name)
 
     return _filtered_schema(collection, request)
 
 
 @view_config(route_name='schemas', request_method='GET')
 def schemas(context, request):
+    collections = request.registry[COLLECTIONS]
     schemas = {}
-    for typename, collection in context.by_item_type.items():
-        schemas[typename] = _filtered_schema(collection, request)
+    for collection in collections.by_item_type.values():
+        name = collection.type_info.name
+        schemas[name] = _filtered_schema(collection, request)
     return schemas

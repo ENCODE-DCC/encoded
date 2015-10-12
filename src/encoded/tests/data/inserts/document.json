@@ -1,4 +1,13 @@
 [
+    {       
+        "attachment": "PathologyImage_CMU-1.svs",
+        "award": "ENCODE2",
+        "description": "Example of high resolution pathology image in SVS format",
+        "document_type": "high resolution pathology slide image",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "2d306180-915d-43b8-a87e-a94c4fa86d7e"
+    },
     {
         "aliases": [
             "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis"

@@ -11,12 +11,11 @@ from .base import (
 
 
 class Donor(Item):
-    item_type = 'donor'
-    base_types = ['donor'] + Item.base_types
+    base_types = ['Donor'] + Item.base_types
     embedded = ['organism']
     name_key = 'accession'
     rev = {
-        'characterizations': ('donor_characterization', 'characterizes'),
+        'characterizations': ('DonorCharacterization', 'characterizes'),
     }
 
     @calculated_property(schema={
@@ -24,7 +23,7 @@ class Donor(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "donor_characterization.characterizes",
+            "linkFrom": "DonorCharacterization.characterizes",
         },
     })
     def characterizations(self, request, characterizations):

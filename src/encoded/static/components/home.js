@@ -25,4 +25,4 @@ var Home = module.exports.Home = React.createClass({
 });
 
 
-globals.content_views.register(Home, 'portal');
+globals.content_views.register(Home, 'Portal');

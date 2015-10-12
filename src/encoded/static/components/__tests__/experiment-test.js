@@ -123,7 +123,7 @@ describe('Experiment Page', function() {
                     <Experiment context={context_doc} />
                 );
             });
-            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-Document').getDOMNode();
         });
 
         it('has one document panel with a PDF image anchor', function() {
@@ -168,7 +168,7 @@ describe('Experiment Page', function() {
                     <Experiment context={context_doc} />
                 );
             });
-            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-Document').getDOMNode();
         });
 
         it('has five key-value pairs, and two good references links', function() {

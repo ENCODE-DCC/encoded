@@ -20,7 +20,7 @@
         "parent": {
             "title": "Parent Page",
             "type": ["string", "null"],
-            "linkTo": "page",
+            "linkTo": "Page",
             "validators": ["isNotCollectionDefaultPage"]
         },
         "name": {
@@ -54,11 +54,11 @@
                             },
                             "image": {
                                 "type": "string",
-                                "linkTo": "image"
+                                "linkTo": "Image"
                             },
                             "item": {
                                 "type": "string",
-                                "linkTo": "item"
+                                "linkTo": "Item"
                             }
                         }
                     }

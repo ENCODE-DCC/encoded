@@ -16,6 +16,7 @@ from jsonschema import (
 )
 from jsonschema.exceptions import ValidationError
 from uuid import UUID
+from .interfaces import TYPES
 
 
 SERVER_DEFAULTS = {}
@@ -64,14 +65,15 @@ def mixinProperties(schema, resolver):
 
 def linkTo(validator, linkTo, instance, schema):
     # avoid circular import
-    from contentbase import Item
+    from contentbase import Item, COLLECTIONS
 
     if not validator.is_type(instance, "string"):
         return
 
     request = get_current_request()
+    collections = request.registry[COLLECTIONS]
     if validator.is_type(linkTo, "string"):
-        base = request.root.by_item_type.get(linkTo, request.root)
+        base = collections.get(linkTo, request.root)
         linkTo = [linkTo] if linkTo else []
     elif validator.is_type(linkTo, "array"):
         base = request.root
@@ -89,7 +91,7 @@ def linkTo(validator, linkTo, instance, schema):
         error = "%r is not a linkable resource" % instance
         yield ValidationError(error)
         return
-    if linkTo and not set([item.item_type] + item.base_types).intersection(set(linkTo)):
+    if linkTo and not set([item.type_info.name] + item.base_types).intersection(set(linkTo)):
         reprs = (repr(it) for it in linkTo)
         error = "%r is not of type %s" % (instance, ", ".join(reprs))
         yield ValidationError(error)
@@ -128,12 +130,13 @@ def linkTo(validator, linkTo, instance, schema):
 
 def linkFrom(validator, linkFrom, instance, schema):
     # avoid circular import
-    from contentbase import Item, TYPES
+    from contentbase import Item, TYPES, COLLECTIONS
+    request = get_current_request()
+    collections = request.registry[COLLECTIONS]
 
     linkType, linkProp = linkFrom.split('.')
     if validator.is_type(instance, "string"):
-        request = get_current_request()
-        base = request.root.by_item_type[linkType]
+        base = collections[linkType]
         try:
             item = find_resource(base, instance.replace(':', '%3A'))
             if item is None:
@@ -146,14 +149,13 @@ def linkFrom(validator, linkFrom, instance, schema):
             error = "%r is not a linkable resource" % instance
             yield ValidationError(error)
             return
-        if linkType not in set([item.item_type] + item.base_types):
+        if linkType not in set([item.type_info.name] + item.type_info.base_types):
             error = "%r is not of type %s" % (instance, repr(linkType))
             yield ValidationError(error)
             return
         pass
     else:
         path = instance.get('@id')
-        request = get_current_request()
         if validator._serialize:
             lv = len(validator._validated)
         if '@id' in instance:

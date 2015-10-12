@@ -26,7 +26,7 @@
         "characterizes": {
             "title": "Biosample characterized",
             "comment": "See biosample.json for available identifiers.",
-            "linkTo": "biosample"
+            "linkTo": "Biosample"
         },
         "characterization_method": {
             "title": "Method",
