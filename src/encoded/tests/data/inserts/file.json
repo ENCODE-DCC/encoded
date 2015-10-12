@@ -228,6 +228,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -250,6 +251,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000ADI",
         "date_created": "2010-05-12",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -273,6 +275,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -296,6 +299,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -319,6 +323,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-13",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -342,6 +347,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEM",
         "date_created": "2013-06-14",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -365,6 +371,7 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
+        "run_type":"single-ended",
         "file_format": "fastq",
         "flowcell_details":
         [{
@@ -571,6 +578,7 @@
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
         "file_format": "fastq",
+        "run_type":"single-ended",
         "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
@@ -673,6 +681,7 @@
         "dataset": "ENCSR000AES",
         "date_created": "2013-06-14",
         "file_format": "fastq",
+        "run_type":"single-ended",
         "flowcell_details":
         [{
             "flowcell": "C1WA6ACXX",
@@ -871,6 +880,7 @@
         "submitted_file_name": "/gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_2_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "7acdc827-3806-448e-b0d4-2d463a42179f",
         "file_format": "fastq",
+        "run_type":"single-ended",
         "flowcell_details": [],
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
         "status": "uploaded",
