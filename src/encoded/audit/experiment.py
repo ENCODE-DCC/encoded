@@ -88,6 +88,20 @@ def audit_experiment_replicated(value, system):
             detail = 'Experiment {} has only one biological replicate, more than one is typically expected before release'.format(value['@id'])
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
+@audit_checker('experiment', frame=['replicates', 'replicates.library'])
+def audit_experiment_replicates_with_no_libraries(value, system):
+    if value['status'] in ['deleted','replaced','revoked']:
+        return
+    if len(value['replicates'])==0:
+        return 
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
+                value['@id'],
+                rep['@id'])
+            yield AuditFailure('replicate with no library', detail, level='DCC_ACTION')
+    return
+  
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample','replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):

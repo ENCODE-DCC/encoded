@@ -127,6 +127,13 @@ def schema_mapping(name, schema):
 def index_settings():
     return {
         'index': {
+            'number_of_shards': 1,
+            'merge': {
+                'policy': {
+                    'max_merged_segment': '2gb',
+                    'max_merge_at_once': 5
+                }
+            },
             'analysis': {
                 'filter': {
                     'substring': {
@@ -409,12 +416,13 @@ def type_mapping(types, item_type, embed=True):
             for prop_name in ['@id', 'title']
             if prop_name in mapping['properties']
         }
-    for value in boost_values:
-        props = value.split('.')
+    for name, boost in boost_values.items():
+        props = name.split('.')
         last = props.pop()
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
+        new_mapping[last]['boost'] = boost
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
         new_mapping[last]['include_in_all'] = True
