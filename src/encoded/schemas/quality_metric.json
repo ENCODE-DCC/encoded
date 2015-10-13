@@ -35,6 +35,38 @@
                 "type": "string",
                 "linkTo": "File"
             }
+        },
+        "attachment": {
+            "title": "QC metric document metadata",
+            "type": "object",
+            "additionalProperties": false,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "text/plain"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
         }
     }
 }
