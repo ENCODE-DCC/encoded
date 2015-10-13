@@ -334,8 +334,6 @@ def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, 
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        for e in errors[error_type]:
-            print (e)
     assert any(error['category'] == 'replicate with no library' for error in errors_list)
 
 
