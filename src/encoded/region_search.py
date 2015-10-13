@@ -18,7 +18,7 @@ import requests
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
 _ASSEMBLY_MAPPER = {
-    'GRCh38': 'hg20',
+    'GRCh38': 'hg38',
     'GRCh37': 'hg19',
     'GRCm38': 'mm10',
     'GRCm37': 'mm9',
@@ -126,15 +126,14 @@ def get_annotation_coordinates(es, id, assembly):
                 return ('chr' + annotation['chromosome'],
                         annotation['start'],
                         annotation['end'])
-        for annotation in annotations:
-            if annotation['assembly_name'] == 'GRCh38':
+            else:
                 location = '{chr}:{start}-{end}'.format(
                     chr=annotation['chromosome'],
                     start=annotation['start'],
                     end=annotation['end']
                 )
-                return assembly_mapper(location, 'human', 'GRCh38', 'GRCh37')
-        return ('', '', '')
+        return assembly_mapper(location, species,
+                               annotations[0]['assembly_name'], assembly)
 
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
