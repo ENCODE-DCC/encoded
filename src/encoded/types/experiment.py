@@ -228,10 +228,6 @@ class Experiment(Dataset):
         '''
         Humans and model organisms are modeled differently
         '''
-        print(biosample_donor_list)
-        print(biosample_age_list)
-        print (biosample_sex_list)
-        print (biosample_species)
 
         if biosample_species == '/organisms/human/':
             if None in biosample_donor_list:
@@ -240,10 +236,11 @@ class Experiment(Dataset):
                 return None
             if len(set(biosample_donor_list)) == 1:
                 return 'isogenic'
-        '''
-        Model organisms are assuming the same strain, this should be an audit
-        '''
-        if 'unknown' in biosample_age_list or len(set(biosample_age_list)) > 1:
+            # We have a problem with model organisms, this will need thought
+            if 'unknown' in biosample_age_list:
+                matchedAgeFlag = False
+
+        if len(set(biosample_age_list)) > 1:
             matchedAgeFlag = False
         elif len(set(biosample_age_list)) == 1:
             matchedAgeFlag = True
