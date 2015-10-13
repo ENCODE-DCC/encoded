@@ -1187,7 +1187,7 @@ globals.graph_detail.register(FileDetailView, 'File');
 // Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
     // QC metrics properties to NOT display.
-    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
     var sortedKeys = Object.keys(metrics.ref).sort();
 
     if (metrics) {
