@@ -29,6 +29,15 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = biosample.SingleTreatment;
 
+
+var anisogenicValues = [
+    'anisogenic, sex-matched and age-matched',
+    'anisogenic, age-matched',
+    'anisogenic, sex-matched',
+    'anisogenic'
+];
+
+
 var Panel = function (props) {
     // XXX not all panels have the same markup
     var context;
@@ -115,7 +124,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
-        var anisogenic = context.replication_type ? (context.replication_type !== 'isogenic') : false;
+        var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
