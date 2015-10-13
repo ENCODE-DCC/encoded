@@ -186,136 +186,88 @@ class Experiment(Dataset):
 
     @calculated_property(schema={
         "title": "Replication type",
-        "description":"Calculated field for experiment object that indicates the biological replicates type",
-        "type": "string",
-        "enum": [
-            "anisogenic, sex-matched",
-            "anisogenic, age-matched",
-            "anisogenic, sex-matched age-matched",
-            "anisogenic",
-            "isogenic",
-            "anisogenic technical replicates"
-        ]
+        "description": "Calculated field that indicates the replication model",
+        "type": "string"
     })
     def replication_type(self, request, replicates=None):
-        bio_tech_biosample_dict = {}
-        
-        for x in replicates:
-            replicateObject = request.embed(x, '@@object')
-            
-            biol_rep_num = replicateObject['biological_replicate_number']
-            tech_rep_num = replicateObject['technical_replicate_number']        
+        # Compare the biosamples to see if for humans they are the same donor and for 
+        # model organisms if they are sex-matched and age-matched
+        biosample_dict = {}
+        biosample_age_list = []
+        biosample_sex_list = []
+        biosample_donor_list = []
+
+        for rep in replicates:
+            replicateObject = request.embed(rep, '@@object')
+
             if 'library' in replicateObject:
                 libraryObject = request.embed(replicateObject['library'], '@@object')
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
-                    #######################################################################################
-                    # VERY IMPORTANT CONDITION:                                                           #
-                    # 1. REPLICATES WIT NO LIBRARIES WILL BE CAUGHT BY AUDIT                              #
-                    # 2. ANY BIOSAMPLE WILL HAVE SEX AND AGE - BECAUSE IDAN WILL FIX THE CALCULATED VALUE #
-                    # SEE TICKET NEMBER 3291. THE VALUES WILL BE UNKNOWN IN CASE WE DONT HAVE INFO        #                                                       
-                    #######################################################################################                            
-                    if 'age' in biosampleObject and 'sex' in biosampleObject:
-                        if not biol_rep_num in bio_tech_biosample_dict:
-                            bio_tech_biosample_dict[biol_rep_num]={}
-                        bio_tech_biosample_dict[biol_rep_num][tech_rep_num]=biosampleObject
-
-
-        # if the number of biological replicates is < 2 Nothing to report here
-        if len(bio_tech_biosample_dict.keys())<2:
-            return None
-        '''
-        First we have ot make sure the technical replicates are isogenic - in order to be able ot pick the representative biological replicate
-        '''
-        for biol_rep_key in bio_tech_biosample_dict.keys():
-            donorsList = []
-            for tech_rep_key in bio_tech_biosample_dict[biol_rep_key].keys():
-                sample = bio_tech_biosample_dict[biol_rep_key][tech_rep_key]
-                if 'donor' in sample:
-                    donorObject = request.embed(sample['donor'], '@@object')
-                    donorsList.append(donorObject['accession'])
-            if (len(donorsList)>1):
-                initialDonorAccession = donorsList[0]
-                for accessionNumber in donorsList:
-                    if accessionNumber != initialDonorAccession:
-                        ####################################################################################################################
-                        # DISCUSSED WITH CRICKET AND DECIDED TO RETURN NONE - SIMPLY BECAUSE IT WILL LOOK BETTER THAN UNKNOWN FOR THE USER #
-                        ####################################################################################################################
-                        return None
-
-        '''
-        Second create a list of biological replicates representatives
-        '''
-        bio_reps = []
-        for biol_rep_key in bio_tech_biosample_dict.keys():   
-            for tech_rep_key in bio_tech_biosample_dict[biol_rep_key].keys(): 
-                bio_reps.append(bio_tech_biosample_dict[biol_rep_key][tech_rep_key])
-                break
-        
-        if len(bio_reps)==0:
-            return []
-
-        initialBiosample = bio_reps[0]
-        initialDonor = request.embed(initialBiosample['donor'], '@@object')
-        initialOrganism = request.embed(initialDonor['organism'], '@@object')
-        initialAccession = initialDonor['accession']
-
-        humanFlag = False
-        if initialOrganism['scientific_name']=='Homo sapiens':
-            humanFlag = True 
-
-
-        listOfReturns =[]
-        for biosample_entry in bio_reps:
-            currentDonor = request.embed(biosample_entry['donor'], '@@object')
-            currentAccession = currentDonor['accession']
-            if currentAccession != initialAccession: # biological replicates with different donors
-                
-                matchedAgeFlag = False
-                age_1 = initialBiosample['age']
-                age_2 = biosample_entry['age'] 
-                if age_1 != 'unknown' and 'age_2' != 'unknown':                    
-                    age_1_units = initialBiosample['age_units']
-                    age_2_units = biosample_entry['age_units']
-                    if age_1_units == age_2_units and age_1 == age_2:
-                        matchedAgeFlag = True
-
-                matchedSexFlag = False
-                sex_1 = initialBiosample['sex']
-                sex_2 = biosample_entry['sex'] 
-                if sex_1 != 'unknown' and sex_2 != 'unknown':
-                    if (sex_1 == sex_2 and sex_1 != 'mixed') or (sex_1 == sex_2 and sex_1 == 'mixed' and humanFlag == False):
-                        matchedSexFlag = True
-
-                returnValue = 0
-                if matchedAgeFlag==True and matchedSexFlag==True:
-                    returnValue =  1 # 
-                if matchedAgeFlag==True and matchedSexFlag==False:
-                    returnValue =  2 # unmatched sex
-                if matchedAgeFlag==False and matchedSexFlag==True:
-                    returnValue =  3 # unmatched age
-                if matchedAgeFlag==False and matchedSexFlag==False:
-                    return "anisogenic"
-                
-                if returnValue != 0: 
-                    if len(listOfReturns)==0:
-                        listOfReturns.append(returnValue)
-                    else:
-                        if len(listOfReturns)>0 and returnValue not in listOfReturns:
-                            listOfReturns.append(returnValue)
-        
-        if len(listOfReturns)>0:
-            if 2 in listOfReturns and 3 in listOfReturns:
-                return "anisogenic"
-            else:
-                if 2 in listOfReturns:
-                    return "anisogenic, age-matched"
+                    biosample_dict[biosampleObject['accession']] = biosampleObject
+                    biosample_age_list.append(biosampleObject.get('age'))
+                    biosample_sex_list.append(biosampleObject.get('sex'))
+                    biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_species = biosampleObject.get('organism')
                 else:
-                    if 3 in listOfReturns:
-                        return "anisogenic, sex-matched"
-                    else:
-                        return "anisogenic, sex-matched and age-matched"
-        return "isogenic"
+                    # If I have a library without a biosample,
+                    # I cannot make a call about replicate structure
+                    return None
+            else:
+                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
+                # If I have a replicate without a library,
+                # I cannot make a call about the replicate structure
+                return None
+
+        if len(biosample_dict.keys()) < 2:
+            return 'unreplicated'
+
+        # I am assuming tech reps have the same biosample, if they do not,
+        # this should generate an audit, not be caught here
+
+        '''
+        Humans and model organisms are modeled differently
+        '''
+
+        if biosample_species == '/organisms/human/':
+            if None in biosample_donor_list:
+                return None
+            if len(set(biosample_donor_list)) == 0:
+                return None
+            if len(set(biosample_donor_list)) == 1:
+                return 'isogenic'
+            # We have a problem with model organisms, this will need thought
+            if 'unknown' in biosample_age_list:
+                matchedAgeFlag = False
+
+        if len(set(biosample_age_list)) > 1:
+            matchedAgeFlag = False
+        elif len(set(biosample_age_list)) == 1:
+            matchedAgeFlag = True
+        else:
+            matchedAgeFlag = False
+
+        if 'unknown' in biosample_sex_list or len(set(biosample_sex_list)) > 1:
+            matchedSexFlag = False
+        elif len(set(biosample_sex_list)) == 1:
+            matchedSexFlag = True
+        else:
+            matchedSexFlag = False
+
+        if matchedAgeFlag and matchedSexFlag:
+            if biosample_species == '/organisms/human/':
+                return 'anisogenic, sex-matched and age-matched'
+            elif len(set(biosample_donor_list)) == 1:
+                return 'isogenic'
+            else:
+                return 'anisogenic, sex-matched and age-matched'
+        if matchedAgeFlag and not matchedSexFlag:
+            return 'anisogenic, age-matched'
+        if not matchedAgeFlag and matchedSexFlag:
+            return 'anisogenic, sex-matched'
+        if not matchedAgeFlag and not matchedSexFlag:
+            return 'anisogenic'
+
 
 @collection(
     name='replicates',

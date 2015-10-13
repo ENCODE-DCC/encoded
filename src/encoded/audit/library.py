@@ -11,6 +11,7 @@ moleculeDict = {
     'miRNA': 'SO:0000276',
     'rRNA': 'SO:0000252',
     'capped mRNA': 'SO:0000862',
+    'protein': 'SO:0000104'
     }
 
 

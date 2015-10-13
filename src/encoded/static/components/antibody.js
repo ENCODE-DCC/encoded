@@ -303,6 +303,20 @@ var Characterization = module.exports.Characterization = React.createClass({
                             </div>
                         : null}
 
+                        {context.comment ?
+                            <div data-test="comment">
+                                <dt>Submitter comment</dt>
+                                <dd className="para-text">{context.comment}</dd>
+                            </div>
+                        : null}
+
+                        {context.notes ?
+                            <div data-test="comment">
+                                <dt>Reviewer comment</dt>
+                                <dd className="para-text">{context.notes}</dd>
+                            </div>
+                        : null}
+
                         {context.submitted_by && context.submitted_by.title ?
                             <div data-test="submitted">
                                 <dt>Submitted by</dt>

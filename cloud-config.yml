@@ -242,7 +242,7 @@ write_files:
 
 - path: /etc/default/elasticsearch
   content: |
-    ES_HEAP_SIZE=4g
+    ES_HEAP_SIZE=8g
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
