@@ -230,9 +230,7 @@ class Experiment(Dataset):
                 initialDonorAccession = donorsList[0]
                 for accessionNumber in donorsList:
                     if accessionNumber != initialDonorAccession:
-                        ####################################################################################################################
-                        # DISCUSSED WITH CRICKET AND DECIDED TO RETURN NONE - SIMPLY BECAUSE IT WILL LOOK BETTER THAN UNKNOWN FOR THE USER #
-                        ####################################################################################################################
+                        # Choosing to return None versus Unknown
                         return None
 
         '''
@@ -246,8 +244,11 @@ class Experiment(Dataset):
         
         if len(bio_reps)==0:
             return []
-
+ 
         initialBiosample = bio_reps[0]
+        if 'donor' not in initialBiosample:
+            print ("why no donor")
+            return None
         initialDonor = request.embed(initialBiosample['donor'], '@@object')
         initialOrganism = request.embed(initialDonor['organism'], '@@object')
         initialAccession = initialDonor['accession']

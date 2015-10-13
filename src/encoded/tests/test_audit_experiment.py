@@ -304,7 +304,6 @@ def test_audit_experiment_biological_replicates_biosample(testapp, base_experime
     testapp.patch_json(library_2['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],replicate_2_1['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -318,7 +317,6 @@ def test_audit_experiment_technical_replicates_biosample(testapp, base_experimen
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],replicate_1_2['@id']]})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -447,7 +445,6 @@ def test_audit_experiment_anisogenic_technical_replicates(testapp, base_experime
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_1_2['@id']]})
     
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -468,8 +465,7 @@ def test_audit_experiment_anisogenic_biological_replicates_unknown_sex_unknown_a
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})   
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -487,8 +483,7 @@ def test_audit_experiment_anisogenic_biological_replicates_matched_sex_age(testa
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})   
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -506,8 +501,7 @@ def test_audit_experiment_anisogenic_biological_replicates_mismatched_sex_age(te
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})  
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -529,7 +523,6 @@ def test_audit_experiment_anisogenic_biological_replicates_matched_mixed_sex_mis
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -548,8 +541,7 @@ def test_audit_experiment_anisogenic_biological_replicates_matched_mixed_sex_mat
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']}) 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -565,7 +557,6 @@ def test_audit_experiment_isogenic_biological_replicates(testapp, base_experimen
     testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'], replicate_2_1['@id']]})    
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
