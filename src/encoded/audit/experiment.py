@@ -160,7 +160,6 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
         raise AuditFailure('undetermined replicate_type', detail, level='DCC_ACTION')
 
-    print (value.get('replication_type') )
     if value.get('replication_type') == 'anisogenic, sex-matched and age-matched':
         detail = 'In experiment {} the replicates are anisogenic, sex and age properties are matched'.format(
             value['@id'])
@@ -175,7 +174,7 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the replicates are anisogenic, sex property is not matched'.format(
             value['@id'])
         raise AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
-    
+
     if value.get('replication_type') == 'anisogenic, sex-matched':
         detail = 'In experiment {} the replicates are anisogenic, age property is not matched'.format(
             value['@id'])
