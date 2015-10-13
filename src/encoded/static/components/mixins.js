@@ -4,7 +4,6 @@ var _ = require('underscore');
 var React = require('react');
 var url = require('url');
 var origin = require('../libs/origin');
-var $script = require('scriptjs');
 var serialize = require('form-serialize');
 var ga = require('google-analytics');
 
@@ -257,6 +256,7 @@ module.exports.Persona = {
     },
 
     triggerLogin: function (event) {
+        var $script = require('scriptjs');
         console.log('Logging in (persona) ');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');

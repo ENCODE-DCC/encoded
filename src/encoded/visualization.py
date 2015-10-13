@@ -73,10 +73,14 @@ def get_track(f, label, parent):
         output=f['output_type']
     )
 
-    replicate_number = 'pooled'
-    if 'replicate' in f:
+    replicate_number = 'rep unknown'
+    if len(f['biological_replicates']) == 1:
         replicate_number = 'rep {rep}'.format(
-            rep=str(f['replicate']['biological_replicate_number'])
+            rep=str(f['biological_replicates'][0])
+        )
+    elif len(f['biological_replicates']) > 1:
+        replicate_number = 'pooled from reps{reps}'.format(
+            reps=str(f['biological_replicates'])
         )
 
     track = OrderedDict([
@@ -242,11 +246,15 @@ def generate_html(context, request):
     data_files = ''
     for f in files_json:
         if f['file_format'] in BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES:
-            replicate_number = 'pooled'
-            if 'replicate' in f:
-                replicate_number = str(f['replicate']['biological_replicate_number'])
+            replicate_number = 'rep unknown'
+            if len(f['biological_replicates']) == 1:
+                replicate_number = str(f['biological_replicates'][0])
+            elif len(f['biological_replicates']) > 1:
+                replicate_number = 'pooled from reps {reps}'.format(
+                    reps=str(f['biological_replicates'])
+                )
             data_files = data_files + \
-                '<tr><td>{title}</td><td>{file_type}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
+                '<tr><td>{title}</batch_hub/type%3Dexperiment/hub.txt/td><td>{file_type}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
                 .format(replicate_number=replicate_number, request=request, **f)
 
     file_table = '<table><tr><th>Accession</th><th>File type</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
