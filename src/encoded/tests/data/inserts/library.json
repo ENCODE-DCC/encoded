@@ -256,38 +256,6 @@
         "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
     },
     {
-        "accession": "ENCLB000ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS044ANI",
-        "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_method": "sonication (generic)",
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_id": "SO:0000352",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "7126310d-93c5-40af-988c-edb532fe6e7f"
-    },
-    {
-        "accession": "ENCLB001ANI",
-        "award": "ENCODE2-Mouse",
-        "biosample": "ENCBS045ANI",
-        "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
-        "fragmentation_method": "sonication (generic)",
-        "lab": "sherman-weissman",
-        "library_size_selection_method": "gel",
-        "nucleic_acid_term_id": "SO:0000352",
-        "nucleic_acid_term_name": "DNA",
-        "size_range": "150-350",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "uuid": "35c0e686-00a2-4b24-8b8f-1bcf3379824b"
-    },
-    {
         "accession": "ENCLB058ZZZ",
         "award": "U54HG007005",
         "biosample": "ENCBS088RNA",

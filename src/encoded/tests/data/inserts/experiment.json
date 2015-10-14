@@ -103,35 +103,6 @@
         "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
     },
     {
-        "_test": "anisogenic experiemnt",
-        "accession": "ENCSR001ADI",
-        "assay_term_id": "OBI:0000716",
-        "assay_term_name": "ChIP-seq",
-        "award": "ENCODE2-Mouse",
-        "biosample_term_id": "EFO:0005233",
-        "biosample_term_name": "CH12.LX cell",
-        "biosample_type": "immortalized cell line",
-        "dataset_type": "experiment",
-        "dbxrefs": [
-            "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
-            "GEO:GSM798327",
-            "GEO:GSE32218"
-        ],
-        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
-        "lab": "sherman-weissman",
-        "possible_controls": [
-            "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
-        ],
-        "status": "released",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "H3K4me3-mouse",
-        "uuid": "2629336f-0f99-4f30-9457-b2a4834e9e69"
-    },
-    {
         "_test": "human chip-seq",
         "accession": "ENCSR000AHF",
         "assay_term_id": "OBI:0000716",
