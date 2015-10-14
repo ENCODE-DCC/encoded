@@ -158,7 +158,10 @@ def index(request):
         es.indices.refresh(index=INDEX)
 
         if flush:
-            es.indices.flush_synced(index=INDEX)  # Faster recovery on ES restart
+            try:
+                es.indices.flush_synced(index=INDEX)  # Faster recovery on ES restart
+            except ConflictError:
+                pass
 
     if first_txn is not None:
         result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
