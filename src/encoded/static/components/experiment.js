@@ -29,6 +29,15 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = biosample.SingleTreatment;
 
+
+var anisogenicValues = [
+    'anisogenic, sex-matched and age-matched',
+    'anisogenic, age-matched',
+    'anisogenic, sex-matched',
+    'anisogenic'
+];
+
+
 var Panel = function (props) {
     // XXX not all panels have the same markup
     var context;
@@ -60,43 +69,14 @@ var Experiment = module.exports.Experiment = React.createClass({
             });
         });
 
-        // Process biosamples for summary display
-        var biosamples = [], lifeAge = [], organismName = [];
-        replicates.forEach(function (replicate) {
-            var biosample = replicate.library && replicate.library.biosample;
-            if (biosample) {
-                biosamples.push(biosample);
-
-                // Add to array of scientific names for rare experiments with cross-species biosamples
-                organismName.push(biosample.organism.scientific_name);
-
-                // Build a string with non-'unknown' life_stage, age, and age_units concatenated
-                var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
-                if (biosample.age && biosample.age != 'unknown') {
-                    lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
-                    lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
-                }
-                if (lifeAgeString) {
-                    lifeAge.push(lifeAgeString);
-                }
-            }
-        });
-
-        // Eliminate duplicates in lifeAge and organismName arrays so each displayed only once
-        if (lifeAge.length) {
-            lifeAge = _.uniq(lifeAge);
-        }
-        if (organismName.length) {
-            organismName = _.uniq(organismName);
-        }
+        // Make array of all replicate biosamples, not including biosample-less replicates.
+        var biosamples = _.compact(replicates.map(function(replicate) {
+            return replicate.library && replicate.library.biosample;
+        }));
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
         var treatments;
         var synchText = [];
-        var depletedIns = [];
-        var mutatedGenes = {};
-        var subcellularTerms = {};
-        var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
             treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
@@ -108,32 +88,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
-
-            // Collect depleted_in
-            if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
-                depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
-
-            }
-            // Collect mutated genes
-            if (biosample.donor && biosample.donor.mutated_gene) {
-                mutatedGenes[biosample.donor.mutated_gene.label] = true;
-            }
-
-            // Collect subcellular fraction term names
-            if (biosample.subcellular_fraction_term_name) {
-                subcellularTerms[biosample.subcellular_fraction_term_name] = true;
-            }
-
-            // Collect cell-cycle phases
-            if (biosample.phase) {
-                cellCycles[biosample.phase] = true;
-            }
         });
         synchText = synchText && _.uniq(synchText);
-        depletedIns = depletedIns && _.uniq(depletedIns);
-        var mutatedGeneNames = Object.keys(mutatedGenes);
-        var subcellularTermNames = Object.keys(subcellularTerms);
-        var cellCycleNames = Object.keys(cellCycles);
+
+        // Generate biosample summaries
+        var fullSummaries = biosampleSummaries(biosamples);
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
@@ -163,6 +122,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
+        var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -196,37 +158,17 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
-                        </div>
+                        {context.replication_type ?
+                            <div data-test="replicationtype">
+                                <dt>Replication type</dt>
+                                <dd>{context.replication_type}</dd>
+                            </div>
+                        : null}
 
                         {biosamples.length || context.biosample_term_name ?
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
-                                    {depletedIns.length ?
-                                        <span>{' missing ' + depletedIns.join(', ')}</span>
-                                    : null}
-                                    {mutatedGeneNames.length ? <span>{', mutated gene: ' + mutatedGeneNames.join('/')}</span> : null}
-                                    {subcellularTermNames.length ? <span>{', subcellular fraction: ' + subcellularTermNames.join('/')}</span> : null}
-                                    {cellCycleNames.length ? <span>{', cell-cycle phase: ' + cellCycleNames.join('/')}</span> : null}
-                                    {organismName.length || lifeAge.length ? ' (' : null}
-                                    {organismName.length ?
-                                        <span>
-                                            {organismName.map(function(name, i) {
-                                                if (i === 0) {
-                                                    return (<em key={name}>{name}</em>);
-                                                } else {
-                                                    return (<span key={name}>{' and '}<em>{name}</em></span>);
-                                                }
-                                            })}
-                                        </span>
-                                    : null}
-                                    {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
-                                    {organismName.length || lifeAge.length ? ')' : null}
-                                </dd>
+                                <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
                             </div>
                         : null}
 
@@ -356,7 +298,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 {replicates.map(function (replicate, index) {
-                    return Replicate({replicate: replicate, key: index});
+                    return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
                 })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
@@ -373,12 +315,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} />
+                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
                     </div>
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
@@ -562,9 +504,17 @@ var Replicate = module.exports.Replicate = function (props) {
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
+
+    // Build biosample summary string
+    var summary;
+    if (biosample) {
+        // Make an array of all the organism summary info to make it easy to comma separate
+        summary = biosampleSummaries([biosample]);
+    }
+
     return (
         <div className="panel-replicate" key={props.key}>
-            <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
+            <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <div data-test="techreplicate">
                     <dt>Technical replicate</dt>
@@ -599,7 +549,8 @@ var Replicate = module.exports.Replicate = function (props) {
                             <dd>
                                 <a href={biosample['@id']}>
                                     {biosample.accession}
-                                </a>{' '}-{' '}{biosample.biosample_term_name}
+                                </a>
+                                {summary ? <span>{' - '}{summary}</span> : null}
                             </dd>
                         : null}
                     </div>
@@ -646,6 +597,100 @@ var BiosampleTreatments = function(biosamples) {
 };
 
 
+// Return a summary of the given biosamples, ready to be displayed in a React component.
+var biosampleSummaries = function(biosamples) {
+    var organismNames = []; // Array of all organism scientific names in all given biosamples
+    var lifeAges = []; // Array of all life stages, ages, and sexes in all given biosamples
+    var depletedIns = {}; // Collection of depleted_in_term_name in all biosamples; each one is a key with the value True
+    var mutatedGenes = {}; // Collection of donor.mutated_gene in all biosamples; each one is a key with the value True
+    var subcellularTerms = {}; // Collection of subcellular_fraction_term_name in all biosamples; each one is a key with the value True
+    var cellCycles = {}; // Collection of phase in all biosamples; each one is a key with the value True
+    var fullSummary = null; // Complete summary of biosample in a <span>, ready to include in a React component
+
+    // Collect biosample data from all biosamples
+    biosamples.forEach(function(biosample) {
+        // Collect names of biosample characteristics
+        if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+            biosample.depleted_in_term_name.forEach(function(depletedIn) {
+                depletedIns[depletedIn] = true;
+            });
+        }
+        if (biosample.donor && biosample.donor.mutated_gene) {
+            mutatedGenes[biosample.donor.mutated_gene.label] = true;
+        }
+        if (biosample.subcellular_fraction_term_name) {
+            subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+        }
+        if (biosample.phase) {
+            cellCycles[biosample.phase] = true;
+        }
+
+        // Collect organism scientific names
+        if (biosample.organism.scientific_name) {
+            organismNames.push(biosample.organism.scientific_name);
+        }
+
+        // Collect strings with non-'unknown', non-empty life_stage, age, age_units, and sex, concatenated
+        var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+        // Add to the filtering options to generate a <select>
+        if (biosample.age && biosample.age != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
+            lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
+        }
+        if (biosample.sex && biosample.sex != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.sex;
+        }
+        if (lifeAgeString) {
+            lifeAges.push(lifeAgeString);
+        }
+    });
+
+    // Remove duplicates from stage/age/sex strings and organism names
+    if (lifeAges.length) {
+        lifeAges = _.uniq(lifeAges);
+    }
+    if (organismNames.length) {
+        organismNames = _.uniq(organismNames);
+    }
+
+    // Make summary strings of each kind of biosample data
+    var nameKeys = Object.keys(depletedIns);
+    var depletedInSummary = nameKeys.length ? 'missing: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(mutatedGenes);
+    var mutatedGeneSummary = nameKeys.length ? 'mutated gene: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(subcellularTerms);
+    var subcellularTermSummary = nameKeys.length ? 'subcellular fraction: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(cellCycles);
+    var cellCycleSummary = nameKeys.length ? 'cell-cycle phase: ' + nameKeys.join('/') : '';
+
+    // Combine all summary strings, comma separated and including only non-empty ones
+    var summary = _.compact([depletedInSummary, mutatedGeneSummary, subcellularTermSummary, cellCycleSummary]).join(', ');
+
+    // Combine all name and life/age/sex strings
+    fullSummary = (
+        <span>
+            {summary ? summary : null}
+            {organismNames.length || lifeAges.length ?
+                <span>
+                    {summary ? ' (' : '('}
+                    {organismNames.map(function(name, i) {
+                        if (i === 0) {
+                            return (<em key={name}>{name}</em>);
+                        } else {
+                            return (<span key={name}>{' and '}<em>{name}</em></span>);
+                        }
+                    })}
+                    {lifeAges.length ? ', ' + lifeAges.join(' and ') : ''}
+                    {')'}
+                </span>
+            : null}
+        </span>
+    );
+
+    return fullSummary;
+};
+
+
 // Generate an object to generate the graph filtering menu. Returns an object keyed like:
 //   {assembly '-' annotation: "assembly annotation"} when both exist, or:
 //   {assembly: "assembly"} when only the assembly exists.
@@ -681,14 +726,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     }
 
-    function _qcFileIds(metric) {
-        if (metric.files) {
-            return metric.files.map(function(file) {
-                return file['@id'];
-            }).sort().join();
-        } else {
-            return '';
-        }
+    function _genQcId(metric, file) {
+        return 'qc:' + metric['@id'] + file['@id'];
     }
 
     function _genFileId(file) {
@@ -735,6 +774,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var allContributing = {}; // List of all contributing files
+    var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -742,8 +782,8 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var derivedFileIds = _.memoize(_derivedFileIds, function(file) {
         return file['@id'];
     });
-    var qcFileIds = _.memoize(_qcFileIds, function(metric) {
-        return metric['@id'];
+    var genQcId = _.memoize(_genQcId, function(metric, file) {
+        return metric['@id'] + file['@id'];
     });
     var genStepId = _.memoize(_genStepId, function(file) {
         return file['@id'];
@@ -802,7 +842,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Keep track of all used replicates by keeping track of all file objects for each replicate.
         // Each key is a replicate number, and each references an array of file objects using that replicate.
-        if (file.biological_replicates && file.biological_replicates.length == 1) {
+        if (file.biological_replicates && file.biological_replicates.length === 1) {
             var biological_replicate_number = file.biological_replicates[0];
             if (!allReplicates[biological_replicate_number]) {
                 // Place a new array in allReplicates if needed
@@ -818,6 +858,24 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
             allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+        }
+
+        // File is derived; collect any QC info that applies to this file
+        if (file.quality_metrics) {
+            var matchingQc = [];
+
+            // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
+            file.quality_metrics.forEach(function(metric) {
+                var matchingFile = _(metric.quality_metric_of).find(function(appliesFile) {
+                    return file['@id'] === appliesFile;
+                });
+                if (matchingFile) {
+                    matchingQc.push(metric);
+                }
+            });
+            if (matchingQc.length) {
+                fileQcMetrics[fileId] = matchingQc;
+            }
         }
 
         // Keep track of whether files exist outside replicates. That could mean it has no replicate information,
@@ -976,7 +1034,9 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
 
     // Go through each file (released or unreleased) to add it and associated steps to the graph
-    files.forEach(function(file) {
+    Object.keys(allFiles).forEach(function(fileId) {
+        var file = allFiles[fileId];
+
         // Only add files derived from others, or that others derive from,
         // and that aren't part of a removed replicate
         if (!file.removed) {
@@ -984,47 +1044,65 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             var label;
             var pipelineInfo;
             var error;
-            var fileId = 'file:' + file['@id'];
-            var replicateNode = ( file.biological_replicates && file.biological_replicates.length==1 )? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
+            var fileNodeId = 'file:' + file['@id'];
+            var replicateNode = (file.biological_replicates && file.biological_replicates.length === 1 ) ? jsonGraph.getNode('rep:' + file.biological_replicates[0]) : null;
             var metricsInfo;
+            var fileContributed = allContributing[fileId];
 
             // Add QC metrics info from the file to the list to generate the nodes later
-            if (file.quality_metrics && file.quality_metrics.length && file.analysis_step) {
-                metricsInfo = file.quality_metrics.map(function(metric) {
-                    var qcId = 'qc:' + metric.uuid;
-                    return {id: qcId, label: 'QC', class: 'pipeline-node-quality-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric};
+            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length && file.step_run) {
+                metricsInfo = fileQcMetrics[fileId].map(function(metric) {
+                    var qcId = genQcId(metric, file);
+                    return {id: qcId, label: 'QC', class: 'pipeline-node-qc-metric' + (infoNodeId === qcId ? ' active' : ''), ref: metric, parent: file};
                 });
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (infoNodeId === fileId ? ' active' : ''),
+            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
+                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: file
             }, metricsInfo);
-            // If the file has an analysis step, prepare it for graph insertion
-            var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-            if (fileAnalysisStep) {
-                // Make an ID and label for the step
-                stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
-                label = fileAnalysisStep.analysis_step_types;
-                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-                error = false;
-            } else if (derivedFileIds(file)) {
-                // File derives from others, but no analysis step; make dummy step
-                stepId = 'error:' + derivedFileIds(file);
-                label = 'Software unknown';
-                pipelineInfo = null;
-                error = true;
-            } else {
-                // No analysis step and no derived_from; don't add a step
-                stepId = '';
-            }
 
-            if (stepId) {
+            // If the file has an analysis step, prepare it for graph insertion
+            if (!fileContributed) {
+                var fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+                if (fileAnalysisStep) {
+                    // Make an ID and label for the step
+                    stepId = 'step:' + derivedFileIds(file) + fileAnalysisStep['@id'];
+                    label = fileAnalysisStep.analysis_step_types;
+                    pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+                    error = false;
+                } else if (derivedFileIds(file)) {
+                    // File derives from others, but no analysis step; make dummy step
+                    stepId = 'error:' + derivedFileIds(file);
+                    label = 'Software unknown';
+                    pipelineInfo = null;
+                    error = true;
+                } else {
+                    // No analysis step and no derived_from; don't add a step
+                    stepId = '';
+                }
+
+                if (stepId) {
+                    // Add the step to the graph only if we haven't for this derived-from set already
+                    if (!jsonGraph.getNode(stepId)) {
+                        jsonGraph.addNode(stepId, label, {
+                            cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
+                            type: 'Step',
+                            shape: 'rect',
+                            cornerRadius: 4,
+                            parentNode: replicateNode,
+                            ref: fileAnalysisStep,
+                            pipelines: pipelineInfo,
+                            fileId: fileId,
+                            stepVersion: file.analysis_step_version
+                        });
+                    }
+
                 // Add the step to the graph only if we haven't for this derived-from set already
                 if (!jsonGraph.getNode(stepId)) {
                     jsonGraph.addNode(stepId, label, {
@@ -1037,39 +1115,12 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         pipelines: pipelineInfo,
                         fileId: file['@id'],
                         fileAccession: file.accession,
-                        stepVersion: file.analysis_step_version
+                        }
                     });
                 }
-
-                // Connect the file to the step, and the step to the derived_from files
-                jsonGraph.addEdge(stepId, fileId);
-                file.derived_from.forEach(function(derived) {
-                    if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
-                        jsonGraph.addEdge('file:' + derived['@id'], stepId);
-                    }
-                });
             }
         }
     }, this);
-
-    // Add contributing files to the graph
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            if (!file.removed) {
-                var fileId = 'file:' + file['@id'];
-
-                // Assemble a single file node; can have file and step nodes in this graph
-                jsonGraph.addNode(fileId, file.title + ' (' + file.output_type + ')', {
-                    cssClass: 'pipeline-node-file contributing' + (infoNodeId === fileId ? ' active' : ''),
-                    type: 'File',
-                    shape: 'rect',
-                    cornerRadius: 16,
-                    ref: file,
-                    contributing: true
-                });
-            }
-        }, this);
-    }
 
     return jsonGraph;
 };
@@ -1299,24 +1350,30 @@ var FileDetailView = function(node) {
 globals.graph_detail.register(FileDetailView, 'File');
 
 
+// Display QC metrics of the selected QC sub-node in a file node.
 var QcDetailsView = function(metrics) {
-    var reserved = {'uuid': true, 'assay_term_name': true, 'level': true, 'status': true, 'date_created': true};
+    // QC metrics properties to NOT display.
+    var reserved = ['uuid', 'assay_term_name', 'assay_term_id', 'attachment', 'submitted_by', 'level', 'status', 'date_created', 'step_run', 'schema_version'];
+    var sortedKeys = Object.keys(metrics.ref).sort();
 
     if (metrics) {
         return (
-            <dl className="key-value">
-                {Object.keys(metrics.ref).map(function(key) {
-                    if (typeof metrics.ref[key] === 'string' && key[0] !== '@' && !(key in reserved)) {
-                        return(
-                            <div>
-                                <dt>{key}</dt>
-                                <dd>{metrics.ref[key]}</dd>
-                            </div>
-                        );
-                    }
-                    return null;
-                })}
-            </dl>
+            <div>
+                <h4 className="quality-metrics-title">Quality metrics of {metrics.parent.accession}</h4>
+                <dl className="key-value-flex">
+                    {sortedKeys.map(function(key) {
+                        if ((typeof metrics.ref[key] === 'string' || typeof metrics.ref[key] === 'number') && key[0] !== '@' && reserved.indexOf(key) === -1) {
+                            return(
+                                <div key={key}>
+                                    <dt>{key}</dt>
+                                    <dd>{metrics.ref[key]}</dd>
+                                </div>
+                            );
+                        }
+                        return null;
+                    })}
+                </dl>
+            </div>
         );
     } else {
         return null;

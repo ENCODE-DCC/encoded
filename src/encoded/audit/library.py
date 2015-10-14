@@ -11,7 +11,21 @@ moleculeDict = {
     'miRNA': 'SO:0000276',
     'rRNA': 'SO:0000252',
     'capped mRNA': 'SO:0000862',
+    'protein': 'SO:0000104'
     }
+
+
+@audit_checker('library', frame=['object'])
+def audit_library_biosample(value, system):
+    '''
+    The library should be linked to biosample 
+    '''
+    if value['status'] in ['deleted']:
+        return
+    if 'biosample' not in value:
+        detail = 'Library {} has no biosample'.format(
+            value['@id'])
+        raise AuditFailure('missing biosample', detail, level='ERROR')
 
 
 @audit_checker('library', frame='object')
@@ -58,6 +72,8 @@ def audit_library_documents(value, system):
                 value['@id']
                 )
             raise AuditFailure('missing documents', detail, level='WARNING')
+
+
 
 
 @audit_checker('library', frame='object')

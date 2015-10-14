@@ -4,7 +4,6 @@ var globals = require('./globals');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var fetched = require('./fetched');
 var _ = require('underscore');
-var $script = require('scriptjs');
 var ga = require('google-analytics');
 
 
@@ -78,6 +77,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     componentDidMount: function () {
+        var $script = require('scriptjs');
         $script('brace', this.setupEditor);
     },
 

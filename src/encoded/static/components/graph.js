@@ -2,7 +2,6 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var $script = require('scriptjs');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
 
 
@@ -98,7 +97,7 @@ class JsonGraph {
                     }
                 }
             } else if (nodes[i].nodes.length) {
-                var matching = this.getNode(id, nodes[i]);
+                var matching = this.getSubnode(id, nodes[i]);
                 if (matching) {
                     return matching;
                 }
@@ -211,6 +210,7 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     componentDidMount: function () {
+        var $script = require('scriptjs');
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
