@@ -183,6 +183,50 @@
         "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
     },
     {
+        "accession": "ENCBS044ANI",
+        "award": "ENCODE2-Mouse",
+        "biosample_term_id": "EFO:0005233",
+        "biosample_term_name": "CH12.LX cell",
+        "biosample_type": "immortalized cell line",
+        "description": "B-cell lymphoma (GM12878 analog)",
+        "donor": "ENCDO000MUS",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:CH12"
+        ],
+        "lab": "sherman-weissman",
+        "model_organism_age": "2",
+        "model_organism_age_units": "month",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "adult",
+        "model_organism_sex": "male",
+        "organism": "mouse",
+        "source": "sherman-weissman",
+        "submitted_by": "semper.habitant@ut.venenatis",
+        "uuid": "c5ce6328-9e59-4309-a61c-020bc1c5720a"
+    },
+    {
+        "accession": "ENCBS045ANI",
+        "award": "ENCODE2-Mouse",
+        "biosample_term_id": "EFO:0005233",
+        "biosample_term_name": "CH12.LX cell",
+        "biosample_type": "immortalized cell line",
+        "description": "B-cell lymphoma (GM12878 analog)",
+        "donor": "ENCDO001MUS",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:CH12"
+        ],
+        "lab": "sherman-weissman",
+        "model_organism_age": "2",
+        "model_organism_age_units": "month",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "adult",
+        "model_organism_sex": "female",
+        "organism": "mouse",
+        "source": "sherman-weissman",
+        "submitted_by": "semper.habitant@ut.venenatis",
+        "uuid": "33a7dece-2b83-43fe-b670-23c63174334b"
+    },
+    {
         "_test": "derived from and has dates",
         "accession": "ENCBS057AAA",
         "award": "U54HG006996",

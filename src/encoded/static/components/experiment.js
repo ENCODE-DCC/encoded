@@ -29,6 +29,15 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = biosample.SingleTreatment;
 
+
+var anisogenicValues = [
+    'anisogenic, sex-matched and age-matched',
+    'anisogenic, age-matched',
+    'anisogenic, sex-matched',
+    'anisogenic'
+];
+
+
 var Panel = function (props) {
     // XXX not all panels have the same markup
     var context;
@@ -60,43 +69,14 @@ var Experiment = module.exports.Experiment = React.createClass({
             });
         });
 
-        // Process biosamples for summary display
-        var biosamples = [], lifeAge = [], organismName = [];
-        replicates.forEach(function (replicate) {
-            var biosample = replicate.library && replicate.library.biosample;
-            if (biosample) {
-                biosamples.push(biosample);
-
-                // Add to array of scientific names for rare experiments with cross-species biosamples
-                organismName.push(biosample.organism.scientific_name);
-
-                // Build a string with non-'unknown' life_stage, age, and age_units concatenated
-                var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
-                if (biosample.age && biosample.age != 'unknown') {
-                    lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
-                    lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
-                }
-                if (lifeAgeString) {
-                    lifeAge.push(lifeAgeString);
-                }
-            }
-        });
-
-        // Eliminate duplicates in lifeAge and organismName arrays so each displayed only once
-        if (lifeAge.length) {
-            lifeAge = _.uniq(lifeAge);
-        }
-        if (organismName.length) {
-            organismName = _.uniq(organismName);
-        }
+        // Make array of all replicate biosamples, not including biosample-less replicates.
+        var biosamples = _.compact(replicates.map(function(replicate) {
+            return replicate.library && replicate.library.biosample;
+        }));
 
         // Build the text of the Treatment, synchronization, and mutatedGene string arrays
         var treatments;
         var synchText = [];
-        var depletedIns = [];
-        var mutatedGenes = {};
-        var subcellularTerms = {};
-        var cellCycles = {};
         biosamples.map(function(biosample) {
             // Collect treatments
             treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
@@ -108,32 +88,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
-
-            // Collect depleted_in
-            if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
-                depletedIns = depletedIns.concat(biosample.depleted_in_term_name);
-
-            }
-            // Collect mutated genes
-            if (biosample.donor && biosample.donor.mutated_gene) {
-                mutatedGenes[biosample.donor.mutated_gene.label] = true;
-            }
-
-            // Collect subcellular fraction term names
-            if (biosample.subcellular_fraction_term_name) {
-                subcellularTerms[biosample.subcellular_fraction_term_name] = true;
-            }
-
-            // Collect cell-cycle phases
-            if (biosample.phase) {
-                cellCycles[biosample.phase] = true;
-            }
         });
         synchText = synchText && _.uniq(synchText);
-        depletedIns = depletedIns && _.uniq(depletedIns);
-        var mutatedGeneNames = Object.keys(mutatedGenes);
-        var subcellularTermNames = Object.keys(subcellularTerms);
-        var cellCycleNames = Object.keys(cellCycles);
+
+        // Generate biosample summaries
+        var fullSummaries = biosampleSummaries(biosamples);
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
@@ -163,6 +122,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
+        var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -196,37 +158,17 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <dd>{context.assay_term_name}</dd>
                         </div>
 
-                        <div data-test="accession">
-                            <dt>Accession</dt>
-                            <dd>{context.accession}</dd>
-                        </div>
+                        {context.replication_type ?
+                            <div data-test="replicationtype">
+                                <dt>Replication type</dt>
+                                <dd>{context.replication_type}</dd>
+                            </div>
+                        : null}
 
                         {biosamples.length || context.biosample_term_name ?
                             <div data-test="biosample-summary">
                                 <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
-                                    {depletedIns.length ?
-                                        <span>{' missing ' + depletedIns.join(', ')}</span>
-                                    : null}
-                                    {mutatedGeneNames.length ? <span>{', mutated gene: ' + mutatedGeneNames.join('/')}</span> : null}
-                                    {subcellularTermNames.length ? <span>{', subcellular fraction: ' + subcellularTermNames.join('/')}</span> : null}
-                                    {cellCycleNames.length ? <span>{', cell-cycle phase: ' + cellCycleNames.join('/')}</span> : null}
-                                    {organismName.length || lifeAge.length ? ' (' : null}
-                                    {organismName.length ?
-                                        <span>
-                                            {organismName.map(function(name, i) {
-                                                if (i === 0) {
-                                                    return (<em key={name}>{name}</em>);
-                                                } else {
-                                                    return (<span key={name}>{' and '}<em>{name}</em></span>);
-                                                }
-                                            })}
-                                        </span>
-                                    : null}
-                                    {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
-                                    {organismName.length || lifeAge.length ? ')' : null}
-                                </dd>
+                                <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
                             </div>
                         : null}
 
@@ -356,7 +298,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 {replicates.map(function (replicate, index) {
-                    return Replicate({replicate: replicate, key: index});
+                    return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
                 })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
@@ -373,12 +315,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} encodevers={encodevers} />
+                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
                     </div>
                 : null }
 
                 {{'released': 1, 'release ready': 1}[context.status] ?
-                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} />
+                    <FetchedItems {...this.props} url={dataset.unreleased_files_url(context)} Component={UnreleasedFiles} anisogenic={anisogenic} />
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
@@ -562,9 +504,17 @@ var Replicate = module.exports.Replicate = function (props) {
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
+
+    // Build biosample summary string
+    var summary;
+    if (biosample) {
+        // Make an array of all the organism summary info to make it easy to comma separate
+        summary = biosampleSummaries([biosample]);
+    }
+
     return (
         <div className="panel-replicate" key={props.key}>
-            <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
+            <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <div data-test="techreplicate">
                     <dt>Technical replicate</dt>
@@ -599,7 +549,8 @@ var Replicate = module.exports.Replicate = function (props) {
                             <dd>
                                 <a href={biosample['@id']}>
                                     {biosample.accession}
-                                </a>{' '}-{' '}{biosample.biosample_term_name}
+                                </a>
+                                {summary ? <span>{' - '}{summary}</span> : null}
                             </dd>
                         : null}
                     </div>
@@ -608,7 +559,7 @@ var Replicate = module.exports.Replicate = function (props) {
         </div>
     );
 };
-// Can't be a properzz panel as the control must be passed in.
+// Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'Replicate');
 
 
@@ -645,6 +596,98 @@ var BiosampleTreatments = function(biosamples) {
     return null;
 };
 
+
+// Return a summary of the given biosamples, ready to be displayed in a React component.
+var biosampleSummaries = function(biosamples) {
+    var organismNames = []; // Array of all organism scientific names in all given biosamples
+    var lifeAges = []; // Array of all life stages, ages, and sexes in all given biosamples
+    var depletedIns = {}; // Collection of depleted_in_term_name in all biosamples; each one is a key with the value True
+    var mutatedGenes = {}; // Collection of donor.mutated_gene in all biosamples; each one is a key with the value True
+    var subcellularTerms = {}; // Collection of subcellular_fraction_term_name in all biosamples; each one is a key with the value True
+    var cellCycles = {}; // Collection of phase in all biosamples; each one is a key with the value True
+    var fullSummary = null; // Complete summary of biosample in a <span>, ready to include in a React component
+
+    // Collect biosample data from all biosamples
+    biosamples.forEach(function(biosample) {
+        // Collect names of biosample characteristics
+        if (biosample.depleted_in_term_name && biosample.depleted_in_term_name.length) {
+            biosample.depleted_in_term_name.forEach(function(depletedIn) {
+                depletedIns[depletedIn] = true;
+            });
+        }
+        if (biosample.donor && biosample.donor.mutated_gene) {
+            mutatedGenes[biosample.donor.mutated_gene.label] = true;
+        }
+        if (biosample.subcellular_fraction_term_name) {
+            subcellularTerms[biosample.subcellular_fraction_term_name] = true;
+        }
+        if (biosample.phase) {
+            cellCycles[biosample.phase] = true;
+        }
+
+        // Collect organism scientific names
+        if (biosample.organism.scientific_name) {
+            organismNames.push(biosample.organism.scientific_name);
+        }
+
+        // Collect strings with non-'unknown', non-empty life_stage, age, age_units, and sex, concatenated
+        var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+        if (biosample.age && biosample.age != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
+            lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
+        }
+        if (biosample.sex && biosample.sex != 'unknown') {
+            lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.sex;
+        }
+        if (lifeAgeString) {
+            lifeAges.push(lifeAgeString);
+        }
+    });
+
+    // Remove duplicates from stage/age/sex strings and organism names
+    if (lifeAges.length) {
+        lifeAges = _.uniq(lifeAges);
+    }
+    if (organismNames.length) {
+        organismNames = _.uniq(organismNames);
+    }
+
+    // Make summary strings of each kind of biosample data
+    var nameKeys = Object.keys(depletedIns);
+    var depletedInSummary = nameKeys.length ? 'missing: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(mutatedGenes);
+    var mutatedGeneSummary = nameKeys.length ? 'mutated gene: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(subcellularTerms);
+    var subcellularTermSummary = nameKeys.length ? 'subcellular fraction: ' + nameKeys.join('/') : '';
+    nameKeys = Object.keys(cellCycles);
+    var cellCycleSummary = nameKeys.length ? 'cell-cycle phase: ' + nameKeys.join('/') : '';
+
+    // Combine all summary strings, comma separated and including only non-empty ones
+    var summary = _.compact([depletedInSummary, mutatedGeneSummary, subcellularTermSummary, cellCycleSummary]).join(', ');
+
+    // Combine all name and life/age/sex strings
+    fullSummary = (
+        <span>
+            {summary ? summary : null}
+            {organismNames.length || lifeAges.length ?
+                <span>
+                    {summary ? ' (' : '('}
+                    {organismNames.map(function(name, i) {
+                        if (i === 0) {
+                            return (<em key={name}>{name}</em>);
+                        } else {
+                            return (<span key={name}>{' and '}<em>{name}</em></span>);
+                        }
+                    })}
+                    {lifeAges.length ? ', ' + lifeAges.join(' and ') : ''}
+                    {')'}
+                </span>
+            : null}
+        </span>
+    );
+
+    return fullSummary;
+};
 
 
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files) {
@@ -814,6 +857,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             allReplicates[repNum] = [];
         }
     });
+
+    // Add contributing files to the allFiles object that other files derive from.
+    // Don't worry about files they derive from; they're not included in the graph.
+    if (context.contributing_files && context.contributing_files.length) {
+        context.contributing_files.forEach(function(file) {
+            allContributing[file['@id']] = file;
+            if (derivedFromFiles[file['@id']]) {
+                allFiles[file['@id']] = file;
+            }
+        });
+    }
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
     // Not sure if this is covered in test cases

@@ -45,6 +45,22 @@
     },
     {
         "biological_replicate_number": 1,
+        "experiment": "ENCSR001ADI",
+        "library": "7126310d-93c5-40af-988c-edb532fe6e7f",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "1d404385-21a6-443c-8a10-1ea69f524662"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR001ADI",
+        "library": "35c0e686-00a2-4b24-8b8f-1bcf3379824b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "fcd40126-a6ba-43aa-a2d7-98fdad21f834"
+    },
+    {
+        "biological_replicate_number": 1,
         "experiment": "ENCSR000AEM",
         "library": "7013e140-dc14-4893-b0b1-0d7bb293730c",
         "submitted_by": "dignissim.euismod@amet.habitant",
