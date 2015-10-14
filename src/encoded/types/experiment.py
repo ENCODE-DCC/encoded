@@ -184,6 +184,91 @@ class Experiment(Dataset):
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
 
+    @calculated_property(schema={
+        "title": "Replication type",
+        "description": "Calculated field that indicates the replication model",
+        "type": "string"
+    })
+    def replication_type(self, request, replicates=None):
+        # Compare the biosamples to see if for humans they are the same donor and for 
+        # model organisms if they are sex-matched and age-matched
+        biosample_dict = {}
+        biosample_age_list = []
+        biosample_sex_list = []
+        biosample_donor_list = []
+
+        for rep in replicates:
+            replicateObject = request.embed(rep, '@@object')
+
+            if 'library' in replicateObject:
+                libraryObject = request.embed(replicateObject['library'], '@@object')
+                if 'biosample' in libraryObject:
+                    biosampleObject = request.embed(libraryObject['biosample'], '@@object')
+                    biosample_dict[biosampleObject['accession']] = biosampleObject
+                    biosample_age_list.append(biosampleObject.get('age'))
+                    biosample_sex_list.append(biosampleObject.get('sex'))
+                    biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_species = biosampleObject.get('organism')
+                else:
+                    # If I have a library without a biosample,
+                    # I cannot make a call about replicate structure
+                    return None
+            else:
+                # REPLICATES WITH NO LIBRARIES WILL BE CAUGHT BY AUDIT (TICKET 3268)
+                # If I have a replicate without a library,
+                # I cannot make a call about the replicate structure
+                return None
+
+        if len(biosample_dict.keys()) < 2:
+            return 'unreplicated'
+
+        # I am assuming tech reps have the same biosample, if they do not,
+        # this should generate an audit, not be caught here
+
+        '''
+        Humans and model organisms are modeled differently
+        '''
+
+        if biosample_species == '/organisms/human/':
+            if None in biosample_donor_list:
+                return None
+            if len(set(biosample_donor_list)) == 0:
+                return None
+            if len(set(biosample_donor_list)) == 1:
+                return 'isogenic'
+            # We have a problem with model organisms, this will need thought
+            if 'unknown' in biosample_age_list:
+                matchedAgeFlag = False
+
+        if len(set(biosample_age_list)) > 1:
+            matchedAgeFlag = False
+        elif len(set(biosample_age_list)) == 1:
+            matchedAgeFlag = True
+        else:
+            matchedAgeFlag = False
+
+        if 'unknown' in biosample_sex_list or len(set(biosample_sex_list)) > 1:
+            matchedSexFlag = False
+        elif len(set(biosample_sex_list)) == 1:
+            matchedSexFlag = True
+        else:
+            matchedSexFlag = False
+
+        if matchedAgeFlag and matchedSexFlag:
+            if biosample_species == '/organisms/human/':
+                return 'anisogenic, sex-matched and age-matched'
+            elif len(set(biosample_donor_list)) == 1:
+                return 'isogenic'
+            else:
+                return 'anisogenic, sex-matched and age-matched'
+        if matchedAgeFlag and not matchedSexFlag:
+            return 'anisogenic, age-matched'
+        if not matchedAgeFlag and matchedSexFlag:
+            return 'anisogenic, sex-matched'
+        if not matchedAgeFlag and not matchedSexFlag:
+            return 'anisogenic'
+
+
 @collection(
     name='replicates',
     acl=ALLOW_SUBMITTER_ADD,
