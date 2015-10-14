@@ -47,21 +47,18 @@ def index(request):
     connection = session.connection()
     # http://www.postgresql.org/docs/9.3/static/functions-info.html#FUNCTIONS-TXID-SNAPSHOT
     if recovery:
-        # Not yet possible to export a snapshot on a standby server:
-        # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
         query = connection.execute(
             "SET TRANSACTION ISOLATION LEVEL READ COMMITTED, READ ONLY;"
-            "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot());"
         )
     else:
         query = connection.execute(
             "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;"
-            "SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot());"
         )
     # DEFERRABLE prevents query cancelling due to conflicts but requires SERIALIZABLE mode
     # which is not available in recovery.
-    result, = query.fetchall()
-    xmin, snapshot_id = result  # lowest xid that is still in progress
+    xmin = query.scalar()  # lowest xid that is still in progress
 
     first_txn = None
     last_xmin = None
@@ -145,7 +142,14 @@ def index(request):
                 first_txn_timestamp=first_txn.isoformat(),
             )
 
-    if not dry_run:
+    if invalidated and not dry_run:
+        # Exporting a snapshot mints a new xid, so only do so when required.
+        # Not yet possible to export a snapshot on a standby server:
+        # http://www.postgresql.org/message-id/CAHGQGwEtJCeHUB6KzaiJ6ndvx6EFsidTGnuLwJ1itwVH0EJTOA@mail.gmail.com
+        snapshot_id = None
+        if not recovery:
+            snapshot_id = connection.execute('SELECT pg_export_snapshot();').scalar()
+
         result['errors'] = indexer.update_objects(request, invalidated, xmin, snapshot_id)
         result['indexed'] = len(invalidated)
         if record:
