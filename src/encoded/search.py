@@ -467,14 +467,31 @@ def search(context, request, search_type=None):
                 'total': facet_results[agg_name]['doc_count']
             })
 
+    # Adding total
+    result['total'] = es_results['hits']['total']
+
+    # Show any filters that aren't facets as a fake facet with one entry,
+    # so that the filter can be viewed and removed
+    for field, values in used_filters.items():
+        if field not in facets:
+            title = field
+            for item_type in doc_types:
+                if field in types[item_type].schema['properties']:
+                    title = types[item_type].schema['properties'][field]['title']
+                    break
+            result['facets'].append({
+                'field': field,
+                'title': title,
+                'terms': [{'key': v} for v in values],
+                'total': result['total'],
+                })
+
     # Add batch actions
     result.update(search_result_actions(request, request.query_string, doc_types, es_results))
 
     # Format results for JSON-LD
     format_results(request, es_results, result)
 
-    # Adding total
-    result['total'] = es_results['hits']['total']
     result['notification'] = 'Success' if result['total'] else 'No results found'
     return result
 
