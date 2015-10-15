@@ -1279,9 +1279,7 @@ var FileDetailView = function(node) {
                         <dt>Technical Replicate</dt>
                         <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
-                : null}
-
-                { selectedFile.biological_replicates && !selectedFile.replicate ?
+                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                     <div data-test="replicate">
                         <dt>Biological Replicate(s)</dt>
                         <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
