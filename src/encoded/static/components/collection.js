@@ -3,6 +3,7 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var StickyHeader = require('./StickyHeader');
 
 
 var lookup_column = function (result, column) {
@@ -305,6 +306,7 @@ var lookup_column = function (result, column) {
             return (
                 <div className="table-responsive">            
                     <table className={table_class + " table table-striped table-hover table-panel"}>
+                      <StickyHeader>
                         <thead className="sticky-header">
                             {this.props.showControls ? <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>
@@ -326,6 +328,7 @@ var lookup_column = function (result, column) {
                                 {headers}
                             </tr>
                         </thead>
+                      </StickyHeader>
                         <tbody>
                             {rows}
                         </tbody>
