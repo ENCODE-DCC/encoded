@@ -518,6 +518,7 @@ def matrix(context, request):
         result['notification'] = 'No matrix configured for this type'
         return result
     matrix = result['matrix'] = type_info.factory.matrix.copy()
+    matrix['search_base'] = request.route_path('search', slash='/') + '?' + 'type=' + context.type_info.item_type + ('&' + request.query_string if request.query_string else '')
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]

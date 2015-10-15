@@ -22,15 +22,17 @@ var Matrix = module.exports.Matrix = React.createClass({
 
     render: function() {
         var context = this.props.context;
+        var matrix = context.matrix;
         var parsed_url = url.parse(this.context.location_href);
-        var searchBase = parsed_url.search || '';
-        searchBase = searchBase ? searchBase + '&' : searchBase + '?';
+        var matrix_search = parsed_url.search || '';
+        matrix_search += matrix_search ? '&' : '?';
+        var search_base = context.matrix.search_base;
         var notification = context['notification'];
-        if (context.matrix.y.buckets) {
-            var x_facets = _.filter(context.facets, f => _.contains(context.matrix.x.facets, f.field));
-            var y_facets = _.filter(context.facets, f => _.contains(context.matrix.y.facets, f.field));
-            var x_buckets = context.matrix.x.buckets;
-            var y_buckets = context.matrix.y.buckets;
+        if (matrix.y.buckets) {
+            var x_facets = _.filter(context.facets, f => _.contains(matrix.x.facets, f.field));
+            var y_facets = _.filter(context.facets, f => _.contains(matrix.y.facets, f.field));
+            var x_buckets = matrix.x.buckets;
+            var y_buckets = matrix.y.buckets;
             // find max bucket count
             var max_count = _.max(y_buckets.map(yb => _.max(_.values(yb.x))));
 
@@ -42,7 +44,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <h3>{context.title}</h3>
-                                        <TextFilter filters={context.filters} searchBase={searchBase} onChange={this.onChange} />
+                                        <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
                                         {context.filters.length ? <a href={parsed_url.pathname}>
                                             <i className="icon icon-times-circle-o"></i> Clear all filters
                                         </a> : ''}
@@ -51,31 +53,30 @@ var Matrix = module.exports.Matrix = React.createClass({
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0}}>
                                 <FacetList facets={x_facets} filters={context.filters} orientation="horizontal"
-                                           searchBase={searchBase} onFilter={this.onFilter} />
+                                           searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
                                 <FacetList facets={y_facets} filters={context.filters}
-                                           searchBase={searchBase} onFilter={this.onFilter} />
+                                           searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9" style={{paddingLeft: 0, overflow: 'auto'}}>
                                 <table className="matrix">
                                     <tbody>
                                         <tr>
                                             <th style={{width: 20}}></th>
-                                            <th colSpan={x_buckets.length + 2}
-                                                style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{context.matrix.x.label.toUpperCase()}</th>
+                                            <th colSpan={x_buckets.length + 1}
+                                                style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
                                         </tr>
                                         <tr style={{borderBottom: "solid 1px #ddd"}}>
                                             <th rowSpan={y_buckets.length + 1}
                                                 className="rotate90"
                                                 style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
-                                                <div style={{width: 15}}><span>{context.matrix.y.label.toUpperCase()}</span></div>
+                                                <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                             </th>
-                                            <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{context.matrix.doc_count} results</h3></th>
-                                            {x_buckets.map(xb => <th className="rotate30"><div><span>{xb.key}</span></div></th>)}
-                                            <th className="rotate30" style={{width: "20%"}}></th>
+                                            <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{matrix.doc_count} results</h3></th>
+                                            {x_buckets.map(xb => <th className="rotate30"><div><span title={xb.key}>{xb.key}</span></div></th>)}
                                         </tr>
                                         {y_buckets.map(function(yb, i) {
                                             return <tr>
@@ -85,9 +86,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     var color = HIGHLIGHT_COLOR.clone();
                                                     // scale color between white and 60% lightness
                                                     color.lightness(60 + (1 - value / max_count) * 40);
-                                                    return <td style={{border: "solid 1px #f9f9f9", backgroundColor: color.hexString()}}>{value || ''}</td>;
+                                                    var href = search_base + '&' + matrix.y.group_by + '=' + encodeURIComponent(yb.key)
+                                                                           + '&' + matrix.x.group_by + '=' + encodeURIComponent(xb.key);
+                                                    return <td style={{border: "solid 1px #f9f9f9", backgroundColor: color.hexString()}}>
+                                                        {value ? <a href={href} style={{color: '#000'}}>{value}</a> : ''}
+                                                    </td>;
                                                 })}
-                                                <td></td>
                                             </tr>;
                                         })}
                                     </tbody>

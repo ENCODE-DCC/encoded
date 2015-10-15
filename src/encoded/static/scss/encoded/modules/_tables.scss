@@ -254,7 +254,10 @@ th.rotate30 {
             display: inline-block;
             width: $rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle);
             text-align: left;
-            line-height: .8;
+            line-height: 1.2;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
     }
 }
@@ -274,7 +277,7 @@ th.rotate90 {
     }
 }
 table.matrix {
-    width: 100%;
+    width: auto;
     th {
         text-align: right;
         padding: 0 .5em;
