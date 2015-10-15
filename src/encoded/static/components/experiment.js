@@ -713,6 +713,19 @@ var generateFilters = function(files) {
 };
 
 
+// Handle graphing throws
+function graphException(message, file0, file1) {
+/*jshint validthis: true */
+    this.message = message;
+    if (file0) {
+        this.file0 = file0;
+    }
+    if (file1) {
+        this.file1 = file1;
+    }
+}
+
+
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
@@ -889,8 +902,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
-        console.warn('No graph: no files have step runs');
-        return null;
+        throw new graphException('No graph: no files have step runs');
     }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
@@ -968,25 +980,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                 allReplicates[derivedFromRep] = [];
             } else {
                 // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
-                abortGraph = abortGraph || true;
-                abortFileId = derivedFromFileId;
+                throw new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
             }
         } // else the derived_from file is in files array (allFiles object); normal case
     });
-
-    // Don't draw anything if a file others derive from outside a replicate doesn't exist
-    if (abortGraph) {
-        console.warn('No graph: derived_from file outside replicate (or in multiple replicates) missing [' + abortFileId + ']');
-        return null;
-    }
 
     // Check whether all files have been removed
     abortGraph = _(Object.keys(allFiles)).all(function(fileId) {
         return allFiles[fileId].removed;
     });
     if (abortGraph) {
-        console.warn('No graph: all files removed');
-        return null;
+        throw new graphException('No graph: all files removed');
     }
 
     // No files exist outside replicates, and all replicates are removed
@@ -994,8 +998,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     if (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
         return !allReplicates[replicateNum].length;
     })) {
-        console.warn('No graph: All replicates removed and no files outside replicates exist');
-        return null;
+        throw new graphException('No graph: All replicates removed and no files outside replicates exist');
     }
 
     // Last check; see if any files derive from files now missing. This test is child-file based, where the last test
@@ -1009,23 +1012,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
             // A file still in the graph derives from others. See if any of the files it derives from have been removed
             // or are missing.
-            abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
+            file.derived_from.forEach(function(derivedFromFile) {
                 var orgDerivedFromFile = derivedFromFiles[derivedFromFile['@id']];
                 var derivedGone = orgDerivedFromFile.missing || orgDerivedFromFile.removed;
 
                 // These two just for debugging a unrendered graph
                 if (derivedGone) {
-                    abortMsg = 'File ' + fileId + ' derives from ' + derivedFromFile['@id'] + ' which is ' + (orgDerivedFromFile.missing ? 'missing' : 'removed');
+                    throw new graphException('file0 derives from file1 which is ' + (orgDerivedFromFile.missing ? 'missing' : 'removed'), fileId, derivedFromFile['@id']);
                 }
-
-                return derivedGone;
             });
         }
     });
-    if (abortGraph) {
-        console.warn('No graph: ' + abortMsg);
-        return null;
-    }
 
     // Create an empty graph architecture that we fill in next.
     jsonGraph = new JsonGraph(context.accession);
@@ -1190,8 +1187,16 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = generateFilters(files);
-            this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
-            if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+            try {
+                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+            } catch(e) {
+                this.jsonGraph = null;
+                console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
+            }
+            var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
+
+            // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
+            if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
@@ -1209,11 +1214,17 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                                 </select>
                             </div>
                         : null}
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                            <div id="graph-node-info">
-                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                        {goodGraph ?
+                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                                <div id="graph-node-info">
+                                    {meta ? <div className="panel-insert">{meta}</div> : null}
+                                </div>
+                            </Graph>
+                        :
+                            <div className="panel-full">
+                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
                             </div>
-                        </Graph>
+                        }
                     </div>
                 );
             }
