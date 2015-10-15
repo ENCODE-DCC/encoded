@@ -8,7 +8,6 @@ var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var Modal = require('react-bootstrap/lib/Modal');
 var ItemStore = require('./lib/store').ItemStore;
-var ReactForms = require('react-forms');
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
 
@@ -177,20 +176,14 @@ var User = module.exports.User = React.createClass({
 globals.content_views.register(User, 'User');
 
 
-var ImpersonateUserSchema = ReactForms.schema.Mapping({}, {
-    userid: ReactForms.schema.Scalar({
-        label: 'User',
-        hint: 'Enter the email of the user you want to impersonate.',
-    }),
-});
-
-
 var ImpersonateUserForm = React.createClass({
     contextTypes: {
         navigate: React.PropTypes.func
     },
 
     render: function() {
+        var ReactForms = require('react-forms');
+        var ImpersonateUserSchema = require('./ImpersonateUserSchema');
         return (
             <div>
                 <h2>Impersonate User</h2>

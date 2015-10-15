@@ -1,4 +1,5 @@
 /*jshint strict:false */
+require('babel-core/polyfill');
 
 // Chrome 42 fetch does not have abort.
 window.fetch = undefined;
