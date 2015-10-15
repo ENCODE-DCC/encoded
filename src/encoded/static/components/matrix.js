@@ -11,6 +11,8 @@ var TextFilter = search.TextFilter;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
+var MAX_X_BUCKETS = 20;
+var MAX_Y_BUCKETS = 20;
 
 
 var Matrix = module.exports.Matrix = React.createClass({
@@ -66,33 +68,55 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     <tbody>
                                         <tr>
                                             <th style={{width: 20}}></th>
-                                            <th colSpan={x_buckets.length + 1}
+                                            <th colSpan={Math.min(x_buckets.length, MAX_X_BUCKETS + 1) + 1}
                                                 style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
                                         </tr>
                                         <tr style={{borderBottom: "solid 1px #ddd"}}>
-                                            <th rowSpan={y_buckets.length + 1}
+                                            <th rowSpan={Math.min(y_buckets.length, MAX_Y_BUCKETS + 1) + 1}
                                                 className="rotate90"
                                                 style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
                                                 <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                             </th>
-                                            <th style={{border: "solid 1px #ddd", textAlign: "center"}}><h3>{matrix.doc_count} results</h3></th>
-                                            {x_buckets.map(xb => <th className="rotate30"><div><span title={xb.key}>{xb.key}</span></div></th>)}
+                                            <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}><h3>{matrix.doc_count} results</h3></th>
+                                            {x_buckets.map(function(xb, i) {
+                                                if (i < MAX_X_BUCKETS) {
+                                                    return <th className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
+                                                } else if (i == MAX_X_BUCKETS) {
+                                                    return <th className="rotate30" style={{width: 10}}><div><span>...and {x_buckets.length - MAX_X_BUCKETS} more</span></div></th>;
+                                                } else {
+                                                    return null;
+                                                }
+                                            })}
                                         </tr>
-                                        {y_buckets.map(function(yb, i) {
-                                            return <tr>
-                                                <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
-                                                {x_buckets.map(function(xb) {
-                                                    var value = yb.x[xb.key];
-                                                    var color = HIGHLIGHT_COLOR.clone();
-                                                    // scale color between white and 60% lightness
-                                                    color.lightness(60 + (1 - value / max_count) * 40);
-                                                    var href = search_base + '&' + matrix.y.group_by + '=' + encodeURIComponent(yb.key)
-                                                                           + '&' + matrix.x.group_by + '=' + encodeURIComponent(xb.key);
-                                                    return <td style={{border: "solid 1px #f9f9f9", backgroundColor: color.hexString()}}>
-                                                        {value ? <a href={href} style={{color: '#000'}}>{value}</a> : ''}
-                                                    </td>;
-                                                })}
-                                            </tr>;
+                                        {y_buckets.map(function(yb, j) {
+                                            if (j < MAX_Y_BUCKETS) {
+                                                return <tr>
+                                                    <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
+                                                    {x_buckets.map(function(xb, i) {
+                                                        if (i < MAX_X_BUCKETS) {
+                                                            var value = yb.x[xb.key];
+                                                            var color = HIGHLIGHT_COLOR.clone();
+                                                            // scale color between white and 60% lightness
+                                                            color.lightness(60 + (1 - value / max_count) * 40);
+                                                            var href = search_base + '&' + matrix.y.group_by + '=' + encodeURIComponent(yb.key)
+                                                                                   + '&' + matrix.x.group_by + '=' + encodeURIComponent(xb.key);
+                                                            return <td style={{backgroundColor: color.hexString()}}>
+                                                                {value ? <a href={href} style={{color: '#000'}}>{value}</a> : ''}
+                                                            </td>;
+                                                        } else {
+                                                            return null;
+                                                        }
+                                                    })}
+                                                    {x_buckets.length > MAX_X_BUCKETS && <td></td>}
+                                                </tr>;
+                                            } else if (j == MAX_Y_BUCKETS) {
+                                                return <tr>
+                                                    <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>...and {y_buckets.length - MAX_Y_BUCKETS} more</th>
+                                                    {_.range(Math.min(x_buckets.length, MAX_X_BUCKETS + 1)).map(n => <td></td>)}
+                                                </tr>;
+                                            } else {
+                                                return null;
+                                            }
                                         })}
                                     </tbody>
                                 </table>

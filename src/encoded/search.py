@@ -573,14 +573,12 @@ def matrix(context, request):
             "y": {
                 "terms": {
                     "field": 'embedded.' + y_grouping + '.raw',
-                    "order": {"_term": "asc"},
                     "size": 0,  # no limit
                 },
                 "aggs": {
                     "x": {
                         "terms": {
                             "field": 'embedded.' + x_grouping + '.raw',
-                            "order": {"_term": "asc"},
                             "size": 0,  # no limit
                         },
                     },
@@ -589,7 +587,6 @@ def matrix(context, request):
             "x": {
                 "terms": {
                     "field": 'embedded.' + x_grouping + '.raw',
-                    "order": {"_term": "asc"},
                     "size": 0,  # no limit
                 },
             },
