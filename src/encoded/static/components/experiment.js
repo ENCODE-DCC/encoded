@@ -755,28 +755,32 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     function processFiltering(fileList, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
 
-        function getOrigFiles(files) {
-            return files.map(function(file) { return allFiles[file['@id']]; });
+        function getSubFileList(filesArray) {
+            var fileList = {};
+            filesArray.forEach(function(file) {
+                fileList[file['@id']] = allFiles[file['@id']];
+            });
+            return fileList;
         }
 
         var fileKeys = Object.keys(fileList);
         for (var i = 0; i < fileKeys.length; i++) {
             var file = fileList[fileKeys[i]];
-            var nextFileArray;
+            var nextFileList;
 
             if (file) {
                 if (!file.removed) {
                     // This file gets included. Include everything it derives from
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileArray = getOrigFiles(file.derived_from);
-                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
                     file.removed = false;
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileArray = getOrigFiles(file.derived_from);
-                        processFiltering(nextFileArray, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 }
             }
