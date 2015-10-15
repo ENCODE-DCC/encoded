@@ -738,14 +738,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
-    function processFiltering(fileArray, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
+    function processFiltering(fileList, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
 
         function getOrigFiles(files) {
             return files.map(function(file) { return allFiles[file['@id']]; });
         }
 
-        for (var i = 0; i < fileArray.length; i++) {
-            var file = fileArray[i];
+        var fileKeys = Object.keys(fileList);
+        for (var i = 0; i < fileKeys.length; i++) {
+            var file = fileList[fileKeys[i]];
             var nextFileArray;
 
             if (file) {
@@ -912,10 +913,10 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Remove files based on the filtering options
     if (filterAssembly) {
-        var combinedFiles = _.union(files, context.contributing_files);
-
         // First remove all raw files, and all other files with mismatched filtering options
-        combinedFiles.forEach(function(file) {
+        Object.keys(allFiles).forEach(function(fileId) {
+            var file = allFiles[fileId];
+
             if (file.output_category === 'raw data') {
                 // File is raw data; just remove it
                 file.removed = true;
@@ -929,7 +930,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         });
 
         // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
-        processFiltering(combinedFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
+        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
     }
 
     // See if removing files by filtering have emptied a replicate.
@@ -1098,23 +1099,17 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                             parentNode: replicateNode,
                             ref: fileAnalysisStep,
                             pipelines: pipelineInfo,
-                            fileId: fileId,
+                            fileId: file['@id'],
+                            fileAccession: file.accession,
                             stepVersion: file.analysis_step_version
                         });
                     }
 
-                // Add the step to the graph only if we haven't for this derived-from set already
-                if (!jsonGraph.getNode(stepId)) {
-                    jsonGraph.addNode(stepId, label, {
-                        cssClass: 'pipeline-node-analysis-step' + (infoNodeId === stepId ? ' active' : '') + (error ? ' error' : ''),
-                        type: 'Step',
-                        shape: 'rect',
-                        cornerRadius: 4,
-                        parentNode: replicateNode,
-                        ref: fileAnalysisStep,
-                        pipelines: pipelineInfo,
-                        fileId: file['@id'],
-                        fileAccession: file.accession,
+                    // Connect the file to the step, and the step to the derived_from files
+                    jsonGraph.addEdge(stepId, fileId);
+                    file.derived_from.forEach(function(derived) {
+                        if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
+                            jsonGraph.addEdge('file:' + derived['@id'], stepId);
                         }
                     });
                 }
