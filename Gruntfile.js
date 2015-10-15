@@ -135,7 +135,6 @@ module.exports = function(grunt) {
                     'source-map-support',
                 ],
                 ignore: [
-                    'jquery',
                     'scriptjs',
                     'google-analytics',
                     'ckeditor',
