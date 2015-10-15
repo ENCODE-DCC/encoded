@@ -470,7 +470,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                         <dd>
                             {platformKeys.map(function(platformId) {
                                 return(
-                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                    <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
                                 );
                             })}
                         </dd>
@@ -724,6 +724,8 @@ function graphException(message, file0, file1) {
         this.file1 = file1;
     }
 }
+
+module.exports.graphException = graphException;
 
 
 var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {

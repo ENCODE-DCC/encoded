@@ -206,9 +206,9 @@ var Documents = React.createClass({
                     var docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
-                        <div className="multi-dd dl-link">
+                        <div className="multi-dd dl-link" key={doc.uuid}>
                             <i className="icon icon-download"></i>&nbsp;
-                            <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
                                 {docName}
                             </a>
                         </div>

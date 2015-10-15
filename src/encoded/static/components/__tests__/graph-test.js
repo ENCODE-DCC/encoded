@@ -8,12 +8,13 @@ jest.dontMock('underscore');
 
 
 describe('Experiment Graph', function() {
-    var React, TestUtils, assembleGraph, context, _, collectNodes;
+    var React, TestUtils, assembleGraph, graphException, context, _, collectNodes;
 
     React = require('react');
     TestUtils = require('react/lib/ReactTestUtils');
     _ = require('underscore');
     assembleGraph = require('../experiment').assembleGraph;
+    graphException = require('../experiment').graphException;
     context = require('../testdata/experiment');
     collectNodes = _.memoize(_collectNodes);
 
@@ -230,16 +231,15 @@ describe('Experiment Graph', function() {
     // One derived-from file is missing, and no graph should be generated.
     describe('Basic graph with missing derived from file', function() {
         var experimentGraph, graph, files;
+        var context_graph = _.clone(context);
 
         beforeEach(function() {
-            var context_graph = _.clone(context);
             context_graph.accession = 'ENCTS000MDF';
             context_graph.files = files = [require('../testdata/file/bam-vuq'),require('../testdata/file/bed-2cos')];
-            graph = assembleGraph(context_graph, '', files);
         });
 
         it('No graph generated at all', function() {
-            expect(graph).toBeNull();
+            expect(function() { assembleGraph(context_graph, '', files); }).toThrow(new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing'));
         });
     });
 
