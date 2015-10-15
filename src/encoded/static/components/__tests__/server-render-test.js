@@ -1,7 +1,6 @@
 'use strict';
 
 jest.autoMockOff();
-jest.mock('jquery');
 
 // Fixes https://github.com/facebook/jest/issues/78
 jest.dontMock('react');

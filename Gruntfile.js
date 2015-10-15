@@ -77,7 +77,6 @@ module.exports = function(grunt) {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
-                    './src/encoded/static/libs/sticky_header.js',
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
@@ -136,7 +135,6 @@ module.exports = function(grunt) {
                     'source-map-support',
                 ],
                 ignore: [
-                    'jquery',
                     'scriptjs',
                     'google-analytics',
                     'ckeditor',
