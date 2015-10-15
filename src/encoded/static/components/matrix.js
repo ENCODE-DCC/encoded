@@ -31,7 +31,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         matrix_search += matrix_search ? '&' : '?';
         var search_base = context.matrix.search_base;
         var notification = context['notification'];
-        var batch_hub_disabled = context.total > 500;
+        var batch_hub_disabled = matrix.doc_count > 500;
         if (matrix.y.buckets) {
             var x_facets = _.filter(context.facets, f => _.contains(matrix.x.facets, f.field));
             var y_facets = _.filter(context.facets, f => _.contains(matrix.y.facets, f.field));
