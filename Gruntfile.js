@@ -76,10 +76,6 @@ module.exports = function(grunt) {
             browser: {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
-                    'es5-shim',
-                    'es5-shim/es5-sham',
-                    'babel-core/polyfill',
-                    'html5shiv/dist/html5shiv',
                     './src/encoded/static/libs/compat.js', // The shims should execute first
                     './src/encoded/static/libs/sticky_header.js',
                     './src/encoded/static/libs/respond.js',

@@ -29,7 +29,7 @@ globals.blocks.fallback = function (obj) {
     return {
         label: obj['@type'].join(','),
         schema: noarg_memoize(function() {
-            var JSONNode = require('../form').JSONNode;
+            var JSONNode = require('../JSONNode');
             return JSONNode.create({
                 label: 'JSON',
                 input: <textarea rows="15" cols="80" />,
