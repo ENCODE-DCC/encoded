@@ -779,6 +779,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
+    var abortMsg; // Console message to display if aborting graph
     var abortFileId; // @id of file that caused abort
     var derivedFileIds = _.memoize(_derivedFileIds, function(file) {
         return file['@id'];
@@ -949,7 +950,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     }
 
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
-    // Not sure if this is covered in test cases
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
         var derivedFromFile = derivedFromFiles[derivedFromFileId];
         if (derivedFromFile.removed || derivedFromFile.missing) {
@@ -989,33 +989,41 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return null;
     }
 
-    // Check for other conditions in which to abort graph drawing
+    // No files exist outside replicates, and all replicates are removed
+    var replicateIds = Object.keys(allReplicates);
+    if (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
+        return !allReplicates[replicateNum].length;
+    })) {
+        console.warn('No graph: All replicates removed and no files outside replicates exist');
+        return null;
+    }
+
+    // Last check; see if any files derive from files now missing. This test is child-file based, where the last test
+    // was based on the derived-from files.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
-        // A file derives from a file that's been removed from the graph
         if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length) {
+            var derivedGoneMissing; // Just to help debugging
+            var derivedGoneId; // @id of derived-from file that's either missing or removed
+
             // A file still in the graph derives from others. See if any of the files it derives from have been removed
             // or are missing.
             abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
                 var orgDerivedFromFile = derivedFromFiles[derivedFromFile['@id']];
-                return orgDerivedFromFile.missing || orgDerivedFromFile.removed;
+                var derivedGone = orgDerivedFromFile.missing || orgDerivedFromFile.removed;
+
+                // These two just for debugging a unrendered graph
+                if (derivedGone) {
+                    abortMsg = 'File ' + fileId + ' derives from ' + derivedFromFile['@id'] + ' which is ' + (orgDerivedFromFile.missing ? 'missing' : 'removed');
+                }
+
+                return derivedGone;
             });
         }
-
-        // No files exist outside replicates, and all replicates are removed
-        var replicateIds = Object.keys(allReplicates);
-        abortGraph = abortGraph || (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
-            return !allReplicates[replicateNum].length;
-        }));
-
-        if (abortGraph) {
-            abortFileId = fileId;
-        }
     });
-
     if (abortGraph) {
-        console.warn('No graph: other condition [' + abortFileId + ']');
+        console.warn('No graph: ' + abortMsg);
         return null;
     }
 
