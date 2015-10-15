@@ -430,6 +430,9 @@ def type_mapping(types, item_type, embed=True):
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
         mapping['properties']['uuid']['index'] = 'not_analyzed'
+        mapping['properties']['uuid']['index_analyzer'] = 'encoded_index_analyzer'
+        mapping['properties']['uuid']['search_analyzer'] = 'encoded_search_analyzer'
+        mapping['properties']['uuid']['include_in_all'] = True
     return mapping
 
 
