@@ -1106,7 +1106,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                     }
 
                     // Connect the file to the step, and the step to the derived_from files
-                    jsonGraph.addEdge(stepId, fileId);
+                    jsonGraph.addEdge(stepId, fileNodeId);
                     file.derived_from.forEach(function(derived) {
                         if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
                             jsonGraph.addEdge('file:' + derived['@id'], stepId);
