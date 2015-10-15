@@ -308,14 +308,14 @@ def format_results(request, es_results, result):
             result['@graph'].append(item)
 
 
-def search_result_actions(request, doc_types, es_results):
+def search_result_actions(request, query_string, doc_types, es_results):
     actions = {}
 
     # generate batch hub URL for experiments
     if doc_types == ['experiment'] and any(
             facet['doc_count'] > 0
             for facet in es_results['aggregations']['assembly']['assembly']['buckets']):
-        search_params = request.query_string.replace('&', ',,')
+        search_params = query_string.replace('&', ',,')
         hub = request.route_url('batch_hub',
                                 search_params=search_params,
                                 txt='hub.txt')
@@ -325,7 +325,7 @@ def search_result_actions(request, doc_types, es_results):
     if doc_types == ['experiment']:
         actions['batch_download'] = request.route_url(
             'batch_download',
-            search_params=request.query_string
+            search_params=query_string
         )
 
     return actions
@@ -468,7 +468,7 @@ def search(context, request, search_type=None):
             })
 
     # Add batch actions
-    result.update(search_result_actions(request, doc_types, es_results))
+    result.update(search_result_actions(request, request.query_string, doc_types, es_results))
 
     # Format results for JSON-LD
     format_results(request, es_results, result)
@@ -621,8 +621,8 @@ def matrix(context, request):
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
-    # XXX need to add type filter to query string
-    result.update(search_result_actions(request, doc_types, es_results))
+    query_string = 'type=' + type_info.item_type + '&' + request.query_string
+    result.update(search_result_actions(request, query_string, doc_types, es_results))
 
     # Format results for JSON-LD
     format_results(request, es_results, result)

@@ -6,6 +6,7 @@ var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
 
+var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
 var TextFilter = search.TextFilter;
 
@@ -30,6 +31,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         matrix_search += matrix_search ? '&' : '?';
         var search_base = context.matrix.search_base;
         var notification = context['notification'];
+        var batch_hub_disabled = context.total > 500;
         if (matrix.y.buckets) {
             var x_facets = _.filter(context.facets, f => _.contains(matrix.x.facets, f.field));
             var y_facets = _.filter(context.facets, f => _.contains(matrix.y.facets, f.field));
@@ -119,6 +121,21 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             }
                                         })}
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th></th>
+                                            <th colSpan={Math.min(x_buckets.length, MAX_X_BUCKETS + 1) + 1} style={{padding: "10px 0", textAlign: 'left'}}>
+                                                {context['batch_download'] ?
+                                                    <BatchDownload context={context} />
+                                                : null}
+                                                {' '}
+                                                {context['batch_hub'] ?
+                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
+                                                       href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>
+                                                : null}
+                                            </th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
