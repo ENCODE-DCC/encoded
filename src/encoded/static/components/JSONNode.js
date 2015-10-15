@@ -1,7 +1,7 @@
 'use strict';
 var ReactForms = require('react-forms');
 
-export class JSONNode extends ReactForms.schema.ScalarNode {
+export default class JSONNode extends ReactForms.schema.ScalarNode {
     serialize(value) {
         return JSON.stringify(value, null, 4);
     }
