@@ -12,6 +12,10 @@
         display: table-cell;
         padding: 0 10px;
     }
+    .facet[hidden] {
+        display: table-cell !important;
+        visibility: hidden;
+    }
 }
 
 .facets h5 {

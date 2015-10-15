@@ -49,9 +49,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     <div className="col-sm-11">
                                         <h3>{context.title}</h3>
                                         <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
-                                        {context.filters.length ? <a href={parsed_url.pathname}>
-                                            <i className="icon icon-times-circle-o"></i> Clear all filters
-                                        </a> : ''}
+                                        {context.filters.length ?
+                                            <div className="facet">
+                                                <a href={parsed_url.pathname}><i className="icon icon-times-circle-o"></i> Clear all filters</a>
+                                            </div>
+                                        : ''}
                                     </div>
                                 </div>
                             </div>
