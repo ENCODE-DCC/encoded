@@ -763,20 +763,28 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             return fileList;
         }
 
+        console.log('************');
+        console.log('fileList: ' + Object.keys(fileList).join(', '));
+        console.log('include: ' + include);
         var fileKeys = Object.keys(fileList);
+        console.log('filecount: ' + fileKeys.length);
+        console.log('--');
         for (var i = 0; i < fileKeys.length; i++) {
             var file = fileList[fileKeys[i]];
             var nextFileList;
 
+            console.log('FILE: ' + file.accession + ':' + file.removed + ',' + i);
             if (file) {
                 if (!file.removed) {
                     // This file gets included. Include everything it derives from
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                        console.log('NOT removed, and has derived from');
                         nextFileList = getSubFileList(file.derived_from);
                         processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                     }
                 } else if (include) {
                     // Unremove the file if this branch is to be included based on files that derive from it
+                    console.log('Removed, but forced to be included');
                     file.removed = false;
                     if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
                         nextFileList = getSubFileList(file.derived_from);
@@ -930,6 +938,30 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
+    // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
+    Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
+        var derivedFromFile = derivedFromFiles[derivedFromFileId];
+        if (derivedFromFile.removed || derivedFromFile.missing) {
+            // A file others derive from doesn't exist or was removed; check if it's in a replicate or not
+            // Note the derived_from file object exists even if it doesn't exist in given files array.
+            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length === 1) {
+                // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
+                var derivedFromRep = derivedFromFile.biological_replicates[0];
+                if (allReplicates[derivedFromRep]) {
+                    allReplicates[derivedFromRep].forEach(function(file) {
+                        file.removed = true;
+                    });
+                }
+
+                // Now remove the replicate
+                allReplicates[derivedFromRep] = [];
+            } else {
+                // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
+                throw new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
+            }
+        } // else the derived_from file is in files array (allFiles object); normal case
+    });
+
     // Remove files based on the filtering options
     if (filterAssembly) {
         // First remove all raw files, and all other files with mismatched filtering options
@@ -950,6 +982,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
         processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
+        console.log('SUMMARY:');
+        Object.keys(allFiles).forEach(function(fileId) {
+            var file = allFiles[fileId];
+            console.log(file.accession + ':' + file.removed);            
+        });
     }
 
     // See if removing files by filtering have emptied a replicate.
