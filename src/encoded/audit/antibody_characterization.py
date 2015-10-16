@@ -151,7 +151,7 @@ def audit_antibody_characterization_status(value, system):
         is_pending = True
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
-            detail = 'A lane.status of {} is incompatible with antibody_characterization.status of pending dcc review'.format(lane['lane_status'])
+            detail = 'A lane.status of {} is incompatible with antibody_characterization.status of {}'.format(lane['lane_status'], value['status'])
             raise AuditFailure('mismatched lane status', detail, level='WARNING')
             continue
 
