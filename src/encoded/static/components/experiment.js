@@ -952,9 +952,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         file.removed = true;
                     });
                 }
-
-                // Now remove the replicate
-                allReplicates[derivedFromRep] = [];
             } else {
                 // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
                 throw new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
@@ -1003,30 +1000,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         });
     }
-
-    // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
-    Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
-        var derivedFromFile = derivedFromFiles[derivedFromFileId];
-        if (derivedFromFile.removed || derivedFromFile.missing) {
-            // A file others derive from doesn't exist or was removed; check if it's in a replicate or not
-            // Note the derived_from file object exists even if it doesn't exist in given files array.
-            if (derivedFromFile.biological_replicates && derivedFromFile.biological_replicates.length === 1) {
-                // Missing derived-from file in a replicate; remove the replicate's files and remove itself.
-                var derivedFromRep = derivedFromFile.biological_replicates[0];
-                if (allReplicates[derivedFromRep]) {
-                    allReplicates[derivedFromRep].forEach(function(file) {
-                        file.removed = true;
-                    });
-                }
-
-                // Now remove the replicate
-                allReplicates[derivedFromRep] = [];
-            } else {
-                // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
-                throw new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
-            }
-        } // else the derived_from file is in files array (allFiles object); normal case
-    });
 
     // Check whether all files have been removed
     abortGraph = _(Object.keys(allFiles)).all(function(fileId) {
