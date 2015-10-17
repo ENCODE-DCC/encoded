@@ -17,7 +17,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/assay" }
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/accessioned_status" }
     ],
     "properties": {
         "schema_version": {
@@ -80,20 +81,6 @@
                 {"format": "date"}
             ],
             "permission": "import_items"
-        },
-        "accessioned_status": {
-            "status": {
-                "title": "Status",
-                "type": "string",
-                "default": "in progress",
-                "enum": [
-                    "in progress",
-                    "deleted",
-                    "replaced",
-                    "released",
-                    "revoked"
-                ]
-            }
         }
     },
     "facets": {
