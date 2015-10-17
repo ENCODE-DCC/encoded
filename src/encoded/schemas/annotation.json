@@ -1,7 +1,8 @@
+
 {
-    "title": "UCSC browser composite",
-    "description": "Schema for submitting metadata for a composite as defined by the UCSC Genome Browser.",
-    "id": "/profiles/ucsc_browser_composite.json",
+    "title": "Annotation",
+    "description": "Schema for submitting metadata for an annotation set.",
+    "id": "/profiles/annotation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
@@ -17,7 +18,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/accessioned_status" }
     ],
     "properties": {
@@ -29,7 +30,7 @@
         },
         "description": {
             "title": "Description",
-            "description": "A plain text description of the composite.",
+            "description": "A plain text description of the annotation set.",
             "type": "string",
             "default": ""
         },
@@ -44,25 +45,38 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
+                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
             }
         },
         "documents": {
             "title": "Documents",
-            "description": "Documents that provide additional information about the composite (not data files).",
+            "description": "Documents that provide additional information about the annotation set (not data files).",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Document",
-                "description": "A document that provides additional information about the composite (not data files).",
+                "description": "A document that provides additional information about the annotation set (not data files).",
                 "type": "string",
                 "comment": "See document.json for available identifiers.",
                 "linkTo": "Document"
             }
         },
+        "software_used": {
+            "title": "Software used",
+            "description": "A list of software used to derive the annotation calls.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Software version",
+                "description": "Version of software used to derived the annotation calls.",
+                "type": "string",
+                "comment": "See software_version.json for available identifiers.",
+                "linkTo": "Software_version"
+            }
+        },
         "related_files": {
             "title": "Additional data files",
-            "description": "List of data files to be associated with the composite.",
+            "description": "List of data files to be associated with the annotation set.",
             "type": "array",
             "default": [],
             "items": {
@@ -84,9 +98,9 @@
         }
     },
     "facets": {
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "string"
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
         },
         "lab.title": {
             "title": "Lab",
@@ -110,12 +124,12 @@
             "title": "Accession",
             "type": "string"
         },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "string"
-        },
         "description": {
             "title": "Description",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Biosample",
             "type": "string"
         },
         "lab.title": {
@@ -129,22 +143,19 @@
         "award.project": {
             "title": "Project",
             "type": "string"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
-            "type": "array"
         }
     },
     "boost_values": {
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "aliases": 1.3,
-        "assay_term_name": 1.0,
-        "assay_term_id": 1.0,
         "description": 1.0,
         "dbxrefs": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
+        "organ_slims": 1.0,
+        "developmental_slims": 1.0,
+        "biosample_synonyms": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
         "submitted_by.last_name": 1.0,
