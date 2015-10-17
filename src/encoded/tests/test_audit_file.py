@@ -181,6 +181,7 @@ def analysis_step_run_bam(testapp, analysis_step_version_bam):
     item = {
         'analysis_step_version': analysis_step_version_bam['@id'],
         'status': 'finished',
+        'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-virtual']
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 
@@ -293,26 +294,63 @@ def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
-    for error_type in errors:       
+    for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
 def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
-    testapp.patch_json(software['@id'],{'title':'TopHat'})
+    testapp.patch_json(software['@id'], {'title': 'TopHat'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type]) 
+        errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing quality metrics' for error in errors_list)
 
+
 def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
-    testapp.patch_json(file_exp['@id'],{'assay_term_name':'shRNA knockdown followed by RNA-seq'})
-    testapp.patch_json(file6['@id'],{'dataset':file_exp['@id']})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'shRNA knockdown followed by RNA-seq'})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
-    for error_type in errors:       
+    for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam', 'output_type': 'alignments'})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing step_run' for error in errors_list)
+
+
+def test_audit_modERN_missing_derived_from(testapp, file_exp, file3, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam', 'output_type': 'alignments', 'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from' for error in errors_list)
+
+
+def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed', 'file_format_type': 'narrowPeak', 'output_type': 'peaks', 'step_run': analysis_step_run_bam['@id'], 'derived_from': [file4['@id']]})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'wrong step_run for peaks' for error in errors_list)
