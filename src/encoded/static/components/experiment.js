@@ -1189,7 +1189,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
             // Build the graph; place resulting graph in this.jsonGraph
-            var filterOptions = generateFilters(files);
+            var filterOptions = {};
             try {
                 this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
             } catch(e) {
@@ -1197,6 +1197,20 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
+            this.jsonGraph.map(function(node) {
+                if (node['@type'][0] === 'File') {
+                    var file = node.metadata.ref;
+                    if (file.output_category !== 'raw data' && file.assembly) {
+                        if (file.genome_annotation) {
+                            filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+                        } else {
+                            filterOptions[file.assembly] = file.assembly;
+                        }
+                    }
+                } else {
+                    return null;
+                }
+            }, this);
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
