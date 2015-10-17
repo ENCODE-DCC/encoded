@@ -44,13 +44,10 @@
                 "reference",
                 "spike-ins",
                 "paired set",
-                "time series",
-                "ucsc_browser_composite_set",
-                "annotation_set",
-                "publication_set",
-                "reference_set",
-                "paired_set",
-                "time_series_set"
+                "ucsc_browser_composite",
+                "annotation",
+                "publication_data",
+                "paired_set"
             ]
         },
         "dbxrefs": {

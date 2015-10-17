@@ -84,6 +84,10 @@
         }
     },
     "facets": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
         "organ_slims": {
             "title": "Organ",
             "type": "array"

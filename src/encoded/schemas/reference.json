@@ -1,7 +1,8 @@
+
 {
-    "title": "UCSC browser composite",
-    "description": "Schema for submitting metadata for a composite as defined by the UCSC Genome Browser.",
-    "id": "/profiles/ucsc_browser_composite.json",
+    "title": "Reference",
+    "description": "Schema for submitting metadata for a reference set.",
+    "id": "/profiles/reference.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
@@ -17,7 +18,6 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/accessioned_status" }
     ],
     "properties": {
@@ -29,32 +29,18 @@
         },
         "description": {
             "title": "Description",
-            "description": "A plain text description of the composite.",
+            "description": "A plain text description of the reference set.",
             "type": "string",
             "default": ""
         },
-        "dbxrefs": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "External identifier",
-                "description": "A unique identifier from external resource.",
-                "type":  "string",
-                "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
-            }
-        },
         "documents": {
             "title": "Documents",
-            "description": "Documents that provide additional information about the composite (not data files).",
+            "description": "Documents that provide additional information about the reference set (not data files).",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Document",
-                "description": "A document that provides additional information about the composite (not data files).",
+                "description": "A document that provides additional information about the reference set (not data files).",
                 "type": "string",
                 "comment": "See document.json for available identifiers.",
                 "linkTo": "Document"
@@ -62,7 +48,7 @@
         },
         "related_files": {
             "title": "Additional data files",
-            "description": "List of data files to be associated with the composite.",
+            "description": "List of data files to be associated with the reference set.",
             "type": "array",
             "default": [],
             "items": {
@@ -88,10 +74,6 @@
             "title": "Accession",
             "type": "string"
         },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "string"
-        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -114,10 +96,6 @@
             "title": "Accession",
             "type": "string"
         },
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "string"
-        },
         "description": {
             "title": "Description",
             "type": "string"
@@ -133,18 +111,12 @@
         "award.project": {
             "title": "Project",
             "type": "string"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
-            "type": "array"
         }
     },
     "boost_values": {
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "aliases": 1.3,
-        "assay_term_name": 1.0,
-        "assay_term_id": 1.0,
         "description": 1.0,
         "dbxrefs": 1.0,
         "award.title": 1.0,
