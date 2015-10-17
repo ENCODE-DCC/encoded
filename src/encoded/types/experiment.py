@@ -209,6 +209,7 @@ class Experiment(Dataset):
                     biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
                     biosample_species = biosampleObject.get('organism')
+                    biosample_type = biosampleObject.get('biosample_type')
                 else:
                     # If I have a library without a biosample,
                     # I cannot make a call about replicate structure
@@ -221,6 +222,9 @@ class Experiment(Dataset):
 
         if len(biosample_dict.keys()) < 2:
             return 'unreplicated'
+
+        if biosample_type == 'immortalized cell line':
+            return 'isogenic'
 
         # I am assuming tech reps have the same biosample, if they do not,
         # this should generate an audit, not be caught here
@@ -236,9 +240,11 @@ class Experiment(Dataset):
                 return None
             if len(set(biosample_donor_list)) == 1:
                 return 'isogenic'
-            # We have a problem with model organisms, this will need thought
+            # I am not sure we handle unknown well for model organisms
             if 'unknown' in biosample_age_list:
                 matchedAgeFlag = False
+            if 'unknown' in biosample_sex_list:
+                matchedSexFlag = False
 
         if len(set(biosample_age_list)) > 1:
             matchedAgeFlag = False
@@ -247,7 +253,7 @@ class Experiment(Dataset):
         else:
             matchedAgeFlag = False
 
-        if 'unknown' in biosample_sex_list or len(set(biosample_sex_list)) > 1:
+        if len(set(biosample_sex_list)) > 1:
             matchedSexFlag = False
         elif len(set(biosample_sex_list)) == 1:
             matchedSexFlag = True
