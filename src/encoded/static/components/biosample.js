@@ -235,19 +235,17 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
-                            </div>
-                        : null}
-
                         {context.dbxrefs.length ?
                             <div data-test="externalresources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList values={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
                             </div>
                         : null}
 
@@ -502,6 +500,13 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                             <dd className="sentence-case">{context.ethnicity}</dd>
                         </div>
                     : null}
+
+                    {context.references && context.references.length ?
+                        <div data-test="references">
+                            <dt>References</dt>
+                            <dd><PubReferenceList values={context.references} /></dd>
+                        </div>
+                    : null}
                 </dl>
             </div>
         );
@@ -602,6 +607,13 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                                 {biosample.donor.characterizations.map(Panel)}
                             </div>
                         </section>
+                    : null}
+
+                    {context.references && context.references.length ?
+                        <div data-test="references">
+                            <dt>References</dt>
+                            <dd><PubReferenceList values={context.references} /></dd>
+                        </div>
                     : null}
                 </dl>
             </div>

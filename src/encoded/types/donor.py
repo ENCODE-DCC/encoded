@@ -12,7 +12,7 @@ from .base import (
 
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
-    embedded = ['organism']
+    embedded = ['organism', 'references']
     name_key = 'accession'
     rev = {
         'characterizations': ('DonorCharacterization', 'characterizes'),
