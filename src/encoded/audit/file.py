@@ -236,7 +236,10 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     if expt['assay_term_id'] != 'OBI:0000716':
         return
 
-    if (value['file_format'] != 'fastq') and ('step_run' not in value):
+    if value['file_format'] == 'fastq':
+        return
+
+    if 'step_run' not in value:
         detail = 'File {} is missing a step_run'.format(value['@id'])
         raise AuditFailure('missing step_run', detail, level='WARNING')
 
@@ -250,17 +253,17 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         raise AuditFailure('wrong step_run ChIP-seq bam', detail, level='WARNING')
 
     if (value['output_type'] == 'normalized signal of all reads'):
-        if (step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual'):
+        if (step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') and (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual'):
             detail = 'Normalized signal of all reads {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             raise AuditFailure('wrong step_run for unique signal', detail, level='WARNING')
 
     if (value['output_type']) == 'read-depth normalized signal':
-        if (step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual'):
+        if (step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') and (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual'):
             detail = 'Read depth normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             raise AuditFailure('wrong step_run for depth signal', detail, level='WARNING')
 
     if (value['output_type']) == 'control normalized signal':
-        if (step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual'):
+        if (step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') and (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual'):
             detail = 'Control normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             raise AuditFailure('wrong step_run for control signal', detail, level='WARNING')
 
@@ -273,7 +276,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         raise AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 
     if (value['file_format'] == 'bigBed'):
-        if (step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual'):
+        if (step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual'):
             detail = 'bigBed {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             raise AuditFailure('wrong step_run for bigBed peaks', detail, level='WARNING')
 
