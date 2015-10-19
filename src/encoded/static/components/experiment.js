@@ -691,28 +691,6 @@ var biosampleSummaries = function(biosamples) {
 };
 
 
-// Generate an object to generate the graph filtering menu. Returns an object keyed like:
-//   {assembly '-' annotation: "assembly annotation"} when both exist, or:
-//   {assembly: "assembly"} when only the assembly exists.
-// This object might itself need to be filtered if all files with a certain combination of annotation/assembly get removed.
-var generateFilters = function(files) {
-    var filterOptions = {};
-
-    // Collect things like used replicates, and used pipelines
-    files.forEach(function(file) {
-        // Add to the filtering options to generate a <select>
-        if (file.output_category !== 'raw data' && file.assembly) {
-            if (file.genome_annotation) {
-                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
-            } else {
-                filterOptions[file.assembly] = file.assembly;
-            }
-        }
-    });
-    return Object.keys(filterOptions).length ? filterOptions : null;
-};
-
-
 // Handle graphing throws
 function graphException(message, file0, file1) {
 /*jshint validthis: true */
@@ -795,6 +773,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
+    var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
@@ -913,11 +892,21 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
+    // Also build the filtering menu here; it genomic annotations and assemblies that ARE involved in the graph.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // File gets removed if doesn’t derive from other files AND no files derive from it.
-        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+        var islandFile = file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+
+        // Add to the filtering options to generate a <select>; don't include island files
+        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
+            if (file.genome_annotation) {
+                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+            } else {
+                filterOptions[file.assembly] = file.assembly;
+            }
+        }
     });
 
     // Remove any replicates containing only removed files from the last step.
@@ -1125,6 +1114,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     }, this);
 
+    jsonGraph.filterOptions = filterOptions;
     return jsonGraph;
 };
 
@@ -1197,20 +1187,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            this.jsonGraph.map(function(node) {
-                if (node['@type'][0] === 'File') {
-                    var file = node.metadata.ref;
-                    if (file.output_category !== 'raw data' && file.assembly) {
-                        if (file.genome_annotation) {
-                            filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
-                        } else {
-                            filterOptions[file.assembly] = file.assembly;
-                        }
-                    }
-                } else {
-                    return null;
-                }
-            }, this);
+            filterOptions = this.jsonGraph.filterOptions;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {

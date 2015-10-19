@@ -575,6 +575,24 @@
         "submitted_file_name": "replicate1.bam",
         "uuid": "87732741-4173-481f-a1a8-03b8fa8829d2"
    },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF002XCV",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "assembly": "GRCh38",
+        "genome_annotation": "V10",
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "cff6c42afc135f1f95971e415b8d5fdd",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "output_type": "alignments",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate1.bam",
+        "uuid": "3150eb32-53dd-4d3b-9f5a-b4c3d90be5e0"
+   },
    {
         "_project": "encode3",
         "accession": "ENCFF001RCW",
