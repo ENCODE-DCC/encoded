@@ -61,11 +61,11 @@ var Dataset = module.exports.Dataset = React.createClass({
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
-                            <AuditIndicators context={context} key="experiment-audit" />
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="experiment-audit" />
+                <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
