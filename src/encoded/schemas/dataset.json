@@ -146,6 +146,10 @@
         "award.project": {
             "title": "Project",
             "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
         }
     },
     "boost_values": {
