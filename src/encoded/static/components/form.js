@@ -229,8 +229,7 @@ var jsonSchemaToFormSchema = function(attrs) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control" disabled={disabled}>{options}</select>;
-        }
-        if (p.linkTo) {
+        } else if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
             var inputs = require('./inputs');
             props.input = (
