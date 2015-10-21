@@ -1,0 +1,24 @@
+[
+    {
+        "_test": "spike-ins",
+        "accession": "ENCSR704RSS",
+        "award": "U54HG007005",
+        "reference_type": "spike-ins",
+        "description": "Spike-ins used in RAMPAGE experiments from CSHL",
+        "lab": "thomas-gingeras",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108"
+    },
+    {
+        "_test": "mappability",
+        "accession": "ENCSR165FBU",
+        "award": "ENCODE2",
+        "referece_type": "mappability",
+        "description": "Human Mappability Uniqueness 35mer",
+        "lab": "greg-crawford",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9"
+    }
+]

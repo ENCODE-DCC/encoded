@@ -1,0 +1,26 @@
+[    
+    {
+        "_test": "enhancer annotation dataset",
+        "accession": "ENCSR356VQT",
+        "award": "U54HG007004",
+        "annotation_type": "enhancer prediction",
+        "description": "Enhancer prediction dataset for Mouse E11.5 heart and forebrain tissues (whole genome) based on histone, DNase HS, k-mer and GC content (Method 4)",
+        "status": "released",
+        "lab": "j-michael-cherry",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "software_used": ["d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"],
+        "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c"
+    },
+    {
+        "_test": "domain annotation dataset ",
+        "accession": "ENCSR575ZXX",
+        "award": "U54HG007004",
+        "annotation_type": "segmentation",
+        "description": "Domain annotation of IMR90 created by Segway with graph-based regularization",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "software_used": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d", "1b071b08-ef76-4a69-8f96-22408e2b380a"],
+        "uuid": "ddff0ede-7f45-486d-9405-e1d889f20dea"
+    }
+]

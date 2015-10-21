@@ -1,0 +1,31 @@
+[
+	{
+        "_test": "UCSC composite",
+        "accession": "ENCSR709LDB",
+        "award": "ENCODE2",
+        "dbxrefs": [
+        	"GEO:GSE32218",
+			"UCSC-GB-mm9:wgEncodeSydhHist"
+        ],
+        "description": "Data from UCSC Genome Browser composite mm9-wgEncodeSydhHist",
+        "documents": [
+            "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
+            "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
+        ],
+        "lab": "michael-snyder",
+        "references": [
+            "99dc0be0-bddb-11e4-bb52-0800200c9a66",
+            "30819150-bddc-11e4-bb52-0800200c9a66",
+            "eedcf3b0-bddc-11e4-bb52-0800200c9a66"
+        ],
+        "related_files": [
+            "ENCFF001MYM",
+            "ENCFF002MYM",
+            "ENCFF001MWZ",
+            "ENCFF001MXA"
+        ],
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "24eb72a1-8dad-4cbe-9f48-692bebdd836f"
+    }
+]

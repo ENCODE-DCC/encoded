@@ -64,6 +64,10 @@ ORDER = [
     'samtools_stats_quality_metric',
     'image',
     'page',
+    'annotation',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite'
 ]
 
 ##############################################################################
