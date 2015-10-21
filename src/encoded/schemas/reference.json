@@ -36,10 +36,6 @@
         }
     },
     "facets": {
-        "accession": {
-            "title": "Accession",
-            "type": "string"
-        },
         "reference_type": {
             "title": "Reference type",
             "type": "string"

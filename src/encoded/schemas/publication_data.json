@@ -25,14 +25,6 @@
         }
     },
     "facets": {
-        "assay_term_name": {
-            "title": "Assay term name",
-            "type": "string"
-        },
-        "organ_slims": {
-            "title": "Organ",
-            "type": "array"
-        },
         "lab.title": {
             "title": "Lab",
             "type": "string"

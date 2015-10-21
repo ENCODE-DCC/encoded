@@ -36,13 +36,68 @@
                 "encyclopedia"
             ]
         },
+        "relevant_timepoint": {
+            "title": "Relevant timepoint",
+            "description": " The timepoint for which the annotation is relevant.",
+            "type": "string",
+            "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
+        },
+        "relevant_timepoint_units": {
+            "title": "Relevant timepoint unit",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "year",
+                "stage"
+            ]
+        },
+        "relevant_life_stage": {
+            "title": "life stage",
+            "type": "string",
+            "enum": [
+                "adult",
+                "unknown",
+                "embryonic",
+                "postnatal",
+                "larva",
+                "first instar larva",
+                "second instar larva",
+                "third instar larva",
+                "wandering third instar larva",
+                "prepupa",
+                "pupa",
+                "early embryonic",
+                "midembryonic",
+                "late embryonic",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)",
+                "L1 larva",
+                "L2 larva",
+                "L2d larva",
+                "L3 larva",
+                "L4 larva",
+                "dauer",
+                "L4/young adult",
+                "young adult"
+            ]
+        },
+        "target": {
+            "title": "Target",
+            "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
+            "comment": "See target.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Target"
+        },
         "software_used": {
             "title": "Software used",
             "description": "A list of software used to derive the annotation calls.",
             "type": "array",
-            "default": [],
             "items": {
-                "title": "Software version",
+                "title": "Software used",
                 "description": "Version of software used to derived the annotation calls.",
                 "type": "string",
                 "comment": "See software_version.json for available identifiers.",
@@ -51,10 +106,6 @@
         }
     },
     "facets": {
-        "accession": {
-            "title": "Accession",
-            "type": "string"
-        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -62,6 +113,14 @@
         "annotation_type": {
             "title": "Annotation type",
             "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        "software_used.software.software_type": {
+            "title": "Software type used",
+            "type": "array"
         },
         "files.file_type": {
             "title": "Available data",
@@ -89,6 +148,10 @@
             "title": "Description",
             "type": "string"
         },
+        "software_used.software.software_type": {
+            "title": "Software type used",
+            "type": "array"
+        },
         "biosample_term_name": {
             "title": "Biosample",
             "type": "string"
@@ -115,6 +178,10 @@
         "dbxrefs": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
+        "organ_slims": 1.0,
+        "developmental_slims": 1.0,
+        "assay_synonyms": 1.0,
+        "biosample_synonyms": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
         "submitted_by.last_name": 1.0,

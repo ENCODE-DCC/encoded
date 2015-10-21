@@ -25,10 +25,6 @@
         }
     },
     "facets": {
-        "accession": {
-            "title": "Accession",
-            "type": "string"
-        },
         "assay_term_name": {
             "title": "Assay term name",
             "type": "string"
