@@ -14,7 +14,7 @@
         "_test": "mappability",
         "accession": "ENCSR165FBU",
         "award": "ENCODE2",
-        "referece_type": "mappability",
+        "reference_type": "mappability",
         "description": "Human Mappability Uniqueness 35mer",
         "lab": "gregory-crawford",
         "status": "released",
