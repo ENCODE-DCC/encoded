@@ -176,3 +176,47 @@ class Dataset(Item):
             '&hgHubConnect.remakeTrackHub=on'
             '&hgHub_do_firstDb=1&hubUrl='
         ) + quote_plus(hub_url, ':/@')
+
+
+@collection(
+    name='annotation',
+    properties={
+        'title': "Annotation dataset",
+        'description': 'A set of annotation files produced by ENCODE.',
+    })
+class Annotation(Dataset):
+    item_type = 'annotation'
+    schema = load_schema('encoded:schemas/annotation.json')
+
+
+@collection(
+    name='publication_data',
+    properties={
+        'title': "Publication dataset",
+        'description': 'A set of files that are described/analyzed in a publication.',
+    })
+class PublicationData(Dataset):
+    item_type = 'publication_data'
+    schema = load_schema('encoded:schemas/publication_data.json')
+
+
+@collection(
+    name='reference',
+    properties={
+        'title': "Reference dataset",
+        'description': 'A set of reference files used by ENCODE.',
+    })
+class Reference(Dataset):
+    item_type = 'reference'
+    schema = load_schema('encoded:schemas/reference.json')
+
+
+@collection(
+    name='ucsc_browser_composite',
+    properties={
+        'title': "UCSC browser composite dataset",
+        'description': 'A set of files that comprise a composite at the UCSC genome browser.',
+    })
+class UcscBrowserComposite(Dataset):
+    item_type = 'ucsc_browser_composite'
+    schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
