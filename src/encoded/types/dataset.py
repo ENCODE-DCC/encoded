@@ -10,6 +10,10 @@ from .base import (
 from itertools import chain
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
+from .shared_calculated_properties import (
+    CalculatedSlims,
+    CalculatedSynonyms
+)
 
 
 def file_is_revoked(request, path):
@@ -184,9 +188,10 @@ class Dataset(Item):
         'title': "Annotation dataset",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(Dataset):
+class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
+    embedded = Dataset.embedded + ['software_used', 'software_used.software']
 
 
 @collection(
