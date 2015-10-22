@@ -45,6 +45,10 @@ ORDER = [
     'analysis_step_version',
     'pipeline',
     'analysis_step_run',
+    'annotation',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite',
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
@@ -63,11 +67,7 @@ ORDER = [
     'phantompeaktools_spp_quality_metric',
     'samtools_stats_quality_metric',
     'image',
-    'page',
-    'annotation',
-    'publication_data',
-    'reference',
-    'ucsc_browser_composite'
+    'page'
 ]
 
 ##############################################################################
@@ -534,6 +534,12 @@ PHASE1_PIPELINES = {
     ],
     'publication': [
         remove_keys('datasets'),
+    ],
+    'publication_data': [
+        remove_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
+        remove_keys('related_files'),
     ]
 }
 
@@ -563,6 +569,12 @@ PHASE2_PIPELINES = {
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),
+    ],
+    'publication_data': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
+        skip_rows_missing_all_keys('related_files'),
     ]
 }
 
