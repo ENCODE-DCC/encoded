@@ -5,7 +5,7 @@
     "id": "/profiles/annotation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "annotation_type"],
+    "required": [ "award", "lab", "annotation_type", "organism"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

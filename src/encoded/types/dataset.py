@@ -192,7 +192,7 @@ class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     base_types = [Dataset.__name__] + Dataset.base_types
-    embedded = Dataset.embedded + ['software_used', 'software_used.software']
+    embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
