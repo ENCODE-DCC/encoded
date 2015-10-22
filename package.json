@@ -1,7 +1,7 @@
 {
   "name": "encoded",
   "version": "0.0.0",
-  "description": "jquery, domready held back.",
+  "description": "domready held back.",
   "scripts": {
     "test": "jest",
     "postinstall": "sh postinstall.sh"
@@ -39,24 +39,21 @@
     "ckeditor": "file:node_shims/ckeditor",
     "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
-    "dagre-d3": "git://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
+    "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
     "domready": "^0.3.0",
-    "es5-shim": "^4.0.3",
     "form-serialize": "^0.6.0",
     "google-analytics": "file:node_shims/google-analytics",
-    "html5shiv": "^3.7.2",
     "immutable": "^3.7.5",
-    "jquery": "^1.11.1",
     "marked": "^0.3.3",
     "node-ckeditor": "^4.3.2",
     "react": "^0.12.2",
     "react-bootstrap": "^0.15.1",
-    "react-forms": "git://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",
+    "react-forms": "git+https://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",
     "scriptjs": "^2.5.7",
     "shivie8": "^1.0.0",
     "source-map-support": "^0.2.7",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
-    "whatwg-fetch": "git://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a"
+    "whatwg-fetch": "git+https://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a"
   }
 }

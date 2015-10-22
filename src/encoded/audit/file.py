@@ -290,12 +290,15 @@ def audit_file_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
-    '''   
-    
+    '''
+
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] != 'bam':
+        return
+
+    if value['output_type'] == 'transcriptome alignments':
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':
@@ -390,13 +393,13 @@ def audit_file_read_depth(value, system):
             return
         if ((singleCellFlag==True) and read_depth<read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag==True) and read_depth<read_depth_special['shRNA knockdown followed by RNA-seq']):
             if shRNAFlag==True:
-                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
                     read_depth, 
                     pipeline['title'],
                     read_depth_special['shRNA knockdown followed by RNA-seq'])
             else:
-                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
                     read_depth, 
                     pipeline['title'],
@@ -407,7 +410,7 @@ def audit_file_read_depth(value, system):
             
                    
         if (read_depth < read_depth_criteria[pipeline['title']]) and (singleCellFlag==False) and (shRNAFlag==False):
-            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                 value['@id'],
                 read_depth, 
                 pipeline['title'],

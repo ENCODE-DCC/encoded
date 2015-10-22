@@ -97,7 +97,7 @@ class JsonGraph {
                     }
                 }
             } else if (nodes[i].nodes.length) {
-                var matching = this.getNode(id, nodes[i]);
+                var matching = this.getSubnode(id, nodes[i]);
                 if (matching) {
                     return matching;
                 }

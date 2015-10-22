@@ -1,7 +1,6 @@
 'use strict';
 var EventEmitter = require('events').EventEmitter;
 var React = require('react');
-var ReactForms = require('react-forms');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var closest = require('../libs/closest');
 var offset = require('../libs/offset');
@@ -25,18 +24,9 @@ var filterValue = function(value) {
 };
 
 
-class JSONNode extends ReactForms.schema.ScalarNode {
-    serialize(value) {
-        return JSON.stringify(value, null, 4);
-    }
-    deserialize(value) {
-        return (typeof value === 'string') ? JSON.parse(value) : value;
-    }
-}
-module.exports.JSONNode = JSONNode;
-
 
 var makeValidationResult = function(validation) {
+    var ReactForms = require('react-forms');
     return new ReactForms.ValidationResult(
         validation.error ? validation.error : null,
         validation.children ? _.mapObject(validation.children, function(v, k) {
@@ -48,6 +38,7 @@ var makeValidationResult = function(validation) {
 
 var ReadOnlyField = React.createClass({
     render: function() {
+        var ReactForms = require('react-forms');
         var value;
         if (this.props.preview) {
             var url = this.props.value.value;
@@ -238,8 +229,7 @@ var jsonSchemaToFormSchema = function(attrs) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control" disabled={disabled}>{options}</select>;
-        }
-        if (p.linkTo) {
+        } else if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
             var inputs = require('./inputs');
             props.input = (
@@ -336,6 +326,7 @@ var Form = module.exports.Form = React.createClass({
     },
 
     render: function() {
+        var ReactForms = require('react-forms');
         return (
             <div>
                 <ReactForms.Form
