@@ -191,6 +191,7 @@ class Dataset(Item):
 class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + ['software_used', 'software_used.software']
 
 
@@ -202,6 +203,7 @@ class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
     })
 class PublicationData(Dataset):
     item_type = 'publication_data'
+    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/publication_data.json')
 
 
@@ -214,6 +216,7 @@ class PublicationData(Dataset):
 class Reference(Dataset):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism']
 
 
@@ -225,4 +228,5 @@ class Reference(Dataset):
     })
 class UcscBrowserComposite(Dataset, CalculatedSynonyms):
     item_type = 'ucsc_browser_composite'
+    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
