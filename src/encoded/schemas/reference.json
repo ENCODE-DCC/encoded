@@ -31,7 +31,8 @@
             "enum": [
                 "index",
                 "spike-in",
-                "mappability"
+                "mappability",
+                "genome"
             ]
         },
         "organism": {
