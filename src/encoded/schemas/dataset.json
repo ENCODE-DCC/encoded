@@ -124,8 +124,24 @@
             "title": "Dataset type",
             "type": "string"
         },
+        "status": {
+            "title": "Dataset status",
+            "type": "string"
+        },
+        "files.file_type": {
+            "title": "Available data",
+            "type": "string"
+        },
+        "date_released": {
+            "title": "Date released",
+            "type": "string"
+        },  
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },

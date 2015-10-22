@@ -25,6 +25,10 @@
         }
     },
     "facets": {
+        "status": {
+            "title": "Dataset status",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -33,10 +37,7 @@
             "title": "Available data",
             "type": "string"
         },
-        "status": {
-            "title": "Experiment status",
-            "type": "string"
-        },
+
         "award.project": {
             "title": "Project",
             "type": "string"
