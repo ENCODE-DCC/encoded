@@ -332,6 +332,7 @@
                         
                         "exon quantifications",
                         "gene quantifications",
+                        "microRNA quantifications",
                         "transcript quantifications",
                         "library fraction",
                         "methylation state at CpG",
@@ -628,6 +629,7 @@
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
+        "microRNA quantifications": "quantification",
         "transcript quantifications": "quantification",
         "methylation state at CpG": "quantification",
         "methylation state at CHG": "quantification",
