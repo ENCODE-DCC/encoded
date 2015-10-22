@@ -183,7 +183,7 @@ class Dataset(Item):
 
 
 @collection(
-    name='annotation',
+    name='annotations',
     properties={
         'title': "Annotation dataset",
         'description': 'A set of annotation files produced by ENCODE.',
@@ -206,7 +206,7 @@ class PublicationData(Dataset):
 
 
 @collection(
-    name='reference',
+    name='references',
     properties={
         'title': "Reference dataset",
         'description': 'A set of reference files used by ENCODE.',
@@ -214,14 +214,15 @@ class PublicationData(Dataset):
 class Reference(Dataset):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
+    embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
-    name='ucsc_browser_composite',
+    name='ucsc_browser_composites',
     properties={
         'title': "UCSC browser composite dataset",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(Dataset):
+class UcscBrowserComposite(Dataset, CalculatedSynonyms):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
