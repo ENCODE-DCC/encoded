@@ -32,7 +32,6 @@
             "title": "Type",
             "description": "The category that best describes the annotation set.",
             "type": "string",
-            "default": "enhancer prediction",
             "enum": [
                 "enhancer prediction",
                 "segmentation",
