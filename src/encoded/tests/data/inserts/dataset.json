@@ -8,7 +8,8 @@
         "lab": "richard-myers",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "d2470afe-ac68-4489-8f51-90ddfbc8e00b"
+        "uuid": "d2470afe-ac68-4489-8f51-90ddfbc8e00b",
+        "date_released": "2015-10-21"
     },
     {
         "_test": "spikes",
@@ -19,7 +20,8 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
+        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5",
+        "date_released": "1999-12-31"
     },
     {
         "_test": "spikes2",
@@ -30,7 +32,8 @@
         "lab": "barbara-wold",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
+        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed",
+        "date_released": "1492-10-12"
     },
     {
         "_test": "ec3 dataset",
@@ -41,7 +44,8 @@
         "lab": "john-stamatoyannopoulos",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "e52a0b01-2fb8-4015-bcad-c902f1d786fb"
+        "uuid": "e52a0b01-2fb8-4015-bcad-c902f1d786fb",
+        "date_released": "1999-12-31"
     },
     {
         "_test": "reference file dataset ",
@@ -84,7 +88,8 @@
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "ce459d50-bea1-407e-acfa-95c1b543cd60"
+        "uuid": "ce459d50-bea1-407e-acfa-95c1b543cd60",
+        "date_released": "1492-10-12"
     },
     {
         "_test": "patch file",
@@ -108,6 +113,7 @@
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "51769a96-5aab-4e50-8677-5bafe269276d"
+        "uuid": "51769a96-5aab-4e50-8677-5bafe269276d",
+        "date_released": "1999-12-31"
     }
 ]

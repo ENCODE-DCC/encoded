@@ -15,7 +15,8 @@
         "relevant_timepoint_units": "day",
         "relevant_life_stage": "embryonic",
         "software_used": ["d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"],
-        "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c"
+        "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c",
+        "date_released": "2015-02-27"
     },
     {
         "_test": "domain annotation dataset ",
@@ -30,6 +31,7 @@
         "biosample_term_name": "IMR-90",
         "biosample_term_id": "EFO:0001196",
         "software_used": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d", "1b071b08-ef76-4a69-8f96-22408e2b380a"],
-        "uuid": "ddff0ede-7f45-486d-9405-e1d889f20dea"
+        "uuid": "ddff0ede-7f45-486d-9405-e1d889f20dea",
+        "date_released": "2014-07-15"
     }
 ]

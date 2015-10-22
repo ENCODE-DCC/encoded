@@ -8,7 +8,8 @@
         "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108"
+        "uuid": "82c2c860-1176-4c93-90cf-67a11a4fc108",
+        "date_released": "2015-04-21"
     },
     {
         "_test": "mappability",
@@ -19,6 +20,18 @@
         "lab": "gregory-crawford",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9"
+        "uuid": "cb15de83-0e56-4428-8742-b2fbb61543d9",
+        "date_released": "2012-06-08"
+    },
+    {
+        "_test": "index",
+        "accession": "ENCSR497EUF",
+        "award": "/awards/U41HG006992",
+        "reference_type": "index",
+        "description": "Bismarck indexed reference files for use with methylation input",
+        "lab": "/labs/encode-processing-pipeline/",
+        "organism": "human",
+        "software_used": ["/software_version/cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
+        "date_released": "2013-11-18"
     }
 ]
