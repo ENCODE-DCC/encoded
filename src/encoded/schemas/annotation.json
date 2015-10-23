@@ -167,6 +167,14 @@
             "title": "Description",
             "type": "string"
         },
+        "organism.scientific_name": {
+            "title": "Organism",
+            "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
         "software_used.software.software_type": {
             "title": "Software type used",
             "type": "array"

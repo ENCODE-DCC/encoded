@@ -230,3 +230,4 @@ class UcscBrowserComposite(Dataset, CalculatedSynonyms):
     item_type = 'ucsc_browser_composite'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
+    embedded = Dataset.embedded + ['organism']
