@@ -170,7 +170,7 @@ def audit_run_type(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if value['file_format'] not in ['fastq', 'fasta']:
+    if value['file_format'] not in ['fastq']:
         return
 
     if 'run_type' not in value:
