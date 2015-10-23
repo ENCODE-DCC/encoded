@@ -107,33 +107,34 @@ organ_slims = {
 }
 
 category_slims = {
- 'OBI:0000634': 'DNA methylation profiling',
- 'OBI:0000424': 'transcription profiling',
- 'OBI:0000435': 'genotyping',
- 'OBI:0000615': 'proteomics',
- 'OBI:0001916': 'replication',
- 'OBI:0001398': "protein and DNA interaction"
+    'OBI:0000634': 'DNA methylation profiling',
+    'OBI:0000424': 'transcription profiling',
+    'OBI:0000435': 'genotyping',
+    'OBI:0000615': 'proteomics',
+    'OBI:0001916': 'replication',
+    'OBI:0001398': "protein and DNA interaction",
+    'OBI:0001854': "protein and RNA interaction"
 }
 
 objective_slims = {
- 'OBI:0000218': 'cellular feature identification objective',
- 'OBI:0001691': 'cellular structure feature identification objective',
- 'OBI:0001916': 'DNA replication identification objective',
- 'OBI:0001917': 'chromosome conformation identification objective',
- 'OBI:0001234': 'epigenetic modification identification objective',
- 'OBI:0001331': 'transcription profiling identification objective',
- 'OBI:0001690': 'molecular function identification objective',
- 'OBI:0000268': 'organism feature identification objective',
- 'OBI:0001623': 'organism identification objective',
- 'OBI:0001398': 'protein and DNA interaction identification objective',
- 'OBI:0001854': 'protein and RNA interaction identification objective'
+    'OBI:0000218': 'cellular feature identification objective',
+    'OBI:0001691': 'cellular structure feature identification objective',
+    'OBI:0001916': 'DNA replication identification objective',
+    'OBI:0001917': 'chromosome conformation identification objective',
+    'OBI:0001234': 'epigenetic modification identification objective',
+    'OBI:0001331': 'transcription profiling identification objective',
+    'OBI:0001690': 'molecular function identification objective',
+    'OBI:0000268': 'organism feature identification objective',
+    'OBI:0001623': 'organism identification objective',
+    'OBI:0001398': 'protein and DNA interaction identification objective',
+    'OBI:0001854': 'protein and RNA interaction identification objective'
 }
 
 type_slims = {
- 'OBI:0001700': 'immunoprecipitation assay',
- 'OBI:0000424': 'transcription profiling assay',
- 'OBI:0000634': 'DNA methylation profiling assay',
- 'OBI:0000435': 'genotyping assay'
+    'OBI:0001700': 'immunoprecipitation assay',
+    'OBI:0000424': 'transcription profiling assay',
+    'OBI:0000634': 'DNA methylation profiling assay',
+    'OBI:0000435': 'genotyping assay'
 }
 
 
