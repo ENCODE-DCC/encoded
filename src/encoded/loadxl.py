@@ -535,7 +535,13 @@ PHASE1_PIPELINES = {
     'publication': [
         remove_keys('datasets'),
     ],
+    'annotation': [
+        remove_keys('related_files'),
+    ],
     'publication_data': [
+        remove_keys('related_files'),
+    ],
+    'reference': [
         remove_keys('related_files'),
     ],
     'ucsc_browser_composite': [
@@ -570,7 +576,13 @@ PHASE2_PIPELINES = {
     'publication': [
         skip_rows_missing_all_keys('datasets'),
     ],
+    'annotation': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
     'publication_data': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'reference': [
         skip_rows_missing_all_keys('related_files'),
     ],
     'ucsc_browser_composite': [
