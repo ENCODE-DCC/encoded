@@ -22,7 +22,6 @@ paired_end_assays = [
     ]
 
 
-
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
@@ -47,7 +46,10 @@ def audit_file_replicate_match(value, system):
         raise AuditFailure('mismatched replicate', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3',
+                                                     'modERN',
+                                                     'ENCODE2',
+                                                     'ENCODE2-Mouse'))
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -65,7 +67,10 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3',
+                                                     'modERN',
+                                                     'ENCODE2',
+                                                     'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
@@ -94,7 +99,10 @@ def audit_file_controlled_by(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if value['dataset'].get('assay_term_name') not in ['ChIP-seq', 'RAMPAGE', 'CAGE', 'shRNA knockdown followed by RNA-seq']:
+    if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
+                                                       'RAMPAGE',
+                                                       'CAGE',
+                                                       'shRNA knockdown followed by RNA-seq']:
         return
 
     if 'target' in value['dataset'] and 'control' in value['dataset']['target'].get('investigated_as', []):
@@ -306,40 +314,39 @@ def audit_file_read_depth(value, system):
 
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has no analysis step version'.format(
-                value['@id'])
-        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION') 
-    
+                 value['@id'])
+        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has no analysis step in {}'.format(
-                value['@id'],
-                value['analysis_step_version']['@id'])
-        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')    
-        
+                 value['@id'],
+                 value['analysis_step_version']['@id'])
+        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed alignment file {} has no pipelines in {}'.format(
-                value['@id'],
-                value['analysis_step_version']['analysis_step']['@id'])
+                 value['@id'],
+                 value['analysis_step_version']['analysis_step']['@id'])
         raise AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
 
     if 'software_versions' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has no software_versions in {}'.format(
-                value['@id'],
-                value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software versions', detail, level='DCC_ACTION')    
+                 value['@id'],
+                 value['analysis_step_version']['@id'])
+        raise AuditFailure('missing software versions', detail, level='DCC_ACTION')
 
-    if value['analysis_step_version']['software_versions']==[]:
+    if value['analysis_step_version']['software_versions'] == []:
         detail = 'ENCODE Processed alignment file {} has no softwares listed in software_versions, under {}'.format(
-                value['@id'],
-                value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software', detail, level='DCC_ACTION')     
-    
-    ''' 
-    excluding bam files from TopHat
-    '''
-    for record in value['analysis_step_version']['software_versions']:        
-        if record['software']['title']=='TopHat':
+                 value['@id'],
+                 value['analysis_step_version']['@id'])
+        raise AuditFailure('missing software', detail, level='DCC_ACTION')
+
+    # excluding bam files from TopHat
+
+    for record in value['analysis_step_version']['software_versions']:
+        if record['software']['title'] == 'TopHat':
             return
-            
+
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
@@ -347,10 +354,10 @@ def audit_file_read_depth(value, system):
             value['@id'])
         raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
     read_depth = 0
-    
+
     for metric in quality_metrics:
         if "uniqueMappedCount" in metric:
-            read_depth = metric['uniqueMappedCount']            
+            read_depth = metric['uniqueMappedCount']
             continue
         else:
             if 'Uniquely mapped reads number' in metric:
@@ -360,7 +367,7 @@ def audit_file_read_depth(value, system):
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
             value['@id'])
         raise AuditFailure('missing read depth', detail, level='DCC_ACTION')
-        
+
     read_depth_criteria = {
         'Small RNA-seq single-end pipeline': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
@@ -370,50 +377,43 @@ def audit_file_read_depth(value, system):
     }
 
     read_depth_special = {
-        'shRNA knockdown followed by RNA-seq':20000000,
-        'single cell isolation followed by RNA-seq':15000000
+        'shRNA knockdown followed by RNA-seq': 20000000,
+        'single cell isolation followed by RNA-seq': 15000000
     }
 
-   
-    '''
-    Finding out if that is shRNA or single Cell to be treated differently
-    '''
+    # Finding out if that is shRNA or single Cell to be treated differently
     shRNAFlag = False
     singleCellFlag = False
-    
 
     if 'dataset' in value:
-        if value['dataset']['assay_term_name']=='shRNA knockdown followed by RNA-seq':
+        if value['dataset']['assay_term_name'] == 'shRNA knockdown followed by RNA-seq':
             shRNAFlag = True
-        if value['dataset']['assay_term_name']=='single cell isolation followed by RNA-seq':
-            singleCellFlag=True
+        if value['dataset']['assay_term_name'] == 'single cell isolation followed by RNA-seq':
+            singleCellFlag = True
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] not in read_depth_criteria: 
+        if pipeline['title'] not in read_depth_criteria:
             return
-        if ((singleCellFlag==True) and read_depth<read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag==True) and read_depth<read_depth_special['shRNA knockdown followed by RNA-seq']):
-            if shRNAFlag==True:
+        if ((singleCellFlag is True) and read_depth < read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag is True) and read_depth < read_depth_special['shRNA knockdown followed by RNA-seq']):
+            if shRNAFlag is True:
                 detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
-                    read_depth, 
+                    read_depth,
                     pipeline['title'],
                     read_depth_special['shRNA knockdown followed by RNA-seq'])
             else:
                 detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
-                    read_depth, 
+                    read_depth,
                     pipeline['title'],
                     read_depth_special['single cell isolation followed by RNA-seq'])
 
-            
             raise AuditFailure('insufficient read depth', detail, level='ERROR')
-            
-                   
-        if (read_depth < read_depth_criteria[pipeline['title']]) and (singleCellFlag==False) and (shRNAFlag==False):
+
+        if (read_depth < read_depth_criteria[pipeline['title']]) and (singleCellFlag is False) and (shRNAFlag is False):
             detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                 value['@id'],
-                read_depth, 
+                read_depth,
                 pipeline['title'],
                 read_depth_criteria[pipeline['title']])
             raise AuditFailure('insufficient read depth', detail, level='ERROR')
-  
