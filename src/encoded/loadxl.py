@@ -49,6 +49,7 @@ ORDER = [
     'publication_data',
     'reference',
     'ucsc_browser_composite',
+    'paired_set',
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
@@ -540,6 +541,9 @@ PHASE1_PIPELINES = {
     ],
     'ucsc_browser_composite': [
         remove_keys('related_files'),
+    ],
+    'paired_set': [
+        remove_keys('related_files'),
     ]
 }
 
@@ -574,6 +578,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'ucsc_browser_composite': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'paired_set': [
         skip_rows_missing_all_keys('related_files'),
     ]
 }

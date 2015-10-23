@@ -231,3 +231,16 @@ class UcscBrowserComposite(Dataset, CalculatedSynonyms):
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
     embedded = Dataset.embedded + ['organism']
+
+
+@collection(
+    name='paired_sets',
+    properties={
+        'title': "Paired set",
+        'description': 'A paired set of experiments.',
+    })
+class PairedSet(Dataset, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'paired_set'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/paired_set.json')
+    embedded = Dataset.embedded + ['organism']

@@ -1,0 +1,23 @@
+[
+	{
+	    "accession": "ENCSR046UUT",
+	    "award": "/awards/U54HG007010/",
+	    "dataset_type": "paired set",
+	    "date_created": "2014-08-21T04:44:02.463524+00:00",
+	    "description": "Paired Experiment for Brain_Cerebellar Cortex (ENCSR503HIB, ENCSR369NDR)",
+	    "assay_term_name": "DNase-seq",
+	    "assay_term_id": "OBI:0001853",
+	    "biosample_term_name": "brain",
+	    "biosample_term_id": "UBERON:0000955",
+	    "biosample_type": "tissue",
+	    "organism": "human",
+	    "lab": "/labs/john-stamatoyannopoulos/",
+	    "related_files": [
+	    	"/files/ENCFF001MYM/",
+	        "/files/ENCFF002MYM/"
+	    ],
+	    "status": "proposed",
+	    "submitted_by": "facilisi.tristique@potenti.vivamus",
+	    "uuid": "aa59185b-5bf4-4e2f-a286-796956f43618"
+	}
+]
