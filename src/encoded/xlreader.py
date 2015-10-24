@@ -44,7 +44,10 @@ def reader(stream, sheetname=None):
     if sheetname is None:
         sheet, = book.sheets()        
     else:
-        sheet = book.sheet_by_name(sheetname)
+        try:
+            sheet = book.sheet_by_name(sheetname)
+        except xlrd.XLRDError:
+            return
 
     datemode = sheet.book.datemode
     for index in range(sheet.nrows):
