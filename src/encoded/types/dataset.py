@@ -231,3 +231,15 @@ class UcscBrowserComposite(Dataset, CalculatedSynonyms):
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
     embedded = Dataset.embedded + ['organism']
+
+
+@collection(
+    name='projects',
+    properties={
+        'title': "Project dataset",
+        'description': 'A set of files that comprise a project.',
+    })
+class Project(Dataset):
+    item_type = 'project'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/project.json')
