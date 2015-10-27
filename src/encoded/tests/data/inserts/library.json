@@ -90,7 +90,7 @@
         "nucleic_acid_term_id": "SO:0000871",
         "nucleic_acid_term_name": "polyadenylated mRNA",
         "size_range": ">200",
-        "spikeins_used": ["ENCSR156CIL", "ENCSR013YHQ"],
+        "spikeins_used": ["ENCSR704RSS", "ENCSR013YHQ"],
         "strand_specificity": true,
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"

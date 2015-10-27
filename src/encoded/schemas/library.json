@@ -53,7 +53,7 @@
                 "description": "A specific spike-ins type dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Dataset"
+                "linkTo": "Reference"
             }
         },
         "biosample": {

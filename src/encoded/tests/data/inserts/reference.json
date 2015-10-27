@@ -12,6 +12,18 @@
         "date_released": "2015-04-21"
     },
     {
+        "_test": "spikes2",
+        "accession": "ENCSR013YHQ",
+        "award": "ENCODE2",
+        "reference_type": "spike-in",
+        "description": "RNA Working Group Spike-ins Dataset 2",
+        "lab": "barbara-wold",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed",
+        "date_released": "1492-10-12"
+    },
+    {
         "_test": "mappability",
         "accession": "ENCSR165FBU",
         "award": "ENCODE2",
