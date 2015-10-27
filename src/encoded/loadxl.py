@@ -46,6 +46,7 @@ ORDER = [
     'pipeline',
     'analysis_step_run',
     'annotation',
+    'project',
     'publication_data',
     'reference',
     'ucsc_browser_composite',
@@ -538,6 +539,9 @@ PHASE1_PIPELINES = {
     'annotation': [
         remove_keys('related_files'),
     ],
+    'project': [
+        remove_keys('related_files'),
+    ],
     'publication_data': [
         remove_keys('related_files'),
     ],
@@ -577,6 +581,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('datasets'),
     ],
     'annotation': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'project': [
         skip_rows_missing_all_keys('related_files'),
     ],
     'publication_data': [
