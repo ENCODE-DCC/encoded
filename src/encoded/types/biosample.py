@@ -121,15 +121,15 @@ class Biosample(Item):
         "title": "Sex",
         "type": "string"
     })
-    def sex(self, request, donor=None, model_organism_sex=None, organism=None):        
+    def sex(self, request, donor=None, model_organism_sex=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag == True:
-            if donor is not None:# try to get the sex from the donor
+        if humanFlag is True:
+            if donor is not None:  # try to get the sex from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'sex' in donorObject:
                     return donorObject['sex']
@@ -151,11 +151,11 @@ class Biosample(Item):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag == True:
-            if donor is not None:# try to get the age from the donor
+        if humanFlag is True:
+            if donor is not None:  # try to get the age from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age' in donorObject:
                     return donorObject['age']
@@ -168,7 +168,7 @@ class Biosample(Item):
                 return model_organism_age
             else:
                 return 'unknown'
-    
+
     @calculated_property(schema={
         "title": "Age units",
         "type": "string",
@@ -177,11 +177,11 @@ class Biosample(Item):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] is 'Homo sapiens':
                 humanFlag = True
 
-        if humanFlag == True:
-            if donor is not None:# try to get the age_units from the donor
+        if humanFlag is True:
+            if donor is not None:  # try to get the age_units from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age_units' in donorObject:
                     return donorObject['age_units']
@@ -191,8 +191,6 @@ class Biosample(Item):
                 return None
         else:
             return model_organism_age_units
-
-        
 
     @calculated_property(schema={
         "title": "Health status",
