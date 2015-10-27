@@ -35,6 +35,7 @@ var portal = {
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started'},
             {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
+            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},
             {id: 'contact', title: 'Contact', url: '/help/contacts'}
         ]}
