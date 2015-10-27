@@ -114,7 +114,8 @@ def audit_experiment_isogeneity(value, system):
 
     if value.get('replication_type') is None:
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
-        raise AuditFailure('undetermined replicate_type', detail, level='DCC_ACTION')
+        raise AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
+        return
 
     biosample_dict = {}
     biosample_age_list = []
