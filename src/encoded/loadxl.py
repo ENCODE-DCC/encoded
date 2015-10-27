@@ -1,6 +1,7 @@
 from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
+import io
 import logging
 import os.path
 
@@ -222,15 +223,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = zf.open(name + '.tsv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.tsv'), encoding='utf-8')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = zf.open(name + '.csv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.csv'), encoding='utf-8')
             return read_csv(stream)
 
         if (name + '.json') in names:
-            stream = zf.open(name + '.json', 'r')
+            stream = io.TextIOWrapper(zf.open(name + '.json'), encoding='utf-8')
             return read_json(stream)
 
     if os.path.isdir(path):
