@@ -1,7 +1,7 @@
 [
 	{
-		"_test": "training data/freeze dataset",
-		"project_type": "training",
+		"_test": "slushie dataset",
+		"project_type": "evaluation",
 		"award": "U54HG007004",
 		"description": "Uniformly processed ENCODE3 eCLIP October 2015",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",

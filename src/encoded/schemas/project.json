@@ -27,7 +27,6 @@
             "description": "The category that best describes the project.",
             "type": "string",
             "enum": [
-                "training",
                 "evaluation",
                 "validation"
             ]
