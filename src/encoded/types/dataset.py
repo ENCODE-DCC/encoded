@@ -176,3 +176,75 @@ class Dataset(Item):
             '&hgHubConnect.remakeTrackHub=on'
             '&hgHub_do_firstDb=1&hubUrl='
         ) + quote_plus(hub_url, ':/@')
+
+
+@collection(
+    name='annotations',
+    properties={
+        'title': "Annotation dataset",
+        'description': 'A set of annotation files produced by ENCODE.',
+    })
+class Annotation(Dataset):
+    item_type = 'annotation'
+    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
+
+
+@collection(
+    name='publication-data',
+    properties={
+        'title': "Publication dataset",
+        'description': 'A set of files that are described/analyzed in a publication.',
+    })
+class PublicationData(Dataset):
+    item_type = 'publication_data'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+
+
+@collection(
+    name='references',
+    properties={
+        'title': "Reference dataset",
+        'description': 'A set of reference files used by ENCODE.',
+    })
+class Reference(Dataset):
+    item_type = 'reference'
+    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
+
+
+@collection(
+    name='ucsc-browser-composites',
+    properties={
+        'title': "UCSC browser composite dataset",
+        'description': 'A set of files that comprise a composite at the UCSC genome browser.',
+    })
+class UcscBrowserComposite(Dataset):
+    item_type = 'ucsc_browser_composite'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+
+
+@collection(
+    name='projects',
+    properties={
+        'title': "Project dataset",
+        'description': 'A set of files that comprise a project.',
+    })
+class Project(Dataset):
+    item_type = 'project'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+
+
+@collection(
+    name='paired-sets',
+    properties={
+        'title': "Paired set series",
+        'description': 'A series that pairs two datasets (experiments) together',
+    })
+class PairedSet(Dataset):
+    item_type = 'paired_set'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
