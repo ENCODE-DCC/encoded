@@ -44,7 +44,7 @@
                 "reference",
                 "spike-ins",
                 "paired set",
-                "time series"
+                "annotation"
             ]
         },
         "dbxrefs": {
