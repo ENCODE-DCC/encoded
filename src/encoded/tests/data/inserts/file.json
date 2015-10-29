@@ -1184,6 +1184,7 @@
         "dbxrefs": []
     },
     {
+        "_test": "original file for a publication data analysis set 1",
         "accession": "ENCFF002ENO",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
@@ -1200,6 +1201,7 @@
         "submitted_file_name": "K562_RAD21_1.1.interactions.txt"
     },
     {
+        "_test": "original file for a publication data analysis set 2",
         "accession": "ENCFF002ENS",
         "assembly": "hg19",
         "award": "/awards/U54HG006996/",
@@ -1216,6 +1218,8 @@
         "submitted_file_name": "K562_RAD21_2.1.interactions.txt"
     },
     {
+
+        "_test": "original file for an annotation analysis set 1",
         "accession": "ENCFF762DWI",
         "assembly": "hg19",
         "award": "ENCODE2",
@@ -1233,6 +1237,7 @@
         "uuid": "157db3cf-c819-4c37-bfcb-a4bb57224975"
     },
     {
+        "_test": "original file for an annotation analysis set 2",
         "accession": "ENCFF015OKV",
         "assembly": "mm10",
         "award": "ENCODE2",
@@ -1249,6 +1254,7 @@
         "uuid": "91ec6382-9f34-4d5a-ac6c-6920b4c16696"
     },
     {
+        "_test": "original file for a series",
         "accession": "ENCFF001JEV",
         "assembly": "ce10",
         "award": "U41HG007355",
