@@ -201,7 +201,16 @@ class AnalysisFileSet(Dataset):
     item_type = 'analysis_file_set'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/analysis_file_set.json')
-    embedded = Dataset.embedded
+    embedded = Dataset.embedded + [
+        'files.replicate.antibody',
+        'files.replicate.experiment.target.organism',
+        'files.replicate.library',
+        'files.replicate.library.biosample',
+        'files.replicate.library.biosample.donor',
+        'files.replicate.library.biosample.donor.organism',
+        'files.replicate.library.biosample.rnais',
+        'files.replicate.experiment.possible_controls'
+    ]
 
     @calculated_property(schema={
         "title": "Contributing files",
@@ -357,12 +366,54 @@ class Series(Dataset):
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
-        'related_datasets',
+        'award.pi.lab',
+        'references',
         'related_datasets.lab',
         'related_datasets.submitted_by',
-        'revoked_datasets',
-        'revoked_datasets.lab',
-        'revoked_datasets.submitted_by'
+        'related_datasets.award.pi.lab',
+        'related_datasets.replicates.antibody',
+        'related_datasets.replicates.antibody.targets',
+        'related_datasets.replicates.library',
+        'related_datasets.replicates.library.documents.lab',
+        'related_datasets.replicates.library.documents.submitted_by',
+        'related_datasets.replicates.library.documents.award',
+        'related_datasets.replicates.library.biosample.submitted_by',
+        'related_datasets.replicates.library.biosample.source',
+        'related_datasets.replicates.library.biosample.organism',
+        'related_datasets.replicates.library.biosample.rnais',
+        'related_datasets.replicates.library.biosample.donor.organism',
+        'related_datasets.replicates.library.biosample.donor.mutated_gene',
+        'related_datasets.replicates.library.biosample.treatments',
+        'related_datasets.replicates.library.spikeins_used',
+        'related_datasets.replicates.library.treatments',
+        'related_datasets.possible_controls',
+        'related_datasets.possible_controls.target',
+        'related_datasets.possible_controls.lab',
+        'related_datasets.target.organism',
+        'related_datasets.references',
+        'files.lab',
+        'files.platform',
+        'files.lab',
+        'files.derived_from',
+        'files.derived_from.replicate',
+        'files.analysis_step_version.analysis_step',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step.versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
+        'files.replicate.library.biosample',
+        'files.quality_metrics',
+        'files.quality_metrics.step_run',
+        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
+        'contributing_files.platform',
+        'contributing_files.lab',
+        'contributing_files.derived_from',
+        'contributing_files.analysis_step_version.analysis_step',
+        'contributing_files.analysis_step_version.analysis_step.pipelines',
+        'contributing_files.analysis_step_version.software_versions',
+        'contributing_files.analysis_step_version.software_versions.software'
     ]
 
     @calculated_property(schema={
@@ -405,7 +456,7 @@ class PairedSet(Series, CalculatedSlims, CalculatedSynonyms):
     item_type = 'paired_set'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/paired_set.json')
-    embedded = Series.embedded + ['organism']
+    embedded = Series.embedded
 
 
 @collection(
@@ -418,7 +469,7 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms):
     item_type = 'treatment_time_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_time_series.json')
-    embedded = Series.embedded + ['organism']
+    embedded = Series.embedded
 
 
 @collection(
@@ -431,7 +482,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms):
     item_type = 'treatment_concentration_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
-    embedded = Series.embedded + ['organism']
+    embedded = Series.embedded
 
 
 @collection(
@@ -444,4 +495,30 @@ class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms):
     item_type = 'organism_development_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/organism_development_series.json')
-    embedded = Series.embedded + ['organism']
+    embedded = Series.embedded
+
+
+@collection(
+    name='replication-timing-series',
+    properties={
+        'title': "Replication timing series",
+        'description': 'A series tracking replication timing over the cell cycle.',
+    })
+class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'replication_timing_series'
+    base_types = [Series.__name__] + Series.base_types
+    schema = load_schema('encoded:schemas/replication_timing_series.json')
+    embedded = Series.embedded
+
+
+@collection(
+    name='complete-epigenome-series',
+    properties={
+        'title': "Complete epigenome series",
+        'description': 'A series made up of complimentary assays that define a complete epigenome according to IHEC.',
+    })
+class CompleteEpigenomeSeries(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'complete_epigenome_series'
+    base_types = [Series.__name__] + Series.base_types
+    schema = load_schema('encoded:schemas/complete_epigenome_series.json')
+    embedded = Series.embedded

@@ -14,7 +14,6 @@ from .shared_calculated_properties import (
     CalculatedSlims,
     CalculatedSynonyms
 )
-import datetime
 
 
 @collection(
