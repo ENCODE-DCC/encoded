@@ -300,7 +300,7 @@ var Annotation = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files for dataset {context.accession}</h3>
-                        <FileTable items={context.files} />
+                        <FileTable context={context} items={context.files} />
                     </div>
                 : null }
 
@@ -410,6 +410,11 @@ function humanFileSize(size) {
 }
 
 var FileTable = module.exports.FileTable = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object, // Optional parent object of file list
+        items: React.PropTypes.array.isRequired // Array of files to appear in the table
+    },
+
     getInitialState: function() {
         return {
             col: {raw: 'accession', proc: 'accession'},
@@ -599,6 +604,8 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     render: function() {
+        var context = this.props.context;
+
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rowsRaw = {};
         var rowsProc = {};
@@ -647,11 +654,11 @@ var FileTable = module.exports.FileTable = React.createClass({
         cellClassRef[this.state.col.ref] = this.state.reversed.ref ? 'tcell-desc' : 'tcell-asc';
         var files = _(this.props.items).groupBy(function(file) {
             if (file.output_category === 'raw data') {
-               return 'raw';
+                return 'raw';
             } else if (file.output_category === 'reference') {
-               return 'ref';
+                return 'ref';
             } else {
-               return 'proc';
+                return 'proc';
             }
         });
         if (files.raw) {
@@ -686,7 +693,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
-                        <td>{file.dataset.accession}</td>
+                        <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td>
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
                         <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
