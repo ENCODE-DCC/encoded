@@ -336,5 +336,19 @@
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         }
+    },
+    "related_files": {
+        "related_files": {
+            "title": "Additional data files",
+            "description": "List of data files to be associated with the dataset.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        }
     }
 }
