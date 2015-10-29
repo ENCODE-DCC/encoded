@@ -712,5 +712,41 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM12878",
         "uuid": "d8ca0867-13cd-40df-9de0-29f9da53d935"
+    },
+    {
+        "_test": "Paired set 1 biosample",
+        "organism": "human",
+        "status": "released",
+        "award": "U54HG007010",
+        "biosample_type": "tissue",
+        "lab": "john-stamatoyannopoulos",
+        "donor": "ENCDO017AAA",
+        "biosample_term_name": "midbrain",
+        "aliases": [
+            "john-stamatoyannopoulos:23429"
+        ],
+        "accession": "ENCBS278TPS",
+        "source": "peggy-farnham",
+        "biosample_term_id": "UBERON:0001891",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "31db042c-9844-467d-a725-ba3a4d007039"
+    },
+    {
+        "_test": "Paired set 2 biosample",
+        "organism": "human",
+        "status": "released",
+        "award": "U54HG007010",
+        "biosample_type": "tissue",
+        "lab": "john-stamatoyannopoulos",
+        "donor": "ENCDO058AAA",
+        "biosample_term_name": "midbrain",
+        "aliases": [
+            "john-stamatoyannopoulos:29043C"
+        ],
+        "accession": "ENCBS804RUL",
+        "source": "peggy-farnham",
+        "biosample_term_id": "UBERON:0001891",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "9213cd74-b065-4f36-8346-800fe10f56ff"
     }
 ]

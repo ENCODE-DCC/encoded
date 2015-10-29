@@ -19,7 +19,8 @@
 		"lab": "j-michael-cherry",
 		"description": "Enhancer Validations for ENCODE3",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
-		"accession": "ENCSR554OJS"
+		"accession": "ENCSR554OJS",
+		"date_released": "1994-04-05"
 	},
 	{
 		"_test": "evaluation dataset",
@@ -35,6 +36,7 @@
 			"/files/ENCFF001REQ/",
 			"/files/ENCFF001MYM/",
 			"/files/ENCFF002MYM/"
-		]
+		],
+		"date_released": "2001-10-21"
 	}
 ]
