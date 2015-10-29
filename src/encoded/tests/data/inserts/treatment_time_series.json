@@ -1,0 +1,25 @@
+[
+	{
+        "_test": "treatment time series",
+        "accession": "ENCSR300TIM",
+        "award": "ENCODE2",
+        "description": "Treatment time series involving TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone.",
+        "assay_term_name": "ChIP-seq",
+        "assay_term_id": "OBI:0000716",
+        "biosample_type": "immortalized cell line",
+        "biosample_term_name": "A549",
+        "biosample_term_id": "EFO:0001086",
+        "treatment_type": "chemical",
+        "treatment_term_name": "dexamethasone",
+        "treatment_term_id": "CHEBI:41879",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR001SER",
+            "/experiments/ENCSR002SER",
+            "/experiments/ENCSR003SER"
+        ],
+        "uuid": "467c72a2-4f84-4c8f-96b0-ec8715e28185"
+    }
+]
