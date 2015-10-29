@@ -27,7 +27,8 @@ TYPE_MAP = {
 def run(app):
     storage = app.registry[STORAGE].write
 
-    for model in storage.__iter__('dataset'):
+    for rid in storage.__iter__('dataset'):
+        model = storage.get_by_uuid(str(rid))
         dataset_type = model.properties['dataset_type']
         new_type = TYPE_MAP[dataset_type]
         model.item_type = new_type
