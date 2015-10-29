@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -48,19 +49,6 @@
             "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
             "type": "string"
-        },
-        "documents": {
-            "title": "RNAi documents",
-            "description": "Documents that describe the RNAi construct.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "RNAi document",
-                "description": "A document that describes the RNAi construct.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
         },
         "rnai_sequence": {
             "title": "RNAi sequence",

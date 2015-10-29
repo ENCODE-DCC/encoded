@@ -17,8 +17,9 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "mixins.json#/related_files" }
+        { "$ref": "analysis_file_set.json#/properties" }
     ],
     "properties": {
         "schema_version": {

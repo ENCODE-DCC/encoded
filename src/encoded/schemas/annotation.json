@@ -1,4 +1,3 @@
-
 {
     "title": "Annotation",
     "description": "Schema for submitting metadata for an annotation set.",
@@ -17,9 +16,10 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "mixins.json#/related_files" }
+        { "$ref": "analysis_file_set.json#/properties" }
     ],
     "dependencies": {
         "relevant_timepoint": ["relevant_timepoint_units"],
@@ -128,6 +128,10 @@
         },
         "organism.scientific_name": {
             "title": "Organism",
+            "type": "string"
+        },
+        "biosample_type": {
+            "title": "Biosample type",
             "type": "string"
         },
         "organ_slims": {

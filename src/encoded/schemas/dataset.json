@@ -1,4 +1,3 @@
-
 {
     "title": "Dataset",
     "description": "Schema for submitting metadata for a dataset.",
@@ -17,6 +16,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -62,19 +62,6 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
-            }
-        },
-        "documents": {
-            "title": "Documents",
-            "description": "Documents that provide additional information about the dataset (not data files).",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Document",
-                "description": "A document that provides additional information about the dataset (not data files).",
-                "type": "string",
-                "comment": "See document.json for available identifiers.",
-                "linkTo": "Document"
             }
         },
         "date_released": {
