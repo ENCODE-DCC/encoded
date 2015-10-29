@@ -14,7 +14,7 @@ dd.h3, dd.h4 {
     margin: 0;
 
     > div {
-        clear: left;
+        @extend .clearfix;
     }
 
     dt {
@@ -188,6 +188,10 @@ dd ul, .multi-value {
 
 .para-text {
     line-height: 1.6 !important;
+}
+
+.software-version-list {
+    @extend .clearfix;
 }
 
 .software-version {

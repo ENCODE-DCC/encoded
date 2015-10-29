@@ -10,12 +10,14 @@ var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
+var software = require('./software');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
 var StatusLabel = statuslabel.StatusLabel;
 var PubReferenceList = reference.PubReferenceList;
+var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -141,6 +143,28 @@ var Dataset = module.exports.Dataset = React.createClass({
 globals.content_views.register(Dataset, 'Dataset');
 
 
+// Return a summary of the given biosamples, ready to be displayed in a React component.
+var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = function(annotation) {
+    var organismName = annotation.organism.scientific_name ? <i>{annotation.organism.scientific_name}</i> : <span>{annotation.organism.name}</span>;
+    var lifeStageString = (annotation.relevant_life_stage && annotation.relevant_life_stage !== 'unknown') ? <span>{annotation.relevant_life_stage}</span> : null;
+    var timepointString = annotation.relevant_timepoint ? <span>{annotation.relevant_timepoint + (annotation.relevant_timepoint_units ? ' ' +  annotation.relevant_timepoint_units : '')}</span> : null;
+
+    // Build an array of strings we can join, not including empty strings
+    var summaryStrings = _.compact([organismName, lifeStageString, timepointString]);
+
+    if (summaryStrings.length) {
+        return (
+            <span className="biosample-summary">
+                {summaryStrings.map(function(summaryString, i) {
+                    return <span key={i}>{i > 0 ? <span>{', '}{summaryString}</span> : <span>{summaryString}</span>}</span>;
+                })}
+            </span>
+        );
+    }
+    return null;
+};
+
+
 // Display Annotation page, a subtype of Dataset.
 var Annotation = React.createClass({
     mixins: [AuditMixin],
@@ -162,6 +186,9 @@ var Annotation = React.createClass({
         context.documents.forEach(function (document, i) {
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
+
+        // Make a biosample summary string
+        var biosampleSummary = annotationBiosampleSummary(context);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
@@ -195,10 +222,28 @@ var Annotation = React.createClass({
                             </div>
                         : null}
 
+                        {context.biosample_term_name || biosampleSummary ?
+                            <div data-test="biosample">
+                                <dt>Biosample summary</dt>
+                                <dd>
+                                    {context.biosample_term_name}
+                                    {context.biosample_term_name ? <span>{' '}</span> : null}
+                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
+                                </dd>
+                            </div>
+                        : null}
+
                         {context.dataset_type ?
                             <div data-test="type">
                                 <dt>Annotation type</dt>
                                 <dd className="sentence-case">{context.annotation_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.software_used && context.software_used.length ?
+                            <div>
+                                <dt>Software used</dt>
+                                <dd>{SoftwareVersionList(context.software_used)}</dd>
                             </div>
                         : null}
 
