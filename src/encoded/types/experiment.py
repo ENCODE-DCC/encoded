@@ -108,13 +108,6 @@ class Experiment(Dataset, CalculatedSlims, CalculatedSynonyms):
         'replicates': ('Replicate', 'experiment')
     })
 
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
-        "type": "string",
-    })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
-
     @calculated_property(schema={
         "title": "Replicates",
         "type": "array",

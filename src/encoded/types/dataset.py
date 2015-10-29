@@ -16,6 +16,7 @@ from .shared_calculated_properties import (
 )
 
 from itertools import chain
+import datetime
 
 
 def item_is_revoked(request, path):
@@ -181,6 +182,13 @@ class Dataset(Item):
             '&hgHubConnect.remakeTrackHub=on'
             '&hgHub_do_firstDb=1&hubUrl='
         ) + quote_plus(hub_url, ':/@')
+
+    @calculated_property(condition='date_released', schema={
+        "title": "Month released",
+        "type": "string",
+    })
+    def month_released(self, date_released):
+        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
 
 @collection(
