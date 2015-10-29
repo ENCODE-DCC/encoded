@@ -18,7 +18,7 @@ from .shared_calculated_properties import (
 from itertools import chain
 
 
-def file_is_revoked(request, path):
+def item_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
@@ -142,7 +142,7 @@ class Dataset(Item):
     def revoked_files(self, request, original_files):
         return [
             path for path in original_files
-            if file_is_revoked(request, path)
+            if item_is_revoked(request, path)
         ]
 
     @calculated_property(define=True, schema={
@@ -254,7 +254,7 @@ class AnalysisFileSet(Dataset):
     def revoked_files(self, request, original_files, related_files):
         return [
             path for path in chain(original_files, related_files)
-            if file_is_revoked(request, path)
+            if item_is_revoked(request, path)
         ]
 
     @calculated_property(define=True, schema={
@@ -349,6 +349,35 @@ class Series(Dataset):
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded
+
+    @calculated_property(schema={
+        "title": "Revoked datasets",
+        "type": "array",
+        "items": {
+            "type": "string",
+            "linkTo": "file",
+        },
+    })
+    def revoked_datasets(self, request, related_datasets):
+        return [
+            path for path in related_datasets
+            if item_is_revoked(request, path)
+        ]
+
+    @calculated_property(define=True, schema={
+        "title": "Assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, related_datasets):
+        assembly = []
+        for path in related_datasets:
+            properties = request.embed(path, '@@object')
+            if 'assembly' in properties:
+                assembly.extend(properties['assembly'])
+        return list(set(assembly))
 
 
 @collection(
