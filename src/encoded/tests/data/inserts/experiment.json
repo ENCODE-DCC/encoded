@@ -175,9 +175,6 @@
             "ENCODE:Myers_Methyl450_protocol"
         ],
        "lab": "richard-myers",
-        "related_files": [
-            "ENCFF000LSP"
-        ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
@@ -227,10 +224,6 @@
         "dataset_type": "experiment",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
-        "related_files": [
-            "ENCFF001REL",
-            "ENCFF001REQ"
-        ],
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"

@@ -39,18 +39,17 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    'dataset',
+    'annotation',
+    'project',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite',
     'software',
     'software_version',
     'analysis_step',
     'analysis_step_version',
     'pipeline',
     'analysis_step_run',
-    'annotation',
-    'project',
-    'publication_data',
-    'reference',
-    'ucsc_browser_composite',
     'file',
     'star_quality_metric',
     'bismark_quality_metric',
@@ -528,17 +527,14 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used'),
     ],
-    'dataset': [
-        remove_keys('related_files'),
-    ],
     'experiment': [
-        remove_keys('related_files', 'possible_controls'),
+        remove_keys('possible_controls'),
     ],
     'publication': [
         remove_keys('datasets'),
     ],
     'annotation': [
-        remove_keys('related_files'),
+        remove_keys('related_files', 'software_used'),
     ],
     'project': [
         remove_keys('related_files'),
@@ -547,7 +543,7 @@ PHASE1_PIPELINES = {
         remove_keys('related_files'),
     ],
     'reference': [
-        remove_keys('related_files'),
+        remove_keys('related_files', 'software_used'),
     ],
     'ucsc_browser_composite': [
         remove_keys('related_files'),
@@ -573,16 +569,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('spikeins_used'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls'),
-    ],
-    'dataset': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'publication': [
-        skip_rows_missing_all_keys('datasets'),
+        skip_rows_missing_all_keys('possible_controls'),
     ],
     'annotation': [
-        skip_rows_missing_all_keys('related_files'),
+        skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
     'project': [
         skip_rows_missing_all_keys('related_files'),
@@ -591,11 +581,14 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'reference': [
-        skip_rows_missing_all_keys('related_files'),
+        skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
     'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
-    ]
+    ],
+    'publication': [
+        skip_rows_missing_all_keys('datasets'),
+    ],
 }
 
 
