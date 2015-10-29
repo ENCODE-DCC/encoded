@@ -77,18 +77,6 @@
                 "linkTo": "Document"
             }
         },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "List of data files to be associated with the dataset.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
-                "type": "string",
-                "linkTo": "File"
-            }
-        },
         "date_released": {
             "title": "Date released",
             "comment": "Do not submit, value is assigned whe the object is releaesd.",
