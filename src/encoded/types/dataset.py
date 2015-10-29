@@ -196,7 +196,7 @@ class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
 
 
 @collection(
-    name='publication_data',
+    name='publication-data',
     properties={
         'title': "Publication dataset",
         'description': 'A set of files that are described/analyzed in a publication.',
@@ -221,7 +221,7 @@ class Reference(Dataset):
 
 
 @collection(
-    name='ucsc_browser_composites',
+    name='ucsc-browser-composites',
     properties={
         'title': "UCSC browser composite dataset",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
