@@ -47,13 +47,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                             <div className="col-sm-5 col-md-4 col-lg-3" style={{paddingRight: 0}}>
                                 <div className="row">
                                     <div className="col-sm-11">
-                                        <h3>{context.title}</h3>
-                                        <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
-                                        {context.filters.length ?
-                                            <div className="facet">
-                                                <a href={parsed_url.pathname}><i className="icon icon-times-circle-o"></i> Clear all filters</a>
-                                            </div>
-                                        : ''}
+                                        <div>
+                                            <h3 style={{marginTop: 0}}>{context.title}</h3>
+                                            <p>Click or enter search terms to filter the experiments included in the matrix.</p>
+                                            <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +79,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
                                                 <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                             </th>
-                                            <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}><h3>{matrix.doc_count} results</h3></th>
+                                            <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
+                                                <h3>{matrix.doc_count} results</h3>
+                                                {context.filters.length ?
+                                                    <a href={parsed_url.pathname} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
+                                                : ''}
+                                            </th>
                                             {x_buckets.map(function(xb, i) {
                                                 if (i < MAX_X_BUCKETS) {
                                                     return <th className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
