@@ -32,6 +32,7 @@ class Dataset(Item):
     schema = load_schema('encoded:schemas/dataset.json')
     embedded = [
         'files',
+        'files.dataset',
         'files.replicate',
         'files.replicate.experiment',
         'files.replicate.experiment.lab',

@@ -496,6 +496,9 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'title':
                 diff = a.title > b.title ? 1 : -1;
                 break;
+            case 'title':
+                diff = a.dataset.accession > b.dataset.accession ? 1 : -1;
+                break;
             case 'file_type':
                 diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
                 break;
@@ -616,6 +619,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         };
         var cellClassProc = {
             title: 'tcell-sort',
+            dataset: 'tcell-sort',
             file_type: 'tcell-sort',
             output_type: 'tcell-sort',
             bio_replicate: 'tcell-sort',
@@ -682,6 +686,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
+                        <td>{file.dataset.accession}</td>
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
                         <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
@@ -755,6 +760,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountProc}>Processed data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'dataset')}>Home dataset<i className={cellClassProc.dataset}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>{bioRepTitle} replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
