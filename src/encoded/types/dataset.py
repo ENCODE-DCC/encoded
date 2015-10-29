@@ -7,12 +7,13 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
-from itertools import chain
+
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedSlims,
-    CalculatedSynonyms
+    CalculatedSynonyms,
+    RelatedFiles
 )
 
 
@@ -24,7 +25,7 @@ def file_is_revoked(request, path):
     name='datasets',
     unique_key='accession',
     properties={
-        'title': 'Datasets',
+        'title': "Datasets",
         'description': 'Listing of datasets',
     })
 class Dataset(Item):
@@ -60,7 +61,7 @@ class Dataset(Item):
     audit_inherit = [
         'original_files',
         'revoked_files',
-        'contributing_files',
+        'contributing_files'
         'submitted_by',
         'lab',
         'award',
@@ -87,18 +88,17 @@ class Dataset(Item):
         "type": "array",
         "items": {
             "type": 'string',
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
-    def contributing_files(self, request, original_files, related_files, status):
-        files = set(original_files + related_files)
+    def contributing_files(self, request, original_files, status):
         derived_from = set()
-        for path in files:
+        for path in original_files:
             properties = request.embed(path, '@@object')
             derived_from.update(
                 paths_filtered_by_status(request, properties.get('derived_from', []))
             )
-        outside_files = list(derived_from.difference(files))
+        outside_files = list(derived_from.difference(original_files))
         if status in ('release ready', 'released'):
             return paths_filtered_by_status(
                 request, outside_files,
@@ -115,18 +115,18 @@ class Dataset(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
-    def files(self, request, original_files, related_files, status):
+    def files(self, request, original_files, status):
         if status in ('release ready', 'released'):
             return paths_filtered_by_status(
-                request, chain(original_files, related_files),
+                request, original_files,
                 include=('released',),
             )
         else:
             return paths_filtered_by_status(
-                request, chain(original_files, related_files),
+                request, original_files,
                 exclude=('revoked', 'deleted', 'replaced'),
             )
 
@@ -135,12 +135,12 @@ class Dataset(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
-    def revoked_files(self, request, original_files, related_files):
+    def revoked_files(self, request, original_files):
         return [
-            path for path in chain(original_files, related_files)
+            path for path in original_files
             if file_is_revoked(request, path)
         ]
 
@@ -151,9 +151,9 @@ class Dataset(Item):
             "type": "string",
         },
     })
-    def assembly(self, request, original_files, related_files):
+    def assembly(self, request, original_files):
         assembly = []
-        for path in chain(original_files, related_files):
+        for path in original_files:
             properties = request.embed(path, '@@object')
             if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
                     properties['status'] in ['released']:
@@ -185,23 +185,23 @@ class Dataset(Item):
 @collection(
     name='annotations',
     properties={
-        'title': "Annotation dataset",
+        'title': "Annotation analysis set",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms):
+class Annotation(Dataset, CalculatedSlims, CalculatedSynonyms, RelatedFiles):
     item_type = 'annotation'
-    schema = load_schema('encoded:schemas/annotation.json')
     base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/annotation.json')
     embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
-    name='publication_data',
+    name='publication-data',
     properties={
-        'title': "Publication dataset",
+        'title': "Publication analysis set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(Dataset):
+class PublicationData(Dataset, RelatedFiles):
     item_type = 'publication_data'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/publication_data.json')
@@ -210,23 +210,23 @@ class PublicationData(Dataset):
 @collection(
     name='references',
     properties={
-        'title': "Reference dataset",
+        'title': "Reference analysis set",
         'description': 'A set of reference files used by ENCODE.',
     })
-class Reference(Dataset):
+class Reference(Dataset, RelatedFiles):
     item_type = 'reference'
-    schema = load_schema('encoded:schemas/reference.json')
     base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/reference.json')
     embedded = Dataset.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
-    name='ucsc_browser_composites',
+    name='ucsc-browser-composites',
     properties={
-        'title': "UCSC browser composite dataset",
+        'title': "UCSC browser composite analysis set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(Dataset, CalculatedSynonyms):
+class UcscBrowserComposite(Dataset, CalculatedSynonyms, RelatedFiles):
     item_type = 'ucsc_browser_composite'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
@@ -236,10 +236,10 @@ class UcscBrowserComposite(Dataset, CalculatedSynonyms):
 @collection(
     name='projects',
     properties={
-        'title': "Project dataset",
+        'title': "Project analysis set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(Dataset):
+class Project(Dataset, RelatedFiles):
     item_type = 'project'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/project.json')
