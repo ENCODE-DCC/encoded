@@ -348,7 +348,14 @@ class Series(Dataset):
     item_type = 'series'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
-    embedded = Dataset.embedded
+    embedded = Dataset.embedded + [
+        'related_datasets',
+        'related_datasets.lab',
+        'related_datasets.submitted_by',
+        'revoked_datasets',
+        'revoked_datasets.lab',
+        'revoked_datasets.submitted_by'
+    ]
 
     @calculated_property(schema={
         "title": "Revoked datasets",
@@ -403,4 +410,30 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms):
     item_type = 'treatment_time_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_time_series.json')
+    embedded = Series.embedded + ['organism']
+
+
+@collection(
+    name='treatment-concentration-series',
+    properties={
+        'title': "Treatment concentration series",
+        'description': 'A series that varies on treatment concentration across an applied treatment.',
+    })
+class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'treatment_concentration_series'
+    base_types = [Series.__name__] + Series.base_types
+    schema = load_schema('encoded:schemas/treatment_concentration_series.json')
+    embedded = Series.embedded + ['organism']
+
+
+@collection(
+    name='organism-development-series',
+    properties={
+        'title': "Organism development series",
+        'description': 'A series that varies age/life stage of an organism.',
+    })
+class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'organism_development_series'
+    base_types = [Series.__name__] + Series.base_types
+    schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded + ['organism']

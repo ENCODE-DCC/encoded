@@ -319,5 +319,18 @@
         "organism": "dmelanogaster",
         "investigated_as": ["transcription factor"],
         "status": "current"
+    },
+    {
+        "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
+        "label": "fkh-10",
+        "dbxref": [
+            "WormBase:WBGene00001442",
+            "WormBase:C25A1.2",
+            "UniProtKB:O17593"
+        ],
+        "organism": "celegans",
+        "gene_name": "fkh-10",
+        "investigated_as": ["transcription factor"],
+        "status": "current"
     }
 ]
