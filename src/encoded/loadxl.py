@@ -46,6 +46,8 @@ ORDER = [
     'ucsc_browser_composite',
     'paired_set',
     'treatment_time_series',
+    'treatment_concentration_series',
+    'organism_development_series',
     'software',
     'software_version',
     'analysis_step',
@@ -553,6 +555,12 @@ PHASE1_PIPELINES = {
     'treatment_time_series': [
         remove_keys('related_datasets'),
     ],
+    'treatment_concentration_series': [
+        remove_keys('related_datasets'),
+    ],
+    'organism_development_series': [
+        remove_keys('related_datasets'),
+    ],
     'paired_sets': [
         remove_keys('related_datasets'),
     ]
@@ -595,6 +603,12 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'treatment_time_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'treatment_concentration_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'organism_development_series': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'paired_sets': [

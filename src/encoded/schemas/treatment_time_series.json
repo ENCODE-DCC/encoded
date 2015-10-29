@@ -63,7 +63,7 @@
             "title": "Organ",
             "type": "array"
         },
-        "related_datasets.eplicates.library.biosample.life_stage": {
+        "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage",
             "type": "string"
         },
