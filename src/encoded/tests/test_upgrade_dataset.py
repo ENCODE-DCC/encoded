@@ -11,7 +11,6 @@ def experiment_1(root, experiment, file, file_dataset):
         'schema_version': '1',
         'files': [file['uuid'], file_dataset['uuid']]
     })
-    del properties['related_files']
     return properties
 
 
