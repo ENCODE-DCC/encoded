@@ -1,4 +1,5 @@
 from contentbase import (
+    COLLECTIONS,
     calculated_property,
     collection,
     load_schema,
@@ -178,13 +179,20 @@ class Dataset(Item):
         ) + quote_plus(hub_url, ':/@')
 
 
+class TemporaryDataset(Dataset):
+    # Use /datasets/{accession}/ as url to avoid reindexing everything.
+    @property
+    def __parent__(self):
+        return self.registry[COLLECTIONS]['dataset']
+
+
 @collection(
     name='annotations',
     properties={
         'title': "Annotation dataset",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(Dataset):
+class Annotation(TemporaryDataset):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/dataset.json')
     base_types = [Dataset.__name__] + Dataset.base_types
@@ -196,7 +204,7 @@ class Annotation(Dataset):
         'title': "Publication dataset",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(Dataset):
+class PublicationData(TemporaryDataset):
     item_type = 'publication_data'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
@@ -208,7 +216,7 @@ class PublicationData(Dataset):
         'title': "Reference dataset",
         'description': 'A set of reference files used by ENCODE.',
     })
-class Reference(Dataset):
+class Reference(TemporaryDataset):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/dataset.json')
     base_types = [Dataset.__name__] + Dataset.base_types
@@ -220,7 +228,7 @@ class Reference(Dataset):
         'title': "UCSC browser composite dataset",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(Dataset):
+class UcscBrowserComposite(TemporaryDataset):
     item_type = 'ucsc_browser_composite'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
@@ -232,7 +240,7 @@ class UcscBrowserComposite(Dataset):
         'title': "Project dataset",
         'description': 'A set of files that comprise a project.',
     })
-class Project(Dataset):
+class Project(TemporaryDataset):
     item_type = 'project'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
@@ -244,7 +252,7 @@ class Project(Dataset):
         'title': "Paired set series",
         'description': 'A series that pairs two datasets (experiments) together',
     })
-class PairedSet(Dataset):
+class PairedSet(TemporaryDataset):
     item_type = 'paired_set'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
