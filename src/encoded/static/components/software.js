@@ -200,3 +200,24 @@ var Listing = React.createClass({
     }
 });
 globals.listing_views.register(Listing, 'Software');
+
+
+// Display a list of software versions from the given software_version list. This is meant to be displayed
+// in a panel.
+var SoftwareVersionList = module.exports.SoftwareVersionList = function(softwareVersions) {
+    return (
+        <div>
+            {softwareVersions.map(function(version, i) {
+                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                return (
+                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
+                        <span className="software">{version.software.name}</span>
+                        {version.version ?
+                            <span className="version">{versionNum}</span>
+                        : null}
+                    </a>
+                );
+            })}
+        </div>
+    );
+};

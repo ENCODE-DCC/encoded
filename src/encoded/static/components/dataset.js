@@ -141,6 +141,135 @@ var Dataset = module.exports.Dataset = React.createClass({
 globals.content_views.register(Dataset, 'Dataset');
 
 
+// Display Annotation page, a subtype of Dataset.
+var Annotation = React.createClass({
+    mixins: [AuditMixin],
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'view-item');
+        var experiments = {};
+        var statuses = [{status: context.status, title: "Status"}];
+        context.files.forEach(function(file) {
+            var experiment = file.replicate && file.replicate.experiment;
+            if (experiment) {
+                experiments[experiment['@id']] = experiment;
+            }
+        });
+        experiments = _.values(experiments);
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>Summary for annotation file dataset {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                        </div>
+                    </div>
+                </header>
+                <AuditDetail context={context} id="dataset-audit" />
+                <div className="panel data-display">
+                    <dl className="key-value">
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{context.accession}</dd>
+                        </div>
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
+                            </div>
+                        : null}
+
+                        {context.dataset_type ?
+                            <div data-test="type">
+                                <dt>Annotation type</dt>
+                                <dd className="sentence-case">{context.annotation_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab ?
+                            <div data-type="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+                        
+                        {context.aliases.length ?
+                            <div data-type="aliases">
+                                <dt>Aliases</dt>
+                                <dd><DbxrefList values={context.aliases} /></dd>
+                            </div>
+                        : null}
+
+                        <div data-type="externalresources">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxrefs.length ?
+                                    <DbxrefList values={context.dbxrefs} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
+                            </div>
+                        : null}
+                    </dl>
+                </div>
+
+                {Object.keys(datasetDocuments).length ?
+                    <div>
+                        <h3>Dataset documents</h3>
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
+                    </div>
+                : null}
+
+                {experiments.length ?
+                    <ExperimentTable
+                        items={experiments}
+                        title={'Related experiments for dataset ' + context.accession} />
+                : null }
+
+                {context.files.length ?
+                    <div>
+                        <h3>Files for dataset {context.accession}</h3>
+                        <FileTable items={context.files} />
+                    </div>
+                : null }
+
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
+
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(Annotation, 'Annotation');
+
+
 var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
     var file_states = [
         '',
