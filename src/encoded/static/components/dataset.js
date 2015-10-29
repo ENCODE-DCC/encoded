@@ -240,6 +240,13 @@ var Annotation = React.createClass({
                             </div>
                         : null}
 
+                        {context.target ?
+                            <div data-test="target">
+                                <dt>Target</dt>
+                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                            </div>
+                        : null}
+
                         {context.software_used && context.software_used.length ?
                             <div>
                                 <dt>Software used</dt>
@@ -289,12 +296,6 @@ var Annotation = React.createClass({
                         </div>
                     </div>
                 : null}
-
-                {experiments.length ?
-                    <ExperimentTable
-                        items={experiments}
-                        title={'Related experiments for dataset ' + context.accession} />
-                : null }
 
                 {context.files.length ?
                     <div>
