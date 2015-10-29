@@ -1,0 +1,25 @@
+[
+	{
+        "_test": "treatment concentration series",
+        "accession": "ENCSR300CON",
+        "award": "ENCODE2",
+        "description": "Treatment concentration series involving TCF4 ChIP-seq on A549 cell line treated with varying concentrations of dexamethasone over 8 hours.",
+        "assay_term_name": "ChIP-seq",
+        "assay_term_id": "OBI:0000716",
+        "biosample_type": "immortalized cell line",
+        "biosample_term_name": "A549",
+        "biosample_term_id": "EFO:0001086",
+        "treatment_type": "chemical",
+        "treatment_term_name": "dexamethasone",
+        "treatment_term_id": "CHEBI:41879",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR001CON",
+            "/experiments/ENCSR002CON",
+            "/experiments/ENCSR003CON"
+        ],
+        "uuid": "7a8bc9b7-47f3-45ce-9d8f-2c1facaffe86"
+    }
+]
