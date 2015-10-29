@@ -4,6 +4,10 @@ from contentbase import (
     collection,
     load_schema,
 )
+from pyramid.security import (
+    Deny,
+    Everyone,
+)
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -20,6 +24,9 @@ def file_is_revoked(request, path):
 @collection(
     name='datasets',
     unique_key='accession',
+    acl=[
+        (Deny, Everyone, 'add'),
+    ],
     properties={
         'title': 'Datasets',
         'description': 'Listing of datasets',
