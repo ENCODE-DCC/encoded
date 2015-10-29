@@ -44,6 +44,8 @@ ORDER = [
     'publication_data',
     'reference',
     'ucsc_browser_composite',
+    'paired_set',
+    'treatment_time_series',
     'software',
     'software_version',
     'analysis_step',
@@ -547,6 +549,12 @@ PHASE1_PIPELINES = {
     ],
     'ucsc_browser_composite': [
         remove_keys('related_files'),
+    ],
+    'treatment_time_series': [
+        remove_keys('related_datasets'),
+    ],
+    'paired_sets': [
+        remove_keys('related_datasets'),
     ]
 }
 
@@ -585,6 +593,12 @@ PHASE2_PIPELINES = {
     ],
     'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'treatment_time_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'paired_sets': [
+        skip_rows_missing_all_keys('related_datasets'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),
