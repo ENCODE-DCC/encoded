@@ -261,19 +261,17 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
+                            </div>
+                        : null}
+
                         {context.aliases.length ?
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{aliasList}</dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
                             </div>
                         : null}
 
