@@ -19,7 +19,7 @@
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "analysis_file_set.json#/properties" }
+        { "$ref": "file_set.json#/properties" }
     ],
     "dependencies": {
         "relevant_timepoint": ["relevant_timepoint_units"],

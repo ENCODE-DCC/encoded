@@ -192,15 +192,15 @@ class Dataset(Item):
 
 
 @collection(
-    name='analysis-file-sets',
+    name='file-sets',
     properties={
-        'title': "Analysis file set",
-        'description': 'Listing of analysis file sets',
+        'title': "File set",
+        'description': 'Listing of file sets',
     })
-class AnalysisFileSet(Dataset):
-    item_type = 'analysis_file_set'
+class FileSet(Dataset):
+    item_type = 'file_set'
     base_types = [Dataset.__name__] + Dataset.base_types
-    schema = load_schema('encoded:schemas/analysis_file_set.json')
+    schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded + [
         'files.replicate.antibody',
         'files.replicate.experiment.target.organism',
@@ -295,63 +295,63 @@ class AnalysisFileSet(Dataset):
 @collection(
     name='annotations',
     properties={
-        'title': "Annotation analysis set",
+        'title': "Annotation file set",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(AnalysisFileSet, CalculatedSlims, CalculatedSynonyms):
+class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
     item_type = 'annotation'
-    base_types = [AnalysisFileSet.__name__] + AnalysisFileSet.base_types
+    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/annotation.json')
-    embedded = AnalysisFileSet.embedded + ['software_used', 'software_used.software', 'organism']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
     name='publication-data',
     properties={
-        'title': "Publication analysis set",
+        'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(AnalysisFileSet):
+class PublicationData(FileSet):
     item_type = 'publication_data'
-    base_types = [AnalysisFileSet.__name__] + AnalysisFileSet.base_types
+    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/publication_data.json')
 
 
 @collection(
     name='references',
     properties={
-        'title': "Reference analysis set",
+        'title': "Reference file set",
         'description': 'A set of reference files used by ENCODE.',
     })
-class Reference(AnalysisFileSet):
+class Reference(FileSet):
     item_type = 'reference'
-    base_types = [AnalysisFileSet.__name__] + AnalysisFileSet.base_types
+    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/reference.json')
-    embedded = AnalysisFileSet.embedded + ['software_used', 'software_used.software', 'organism']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
 
 
 @collection(
     name='ucsc-browser-composites',
     properties={
-        'title': "UCSC browser composite analysis set",
+        'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(AnalysisFileSet, CalculatedSlims, CalculatedSynonyms):
+class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
     item_type = 'ucsc_browser_composite'
-    base_types = [AnalysisFileSet.__name__] + AnalysisFileSet.base_types
+    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = AnalysisFileSet.embedded + ['organism']
+    embedded = FileSet.embedded + ['organism']
 
 
 @collection(
     name='projects',
     properties={
-        'title': "Project analysis set",
+        'title': "Project file set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(AnalysisFileSet):
+class Project(FileSet):
     item_type = 'project'
-    base_types = [AnalysisFileSet.__name__] + AnalysisFileSet.base_types
+    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/project.json')
 
 
@@ -512,13 +512,13 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms):
 
 
 @collection(
-    name='complete-epigenome-series',
+    name='complete-epigenomes',
     properties={
-        'title': "Complete epigenome series",
+        'title': "Complete epigenomes",
         'description': 'A series made up of complimentary assays that define a complete epigenome according to IHEC.',
     })
-class CompleteEpigenomeSeries(Series, CalculatedSlims, CalculatedSynonyms):
-    item_type = 'complete_epigenome_series'
+class CompleteEpigenome(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'complete_epigenome'
     base_types = [Series.__name__] + Series.base_types
-    schema = load_schema('encoded:schemas/complete_epigenome_series.json')
+    schema = load_schema('encoded:schemas/complete_epigenome.json')
     embedded = Series.embedded

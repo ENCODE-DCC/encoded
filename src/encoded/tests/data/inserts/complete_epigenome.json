@@ -1,9 +1,9 @@
 [
 	{
-        "_test": "complete epigenome series",
+        "_test": "complete epigenome",
         "accession": "ENCSR300EPI",
         "award": "ENCODE2",
-        "description": "Complete epigenome series on the K562 cell line.",
+        "description": "Complete epigenome of the K562 cell line.",
         "biosample_type": "immortalized cell line",
         "biosample_term_name": "K562",
         "biosample_term_id": "EFO:0002067",
