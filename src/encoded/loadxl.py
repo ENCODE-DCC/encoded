@@ -44,7 +44,7 @@ ORDER = [
     'publication_data',
     'reference',
     'ucsc_browser_composite',
-    'paired_set',
+    'matched_set',
     'treatment_time_series',
     'treatment_concentration_series',
     'organism_development_series',
@@ -569,7 +569,7 @@ PHASE1_PIPELINES = {
     'reference_epigenome': [
         remove_keys('related_datasets'),
     ],
-    'paired_sets': [
+    'matched_sets': [
         remove_keys('related_datasets'),
     ]
 }
@@ -625,7 +625,7 @@ PHASE2_PIPELINES = {
     'reference_epigenome': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
-    'paired_sets': [
+    'matched_sets': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'publication': [

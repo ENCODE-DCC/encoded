@@ -1288,7 +1288,7 @@
         "uuid": "91ec6382-9f34-4d5a-ac6c-6920b4c16696"
     },
     {
-        "_test": "raw file for paired set 1",
+        "_test": "raw file for matched set 1",
         "output_type": "reads",
         "run_type": "single-ended",
         "assembly": "hg19",
@@ -1309,7 +1309,7 @@
         "file_format": "fastq"
     },
     {
-        "_test": "raw file for paired set 2",
+        "_test": "raw file for matched set 2",
         "submitted_file_name": "human/submission/fastq-combined/UwStam_Brain_Midbrain-DS29043C-FCC5E9P-L008_R2.fastq.gz",
         "read_length": 36,
         "file_format": "fastq",
@@ -1330,8 +1330,8 @@
         "uuid": "97573a88-bd85-4649-9c82-04d80afcddc5"
     },
     {
-        "_test": "original file for paired set",
-        "submitted_file_name": "test_paired_set_original_file.bed",
+        "_test": "original file for matched set",
+        "submitted_file_name": "test_matched_set_original_file.bed",
         "file_format": "bed",
         "file_format_type": "bed9",
         "output_type": "hotspots",
