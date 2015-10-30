@@ -225,7 +225,7 @@ var Annotation = React.createClass({
                             </div>
                         : null}
 
-                        {context.dataset_type ?
+                        {context.annotation_type ?
                             <div data-test="type">
                                 <dt>Annotation type</dt>
                                 <dd className="sentence-case">{context.annotation_type}</dd>
@@ -291,7 +291,7 @@ var Annotation = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files for dataset {context.accession}</h3>
+                        <h3>Files in annotation file dataset {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -313,6 +313,7 @@ var PublicationData = React.createClass({
     mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
+        var files = context.files;
         var itemClass = globals.itemClass(context, 'view-item');
         var statuses = [{status: context.status, title: "Status"}];
 
@@ -322,8 +323,138 @@ var PublicationData = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
-        // Make a biosample summary string
-        var biosampleSummary = annotationBiosampleSummary(context);
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
+        // Collect assay term names
+        var assays = _.chain(files.map(function(file) {
+            return file.dataset.assay_term_name;
+        })).compact().uniq().value();
+
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>Summary for publication file dataset {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                        </div>
+                    </div>
+                </header>
+                <AuditDetail context={context} id="dataset-audit" />
+                <div className="panel data-display">
+                    <dl className="key-value">
+                        {assays && assays.length ?
+                            <div data-test="accession">
+                                <dt>Assay(s)</dt>
+                                <dd>{assays.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{context.accession}</dd>
+                        </div>
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
+                            </div>
+                        : null}
+
+                        {context.dataset_type ?
+                            <div data-test="type">
+                                <dt>Dataset type</dt>
+                                <dd className="sentence-case">{context.dataset_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.software_used && context.software_used.length ?
+                            <div>
+                                <dt>Software used</dt>
+                                <dd>{SoftwareVersionList(context.software_used)}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab ?
+                            <div data-type="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+                        
+                        <div data-type="externalresources">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxrefs.length ?
+                                    <DbxrefList values={context.dbxrefs} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
+                            </div>
+                        : null}
+                    </dl>
+                </div>
+
+                {Object.keys(datasetDocuments).length ?
+                    <div>
+                        <h3>Dataset documents</h3>
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
+                    </div>
+                : null}
+
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
+
+                {context.files.length ?
+                    <div>
+                        <h3>Files for dataset {context.accession}</h3>
+                        <FileTable context={context} items={context.files} />
+                    </div>
+                : null }
+
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
+
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(PublicationData, 'PublicationData');
+
+
+// Display Annotation page, a subtype of Dataset.
+var Reference = React.createClass({
+    mixins: [AuditMixin],
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'view-item');
+        var statuses = [{status: context.status, title: "Status"}];
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
@@ -332,7 +463,7 @@ var PublicationData = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Summary for publication file dataset {context.accession}</h2>
+                        <h2>Summary for reference file dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -357,28 +488,17 @@ var PublicationData = React.createClass({
                             </div>
                         : null}
 
-                        {context.biosample_term_name || biosampleSummary ?
-                            <div data-test="biosample">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name}
-                                    {context.biosample_term_name ? <span>{' '}</span> : null}
-                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.dataset_type ?
+                        {context.reference_type ?
                             <div data-test="type">
-                                <dt>Annotation type</dt>
-                                <dd className="sentence-case">{context.annotation_type}</dd>
+                                <dt>Reference type</dt>
+                                <dd>{context.reference_type}</dd>
                             </div>
                         : null}
 
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                        {context.organism ?
+                            <div data-test="organism">
+                                <dt>Organism</dt>
+                                <dd>{context.organism.name}</dd>
                             </div>
                         : null}
 
@@ -434,7 +554,7 @@ var PublicationData = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files for dataset {context.accession}</h3>
+                        <h3>Files in annotation file dataset {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -448,7 +568,7 @@ var PublicationData = React.createClass({
     }
 });
 
-globals.content_views.register(PublicationData, 'PublicationData');
+globals.content_views.register(Reference, 'Reference');
 
 
 var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
