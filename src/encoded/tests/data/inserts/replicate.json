@@ -297,27 +297,27 @@
     {
         "_test": "organism development series 1 rep 1",
         "aliases": [
-            "robert-waterston:MT13544_80_1_rep1"
+            "robert-waterston:replicate:RB884_80_1_1"
         ],
-        "library": "ENCLB780UZE",
-        "experiment": "/experiments/ENCSR001DEV/",
+        "library": "ENCLB857STI",
+        "experiment": "/experiments/ENCSR374GSQ/",
         "technical_replicate_number": 1,
         "biological_replicate_number": 1,
         "status": "released",
-        "uuid": "10cfa26a-7a6c-4296-b44c-a313cddbfd53",
+        "uuid": "c97bc58c-0a16-4b5f-b4b3-d84813cfea0b",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
     {
         "_test": "organism development series 2 rep 1",
         "aliases": [
-            "robert-waterston:MT13544_480_1_rep1"
+            "robert-waterston:replicate:RB884_680_1_1"
         ],
-        "library": "ENCLB029PDQ",
-        "experiment": "/experiments/ENCSR002DEV/",
+        "library": "ENCLB332ELH",
+        "experiment": "/experiments/ENCSR862BAF/",
         "technical_replicate_number": 1,
         "biological_replicate_number": 1,
         "status": "released",
-        "uuid": "0113b15a-2692-4b87-b8c0-888f8d1cd424",
+        "uuid": "ece9d1cd-6243-4156-bf41-d79f1b93fb86",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },
     {
@@ -325,12 +325,13 @@
         "aliases": [
             "robert-waterston:MT13544_880_1_rep1"
         ],
-        "library": "ENCLB381UEN",
-        "experiment": "/experiments/ENCSR003DEV/",
+        "library": "ENCLB595GWE",
+        "experiment": "/experiments/ENCSR787DGZ/",
         "technical_replicate_number": 1,
         "biological_replicate_number": 1,
         "status": "released",
-        "uuid": "8f64b389-29e8-4c21-8675-5db807eab93f",
+        "aliases": ["robert-waterston:replicate:RB884_880_1_1"],
+        "uuid": "925d5bac-e428-4603-a09e-0987bb884be5",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     }
 ]

@@ -122,5 +122,17 @@
         "term_name": "HiSeq 2500",
         "url": "http://res.illumina.com/documents/products/datasheets/datasheet_hiseq2500.pdf",
         "uuid": "171f8a03-650b-4f7f-9c2f-0970348ee95f"
+    },
+    {
+        "url": "http://www.illumina.com/documents/products/datasheets/datasheet_miseq.pdf",
+        "term_name": "MiSeq",
+        "status": "current",
+        "aliases": ["ENCODE:MiSeq"],
+        "uuid": "bab144b6-97b5-4dfb-b307-ff2997b73550",
+        "dbxrefs": [
+            "GEO:GPL15520",
+            "GEO:GPL16417"
+        ],
+        "term_id": "OBI:0002003"
     }
 ]
