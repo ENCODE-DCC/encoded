@@ -468,7 +468,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                         <dd>
                             {platformKeys.map(function(platformId) {
                                 return(
-                                    <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                    <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
                                 );
                             })}
                         </dd>
@@ -558,7 +558,7 @@ var Replicate = module.exports.Replicate = function (props) {
     );
 };
 // Can't be a proper panel as the control must be passed in.
-//globals.panel_views.register(Replicate, 'Replicate');
+//globals.panel_views.register(Replicate, 'replicate');
 
 
 var BiosampleTreatments = function(biosamples) {
@@ -630,6 +630,7 @@ var biosampleSummaries = function(biosamples) {
 
         // Collect strings with non-'unknown', non-empty life_stage, age, age_units, and sex, concatenated
         var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+        // Add to the filtering options to generate a <select>
         if (biosample.age && biosample.age != 'unknown') {
             lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
             lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
@@ -688,7 +689,22 @@ var biosampleSummaries = function(biosamples) {
 };
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files) {
+// Handle graphing throws
+function graphException(message, file0, file1) {
+/*jshint validthis: true */
+    this.message = message;
+    if (file0) {
+        this.file0 = file0;
+    }
+    if (file1) {
+        this.file1 = file1;
+    }
+}
+
+module.exports.graphException = graphException;
+
+
+var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -713,6 +729,40 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return 'step:' + derivedFileIds(file) + file.analysis_step['@id'];
     }
 
+    function processFiltering(fileList, filterAssembly, filterAnnotation, allFiles, allContributing, include) {
+
+        function getSubFileList(filesArray) {
+            var fileList = {};
+            filesArray.forEach(function(file) {
+                fileList[file['@id']] = allFiles[file['@id']];
+            });
+            return fileList;
+        }
+
+        var fileKeys = Object.keys(fileList);
+        for (var i = 0; i < fileKeys.length; i++) {
+            var file = fileList[fileKeys[i]];
+            var nextFileList;
+
+            if (file) {
+                if (!file.removed) {
+                    // This file gets included. Include everything it derives from
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                    }
+                } else if (include) {
+                    // Unremove the file if this branch is to be included based on files that derive from it
+                    file.removed = false;
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                    }
+                }
+            }
+        }
+    }
+
     var jsonGraph; // JSON graph object of entire graph; see graph.js
     var derivedFromFiles = {}; // List of all files that other files derived from
     var allFiles = {}; // All files' accessions as keys
@@ -721,9 +771,11 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allMetricsInfo = []; // List of all QC metrics found attached to files
     var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
+    var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
     var fileOutsideReplicate = false; // True if at least one file exists outside a replicate
     var abortGraph = false; // True if graph shouldn't be drawn
+    var abortMsg; // Console message to display if aborting graph
     var abortFileId; // @id of file that caused abort
     var derivedFileIds = _.memoize(_derivedFileIds, function(file) {
         return file['@id'];
@@ -833,17 +885,26 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
-        console.warn('No graph: no files have step runs');
-        return null;
+        throw new graphException('No graph: no files have step runs');
     }
 
     // Now that we know at least some files derive from each other through analysis steps, mark file objects that
     // don't derive from other files — and that no files derive from them — as removed from the graph.
+    // Also build the filtering menu here; it genomic annotations and assemblies that ARE involved in the graph.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // File gets removed if doesn’t derive from other files AND no files derive from it.
-        file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+        var islandFile = file.removed = !(file.derived_from && file.derived_from.length) && !derivedFromFiles[fileId];
+
+        // Add to the filtering options to generate a <select>; don't include island files
+        if (!islandFile && file.output_category !== 'raw data' && file.assembly) {
+            if (file.genome_annotation) {
+                filterOptions[file.assembly + '-' + file.genome_annotation] = file.assembly + ' ' + file.genome_annotation;
+            } else {
+                filterOptions[file.assembly] = file.assembly;
+            }
+        }
     });
 
     // Remove any replicates containing only removed files from the last step.
@@ -856,19 +917,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            allContributing[file['@id']] = file;
-            if (derivedFromFiles[file['@id']]) {
-                allFiles[file['@id']] = file;
-            }
-        });
-    }
-
     // Check whether any files that others derive from are missing (usually because they're unreleased and we're logged out).
-    // Not sure if this is covered in test cases
     Object.keys(derivedFromFiles).forEach(function(derivedFromFileId) {
         var derivedFromFile = derivedFromFiles[derivedFromFileId];
         if (derivedFromFile.removed || derivedFromFile.missing) {
@@ -882,21 +931,48 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                         file.removed = true;
                     });
                 }
-
-                // Now remove the replicate
-                allReplicates[derivedFromRep] = [];
             } else {
                 // Missing derived-from file not in a replicate or in multiple replicates; don't draw any graph
-                abortGraph = abortGraph || true;
-                abortFileId = derivedFromFileId;
+                throw new graphException('No graph: derived_from file outside replicate (or in multiple replicates) missing', derivedFromFileId);
             }
         } // else the derived_from file is in files array (allFiles object); normal case
     });
 
-    // Don't draw anything if a file others derive from outside a replicate doesn't exist
-    if (abortGraph) {
-        console.warn('No graph: derived_from file outside replicate (or in multiple replicates) missing [' + abortFileId + ']');
-        return null;
+    // Remove files based on the filtering options
+    if (filterAssembly) {
+        // First remove all raw files, and all other files with mismatched filtering options
+        Object.keys(allFiles).forEach(function(fileId) {
+            var file = allFiles[fileId];
+
+            if (file.output_category === 'raw data') {
+                // File is raw data; just remove it
+                file.removed = true;
+            } else {
+                // At this stage, we know it's a process or reference file. Remove from files if
+                // it has mismatched assembly or annotation
+                if ((file.assembly !== filterAssembly) || ((file.genome_annotation || filterAnnotation) && (file.genome_annotation !== filterAnnotation))) {
+                    file.removed = true;
+                }
+            }
+        });
+
+        // For all files matching the filtering options that derive from others, go up the derivation chain and re-include everything there.
+        processFiltering(allFiles, filterAssembly, filterAnnotation, allFiles, allContributing);
+    }
+
+    // See if removing files by filtering have emptied a replicate.
+    if (Object.keys(allReplicates).length) {
+        Object.keys(allReplicates).forEach(function(replicateId) {
+            var emptied = _(allReplicates[replicateId]).all(function(file) {
+                return file.removed;
+            });
+
+            // If all files removed from a replicate, remove the replicate
+            if (emptied) {
+                allReplicates[replicateId] = [];
+            }
+
+        });
     }
 
     // Check whether all files have been removed
@@ -904,39 +980,39 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         return allFiles[fileId].removed;
     });
     if (abortGraph) {
-        console.warn('No graph: all files removed');
-        return null;
+        throw new graphException('No graph: all files removed');
     }
 
-    // Check for other conditions in which to abort graph drawing
+    // No files exist outside replicates, and all replicates are removed
+    var replicateIds = Object.keys(allReplicates);
+    if (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
+        return !allReplicates[replicateNum].length;
+    })) {
+        throw new graphException('No graph: All replicates removed and no files outside replicates exist');
+    }
+
+    // Last check; see if any files derive from files now missing. This test is child-file based, where the last test
+    // was based on the derived-from files.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
-        // A file derives from a file that's been removed from the graph
         if (!file.removed && !allContributing[fileId] && file.derived_from && file.derived_from.length) {
+            var derivedGoneMissing; // Just to help debugging
+            var derivedGoneId; // @id of derived-from file that's either missing or removed
+
             // A file still in the graph derives from others. See if any of the files it derives from have been removed
             // or are missing.
-            abortGraph = abortGraph || _(file.derived_from).any(function(derivedFromFile) {
+            file.derived_from.forEach(function(derivedFromFile) {
                 var orgDerivedFromFile = derivedFromFiles[derivedFromFile['@id']];
-                return orgDerivedFromFile.missing || orgDerivedFromFile.removed;
+                var derivedGone = orgDerivedFromFile.missing || orgDerivedFromFile.removed;
+
+                // These two just for debugging a unrendered graph
+                if (derivedGone) {
+                    throw new graphException('file0 derives from file1 which is ' + (orgDerivedFromFile.missing ? 'missing' : 'removed'), fileId, derivedFromFile['@id']);
+                }
             });
         }
-
-        // No files exist outside replicates, and all replicates are removed
-        var replicateIds = Object.keys(allReplicates);
-        abortGraph = abortGraph || (fileOutsideReplicate && replicateIds.length && _(replicateIds).all(function(replicateNum) {
-            return !allReplicates[replicateNum].length;
-        }));
-
-        if (abortGraph) {
-            abortFileId = fileId;
-        }
     });
-
-    if (abortGraph) {
-        console.warn('No graph: other condition [' + abortFileId + ']');
-        return null;
-    }
 
     // Create an empty graph architecture that we fill in next.
     jsonGraph = new JsonGraph(context.accession);
@@ -1018,12 +1094,13 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
                             parentNode: replicateNode,
                             ref: fileAnalysisStep,
                             pipelines: pipelineInfo,
-                            fileId: fileId,
+                            fileId: file['@id'],
+                            fileAccession: file.accession,
                             stepVersion: file.analysis_step_version
                         });
                     }
 
-                    // Connect the file to the step, and the step to the derived_from files.
+                    // Connect the file to the step, and the step to the derived_from files
                     jsonGraph.addEdge(stepId, fileNodeId);
                     file.derived_from.forEach(function(derived) {
                         if (!jsonGraph.getEdge('file:' + derived['@id'], stepId)) {
@@ -1035,6 +1112,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     }, this);
 
+    jsonGraph.filterOptions = filterOptions;
     return jsonGraph;
 };
 
@@ -1043,7 +1121,9 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
     getInitialState: function() {
         return {
-            infoNodeId: '' // @id of node whose info panel is open
+            infoNodeId: '', // @id of node whose info panel is open
+            selectedAssembly: '', // Value of selected mapping assembly filter
+            selectedAnnotation: '' // Value of selected genome annotation filter
         };
     },
 
@@ -1078,6 +1158,16 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
         this.setState({infoNodeId: this.state.infoNodeId !== nodeId ? nodeId : ''});
     },
 
+    handleFilterChange: function(e) {
+        var value = e.target.selectedOptions[0].value;
+        if (value !== 'default') {
+            var filters = value.split('-');
+            this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
+        } else {
+            this.setState({selectedAssembly: '', selectedAnnotation: ''});
+        }
+    },
+
     render: function() {
         var context = this.props.context;
         var data = this.props.data;
@@ -1086,17 +1176,47 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length) {
-            this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files);
-            if (this.jsonGraph && Object.keys(this.jsonGraph).length) {
+            // Build the graph; place resulting graph in this.jsonGraph
+            var filterOptions = {};
+            try {
+                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+            } catch(e) {
+                this.jsonGraph = null;
+                console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
+            }
+            var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
+            filterOptions = this.jsonGraph.filterOptions;
+
+            // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
+            if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
                 var meta = this.detailNodes(this.jsonGraph, this.state.infoNodeId);
                 return (
                     <div>
                         <h3>Files generated by pipeline</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
-                            <div id="graph-node-info">
-                                {meta ? <div className="panel-insert">{meta}</div> : null}
+                        {filterOptions && Object.keys(filterOptions).length ?
+                            <div className="form-inline">
+                                <select className="form-control" defaultValue="default" onChange={this.handleFilterChange}>
+                                    <option value="default" key="title">All Assemblies and Annotations</option>
+                                    <option disabled="disabled"></option>
+                                    {Object.keys(filterOptions).map(function(option) {
+                                        return (
+                                            <option key={option} value={option}>{filterOptions[option]}</option>
+                                        );
+                                    })}
+                                </select>
                             </div>
-                        </Graph>
+                        : null}
+                        {goodGraph ?
+                            <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick}>
+                                <div id="graph-node-info">
+                                    {meta ? <div className="panel-insert">{meta}</div> : null}
+                                </div>
+                            </Graph>
+                        :
+                            <div className="panel-full">
+                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
+                            </div>
+                        }
                     </div>
                 );
             }
@@ -1151,9 +1271,7 @@ var FileDetailView = function(node) {
                         <dt>Technical Replicate</dt>
                         <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
-                : null}
-
-                { selectedFile.biological_replicates && !selectedFile.replicate ?
+                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
                     <div data-test="replicate">
                         <dt>Biological Replicate(s)</dt>
                         <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
