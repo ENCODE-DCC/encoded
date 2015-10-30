@@ -70,6 +70,19 @@
                 "type": "string",
                 "linkTo": "Experiment"
             }
+        },
+        "related_files": {
+            "title": "Additional data files",
+            "description": "To be removed in a future release after data cleanup.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
         }
     },
     "facets": {
