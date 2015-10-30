@@ -100,10 +100,8 @@ var Dataset = module.exports.Dataset = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
                             </div>
                         : null}
                     </dl>

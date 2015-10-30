@@ -35,6 +35,7 @@ class Biosample(Item, CalculatedSlims, CalculatedSynonyms):
         'donor.characterizations.award',
         'donor.characterizations.lab',
         'donor.characterizations.submitted_by',
+        'donor.references',
         'model_organism_donor_constructs',
         'model_organism_donor_constructs.submitted_by',
         'model_organism_donor_constructs.target',

@@ -540,6 +540,8 @@
         "accession": "ENCFF001RCV",
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
+        "assembly": "hg19",
+        "genome_annotation": "V19",
         "date_created": "2013-05-19",
         "derived_from": [
             "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
@@ -561,6 +563,8 @@
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
         "date_created": "2013-05-19",
+        "assembly": "GRCh38",
+        "genome_annotation": "V19",
         "file_format": "bam",
         "lab":"j-michael-cherry",
         "md5sum": "cef6c42afc135f1f95971e415b8d5fdd",
@@ -571,11 +575,31 @@
         "submitted_file_name": "replicate1.bam",
         "uuid": "87732741-4173-481f-a1a8-03b8fa8829d2"
    },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF002XCV",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "assembly": "GRCh38",
+        "genome_annotation": "V10",
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "cff6c42afc135f1f95971e415b8d5fdd",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "output_type": "alignments",
+        "status": "in progress",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate1.bam",
+        "uuid": "3150eb32-53dd-4d3b-9f5a-b4c3d90be5e0"
+   },
    {
         "_project": "encode3",
         "accession": "ENCFF001RCW",
         "award":"U41HG006992",
         "dataset": "ENCSR000AEN",
+        "assembly": "hg19",
+        "genome_annotation": "V19",
         "date_created": "2013-05-19",
         "derived_from": [
             "34b653f7-6777-49d9-8e06-d76a96a4d10b",
@@ -603,6 +627,8 @@
             "87732741-4173-481f-a1a8-03b8fa8829d2"
         ],
         "file_format": "bigWig",
+        "assembly": "GRCh38",
+        "genome_annotation": "V19",
         "lab":"j-michael-cherry",
         "md5sum": "0fa8f5fdd8eebe55eebf1875e5ac5a3c",
         "output_type": "signal of all reads",
@@ -624,6 +650,8 @@
         ],
         "file_format": "bigWig",
         "lab":"j-michael-cherry",
+        "assembly": "hg19",
+        "genome_annotation": "V19",
         "md5sum": "3f68ceaa13a380990ca16d8dcaeffd0b",
         "output_type": "signal of all reads",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
@@ -853,7 +881,7 @@
         "aliases": []
     },
     {
-        "status": "uploaded",
+        "status": "released",
         "submitted_file_name": "female.hg19.bisulfite.tgz",
         "uuid": "388284da-f97e-4623-a112-bc5d28c03382",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -999,6 +1027,8 @@
         "accession": "ENCFF690MGJ",
         "file_format": "tsv",
         "award": "/awards/U54HG006998/",
+        "assembly": "GRCh38",
+        "genome_annotation": "V19",
         "dataset": "/experiments/ENCSR765JPC/",
         "flowcell_details": [],
         "alternate_accessions": [],
@@ -1021,13 +1051,15 @@
         "award": "/awards/U54HG006998/",
         "dataset": "/experiments/ENCSR765JPC/",
         "flowcell_details": [],
+        "assembly": "hg19",
+        "genome_annotation": "V19",
         "alternate_accessions": [],
         "file_size": 1544154147,
         "lab": "/labs/richard-myers/",
         "output_type": "methylation state at CHH",
         "derived_from": ["ENCFF434GXF"],
         "aliases": [],
-         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
         "status": "uploaded",
@@ -1036,6 +1068,8 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "md5sum": "e28cf4d4ecc7a181160846343ed14fff",
         "accession": "ENCFF946XEC",
+        "assembly": "hg19",
+        "genome_annotation": "V19",
         "file_format": "tsv",
         "award": "/awards/U54HG006998/",
         "dataset": "/experiments/ENCSR765JPC/",
@@ -1045,7 +1079,7 @@
         "output_type": "methylation state at CHG",
         "aliases": [],
         "derived_from": ["ENCFF434GXF"],
-         "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
+        "step_run": "2d664a68-ea7e-4e9a-b718-95e52e4c62df"
     },
     {
         "accession": "ENCFF000VWO",
