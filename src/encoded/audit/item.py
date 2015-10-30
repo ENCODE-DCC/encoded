@@ -40,7 +40,7 @@ def audit_item_schema(value, system):
         category = 'validation error'
         path = list(error.path)
         if path:
-            category += ': ' + '/'.join(path)
+            category += ': ' + '/'.join(str(elem) for elem in path)
         detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
         yield AuditFailure(category, detail, level='DCC_ACTION')
 
