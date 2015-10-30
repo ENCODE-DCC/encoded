@@ -372,13 +372,6 @@ var PublicationData = React.createClass({
                             </div>
                         : null}
 
-                        {context.software_used && context.software_used.length ?
-                            <div>
-                                <dt>Software used</dt>
-                                <dd>{SoftwareVersionList(context.software_used)}</dd>
-                            </div>
-                        : null}
-
                         {context.lab ?
                             <div data-type="lab">
                                 <dt>Lab</dt>
@@ -569,6 +562,148 @@ var Reference = React.createClass({
 globals.content_views.register(Reference, 'Reference');
 
 
+// Display Annotation page, a subtype of Dataset.
+var UcscBrowserComposite = React.createClass({
+    mixins: [AuditMixin],
+    render: function() {
+        var context = this.props.context;
+        var files = context.files;
+        var itemClass = globals.itemClass(context, 'view-item');
+        var statuses = [{status: context.status, title: "Status"}];
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
+        // Collect assay term names
+        var assays = _.chain(files.map(function(file) {
+            return file.dataset.assay_term_name;
+        })).compact().uniq().value();
+
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>Summary for UCSC browser composite file dataset {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                        </div>
+                    </div>
+                </header>
+                <AuditDetail context={context} id="dataset-audit" />
+                <div className="panel data-display">
+                    <dl className="key-value">
+                        {assays && assays.length ?
+                            <div data-test="accession">
+                                <dt>Assay(s)</dt>
+                                <dd>{assays.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{context.accession}</dd>
+                        </div>
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
+                            </div>
+                        : null}
+
+                        {context.dataset_type ?
+                            <div data-test="type">
+                                <dt>Dataset type</dt>
+                                <dd className="sentence-case">{context.dataset_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.organism ?
+                            <div data-test="organism">
+                                <dt>Organism</dt>
+                                <dd>{context.organism.name}</dd>
+                            </div>
+                        : null}
+
+                        {context.software_used && context.software_used.length ?
+                            <div>
+                                <dt>Software used</dt>
+                                <dd>{SoftwareVersionList(context.software_used)}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab ?
+                            <div data-type="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+                        
+                        {context.aliases.length ?
+                            <div data-type="aliases">
+                                <dt>Aliases</dt>
+                                <dd><DbxrefList values={context.aliases} /></dd>
+                            </div>
+                        : null}
+
+                        <div data-type="externalresources">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxrefs.length ?
+                                    <DbxrefList values={context.dbxrefs} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>Publications</dt>
+                                <dd>
+                                    <PubReferenceList values={context.references} />
+                                </dd>
+                            </div>
+                        : null}
+                    </dl>
+                </div>
+
+                {Object.keys(datasetDocuments).length ?
+                    <div>
+                        <h3>Dataset documents</h3>
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
+                    </div>
+                : null}
+
+                {context.files.length ?
+                    <div>
+                        <h3>Files in annotation file dataset {context.accession}</h3>
+                        <FileTable context={context} items={context.files} />
+                    </div>
+                : null }
+
+                {{'released': 1, 'release ready': 1}[context.status] ?
+                    <FetchedItems {...this.props} url={unreleased_files_url(context)} Component={UnreleasedFiles} />
+                : null}
+
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
+
+
 var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
     var file_states = [
         '',
@@ -688,6 +823,9 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'accession':
                 diff = a.accession > b.accession ? 1 : -1;
                 break;
+            case 'dataset':
+                diff = a.dataset.accession > b.dataset.accession ? 1 : -1;
+                break;
             case 'file_type':
                 diff = a.file_type > b.file_type ? 1 : (a.file_type === b.file_type ? 0 : -1);
                 break;
@@ -754,7 +892,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             case 'title':
                 diff = a.title > b.title ? 1 : -1;
                 break;
-            case 'title':
+            case 'dataset':
                 diff = a.dataset.accession > b.dataset.accession ? 1 : -1;
                 break;
             case 'file_type':
@@ -867,6 +1005,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         var bioRepTitle = this.props.anisogenic ? 'Anisogenic' : 'Biological';
         var cellClassRaw = {
             title: 'tcell-sort',
+            dataset: 'tcell-sort',
             file_type: 'tcell-sort',
             bio_replicate: 'tcell-sort',
             tech_replicate: 'tcell-sort',
@@ -923,6 +1062,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
+                        <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td>
                         <td>{file.file_type}</td>
                         <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
@@ -989,6 +1129,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountRaw}>Raw data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Accession<i className={cellClassRaw.title}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'dataset')}>Home dataset<i className={cellClassRaw.dataset}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>{bioRepTitle} replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
