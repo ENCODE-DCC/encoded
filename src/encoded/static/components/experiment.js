@@ -64,11 +64,11 @@ var Experiment = module.exports.Experiment = React.createClass({
         var aliasList = context.aliases.join(", ");
 
         // Set up the breadcrumbs
-        var assayterm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        var assayname = context[assayterm];
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
         var crumbs = [
             {id: 'Experiment', uri: null},
-            {id: assayname, uri: '/search/?type=experiment&' + assayterm + '=' + assayname, tip: 'Search for ' + assayname + ' experiments'}
+            {id: assayName, uri: '/search/?type=experiment&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' experiments'}
         ];
 
         var documents = {};

@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var image = require('./image');
@@ -11,6 +12,7 @@ var item = require('./item');
 var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Attachment = image.Attachment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
@@ -53,6 +55,21 @@ var Lot = module.exports.Lot = React.createClass({
         }
         var targetKeys = Object.keys(targets);
 
+        // Set up the breadcrumbs
+        var targetNames = targetKeys.map(function(key, i) {
+            return <span>{i > 0 ? <span> and <i>{targets[key].organism.scientific_name}</i></span> : <i>{targets[key].organism.scientific_name}</i>}</span>;
+        });
+        var targetSearchTerms = targetKeys.map(function(key) {
+            return 'targets.organism.scientific_name=' + targets[key].organism.scientific_name;
+        });
+        var targetTips = targetKeys.map(function(key) {
+            return targets[key].organism.scientific_name;
+        });
+        var crumbs = [
+            {id: 'Antibody', uri: null},
+            {id: targetNames, uri: '/search/?type=antibody_lot&' + targetSearchTerms.join('&'), tip: 'Search for ' + targetTips.join(' + ')}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -60,6 +77,7 @@ var Lot = module.exports.Lot = React.createClass({
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
