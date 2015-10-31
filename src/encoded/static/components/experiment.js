@@ -145,10 +145,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
-                        <ul className="breadcrumb">
-                            <li>Experiment</li>
-                            <li className="active">{context.assay_term_name}</li>
-                        </ul>
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
