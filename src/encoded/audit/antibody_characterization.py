@@ -136,14 +136,6 @@ def audit_antibody_characterization_status(value, system):
     if 'secondary_characterization_method' in value:
         return
 
-    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
-        if 'characterization_reviews' in value:
-            '''If any of these statuses, we shouldn't have characterization_reviews'''
-            detail = 'Antibody_characterization.status of {} is incompatible with having a value for characterization_reviews'.format(value['status'])
-            raise AuditFailure('unexpected characterization_reviews', detail, level='WARNING')
-        else:
-            return
-
     '''Check each of the lane_statuses in characterization_reviews for an appropriate match'''
     has_compliant_lane = False
     is_pending = False
