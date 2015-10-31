@@ -1196,7 +1196,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = this.jsonGraph.filterOptions;
+            filterOptions = goodGraph && this.jsonGraph.filterOptions;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {
