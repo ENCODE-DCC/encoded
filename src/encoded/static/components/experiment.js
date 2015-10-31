@@ -3,6 +3,7 @@ var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -14,6 +15,7 @@ var pipeline = require('./pipeline');
 var reference = require('./reference');
 var biosample = require('./biosample');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
@@ -60,6 +62,14 @@ var Experiment = module.exports.Experiment = React.createClass({
             return item.biological_replicate_number;
         });
         var aliasList = context.aliases.join(", ");
+
+        // Set up the breadcrumbs
+        var assayterm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayname = context[assayterm];
+        var crumbs = [
+            {id: 'Experiment', uri: null},
+            {id: assayname, uri: '/search/?type=experiment&' + assayterm + '=' + assayname, tip: 'Search for ' + assayname + ' experiments'}
+        ];
 
         var documents = {};
         replicates.forEach(function (replicate) {
@@ -134,6 +144,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <ul className="breadcrumb">
                             <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>

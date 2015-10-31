@@ -185,3 +185,33 @@ var UserActions = React.createClass({
 });
 
 module.exports = NavBar;
+
+
+// Display breadcrumbs with contents given in 'crumbs' object.
+// Each crumb in the crumbs array: {
+//     id: Title string to display in each breadcrumb. If falsy, does not get included, not even as an empty breadcrumb
+//     uri: URI string, or null do display unlinked id
+//     tip: Text to display as uri tooltip
+// }
+var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
+    propTypes: {
+        crumbs: React.PropTypes.arrayOf(React.PropTypes.object).isRequired // Object with breadcrumb contents
+    },
+
+    render: function() {
+        // Get an array of just the crumbs with something in their id
+        var crumbs = _.filter(this.props.crumbs, function(crumb) { return crumb.id; });
+
+        return (
+            <ol className="breadcrumb">
+                {crumbs.map(function(crumb, i) {
+                    return (
+                        <li key={i}>
+                            {crumb.uri ? <a href={crumb.uri} title={crumb.tip}>{crumb.id}</a> : <span>{crumb.id}</span>}
+                        </li>
+                    );
+                })}
+            </ol>
+        );
+    }
+});
