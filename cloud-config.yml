@@ -93,13 +93,14 @@ apt_sources:
     -----END PGP PUBLIC KEY BLOCK-----
 
 bootcmd:
+- set -ex
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if (($MEMGIGS > 12))
+- if [ "$MEMGIGS" -gt 12 ]
 - then
 -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
 - else
@@ -153,7 +154,7 @@ output:
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
-- set -e
+- set -ex
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
