@@ -332,6 +332,7 @@
                         
                         "exon quantifications",
                         "gene quantifications",
+                        "microRNA quantifications",
                         "transcript quantifications",
                         "library fraction",
                         "methylation state at CpG",
@@ -516,7 +517,8 @@
                 "V7",
                 "V10",
                 "V19",
-                "ENSEMBL V65"
+                "ENSEMBL V65",
+                "miRBase V21"
                 ]
         },
         "submitted_file_name": {
@@ -628,6 +630,7 @@
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
+        "microRNA quantifications": "quantification",
         "transcript quantifications": "quantification",
         "methylation state at CpG": "quantification",
         "methylation state at CHG": "quantification",
