@@ -57,7 +57,7 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Set up the breadcrumbs
         var targetNames = targetKeys.map(function(key, i) {
-            return <span>{i > 0 ? <span> and <i>{targets[key].organism.scientific_name}</i></span> : <i>{targets[key].organism.scientific_name}</i>}</span>;
+            return <span>{i > 0 ? <span> + <i>{targets[key].organism.scientific_name}</i></span> : <i>{targets[key].organism.scientific_name}</i>}</span>;
         });
         var targetSearchTerms = targetKeys.map(function(key) {
             return 'targets.organism.scientific_name=' + targets[key].organism.scientific_name;
