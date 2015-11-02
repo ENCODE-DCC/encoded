@@ -1343,7 +1343,7 @@
         "md5sum": "04452eaaff844876057d19cab050aee5",
         "uuid": "4d103c08-22b8-4707-bc37-def3ade26153",
         "status": "released",
-        "dataset": "/paired-sets/ENCSR834QRI/"
+        "dataset": "/matched-sets/ENCSR834QRI/"
     },
     {
         "_test": "raw file for organism development series 1",

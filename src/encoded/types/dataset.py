@@ -447,15 +447,15 @@ class Series(Dataset):
 
 
 @collection(
-    name='paired-sets',
+    name='matched-sets',
     properties={
-        'title': "Paired Set Series",
-        'description': 'A series that pairs two datasets (experiments) together',
+        'title': "Matched Set Series",
+        'description': 'A series that groups two or more datasets (experiments) together with shared properties',
     })
-class PairedSet(Series, CalculatedSlims, CalculatedSynonyms):
-    item_type = 'paired_set'
+class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'matched_set'
     base_types = [Series.__name__] + Series.base_types
-    schema = load_schema('encoded:schemas/paired_set.json')
+    schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded
 
 
