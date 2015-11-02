@@ -98,8 +98,15 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- sysctl "vm.swappiness=0"
-- swapon /swapfile
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if (($MEMGIGS > 12))
+- then
+-    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+- else
+-    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 
 package_upgrade: true
 
@@ -239,10 +246,6 @@ write_files:
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
-
-- path: /etc/default/elasticsearch
-  content: |
-    ES_HEAP_SIZE=4g
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
