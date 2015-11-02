@@ -285,7 +285,7 @@
         "biosample_term_name": "K562",
         "dataset_type": "experiment",
         "assay_term_id": "OBI:0001863",
-        "status": "proposed",
+        "status": "released",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole genome bisulfite sequencing",
         "lab": "richard-myers",

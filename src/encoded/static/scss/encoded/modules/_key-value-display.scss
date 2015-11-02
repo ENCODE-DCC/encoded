@@ -14,7 +14,7 @@ dd.h3, dd.h4 {
     margin: 0;
 
     > div {
-        clear: left;
+        @extend .clearfix;
     }
 
     dt {

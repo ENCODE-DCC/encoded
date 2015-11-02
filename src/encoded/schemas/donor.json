@@ -30,6 +30,19 @@
             "type": "string",
             "linkTo": "Organism"
         },
+        "donor_documents": {
+            "title": "Donor documents",
+            "description": "Documents that are related to the donor.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Donor document",
+                "description": "A document that relates to the donor.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Document"
+            }
+        },
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the donor.",
