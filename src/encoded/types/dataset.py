@@ -512,13 +512,13 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms):
 
 
 @collection(
-    name='complete-epigenomes',
+    name='reference-epigenomes',
     properties={
-        'title': "Complete epigenomes",
-        'description': 'A series made up of complimentary assays that define a complete epigenome according to IHEC.',
+        'title': "Reference epigenomes",
+        'description': 'A series made up of complimentary assays that define a reference epigenome according to IHEC.',
     })
-class CompleteEpigenome(Series, CalculatedSlims, CalculatedSynonyms):
-    item_type = 'complete_epigenome'
+class ReferenceEpigenome(Series, CalculatedSlims, CalculatedSynonyms):
+    item_type = 'reference_epigenome'
     base_types = [Series.__name__] + Series.base_types
-    schema = load_schema('encoded:schemas/complete_epigenome.json')
+    schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded
