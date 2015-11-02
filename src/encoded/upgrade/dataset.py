@@ -106,5 +106,5 @@ def experiment_5_6(value, system):
 @upgrade_step('experiment', '6', '7')
 @upgrade_step('dataset', '6', '7')
 def experiment_6_7(value, system):
-    if 'related_files' in value:
-        del value['related_files']
+    if 'dataset_type' in value:
+        del value['dataset_type']

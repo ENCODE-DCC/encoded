@@ -72,6 +72,16 @@ def dataset_5(root, dataset, publication):
     return properties
 
 
+@pytest.fixture
+def experiment_6(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '6'
+    })
+    return properties
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_dataset, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -185,3 +195,11 @@ def test_dataset_upgrade_references(root, upgrader, dataset, dataset_5, publicat
     value = upgrader.upgrade('dataset', dataset_5, target_version='6', context=context)
     assert value['schema_version'] == '6'
     assert value['references'] == [publication['uuid']]
+
+
+def test_experiment_upgrade_no_dataset_type(root, upgrader, experiment, experiment_6, threadlocals, dummy_request):
+    context = root.get_by_uuid(experiment['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('experiment', experiment_6, target_version='7', context=context)
+    assert value['schema_version'] == '7'
+    assert 'dataset_type' not in value
