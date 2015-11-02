@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -12,6 +13,7 @@ var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
@@ -49,6 +51,15 @@ var Biosample = module.exports.Biosample = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var aliasList = context.aliases.join(", ");
+
+        // Set up the breadcrumbs
+        var organismName = <i>{context.organism.scientific_name}</i>;
+        var crumbs = [
+            {id: 'Biosamples', uri: null},
+            {id: context.biosample_type, uri: '/search/?type=biosample&biosample_type=' + context.biosample_type, tip: 'Search for ' + context.biosample_type + ' in biosamples'},
+            {id: organismName, uri: '/search/?type=biosample&biosample_type=' + context.biosample_type + '&organism.scientific_name=' + context.organism.scientific_name,
+                tip: 'Search for ' + context.biosample_type + ' + ' + context.organism.scientific_name + ' in biosamples'}
+        ];
 
         // set up construct documents panels
         var constructs = _.sortBy(context.constructs, function(item) {
@@ -93,13 +104,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Biosamples</li>
-                            <li>{context.biosample_type}</li>
-                            {context.donor ?
-                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
-                            : null }
-                        </ul>
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -747,14 +752,19 @@ var Donor = module.exports.Donor = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Set up breadcrumbs
+        var name = context.organism.name;
+        var scientificName = context.organism.scientific_name;
+        var crumbs = [
+            {id: 'Donors'},
+            {id: <i>{scientificName}</i>}
+        ];
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Donors</li>
-                            <li className="active"><em>{context.organism.scientific_name}</em></li>
-                        </ul>
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">

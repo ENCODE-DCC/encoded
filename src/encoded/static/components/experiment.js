@@ -67,8 +67,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var crumbs = [
-            {id: 'Experiment', uri: null},
-            {id: assayName, uri: '/search/?type=experiment&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' experiments'}
+            {id: 'Experiments', uri: null},
+            {id: assayName, uri: '/search/?type=experiment&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' in experiments'}
         ];
 
         var documents = {};

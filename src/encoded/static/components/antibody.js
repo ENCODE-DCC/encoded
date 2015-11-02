@@ -66,8 +66,8 @@ var Lot = module.exports.Lot = React.createClass({
             return targets[key].organism.scientific_name;
         });
         var crumbs = [
-            {id: 'Antibody', uri: null},
-            {id: targetNames, uri: '/search/?type=antibody_lot&' + targetSearchTerms.join('&'), tip: 'Search for ' + targetTips.join(' + ')}
+            {id: 'Antibodies', uri: null},
+            {id: targetNames, uri: '/search/?type=antibody_lot&' + targetSearchTerms.join('&'), tip: 'Search for ' + targetTips.join(' + ') + ' in antibodies'}
         ];
 
         // Make string of alternate accessions
