@@ -161,7 +161,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var crumbs = [
-            {id: 'Experiments', uri: null},
+            {id: 'Pipelines', uri: null},
             {id: assayName, uri: '/search/?type=pipeline&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' in pipelines'}
         ];
 
