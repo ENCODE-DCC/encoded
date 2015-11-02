@@ -191,12 +191,6 @@ class Dataset(Item):
         return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
 
-@collection(
-    name='file-sets',
-    properties={
-        'title': "File set",
-        'description': 'Listing of file sets',
-    })
 class FileSet(Dataset):
     item_type = 'file_set'
     base_types = [Dataset.__name__] + Dataset.base_types
@@ -355,12 +349,6 @@ class Project(FileSet):
     schema = load_schema('encoded:schemas/project.json')
 
 
-@collection(
-    name='series',
-    properties={
-        'title': "Series-type dataset",
-        'description': 'A dataset that references other datasets.',
-    })
 class Series(Dataset):
     item_type = 'series'
     base_types = [Dataset.__name__] + Dataset.base_types
