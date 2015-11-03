@@ -86,6 +86,14 @@ var Biosample = module.exports.Biosample = React.createClass({
             protocol_documents[doc['@id']] = Panel({context: doc});
         });
 
+        // Set up TALENs panel for multiple TALENs
+        var talens = null;
+        if (context.talens && context.talens.length) {
+            talens = context.talens.map(function(talen) {
+                return Panel({context: talen});
+            });
+        }
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -362,6 +370,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
                         <div className="panel data-display">
                             {Panel({context: context.donor, biosample: context})}
+                        </div>
+                    </div>
+                : null}
+
+                {talens ?
+                    <div>
+                        <h3>TALENs</h3>
+                        <div className="panel panel-default">
+                            {talens}
                         </div>
                     </div>
                 : null}
@@ -1065,3 +1082,59 @@ var Document = module.exports.Document = React.createClass({
 globals.panel_views.register(Document, 'Document');
 globals.panel_views.register(Document, 'BiosampleCharacterization');
 globals.panel_views.register(Document, 'DonorCharacterization');
+
+
+// Display a TALENs panel. We can have multiple TALENs in one panel
+var Talen = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired // TALEN object
+    },
+
+    render: function() {
+        var context = this.props.context;
+        var coordinates = context.target_genomic_coordinates;
+
+        return (
+            <div className="panel-body">
+                <dl className="key-value">
+                    <div data-test="name">
+                        <dt>Name</dt>
+                        <dd>{context.name}</dd>
+                    </div>
+
+                    <div data-test="rvd">
+                        <dt>RVD sequence</dt>
+                        <dd>{context.RVD_sequence}</dd>
+                    </div>
+
+                    <div data-test="targetsequence">
+                        <dt>Target sequence</dt>
+                        <dd>{context.target_sequence}</dd>
+                    </div>
+
+                    <div data-test="genomeassembly">
+                        <dt>Genome assembly</dt>
+                        <dd>{coordinates.assembly}</dd>
+                    </div>
+
+                    <div data-test="targetsequence">
+                        <dt>Genomic coordinates</dt>
+                        <dd>chr{coordinates.chromosome}:{coordinates.start}-{coordinates.end}</dd>
+                    </div>
+
+                    <div data-test="platform">
+                        <dt>TALEN platform</dt>
+                        <dd>chr{coordinates.talen_platform}</dd>
+                    </div>
+
+                    <div data-test="backbone">
+                        <dt>Backbone name</dt>
+                        <dd>chr{coordinates.vector_backbone_name}</dd>
+                    </div>
+                </dl>
+            </div>
+        );
+    }
+});
+
+globals.panel_views.register(Talen, 'TALEN');

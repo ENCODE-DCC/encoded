@@ -68,6 +68,7 @@ class Biosample(Item):
         'rnais.documents.lab',
         'organism',
         'references',
+        'talens',
     ]
 
     @calculated_property(condition='biosample_term_id', schema={
