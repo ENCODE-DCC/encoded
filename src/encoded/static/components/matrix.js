@@ -121,7 +121,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             var rows = [<tr>
                                                 <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>{group.key} ({group.doc_count})</th>
                                             </tr>];
-                                            rows.push.apply(rows, group[secondary_y_grouping].buckets.map(function(yb, j) {
+                                            var group_buckets = group[secondary_y_grouping].buckets;
+                                            rows.push.apply(rows, group_buckets.map(function(yb, j) {
                                                 if (j < Y_BUCKETS_PER_GROUP) {
                                                     return <tr>
                                                         <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
@@ -145,7 +146,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     </tr>;
                                                 } else if (j == Y_BUCKETS_PER_GROUP) {
                                                     return <tr>
-                                                        <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>...and {y_buckets.length - Y_BUCKETS_PER_GROUP} more</th>
+                                                        <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>...and {group_buckets.length - Y_BUCKETS_PER_GROUP} more</th>
                                                         {_.range(colCount - 1).map(n => <td></td>)}
                                                     </tr>;
                                                 } else {
