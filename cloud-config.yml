@@ -191,7 +191,7 @@ runcmd:
 - a2dissite 000-default
 - a2enconf logging
 - a2disconf charset
-- a2disconf javascript-common
+- a2disconf security
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
