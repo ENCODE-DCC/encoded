@@ -38,7 +38,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         var matrix = context.matrix;
         var parsed_url = url.parse(this.context.location_href);
         var matrix_base = parsed_url.search || '';
-        var matrix_search = matrix_base ? '&' : '?';
+        var matrix_search = matrix_base + (matrix_base ? '&' : '?');
         var search_base = context.matrix.search_base;
         var notification = context['notification'];
         var batch_hub_disabled = matrix.doc_count > 500;
