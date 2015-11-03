@@ -38,7 +38,12 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    'dataset',
+    'annotation',
+    'paired_set',
+    'project',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite',
     'software',
     'software_version',
     'analysis_step',
@@ -522,7 +527,22 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used'),
     ],
-    'dataset': [
+    'annotation': [
+        remove_keys('related_files'),
+    ],
+    'paired_set': [
+        remove_keys('related_files'),
+    ],
+    'project': [
+        remove_keys('related_files'),
+    ],
+    'publication_data': [
+        remove_keys('related_files'),
+    ],
+    'reference': [
+        remove_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
         remove_keys('related_files'),
     ],
     'experiment': [
@@ -554,7 +574,22 @@ PHASE2_PIPELINES = {
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls'),
     ],
-    'dataset': [
+    'annotation': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'paired_set': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'project': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'publication_data': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'reference': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
     ],
     'publication': [
