@@ -203,6 +203,7 @@ class Annotation(TemporaryDataset):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/dataset.json')
     base_types = [Dataset.__name__] + Dataset.base_types
+    schema['properties']['dataset_type']['enum'] = ['annotation']
 
 
 @collection(
@@ -215,6 +216,7 @@ class PublicationData(TemporaryDataset):
     item_type = 'publication_data'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['publication']
 
 
 @collection(
@@ -239,6 +241,7 @@ class UcscBrowserComposite(TemporaryDataset):
     item_type = 'ucsc_browser_composite'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['composite']
 
 
 @collection(
@@ -251,6 +254,7 @@ class Project(TemporaryDataset):
     item_type = 'project'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['project']
 
 
 @collection(
@@ -263,3 +267,4 @@ class PairedSet(TemporaryDataset):
     item_type = 'paired_set'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['paired set']
