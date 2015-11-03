@@ -186,7 +186,7 @@ def main():
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('--item-type', dest='types', action='append', default=[])
-    parser.add_argument('--batch-size', type=int, default=500)
+    parser.add_argument('--batch-size', type=int, default=1000)
     parser.add_argument('--processes', type=int)
     parser.add_argument('--username')
     args = parser.parse_args()
