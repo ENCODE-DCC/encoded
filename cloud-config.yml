@@ -93,13 +93,21 @@ apt_sources:
     -----END PGP PUBLIC KEY BLOCK-----
 
 bootcmd:
+- set -ex
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- sysctl "vm.swappiness=0"
-- swapon /swapfile
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 12 ]
+- then
+-    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+- else
+-    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 
 package_upgrade: true
 
@@ -146,7 +154,7 @@ output:
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
-- set -e
+- set -ex
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
@@ -240,9 +248,11 @@ write_files:
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
 
-- path: /etc/default/elasticsearch
+- path: /etc/elasticsearch/elasticsearch.log
   content: |
-    ES_HEAP_SIZE=4g
+    index.search.slowlog.threshold.query.warn: 8s
+    index.search.slowlog.threshold.fetch.warn: 1s
+    index.indexing.slowlog.threshold.index.warn: 25s
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
