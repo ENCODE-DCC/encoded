@@ -119,7 +119,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         {y_groups.map(function(group, k) {
                                             var seriesColor = color(COLORS[k % COLORS.length]);
                                             var rows = [<tr>
-                                                <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>{group.key} ({group.doc_count})</th>
+                                                <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>{group.key}</th>
                                             </tr>];
                                             var group_buckets = group[secondary_y_grouping].buckets;
                                             rows.push.apply(rows, group_buckets.map(function(yb, j) {
