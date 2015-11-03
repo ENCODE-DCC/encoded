@@ -280,7 +280,7 @@ class Experiment(Dataset):
                 'organ_slims',
                 'replicates.library.biosample.biosample_type',
             ],
-            'group_by': 'biosample_term_name',
+            'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
         },
         'x': {
