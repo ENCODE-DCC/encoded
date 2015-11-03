@@ -197,7 +197,7 @@ runcmd:
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -u encoded bin/batchupgrade production.ini --app-name app
+-   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
