@@ -162,7 +162,7 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'mode',
+        if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode',
                      'format', 'frame', 'datastore', 'field']:
             continue
 

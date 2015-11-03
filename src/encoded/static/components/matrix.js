@@ -37,8 +37,8 @@ var Matrix = module.exports.Matrix = React.createClass({
         var context = this.props.context;
         var matrix = context.matrix;
         var parsed_url = url.parse(this.context.location_href);
-        var matrix_search = parsed_url.search || '';
-        matrix_search += matrix_search ? '&' : '?';
+        var matrix_base = parsed_url.search || '';
+        var matrix_search = matrix_base ? '&' : '?';
         var search_base = context.matrix.search_base;
         var notification = context['notification'];
         var batch_hub_disabled = matrix.doc_count > 500;
@@ -105,7 +105,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 if (i < x_limit) {
                                                     return <th className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
                                                 } else if (i == x_limit) {
-                                                    var parsed = url.parse(matrix_search, true);
+                                                    var parsed = url.parse(matrix_base, true);
                                                     parsed.query['x.limit'] = null;
                                                     delete parsed.search; // this makes format compose the search string out of the query object
                                                     var unlimited_href = url.format(parsed);
@@ -117,9 +117,9 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         </tr>
                                         {y_groups.map(function(group, k) {
                                             var seriesColor = color(COLORS[k % COLORS.length]);
-                                            var parsed = url.parse(matrix_search, true);
+                                            var parsed = url.parse(matrix_base, true);
                                             parsed.query[primary_y_grouping] = group.key;
-                                            parsed.query['limit'] = null;
+                                            parsed.query['y.limit'] = null;
                                             delete parsed.search; // this makes format compose the search string out of the query object
                                             var group_href = url.format(parsed);
                                             var rows = [<tr>
