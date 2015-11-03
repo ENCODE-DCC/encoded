@@ -422,13 +422,13 @@ def audit_file_read_depth(value, system):
         'Small RNA-seq single-end pipeline': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
-        'RAMPAGE (paired-end, stranded)': 30000000,
+        'RAMPAGE (paired-end, stranded)': 25000000,
         'ChIP-seq of histone modifications': 45000000,
     }
 
     read_depth_special = {
-        'shRNA knockdown followed by RNA-seq':20000000,
-        'single cell isolation followed by RNA-seq':15000000
+        'shRNA knockdown followed by RNA-seq':10000000,
+        'single cell isolation followed by RNA-seq':10000000
     }
 
     '''

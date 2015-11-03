@@ -37,7 +37,8 @@ var Dataset = module.exports.Dataset = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var experiments = {};
-        context.files.forEach(function (file) {
+        var statuses = [{status: context.status, title: "Status"}];
+        context.files.forEach(function(file) {
             var experiment = file.replicate && file.replicate.experiment;
             if (experiment) {
                 experiments[experiment['@id']] = experiment;
@@ -61,11 +62,14 @@ var Dataset = module.exports.Dataset = React.createClass({
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
-                            <AuditIndicators context={context} key="experiment-audit" />
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="experiment-audit" />
+                <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
@@ -94,10 +98,8 @@ var Dataset = module.exports.Dataset = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
                             </div>
                         : null}
                     </dl>
