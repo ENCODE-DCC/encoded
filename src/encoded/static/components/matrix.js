@@ -12,8 +12,6 @@ var TextFilter = search.TextFilter;
 
 
 var HIGHLIGHT_COLOR = color('#4e7294');
-var MAX_X_BUCKETS = 20;
-var Y_BUCKETS_PER_GROUP = 5;
 // 9-class pastel Brewer palette from http://colorbrewer2.org/
 var COLORS = [
     '#fbb4ae',
@@ -51,15 +49,12 @@ var Matrix = module.exports.Matrix = React.createClass({
             var primary_y_grouping = matrix.y.group_by[0];
             var secondary_y_grouping = matrix.y.group_by[1];
             var x_buckets = matrix.x.buckets;
+            var x_limit = matrix.x.limit || x_buckets.length;
             var y_groups = matrix.y[primary_y_grouping].buckets;
+            var y_limit = matrix.y.limit;
 
-            var colCount = Math.min(x_buckets.length, MAX_X_BUCKETS + 1);
-            var rowCount;
-            if (y_groups.length > 1) {
-                rowCount = y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, Y_BUCKETS_PER_GROUP + 1) + 1).reduce((a, b) => a + b);
-            } else {
-                rowCount = y_groups[0][secondary_y_grouping].buckets.length + 1;
-            }
+            var colCount = Math.min(x_buckets.length, x_limit + 1);
+            var rowCount = y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b);
 
             return (
                 <div>
@@ -107,10 +102,14 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 : ''}
                                             </th>
                                             {x_buckets.map(function(xb, i) {
-                                                if (i < MAX_X_BUCKETS) {
+                                                if (i < x_limit) {
                                                     return <th className="rotate30" style={{width: 10}}><div><span title={xb.key}>{xb.key}</span></div></th>;
-                                                } else if (i == MAX_X_BUCKETS) {
-                                                    return <th className="rotate30" style={{width: 10}}><div><span>...and {x_buckets.length - MAX_X_BUCKETS} more</span></div></th>;
+                                                } else if (i == x_limit) {
+                                                    var parsed = url.parse(matrix_search, true);
+                                                    parsed.query['x.limit'] = null;
+                                                    delete parsed.search; // this makes format compose the search string out of the query object
+                                                    var unlimited_href = url.format(parsed);
+                                                    return <th className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>;
                                                 } else {
                                                     return null;
                                                 }
@@ -118,16 +117,24 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         </tr>
                                         {y_groups.map(function(group, k) {
                                             var seriesColor = color(COLORS[k % COLORS.length]);
+                                            var parsed = url.parse(matrix_search, true);
+                                            parsed.query[primary_y_grouping] = group.key;
+                                            parsed.query['limit'] = null;
+                                            delete parsed.search; // this makes format compose the search string out of the query object
+                                            var group_href = url.format(parsed);
                                             var rows = [<tr>
-                                                <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>{group.key}</th>
+                                                <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: seriesColor.hexString()}}>
+                                                    <a href={group_href} style={{color: '#000'}}>{group.key}</a>
+                                                </th>
                                             </tr>];
                                             var group_buckets = group[secondary_y_grouping].buckets;
+                                            var y_limit = matrix.y.limit || group_buckets.length;
                                             rows.push.apply(rows, group_buckets.map(function(yb, j) {
-                                                if (y_groups.length == 1 || j < Y_BUCKETS_PER_GROUP) {
+                                                if (y_groups.length == 1 || j < y_limit) {
                                                     return <tr>
                                                         <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
                                                         {x_buckets.map(function(xb, i) {
-                                                            if (i < MAX_X_BUCKETS) {
+                                                            if (i < x_limit) {
                                                                 var value = yb[x_grouping][xb.key];
                                                                 var color = seriesColor.clone();
                                                                 // scale color between white and 60% lightness
@@ -142,11 +149,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                 return null;
                                                             }
                                                         })}
-                                                        {x_buckets.length > MAX_X_BUCKETS && <td></td>}
+                                                        {x_buckets.length > x_limit && <td></td>}
                                                     </tr>;
-                                                } else if (j == Y_BUCKETS_PER_GROUP) {
+                                                } else if (j == y_limit) {
                                                     return <tr>
-                                                        <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>...and {group_buckets.length - Y_BUCKETS_PER_GROUP} more</th>
+                                                        <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={group_href}>...and {group_buckets.length - y_limit} more</a></th>
                                                         {_.range(colCount - 1).map(n => <td></td>)}
                                                     </tr>;
                                                 } else {
@@ -159,7 +166,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     <tfoot>
                                         <tr>
                                             <th></th>
-                                            <th colSpan={Math.min(x_buckets.length, MAX_X_BUCKETS + 1) + 1} style={{padding: "10px 0", textAlign: 'left'}}>
+                                            <th colSpan={Math.min(x_buckets.length, x_limit + 1) + 1} style={{padding: "10px 0", textAlign: 'left'}}>
                                                 {context['batch_download'] ?
                                                     <BatchDownload context={context} />
                                                 : null}
@@ -178,7 +185,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                 </div>
             );
         } else {
-            return <h4>{context.notification}</h4>; 
+            return <h4>{context.notification}</h4>;
         }
     },
 

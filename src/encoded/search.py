@@ -537,6 +537,8 @@ def matrix(context, request):
         result['notification'] = 'No matrix configured for this type'
         return result
     matrix = result['matrix'] = type_info.factory.matrix.copy()
+    matrix['x']['limit'] = request.params.get('x.limit', 20)
+    matrix['y']['limit'] = request.params.get('y.limit', 5)
     matrix['search_base'] = request.route_path('search', slash='/') + '?' + 'type=' + context.type_info.item_type + ('&' + request.query_string if request.query_string else '')
 
     principals = effective_principals(request)
