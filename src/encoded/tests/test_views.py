@@ -134,7 +134,6 @@ def test_load_sample_data(
         biosample,
         biosample_characterization,
         construct,
-        dataset,
         document,
         experiment,
         file,
@@ -152,6 +151,7 @@ def test_load_sample_data(
         source,
         submitter,
         target,
+        ucsc_browser_composite,
         ):
     assert True, 'Fixtures have loaded sample data'
 
