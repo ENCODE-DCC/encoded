@@ -43,8 +43,8 @@ var Matrix = module.exports.Matrix = React.createClass({
         var notification = context['notification'];
         var batch_hub_disabled = matrix.doc_count > 500;
         if (context.notification == 'Success') {
-            var x_facets = _.filter(context.facets, f => _.contains(matrix.x.facets, f.field));
-            var y_facets = _.filter(context.facets, f => _.contains(matrix.y.facets, f.field));
+            var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
+            var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var x_grouping = matrix.x.group_by;
             var primary_y_grouping = matrix.y.group_by[0];
             var secondary_y_grouping = matrix.y.group_by[1];
