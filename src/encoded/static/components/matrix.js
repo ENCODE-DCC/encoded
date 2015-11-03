@@ -56,7 +56,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             var colCount = Math.min(x_buckets.length, MAX_X_BUCKETS + 1);
             var rowCount;
             if (y_groups.length > 1) {
-                rowCount = y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, 5) + 1).reduce((a, b) => a + b);
+                rowCount = y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, Y_BUCKETS_PER_GROUP + 1) + 1).reduce((a, b) => a + b);
             } else {
                 rowCount = y_groups[0][secondary_y_grouping].buckets.length + 1;
             }
@@ -123,7 +123,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             </tr>];
                                             var group_buckets = group[secondary_y_grouping].buckets;
                                             rows.push.apply(rows, group_buckets.map(function(yb, j) {
-                                                if (j < Y_BUCKETS_PER_GROUP) {
+                                                if (y_groups.length > 1 && j < Y_BUCKETS_PER_GROUP) {
                                                     return <tr>
                                                         <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
                                                         {x_buckets.map(function(xb, i) {
