@@ -143,6 +143,7 @@ def test_load_sample_data(
         organism,
         pipeline,
         publication,
+        publication_data,
         quality_metric,
         replicate,
         rnai,

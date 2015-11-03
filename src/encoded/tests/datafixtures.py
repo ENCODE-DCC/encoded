@@ -329,6 +329,16 @@ def ucsc_browser_composite(testapp, lab, award):
 
 
 @pytest.fixture
+def publication_data(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'dataset_type': 'publication',
+    }
+    return testapp.post_json('/publication_data', item).json['@graph'][0]
+
+
+@pytest.fixture
 def publication(testapp, lab, award):
     item = {
         # upgrade/shared.py has a REFERENCES_UUID mapping.
