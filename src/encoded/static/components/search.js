@@ -832,7 +832,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} {label}
+                                        Showing {results.length} of {total} {label} {context.matrix && <a href={context.matrix} title="View result matrix"><i className="icon icon-table"></i></a>}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"

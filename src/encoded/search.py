@@ -408,6 +408,9 @@ def search(context, request, search_type=None):
                 'term': ti.item_type,
                 'remove': '{}?{}'.format(request.path, qs)
             })
+        if len(doc_types) == 1 and hasattr(ti.factory, 'matrix'):
+            qs = re.sub(r'type=\w+', '', request.query_string)
+            result['matrix'] = request.resource_path(root[item_type], 'matrix') + ('?' + qs if qs else '')
 
     search_fields, highlights = get_search_fields(request, doc_types)
 

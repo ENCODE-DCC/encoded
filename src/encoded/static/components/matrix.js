@@ -96,7 +96,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
                                             </th>
                                             <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
-                                                <h3>{matrix.doc_count} results</h3>
+                                                <h3>{matrix.doc_count} results <a href={search_base} title="View result list"><i className="icon icon-list-alt"></i></a></h3>
                                                 {context.filters.length ?
                                                     <a href={parsed_url.pathname} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
                                                 : ''}
