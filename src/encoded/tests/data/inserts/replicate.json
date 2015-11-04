@@ -333,5 +333,65 @@
         "aliases": ["robert-waterston:replicate:RB884_880_1_1"],
         "uuid": "925d5bac-e428-4603-a09e-0987bb884be5",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "treatment time series 1 rep 1",
+        "experiment": "/experiments/ENCSR001SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001SER",
+        "uuid": "43700156-5bc7-4084-97fa-2653ddd14bf7"
+    },
+    {
+        "_test": "treatment time series 2 rep 1",
+        "experiment": "/experiments/ENCSR002SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002SER",
+        "uuid": "982b0033-204d-484d-adde-8b141356871b"
+    },
+        {
+        "_test": "treatment time series 3 rep 1",
+        "experiment": "/experiments/ENCSR003SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003SER",
+        "uuid": "e26ef779-bcc2-4878-b8f6-43b69d921a62"
+    },
+        {
+        "_test": "treatment concentration series 1 rep 1",
+        "experiment": "/experiments/ENCSR001CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001CON",
+        "uuid": "13f603e5-5bfd-4cd4-a352-83d6f7155bea"
+    },
+    {
+        "_test": "treatment concentration series 2 rep 1",
+        "experiment": "/experiments/ENCSR002CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002CON",
+        "uuid": "60ee5509-882c-4617-bc5a-81143d3f5fae"
+    },
+        {
+        "_test": "treatment concentration series 3 rep 1",
+        "experiment": "/experiments/ENCSR003CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003CON",
+        "uuid": "5cc02cd5-1e4f-499f-a448-7ef6b7bda29e"
     }
 ]
