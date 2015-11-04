@@ -18,6 +18,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
     ],
     "properties": {
