@@ -16,7 +16,10 @@ from .shared_calculated_properties import (
     CalculatedAssay,
     CalculatedBiosample,
     CalculatedTreatment,
-    CalculatedTarget
+    CalculatedTarget,
+    CalculatedAge,
+    CalculatedLifeStage,
+    CalculatedSynchronization
 )
 
 from itertools import chain
@@ -457,7 +460,7 @@ class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, C
         'title': "Treatment time series",
         'description': 'A series that varies on treatment duration across an applied treatment.',
     })
-class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedTreatment):
+class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
     item_type = 'treatment_time_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_time_series.json')
@@ -483,7 +486,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, 
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
+class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedAge, CalculatedSynchronization):
     item_type = 'organism_development_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/organism_development_series.json')

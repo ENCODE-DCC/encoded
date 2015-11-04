@@ -78,7 +78,7 @@ class CalculatedSynonyms:
 class CalculatedAssay:
 
     @calculated_property(schema={
-        "title": "assay_term_name",
+        "title": "Assay term name",
         "type": "array",
         "items": {
             "type": ['string'],
@@ -96,7 +96,7 @@ class CalculatedAssay:
 class CalculatedBiosample:
 
     @calculated_property(schema={
-        "title": "biosample_term_name",
+        "title": "Biosample term name",
         "type": "array",
         "items": {
             "type": ['string'],
@@ -111,7 +111,7 @@ class CalculatedBiosample:
         return list(set(biosamples))
 
     @calculated_property(schema={
-        "title": "biosample_type",
+        "title": "Biosample type",
         "type": "array",
         "items": {
             "type": ['string'],
@@ -125,11 +125,35 @@ class CalculatedBiosample:
                 biosample_types.append(properties['biosample_type'])
         return list(set(biosample_types))
 
+    @calculated_property(schema={
+        "title": "Organism",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkTo": "Organism"
+        },
+    })
+    def organism(self, request, related_datasets):
+        organisms = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'organism' in bio:
+                                organisms.append(bio['organism'])
+        if organisms:
+            return paths_filtered_by_status(request, organisms)
+
 
 class CalculatedTreatment:
 
     @calculated_property(schema={
-        "title": "treatment_term_name",
+        "title": "Treatment term name",
         "type": "array",
         "items": {
             "type": ['string'],
@@ -154,7 +178,7 @@ class CalculatedTreatment:
         return list(set(treatments))
 
     @calculated_property(schema={
-        "title": "treatment_type",
+        "title": "Treatment type",
         "type": "array",
         "items": {
             "type": ['string'],
@@ -182,7 +206,7 @@ class CalculatedTreatment:
 class CalculatedTarget:
 
     @calculated_property(schema={
-        "title": "targets",
+        "title": "Targets",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -197,4 +221,145 @@ class CalculatedTarget:
                 targets.append(properties['target'])
 
             if targets:
-                return paths_filtered_by_status(request, targets, include=('current', 'proposed'),)
+                return paths_filtered_by_status(request, targets)
+
+
+class CalculatedAge:
+
+    @calculated_property(define=True, schema={
+        "title": "Age",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def age(self, request, related_datasets):
+        ages = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'age' in bio:
+                                ages.append(bio['age'])
+        return list(set(ages))
+
+    @calculated_property(define=True, schema={
+        "title": "Age units",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def age_units(self, request, related_datasets):
+        age_units = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'age_units' in bio:
+                                age_units.append(bio['age'])
+        return list(set(age_units))
+
+
+class CalculatedLifeStage:
+
+    @calculated_property(define=True, schema={
+        "title": "Life stage",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def life_stage(self, request, related_datasets):
+        stages = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'life_stage' in bio:
+                                stages.append(bio['life_stage'])
+        return list(set(stages))
+
+
+class CalculatedSynchronization:
+
+    @calculated_property(define=True, schema={
+        "title": "Synchronization stage",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def synchronization(self, request, related_datasets):
+        syncs = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'synchronization' in bio:
+                                syncs.append(bio['synchronization'])
+        return list(set(syncs))
+
+    @calculated_property(define=True, schema={
+        "title": "Post-synchronization time",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def post_synchronization_time(self, request, related_datasets):
+        times = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'post_synchronization_time' in bio:
+                                times.append(bio['post_synchronization_time'])
+        return list(set(times))
+
+    @calculated_property(define=True, schema={
+        "title": "Post-synchronization time units",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def post_synchronization_time_units(self, request, related_datasets):
+        time_units = []
+        for path in related_datasets:
+            dataset = request.embed(path, '@@object')
+            if 'replicates' in dataset:
+                for rep_path in dataset['replicates']:
+                    rep = request.embed(rep_path, '@@object')
+                    if 'library' in rep:
+                        lib = request.embed(rep['library'], '@@object')
+                        if 'biosample' in lib:
+                            bio = request.embed(lib['biosample'], '@@object')
+                            if 'post_synchronization_time_units' in bio:
+                                time_units.append(bio['post_synchronization_time_units'])
+        return list(set(time_units))
