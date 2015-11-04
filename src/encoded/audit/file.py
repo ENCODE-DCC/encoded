@@ -242,6 +242,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     if 'step_run' not in value:
         detail = 'File {} is missing a step_run'.format(value['@id'])
         yield AuditFailure('missing step_run', detail, level='WARNING')
+        return
 
     if (value['file_format'] != 'fastq') and ('derived_from' not in value):
         detail = 'File {} is missing its derived_from'.format(value['@id'])
