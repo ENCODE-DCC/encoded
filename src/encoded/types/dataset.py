@@ -258,13 +258,13 @@ class Project(TemporaryDataset):
 
 
 @collection(
-    name='paired-sets',
+    name='matched-sets',
     properties={
-        'title': "Paired set series",
+        'title': "Matched set series",
         'description': 'A series that pairs two datasets (experiments) together',
     })
-class PairedSet(TemporaryDataset):
-    item_type = 'paired_set'
+class MatchedSet(TemporaryDataset):
+    item_type = 'matched_set'
     base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['paired set']

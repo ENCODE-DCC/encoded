@@ -19,7 +19,7 @@ TYPE_MAP = {
     'composite': 'ucsc_browser_composite',
     'publication': 'publication_data',
     'reference': 'reference',
-    'paired set': 'paired_set',
+    'paired set': 'matched_set',
     'annotation': 'annotation',
 }
 

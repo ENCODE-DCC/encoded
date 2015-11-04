@@ -7,7 +7,7 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 @upgrade_step('experiment', '', '2')
 @upgrade_step('annotation', '', '2')
-@upgrade_step('paired_set', '', '2')
+@upgrade_step('matched_set', '', '2')
 @upgrade_step('project', '', '2')
 @upgrade_step('publication_data', '', '2')
 @upgrade_step('reference', '', '2')
@@ -27,7 +27,7 @@ def dataset_0_2(value, system):
 
 @upgrade_step('experiment', '2', '3')
 @upgrade_step('annotation', '2', '3')
-@upgrade_step('paired_set', '2', '3')
+@upgrade_step('matched_set', '2', '3')
 @upgrade_step('project', '2', '3')
 @upgrade_step('publication_data', '2', '3')
 @upgrade_step('reference', '2', '3')
@@ -69,7 +69,7 @@ def dataset_2_3(value, system):
 
 @upgrade_step('experiment', '3', '4')
 @upgrade_step('annotation', '3', '4')
-@upgrade_step('paired_set', '3', '4')
+@upgrade_step('matched_set', '3', '4')
 @upgrade_step('project', '3', '4')
 @upgrade_step('publication_data', '3', '4')
 @upgrade_step('reference', '3', '4')
@@ -94,7 +94,7 @@ def dataset_3_4(value, system):
 
 @upgrade_step('experiment', '4', '5')
 @upgrade_step('annotation', '4', '5')
-@upgrade_step('paired_set', '4', '5')
+@upgrade_step('matched_set', '4', '5')
 @upgrade_step('project', '4', '5')
 @upgrade_step('publication_data', '4', '5')
 @upgrade_step('reference', '4', '5')
@@ -107,7 +107,7 @@ def experiment_4_5(value, system):
 
 @upgrade_step('experiment', '5', '6')
 @upgrade_step('annotation', '5', '6')
-@upgrade_step('paired_set', '5', '6')
+@upgrade_step('matched_set', '5', '6')
 @upgrade_step('project', '5', '6')
 @upgrade_step('publication_data', '5', '6')
 @upgrade_step('reference', '5', '6')

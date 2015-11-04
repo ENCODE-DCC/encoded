@@ -39,7 +39,7 @@ ORDER = [
     'experiment',
     'replicate',
     'annotation',
-    'paired_set',
+    'matched_set',
     'project',
     'publication_data',
     'reference',
@@ -530,7 +530,7 @@ PHASE1_PIPELINES = {
     'annotation': [
         remove_keys('related_files'),
     ],
-    'paired_set': [
+    'matched_set': [
         remove_keys('related_files'),
     ],
     'project': [
@@ -577,7 +577,7 @@ PHASE2_PIPELINES = {
     'annotation': [
         skip_rows_missing_all_keys('related_files'),
     ],
-    'paired_set': [
+    'matched_set': [
         skip_rows_missing_all_keys('related_files'),
     ],
     'project': [
