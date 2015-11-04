@@ -69,6 +69,10 @@ class Biosample(Item):
         'organism',
         'references',
         'talens',
+        'talens.documents',
+        'talens.documents.award',
+        'talens.documents.lab',
+        'talens.documents.submitted_by',
     ]
 
     @calculated_property(condition='biosample_term_id', schema={
