@@ -12,7 +12,11 @@ from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedSlims,
-    CalculatedSynonyms
+    CalculatedSynonyms,
+    CalculatedAssay,
+    CalculatedBiosample,
+    CalculatedTreatment,
+    CalculatedTarget
 )
 
 from itertools import chain
@@ -440,7 +444,7 @@ class Series(Dataset):
         'title': "Matched Set Series",
         'description': 'A series that groups two or more datasets (experiments) together with shared properties',
     })
-class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms):
+class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'matched_set'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/matched_set.json')
@@ -453,7 +457,7 @@ class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms):
         'title': "Treatment time series",
         'description': 'A series that varies on treatment duration across an applied treatment.',
     })
-class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms):
+class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedTreatment):
     item_type = 'treatment_time_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_time_series.json')
@@ -466,7 +470,7 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms):
         'title': "Treatment concentration series",
         'description': 'A series that varies on treatment concentration across an applied treatment.',
     })
-class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms):
+class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
     item_type = 'treatment_concentration_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
@@ -479,7 +483,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms):
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms):
+class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'organism_development_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/organism_development_series.json')
@@ -492,7 +496,7 @@ class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms):
         'title': "Replication timing series",
         'description': 'A series tracking replication timing over the cell cycle.',
     })
-class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms):
+class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'replication_timing_series'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/replication_timing_series.json')
@@ -505,7 +509,7 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms):
         'title': "Reference epigenomes",
         'description': 'A series made up of complimentary assays that define a reference epigenome according to IHEC.',
     })
-class ReferenceEpigenome(Series, CalculatedSlims, CalculatedSynonyms):
+class ReferenceEpigenome(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'reference_epigenome'
     base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/reference_epigenome.json')
