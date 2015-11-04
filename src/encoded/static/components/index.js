@@ -22,6 +22,7 @@ require('./navbar');
 require('./platform');
 require('./statuslabel');
 require('./search');
+require('./talen');
 require('./target');
 require('./publication');
 require('./pipeline');
