@@ -130,7 +130,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             var group_buckets = group[secondary_y_grouping].buckets;
                                             var y_limit = matrix.y.limit || group_buckets.length;
                                             rows.push.apply(rows, group_buckets.map(function(yb, j) {
-                                                if (y_groups.length == 1 || j < y_limit) {
+                                                if (j < y_limit) {
                                                     return <tr>
                                                         <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
                                                         {x_buckets.map(function(xb, i) {
