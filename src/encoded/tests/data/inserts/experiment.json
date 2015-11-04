@@ -539,7 +539,7 @@
         "uuid": "8dc4b825-a5d9-4663-9f1a-cf769c1a0f8c"
     },
     {
-        "_test": "complete epigenome series 1: RNA-seq",
+        "_test": "reference epigenome series 1: RNA-seq",
         "accession": "ENCSR001EPI",
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
@@ -555,7 +555,7 @@
         "uuid": "dc7baa06-bd53-4b5c-809a-85e0c6bd23d6"
     },
     {
-        "_test": "complete epigenome series 2: WGBS",
+        "_test": "reference epigenome series 2: WGBS",
         "accession": "ENCSR002EPI",
         "assay_term_id": "OBI:0001863",
         "assay_term_name": "whole genome bisulfite sequencing",
@@ -571,7 +571,7 @@
         "uuid": "4e0a5e53-fc05-4c9b-8d86-8572c8d227a2"
     },
     {
-        "_test": "complete epigenome series 3: H3K4me1",
+        "_test": "reference epigenome series 3: H3K4me1",
         "accession": "ENCSR003EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -588,7 +588,7 @@
         "uuid": "59584793-f9ad-4cb3-a6e9-e2bd6112116b"
     },
     {
-        "_test": "complete epigenome series 4: H3K4me3",
+        "_test": "reference epigenome series 4: H3K4me3",
         "accession": "ENCSR004EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -605,7 +605,7 @@
         "uuid": "b7a37424-cc23-4c28-ac0d-5dd311f993f4"
     },
     {
-        "_test": "complete epigenome series 5: H3K27ac",
+        "_test": "reference epigenome series 5: H3K27ac",
         "accession": "ENCSR005EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -622,7 +622,7 @@
         "uuid": "36bb66bc-c6d6-4fde-a0b6-b984926ca081"
     },
     {
-        "_test": "complete epigenome series 6: H3K36me3",
+        "_test": "reference epigenome series 6: H3K36me3",
         "accession": "ENCSR006EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -639,7 +639,7 @@
         "uuid": "c70c0fb9-08c5-404f-9905-11aac1069b4e"
     },
     {
-        "_test": "complete epigenome series 7: H3K27me3",
+        "_test": "reference epigenome series 7: H3K27me3",
         "accession": "ENCSR007EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -656,7 +656,7 @@
         "uuid": "0fd18fa0-eeab-48d1-b249-84eca0ea0d6f"
     },
     {
-        "_test": "complete epigenome series 8: H3K9me3",
+        "_test": "reference epigenome series 8: H3K9me3",
         "accession": "ENCSR008EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -673,7 +673,7 @@
         "uuid": "d63e3ea5-86b2-4780-9c07-becbc6c4a63f"
     },
     {
-        "_test": "complete epigenome series 9: control",
+        "_test": "reference epigenome series 9: control",
         "accession": "ENCSR009EPI",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
