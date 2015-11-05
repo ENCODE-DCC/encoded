@@ -54,7 +54,7 @@ def audit_file_platform(value, system):
     Should be in the schema.
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] not in raw_data_formats:
