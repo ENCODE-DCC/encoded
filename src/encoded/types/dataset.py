@@ -228,6 +228,7 @@ class PublicationData(TemporaryDataset):
 class Reference(TemporaryDataset):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['reference']
     base_types = [Dataset.__name__] + Dataset.base_types
 
 
