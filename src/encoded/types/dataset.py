@@ -1,7 +1,12 @@
 from contentbase import (
+    COLLECTIONS,
     calculated_property,
     collection,
     load_schema,
+)
+from pyramid.security import (
+    Deny,
+    Everyone,
 )
 from .base import (
     Item,
@@ -19,6 +24,9 @@ def file_is_revoked(request, path):
 @collection(
     name='datasets',
     unique_key='accession',
+    acl=[
+        (Deny, Everyone, 'add'),
+    ],
     properties={
         'title': 'Datasets',
         'description': 'Listing of datasets',
@@ -176,3 +184,87 @@ class Dataset(Item):
             '&hgHubConnect.remakeTrackHub=on'
             '&hgHub_do_firstDb=1&hubUrl='
         ) + quote_plus(hub_url, ':/@')
+
+
+class TemporaryDataset(Dataset):
+    # Use /datasets/{accession}/ as url to avoid reindexing everything.
+    @property
+    def __parent__(self):
+        return self.registry[COLLECTIONS]['dataset']
+
+
+@collection(
+    name='annotations',
+    properties={
+        'title': "Annotation dataset",
+        'description': 'A set of annotation files produced by ENCODE.',
+    })
+class Annotation(TemporaryDataset):
+    item_type = 'annotation'
+    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema['properties']['dataset_type']['enum'] = ['annotation']
+
+
+@collection(
+    name='publication-data',
+    properties={
+        'title': "Publication dataset",
+        'description': 'A set of files that are described/analyzed in a publication.',
+    })
+class PublicationData(TemporaryDataset):
+    item_type = 'publication_data'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['publication']
+
+
+@collection(
+    name='references',
+    properties={
+        'title': "Reference dataset",
+        'description': 'A set of reference files used by ENCODE.',
+    })
+class Reference(TemporaryDataset):
+    item_type = 'reference'
+    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = [Dataset.__name__] + Dataset.base_types
+
+
+@collection(
+    name='ucsc-browser-composites',
+    properties={
+        'title': "UCSC browser composite dataset",
+        'description': 'A set of files that comprise a composite at the UCSC genome browser.',
+    })
+class UcscBrowserComposite(TemporaryDataset):
+    item_type = 'ucsc_browser_composite'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['composite']
+
+
+@collection(
+    name='projects',
+    properties={
+        'title': "Project dataset",
+        'description': 'A set of files that comprise a project.',
+    })
+class Project(TemporaryDataset):
+    item_type = 'project'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['project']
+
+
+@collection(
+    name='matched-sets',
+    properties={
+        'title': "Matched set series",
+        'description': 'A series that pairs two datasets (experiments) together',
+    })
+class MatchedSet(TemporaryDataset):
+    item_type = 'matched_set'
+    base_types = [Dataset.__name__] + Dataset.base_types
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['paired set']

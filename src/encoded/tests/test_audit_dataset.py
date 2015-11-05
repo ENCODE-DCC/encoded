@@ -1,19 +1,9 @@
 import pytest
 
 
-@pytest.fixture
-def dataset(award, lab, testapp):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'status': 'released'
-    }
-    return testapp.post_json('/dataset', item, status=201).json['@graph'][0]
-
-
-def test_audit_publication(testapp, dataset):
-    testapp.patch_json(dataset['@id'], {'dataset_type': 'publication'})
-    res = testapp.get(dataset['@id'] + '@@index-data')
+def test_audit_publication(testapp, publication_data):
+    testapp.patch_json(publication_data['@id'], {'status': 'released'})
+    res = testapp.get(publication_data['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
