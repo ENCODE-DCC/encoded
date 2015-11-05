@@ -11,50 +11,6 @@
         "uuid": "d2470afe-ac68-4489-8f51-90ddfbc8e00b"
     },
     {
-        "_test": "spikes",
-        "accession": "ENCSR156CIL",
-        "award": "ENCODE2",
-        "dataset_type": "reference",
-        "description": "RNA Working Group Spike-ins Dataset",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
-    },
-    {
-        "_test": "spikes2",
-        "accession": "ENCSR013YHQ",
-        "award": "ENCODE2",
-        "dataset_type": "reference",
-        "description": "RNA Working Group Spike-ins Dataset 2",
-        "lab": "barbara-wold",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
-    },
-    {
-        "_test": "ec3 dataset",
-        "accession": "ENCSR000AJW",
-        "award": "ENCODE2",
-        "dataset_type": "project",
-        "description": "RNA Working Group Evaluation Dataset",
-        "lab": "john-stamatoyannopoulos",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "e52a0b01-2fb8-4015-bcad-c902f1d786fb"
-    },
-    {
-        "_test": "reference file dataset ",
-        "accession": "ENCSR001REF",
-        "award": "ENCODE2",
-        "dataset_type": "project",
-        "description": "Dataset for Reference Files (including Genomes)",
-        "lab": "j-michael-cherry",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "8bd36e84-f20e-48d3-8c03-c99df8cd6b2b"
-    },
-    {
         "_test": "ec2 dataset",
         "accession": "ENCSR847FDT",
         "aliases": [
