@@ -137,8 +137,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                             if (i < x_limit) {
                                                                 var value = yb[x_grouping][xb.key];
                                                                 var color = seriesColor.clone();
-                                                                // scale color between white and 60% lightness
-                                                                color.lightness(60 + (1 - value / matrix.max_cell_doc_count) * 40);
+                                                                // scale color between white and the series color
+                                                                color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
                                                                 var href = search_base + '&' + secondary_y_grouping + '=' + encodeURIComponent(yb.key)
                                                                                        + '&' + x_grouping + '=' + encodeURIComponent(xb.key);
                                                                 var title = yb.key + ' / ' + xb.key + ': ' + value;
