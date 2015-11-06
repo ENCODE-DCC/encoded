@@ -8,6 +8,7 @@ from .interfaces import (
     ROOT,
     TYPES,
 )
+from .resources import AbstractCollection
 
 
 def includeme(config):
@@ -62,12 +63,40 @@ def collection(name, **kw):
     return decorate
 
 
+def abstract_collection(name, Collection=AbstractCollection, **kw):
+    """ Attach a collection at the location ``name``.
+
+    Use as a decorator on Collection subclasses.
+    """
+
+    def set_collection(config, Collection, name, Item, **kw):
+        registry = config.registry
+        ti = registry[TYPES].register_abstract(Item)
+        registry[TYPES].all[Item] = ti  # XXX Ugly this is here.
+        collection = Collection(registry, name, ti, **kw)
+        registry[COLLECTIONS].register(name, collection)
+
+    def decorate(Item):
+
+        def callback(scanner, factory_name, factory):
+            scanner.config.action(('collection', name), set_collection,
+                                  args=(scanner.config, Collection, name, Item),
+                                  kw=kw,
+                                  order=PHASE2_CONFIG)
+        venusian.attach(Item, callback, category='pyramid')
+        return Item
+
+    return decorate
+
+
 class CollectionsTool(dict):
     def __init__(self):
         self.by_item_type = {}
 
     def register(self, name, value):
         self[name] = value
-        self[value.type_info.name] = value
-        self[value.type_info.item_type] = value
-        self.by_item_type[value.type_info.item_type] = value
+        ti = value.type_info
+        self[ti.name] = value
+        if hasattr(ti, 'item_type'):
+            self[ti.item_type] = value
+            self.by_item_type[value.type_info.item_type] = value
