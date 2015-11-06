@@ -11,6 +11,7 @@ from .base import (
 
 @collection(
     name='pipelines',
+    unique_key='accession',
     properties={
         'title': 'Pipelines',
         'description': 'Listing of Pipelines',

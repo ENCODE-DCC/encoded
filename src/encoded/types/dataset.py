@@ -19,6 +19,7 @@ def file_is_revoked(request, path):
 
 @abstract_collection(
     name='datasets',
+    unique_key='accession',
     properties={
         'title': "Datasets",
         'description': 'Listing of all types of dataset.',
@@ -179,6 +180,7 @@ class Dataset(Item):
 
 @collection(
     name='annotations',
+    unique_key='accession',
     properties={
         'title': "Annotation dataset",
         'description': 'A set of annotation files produced by ENCODE.',
@@ -191,6 +193,7 @@ class Annotation(Dataset):
 
 @collection(
     name='publication-data',
+    unique_key='accession',
     properties={
         'title': "Publication dataset",
         'description': 'A set of files that are described/analyzed in a publication.',
@@ -203,6 +206,7 @@ class PublicationData(Dataset):
 
 @collection(
     name='references',
+    unique_key='accession',
     properties={
         'title': "Reference dataset",
         'description': 'A set of reference files used by ENCODE.',
@@ -215,6 +219,7 @@ class Reference(Dataset):
 
 @collection(
     name='ucsc-browser-composites',
+    unique_key='accession',
     properties={
         'title': "UCSC browser composite dataset",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
@@ -227,6 +232,7 @@ class UcscBrowserComposite(Dataset):
 
 @collection(
     name='projects',
+    unique_key='accession',
     properties={
         'title': "Project dataset",
         'description': 'A set of files that comprise a project.',
@@ -239,6 +245,7 @@ class Project(Dataset):
 
 @collection(
     name='matched-sets',
+    unique_key='accession',
     properties={
         'title': "Matched set series",
         'description': 'A series that pairs two datasets (experiments) together',
