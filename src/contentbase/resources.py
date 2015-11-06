@@ -155,7 +155,7 @@ class AbstractCollection(Resource, Mapping):
 
     def _allow_contained(self, resource):
         return resource.__parent__ is self or \
-            resource.type_info.name in resource.self.type_info.subtypes
+            resource.type_info.name in resource.type_info.subtypes
 
     def get(self, name, default=None):
         resource = self.connection.get_by_uuid(name, None)
