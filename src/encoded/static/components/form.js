@@ -240,6 +240,11 @@ var jsonSchemaToFormSchema = function(attrs) {
             // Backrefs have a linkFrom property in the form
             // (object type).(property name)
             var a = p.linkFrom.split('.'), linkType = a[0], linkProp = a[1];
+            // FIXME Handle linkFrom abstract type.
+            if (!schemas[linkType]) {
+                props.input = <input type="text" disabled={disabled} />;
+                return ReactForms.schema.Scalar(props);
+            }
             // Get the schema for the child object, omitting the attribute that
             // refers to the parent.
             var linkFormSchema = jsonSchemaToFormSchema({
