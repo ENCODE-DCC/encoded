@@ -41,6 +41,7 @@ DEFAULT_DOC_TYPES = [
     'experiment',
     'matched_set',
     'page',
+    'pipeline',
     'project',
     'publication',
     'publication_data',
