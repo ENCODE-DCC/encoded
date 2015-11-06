@@ -196,24 +196,31 @@ var jsonSchemaToFormSchema = function(attrs) {
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
             var subprops = {required: required};
-            properties[name] = jsonSchemaToFormSchema({
+            var subschema = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
                 props: subprops,
                 readonly: readonly,
                 showReadOnly: showReadOnly,
             });
+            if (subschema) {
+                properties[name] = subschema;
+            }
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
-                                                        noAddButton={readonly} noRemoveButton={readonly} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({
+        var subschema = jsonSchemaToFormSchema({
             schemas: schemas,
             jsonNode: p.items,
             readonly: readonly,
             showReadOnly: showReadOnly,
-        }));
+        });
+        if (!subschema) {
+            return null;
+        }
+        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
+                                                        noAddButton={readonly} noRemoveButton={readonly} />;
+        return ReactForms.schema.List(props, subschema);
     } else if (p.type == 'boolean') {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
@@ -242,8 +249,7 @@ var jsonSchemaToFormSchema = function(attrs) {
             var a = p.linkFrom.split('.'), linkType = a[0], linkProp = a[1];
             // FIXME Handle linkFrom abstract type.
             if (!schemas[linkType]) {
-                props.input = <input type="text" disabled={disabled} />;
-                return ReactForms.schema.Scalar(props);
+                return null;
             }
             // Get the schema for the child object, omitting the attribute that
             // refers to the parent.
