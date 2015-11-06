@@ -129,8 +129,8 @@ class AnalysisStepRun(Item):
         'output_files'
     ]
     rev = {
-        'quality_metrics': ('quality_metric', 'step_run'),
-        'output_files': ('file', 'step_run')
+        'quality_metrics': ('QualityMetric', 'step_run'),
+        'output_files': ('File', 'step_run')
     }
 
     @calculated_property(schema={
