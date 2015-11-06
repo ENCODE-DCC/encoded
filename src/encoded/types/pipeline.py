@@ -154,14 +154,3 @@ class AnalysisStepRun(Item):
     })
     def output_files(self, request, output_files):
         return paths_filtered_by_status(request, output_files)
-
-
-@collection(
-    name='quality-metrics',
-    properties={
-        'title': "QC metrics",
-        'description': 'Listing of the QC metrics'
-    })
-class QualityMetric(Item):
-    item_type = 'quality_metric'
-    schema = load_schema('encoded:schemas/quality_metric.json')
