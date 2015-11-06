@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -10,6 +11,12 @@ from .base import (
 )
 
 
+@abstract_collection(
+    name='donors',
+    properties={
+        'title': "Donors",
+        'description': 'Listing of all types of donor.',
+    })
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = ['organism']

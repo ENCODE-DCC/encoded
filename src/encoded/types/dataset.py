@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -16,6 +17,12 @@ def file_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
+@abstract_collection(
+    name='datasets',
+    properties={
+        'title': "Datasets",
+        'description': 'Listing of all types of dataset.',
+    })
 class Dataset(Item):
     base_types = ['Dataset'] + Item.base_types
     embedded = [
