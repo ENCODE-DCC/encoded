@@ -199,6 +199,7 @@ class Item(Resource):
     embedded = ()
     audit_inherit = None
     schema = None
+    AbstractCollection = AbstractCollection
     Collection = Collection
 
     def __init__(self, registry, model):

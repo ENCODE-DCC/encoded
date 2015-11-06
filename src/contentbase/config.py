@@ -8,7 +8,6 @@ from .interfaces import (
     ROOT,
     TYPES,
 )
-from .resources import AbstractCollection
 
 
 def includeme(config):
@@ -63,7 +62,7 @@ def collection(name, **kw):
     return decorate
 
 
-def abstract_collection(name, Collection=AbstractCollection, **kw):
+def abstract_collection(name, **kw):
     """ Attach a collection at the location ``name``.
 
     Use as a decorator on Collection subclasses.
@@ -80,7 +79,7 @@ def abstract_collection(name, Collection=AbstractCollection, **kw):
 
         def callback(scanner, factory_name, factory):
             scanner.config.action(('collection', name), set_collection,
-                                  args=(scanner.config, Collection, name, Item),
+                                  args=(scanner.config, Item.AbstractCollection, name, Item),
                                   kw=kw,
                                   order=PHASE2_CONFIG)
         venusian.attach(Item, callback, category='pyramid')
