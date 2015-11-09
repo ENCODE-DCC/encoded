@@ -1159,7 +1159,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     handleFilterChange: function(e) {
-        var value = e.target.selectedOptions[0].value;
+        var value = e.target.value;
         if (value !== 'default') {
             var filters = value.split('-');
             this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
