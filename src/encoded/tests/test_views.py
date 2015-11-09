@@ -134,7 +134,6 @@ def test_load_sample_data(
         biosample,
         biosample_characterization,
         construct,
-        dataset,
         document,
         experiment,
         file,
@@ -144,6 +143,7 @@ def test_load_sample_data(
         organism,
         pipeline,
         publication,
+        publication_data,
         quality_metric,
         replicate,
         rnai,
@@ -152,8 +152,14 @@ def test_load_sample_data(
         source,
         submitter,
         target,
+        ucsc_browser_composite,
         ):
     assert True, 'Fixtures have loaded sample data'
+
+
+def test_abstract_collection(testapp, experiment):
+    testapp.get('/Dataset/{accession}'.format(**experiment))
+    testapp.get('/datasets/{accession}'.format(**experiment))
 
 
 @pytest.mark.slow

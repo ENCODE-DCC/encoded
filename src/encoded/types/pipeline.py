@@ -11,6 +11,7 @@ from .base import (
 
 @collection(
     name='pipelines',
+    unique_key='accession',
     properties={
         'title': 'Pipelines',
         'description': 'Listing of Pipelines',
@@ -129,8 +130,8 @@ class AnalysisStepRun(Item):
         'output_files'
     ]
     rev = {
-        'quality_metrics': ('quality_metric', 'step_run'),
-        'output_files': ('file', 'step_run')
+        'quality_metrics': ('QualityMetric', 'step_run'),
+        'output_files': ('File', 'step_run')
     }
 
     @calculated_property(schema={
@@ -154,14 +155,3 @@ class AnalysisStepRun(Item):
     })
     def output_files(self, request, output_files):
         return paths_filtered_by_status(request, output_files)
-
-
-@collection(
-    name='quality-metrics',
-    properties={
-        'title': "QC metrics",
-        'description': 'Listing of the QC metrics'
-    })
-class QualityMetric(Item):
-    item_type = 'quality_metric'
-    schema = load_schema('encoded:schemas/quality_metric.json')

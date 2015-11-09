@@ -90,6 +90,7 @@ setup(
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
+        migrate-dataset-type = encoded.commands.migrate_dataset_type:main
 
         [paste.app_factory]
         main = encoded:main
