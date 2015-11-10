@@ -71,7 +71,7 @@ def audit_biosample_gtex_children(value, system):
         return
     if 'donor' not in value:
         return
-    if (value['donor']['accesson'] in gtexDonorsList) and \
+    if (value['donor']['accession'] in gtexDonorsList) and \
        (value['accession'] not in gtexParentsList):
         if 'source' not in value:
             detail = 'GTEX biosample {} has no source'.format(
