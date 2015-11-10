@@ -37,7 +37,8 @@ var Dataset = module.exports.Dataset = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var experiments = {};
-        context.files.forEach(function (file) {
+        var statuses = [{status: context.status, title: "Status"}];
+        context.files.forEach(function(file) {
             var experiment = file.replicate && file.replicate.experiment;
             if (experiment) {
                 experiments[experiment['@id']] = experiment;
@@ -61,11 +62,14 @@ var Dataset = module.exports.Dataset = React.createClass({
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
-                            <AuditIndicators context={context} key="experiment-audit" />
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="experiment-audit" />
+                <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
@@ -94,10 +98,8 @@ var Dataset = module.exports.Dataset = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
                             </div>
                         : null}
                     </dl>
@@ -422,6 +424,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         var rowsProc = {};
         var rowsRef = {};
         var encodevers = this.props.encodevers;
+        var bioRepTitle = this.props.anisogenic ? 'Anisogenic' : 'Biological';
         var cellClassRaw = {
             title: 'tcell-sort',
             file_type: 'tcell-sort',
@@ -480,7 +483,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             {humanFileSize(file.file_size)}
                         </td>
                         <td>{file.file_type}</td>
-                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b }).join(', ') : null}</td>
+                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.read_length ? <span>{file.read_length + ' ' + file.read_length_units}</span> : null}</td>
                         <td>{file.run_type ? file.run_type : null}</td>
@@ -504,7 +507,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                         </td>
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
-                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b }).join(', '): null}</td>
+                        <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
                         <td>{file.assembly}</td>
                         <td>{file.genome_annotation}</td>
@@ -545,7 +548,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Accession<i className={cellClassRaw.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>Biological replicate<i className={cellClassRaw.bio_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>{bioRepTitle} replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'read_length')}>Read length<i className={cellClassRaw.read_length}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'run_type')}>Run type<i className={cellClassRaw.run_type}></i></th>
@@ -577,7 +580,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>Biological replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>{bioRepTitle} replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'tech_replicate')}>Technical replicate<i className={cellClassProc.tech_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'assembly')}>Mapping assembly<i className={cellClassProc.assembly}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'annotation')}>Genome annotation<i className={cellClassProc.annotation}></i></th>

@@ -34,6 +34,24 @@ audit_facets = [
 ]
 
 
+DEFAULT_DOC_TYPES = [
+    'annotation',
+    'antibody_lot',
+    'biosample',
+    'experiment',
+    'matched_set',
+    'page',
+    'pipeline',
+    'project',
+    'publication',
+    'publication_data',
+    'reference',
+    'software',
+    'target',
+    'ucsc_browser_composite',
+]
+
+
 def get_filtered_query(term, search_fields, result_fields, principals):
     return {
         'query': {
@@ -367,9 +385,7 @@ def search(context, request, search_type=None):
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
-            doc_types = ['antibody_lot', 'biosample',
-                         'experiment', 'target', 'dataset', 'page', 'publication',
-                         'software']
+            doc_types = DEFAULT_DOC_TYPES
     else:
         for item_type in doc_types:
             ti = types[item_type]

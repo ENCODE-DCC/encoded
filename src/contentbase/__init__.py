@@ -12,11 +12,13 @@ from .auditor import (  # noqa
 )
 from .calculated import calculated_property  # noqa
 from .config import (  # noqa
+    abstract_collection,
     collection,
     root,
 )
 from .interfaces import *  # noqa
 from .resources import (  # noqa
+    AbstractCollection,
     Collection,
     Item,
     Resource,

@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     collection,
     calculated_property,
     load_schema,
@@ -9,6 +10,12 @@ from .base import (
 )
 
 
+@abstract_collection(
+    name='quality-metrics',
+    properties={
+        'title': "Quality metrics",
+        'description': 'Listing of all types of quality metric.',
+    })
 class QualityMetric(ItemWithAttachment):
     base_types = ['QualityMetric'] + Item.base_types
 

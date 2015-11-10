@@ -58,6 +58,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         connection.detach()
         conn = connection.connection
         conn.autocommit = True
+        conn.set_session(readonly=True)
         sockets = [conn]
         if control is not None:
             sockets.append(control)

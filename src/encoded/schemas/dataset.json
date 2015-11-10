@@ -42,9 +42,8 @@
                 "composite",
                 "publication",
                 "reference",
-                "spike-ins",
                 "paired set",
-                "time series"
+                "annotation"
             ]
         },
         "dbxrefs": {
@@ -145,6 +144,10 @@
         },
         "award.project": {
             "title": "Project",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
             "type": "string"
         }
     },

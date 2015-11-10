@@ -1,7 +1,6 @@
 'use strict';
 var EventEmitter = require('events').EventEmitter;
 var React = require('react');
-var ReactForms = require('react-forms');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var closest = require('../libs/closest');
 var offset = require('../libs/offset');
@@ -25,18 +24,9 @@ var filterValue = function(value) {
 };
 
 
-class JSONNode extends ReactForms.schema.ScalarNode {
-    serialize(value) {
-        return JSON.stringify(value, null, 4);
-    }
-    deserialize(value) {
-        return (typeof value === 'string') ? JSON.parse(value) : value;
-    }
-}
-module.exports.JSONNode = JSONNode;
-
 
 var makeValidationResult = function(validation) {
+    var ReactForms = require('react-forms');
     return new ReactForms.ValidationResult(
         validation.error ? validation.error : null,
         validation.children ? _.mapObject(validation.children, function(v, k) {
@@ -48,6 +38,7 @@ var makeValidationResult = function(validation) {
 
 var ReadOnlyField = React.createClass({
     render: function() {
+        var ReactForms = require('react-forms');
         var value;
         if (this.props.preview) {
             var url = this.props.value.value;
@@ -205,24 +196,31 @@ var jsonSchemaToFormSchema = function(attrs) {
             if (_.contains(skip, name)) continue;
             var required = _.contains(p.required || [], name);
             var subprops = {required: required};
-            properties[name] = jsonSchemaToFormSchema({
+            var subschema = jsonSchemaToFormSchema({
                 schemas: schemas,
                 jsonNode: p.properties[name],
                 props: subprops,
                 readonly: readonly,
                 showReadOnly: showReadOnly,
             });
+            if (subschema) {
+                properties[name] = subschema;
+            }
         }
         return ReactForms.schema.Mapping(props, properties);
     } else if (p.type == 'array') {
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
-                                                        noAddButton={readonly} noRemoveButton={readonly} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({
+        var subschema = jsonSchemaToFormSchema({
             schemas: schemas,
             jsonNode: p.items,
             readonly: readonly,
             showReadOnly: showReadOnly,
-        }));
+        });
+        if (!subschema) {
+            return null;
+        }
+        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
+                                                        noAddButton={readonly} noRemoveButton={readonly} />;
+        return ReactForms.schema.List(props, subschema);
     } else if (p.type == 'boolean') {
         props.type = 'bool';
         return ReactForms.schema.Scalar(props);
@@ -238,8 +236,7 @@ var jsonSchemaToFormSchema = function(attrs) {
                 options = [<option value={null} />].concat(options);
             }
             props.input = <select className="form-control" disabled={disabled}>{options}</select>;
-        }
-        if (p.linkTo) {
+        } else if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
             var inputs = require('./inputs');
             props.input = (
@@ -250,6 +247,10 @@ var jsonSchemaToFormSchema = function(attrs) {
             // Backrefs have a linkFrom property in the form
             // (object type).(property name)
             var a = p.linkFrom.split('.'), linkType = a[0], linkProp = a[1];
+            // FIXME Handle linkFrom abstract type.
+            if (!schemas[linkType]) {
+                return null;
+            }
             // Get the schema for the child object, omitting the attribute that
             // refers to the parent.
             var linkFormSchema = jsonSchemaToFormSchema({
@@ -336,6 +337,7 @@ var Form = module.exports.Form = React.createClass({
     },
 
     render: function() {
+        var ReactForms = require('react-forms');
         return (
             <div>
                 <ReactForms.Form

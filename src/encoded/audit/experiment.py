@@ -103,6 +103,89 @@ def audit_experiment_replicates_with_no_libraries(value, system):
     return
   
 
+@audit_checker('experiment', frame=['replicates', 'replicates.library.biosample', 'replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
+def audit_experiment_isogeneity(value, system):
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if len(value['replicates']) == 0:
+        return
+
+    if len(value['replicates']) == 1:
+        return
+
+    biological_rep_biosample_dict = {}
+
+    for rep in value['replicates']:
+        bio_rep_num = rep['biological_replicate_number']
+        tech_rep_num = rep['technical_replicate_number']
+
+        if 'library' not in rep:
+            continue
+        lib = rep['library']
+        if 'biosample' not in lib: # checked at the level of library            
+            continue
+        biosample = lib['biosample']
+        if 'donor' not in biosample: # already checked at biosample
+            continue
+
+        if not bio_rep_num in biological_rep_biosample_dict:
+            biological_rep_biosample_dict[bio_rep_num]={}
+        biological_rep_biosample_dict[bio_rep_num][tech_rep_num]=biosample
+     
+    if len(biological_rep_biosample_dict.keys())<1:
+        return   
+    ''' 
+    To allow validation of biological replicates - first make sure technical replicates are from the same donor
+    '''
+    for tech_rep_dict_key in biological_rep_biosample_dict.keys():
+        donorsList = []
+        for tech_rep_donor_key in biological_rep_biosample_dict[tech_rep_dict_key].keys():
+            donorsList.append(biological_rep_biosample_dict[tech_rep_dict_key][tech_rep_donor_key]['donor'])
+        
+        if len(donorsList)>1:
+            initialDonor = donorsList[0]
+            for tech_donor in donorsList:
+                if initialDonor['accession']!=tech_donor['accession']:  
+                    #######################################################################################
+                    # talk with Cricket about the return value in case of anisogenic technical replicates #
+                    #######################################################################################                  
+                    raise technical_failure(value)
+    '''
+    Now we can proceed to biological replicates validation
+    '''
+
+    if value.get('replication_type') is None:
+        detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
+        raise AuditFailure('undetermined replicate_type', detail, level='DCC_ACTION')
+
+    if value.get('replication_type') == 'anisogenic, sex-matched and age-matched':
+        detail = 'In experiment {} the replicates are anisogenic, sex and age properties are matched'.format(
+            value['@id'])
+        raise AuditFailure('anisogenic biological replicates, matched sex and age', detail, level='DCC_ACTION')
+
+    if value.get('replication_type') == 'anisogenic':
+        detail = 'In experiment {} the replicates are anisogenic, sex and age properties are not matched'.format(
+        value['@id'])
+        raise AuditFailure('anisogenic biological replicates, mismatched sex and age', detail, level='DCC_ACTION')
+
+    if value.get('replication_type') == 'anisogenic, age-matched':
+        detail = 'In experiment {} the replicates are anisogenic, sex property is not matched'.format(
+            value['@id'])
+        raise AuditFailure('anisogenic biological replicates, matched age', detail, level='DCC_ACTION')
+
+    if value.get('replication_type') == 'anisogenic, sex-matched':
+        detail = 'In experiment {} the replicates are anisogenic, age property is not matched'.format(
+            value['@id'])
+        raise AuditFailure('anisogenic biological replicates, matched sex', detail, level='DCC_ACTION')
+
+
+def technical_failure(value):
+    detail = 'Experiment {} has anisogenic technical replicates'.format(value['@id'])
+    return AuditFailure('anisogenic technical replicates', detail, level='DCC_ACTION')
+
+
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_technical_replicates_same_library(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -121,7 +204,8 @@ def audit_experiment_technical_replicates_same_library(value, system):
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library','replicates.library.biosample' ])
+
+@audit_checker('experiment', frame=['replicates', 'replicates.library', 'replicates.library.biosample'])
 def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return

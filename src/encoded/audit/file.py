@@ -170,7 +170,7 @@ def audit_run_type(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
-    if value['file_format'] not in ['fastq', 'fasta']:
+    if value['file_format'] not in ['fastq']:
         return
 
     if 'run_type' not in value:
@@ -226,6 +226,67 @@ def audit_paired_with(value, system):
                 paired_with,
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
+
+
+@audit_checker('file', frame=['step_run',
+                              'dataset'], condition=rfa('modERN'))
+def audit_modERN_ChIP_pipeline_steps(value, system):
+
+    expt = value['dataset']
+    if 'Experiment' not in expt['@type']:
+        return
+    
+    if expt['assay_term_id'] != 'OBI:0000716':
+        return
+
+    if value['file_format'] == 'fastq':
+        return
+
+    if 'step_run' not in value:
+        detail = 'File {} is missing a step_run'.format(value['@id'])
+        yield AuditFailure('missing step_run', detail, level='WARNING')
+        return
+
+    if (value['file_format'] != 'fastq') and ('derived_from' not in value):
+        detail = 'File {} is missing its derived_from'.format(value['@id'])
+        yield AuditFailure('missing derived_from', detail, level='WARNING')
+
+    step = value['step_run']
+    if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
+        detail = 'Bam {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+        yield AuditFailure('wrong step_run ChIP-seq bam', detail, level='WARNING')
+
+    if (value['output_type'] == 'normalized signal of all reads'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual')):
+            detail = 'Normalized signal of all reads {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for unique signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'read-depth normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Read depth normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for depth signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'control normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Control normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for control signal', detail, level='WARNING')
+
+    if (value['file_format'] == 'bigBed'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual')):
+            detail = 'bigBed {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for bigBed peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-spp-peak-calling-step-run-v-1-virtual'):
+            detail = 'Peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'optimal idr thresholded peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
+            detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
+
+
 
 
 @audit_checker('file', frame='object')
@@ -285,17 +346,20 @@ def audit_file_paired_ended_run_type(value, system):
                               'analysis_step_version.software_versions',
                               'analysis_step_version.software_versions.software',
                               'dataset'],
-               condition=rfa('ENCODE3','ENCODE'))
+               condition=rfa('ENCODE3', 'ENCODE'))
 def audit_file_read_depth(value, system):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
-    '''   
-    
+    '''
+
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] != 'bam':
+        return
+
+    if value['output_type'] == 'transcriptome alignments':
         return
 
     if value['lab'] != '/labs/encode-processing-pipeline/':
@@ -304,14 +368,14 @@ def audit_file_read_depth(value, system):
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has no analysis step version'.format(
                 value['@id'])
-        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION') 
-    
+        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has no analysis step in {}'.format(
                 value['@id'],
                 value['analysis_step_version']['@id'])
-        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')    
-        
+        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed alignment file {} has no pipelines in {}'.format(
                 value['@id'],
@@ -322,21 +386,21 @@ def audit_file_read_depth(value, system):
         detail = 'ENCODE Processed alignment file {} has no software_versions in {}'.format(
                 value['@id'],
                 value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software versions', detail, level='DCC_ACTION')    
+        raise AuditFailure('missing software versions', detail, level='DCC_ACTION')
 
-    if value['analysis_step_version']['software_versions']==[]:
+    if value['analysis_step_version']['software_versions'] == []:
         detail = 'ENCODE Processed alignment file {} has no softwares listed in software_versions, under {}'.format(
                 value['@id'],
                 value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software', detail, level='DCC_ACTION')     
-    
-    ''' 
+        raise AuditFailure('missing software', detail, level='DCC_ACTION')
+
+    '''
     excluding bam files from TopHat
     '''
-    for record in value['analysis_step_version']['software_versions']:        
+    for record in value['analysis_step_version']['software_versions']:   
         if record['software']['title']=='TopHat':
             return
-            
+
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
@@ -344,7 +408,7 @@ def audit_file_read_depth(value, system):
             value['@id'])
         raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
     read_depth = 0
-    
+
     for metric in quality_metrics:
         if "uniqueMappedCount" in metric:
             read_depth = metric['uniqueMappedCount']            
@@ -357,60 +421,55 @@ def audit_file_read_depth(value, system):
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
             value['@id'])
         raise AuditFailure('missing read depth', detail, level='DCC_ACTION')
-        
+
     read_depth_criteria = {
         'Small RNA-seq single-end pipeline': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
-        'RAMPAGE (paired-end, stranded)': 30000000,
+        'RAMPAGE (paired-end, stranded)': 25000000,
         'ChIP-seq of histone modifications': 45000000,
     }
 
     read_depth_special = {
-        'shRNA knockdown followed by RNA-seq':20000000,
-        'single cell isolation followed by RNA-seq':15000000
+        'shRNA knockdown followed by RNA-seq':10000000,
+        'single cell isolation followed by RNA-seq':10000000
     }
 
-   
     '''
     Finding out if that is shRNA or single Cell to be treated differently
     '''
     shRNAFlag = False
     singleCellFlag = False
-    
 
     if 'dataset' in value:
-        if value['dataset']['assay_term_name']=='shRNA knockdown followed by RNA-seq':
+        if value['dataset']['assay_term_name'] == 'shRNA knockdown followed by RNA-seq':
             shRNAFlag = True
-        if value['dataset']['assay_term_name']=='single cell isolation followed by RNA-seq':
-            singleCellFlag=True
+        if value['dataset']['assay_term_name'] == 'single cell isolation followed by RNA-seq':
+            singleCellFlag = True
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] not in read_depth_criteria: 
+        if pipeline['title'] not in read_depth_criteria:
             return
-        if ((singleCellFlag==True) and read_depth<read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag==True) and read_depth<read_depth_special['shRNA knockdown followed by RNA-seq']):
-            if shRNAFlag==True:
-                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+        if ((singleCellFlag is True) and read_depth < read_depth_special['single cell isolation followed by RNA-seq']) or ((shRNAFlag is True) and read_depth < read_depth_special['shRNA knockdown followed by RNA-seq']):
+            if shRNAFlag is True:
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
-                    read_depth, 
+                    read_depth,
                     pipeline['title'],
                     read_depth_special['shRNA knockdown followed by RNA-seq'])
             else:
-                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+                detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                     value['@id'],
-                    read_depth, 
+                    read_depth,
                     pipeline['title'],
                     read_depth_special['single cell isolation followed by RNA-seq'])
 
-            
             raise AuditFailure('insufficient read depth', detail, level='ERROR')
-            
-                   
-        if (read_depth < read_depth_criteria[pipeline['title']]) and (singleCellFlag==False) and (shRNAFlag==False):
-            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Files from pipeline {} require {}'.format(
+
+        if (read_depth < read_depth_criteria[pipeline['title']]) and (singleCellFlag is False) and (shRNAFlag is False):
+            detail = 'ENCODE Processed alignment file {} has {} uniquely mapped reads. Replicates for this assay {} require {}'.format(
                 value['@id'],
-                read_depth, 
+                read_depth,
                 pipeline['title'],
                 read_depth_criteria[pipeline['title']])
             raise AuditFailure('insufficient read depth', detail, level='ERROR')
-  

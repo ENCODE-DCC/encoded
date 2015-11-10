@@ -415,6 +415,7 @@ var AuditMixin = audit.AuditMixin;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Dataset</p>
                             <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">

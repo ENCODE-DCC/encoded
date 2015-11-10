@@ -4,7 +4,7 @@ from contentbase import (
 )
 
 
-@audit_checker('dataset', frame='object')
+@audit_checker('Dataset', frame='object')
 def audit_references_for_publication(value, system):
     '''
     For datasets of type publication, there should be references. Those that
