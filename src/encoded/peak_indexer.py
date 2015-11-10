@@ -168,15 +168,14 @@ def index_file(request):
     if recovery:
         query = connection.execute(
             "SET TRANSACTION ISOLATION LEVEL READ COMMITTED, READ ONLY;"
-            "SELECT txid_snapshot_xmin(txid_current_snapshot()), NULL;"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot());"
         )
     else:
         query = connection.execute(
             "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;"
-            "SELECT txid_snapshot_xmin(txid_current_snapshot()), pg_export_snapshot();"
+            "SELECT txid_snapshot_xmin(txid_current_snapshot());"
         )
-    result, = query.fetchall()
-    xmin, snapshot_id = result  # lowest xid that is still in progress
+    xmin = query.scalar()  # lowest xid that is still in progress
 
     first_txn = None
     last_xmin = None
