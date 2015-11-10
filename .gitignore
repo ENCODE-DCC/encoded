@@ -1,6 +1,7 @@
 .coverage
 .installed.cfg
 .mr.developer.cfg
+.cache/
 .sass-cache/
 bin/
 build/

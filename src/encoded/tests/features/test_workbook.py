@@ -12,5 +12,4 @@ scenarios(
     'experiments.feature',
     'search.feature',
     'targets.feature',
-    'trackhubs.feature',
 )

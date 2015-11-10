@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -10,6 +11,13 @@ from .base import (
 )
 
 
+@abstract_collection(
+    name='donors',
+    unique_key='accession',
+    properties={
+        'title': "Donors",
+        'description': 'Listing of all types of donor.',
+    })
 class Donor(Item):
     base_types = ['Donor'] + Item.base_types
     embedded = ['organism']
@@ -32,6 +40,7 @@ class Donor(Item):
 
 @collection(
     name='mouse-donors',
+    unique_key='accession',
     acl=[],
     properties={
         'title': 'Mouse donors',
@@ -40,6 +49,7 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
+    embedded = Donor.embedded + ['references']
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
@@ -48,6 +58,7 @@ class MouseDonor(Donor):
 
 @collection(
     name='fly-donors',
+    unique_key='accession',
     properties={
         'title': 'Fly donors',
         'description': 'Listing Biosample Donors',
@@ -60,6 +71,7 @@ class FlyDonor(Donor):
 
 @collection(
     name='worm-donors',
+    unique_key='accession',
     properties={
         'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
@@ -72,6 +84,7 @@ class WormDonor(Donor):
 
 @collection(
     name='human-donors',
+    unique_key='accession',
     properties={
         'title': 'Human donors',
         'description': 'Listing Biosample Donors',
@@ -79,3 +92,4 @@ class WormDonor(Donor):
 class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
+    embedded = Donor.embedded + ['references']
