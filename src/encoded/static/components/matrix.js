@@ -135,7 +135,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>{yb.key}</th>
                                                         {x_buckets.map(function(xb, i) {
                                                             if (i < x_limit) {
-                                                                var value = yb[x_grouping][xb.key];
+                                                                var value = yb[x_grouping][i];
                                                                 var color = seriesColor.clone();
                                                                 // scale color between white and the series color
                                                                 color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));

@@ -637,21 +637,24 @@ def matrix(context, request):
     # Format matrix for results
     result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
-    def summarize_buckets(matrix, outer_bucket, grouping_fields):
+    def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if not grouping_fields:
-            summary = {}
+            counts = {}
             for bucket in outer_bucket[group_by]['buckets']:
                 doc_count = bucket['doc_count']
                 if doc_count > matrix['max_cell_doc_count']:
                     matrix['max_cell_doc_count'] = doc_count
-                summary[bucket['key']] = doc_count
+                counts[bucket['key']] = doc_count
+            summary = []
+            for bucket in x_buckets:
+                summary.append(counts.get(bucket['key'], 0))
             outer_bucket[group_by] = summary
         else:
             for bucket in outer_bucket[group_by]['buckets']:
-                summarize_buckets(matrix, bucket, grouping_fields)
-    summarize_buckets(result['matrix'], aggregations['matrix'], y_groupings + [x_grouping])
+                summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
+    summarize_buckets(result['matrix'], aggregations['matrix']['x']['buckets'], aggregations['matrix'], y_groupings + [x_grouping])
     result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
