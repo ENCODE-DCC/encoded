@@ -86,23 +86,21 @@ def audit_biosample_gtex_children(value, system):
         if 'part_of' not in value:
             detail = 'GTEX child biosample {} is not asociated with any parent biosample'.format(
                 value['@id'])
-            yield AuditFailure('GTEX biosample missing has no part_of property', detail,
+            yield AuditFailure('GTEX biosample has no part_of property', detail,
                                level='DCC_ACTION')
         else:
             partOfBiosample = value['part_of']
             if (partOfBiosample['accession'] not in gtexParentsList):
-                detail = 'GTEX child biosample {} is asociated with biosample {} which is' + \
-                         'not a part of parent biosamples list'.format(value['@id'],
-                                                                       partOfBiosample)
+                detail = 'GTEX child biosample {} is asociated '.format(value['@id']) + \
+                         'with biosample {} which is '.format(partOfBiosample) + \
+                         'not a part of parent biosamples list'
                 yield AuditFailure('GTEX biosample has invalid part_of property', detail,
                                    level='DCC_ACTION')
             else:
                 if value['biosample_term_id'] != partOfBiosample['biosample_term_id']:
-                    detail = 'GTEX child biosample {} is asociated with biosample {} that' + \
-                             'has a different biosample_term_id {}'.format(value['@id'],
-                                                                           partOfBiosample,
-                                                                           partOfBiosample[
-                                                                           'biosample_term_id'])
+                    detail = 'GTEX child biosample {} is associated with '.format(value['@id']) + \
+                             'biosample {} that has a different '.format(partOfBiosample) + \
+                             'biosample_term_id {}'.format(partOfBiosample['biosample_term_id'])
                     yield AuditFailure('GTEX biosample has invalid part_of property', detail,
                                        level='DCC_ACTION')
         if ('aliases' not in value):
@@ -120,10 +118,10 @@ def audit_biosample_gtex_children(value, system):
                 if ca[0:14] == repDonorAlias:
                     aliasFlag = True
             if aliasFlag is False:
-                detail = 'GTEX biosample {} has aliases {} that do not' + \
-                         'alias from column A of youur plate-map'.format(value['@id'],
-                                                                         childAliases)
-                raise AuditFailure('GTEX biosample have no correct aliase', detail,
+                detail = 'GTEX biosample {} aliases {}'.format(value['@id'],
+                                                               childAliases) + \
+                         'do not match information from column A of your plate-map'
+                raise AuditFailure('GTEX biosample has no correct aliase', detail,
                                    level='DCC_ACTION')
 
 
