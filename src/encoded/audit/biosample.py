@@ -81,7 +81,7 @@ def audit_biosample_gtex_children(value, system):
             if (value['source']['uuid'] != 'f85ecd67-abf2-4a26-89c8-53a7273c8b0c'):
                 detail = 'GTEX biosample {} has incorrect source {}'.format(
                     value['@id'],
-                    value['source'])
+                    value['source']['title'])
                 yield AuditFailure('GTEX biosample incorrect source', detail, level='DCC_ACTION')
         if 'part_of' not in value:
             detail = 'GTEX child biosample {} is not asociated with any parent biosample'.format(
@@ -92,14 +92,14 @@ def audit_biosample_gtex_children(value, system):
             partOfBiosample = value['part_of']
             if (partOfBiosample['accession'] not in gtexParentsList):
                 detail = 'GTEX child biosample {} is asociated '.format(value['@id']) + \
-                         'with biosample {} which is '.format(partOfBiosample) + \
+                         'with biosample {} which is '.format(partOfBiosample['@id']) + \
                          'not a part of parent biosamples list'
                 yield AuditFailure('GTEX biosample invalid part_of property', detail,
                                    level='DCC_ACTION')
             else:
                 if value['biosample_term_id'] != partOfBiosample['biosample_term_id']:
                     detail = 'GTEX child biosample {} is associated with '.format(value['@id']) + \
-                             'biosample {} that has a different '.format(partOfBiosample) + \
+                             'biosample {} that has a different '.format(partOfBiosample['@id']) + \
                              'biosample_term_id {}'.format(partOfBiosample['biosample_term_id'])
                     yield AuditFailure('GTEX biosample invalid part_of property', detail,
                                        level='DCC_ACTION')
@@ -120,8 +120,8 @@ def audit_biosample_gtex_children(value, system):
             if aliasFlag is False:
                 detail = 'GTEX biosample {} aliases {} '.format(value['@id'],
                                                                 childAliases) + \
-                         'do not match information from column A of the plate-map'
-                yield AuditFailure('GTEX biosample incorrect aliase', detail,
+                         'do not include an alias based on plate-map, column A identifier'
+                yield AuditFailure('GTEX biosample missing aliases', detail,
                                    level='DCC_ACTION')
     return
 
