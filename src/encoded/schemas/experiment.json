@@ -34,13 +34,6 @@
             "type": "string",
             "linkTo": "Target"
         },
-        "dataset_type": {
-            "title": "Type",
-            "comment": "Do not need to submit, value is assigned by server.",
-            "type": "string",
-            "default": "experiment",
-            "enum": ["experiment"]
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
