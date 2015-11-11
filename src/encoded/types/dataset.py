@@ -200,7 +200,7 @@ class Dataset(Item):
 
 class FileSet(Dataset):
     item_type = 'file_set'
-    base_types = [Dataset.__name__] + Dataset.base_types
+    base_types = ['FileSet'] + Dataset.base_types
     schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded + [
         'files.replicate.antibody',
@@ -301,7 +301,6 @@ class FileSet(Dataset):
     })
 class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
     item_type = 'annotation'
-    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
 
@@ -315,7 +314,6 @@ class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
     })
 class PublicationData(FileSet):
     item_type = 'publication_data'
-    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/publication_data.json')
 
 
@@ -328,7 +326,6 @@ class PublicationData(FileSet):
     })
 class Reference(FileSet):
     item_type = 'reference'
-    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/reference.json')
     embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
 
@@ -342,7 +339,6 @@ class Reference(FileSet):
     })
 class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
     item_type = 'ucsc_browser_composite'
-    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
     embedded = FileSet.embedded + ['organism']
 
@@ -356,13 +352,12 @@ class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
     })
 class Project(FileSet):
     item_type = 'project'
-    base_types = [FileSet.__name__] + FileSet.base_types
     schema = load_schema('encoded:schemas/project.json')
 
 
 class Series(Dataset):
     item_type = 'series'
-    base_types = [Dataset.__name__] + Dataset.base_types
+    base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
         'award.pi.lab',
@@ -454,7 +449,6 @@ class Series(Dataset):
     })
 class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'matched_set'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded
 
@@ -468,7 +462,6 @@ class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, C
     })
 class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
     item_type = 'treatment_time_series'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded
 
@@ -482,7 +475,6 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, Calculate
     })
 class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
     item_type = 'treatment_concentration_series'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded
 
@@ -496,7 +488,6 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, 
     })
 class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedAge, CalculatedSynchronization):
     item_type = 'organism_development_series'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded
 
@@ -510,7 +501,6 @@ class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, Cal
     })
 class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'replication_timing_series'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded
 
@@ -524,6 +514,5 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, Calcu
     })
 class ReferenceEpigenome(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
     item_type = 'reference_epigenome'
-    base_types = [Series.__name__] + Series.base_types
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded
