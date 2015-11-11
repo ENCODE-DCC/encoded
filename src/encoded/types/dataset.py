@@ -295,6 +295,7 @@ class FileSet(Dataset):
 
 @collection(
     name='annotations',
+    unique_key='accession',
     properties={
         'title': "Annotation file set",
         'description': 'A set of annotation files produced by ENCODE.',
