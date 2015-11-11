@@ -129,7 +129,12 @@ def experiment_5_6(value, system):
 
 
 @upgrade_step('experiment', '6', '7')
-@upgrade_step('dataset', '6', '7')
+@upgrade_step('annotation', '6', '7')
+@upgrade_step('matched_set', '6', '7')
+@upgrade_step('project', '6', '7')
+@upgrade_step('publication_data', '6', '7')
+@upgrade_step('reference', '6', '7')
+@upgrade_step('ucsc_browser_composite', '6', '7')
 def experiment_6_7(value, system):
     if 'dataset_type' in value:
         del value['dataset_type']
