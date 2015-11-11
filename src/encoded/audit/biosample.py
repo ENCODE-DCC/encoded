@@ -105,7 +105,7 @@ def audit_biosample_gtex_children(value, system):
                                        level='DCC_ACTION')
         if ('aliases' not in value):
             detail = 'GTEX biosample {} has no aliases'.format(value['@id'])
-            raise AuditFailure('GTEX biosample lacking aliases', detail, level='DCC_ACTION')
+            yield AuditFailure('GTEX biosample lacking aliases', detail, level='DCC_ACTION')
         else:
             donorAliases = value['donor']['aliases']
             repDonorAlias = ''
@@ -121,8 +121,9 @@ def audit_biosample_gtex_children(value, system):
                 detail = 'GTEX biosample {} aliases {} '.format(value['@id'],
                                                                 childAliases)
                 detail += 'do not match information from column A of your plate-map'
-                raise AuditFailure('GTEX biosample has no correct aliase', detail,
+                yield AuditFailure('GTEX biosample has no correct aliase', detail,
                                    level='DCC_ACTION')
+    return
 
 
 @audit_checker('biosample', frame='object')
