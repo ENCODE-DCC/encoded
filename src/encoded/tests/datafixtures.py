@@ -332,6 +332,7 @@ def publication_data(testapp, lab, award):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
+        'references': [],
     }
     return testapp.post_json('/publication_data', item).json['@graph'][0]
 
