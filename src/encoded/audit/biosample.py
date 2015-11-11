@@ -118,9 +118,9 @@ def audit_biosample_gtex_children(value, system):
                 if ca[0:14] == repDonorAlias:
                     aliasFlag = True
             if aliasFlag is False:
-                detail = 'GTEX biosample {} aliases {}'.format(value['@id'],
-                                                               childAliases) + \
-                         'do not match information from column A of your plate-map'
+                detail = 'GTEX biosample {} aliases {} '.format(value['@id'],
+                                                                childAliases)
+                detail += 'do not match information from column A of your plate-map'
                 raise AuditFailure('GTEX biosample has no correct aliase', detail,
                                    level='DCC_ACTION')
 
