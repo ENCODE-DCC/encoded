@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -30,16 +31,15 @@ def item_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-@collection(
+@abstract_collection(
     name='datasets',
     unique_key='accession',
     properties={
         'title': "Datasets",
-        'description': 'Listing of datasets',
+        'description': 'Listing of all types of dataset.',
     })
 class Dataset(Item):
-    item_type = 'dataset'
-    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = ['Dataset'] + Item.base_types
     embedded = [
         'files',
         'files.replicate',
@@ -308,6 +308,7 @@ class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
 
 @collection(
     name='publication-data',
+    unique_key='accession',
     properties={
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
@@ -320,6 +321,7 @@ class PublicationData(FileSet):
 
 @collection(
     name='references',
+    unique_key='accession',
     properties={
         'title': "Reference file set",
         'description': 'A set of reference files used by ENCODE.',
@@ -333,6 +335,7 @@ class Reference(FileSet):
 
 @collection(
     name='ucsc-browser-composites',
+    unique_key='accession',
     properties={
         'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
@@ -346,6 +349,7 @@ class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
 
 @collection(
     name='projects',
+    unique_key='accession',
     properties={
         'title': "Project file set",
         'description': 'A set of files that comprise a project.',
@@ -443,6 +447,7 @@ class Series(Dataset):
 
 @collection(
     name='matched-sets',
+    unique_key='accession',
     properties={
         'title': "Matched Set Series",
         'description': 'A series that groups two or more datasets (experiments) together with shared properties',
@@ -456,6 +461,7 @@ class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, C
 
 @collection(
     name='treatment-time-series',
+    unique_key='accession',
     properties={
         'title': "Treatment time series",
         'description': 'A series that varies on treatment duration across an applied treatment.',
@@ -469,6 +475,7 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, Calculate
 
 @collection(
     name='treatment-concentration-series',
+    unique_key='accession',
     properties={
         'title': "Treatment concentration series",
         'description': 'A series that varies on treatment concentration across an applied treatment.',
@@ -482,6 +489,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, 
 
 @collection(
     name='organism-development-series',
+    unique_key='accession',
     properties={
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
@@ -495,6 +503,7 @@ class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, Cal
 
 @collection(
     name='replication-timing-series',
+    unique_key='accession',
     properties={
         'title': "Replication timing series",
         'description': 'A series tracking replication timing over the cell cycle.',
@@ -508,6 +517,7 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, Calcu
 
 @collection(
     name='reference-epigenomes',
+    unique_key='accession',
     properties={
         'title': "Reference epigenomes",
         'description': 'A series made up of complimentary assays that define a reference epigenome according to IHEC.',

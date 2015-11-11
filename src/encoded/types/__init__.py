@@ -170,6 +170,7 @@ class Platform(Item):
 
 @collection(
     name='libraries',
+    unique_key='accession',
     properties={
         'title': 'Libraries',
         'description': 'Listing of Libraries',

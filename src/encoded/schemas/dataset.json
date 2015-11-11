@@ -39,15 +39,11 @@
             "default": "project",
             "enum": [
                 "project",
-                "composite",
-                "publication",
-                "reference",
-                "spike-ins",
-                "paired set",
                 "ucsc_browser_composite",
-                "annotation",
                 "publication_data",
-                "paired_set"
+                "reference",
+                "matched set",
+                "annotation"
             ]
         },
         "dbxrefs": {
