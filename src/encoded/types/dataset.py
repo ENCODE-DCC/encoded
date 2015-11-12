@@ -12,15 +12,19 @@ from .base import (
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
 from .shared_calculated_properties import (
-    CalculatedSlims,
-    CalculatedSynonyms,
-    CalculatedAssay,
-    CalculatedBiosample,
-    CalculatedTreatment,
-    CalculatedTarget,
-    CalculatedAge,
-    CalculatedLifeStage,
-    CalculatedSynchronization
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms,
+    CalculatedFileSetAssaySynonyms,
+    CalculatedFileSetAssayTerm,
+    CalculatedFileSetAssayId,
+    CalculatedFileSetOrganism,
+    CalculatedSeriesAssay,
+    CalculatedSeriesBiosample,
+    CalculatedSeriesTreatment,
+    CalculatedSeriesTarget,
+    CalculatedSeriesAge,
+    CalculatedSeriesLifeStage,
+    CalculatedSeriesSynchronization
 )
 
 from itertools import chain
@@ -300,7 +304,7 @@ class FileSet(Dataset):
         'title': "Annotation file set",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
+class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
@@ -313,7 +317,7 @@ class Annotation(FileSet, CalculatedSlims, CalculatedSynonyms):
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet):
+class PublicationData(FileSet, CalculatedFileSetOrganism, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
 
@@ -338,10 +342,9 @@ class Reference(FileSet):
         'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
+class UcscBrowserComposite(FileSet, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms, CalculatedFileSetOrganism):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = FileSet.embedded + ['organism']
 
 
 @collection(
@@ -351,7 +354,7 @@ class UcscBrowserComposite(FileSet, CalculatedSlims, CalculatedSynonyms):
         'title': "Project file set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(FileSet):
+class Project(FileSet, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms, CalculatedFileSetOrganism):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
 
@@ -448,7 +451,7 @@ class Series(Dataset):
         'title': "Matched Set Series",
         'description': 'A series that groups two or more datasets (experiments) together with shared properties',
     })
-class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
+class MatchedSet(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded
@@ -461,7 +464,7 @@ class MatchedSet(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, C
         'title': "Treatment time series",
         'description': 'A series that varies on treatment duration across an applied treatment.',
     })
-class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
+class TreatmentTimeSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment):
     item_type = 'treatment_time_series'
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded
@@ -474,7 +477,7 @@ class TreatmentTimeSeries(Series, CalculatedSlims, CalculatedSynonyms, Calculate
         'title': "Treatment concentration series",
         'description': 'A series that varies on treatment concentration across an applied treatment.',
     })
-class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedTreatment):
+class TreatmentConcentrationSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment):
     item_type = 'treatment_concentration_series'
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded
@@ -487,7 +490,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSlims, CalculatedSynonyms, 
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget, CalculatedAge, CalculatedSynchronization):
+class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesAge, CalculatedSeriesSynchronization, CalculatedSeriesLifeStage):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded
@@ -500,7 +503,7 @@ class OrganismDevelopmentSeries(Series, CalculatedSlims, CalculatedSynonyms, Cal
         'title': "Replication timing series",
         'description': 'A series tracking replication timing over the cell cycle.',
     })
-class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
+class ReplicationTimingSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded
@@ -513,7 +516,7 @@ class ReplicationTimingSeries(Series, CalculatedSlims, CalculatedSynonyms, Calcu
         'title': "Reference epigenomes",
         'description': 'A series made up of complimentary assays that define a reference epigenome according to IHEC.',
     })
-class ReferenceEpigenome(Series, CalculatedSlims, CalculatedSynonyms, CalculatedAssay, CalculatedBiosample, CalculatedTarget):
+class ReferenceEpigenome(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded
