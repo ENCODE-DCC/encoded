@@ -155,8 +155,8 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'mode', 'searchTerm',
-                     'format', 'frame', 'datastore', 'field']:
+        if field in ['type', 'limit', 'mode', 'searchTerm', 'annotation',
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome']:
             continue
 
         # Add filter to result
@@ -298,6 +298,25 @@ def load_results(request, es_results, result):
             result['@graph'].append(item)
 
 
+def load_facets(es_results, facets, result):
+    # Loading facets in to the results
+    if 'aggregations' in es_results:
+        facet_results = es_results['aggregations']
+        for field, facet in facets:
+            agg_name = field.replace('.', '-')
+            if agg_name not in facet_results:
+                continue
+            terms = facet_results[agg_name][agg_name]['buckets']
+            if len(terms) < 2:
+                continue
+            result['facets'].append({
+                'field': field,
+                'title': facet['title'],
+                'terms': terms,
+                'total': facet_results[agg_name]['doc_count']
+            })
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
@@ -423,22 +442,7 @@ def search(context, request, search_type=None):
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, size=size)
 
-    # Loading facets in to the results
-    if 'aggregations' in es_results:
-        facet_results = es_results['aggregations']
-        for field, facet in facets:
-            agg_name = field.replace('.', '-')
-            if agg_name not in facet_results:
-                continue
-            terms = facet_results[agg_name][agg_name]['buckets']
-            if len(terms) < 2:
-                continue
-            result['facets'].append({
-                'field': field,
-                'title': facet['title'],
-                'terms': terms,
-                'total': facet_results[agg_name]['doc_count']
-            })
+    load_facets(es_results, facets, result)
 
     # generate batch hub URL for experiments
     if doc_types == ['experiment'] and any(

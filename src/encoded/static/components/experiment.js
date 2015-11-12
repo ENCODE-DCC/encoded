@@ -855,7 +855,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
         // File is derived; collect any QC info that applies to this file
