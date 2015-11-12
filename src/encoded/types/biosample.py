@@ -8,8 +8,8 @@ from .base import (
     paths_filtered_by_status,
 )
 from .shared_calculated_properties import (
-    CalculatedSlims,
-    CalculatedSynonyms
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms
 )
 
 
@@ -20,7 +20,7 @@ from .shared_calculated_properties import (
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     })
-class Biosample(Item, CalculatedSlims, CalculatedSynonyms):
+class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'biosample'
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'

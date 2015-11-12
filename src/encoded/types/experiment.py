@@ -11,8 +11,9 @@ from .base import (
 )
 from .dataset import Dataset
 from .shared_calculated_properties import (
-    CalculatedSlims,
-    CalculatedSynonyms
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms,
+    CalculatedAssaySynonyms
 )
 
 
@@ -23,7 +24,7 @@ from .shared_calculated_properties import (
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset, CalculatedSlims, CalculatedSynonyms):
+class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
