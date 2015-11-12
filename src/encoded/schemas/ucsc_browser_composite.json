@@ -16,7 +16,6 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/assay" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "file_set.json#/properties" }
@@ -24,12 +23,6 @@
     "properties": {
         "schema_version": {
             "default": "7"
-        },
-        "organism": {
-            "title": "Organism",
-            "comment": "See organism.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Organism"
         }
     },
     "facets": {

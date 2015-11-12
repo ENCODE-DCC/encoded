@@ -70,9 +70,6 @@
         "_test": "UCSC composite",
         "accession": "ENCSR709LDB",
         "award": "ENCODE2",
-        "assay_term_name": "ChIP-seq",
-        "assay_term_id": "OBI:0000716",
-        "organism": "mouse",
         "dbxrefs": [
             "GEO:GSE32218",
             "UCSC-GB-mm9:wgEncodeSydhHist"
