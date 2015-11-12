@@ -15,9 +15,19 @@ from pyramid.path import (
     caller_package,
 )
 from pyramid.session import SignedCookieSessionFactory
-from pyramid.settings import asbool
+from pyramid.settings import (
+    aslist,
+    asbool,
+)
 from sqlalchemy import engine_from_config
 from webob.cookies import JSONSerializer
+from contentbase.elasticsearch import (
+    PyramidJSONSerializer,
+    TimedUrllib3HttpConnection,
+)
+from contentbase.elasticsearch.interfaces import SNP_SEARCH_ES
+from contentbase.json_renderer import json_renderer
+from elasticsearch import Elasticsearch
 STATIC_MAX_AGE = 0
 
 
@@ -55,7 +65,6 @@ def changelogs(config):
 
 
 def configure_engine(settings):
-    from contentbase.json_renderer import json_renderer
     engine_url = settings['sqlalchemy.url']
     engine_opts = {}
     if engine_url.startswith('postgresql'):
@@ -209,6 +218,16 @@ def main(global_config, **local_config):
         config.include('contentbase.elasticsearch')
         config.include('.search')
 
+    if 'snp_search.server' in config.registry.settings:
+        addresses = aslist(config.registry.settings['snp_search.server'])
+        config.registry[SNP_SEARCH_ES] = Elasticsearch(
+            addresses,
+            serializer=PyramidJSONSerializer(json_renderer),
+            connection_class=TimedUrllib3HttpConnection,
+            retry_on_timeout=True,
+        )
+        config.include('.region_search')
+        config.include('.peak_indexer')
     config.include(static_resources)
     config.include(changelogs)
 
