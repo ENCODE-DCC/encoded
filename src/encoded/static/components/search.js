@@ -517,6 +517,9 @@ var AuditMixin = audit.AuditMixin;
     }
 
     var Term = search.Term = React.createClass({
+        contextTypes: {
+            location_href: React.PropTypes.string
+        },
         render: function () {
             var filters = this.props.filters;
             var term = this.props.term['key'];
@@ -530,13 +533,22 @@ var AuditMixin = audit.AuditMixin;
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
             var selected = termSelected(term, field, filters);
+            var temp_href = this.context.location_href;
             var href;
             if (selected && !this.props.canDeselect) {
                 href = null;
             } else if (selected) {
-                href = selected;
+                if (temp_href.indexOf("#!") > -1) {
+                  href = selected + "#!browser"
+                } else {
+                  href = selected;
+                }
             } else {
-                href = this.props.searchBase + field + '=' + term;
+                if (temp_href.indexOf("#!") > -1) {
+                  href = this.props.searchBase + field + '=' + term + "#!browser"
+                } else {
+                  href = this.props.searchBase + field + '=' + term
+                }
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
@@ -890,9 +902,10 @@ var AuditMixin = audit.AuditMixin;
             var facetdisplay = context.facets.some(function(facet) {
                 return facet.total > 0;
             });
+            console.log(searchBase);
             return (
                 <div>
-                    {facetdisplay ?
+                    {context['total'] ?
                         <div className="panel data-display main-panel">
                             <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
                         </div>
