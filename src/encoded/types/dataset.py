@@ -14,10 +14,8 @@ from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
-    CalculatedFileSetAssaySynonyms,
-    CalculatedFileSetAssayTerm,
-    CalculatedFileSetAssayId,
-    CalculatedFileSetOrganism,
+    CalculatedFileSetAssay,
+    CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
@@ -317,7 +315,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetOrganism, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms):
+class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
 
@@ -342,7 +340,7 @@ class Reference(FileSet):
         'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(FileSet, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms, CalculatedFileSetOrganism):
+class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
 
@@ -354,7 +352,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssayTerm, CalculatedFileSe
         'title': "Project file set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(FileSet, CalculatedFileSetAssayTerm, CalculatedFileSetAssayId, CalculatedFileSetAssaySynonyms, CalculatedFileSetOrganism):
+class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
 

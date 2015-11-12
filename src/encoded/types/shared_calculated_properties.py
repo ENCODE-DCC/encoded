@@ -75,65 +75,43 @@ class CalculatedAssaySynonyms:
         return []
 
 
-class CalculatedFileSetAssayTerm:
+class CalculatedFileSetBiosample:
     @calculated_property(schema={
-        "title": "Assay term name",
+        "title": "Biosample term name",
         "type": "array",
         "items": {
             "type": ['string'],
         },
     })
-    def assay_term_name(self, request, related_files):
-        assays = []
+    def biosample_term_name(self, request, related_files):
+        biosamples = []
         if related_files:
             for path in related_files:
                 related_file = request.embed(path, '@@object')
                 dataset = request.embed(related_file['dataset'], '@@object')
-                if 'assay_term_name' in dataset:
-                    assays.append(dataset['assay_term_name'])
-            return list(set(assays))
+                if 'biosample_term_name' in dataset:
+                    biosamples.append(dataset['biosample_term_name'])
+            return list(set(biosamples))
         return []
 
-
-class CalculatedFileSetAssayId:
     @calculated_property(schema={
-        "title": "Assay term id",
+        "title": "Biosample type",
         "type": "array",
         "items": {
             "type": ['string'],
         },
     })
-    def assay_term_id(self, request, related_files):
-        assays = []
+    def biosample_type(self, request, related_files):
+        biosamples = []
         if related_files:
             for path in related_files:
                 related_file = request.embed(path, '@@object')
                 dataset = request.embed(related_file['dataset'], '@@object')
-                if 'assay_term_id' in dataset:
-                    assays.append(dataset['assay_term_id'])
-            return list(set(assays))
+                if 'biosample_type' in dataset:
+                    biosamples.append(dataset['biosample_type'])
+            return list(set(biosamples))
         return []
 
-
-class CalculatedFileSetAssaySynonyms:
-    @calculated_property(condition='assay_term_id', schema={
-        "title": "Assay synonyms",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assay_synonyms(self, registry, assay_term_id):
-        if assay_term_id:
-            for term_id in assay_term_id:
-                if term_id in registry['ontology']:
-                    return registry['ontology'][assay_term_id]['synonyms'] + [
-                        registry['ontology'][assay_term_id]['name'],
-                    ]
-                return []
-
-
-class CalculatedFileSetOrganism:
     @calculated_property(schema={
         "title": "Organism",
         "type": "array",
@@ -158,6 +136,60 @@ class CalculatedFileSetOrganism:
                                 organisms.append(bio['organism'])
             if organisms:
                 return paths_filtered_by_status(request, list(set(organisms)))
+
+
+class CalculatedFileSetAssay:
+    @calculated_property(schema={
+        "title": "Assay term name",
+        "type": "array",
+        "items": {
+            "type": ['string'],
+        },
+    })
+    def assay_term_name(self, request, related_files):
+        assays = []
+        if related_files:
+            for path in related_files:
+                related_file = request.embed(path, '@@object')
+                dataset = request.embed(related_file['dataset'], '@@object')
+                if 'assay_term_name' in dataset:
+                    assays.append(dataset['assay_term_name'])
+            return list(set(assays))
+        return []
+
+    @calculated_property(schema={
+        "title": "Assay term id",
+        "type": "array",
+        "items": {
+            "type": ['string'],
+        },
+    })
+    def assay_term_id(self, request, related_files):
+        assays = []
+        if related_files:
+            for path in related_files:
+                related_file = request.embed(path, '@@object')
+                dataset = request.embed(related_file['dataset'], '@@object')
+                if 'assay_term_id' in dataset:
+                    assays.append(dataset['assay_term_id'])
+            return list(set(assays))
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay synonyms",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assay_synonyms(self, registry, assay_term_id):
+        if assay_term_id:
+            for term_id in assay_term_id:
+                if term_id in registry['ontology']:
+                    return registry['ontology'][assay_term_id]['synonyms'] + [
+                        registry['ontology'][assay_term_id]['name'],
+                    ]
+                return []
 
 
 class CalculatedSeriesAssay:
@@ -238,7 +270,6 @@ class CalculatedSeriesBiosample:
                                     organisms.append(bio['organism'])
             if organisms:
                 return paths_filtered_by_status(request, list(set(organisms)))
-        return []
 
 
 class CalculatedSeriesTreatment:
