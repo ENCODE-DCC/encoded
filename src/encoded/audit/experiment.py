@@ -79,12 +79,6 @@ def audit_experiment_replicated(value, system):
     if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
         return
 
-    #'''
-    #Excluding Roadmap experiments form this audit
-    #'''
-    #if value['award']['project'] == 'Roadmap':
-    #    return
-
     num_bio_reps = set()
     for rep in value['replicates']:
         num_bio_reps.add(rep['biological_replicate_number'])
