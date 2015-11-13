@@ -39,9 +39,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         var parsed_url = url.parse(this.context.location_href);
         var matrix_base = parsed_url.search || '';
         var matrix_search = matrix_base + (matrix_base ? '&' : '?');
-        var search_base = context.matrix.search_base;
         var notification = context['notification'];
-        var batch_hub_disabled = matrix.doc_count > 500;
         if (context.notification == 'Success' || context.notification == 'No results found') {
             var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
@@ -52,6 +50,8 @@ var Matrix = module.exports.Matrix = React.createClass({
             var x_limit = matrix.x.limit || x_buckets.length;
             var y_groups = matrix.y[primary_y_grouping].buckets;
             var y_limit = matrix.y.limit;
+            var search_base = context.matrix.search_base;
+            var batch_hub_disabled = matrix.doc_count > 500;
 
             var colCount = Math.min(x_buckets.length, x_limit + 1);
             var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
@@ -98,7 +98,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                             <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                 <h3>{matrix.doc_count} results <a href={search_base} title="View result list"><i className="icon icon-list-alt"></i></a></h3>
                                                 {context.filters.length ?
-                                                    <a href={parsed_url.pathname} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
+                                                    <a href={context.matrix.clear_matrix} className="btn btn-info btn-sm"><i className="icon icon-times-circle-o"></i> Clear all filters</a>
                                                 : ''}
                                             </th>
                                             {x_buckets.map(function(xb, i) {

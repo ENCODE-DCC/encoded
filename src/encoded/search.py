@@ -13,6 +13,7 @@ from collections import OrderedDict
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('matrix', '/matrix{slash:/?}')
     config.scan(__name__)
 
 
@@ -162,7 +163,7 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'y.limit', 'x.limit' 'mode', 'searchTerm', 'annotation',
+        if field in ['type', 'limit', 'y.limit', 'x.limit' 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome']:
             continue
 
@@ -308,14 +309,14 @@ def format_results(request, es_results, result):
             result['@graph'].append(item)
 
 
-def search_result_actions(request, query_string, doc_types, es_results):
+def search_result_actions(request, doc_types, es_results):
     actions = {}
 
     # generate batch hub URL for experiments
     if doc_types == ['experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in es_results['aggregations']['assembly']['assembly']['buckets']):
-        search_params = query_string.replace('&', ',,')
+        search_params = request.query_string.replace('&', ',,')
         hub = request.route_url('batch_hub',
                                 search_params=search_params,
                                 txt='hub.txt')
@@ -327,7 +328,7 @@ def search_result_actions(request, query_string, doc_types, es_results):
             for bucket in es_results['aggregations']['files-file_type']['files-file_type']['buckets']):
         actions['batch_download'] = request.route_url(
             'batch_download',
-            search_params=query_string
+            search_params=request.query_string
         )
 
     return actions
@@ -359,9 +360,10 @@ def search(context, request, search_type=None):
     """
     root = request.root
     types = request.registry[TYPES]
+    search_base = ('?' + request.query_string if request.query_string else '')
     result = {
         '@context': request.route_path('jsonld_context'),
-        '@id': '/search/' + ('?' + request.query_string if request.query_string else ''),
+        '@id': '/search/' + search_base,
         '@type': ['Search'],
         'title': 'Search',
         'facets': [],
@@ -428,8 +430,7 @@ def search(context, request, search_type=None):
                 'remove': '{}?{}'.format(request.path, qs)
             })
         if len(doc_types) == 1 and hasattr(ti.factory, 'matrix'):
-            qs = re.sub(r'type=\w+', '', request.query_string)
-            result['matrix'] = request.resource_path(root[item_type], 'matrix') + ('?' + qs if qs else '')
+            result['matrix'] = request.route_path('matrix', slash='/') + search_base
 
     search_fields, highlights = get_search_fields(request, doc_types)
 
@@ -496,7 +497,7 @@ def search(context, request, search_type=None):
                 })
 
     # Add batch actions
-    result.update(search_result_actions(request, request.query_string, doc_types, es_results))
+    result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD
     format_results(request, es_results, result)
@@ -522,31 +523,41 @@ def collection_view_listing_es(context, request):
     return result
 
 
-@view_config(context=Collection, name='matrix', request_method='GET', permission='search')
+@view_config(route_name='matrix', request_method='GET', permission='search')
 def matrix(context, request):
     """
     Return search results aggregated by x and y buckets for building a matrix display.
     """
-    type_info = context.type_info
-    schema = type_info.schema
-
+    search_base = ('?' + request.query_string if request.query_string else '')
     result = {
         '@context': request.route_path('jsonld_context'),
-        '@id': request.resource_path(context, 'matrix') + ('?' + request.query_string if request.query_string else ''),
+        '@id': request.route_path('matrix', slash='/') + search_base,
         '@type': ['Matrix'],
-        'title': context.type_info.schema['title'] + ' Matrix',
         'facets': [],
         'filters': [],
         'notification': '',
     }
 
-    if not hasattr(type_info.factory, 'matrix'):
-        result['notification'] = 'No matrix configured for this type'
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
+        result['notification'] = 'Search result matrix currently requires specifying a single type.'
         return result
+    item_type = doc_types[0]
+    types = request.registry[TYPES]
+    if item_type not in types:
+        result['notification'] = 'Invalid type: {}'.format(item_type)
+    type_info = types[item_type]
+    if not hasattr(type_info.factory, 'matrix'):
+        result['notification'] = 'No matrix configured for type: {}'.format(item_type)
+        return result
+    schema = type_info.schema
+    result['title'] = type_info.name + ' Matrix'
+
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
     matrix['y']['limit'] = request.params.get('y.limit', 5)
-    matrix['search_base'] = request.route_path('search', slash='/') + '?' + 'type=' + context.type_info.item_type + ('&' + request.query_string if request.query_string else '')
+    matrix['search_base'] = request.route_path('search', slash='/') + search_base
+    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
@@ -559,7 +570,6 @@ def matrix(context, request):
         result['notification'] = 'Please enter search term'
         return result
 
-    doc_types = [context.type_info.item_type]
     search_fields, highlights = get_search_fields(request, doc_types)
 
     # Builds filtered query which supports multiple facet selection
@@ -652,8 +662,7 @@ def matrix(context, request):
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
-    query_string = 'type=' + type_info.item_type + '&' + request.query_string
-    result.update(search_result_actions(request, query_string, doc_types, es_results))
+    result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD
     format_results(request, es_results, result)
