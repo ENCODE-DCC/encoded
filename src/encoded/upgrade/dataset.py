@@ -131,6 +131,12 @@ def experiment_5_6(value, system):
 @upgrade_step('experiment', '6', '7')
 @upgrade_step('annotation', '6', '7')
 @upgrade_step('matched_set', '6', '7')
+def matched_set_6_7(value, system):
+    if 'related_files' in value:
+        del value['related_files']
+        value['related_datasets'] = []
+
+
 @upgrade_step('project', '6', '7')
 @upgrade_step('publication_data', '6', '7')
 @upgrade_step('reference', '6', '7')
