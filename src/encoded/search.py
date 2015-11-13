@@ -287,40 +287,46 @@ def set_facets(facets, used_filters, query, principals):
         }
 
 
-def format_results(request, es_results, result):
+def format_results(request, es_results):
     """
     Loads results to pass onto UI
     """
-    hits = es_results['hits']['hits']
-    frame = request.params.get('frame')
     fields_requested = request.params.getall('field')
-    if frame in ['embedded', 'object'] and not len(fields_requested):
-        result['@graph'] = [hit['_source'][frame] for hit in hits]
-    elif fields_requested:
-        result['@graph'] = [hit['_source']['embedded'] for hit in hits]
-    else:  # columns
+    if fields_requested:
+        frame = 'embedded'
+    else:
+        frame = request.params.get('frame')
+
+    hits = es_results['hits']['hits']
+    if frame in ['embedded', 'object']:
         for hit in hits:
-            item_type = hit['_type']
-            if 'columns' in request.registry[TYPES][item_type].schema:
-                item = hit['_source']['embedded']
-            else:
-                item = hit['_source']['object']
-            if 'audit' in hit['_source']:
-                item['audit'] = hit['_source']['audit']
-            if 'highlight' in hit:
-                item['highlight'] = {}
-                for key in hit['highlight']:
-                    item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
-            result['@graph'].append(item)
+            yield hit['_source'][frame]
+        return
+
+    # columns
+    for hit in hits:
+        item_type = hit['_type']
+        if 'columns' in request.registry[TYPES][item_type].schema:
+            item = hit['_source']['embedded']
+        else:
+            item = hit['_source']['object']
+        if 'audit' in hit['_source']:
+            item['audit'] = hit['_source']['audit']
+        if 'highlight' in hit:
+            item['highlight'] = {}
+            for key in hit['highlight']:
+                item['highlight'][key[9:]] = list(set(hit['highlight'][key]))
+        yield item
 
 
 def search_result_actions(request, doc_types, es_results):
     actions = {}
+    aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
     if doc_types == ['experiment'] and any(
             bucket['doc_count'] > 0
-            for bucket in es_results['aggregations']['assembly']['assembly']['buckets']):
+            for bucket in aggregations['assembly']['assembly']['buckets']):
         search_params = request.query_string.replace('&', ',,')
         hub = request.route_url('batch_hub',
                                 search_params=search_params,
@@ -330,7 +336,7 @@ def search_result_actions(request, doc_types, es_results):
     # generate batch download URL for experiments
     if doc_types == ['experiment'] and any(
             bucket['doc_count'] > 0
-            for bucket in es_results['aggregations']['files-file_type']['files-file_type']['buckets']):
+            for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
         actions['batch_download'] = request.route_url(
             'batch_download',
             search_params=request.query_string
@@ -339,23 +345,28 @@ def search_result_actions(request, doc_types, es_results):
     return actions
 
 
-def load_facets(es_results, facets, result):
+def format_facets(es_results, facets):
+    result = []
     # Loading facets in to the results
-    if 'aggregations' in es_results:
-        facet_results = es_results['aggregations']
-        for field, facet in facets:
-            agg_name = field.replace('.', '-')
-            if agg_name not in facet_results:
-                continue
-            terms = facet_results[agg_name][agg_name]['buckets']
-            if len(terms) < 2:
-                continue
-            result['facets'].append({
-                'field': field,
-                'title': facet['title'],
-                'terms': terms,
-                'total': facet_results[agg_name]['doc_count']
-            })
+    if 'aggregations' not in es_results:
+        return result
+
+    aggregations = es_results['aggregations']
+    for field, facet in facets:
+        agg_name = field.replace('.', '-')
+        if agg_name not in aggregations:
+            continue
+        terms = aggregations[agg_name][agg_name]['buckets']
+        if len(terms) < 2:
+            continue
+        result.append({
+            'field': field,
+            'title': facet['title'],
+            'terms': terms,
+            'total': aggregations[agg_name]['doc_count']
+        })
+
+    return result
 
 
 @view_config(route_name='search', request_method='GET', permission='search')
@@ -371,11 +382,8 @@ def search(context, request, search_type=None):
         '@id': '/search/' + search_base,
         '@type': ['Search'],
         'title': 'Search',
-        'facets': [],
-        '@graph': [],
         'columns': OrderedDict(),
         'filters': [],
-        'notification': '',
     }
 
     principals = effective_principals(request)
@@ -485,11 +493,10 @@ def search(context, request, search_type=None):
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, size=size)
 
-    load_facets(es_results, facets, result)
-
-    # Adding total
     result['total'] = es_results['hits']['total']
+    result['notification'] = 'Success' if result['total'] else 'No results found'
 
+    result['facets'] = format_facets(es_results, facets)
     # Show any filters that aren't facets as a fake facet with one entry,
     # so that the filter can be viewed and removed
     for field, values in used_filters.items():
@@ -510,9 +517,7 @@ def search(context, request, search_type=None):
     result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD
-    format_results(request, es_results, result)
-
-    result['notification'] = 'Success' if result['total'] else 'No results found'
+    result['@graph'] = list(format_results(request, es_results))
     return result
 
 
@@ -543,7 +548,6 @@ def matrix(context, request):
         '@context': request.route_path('jsonld_context'),
         '@id': request.route_path('matrix', slash='/') + search_base,
         '@type': ['Matrix'],
-        'facets': [],
         'filters': [],
         'notification': '',
     }
@@ -642,14 +646,14 @@ def matrix(context, request):
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, search_type='count')
 
-
     # Format facets for results
-    load_facets(es_results, facets, result)
+    result['facets'] = format_facets(es_results, facets)
 
     # Format matrix for results
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
+
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
@@ -667,15 +671,18 @@ def matrix(context, request):
         else:
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
-    summarize_buckets(result['matrix'], aggregations['matrix']['x']['buckets'], aggregations['matrix'], y_groupings + [x_grouping])
+
+    summarize_buckets(
+        result['matrix'],
+        aggregations['matrix']['x']['buckets'],
+        aggregations['matrix'],
+        y_groupings + [x_grouping])
+
     result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
-
-    # Format results for JSON-LD
-    format_results(request, es_results, result)
 
     # Adding total
     result['total'] = es_results['hits']['total']
