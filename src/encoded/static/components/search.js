@@ -582,6 +582,10 @@ var AuditMixin = audit.AuditMixin;
 
 
     var Facet = search.Facet = React.createClass({
+        getDefaultProps: function() {
+            return {width: 'inherit'};
+        },
+
         getInitialState: function () {
             return {
                 facetOpen: false
@@ -619,7 +623,7 @@ var AuditMixin = audit.AuditMixin;
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
             return (
-                <div className="facet" hidden={terms.length === 0}>
+                <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
@@ -647,7 +651,7 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    var TextFilter = React.createClass({
+    var TextFilter = search.TextFilter = React.createClass({
 
         getValue: function(props) {
             var filter = this.props.filters.filter(function(f) {
@@ -696,10 +700,15 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var FacetList = search.FacetList = React.createClass({
+        getDefaultProps: function() {
+            return {orientation: 'vertical'};
+        },
+
         render: function() {
             var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
+            var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
             var hideTypes;
             if (this.props.mode == 'picker') {
@@ -709,14 +718,18 @@ var AuditMixin = audit.AuditMixin;
                     return filter.field == 'type';
                 }).length;
             }
+            if (this.props.orientation == 'horizontal') {
+                width = (100 / facets.length) + '%';
+            }
             return (
-                <div className="box facets">
+                <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                          width={width} />;
                         }
                     }.bind(this))}
                 </div>
@@ -831,7 +844,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} {label}
+                                        Showing {results.length} of {total} {label} {context.matrix && <a href={context.matrix} title="View result matrix"><i className="icon icon-table"></i></a>}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
