@@ -181,6 +181,8 @@ div.meta-status {
 }
 
 .result-table {
+    position: relative;
+    z-index: 10;
     list-style-type: none;
     margin: 0;
     padding: 0;

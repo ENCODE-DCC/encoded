@@ -82,6 +82,7 @@ setup(
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
         es-index-listener = encoded.commands.es_index_listener:main
+        es-file-index-listener = encoded.commands.es_file_index_listener:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
         jsonld-rdf = encoded.commands.jsonld_rdf:main
@@ -89,6 +90,8 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-file-status = encoded.commands.update_file_status:main
+        generate-annotations = encoded.commands.generate_annotations:main
+        index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
         migrate-dataset-type = encoded.commands.migrate_dataset_type:main
 

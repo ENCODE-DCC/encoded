@@ -1,12 +1,8 @@
 from contentbase import (
-    COLLECTIONS,
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
-)
-from pyramid.security import (
-    Deny,
-    Everyone,
 )
 from .base import (
     Item,
@@ -21,19 +17,15 @@ def file_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-@collection(
+@abstract_collection(
     name='datasets',
     unique_key='accession',
-    acl=[
-        (Deny, Everyone, 'add'),
-    ],
     properties={
-        'title': 'Datasets',
-        'description': 'Listing of datasets',
+        'title': "Datasets",
+        'description': 'Listing of all types of dataset.',
     })
 class Dataset(Item):
-    item_type = 'dataset'
-    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = ['Dataset'] + Item.base_types
     embedded = [
         'files',
         'files.replicate',
@@ -186,86 +178,79 @@ class Dataset(Item):
         ) + quote_plus(hub_url, ':/@')
 
 
-class TemporaryDataset(Dataset):
-    # Use /datasets/{accession}/ as url to avoid reindexing everything.
-    @property
-    def __parent__(self):
-        return self.registry[COLLECTIONS]['dataset']
-
-
 @collection(
     name='annotations',
+    unique_key='accession',
     properties={
         'title': "Annotation dataset",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(TemporaryDataset):
+class Annotation(Dataset):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/dataset.json')
-    base_types = [Dataset.__name__] + Dataset.base_types
     schema['properties']['dataset_type']['enum'] = ['annotation']
 
 
 @collection(
     name='publication-data',
+    unique_key='accession',
     properties={
         'title': "Publication dataset",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(TemporaryDataset):
+class PublicationData(Dataset):
     item_type = 'publication_data'
-    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['publication']
 
 
 @collection(
     name='references',
+    unique_key='accession',
     properties={
         'title': "Reference dataset",
         'description': 'A set of reference files used by ENCODE.',
     })
-class Reference(TemporaryDataset):
+class Reference(Dataset):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['reference']
-    base_types = [Dataset.__name__] + Dataset.base_types
 
 
 @collection(
     name='ucsc-browser-composites',
+    unique_key='accession',
     properties={
         'title': "UCSC browser composite dataset",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(TemporaryDataset):
+class UcscBrowserComposite(Dataset):
     item_type = 'ucsc_browser_composite'
-    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['composite']
 
 
 @collection(
     name='projects',
+    unique_key='accession',
     properties={
         'title': "Project dataset",
         'description': 'A set of files that comprise a project.',
     })
-class Project(TemporaryDataset):
+class Project(Dataset):
     item_type = 'project'
-    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['project']
 
 
 @collection(
     name='matched-sets',
+    unique_key='accession',
     properties={
         'title': "Matched set series",
         'description': 'A series that pairs two datasets (experiments) together',
     })
-class MatchedSet(TemporaryDataset):
+class MatchedSet(Dataset):
     item_type = 'matched_set'
-    base_types = [Dataset.__name__] + Dataset.base_types
     schema = load_schema('encoded:schemas/dataset.json')
     schema['properties']['dataset_type']['enum'] = ['paired set']

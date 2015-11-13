@@ -157,6 +157,11 @@ def test_load_sample_data(
     assert True, 'Fixtures have loaded sample data'
 
 
+def test_abstract_collection(testapp, experiment):
+    testapp.get('/Dataset/{accession}'.format(**experiment))
+    testapp.get('/datasets/{accession}'.format(**experiment))
+
+
 @pytest.mark.slow
 @pytest.mark.parametrize(('item_type', 'length'), TYPE_LENGTH.items())
 def test_load_workbook(workbook, testapp, item_type, length):

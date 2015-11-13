@@ -23,7 +23,6 @@ import datetime
 class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
-    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.lab',
         'files.platform',
