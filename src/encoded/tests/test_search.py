@@ -19,7 +19,7 @@ def test_search_view(workbook, testapp):
 def test_matrix_view(workbook, testapp):
     res = testapp.get('/matrix/?type=experiment').json
     assert res['@type'] == ['Matrix']
-    assert res['@id'] == '/experiments/matrix'
+    assert res['@id'] == '/matrix/?type=experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
     assert res['title'] == 'Experiment Matrix'
