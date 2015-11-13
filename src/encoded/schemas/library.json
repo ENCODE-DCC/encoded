@@ -166,7 +166,8 @@
             "type": "string",
             "enum": [
                 "chemical (generic)",
-                "chemical (DnaseI)",
+                "chemical (DNaseI)",
+                "chemical (RNase III)",
                 "chemical (HindIII/DpnII restriction)",
                 "chemical (Tn5 transposase)",
                 "chemical (micrococcal nuclease)",
