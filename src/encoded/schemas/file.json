@@ -19,29 +19,23 @@
     ],
     "facets": {
         "status": {
-            "title": "File status",
-            "type": "string"
+            "title": "File status"
         },
         "output_category": {
-            "title": "Data category",
-            "type": "string"
+            "title": "Data category"
         },
         "output_type": {
-            "title": "Data type",
-            "type": "string"
+            "title": "Data type"
         },
 
         "file_format": {
-            "title": "File format",
-            "type": "string"
+            "title": "File format"
         },
         "file_format_type": {
-            "title": "Specific file format type",
-            "type": "string"
+            "title": "Specific file format type"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         }
     },
     "dependencies": {
@@ -574,28 +568,22 @@
     },
     "columns": {
         "title": {
-            "title": "Title",
-            "type": "string"
+            "title": "Title"
         },
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "dataset": {
-            "title": "Dataset",
-            "type": "string"
+            "title": "Dataset"
         },
         "file_format": {
-            "title": "File Format",
-            "type": "string"
+            "title": "File Format"
         },
         "md5sum": {
-            "title": "MD5 Sum",
-            "type": "string"
+            "title": "MD5 Sum"
         },
         "output_type": {
-            "title": "Output Type",
-            "type": "string"
+            "title": "Output Type"
         }
     },
     "output_type_output_category": {

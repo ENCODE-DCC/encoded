@@ -237,20 +237,16 @@
     },
     "facets": {
         "status": {
-            "title": "Characterization status",
-            "type": "string"
+            "title": "Characterization status"
         },
         "target.organism.scientific_name": {
-            "title": "Target Organism",
-            "type": "string"
+            "title": "Target Organism"
         },
         "characterization_method":{
-            "title": "Characterization method",
-            "type": "string"
+            "title": "Characterization method"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         }
     }
 }
