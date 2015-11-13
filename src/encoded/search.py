@@ -162,8 +162,8 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode',
-                     'format', 'frame', 'datastore', 'field']:
+        if field in ['type', 'limit', 'y.limit', 'x.limit' 'mode', 'searchTerm', 'annotation',
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome']:
             continue
 
         # Add filter to result
@@ -333,6 +333,25 @@ def search_result_actions(request, query_string, doc_types, es_results):
     return actions
 
 
+def load_facets(es_results, facets, result):
+    # Loading facets in to the results
+    if 'aggregations' in es_results:
+        facet_results = es_results['aggregations']
+        for field, facet in facets:
+            agg_name = field.replace('.', '-')
+            if agg_name not in facet_results:
+                continue
+            terms = facet_results[agg_name][agg_name]['buckets']
+            if len(terms) < 2:
+                continue
+            result['facets'].append({
+                'field': field,
+                'title': facet['title'],
+                'terms': terms,
+                'total': facet_results[agg_name]['doc_count']
+            })
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
@@ -455,22 +474,7 @@ def search(context, request, search_type=None):
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, size=size)
 
-    # Loading facets in to the results
-    if 'aggregations' in es_results:
-        facet_results = es_results['aggregations']
-        for field, facet in facets:
-            agg_name = field.replace('.', '-')
-            if agg_name not in facet_results:
-                continue
-            terms = facet_results[agg_name][agg_name]['buckets']
-            if len(terms) < 2:
-                continue
-            result['facets'].append({
-                'field': field,
-                'title': facet['title'],
-                'terms': terms,
-                'total': facet_results[agg_name]['doc_count']
-            })
+    load_facets(es_results, facets, result)
 
     # Adding total
     result['total'] = es_results['hits']['total']
@@ -618,23 +622,12 @@ def matrix(context, request):
     es_results = es.search(body=query, index=es_index,
                            doc_type=doc_types or None, search_type='count')
 
+
     # Format facets for results
-    aggregations = es_results['aggregations']
-    for field, facet in facets:
-        agg_name = field.replace('.', '-')
-        if agg_name not in aggregations:
-            continue
-        terms = aggregations[agg_name][agg_name]['buckets']
-        if len(terms) < 2:
-            continue
-        result['facets'].append({
-            'field': field,
-            'title': facet['title'],
-            'terms': terms,
-            'total': aggregations[agg_name]['doc_count']
-        })
+    load_facets(es_results, facets, result)
 
     # Format matrix for results
+    aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):

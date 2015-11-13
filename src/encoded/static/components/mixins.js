@@ -482,7 +482,6 @@ module.exports.HistoryAndTriggers = {
         if (search) {
             href += '?' + search;
         }
-
         options.skipRequest = target.getAttribute('data-skiprequest');
 
         if (this.historyEnabled) {
