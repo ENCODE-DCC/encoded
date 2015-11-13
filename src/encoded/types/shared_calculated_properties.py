@@ -86,11 +86,13 @@ class CalculatedFileSetBiosample:
     def biosample_term_name(self, request, related_files):
         biosamples = []
         if related_files:
-            for path in related_files:
-                related_file = request.embed(path, '@@object')
-                dataset = request.embed(related_file['dataset'], '@@object')
-                if 'biosample_term_name' in dataset:
-                    biosamples.append(dataset['biosample_term_name'])
+            for idx, path in enumerate(related_files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    related_file = request.embed(path, '@@object')
+                    dataset = request.embed(related_file['dataset'], '@@object')
+                    if 'biosample_term_name' in dataset:
+                        biosamples.append(dataset['biosample_term_name'])
             return list(set(biosamples))
         return []
 
@@ -104,11 +106,13 @@ class CalculatedFileSetBiosample:
     def biosample_type(self, request, related_files):
         biosamples = []
         if related_files:
-            for path in related_files:
-                related_file = request.embed(path, '@@object')
-                dataset = request.embed(related_file['dataset'], '@@object')
-                if 'biosample_type' in dataset:
-                    biosamples.append(dataset['biosample_type'])
+            for idx, path in enumerate(related_files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    related_file = request.embed(path, '@@object')
+                    dataset = request.embed(related_file['dataset'], '@@object')
+                    if 'biosample_type' in dataset:
+                        biosamples.append(dataset['biosample_type'])
             return list(set(biosamples))
         return []
 
@@ -123,17 +127,19 @@ class CalculatedFileSetBiosample:
     def organism(self, request, related_files):
         organisms = []
         if related_files:
-            for path in related_files:
-                related_file = request.embed(path, '@@object')
-                dataset = request.embed(related_file['dataset'], '@@object')
-                if 'replicate' in dataset:
-                    rep = request.embed(related_file['replicate'], '@@object')
-                    if 'library' in rep:
-                        lib = request.embed(rep['library'], '@@object')
-                        if 'biosample' in lib:
-                            bio = request.embed(lib['biosample'], '@@object')
-                            if 'organism' in bio:
-                                organisms.append(bio['organism'])
+            for idx, path in enumerate(related_files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    related_file = request.embed(path, '@@object')
+                    dataset = request.embed(related_file['dataset'], '@@object')
+                    if 'replicate' in dataset:
+                        rep = request.embed(related_file['replicate'], '@@object')
+                        if 'library' in rep:
+                            lib = request.embed(rep['library'], '@@object')
+                            if 'biosample' in lib:
+                                bio = request.embed(lib['biosample'], '@@object')
+                                if 'organism' in bio:
+                                    organisms.append(bio['organism'])
             if organisms:
                 return paths_filtered_by_status(request, list(set(organisms)))
 
@@ -149,11 +155,13 @@ class CalculatedFileSetAssay:
     def assay_term_name(self, request, related_files):
         assays = []
         if related_files:
-            for path in related_files:
-                related_file = request.embed(path, '@@object')
-                dataset = request.embed(related_file['dataset'], '@@object')
-                if 'assay_term_name' in dataset:
-                    assays.append(dataset['assay_term_name'])
+            for idx, path in enumerate(related_files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    related_file = request.embed(path, '@@object')
+                    dataset = request.embed(related_file['dataset'], '@@object')
+                    if 'assay_term_name' in dataset:
+                        assays.append(dataset['assay_term_name'])
             return list(set(assays))
         return []
 
@@ -165,14 +173,17 @@ class CalculatedFileSetAssay:
         },
     })
     def assay_term_id(self, request, related_files):
-        assays = []
+        assays = set()
         if related_files:
-            for path in related_files:
-                related_file = request.embed(path, '@@object')
-                dataset = request.embed(related_file['dataset'], '@@object')
-                if 'assay_term_id' in dataset:
-                    assays.append(dataset['assay_term_id'])
-            return list(set(assays))
+            for idx, path in enumerate(related_files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    related_file = request.embed(path, '@@object')
+                    dataset = request.embed(related_file['dataset'], '@@object')
+                    if 'assay_term_id' in dataset:
+                        if dataset['assay_term_id'] not in assays:
+                            assays.add(dataset['assay_term_id'])
+            return list(assays)
         return []
 
     @calculated_property(condition='assay_term_id', schema={
