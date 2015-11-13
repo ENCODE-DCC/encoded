@@ -348,7 +348,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
-    testapp.patch_json(award['@id'], {'project': 'Roadmap'})
+    testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
     testapp.patch_json(base_experiment['@id'], {'status': 'released'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
