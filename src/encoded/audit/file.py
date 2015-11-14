@@ -458,12 +458,13 @@ def audit_file_read_depth(value, system):
         'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
         'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
         'RAMPAGE (paired-end, stranded)': 25000000,
+        'Histone ChIP-seq': 45000000,
         'ChIP-seq of histone modifications': 45000000,
     }
 
     read_depth_special = {
         'shRNA knockdown followed by RNA-seq': 10000000,
-        'single cell isolation followed by RNA-seq': 10000000
+        'single cell isolation followed by RNA-seq': 5000000
     }
 
     '''
@@ -491,13 +492,14 @@ def audit_file_read_depth(value, system):
                          'uniquely mapped reads. Replicates for this assay ' + \
                          '{} require '.format(pipeline['title']) + \
                          '{}'.format(read_depth_special['shRNA knockdown followed by RNA-seq'])
+                raise AuditFailure('insufficient read depth', detail, level='ERROR')
             else:
                 detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                              read_depth) + \
                          'uniquely mapped reads. Replicates for this ' + \
                          'assay {} require '.format(pipeline['title']) + \
                          '{}'.format(read_depth_special['single cell isolation followed by RNA-seq'])
-            raise AuditFailure('insufficient read depth', detail, level='ERROR')
+                raise AuditFailure('insufficient read depth', detail, level='ERROR')
 
         if (read_depth < read_depth_criteria[pipeline['title']]) and \
            (singleCellFlag is False) and (shRNAFlag is False):
