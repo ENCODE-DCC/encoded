@@ -6,6 +6,7 @@ from contentbase import (
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from contentbase.resource_views import collection_view_listing_db
+from elasticsearch.helpers import scan
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
@@ -73,7 +74,6 @@ def get_filtered_query(term, search_fields, result_fields, principals):
                 ]
             }
         },
-        'aggs': {},
         '_source': list(result_fields),
     }
 
@@ -238,10 +238,11 @@ def set_filters(request, query, result):
     return used_filters
 
 
-def set_facets(facets, used_filters, query, principals):
+def set_facets(facets, used_filters, principals):
     """
     Sets facets in the query using filters
     """
+    aggs = {}
     for field, _ in facets:
         if field == 'type':
             query_field = '_type'
@@ -264,7 +265,7 @@ def set_facets(facets, used_filters, query, principals):
         terms.append(
             {'terms': {'principals_allowed.view': principals}}
         )
-        query['aggs'][agg_name] = {
+        aggs[agg_name] = {
             'aggs': {
                 agg_name: {
                     'terms': {
@@ -281,8 +282,10 @@ def set_facets(facets, used_filters, query, principals):
             },
         }
 
+    return aggs
 
-def format_results(request, es_results):
+
+def format_results(request, hits):
     """
     Loads results to pass onto UI
     """
@@ -292,7 +295,6 @@ def format_results(request, es_results):
     else:
         frame = request.params.get('frame')
 
-    hits = es_results['hits']['hits']
     if frame in ['embedded', 'object']:
         for hit in hits:
             yield hit['_source'][frame]
@@ -364,6 +366,25 @@ def format_facets(es_results, facets):
     return result
 
 
+def iter_long_json(name, iterable, **other):
+    import json
+
+    before = (json.dumps(other)[:-1] + ',') if other else '{'
+    yield before + json.dumps(name) + ':['
+
+    it = iter(iterable)
+    try:
+        first = next(it)
+    except StopIteration:
+        pass
+    else:
+        yield json.dumps(first)
+        for value in it:
+            yield ',' + json.dumps(value)
+
+    yield ']}'
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
@@ -389,7 +410,7 @@ def search(context, request, search_type=None):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = 99999
+        size = -1  # return all
     else:
         try:
             size = int(size)
@@ -482,7 +503,24 @@ def search(context, request, search_type=None):
         for audit_facet in audit_facets:
             facets.append(audit_facet)
 
-    set_facets(facets, used_filters, query, principals)
+    if size == -1 or size > 1000:
+        hits = scan(es, query=query, index=es_index,
+                    doc_type=doc_types or None, size=size)
+        graph = format_results(request, hits)
+        if search_type or request.__parent__ is None:
+            result['@graph'] = list(graph)
+            return result
+
+        # XXX BeforeRender event listeners not called.
+        app_iter = iter_long_json('@graph', graph, **result)
+        request.response.content_type = 'application/json'
+        if str is bytes:  # Python 2 vs 3 wsgi differences
+            request.response.app_iter = app_iter
+        else:
+            request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+        return request.response
+
+    query['aggs'] = set_facets(facets, used_filters, principals)
 
     # Execute the query
     es_results = es.search(body=query, index=es_index,
@@ -512,7 +550,7 @@ def search(context, request, search_type=None):
     result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD
-    result['@graph'] = list(format_results(request, es_results))
+    result['@graph'] = list(format_results(request, es_results['hits']['hits']))
     return result
 
 
@@ -525,7 +563,7 @@ def collection_view_listing_es(context, request):
 
     result = search(context, request, context.type_info.name)
 
-    if len(result['@graph']) < result['total']:
+    if 'limit' not in request.params and len(result['@graph']) < result['total']:
         params = [(k, v) for k, v in request.params.items() if k != 'limit']
         params.append(('limit', 'all'))
         result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
@@ -599,7 +637,7 @@ def matrix(context, request):
 
     # Adding facets to the query
     facets = schema['facets'].items()
-    set_facets(facets, used_filters, query, principals)
+    query['aggs'] = set_facets(facets, used_filters, principals)
 
     # Group results in 2 dimensions
     matrix_terms = []
