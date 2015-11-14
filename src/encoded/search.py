@@ -1,7 +1,7 @@
 import re
 from pyramid.view import view_config
 from contentbase import (
-    Collection,
+    AbstractCollection,
     TYPES,
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
@@ -411,10 +411,15 @@ def search(context, request, search_type=None):
             result['notification'] = "Invalid type: %s" ', '.join(bad_types)
             return result
 
-        # Normalize to item_type
-        doc_types = [types[name].item_type for name in doc_types]
     else:
         doc_types = [search_type]
+
+    # Normalize to item_type
+    doc_types = sorted({
+        types[subtype].item_type
+        for name in doc_types
+        for subtype in types[name].subtypes
+    })
 
     # Building query for filters
     if not doc_types:
@@ -511,14 +516,14 @@ def search(context, request, search_type=None):
     return result
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
+@view_config(context=AbstractCollection, permission='list', request_method='GET',
              name='listing')
 def collection_view_listing_es(context, request):
     # Switch to change summary page loading options
     if request.datastore != 'elasticsearch':
         return collection_view_listing_db(context, request)
 
-    result = search(context, request, context.type_info.item_type)
+    result = search(context, request, context.type_info.name)
 
     if len(result['@graph']) < result['total']:
         params = [(k, v) for k, v in request.params.items() if k != 'limit']
