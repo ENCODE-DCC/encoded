@@ -893,5 +893,23 @@
         "accession": "ENCBS003CON",
         "treatments": ["robert-waterston:60mM_dex_8hr"],
         "uuid": "d3da3e40-d934-4fa2-b1c5-888994837524"
+    },
+     {
+        "_test": "reference epigenome series 1 biosample",
+        "award": "U41HG007355",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
+        "donor": "ENCDO000HUM",
+        "lab": "robert-waterston",
+        "lot_id": "58483235",
+        "organism": "human",
+        "source": "encode",
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "accession": "ENCBS001EPI",
+        "treatments": ["robert-waterston:60mM_dex_8hr"],
+        "uuid": "006d62aa-eade-4908-80a2-d42f481d2a32"
     }
 ]
