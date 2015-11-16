@@ -122,9 +122,7 @@ class TypesTool(object):
         self.all[ti.name] = self.abstract[ti.name] = ti
         self.all[ti.factory] = ti
         for base in ti.base_types:
-            if base not in self.abstract:
-                ati = AbstractTypeInfo(self.registry, base)
-                self.all[base] = self.abstract[base] = ati
+            self.register_abstract(base)
 
         # Calculate the reverse rev map
         for prop_name, spec in factory.rev.items():
@@ -132,6 +130,13 @@ class TypesTool(object):
             back = self.type_back_rev.setdefault(rev_type_name, {}).setdefault(rel, set())
             back.add((ti.name, prop_name))
 
+        return ti
+
+    def register_abstract(self, name):
+        ti = self.abstract.get(name)
+        if ti is None:
+            ti = AbstractTypeInfo(self.registry, name)
+            self.all[name] = self.abstract[name] = ti
         return ti
 
     def __contains__(self, name):

@@ -1,6 +1,7 @@
 from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
+import io
 import logging
 import os.path
 
@@ -38,7 +39,12 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    'dataset',
+    'annotation',
+    'matched_set',
+    'project',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite',
     'software',
     'software_version',
     'analysis_step',
@@ -217,15 +223,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = zf.open(name + '.tsv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.tsv'), encoding='utf-8')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = zf.open(name + '.csv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.csv'), encoding='utf-8')
             return read_csv(stream)
 
         if (name + '.json') in names:
-            stream = zf.open(name + '.json', 'r')
+            stream = io.TextIOWrapper(zf.open(name + '.json'), encoding='utf-8')
             return read_json(stream)
 
     if os.path.isdir(path):
@@ -522,7 +528,22 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used'),
     ],
-    'dataset': [
+    'annotation': [
+        remove_keys('related_files'),
+    ],
+    'matched_set': [
+        remove_keys('related_files'),
+    ],
+    'project': [
+        remove_keys('related_files'),
+    ],
+    'publication_data': [
+        remove_keys('related_files'),
+    ],
+    'reference': [
+        remove_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
         remove_keys('related_files'),
     ],
     'experiment': [
@@ -554,7 +575,22 @@ PHASE2_PIPELINES = {
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls'),
     ],
-    'dataset': [
+    'annotation': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'matched_set': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'project': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'publication_data': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'reference': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'ucsc_browser_composite': [
         skip_rows_missing_all_keys('related_files'),
     ],
     'publication': [

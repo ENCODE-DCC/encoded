@@ -143,7 +143,7 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/\/[^\/]+?\/[^\/]+?\//g);
+        var matches = detail.match(/(?!^|\s+)(\/.+?\/)(?=$|\s+)/g);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;

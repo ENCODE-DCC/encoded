@@ -22,12 +22,6 @@ GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
-FILE_QUERY = {
-    'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
-    'limit': ['all'],
-    'frame': ['embedded'],
-    'status': ['released']
-}
 
 
 def render(data):
@@ -271,6 +265,10 @@ def generate_batch_hubs(context, request):
     txt = request.matchdict['txt']
     param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
 
+    view = 'search'
+    if 'region' in param_list:
+        view = 'region-search'
+
     if len(request.matchdict) == 3:
 
         # Should generate a HTML page for requests other than trackDb.txt
@@ -279,25 +277,28 @@ def generate_batch_hubs(context, request):
             return generate_html(context, request) + data_policy
 
         assembly = str(request.matchdict['assembly'])
-        if 'status' in param_list:
-            del FILE_QUERY['status']
-        params = dict(param_list, **FILE_QUERY)
-        results = []
-        params['assembly'] = [assembly]
-
+        params = {
+            'files.file_format': BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES,
+            'status': ['released'],
+        }
+        params.update(param_list)
+        params.update({
+            'assembly': [assembly],
+            'limit': ['all'],
+            'frame': ['embedded'],
+        })
+        path = '/%s/?%s' % (view, urlencode(params, True))
+        results = request.embed(path, as_user=True)['@graph']
         # if files.file_format is a input param
         if 'files.file_format' in param_list:
-            params['files.file_format'] = param_list['files.file_format']
-            path = '/search/?%s' % urlencode(params, True)
-            for result in request.embed(path, as_user=True)['@graph']:
-                if 'files' in result:
-                    for f in result['files']:
-                        if f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES:
-                            results.append(result)
-                        break
-        else:
-            path = '/search/?%s' % urlencode(params, True)
-            results = request.embed(path, as_user=True)['@graph']
+            results = [
+                result
+                for result in results
+                if any(
+                    f['file_format'] in BIGWIG_FILE_TYPES + BIGBED_FILE_TYPES
+                    for f in result.get('files', [])
+                )
+            ]
         trackdb = ''
         for i, experiment in enumerate(results):
             if i < 5:
@@ -311,7 +312,7 @@ def generate_batch_hubs(context, request):
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        path = '/search/?%s' % urlencode(param_list, True)
+        path = '/%s/?%s' % (view, urlencode(param_list, True))
         results = request.embed(path, as_user=True)
         g_text = ''
         if 'assembly' in param_list:

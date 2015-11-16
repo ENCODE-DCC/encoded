@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -16,16 +17,15 @@ def file_is_revoked(request, path):
     return request.embed(path, '@@object').get('status') == 'revoked'
 
 
-@collection(
+@abstract_collection(
     name='datasets',
     unique_key='accession',
     properties={
-        'title': 'Datasets',
-        'description': 'Listing of datasets',
+        'title': "Datasets",
+        'description': 'Listing of all types of dataset.',
     })
 class Dataset(Item):
-    item_type = 'dataset'
-    schema = load_schema('encoded:schemas/dataset.json')
+    base_types = ['Dataset'] + Item.base_types
     embedded = [
         'files',
         'files.replicate',
@@ -176,3 +176,81 @@ class Dataset(Item):
             '&hgHubConnect.remakeTrackHub=on'
             '&hgHub_do_firstDb=1&hubUrl='
         ) + quote_plus(hub_url, ':/@')
+
+
+@collection(
+    name='annotations',
+    unique_key='accession',
+    properties={
+        'title': "Annotation dataset",
+        'description': 'A set of annotation files produced by ENCODE.',
+    })
+class Annotation(Dataset):
+    item_type = 'annotation'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['annotation']
+
+
+@collection(
+    name='publication-data',
+    unique_key='accession',
+    properties={
+        'title': "Publication dataset",
+        'description': 'A set of files that are described/analyzed in a publication.',
+    })
+class PublicationData(Dataset):
+    item_type = 'publication_data'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['publication']
+
+
+@collection(
+    name='references',
+    unique_key='accession',
+    properties={
+        'title': "Reference dataset",
+        'description': 'A set of reference files used by ENCODE.',
+    })
+class Reference(Dataset):
+    item_type = 'reference'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['reference']
+
+
+@collection(
+    name='ucsc-browser-composites',
+    unique_key='accession',
+    properties={
+        'title': "UCSC browser composite dataset",
+        'description': 'A set of files that comprise a composite at the UCSC genome browser.',
+    })
+class UcscBrowserComposite(Dataset):
+    item_type = 'ucsc_browser_composite'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['composite']
+
+
+@collection(
+    name='projects',
+    unique_key='accession',
+    properties={
+        'title': "Project dataset",
+        'description': 'A set of files that comprise a project.',
+    })
+class Project(Dataset):
+    item_type = 'project'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['project']
+
+
+@collection(
+    name='matched-sets',
+    unique_key='accession',
+    properties={
+        'title': "Matched set series",
+        'description': 'A series that pairs two datasets (experiments) together',
+    })
+class MatchedSet(Dataset):
+    item_type = 'matched_set'
+    schema = load_schema('encoded:schemas/dataset.json')
+    schema['properties']['dataset_type']['enum'] = ['paired set']
