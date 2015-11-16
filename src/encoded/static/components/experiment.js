@@ -855,7 +855,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
         // File is derived; collect any QC info that applies to this file
@@ -1159,7 +1159,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     handleFilterChange: function(e) {
-        var value = e.target.selectedOptions[0].value;
+        var value = e.target.value;
         if (value !== 'default') {
             var filters = value.split('-');
             this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});

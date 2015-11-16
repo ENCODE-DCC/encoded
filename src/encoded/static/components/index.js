@@ -22,6 +22,7 @@ require('./navbar');
 require('./platform');
 require('./statuslabel');
 require('./search');
+require('./matrix');
 require('./talen');
 require('./target');
 require('./publication');
@@ -33,5 +34,7 @@ require('./inputs');
 require('./blocks');
 require('./user');
 require('./schema');
+require('./region_search');
+
 
 module.exports = require('./app');
