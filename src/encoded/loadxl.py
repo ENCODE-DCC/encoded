@@ -533,24 +533,6 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used'),
     ],
-    'annotation': [
-        remove_keys('related_files'),
-    ],
-    'matched_set': [
-        remove_keys('related_files'),
-    ],
-    'project': [
-        remove_keys('related_files'),
-    ],
-    'publication_data': [
-        remove_keys('related_files'),
-    ],
-    'reference': [
-        remove_keys('related_files'),
-    ],
-    'ucsc_browser_composite': [
-        remove_keys('related_files'),
-    ],
     'experiment': [
         remove_keys('possible_controls', 'related_files'),
     ],
@@ -587,7 +569,7 @@ PHASE1_PIPELINES = {
     'reference_epigenome': [
         remove_keys('related_datasets'),
     ],
-    'matched_sets': [
+    'matched_set': [
         remove_keys('related_datasets'),
     ]
 }
@@ -622,24 +604,6 @@ PHASE2_PIPELINES = {
     'publication_data': [
         skip_rows_missing_all_keys('related_files'),
     ],
-    'annotation': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'matched_set': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'project': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'publication_data': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'reference': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
-    'ucsc_browser_composite': [
-        skip_rows_missing_all_keys('related_files'),
-    ],
     'reference': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
     ],
@@ -661,7 +625,7 @@ PHASE2_PIPELINES = {
     'reference_epigenome': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
-    'matched_sets': [
+    'matched_set': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'publication': [
