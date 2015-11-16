@@ -29,7 +29,7 @@ def includeme(config):
         serializer=PyramidJSONSerializer(json_renderer),
         connection_class=TimedUrllib3HttpConnection,
         retry_on_timeout=True,
-        timeout=20,
+        timeout=30,
     )
 
     config.include('.cached_views')
