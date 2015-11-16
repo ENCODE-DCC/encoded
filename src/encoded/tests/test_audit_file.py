@@ -400,6 +400,7 @@ def test_audit_file_mad_qc_spearman_correlation(testapp, file7,  file_exp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
 
+
 def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
                                                   mad_quality_metric,
                                                   analysis_step_run_bam,
@@ -408,13 +409,14 @@ def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
     testapp.patch_json(mad_quality_metric['@id'], {'Spearman correlation': 0.99})
     testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
     testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})   
+    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})
     res = testapp.get(file7['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'insufficient spearman correlation' for error in errors_list)
+
 
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})

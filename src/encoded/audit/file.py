@@ -557,14 +557,12 @@ def audit_file_mad_qc_spearman_correlation(value, system):
             value['@id'])
         raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
 
-
-    # looking for Spearman correlation in MAD-QC-METRIC
-    spearman_correlation = None
+    spearman_correlation = False
     for metric in quality_metrics:
         if 'Spearman correlation' in metric:
             spearman_correlation = metric['Spearman correlation']
             break
-    if spearman_correlation is None:
+    if spearman_correlation is False:
         detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
                  'has no MAD quality metric'
         raise AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
@@ -591,4 +589,5 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                          ', gene quantification file for {}'.format(experiment_replication_type) + \
                          ' assay {} '.format(pipeline['title']) + \
                          'require {}'.format(required_value)
-            raise AuditFailure('insufficient spearman correlation', detail, level='NOT_COMPLIANT')
+                raise AuditFailure('insufficient spearman correlation', detail,
+                                   level='NOT_COMPLIANT')
