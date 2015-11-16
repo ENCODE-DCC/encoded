@@ -855,7 +855,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
         // File is derived; collect any QC info that applies to this file
@@ -1159,7 +1159,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     handleFilterChange: function(e) {
-        var value = e.target.selectedOptions[0].value;
+        var value = e.target.value;
         if (value !== 'default') {
             var filters = value.split('-');
             this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
@@ -1185,7 +1185,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
             }
             var goodGraph = this.jsonGraph && Object.keys(this.jsonGraph).length;
-            filterOptions = this.jsonGraph.filterOptions;
+            filterOptions = goodGraph && this.jsonGraph.filterOptions;
 
             // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
             if (goodGraph || this.state.selectedAssembly || this.state.selectedAnnotation) {

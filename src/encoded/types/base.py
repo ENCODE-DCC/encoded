@@ -71,9 +71,23 @@ def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), in
         ]
 
 
-class Collection(contentbase.Collection):
+class AbstractCollection(contentbase.AbstractCollection):
+    def get(self, name, default=None):
+        resource = super(AbstractCollection, self).get(name, None)
+        if resource is not None:
+            return resource
+        if ':' in name:
+            resource = self.connection.get_by_unique_key('alias', name)
+            if resource is not None:
+                if not self._allow_contained(resource):
+                    return default
+                return resource
+        return default
+
+
+class Collection(contentbase.Collection, AbstractCollection):
     def __init__(self, *args, **kw):
-        super(Item.Collection, self).__init__(*args, **kw)
+        super(Collection, self).__init__(*args, **kw)
         if hasattr(self, '__acl__'):
             return
         # XXX collections should be setup after all types are registered.
@@ -81,26 +95,9 @@ class Collection(contentbase.Collection):
         if 'lab' in self.type_info.factory.schema['properties']:
             self.__acl__ = ALLOW_SUBMITTER_ADD
 
-    def get(self, name, default=None):
-        resource = super(Collection, self).get(name, None)
-        if resource is not None:
-            return resource
-        if is_accession(name):
-            resource = self.connection.get_by_unique_key('accession', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        if ':' in name:
-            resource = self.connection.get_by_unique_key('alias', name)
-            if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
-                    return default
-                return resource
-        return default
-
 
 class Item(contentbase.Item):
+    AbstractCollection = AbstractCollection
     Collection = Collection
     STATUS_ACL = {
         # standard_status

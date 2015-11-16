@@ -11,6 +11,7 @@ from .base import (
 
 @collection(
     name='antibodies',
+    unique_key='accession',
     properties={
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',

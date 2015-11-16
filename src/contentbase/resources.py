@@ -106,7 +106,7 @@ class Root(Resource):
         return ['Portal']
 
 
-class Collection(Resource, Mapping):
+class AbstractCollection(Resource, Mapping):
     properties = {}
     unique_key = None
 
@@ -141,11 +141,11 @@ class Collection(Resource, Mapping):
         return item
 
     def __iter__(self):
-        for uuid in self.connection.__iter__(self.type_info.name):
+        for uuid in self.connection.__iter__(*self.type_info.subtypes):
             yield uuid
 
     def __len__(self):
-        return self.connection.__len__(self.type_info.name)
+        return self.connection.__len__(*self.type_info.subtypes)
 
     def __hash__(self):
         return object.__hash__(self)
@@ -153,16 +153,20 @@ class Collection(Resource, Mapping):
     def __eq__(self, other):
         return self is other
 
+    def _allow_contained(self, resource):
+        return resource.__parent__ is self or \
+            resource.type_info.name in resource.type_info.subtypes
+
     def get(self, name, default=None):
         resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
-            if resource.collection is not self and resource.__parent__ is not self:
+            if not self._allow_contained(resource):
                 return default
             return resource
         if self.unique_key is not None:
             resource = self.connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
+                if not self._allow_contained(resource):
                     return default
                 return resource
         return default
@@ -183,6 +187,10 @@ class Collection(Resource, Mapping):
         ]
 
 
+class Collection(AbstractCollection):
+    ''' Separate class so add views do not apply to AbstractCollection '''
+
+
 class Item(Resource):
     item_type = None
     base_types = ['Item']
@@ -191,6 +199,7 @@ class Item(Resource):
     embedded = ()
     audit_inherit = None
     schema = None
+    AbstractCollection = AbstractCollection
     Collection = Collection
 
     def __init__(self, registry, model):

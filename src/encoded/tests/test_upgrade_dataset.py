@@ -2,14 +2,14 @@ import pytest
 
 
 @pytest.fixture
-def experiment_1(root, experiment, file, file_dataset):
+def experiment_1(root, experiment, file, file_ucsc_browser_composite):
     item = root.get_by_uuid(experiment['uuid'])
     properties = item.properties.copy()
     assert root.get_by_uuid(file['uuid']).properties['dataset'] == str(item.uuid)
-    assert root.get_by_uuid(file_dataset['uuid']).properties['dataset'] != str(item.uuid)
+    assert root.get_by_uuid(file_ucsc_browser_composite['uuid']).properties['dataset'] != str(item.uuid)
     properties.update({
         'schema_version': '1',
-        'files': [file['uuid'], file_dataset['uuid']]
+        'files': [file['uuid'], file_ucsc_browser_composite['uuid']]
     })
     del properties['related_files']
     return properties
@@ -28,8 +28,8 @@ def experiment_2(root, experiment):
 
 
 @pytest.fixture
-def dataset_2(root, dataset):
-    item = root.get_by_uuid(dataset['uuid'])
+def dataset_2(root, ucsc_browser_composite):
+    item = root.get_by_uuid(ucsc_browser_composite['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '2',
@@ -51,8 +51,8 @@ def experiment_3(root, experiment):
 
 
 @pytest.fixture
-def dataset_3(root, dataset):
-    item = root.get_by_uuid(dataset['uuid'])
+def dataset_3(root, ucsc_browser_composite):
+    item = root.get_by_uuid(ucsc_browser_composite['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '3',
@@ -63,8 +63,8 @@ def dataset_3(root, dataset):
 
 
 @pytest.fixture
-def dataset_5(root, dataset, publication):
-    item = root.get_by_uuid(dataset['uuid'])
+def dataset_5(root, ucsc_browser_composite, publication):
+    item = root.get_by_uuid(ucsc_browser_composite['uuid'])
     properties = item.properties.copy()
     properties.update({
         'schema_version': '5',
@@ -73,13 +73,13 @@ def dataset_5(root, dataset, publication):
     return properties
 
 
-def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_dataset, threadlocals, dummy_request):
+def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
     value = upgrader.upgrade('experiment', experiment_1, target_version='2', context=context)
     assert value['schema_version'] == '2'
     assert 'files' not in value
-    assert value['related_files'] == [file_dataset['uuid']]
+    assert value['related_files'] == [file_ucsc_browser_composite['uuid']]
 
 
 def test_experiment_upgrade_dbxrefs(root, upgrader, experiment, experiment_2, threadlocals, dummy_request):
@@ -103,32 +103,32 @@ def test_experiment_upgrade_dbxrefs_mouse(root, upgrader, experiment, experiment
     assert value['dbxrefs'] == ['UCSC-ENCODE-mm9:wgEncodeEM008391', 'GEO:GSM99494']
 
 
-def test_dataset_upgrade_dbxrefs(root, upgrader, dataset, dataset_2, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_dbxrefs(root, upgrader, ucsc_browser_composite, dataset_2, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('dataset', dataset_2, target_version='3', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-GB-mm9:wgEncodeCaltechTfbs']
     assert value['aliases'] == ['barbara-wold:mouse-TFBS']
     assert 'geo_dbxrefs' not in value
 
 
-def test_dataset_upgrade_dbxrefs_human(root, upgrader, dataset, dataset_2, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_dbxrefs_human(root, upgrader, ucsc_browser_composite, dataset_2, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
     dataset_2['aliases'] = [ 'ucsc_encode_db:hg19-wgEncodeSydhTfbs']
-    value = upgrader.upgrade('dataset', dataset_2, target_version='3', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-GB-hg19:wgEncodeSydhTfbs']
     assert value['aliases'] == []
     assert 'geo_dbxrefs' not in value
 
 
-def test_dataset_upgrade_dbxrefs_alias(root, upgrader, dataset, dataset_2, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_dbxrefs_alias(root, upgrader, ucsc_browser_composite, dataset_2, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
     dataset_2['aliases'] = ['ucsc_encode_db:wgEncodeEH002945']
-    value = upgrader.upgrade('dataset', dataset_2, target_version='3', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-ENCODE-hg19:wgEncodeEH002945']
     assert value['aliases'] == []
@@ -143,10 +143,10 @@ def test_experiment_upgrade_status(root, upgrader, experiment, experiment_3, thr
     assert value['status'] == 'deleted'
 
 
-def test_dataset_upgrade_status(root, upgrader, dataset, dataset_3, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_status(root, upgrader, ucsc_browser_composite, dataset_3, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('dataset', dataset_3, target_version='4', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['status'] == 'released'
 
@@ -161,11 +161,11 @@ def test_experiment_upgrade_status_encode3(root, upgrader, experiment, experimen
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_no_status_encode2(root, upgrader, dataset, dataset_3, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_no_status_encode2(root, upgrader, ucsc_browser_composite, dataset_3, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
     del dataset_3['status']
-    value = upgrader.upgrade('dataset', dataset_3, target_version='4', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['status'] == 'released'
 
@@ -180,9 +180,9 @@ def test_experiment_upgrade_no_status_encode3(root, upgrader, experiment, experi
     assert value['status'] == 'submitted'
 
 
-def test_dataset_upgrade_references(root, upgrader, dataset, dataset_5, publication, threadlocals, dummy_request):
-    context = root.get_by_uuid(dataset['uuid'])
+def test_dataset_upgrade_references(root, upgrader, ucsc_browser_composite, dataset_5, publication, threadlocals, dummy_request):
+    context = root.get_by_uuid(ucsc_browser_composite['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('dataset', dataset_5, target_version='6', context=context)
+    value = upgrader.upgrade('ucsc_browser_composite', dataset_5, target_version='6', context=context)
     assert value['schema_version'] == '6'
     assert value['references'] == [publication['uuid']]
