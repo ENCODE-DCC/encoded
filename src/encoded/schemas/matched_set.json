@@ -26,7 +26,7 @@
         }
     },
     "facets": {
-        "related_datasets.assay_term_name": {
+        "assay_term_name": {
             "title": "Assay",
             "type": "string"
         },
@@ -46,11 +46,11 @@
             "title": "Target of assay",
             "type": "string"
         },
-        "related_datasets.biosample.biosample_type": {
+        "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },
-        "organ_slims": {
+        "related_datasets.replicates.library.biosample.organ_slims": {
             "title": "Organ",
             "type": "array"
         },
@@ -112,7 +112,7 @@
             "title": "Accession",
             "type": "string"
         },
-        "related_datasets.assay_term_name": {
+        "assay_term_name": {
             "title": "Assay Type",
             "type": "string"
         },
@@ -120,7 +120,7 @@
             "title": "Target",
             "type": "string"
         },
-        "related_datasets.biosample_term_name": {
+        "biosample_term_name": {
             "title": "Biosample",
             "type": "string"
         },
