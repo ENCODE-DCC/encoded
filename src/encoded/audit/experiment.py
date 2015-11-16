@@ -118,7 +118,6 @@ def audit_experiment_isogeneity(value, system):
     if value.get('replication_type') is None:
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
         raise AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
-        return
 
     biosample_dict = {}
     biosample_age_list = []
@@ -154,19 +153,19 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying strains {}'.format(
             value['@id'],
             biosample_donor_list)
-        yield AuditFailure('mismatched donor', detail, level='ERROR')
+        raise AuditFailure('mismatched donor', detail, level='ERROR')
 
     if len(set(biosample_age_list)) > 1:
         detail = 'In experiment {} the biosamples have varying ages {}'.format(
             value['@id'],
             biosample_age_list)
-        yield AuditFailure('mismatched age', detail, level='ERROR')
+        raise AuditFailure('mismatched age', detail, level='ERROR')
 
     if len(set(biosample_sex_list)) > 1:
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
             value['@id'],
             repr(biosample_sex_list))
-        yield AuditFailure('mismatched sex', detail, level='ERROR')
+        raise AuditFailure('mismatched sex', detail, level='ERROR')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
