@@ -122,11 +122,11 @@ class Biosample(Item):
         "title": "Sex",
         "type": "string"
     })
-    def sex(self, request, donor=None, model_organism_sex=None, organism=None):        
+    def sex(self, request, donor=None, model_organism_sex=None, organism=None):
         humanFlag = False
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            if organismObject['scientific_name']=='Homo sapiens':
+            if organismObject['scientific_name'] == 'Homo sapiens':
                 humanFlag = True
 
         if humanFlag == True:
@@ -156,7 +156,7 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag == True:
-            if donor is not None:# try to get the age from the donor
+            if donor is not None:  # try to get the age from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age' in donorObject:
                     return donorObject['age']
@@ -182,7 +182,7 @@ class Biosample(Item):
                 humanFlag = True
 
         if humanFlag == True:
-            if donor is not None:# try to get the age_units from the donor
+            if donor is not None:  # try to get the age_units from the donor
                 donorObject = request.embed(donor, '@@object')
                 if 'age_units' in donorObject:
                     return donorObject['age_units']
@@ -193,33 +193,56 @@ class Biosample(Item):
         else:
             return model_organism_age_units
 
-        
-
     @calculated_property(schema={
         "title": "Health status",
         "type": "string",
     })
-    def health_status(self, request, donor=None, model_organism_health_status=None):
-        if model_organism_health_status is not None:
-            return model_organism_health_status
-        if donor is not None:
-            return request.embed(donor, '@@object').get('health_status')
+    def health_status(self, request, donor=None, model_organism_health_status=None, organism=None):
+        humanFlag = False
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+            if organismObject['scientific_name'] == 'Homo sapiens':
+                humanFlag = True
+
+        if humanFlag is True and donor is not None:
+            donorObject = request.embed(donor, '@@object')
+            if 'health_status' in donorObject:
+                return donorObject['health_status']
+            else:
+                return None
+        else:
+            if humanFlag is False:
+                return model_organism_health_status
+            return None
 
     @calculated_property(schema={
         "title": "Life stage",
         "type": "string",
     })
     def life_stage(self, request, donor=None, mouse_life_stage=None, fly_life_stage=None,
-                   worm_life_stage=None):
-        if mouse_life_stage is not None:
-            return mouse_life_stage
-        if fly_life_stage is not None:
-            return fly_life_stage
-        if worm_life_stage is not None:
-            return worm_life_stage
-        if donor is not None:
-            return request.embed(donor, '@@object').get('life_stage')
+                   worm_life_stage=None, organism=None):
+        humanFlag = False
+        if organism is not None:
+            organismObject = request.embed(organism, '@@object')
+            if organismObject['scientific_name'] == 'Homo sapiens':
+                humanFlag = True
 
+        if humanFlag is True and donor is not None:
+            donorObject = request.embed(donor, '@@object')
+            if 'life_stage' in donorObject:
+                return donorObject['life_stage']
+            else:
+                return 'unknown'
+        else:
+            if humanFlag is False:
+                if mouse_life_stage is not None:
+                    return mouse_life_stage
+                if fly_life_stage is not None:
+                    return fly_life_stage
+                if worm_life_stage is not None:
+                    return worm_life_stage
+            return 'unknown'
+            
     @calculated_property(schema={
         "title": "Synchronization",
         "type": "string",
