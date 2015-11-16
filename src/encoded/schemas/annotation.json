@@ -97,12 +97,19 @@
                 "young adult"
             ]
         },
-        "target": {
-            "title": "Target",
-            "description": "For predictions of particular features (e.g. distribution of a histone mark), specify the predicted feature.",
+        "targets": {
+            "title": "Targets",
+            "description": "For predictions of particular features (e.g. distribution of a histone mark), specify the predicted feature(s).",
             "comment": "See target.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Target"
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Targets",
+                "description": "For predictions of particular features (e.g. distribution of a histone mark), specify the predicted feature(s).",
+                "comment": "See contstruct.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "Target"
+            }
         },
         "software_used": {
             "title": "Software used",
@@ -122,12 +129,12 @@
             "title": "Annotation type",
             "type": "string"
         },
-        "related_files.dataset.assay_term_name": {
+        "files.dataset.assay_term_name": {
             "title": "Assay",
             "type": "string"
         },
         "status": {
-            "title": "Series status",
+            "title": "File set status",
             "type": "string"
         },
         "assembly": {
@@ -138,9 +145,9 @@
             "title": "Organism",
             "type": "string"
         },
-        "target.investigated_as": {
-            "title": "Target of assay",
-            "type": "string"
+        "targets.investigated_as": {
+            "title": "Target(s) of assay",
+            "type": "array"
         },
         "biosample_type": {
             "title": "Biosample type",
@@ -154,45 +161,13 @@
             "title": "Life stage",
             "type": "string"
         },
-        "related_files.dataset.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "string"
-        },
-        "related_files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline",
-            "type": "string"
-        },
-        "related_files.file_type": {
-            "title": "Available data",
-            "type": "string"
-        },
-        "related_files.run_type": {
-            "title": "Run type",
-            "type": "string"
-        },
-        "related_files.read_length": {
-            "title": "Read length",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.size_range": {
-            "title": "Library insert size (nt)",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.nucleic_acid_term_name": {
-            "title": "Library made from",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment",
-            "type": "array"
-        },
         "month_released": {
             "title": "Date released",
             "type": "string"
+        },
+        "software_used.software.name": {
+            "title": "Software used",
+            "type": "array"
         },
         "lab.title": {
             "title": "Lab",
@@ -208,15 +183,15 @@
             "title": "Accession",
             "type": "string"
         },
-        "related_files.dataset.assay_term_name": {
+        "files.dataset.assay_term_name": {
             "title": "Assay Type",
             "type": "string"
         },
-        "related_files.dataset.target.label":{
+        "targets.label":{
             "title": "Target",
             "type": "string"
         },
-        "related_files.dataset.biosample_term_name": {
+        "biosample_term_name": {
             "title": "Biosample",
             "type": "string"
         },
@@ -236,10 +211,6 @@
             "title": "Status",
             "type": "string"
         },
-         "related_files.dataset.replicates.antibody.accession": {
-            "title": "Linked Antibody",
-            "type": "string"
-        },
         "organism.scientific_name": {
             "title": "Species",
             "type": "array"
@@ -248,60 +219,16 @@
             "title": "Life stage",
             "type": "array"
         },
-        "related_files.dataset.replicates.library.biosample.age": {
+        "relevant_timepoint": {
             "title": "Age",
             "type": "array"
         },
-        "related_files.dataset.replicates.library.biosample.age_units": {
+        "relevant_timepoint_units": {
             "title": "Age Units",
             "type": "array"
         },
-        "related_files.dataset.replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Treatment",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.treatments.treatment_term_id": {
-            "title": "Term ID",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.treatments.concentration": {
-            "title": "Concentration",
-            "type": "number"
-        },
-        "related_files.dataset.replicates.library.biosample.treatments.concentration_units": {
-            "title": "Concentration units",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.treatments.duration": {
-            "title": "Duration",
-            "type": "number"
-        },
-        "related_files.dataset.replicates.library.biosample.treatments.duration_units": {
-            "title": "Duration units",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.synchronization": {
-            "title": "Synchronization",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.post_synchronization_time": {
-            "title": "Post-synchronization time",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.library.biosample.post_synchronization_time_units": {
-            "title": "Post-synchronization time units",
-            "type": "string"
-        },
-        "related_files.dataset.replicates.length": {
-            "title": "Datasets",
-            "type": "array"
-        },
-        "related_files.length": {
-            "title": "Files",
-            "type": "array"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
+        "software_used.software.name": {
+            "title": "Software used",
             "type": "array"
         }
     },
@@ -316,6 +243,9 @@
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
         "biosample_synonyms": 1.0,
+        "relevant_life_stage": 1.0,
+        "relevant_timepoint": 1.0,
+        "software_used.software.name": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
         "submitted_by.email": 1.0,
