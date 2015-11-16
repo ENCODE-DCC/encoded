@@ -205,14 +205,21 @@ class FileSet(Dataset):
     base_types = ['FileSet'] + Dataset.base_types
     schema = load_schema('encoded:schemas/file_set.json')
     embedded = Dataset.embedded + [
-        'files.replicate.antibody',
-        'files.replicate.experiment.target.organism',
-        'files.replicate.library',
-        'files.replicate.library.biosample',
-        'files.replicate.library.biosample.donor',
-        'files.replicate.library.biosample.donor.organism',
-        'files.replicate.library.biosample.rnais',
-        'files.replicate.experiment.possible_controls'
+        'related_files',
+        'related_files.dataset',
+        'related_files.dataset.replicates',
+        'related_files.dataset.lab',
+        'related_files.dataset.target',
+        'related_files.dataset.submitted_by',
+        'related_files.dataset.lab',
+        'related_files.dataset.replicates.antibody',
+        'related_files.dataset.target.organism',
+        'related_files.dataset.replicates.library',
+        'related_files.dataset.replicates.library.biosample',
+        'related_files.dataset.replicates.library.biosample.donor',
+        'related_files.dataset.replicates.library.biosample.donor.organism',
+        'related_files.dataset.replicates.library.biosample.rnais',
+        'related_files.dataset.possible_controls'
     ]
 
     @calculated_property(schema={

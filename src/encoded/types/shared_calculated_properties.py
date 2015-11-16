@@ -131,8 +131,7 @@ class CalculatedFileSetBiosample:
                 # Need to cap this due to the large numbers of files in related_files
                 if idx < 100:
                     related_file = request.embed(path, '@@object')
-                    dataset = request.embed(related_file['dataset'], '@@object')
-                    if 'replicate' in dataset:
+                    if 'replicate' in related_file:
                         rep = request.embed(related_file['replicate'], '@@object')
                         if 'library' in rep:
                             lib = request.embed(rep['library'], '@@object')
@@ -344,7 +343,7 @@ class CalculatedSeriesTarget:
         "title": "Targets",
         "type": "array",
         "items": {
-            "type": ['string', 'object'],
+            "type": 'string',
             "linkTo": "Target",
         },
     })
