@@ -133,6 +133,10 @@ def audit_antibody_characterization_status(value, system):
     Make sure the lane_status matches
     the characterization status
     '''
+
+    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
+        return
+
     if 'secondary_characterization_method' in value:
         return
 
