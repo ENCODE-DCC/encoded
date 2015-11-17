@@ -507,7 +507,6 @@
             "description": "Genome annotation that file was generated with.",
             "comment": "Applies to files created using annotations.",
             "type": "string",
-            "permission": "import_items",
             "enum": [
                 "None",
                 "M2",
