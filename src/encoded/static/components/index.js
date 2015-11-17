@@ -23,6 +23,7 @@ require('./platform');
 require('./statuslabel');
 require('./search');
 require('./matrix');
+require('./talen');
 require('./target');
 require('./publication');
 require('./pipeline');
