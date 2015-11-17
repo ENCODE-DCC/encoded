@@ -98,7 +98,7 @@ class Dataset(Item):
         "title": "Contributing files",
         "type": "array",
         "items": {
-            "type": 'string',
+            "type": "string",
             "linkTo": "File",
         },
     })
@@ -204,29 +204,13 @@ class FileSet(Dataset):
     item_type = 'file_set'
     base_types = ['FileSet'] + Dataset.base_types
     schema = load_schema('encoded:schemas/file_set.json')
-    embedded = Dataset.embedded + [
-        'related_files',
-        'related_files.dataset',
-        'related_files.dataset.replicates',
-        'related_files.dataset.lab',
-        'related_files.dataset.target',
-        'related_files.dataset.submitted_by',
-        'related_files.dataset.lab',
-        'related_files.dataset.replicates.antibody',
-        'related_files.dataset.target.organism',
-        'related_files.dataset.replicates.library',
-        'related_files.dataset.replicates.library.biosample',
-        'related_files.dataset.replicates.library.biosample.donor',
-        'related_files.dataset.replicates.library.biosample.donor.organism',
-        'related_files.dataset.replicates.library.biosample.rnais',
-        'related_files.dataset.possible_controls'
-    ]
+    embedded = Dataset.embedded
 
     @calculated_property(schema={
         "title": "Contributing files",
         "type": "array",
         "items": {
-            "type": 'string',
+            "type": "string",
             "linkTo": "file",
         },
     })
@@ -250,7 +234,7 @@ class FileSet(Dataset):
                 exclude=('revoked', 'deleted', 'replaced'),
             )
 
-    @calculated_property(schema={
+    @calculated_property(define=True, schema={
         "title": "Files",
         "type": "array",
         "items": {
@@ -312,7 +296,7 @@ class FileSet(Dataset):
 class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets']
 
 
 @collection(
@@ -350,6 +334,7 @@ class Reference(FileSet):
 class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
+    embedded = FileSet.embedded
 
 
 @collection(
@@ -362,6 +347,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedFileSetBio
 class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
+    embedded = FileSet.embedded + ['files.replicate.experiment.target', 'organism']
 
 
 class Series(Dataset):
