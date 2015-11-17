@@ -116,7 +116,7 @@ def get_search_fields(request, doc_types):
     """
     Returns set of columns that are being searched and highlights
     """
-    fields = {'uuid'}
+    fields = {'embedded.uuid.raw'}
     highlights = {}
     for doc_type in (doc_types or request.root.by_item_type.keys()):
         collection = request.root[doc_type]
