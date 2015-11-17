@@ -261,6 +261,7 @@
         "targets.dbxref": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
-        "organism.taxon_id": 1.0
+        "organism.taxon_id": 1.0,
+        "annotation_type": 1.0
     }
 }

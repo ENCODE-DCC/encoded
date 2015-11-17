@@ -309,7 +309,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
 class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded + ['organism']
+    embedded = FileSet.embedded + ['files.replicate.experiment.target', 'organism']
 
 
 @collection(
@@ -332,10 +332,38 @@ class Reference(FileSet):
         'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
+class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = FileSet.embedded
+    embedded = FileSet.embedded + ['organism']
+
+    @calculated_property(condition='files', schema={
+        "title": "Organism",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "Organism"
+        },
+    })
+    def organism(self, request, files):
+        organisms = []
+        if files:
+            for idx, path in enumerate(files):
+                # Need to cap this due to the large numbers of files in related_files
+                if idx < 100:
+                    f = request.embed(path, '@@object')
+                    if 'replicate' in f:
+                        rep = request.embed(f['replicate'], '@@object')
+                        if 'library' in rep:
+                            lib = request.embed(rep['library'], '@@object')
+                            if 'biosample' in lib:
+                                bio = request.embed(lib['biosample'], '@@object')
+                                if 'organism' in bio:
+                                    organisms.append(bio['organism'])
+            if organisms:
+                return paths_filtered_by_status(request, list(set(organisms)))
+            else:
+                return organisms
 
 
 @collection(
