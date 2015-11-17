@@ -209,7 +209,7 @@ class Experiment(Dataset):
                     biosample_age_list.append(biosampleObject.get('age'))
                     biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
-                    biosample_number_list.append(biosampleObject.get('biological_replicate_number'))
+                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
                     biosample_type = biosampleObject.get('biosample_type')
                 else:
