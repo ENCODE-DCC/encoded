@@ -195,10 +195,12 @@ class Experiment(Dataset):
         biosample_age_list = []
         biosample_sex_list = []
         biosample_donor_list = []
+        biosample_number_list = []
 
         for rep in replicates:
             replicateObject = request.embed(rep, '@@object')
-
+            if replicateObject['status'] == 'deleted':
+                continue
             if 'library' in replicateObject:
                 libraryObject = request.embed(replicateObject['library'], '@@object')
                 if 'biosample' in libraryObject:
@@ -207,6 +209,7 @@ class Experiment(Dataset):
                     biosample_age_list.append(biosampleObject.get('age'))
                     biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_number_list.append(biosampleObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
                     biosample_type = biosampleObject.get('biosample_type')
                 else:
@@ -219,40 +222,32 @@ class Experiment(Dataset):
                 # I cannot make a call about the replicate structure
                 return None
 
-        if len(biosample_dict.keys()) < 2:
+        if len(set(biosample_number_list)) < 2:
             return 'unreplicated'
 
         if biosample_type == 'immortalized cell line':
             return 'isogenic'
 
-        # I am assuming tech reps have the same biosample, if they do not,
-        # this should generate an audit, not be caught here
+        # Since we are not looking for model organisms here, we likely need audits
+        if biosample_species != '/organisms/human/':
+            return 'isogenic'
 
-        '''
-        Humans and model organisms are modeled differently
-        '''
-
-        if biosample_species == '/organisms/human/':
+        if len(set(biosample_donor_list)) == 0:
+            return None
+        if len(set(biosample_donor_list)) == 1:
             if None in biosample_donor_list:
                 return None
-            if len(set(biosample_donor_list)) == 0:
-                return None
-            if len(set(biosample_donor_list)) == 1:
+            else:
                 return 'isogenic'
-            # I am not sure we handle unknown well for model organisms
-            if 'unknown' in biosample_age_list:
-                matchedAgeFlag = False
-            if 'unknown' in biosample_sex_list:
-                matchedSexFlag = False
 
-        if len(set(biosample_age_list)) > 1:
+        if 'unknown' in biosample_age_list:
             matchedAgeFlag = False
         elif len(set(biosample_age_list)) == 1:
             matchedAgeFlag = True
         else:
             matchedAgeFlag = False
 
-        if len(set(biosample_sex_list)) > 1:
+        if 'unknown' in biosample_sex_list:
             matchedSexFlag = False
         elif len(set(biosample_sex_list)) == 1:
             matchedSexFlag = True
@@ -260,41 +255,13 @@ class Experiment(Dataset):
             matchedSexFlag = False
 
         if matchedAgeFlag and matchedSexFlag:
-            if biosample_species == '/organisms/human/':
-                return 'anisogenic, sex-matched and age-matched'
-            elif len(set(biosample_donor_list)) == 1:
-                return 'isogenic'
-            else:
-                return 'anisogenic, sex-matched and age-matched'
+            return 'anisogenic, sex-matched and age-matched'
         if matchedAgeFlag and not matchedSexFlag:
             return 'anisogenic, age-matched'
         if not matchedAgeFlag and matchedSexFlag:
             return 'anisogenic, sex-matched'
         if not matchedAgeFlag and not matchedSexFlag:
             return 'anisogenic'
-
-    matrix = {
-        'y': {
-            'facets': [
-                'replicates.library.biosample.donor.organism.scientific_name',
-                'replicates.library.biosample.biosample_type',
-                'organ_slims',
-                'award.project',
-            ],
-            'group_by': ['replicates.library.biosample.biosample_type', 'biosample_term_name'],
-            'label': 'Biosample',
-        },
-        'x': {
-            'facets': [
-                'assay_term_name',
-                'target.investigated_as',
-                'month_released',
-                'files.file_type',
-            ],
-            'group_by': 'assay_term_name',
-            'label': 'Assay',
-        },
-    }
 
 
 @collection(
