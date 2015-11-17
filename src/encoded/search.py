@@ -123,9 +123,10 @@ def get_search_fields(request, doc_types):
     """
     fields = {'uuid'}
     highlights = {}
-    for doc_type in (doc_types or request.root.by_item_type.keys()):
-        collection = request.root[doc_type]
-        for value in collection.type_info.schema.get('boost_values', ()):
+    types = request.registry[TYPES]
+    for doc_type in doc_types:
+        type_info = types[doc_type]
+        for value in type_info.schema.get('boost_values', ()):
             fields.add('embedded.' + value)
             highlights['embedded.' + value] = {}
     return fields, highlights
@@ -147,12 +148,13 @@ def load_columns(request, doc_types, result):
         fields = set()
         if request.has_permission('search_audit'):
             fields.add('audit.*')
-        for doc_type in (doc_types or request.root.by_item_type.keys()):
-            collection = request.root[doc_type]
-            if 'columns' not in (collection.type_info.schema or ()):
+        types = request.registry[TYPES]
+        for doc_type in doc_types:
+            type_info = types[doc_type]
+            if 'columns' not in (type_info.schema or ()):
                 fields.add('object.*')
             else:
-                columns = collection.type_info.schema['columns']
+                columns = type_info.schema['columns']
                 fields.update(
                     ('embedded.@id', 'embedded.@type'),
                     ('embedded.' + column for column in columns),
@@ -269,11 +271,15 @@ def set_facets(facets, used_filters, query, principals):
         terms.append(
             {'terms': {'principals_allowed.view': principals}}
         )
+        exclude = []
+        if field == '@type':
+            exclude = ['Item']
         query['aggs'][agg_name] = {
             'aggs': {
                 agg_name: {
                     'terms': {
                         'field': query_field,
+                        'exclude': exclude,
                         'min_doc_count': 0,
                         'size': 100
                     }
@@ -361,7 +367,7 @@ def format_facets(es_results, facets):
             continue
         result.append({
             'field': field,
-            'title': facet['title'],
+            'title': facet.get('title', field),
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })
@@ -374,7 +380,6 @@ def search(context, request, search_type=None):
     """
     Search view connects to ElasticSearch and returns the results
     """
-    root = request.root
     types = request.registry[TYPES]
     search_base = ('?' + request.query_string if request.query_string else '')
     result = {
@@ -411,28 +416,25 @@ def search(context, request, search_type=None):
     if search_type is None:
         doc_types = request.params.getall('type')
         if '*' in doc_types:
-            doc_types = []
-
-        # Check for invalid types including abstract types
-        bad_types = [t for t in doc_types if t not in types or not hasattr(types[t], 'item_type')]
-        if bad_types:
-            result['notification'] = "Invalid type: %s" ', '.join(bad_types)
-            return result
+            doc_types = ['Item']
 
     else:
         doc_types = [search_type]
 
     # Normalize to item_type
-    doc_types = sorted({
-        types[subtype].item_type
-        for name in doc_types
-        for subtype in types[name].subtypes
-    })
+    try:
+        doc_types = sorted({types[name].name for name in doc_types})
+    except KeyError:
+        # Check for invalid types
+        bad_types = [t for t in doc_types if t not in types]
+        result['notification'] = "Invalid type: %s" ', '.join(bad_types)
+        # XXX response code
+        return result
 
     # Building query for filters
     if not doc_types:
         if request.params.get('mode') == 'picker':
-            doc_types = []
+            doc_types = ['Item']
         else:
             doc_types = DEFAULT_DOC_TYPES
     else:
@@ -444,7 +446,7 @@ def search(context, request, search_type=None):
             ])
             result['filters'].append({
                 'field': 'type',
-                'term': ti.item_type,
+                'term': ti.name,
                 'remove': '{}?{}'.format(request.path, qs)
             })
         if len(doc_types) == 1 and hasattr(ti.factory, 'matrix'):
@@ -465,7 +467,7 @@ def search(context, request, search_type=None):
     if search_term == '*':
         query['sort'] = [get_sort_order()]
         if len(doc_types) == 1:
-            type_schema = root[doc_types[0]].type_info.schema
+            type_schema = types[doc_types[0]].schema
             if 'sort_by' in type_schema and len(type_schema['sort_by']):
                 query['sort'] = [get_sort_order(type_schema['sort_by'])]
         query['query']['match_all'] = {}
@@ -478,7 +480,7 @@ def search(context, request, search_type=None):
 
     # Adding facets to the query
     facets = [
-        ('type', {'title': 'Data Type'}),
+        ('@type', {'title': 'Data Type'}),
     ]
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
@@ -504,7 +506,7 @@ def search(context, request, search_type=None):
             title = field
             for item_type in doc_types:
                 if field in types[item_type].schema['properties']:
-                    title = types[item_type].schema['properties'][field]['title']
+                    title = types[item_type].schema['properties'][field].get('title', field)
                     break
             result['facets'].append({
                 'field': field,
