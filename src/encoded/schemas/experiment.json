@@ -19,12 +19,13 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/assay" }
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "target": {
             "title": "Target",
@@ -32,13 +33,6 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
-        },
-        "dataset_type": {
-            "title": "Type",
-            "comment": "Do not need to submit, value is assigned by server.",
-            "type": "string",
-            "default": "experiment",
-            "enum": ["experiment"]
         },
         "dbxrefs": {
             "@type": "@id",
@@ -68,6 +62,19 @@
                 "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
                 "linkTo": "Experiment"
+            }
+        },
+        "related_files": {
+            "title": "Additional data files",
+            "description": "To be removed in a future release after data cleanup.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "File"
             }
         }
     },

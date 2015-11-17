@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -95,19 +96,6 @@
             "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
             "type": "string"
-        },
-        "documents": {
-            "title": "Construct documents",
-            "description": "Documents that describe the construct.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Construct document",
-                "description": "Document that describes the construct.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
         },
         "genomic_integration_site": {
             "title": "Integration site",

@@ -1,4 +1,15 @@
 [
+    {
+        "_test": "ec3 dataset",
+        "accession": "ENCSR000AJW",
+        "award": "ENCODE2",
+        "project_type": "evaluation",
+        "description": "RNA Working Group Evaluation Dataset",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "e52a0b01-2fb8-4015-bcad-c902f1d786fb"
+    },
 	{
 		"_test": "slushie dataset",
 		"project_type": "evaluation",
@@ -19,7 +30,8 @@
 		"lab": "j-michael-cherry",
 		"description": "Enhancer Validations for ENCODE3",
 		"submitted_by": "facilisi.tristique@potenti.vivamus",
-		"accession": "ENCSR554OJS"
+		"accession": "ENCSR554OJS",
+		"date_released": "1994-04-05"
 	},
 	{
 		"_test": "evaluation dataset",
@@ -35,6 +47,7 @@
 			"/files/ENCFF001REQ/",
 			"/files/ENCFF001MYM/",
 			"/files/ENCFF002MYM/"
-		]
+		],
+		"date_released": "2001-10-21"
 	}
 ]

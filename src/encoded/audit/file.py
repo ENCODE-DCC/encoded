@@ -54,7 +54,7 @@ def audit_file_platform(value, system):
     Should be in the schema.
     '''
 
-    if value['status'] in ['deleted', 'replaced']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if value['file_format'] not in raw_data_formats:
@@ -233,6 +233,9 @@ def audit_paired_with(value, system):
 def audit_modERN_ChIP_pipeline_steps(value, system):
 
     expt = value['dataset']
+    if 'Experiment' not in expt['@type']:
+        return
+
     if expt['assay_term_id'] != 'OBI:0000716':
         return
 
@@ -242,6 +245,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     if 'step_run' not in value:
         detail = 'File {} is missing a step_run'.format(value['@id'])
         yield AuditFailure('missing step_run', detail, level='WARNING')
+        return
 
     if (value['file_format'] != 'fastq') and ('derived_from' not in value):
         detail = 'File {} is missing its derived_from'.format(value['@id'])

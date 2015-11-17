@@ -4,7 +4,7 @@ from contentbase import (
 )
 
 
-@audit_checker('dataset', frame='object')
+@audit_checker('PublicationData', frame='object')
 def audit_references_for_publication(value, system):
     '''
     For datasets of type publication, there should be references. Those that
@@ -14,6 +14,6 @@ def audit_references_for_publication(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'preliminary']:
         return
 
-    if (value['dataset_type'] == 'publication') and (not value['references']):
+    if not value['references']:
         detail = 'publication dataset missing a reference to a publication'
         raise AuditFailure('missing reference', detail, level='WARNING')

@@ -220,9 +220,9 @@ def file(testapp, lab, award, experiment):
 
 
 @pytest.fixture
-def file_dataset(testapp, lab, award, dataset):
+def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
-        'dataset': dataset['@id'],
+        'dataset': ucsc_browser_composite['@id'],
         'file_format': 'fasta',
         'md5sum': '3f9ae164abb55a93bcd891b192d86164',
         'output_type': 'raw data',
@@ -319,13 +319,22 @@ def construct(testapp, lab, award, target, source):
 
 
 @pytest.fixture
-def dataset(testapp, lab, award):
+def ucsc_browser_composite(testapp, lab, award):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'dataset_type': 'composite',
     }
-    return testapp.post_json('/dataset', item).json['@graph'][0]
+    return testapp.post_json('/ucsc_browser_composite', item).json['@graph'][0]
+
+
+@pytest.fixture
+def publication_data(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'references': [],
+    }
+    return testapp.post_json('/publication_data', item).json['@graph'][0]
 
 
 @pytest.fixture

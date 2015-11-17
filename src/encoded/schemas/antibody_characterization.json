@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
         "characterization_reviews": ["primary_characterization_method"],

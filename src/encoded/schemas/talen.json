@@ -26,7 +26,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -72,19 +73,6 @@
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
             "type": "string"
-        },
-        "documents": {
-            "title": "Construct documents",
-            "description": "Documents that describe the construct.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Construct document",
-                "description": "Document that describes the construct.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
         },
         "target_genomic_coordinates": {
             "title": "Target genomic coordinates",
@@ -181,6 +169,24 @@
                     }
                 }
             }
+        }
+    },
+    "facets": {
+        "talen_platform": {
+            "title": "TALEN platform",
+            "type": "string"
+        },
+        "status": {
+            "title": "TALEN status",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
         }
     }
 }

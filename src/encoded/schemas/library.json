@@ -18,6 +18,7 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -99,19 +100,6 @@
                 "SO:0000104"
             ]
         },
-        "documents": {
-            "title": "Protocol documents",
-            "description": "Documents that describe the preparation of the library.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Protocol document",
-                "description": "A document that describe the preparation of the library. ",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -166,7 +154,8 @@
             "type": "string",
             "enum": [
                 "chemical (generic)",
-                "chemical (DnaseI)",
+                "chemical (DNaseI)",
+                "chemical (RNase III)",
                 "chemical (HindIII/DpnII restriction)",
                 "chemical (Tn5 transposase)",
                 "chemical (micrococcal nuclease)",

@@ -11,10 +11,10 @@ from .base import (
 )
 from .dataset import Dataset
 from .shared_calculated_properties import (
-    CalculatedSlims,
-    CalculatedSynonyms
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms,
+    CalculatedAssaySynonyms
 )
-import datetime
 
 
 @collection(
@@ -24,10 +24,9 @@ import datetime
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset, CalculatedSlims, CalculatedSynonyms):
+class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
-    base_types = [Dataset.__name__] + Dataset.base_types
     embedded = Dataset.embedded + [
         'files.lab',
         'files.platform',
@@ -107,13 +106,6 @@ class Experiment(Dataset, CalculatedSlims, CalculatedSynonyms):
     rev.update({
         'replicates': ('Replicate', 'experiment')
     })
-
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
-        "type": "string",
-    })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
 
     @calculated_property(schema={
         "title": "Replicates",
@@ -215,6 +207,29 @@ class Experiment(Dataset, CalculatedSlims, CalculatedSynonyms):
             return 'anisogenic, sex-matched'
         if not matchedAgeFlag and not matchedSexFlag:
             return 'anisogenic'
+
+    matrix = {
+        'y': {
+            'facets': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'replicates.library.biosample.biosample_type',
+                'organ_slims',
+                'award.project',
+            ],
+            'group_by': ['replicates.library.biosample.biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'assay_term_name',
+                'target.investigated_as',
+                'month_released',
+                'files.file_type',
+            ],
+            'group_by': 'assay_term_name',
+            'label': 'Assay',
+        },
+    }
 
 
 @collection(
