@@ -139,5 +139,7 @@ def dataset_6_7(value, system):
     if 'dataset_type' in value:
         if value['dataset_type'] == 'paired set':
             del value['related_files']
+            del value['contributing_files']
+            del value['revoked_files']
             value['related_datasets'] = []
         del value['dataset_type']
