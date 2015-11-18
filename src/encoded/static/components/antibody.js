@@ -57,7 +57,11 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Set up the breadcrumbs
         var targetNames = targetKeys.map(function(key, i) {
-            return <span>{i > 0 ? <span> + <i>{targets[key].organism.scientific_name}</i></span> : <i>{targets[key].organism.scientific_name}</i>}</span>;
+            return <span key={key}>{i > 0 ? <span> + <i>{targets[key].organism.scientific_name}</i></span> : <i>{targets[key].organism.scientific_name}</i>}</span>;
+        });
+        var targetGenes = targetKeys.map(function(key, i) {
+            var geneName = targets[key].gene_name;
+            return <span>{geneName ? <span>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span> : null}</span>
         });
         var targetSearchTerms = targetKeys.map(function(key) {
             return 'targets.organism.scientific_name=' + targets[key].organism.scientific_name;
@@ -65,9 +69,12 @@ var Lot = module.exports.Lot = React.createClass({
         var targetTips = targetKeys.map(function(key) {
             return targets[key].organism.scientific_name;
         });
+        var targetNameQuery = targetSearchTerms.join('&');
+        var targetGeneQuery = 
         var crumbs = [
             {id: 'Antibodies', uri: null},
-            {id: targetNames, uri: '/search/?type=antibody_lot&' + targetSearchTerms.join('&'), tip: 'Search for ' + targetTips.join(' + ') + ' in antibodies'}
+            {id: targetNames, uri: '/search/?type=antibody_lot&' + targetNameQuery, tip: 'Search for ' + targetTips.join(' + ') + ' in antibodies'}
+            {id: targetGenes, uri: }
         ];
 
         // Make string of alternate accessions
