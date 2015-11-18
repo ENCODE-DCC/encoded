@@ -347,6 +347,18 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
+def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
+    testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
+    testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        for e in errors[error_type]:
+            print (e)
+    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})

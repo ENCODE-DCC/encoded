@@ -62,7 +62,10 @@ def audit_experiment_release_date(value, system):
         raise AuditFailure('missing date_released', detail, level='DCC_ACTION')
 
 
-@audit_checker('experiment', frame=['replicates'])
+@audit_checker('experiment',
+               frame=['replicates', 'award'],
+               condition=rfa("ENCODE2", "ENCODE3", "modERN",
+                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
     Experiments in ready for review or release ready state should be replicated. If not,

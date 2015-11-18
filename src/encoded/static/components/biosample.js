@@ -97,6 +97,14 @@ var Biosample = module.exports.Biosample = React.createClass({
             protocol_documents[doc['@id']] = Panel({context: doc});
         });
 
+        // Set up TALENs panel for multiple TALENs
+        var talens = null;
+        if (context.talens && context.talens.length) {
+            talens = context.talens.map(function(talen) {
+                return Panel({context: talen});
+            });
+        }
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -367,6 +375,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
                         <div className="panel data-display">
                             {Panel({context: context.donor, biosample: context})}
+                        </div>
+                    </div>
+                : null}
+
+                {talens ?
+                    <div>
+                        <h3>TALENs</h3>
+                        <div className="panel panel-default">
+                            {talens}
                         </div>
                     </div>
                 : null}

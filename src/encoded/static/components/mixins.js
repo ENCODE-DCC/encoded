@@ -306,7 +306,7 @@ class UnsavedChangesToken {
 
 
 module.exports.HistoryAndTriggers = {
-    SLOW_REQUEST_TIME: 750,
+    SLOW_REQUEST_TIME: 250,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
@@ -482,7 +482,6 @@ module.exports.HistoryAndTriggers = {
         if (search) {
             href += '?' + search;
         }
-
         options.skipRequest = target.getAttribute('data-skiprequest');
 
         if (this.historyEnabled) {

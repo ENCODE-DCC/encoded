@@ -122,7 +122,14 @@ class TALEN(Item):
     rev = {
         'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
-    embedded = ['lab', 'submitted_by']
+    embedded = [
+        'lab',
+        'submitted_by',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by'
+    ]
 
     @calculated_property(schema={
         "title": "Characterizations",
@@ -170,6 +177,7 @@ class Platform(Item):
 
 @collection(
     name='libraries',
+    unique_key='accession',
     properties={
         'title': 'Libraries',
         'description': 'Listing of Libraries',

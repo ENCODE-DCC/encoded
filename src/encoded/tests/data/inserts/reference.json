@@ -1,0 +1,24 @@
+[
+    {
+        "_test": "spikes",
+        "accession": "ENCSR156CIL",
+        "award": "ENCODE2",
+        "dataset_type": "reference",
+        "description": "RNA Working Group Spike-ins Dataset",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "1986343c-a156-43f3-b1a4-1761f1786df5"
+    },
+    {
+        "_test": "spikes2",
+        "accession": "ENCSR013YHQ",
+        "award": "ENCODE2",
+        "dataset_type": "reference",
+        "description": "RNA Working Group Spike-ins Dataset 2",
+        "lab": "barbara-wold",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "01235afd-85c6-4d01-be18-06b0eb2266ed"
+    }
+]
