@@ -133,16 +133,12 @@ def audit_antibody_characterization_status(value, system):
     Make sure the lane_status matches
     the characterization status
     '''
-    if 'secondary_characterization_method' in value:
+
+    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
         return
 
-    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
-        if 'characterization_reviews' in value:
-            '''If any of these statuses, we shouldn't have characterization_reviews'''
-            detail = 'Antibody_characterization.status of {} is incompatible with having a value for characterization_reviews'.format(value['status'])
-            raise AuditFailure('unexpected characterization_reviews', detail, level='WARNING')
-        else:
-            return
+    if 'secondary_characterization_method' in value:
+        return
 
     '''Check each of the lane_statuses in characterization_reviews for an appropriate match'''
     has_compliant_lane = False
@@ -151,7 +147,7 @@ def audit_antibody_characterization_status(value, system):
         is_pending = True
     for lane in value['characterization_reviews']:
         if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
-            detail = 'A lane.status of {} is incompatible with antibody_characterization.status of pending dcc review'.format(lane['lane_status'])
+            detail = 'A lane.status of {} is incompatible with antibody_characterization.status of {}'.format(lane['lane_status'], value['status'])
             raise AuditFailure('mismatched lane status', detail, level='WARNING')
             continue
 
