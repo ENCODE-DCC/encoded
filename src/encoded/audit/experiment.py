@@ -649,3 +649,55 @@ def audit_experiment_antibody_eligible(value, system):
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'replicates',
+        'replicates.library'])
+def audit_experiment_library_biosample(value, system):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+        return
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            continue
+
+        lib = rep['library']
+        if 'biosample' not in lib:
+            detail = '{} is missing biosample'.format(
+                lib['@id'])
+            yield AuditFailure('missing biosample', detail, level='ERROR')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'replicates',
+        'replicates.library'])
+def audit_library_RNA_size_range(value, system):
+    '''
+    An RNA library should have a size_range specified.
+    This needs to accomodate the rfa
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value.get('assay_term_name') == 'transcription profiling by array assay':
+        return
+
+    if value['status'] in ['deleted']:
+        return
+
+    RNAs = ['SO:0000356', 'SO:0000871']
+
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            continue
+        lib = rep['library']
+        if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
+            detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
+            raise AuditFailure('missing size_range', detail, level='ERROR')
