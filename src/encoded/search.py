@@ -58,7 +58,7 @@ DEFAULT_DOC_TYPES = [
 ]
 
 
-def get_filtered_query(term, search_fields, result_fields, principals):
+def get_filtered_query(term, search_fields, result_fields, principals, doc_types):
     return {
         'query': {
             'query_string': {
@@ -74,11 +74,15 @@ def get_filtered_query(term, search_fields, result_fields, principals):
                         'terms': {
                             'principals_allowed.view': principals
                         }
+                    },
+                    {
+                        'terms': {
+                            'embedded.@type.raw': doc_types
+                        }
                     }
                 ]
             }
         },
-        'aggs': {},
         '_source': list(result_fields),
     }
 
@@ -245,10 +249,11 @@ def set_filters(request, query, result):
     return used_filters
 
 
-def set_facets(facets, used_filters, query, principals):
+def set_facets(facets, used_filters, principals, doc_types):
     """
     Sets facets in the query using filters
     """
+    aggs = {}
     for field, _ in facets:
         if field == 'type':
             query_field = '_type'
@@ -258,7 +263,10 @@ def set_facets(facets, used_filters, query, principals):
             query_field = 'embedded.' + field + '.raw'
         agg_name = field.replace('.', '-')
 
-        terms = []
+        terms = [
+            {'terms': {'principals_allowed.view': principals}},
+            {'terms': {'embedded.@type.raw': doc_types}},
+        ]
         # Adding facets based on filters
         for q_field, q_terms in used_filters.items():
             if q_field != field and q_field.startswith('audit'):
@@ -268,13 +276,10 @@ def set_facets(facets, used_filters, query, principals):
             elif q_field != field and q_field.endswith('!'):
                 terms.append({'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
 
-        terms.append(
-            {'terms': {'principals_allowed.view': principals}}
-        )
         exclude = []
         if field == '@type':
             exclude = ['Item']
-        query['aggs'][agg_name] = {
+        aggs[agg_name] = {
             'aggs': {
                 agg_name: {
                     'terms': {
@@ -292,8 +297,10 @@ def set_facets(facets, used_filters, query, principals):
             },
         }
 
+    return aggs
 
-def format_results(request, es_results):
+
+def format_results(request, hits):
     """
     Loads results to pass onto UI
     """
@@ -303,7 +310,6 @@ def format_results(request, es_results):
     else:
         frame = request.params.get('frame')
 
-    hits = es_results['hits']['hits']
     if frame in ['embedded', 'object']:
         for hit in hits:
             yield hit['_source'][frame]
@@ -458,7 +464,8 @@ def search(context, request, search_type=None):
     query = get_filtered_query(search_term,
                                search_fields,
                                sorted(load_columns(request, doc_types, result)),
-                               principals)
+                               principals,
+                               doc_types)
 
     if not result['columns']:
         del result['columns']
@@ -489,11 +496,10 @@ def search(context, request, search_type=None):
         for audit_facet in audit_facets:
             facets.append(audit_facet)
 
-    set_facets(facets, used_filters, query, principals)
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Execute the query
-    es_results = es.search(body=query, index=es_index,
-                           doc_type=doc_types or None, size=size)
+    es_results = es.search(body=query, index=es_index, size=size)
 
     result['total'] = es_results['hits']['total']
     result['notification'] = 'Success' if result['total'] else 'No results found'
@@ -519,7 +525,7 @@ def search(context, request, search_type=None):
     result.update(search_result_actions(request, doc_types, es_results))
 
     # Format results for JSON-LD
-    result['@graph'] = list(format_results(request, es_results))
+    result['@graph'] = list(format_results(request, es_results['hits']['hits']))
     return result
 
 
@@ -592,7 +598,8 @@ def matrix(context, request):
     query = get_filtered_query(search_term,
                                search_fields,
                                [],
-                               principals)
+                               principals,
+                               doc_types)
 
     if search_term == '*':
         query['query']['match_all'] = {}
@@ -606,7 +613,7 @@ def matrix(context, request):
 
     # Adding facets to the query
     facets = schema['facets'].items()
-    set_facets(facets, used_filters, query, principals)
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
     matrix_terms = []
@@ -645,8 +652,7 @@ def matrix(context, request):
     }
 
     # Execute the query
-    es_results = es.search(body=query, index=es_index,
-                           doc_type=doc_types or None, search_type='count')
+    es_results = es.search(body=query, index=es_index, search_type='count')
 
     # Format facets for results
     result['facets'] = format_facets(es_results, facets)
