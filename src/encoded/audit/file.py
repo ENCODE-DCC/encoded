@@ -575,7 +575,10 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     experiment_replication_type = 'isogenic'
     if 'dataset' in value:
         if 'replication_type' in value['dataset']:
-            if value['dataset']['replication_type'] == 'anisogenic':
+            if value['dataset']['replication_type'] in ['anisogenic',
+                                                        'anisogenic, sex-matched and age-matched',
+                                                        'anisogenic, age-matched',
+                                                        'anisogenic, sex-matched']:
                 experiment_replication_type = 'anisogenic'
                 required_value = 0.8
             else:
