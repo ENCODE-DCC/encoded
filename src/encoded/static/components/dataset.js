@@ -603,7 +603,7 @@ var UcscBrowserComposite = React.createClass({
                 <div className="panel data-display">
                     <dl className="key-value">
                         {assays && assays.length ?
-                            <div data-test="accession">
+                            <div data-test="assays">
                                 <dt>Assay(s)</dt>
                                 <dd>{assays.join(', ')}</dd>
                             </div>
@@ -687,7 +687,7 @@ var UcscBrowserComposite = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files in annotation file dataset {context.accession}</h3>
+                        <h3>Files in UCSC browser composite file dataset {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -702,6 +702,119 @@ var UcscBrowserComposite = React.createClass({
 });
 
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
+
+
+var seriesTitles = {
+    'MatchedSet': 'Matched set',
+    'OrganismDevelopmentSeries': 'Organism development series',
+    'ReferenceEpigenome': 'Reference epigenome',
+    'ReplicationTimingSeries': 'Replication timing series',
+    'TreatmentConcentrationSeries': 'Treatment concentration series',
+    'TreatmentTimeSeries': 'Treatment time series'
+};
+
+var Series = module.exports.Series = React.createClass({
+    mixins: [AuditMixin],
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'view-item');
+        var experiments = {};
+        var statuses = [{status: context.status, title: "Status"}];
+        context.files.forEach(function(file) {
+            var experiment = file.replicate && file.replicate.experiment;
+            if (experiment) {
+                experiments[experiment['@id']] = experiment;
+            }
+        });
+        experiments = _.values(experiments);
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>{seriesTitles[context['@type'][0]]} {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditIndicators audits={context.audit} id="dataset-audit" />
+                        </div>
+                    </div>
+                </header>
+                <AuditDetail context={context} id="dataset-audit" />
+                <div className="panel data-display">
+                    <dl className="key-value">
+                        <dt>Accession</dt>
+                        <dd>{context.accession}</dd>
+
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
+                            </div>
+                        : null}
+
+                        {context.dataset_type ?
+                            <div data-test="type">
+                                <dt>Dataset type</dt>
+                                <dd className="sentence-case">{context.dataset_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab ?
+                            <div data-type="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+
+                        <div data-type="externalresources">
+                            <dt>External resources</dt>
+                            <dd>
+                                {context.dbxrefs.length ?
+                                    <DbxrefList values={context.dbxrefs} />
+                                : <em>None submitted</em> }
+                            </dd>
+                        </div>
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><PubReferenceList values={context.references} /></dd>
+                            </div>
+                        : null}
+                    </dl>
+                </div>
+
+                {context.related_datasets.length ?
+                    <ExperimentTable
+                        items={context.related_datasets}
+                        title={'Experiments for series ' + context.accession} />
+                : null }
+
+                {context.files && context.files.length ?
+                    <div>
+                        <h3>Files for series {context.accession}</h3>
+                        <FileTable items={context.files} />
+                    </div>
+                : null }
+
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(Series, 'Series');
 
 
 var unreleased_files_url = module.exports.unreleased_files_url = function (context) {
