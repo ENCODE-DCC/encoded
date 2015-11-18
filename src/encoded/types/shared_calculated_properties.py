@@ -163,10 +163,9 @@ class CalculatedFileSetAssay:
                 f = request.embed(path, '@@object')
                 if 'replicate' in f:
                     rep = request.embed(f['replicate'], '@@object')
-                    if 'experiment' in rep:
+                    if 'assay_term_name' in rep['experiment']:
                         expt = request.embed(rep['experiment'])
-                        if 'assay_term_name' in expt:
-                            assays.append(expt['assay_term_name'])
+                        assays.append(expt['assay_term_name'])
         return list(set(assays))
 
 
