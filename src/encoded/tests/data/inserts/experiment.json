@@ -320,6 +320,22 @@
         "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
     },
     {
+        "_test": "treatment control",
+        "accession": "ENCSR001CTL",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0001086",
+        "biosample_term_name": "A549",
+        "biosample_type": "immortalized cell line",
+        "target": "/targets/Control-human",
+        "description": "Control ChIP-seq on A549 cell line.",
+        "lab": "robert-waterston",
+        "status": "released",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
+    },
+    {
         "_test": "treatment time series 1",
         "accession": "ENCSR001SER",
         "assay_term_id": "OBI:0000716",
@@ -329,6 +345,7 @@
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
         "target": "/targets/TCF4-human/",
+        "possible_controls": ["ENCSR001CTL"],
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
@@ -344,6 +361,7 @@
         "biosample_term_id": "EFO:0001086",
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
+        "possible_controls": ["ENCSR001CTL"],
         "target": "/targets/TCF4-human",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
         "lab": "robert-waterston",
@@ -352,7 +370,7 @@
         "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
     },
     {
-        "_test": "treatment time series 3",
+        "_test": "treatment time series 3 missing possible_controls",
         "accession": "ENCSR003SER",
         "assay_term_id": "OBI:0000716",
         "assay_term_name": "ChIP-seq",
@@ -377,6 +395,7 @@
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
         "target": "/targets/TCF4-human/",
+        "possible_controls": ["ENCSR001CTL"],
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
@@ -392,6 +411,7 @@
         "biosample_term_id": "EFO:0001086",
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
+        "possible_controls": ["ENCSR001CTL"],
         "target": "/targets/TCF4-human",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 80 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
@@ -409,6 +429,7 @@
         "biosample_term_name": "A549",
         "biosample_type": "immortalized cell line",
         "target": "/targets/TCF4-human/",
+        "possible_controls": ["ENCSR001CTL"],
         "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
@@ -467,7 +488,7 @@
         "uuid": "785f86d8-9d3e-4c29-b007-b1b615ba6076"
     },
     {
-        "_test": "replication timing series 1",
+        "_test": "replication timing series 1 (G1b phase)",
         "accession": "ENCSR001REP",
         "assay_term_id": "OBI:0001920",
         "assay_term_name": "Repli-seq",
@@ -482,7 +503,7 @@
         "uuid": "87958f5b-27f8-4e54-b398-d5bd5ba3e2a0"
     },
     {
-        "_test": "replication timing series 2",
+        "_test": "replication timing series 2 (S1 phase)",
         "accession": "ENCSR002REP",
         "assay_term_id": "OBI:0001920",
         "assay_term_name": "Repli-seq",
@@ -497,7 +518,7 @@
         "uuid": "fe9d124e-9ca1-488f-a1f2-2f9d389562f1"
     },
     {
-        "_test": "replication timing series 3",
+        "_test": "replication timing series 3 (S4 phase)",
         "accession": "ENCSR003REP",
         "assay_term_id": "OBI:0001920",
         "assay_term_name": "Repli-seq",

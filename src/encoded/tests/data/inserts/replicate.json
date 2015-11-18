@@ -404,7 +404,7 @@
         "library": "ENCLB001EPI",
         "uuid": "2cc2e28e-8821-4236-b9df-ef69cd9a9ea4"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 WGBS",
         "experiment": "/experiments/ENCSR002EPI/",
         "technical_replicate_number": 1,
@@ -414,7 +414,7 @@
         "library": "ENCLB002EPI",
         "uuid": "9883e919-1651-40ea-a505-068733d63aa4"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K4me1",
         "experiment": "/experiments/ENCSR003EPI/",
         "antibody": "ENCAB000AUU",
@@ -425,7 +425,7 @@
         "library": "ENCLB003EPI",
         "uuid": "e0558c7e-add5-46ae-acef-b96a0e2e9535"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K4me3",
         "experiment": "/experiments/ENCSR004EPI/",
         "antibody": "ENCAB000AUU",
@@ -436,7 +436,7 @@
         "library": "ENCLB004EPI",
         "uuid": "1be45e03-da0e-4a69-934e-1eb2dd39b214"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K27ac",
         "experiment": "/experiments/ENCSR005EPI/",
         "antibody": "ENCAB000AUU",
@@ -447,7 +447,7 @@
         "library": "ENCLB005EPI",
         "uuid": "a02299d7-d2a2-4a79-9f7f-9e9e2becadc8"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K36me3",
         "experiment": "/experiments/ENCSR006EPI/",
         "antibody": "ENCAB000AUU",
@@ -458,7 +458,7 @@
         "library": "ENCLB006EPI",
         "uuid": "531ebe66-0160-4f9e-aca7-d071322eb5d7"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K27me3",
         "experiment": "/experiments/ENCSR007EPI/",
         "antibody": "ENCAB000AUU",
@@ -469,7 +469,7 @@
         "library": "ENCLB007EPI",
         "uuid": "d04fd880-c5a9-4d01-b475-395676abf28d"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 H3K9me3",
         "experiment": "/experiments/ENCSR008EPI/",
         "antibody": "ENCAB000AUU",
@@ -480,7 +480,7 @@
         "library": "ENCLB008EPI",
         "uuid": "ae1d1892-8826-4a04-ae40-86dd3516393d"
     },
-       {
+    {
         "_test": "reference epigenome series 1 rep 1 control",
         "antibody": "ENCAB000AUU",
         "experiment": "/experiments/ENCSR009EPI/",
@@ -490,5 +490,49 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "library": "ENCLB009EPI",
         "uuid": "5fb43a3c-1fef-42ac-93a3-69b5afd14a7f"
+    },
+    {
+        "_test": "replication timing series 1 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR001REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001REP",
+        "uuid": "72246397-64e5-4151-8159-25219f4127ac"
+    },
+    {
+        "_test": "replication timing series 2 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR002REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002REP",
+        "uuid": "fd7a0ee5-61db-4ae3-9421-b25455c62cb9"
+    },
+    {
+        "_test": "replication timing series 3 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR003REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003REP",
+        "uuid": "6b481766-5b86-45af-b40b-e1e3eded9f6f"
+    },
+    {
+        "_test": "replication timing series 3 rep 2",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR003REP/",
+        "technical_replicate_number": 2,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003REP",
+        "uuid": "3ed9da01-3ca5-4102-89d9-4933fa49f7e4"
     }
 ]
