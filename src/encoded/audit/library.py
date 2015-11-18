@@ -71,7 +71,7 @@ def audit_library_documents(value, system):
             detail = 'Library {} method specifies "see document" yet has no document'.format(
                 value['@id']
                 )
-            raise AuditFailure('missing documents', detail, level='WARNING')
+            raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 

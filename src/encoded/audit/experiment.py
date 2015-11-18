@@ -102,9 +102,9 @@ def audit_experiment_replicates_with_no_libraries(value, system):
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
-            yield AuditFailure('replicate with no library', detail, level='DCC_ACTION')
+            yield AuditFailure('replicate with no library', detail, level='NOT_COMPLIANT')
     return
-  
+
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample', 'replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
@@ -208,36 +208,44 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library', 'replicates.library.biosample'])
+@audit_checker('experiment', frame=['replicates', 
+                                    'replicates.library', 'replicates.library.biosample'])
 def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
     biosamples_list = []
+    assay_name = 'unknown'
+    if 'assay_term_name' in value:
+        assay_name = value['assay_term_name']
+
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
-        if 'library' in rep and 'biosample' in rep['library']:         
-            biosample = rep['library']['biosample'] 
+        if 'library' in rep and 'biosample' in rep['library']:
+            biosample = rep['library']['biosample']
 
-            if not bio_rep_num in biological_replicates_dict:
-                biological_replicates_dict[bio_rep_num]=biosample['accession']
+            if bio_rep_num not in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num] = biosample['accession']
                 if biosample['accession'] in biosamples_list:
-                    detail = 'Experiment {} has multiple biological replicates associated with the same biosample {}'.format(
+                    detail = 'Experiment {} has multiple biological replicates \
+                              associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    raise AuditFailure('biological replicates with identical biosample', detail, level='DCC_ACTION')
+                    raise AuditFailure('biological replicates with identical biosample',
+                                       detail, level='DCC_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
-            else:     
-                if biosample['accession'] !=  biological_replicates_dict[bio_rep_num]:
-                    detail = 'Experiment {} has technical replicates associated with the different biosamples'.format(
+            else:
+                if biosample['accession'] != biological_replicates_dict[bio_rep_num] and \
+                   assay_name != 'single cell isolation followed by RNA-seq':
+                    detail = 'Experiment {} has technical replicates \
+                              associated with the different biosamples'.format(
                         value['@id'])
-                    raise AuditFailure('technical replicates with not identical biosample', detail, level='DCC_ACTION')
+                    raise AuditFailure('technical replicates with not identical biosample',
+                                       detail, level='ERROR')
 
-
-    
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_documents(value, system):
@@ -263,7 +271,7 @@ def audit_experiment_documents(value, system):
     # If there are no library documents anywhere, then we say something
     if lib_docs == 0:
         detail = 'Experiment {} has no attached documents'.format(value['@id'])
-        raise AuditFailure('missing documents', detail, level='WARNING')
+        raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('experiment', frame='object')
