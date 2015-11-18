@@ -5,7 +5,7 @@ from contentbase.elasticsearch.interfaces import (
 )
 from pyramid.security import effective_principals
 from .search import (
-    load_results,
+    format_results,
     set_filters,
     set_facets,
     get_filtered_query,
@@ -289,7 +289,7 @@ def region_search(context, request):
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
-        load_results(request, es_results, result)
+        format_results(request, es_results, result)
         load_facets(es_results, _FACETS, result)
         if len(result['@graph']):
             result['notification'] = 'Success'
