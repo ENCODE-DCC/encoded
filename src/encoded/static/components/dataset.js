@@ -187,7 +187,7 @@ var Annotation = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Summary for annotation file dataset {context.accession}</h2>
+                        <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -289,7 +289,7 @@ var Annotation = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files in annotation file dataset {context.accession}</h3>
+                        <h3>Files in annotation file set {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -333,7 +333,7 @@ var PublicationData = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Summary for publication file dataset {context.accession}</h2>
+                        <h2>Summary for publication file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -416,7 +416,7 @@ var PublicationData = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files for dataset {context.accession}</h3>
+                        <h3>Files for publication file set {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -454,7 +454,7 @@ var Reference = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Summary for reference file dataset {context.accession}</h2>
+                        <h2>Summary for reference file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -545,7 +545,7 @@ var Reference = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files in annotation file dataset {context.accession}</h3>
+                        <h3>Files in reference file set {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -589,7 +589,7 @@ var UcscBrowserComposite = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Summary for UCSC browser composite file dataset {context.accession}</h2>
+                        <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -687,7 +687,7 @@ var UcscBrowserComposite = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files in UCSC browser composite file dataset {context.accession}</h3>
+                        <h3>Files in UCSC browser composite file set {context.accession}</h3>
                         <FileTable context={context} items={context.files} />
                     </div>
                 : null }
@@ -705,12 +705,12 @@ globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
 var seriesTitles = {
-    'MatchedSet': 'Matched set',
-    'OrganismDevelopmentSeries': 'Organism development series',
-    'ReferenceEpigenome': 'Reference epigenome',
-    'ReplicationTimingSeries': 'Replication timing series',
-    'TreatmentConcentrationSeries': 'Treatment concentration series',
-    'TreatmentTimeSeries': 'Treatment time series'
+    'MatchedSet': 'matched set series',
+    'OrganismDevelopmentSeries': 'organism development series',
+    'ReferenceEpigenome': 'reference epigenome series',
+    'ReplicationTimingSeries': 'replication timing series',
+    'TreatmentConcentrationSeries': 'treatment concentration series',
+    'TreatmentTimeSeries': 'treatment time series'
 };
 
 var Series = module.exports.Series = React.createClass({
@@ -719,6 +719,7 @@ var Series = module.exports.Series = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var experiments = {};
+        var assayTermNames;
         var statuses = [{status: context.status, title: "Status"}];
         context.files.forEach(function(file) {
             var experiment = file.replicate && file.replicate.experiment;
@@ -734,14 +735,22 @@ var Series = module.exports.Series = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Get all the assay term names with duplicates removed
+        if (context.assay_term_name && context.assay_term_name.length) {
+            assayTermNames = _.uniq(context.assay_term_name);
+        }
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Make the series title
+        var seriesTitle = seriesTitles[context['@type'][0]] ? seriesTitles[context['@type'][0]] : 'series';
 
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>{seriesTitles[context['@type'][0]]} {context.accession}</h2>
+                        <h2>Summary for {seriesTitle} {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -754,6 +763,13 @@ var Series = module.exports.Series = React.createClass({
                 <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
+                        {assayTermNames ?
+                            <div data-test="description">
+                                <dt>Assay</dt>
+                                <dd>{assayTermNames.join(', ')}</dd>
+                            </div>
+                        : null}
+
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
@@ -764,17 +780,17 @@ var Series = module.exports.Series = React.createClass({
                             </div>
                         : null}
 
+                        {context.biosample_term_name.length ?
+                            <div data-test="description">
+                                <dt>Biosample term name</dt>
+                                <dd>{context.biosample_term_name.join(', ')}</dd>
+                            </div>
+                        : null}
+
                         {context.dataset_type ?
                             <div data-test="type">
                                 <dt>Dataset type</dt>
                                 <dd className="sentence-case">{context.dataset_type}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab ?
-                            <div data-type="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
                             </div>
                         : null}
 
@@ -796,15 +812,24 @@ var Series = module.exports.Series = React.createClass({
                     </dl>
                 </div>
 
+                {Object.keys(datasetDocuments).length ?
+                    <div>
+                        <h3>Dataset documents</h3>
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
+                    </div>
+                : null}
+
                 {context.related_datasets.length ?
                     <ExperimentTable
                         items={context.related_datasets}
-                        title={'Experiments for series ' + context.accession} />
+                        title={'Experiments in ' + seriesTitle + ' ' + context.accession} />
                 : null }
 
                 {context.files && context.files.length ?
                     <div>
-                        <h3>Files for series {context.accession}</h3>
+                        <h3>Original files in {seriesTitle} {context.accession}</h3>
                         <FileTable items={context.files} />
                     </div>
                 : null }
@@ -1242,7 +1267,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountRaw}>Raw data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Accession<i className={cellClassRaw.title}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'dataset')}>Home dataset<i className={cellClassRaw.dataset}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'dataset')}>Originating dataset<i className={cellClassRaw.dataset}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>{bioRepTitle} replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
@@ -1274,7 +1299,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountProc}>Processed data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'dataset')}>Home dataset<i className={cellClassProc.dataset}></i></th>
+                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'dataset')}>Originating dataset<i className={cellClassProc.dataset}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>{bioRepTitle} replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
