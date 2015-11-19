@@ -240,7 +240,7 @@ var Annotation = React.createClass({
                         {context.organism ?
                             <div data-test="organism">
                                 <dt>Organism</dt>
-                                <dd>{context.organism}</dd>
+                                <dd>{context.organism.name}</dd>
                             </div>
                         : null}
 
