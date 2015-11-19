@@ -134,16 +134,53 @@ def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'file_format': 'tsv',
+        'file_size': 3,
+        'md5sum': '100d8c998f00b204e9800998ecf8428b',
+        'output_type': 'gene quantifications',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def bam_quality_metric(testapp, analysis_step_run_bam, file6):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file6['@id']],
+        'Uniquely mapped reads number': 1000
+    }
 
+    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def mad_quality_metric(testapp, analysis_step_run_bam, file7):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of':[file7['@id']],
+        'Spearman correlation':0.2
+    }
+
+    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
+
+@pytest.fixture
+def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6):
     item = {
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of':[file6['@id']],
-        'uniqueMappedCount':1000
+        'total':20000000
     }
 
-    return testapp.post_json('/edwbamstats_quality_metric', item).json['@graph'][0]
+    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
 
 @pytest.fixture
 def analysis_step_bam(testapp):
@@ -290,7 +327,10 @@ def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_ba
     assert any(error['category'] == 'missing quality metrics' for error in errors_list)
 
 
-def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+def test_audit_file_read_depth(testapp, file6, file4, bam_quality_metric, analysis_step_run_bam,
+                               analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -299,7 +339,11 @@ def test_audit_file_read_depth(testapp, file6, bam_quality_metric, analysis_step
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
-def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric,
+                                                             analysis_step_run_bam,
+                                                             analysis_step_version_bam,
+                                                             analysis_step_bam, pipeline_bam,
+                                                             software):
     testapp.patch_json(software['@id'], {'title': 'TopHat'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -309,15 +353,69 @@ def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam
     assert all(error['category'] != 'missing quality metrics' for error in errors_list)
 
 
-def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp,file6, bam_quality_metric, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp, file6, file4,
+                                                  bam_quality_metric, analysis_step_run_bam,
+                                                  analysis_step_version_bam, analysis_step_bam,
+                                                  pipeline_bam):
     testapp.patch_json(file_exp['@id'], {'assay_term_name': 'shRNA knockdown followed by RNA-seq'})
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
+                                                   chipseq_bam_quality_metric, analysis_step_run_bam,
+                                                   analysis_step_version_bam, analysis_step_bam,
+                                                   pipeline_bam):
+
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_file_mad_qc_spearman_correlation(testapp, file7,  file_exp,
+                                                mad_quality_metric,
+                                                analysis_step_run_bam,
+                                                analysis_step_version_bam, analysis_step_bam,
+                                                pipeline_bam):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})   
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
+
+
+def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
+                                                  mad_quality_metric,
+                                                  analysis_step_run_bam,
+                                                  analysis_step_version_bam, analysis_step_bam,
+                                                  pipeline_bam):
+    testapp.patch_json(mad_quality_metric['@id'], {'Spearman correlation': 0.99})
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient spearman correlation' for error in errors_list)
 
 
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
