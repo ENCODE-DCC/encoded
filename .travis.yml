@@ -9,6 +9,7 @@ addons:
     sources:
       - elasticsearch-1.7
     packages:
+      - bsdtar
       - elasticsearch
       - graphviz
 env:

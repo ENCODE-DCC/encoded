@@ -276,7 +276,7 @@ var App = React.createClass({
         getRenderedProps: function (document) {
             var props = {};
             // Ensure the initial render is exactly the same
-            props.href = document.querySelector('link[rel="canonical"]').href;
+            props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
             var script_props = document.querySelectorAll('script[data-prop-name]');
             for (var i = 0; i < script_props.length; i++) {
                 var elem = script_props[i];
