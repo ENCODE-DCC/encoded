@@ -642,6 +642,7 @@ def audit_experiment_antibody_eligible(value, system):
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
+            warning_flag = False
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] in ['eligible for new data',
                                             'eligible for new data (via exemption)']:
@@ -649,10 +650,12 @@ def audit_experiment_antibody_eligible(value, system):
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
                         eligible_biosamples.add(eligible_biosample)
                 if lot_review['status'] == 'eligible for new data (via exemption)':
-                    detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
-                                                                             biosample_term_name,
-                                                                             organism)
-                    yield AuditFailure('antibody eligible via exempt', detail, level='WARNING')
+                    warning_flag = True
+            if warning_flag is True:
+                detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
+                                                                         biosample_term_name,
+                                                                         organism)
+                yield AuditFailure('antibody eligible via exempt', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"],
