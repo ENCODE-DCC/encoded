@@ -376,7 +376,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
 class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
-    embedded = FileSet.embedded + ['files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
 class Series(Dataset):
