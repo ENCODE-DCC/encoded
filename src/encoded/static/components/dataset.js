@@ -200,6 +200,13 @@ var Annotation = React.createClass({
                 <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
+                        {context.assay_term_name && context.assay_term_name.length ?
+                            <div data-test="assaytermname">
+                                <dt>Assay(s)</dt>
+                                <dd>{context.assay_term_name.join(', ')}</dd>
+                            </div>
+                        : null}
+
                         <div data-test="accession">
                             <dt>Accession</dt>
                             <dd>{context.accession}</dd>
@@ -227,6 +234,13 @@ var Annotation = React.createClass({
                             <div data-test="biosampletype">
                                 <dt>Biosample type</dt>
                                 <dd>{context.biosample_type}</dd>
+                            </div>
+                        : null}
+
+                        {context.organism ?
+                            <div data-test="organism">
+                                <dt>Organism</dt>
+                                <dd>{context.organism}</dd>
                             </div>
                         : null}
 
@@ -328,9 +342,6 @@ var PublicationData = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
-        // Make a biosample summary string
-        var biosampleSummary = annotationBiosampleSummary(context);
-
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -352,7 +363,7 @@ var PublicationData = React.createClass({
                 <div className="panel data-display">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
-                            <div data-test="accession">
+                            <div data-test="assaytermname">
                                 <dt>Assay(s)</dt>
                                 <dd>{context.assay_term_name.join(', ')}</dd>
                             </div>
@@ -370,21 +381,17 @@ var PublicationData = React.createClass({
                             </div>
                         : null}
 
-                        {context.biosample_term_name || biosampleSummary ?
-                            <div data-test="biosample">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name}
-                                    {context.biosample_term_name ? <span>{' '}</span> : null}
-                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
-                                </dd>
+                        {context.biosample_term_name && context.biosample_term_name.length ?
+                            <div data-test="biosampletermname">
+                                <dt>Biosample term name</dt>
+                                <dd>{context.biosample_term_name.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.biosample_type ?
+                        {context.biosample_type && context.biosample_type.length ?
                             <div data-test="biosampletype">
                                 <dt>Biosample type</dt>
-                                <dd>{context.biosample_type}</dd>
+                                <dd>{context.biosample_type.join(', ')}</dd>
                             </div>
                         : null}
 
@@ -509,13 +516,6 @@ var Reference = React.createClass({
                             </div>
                         : null}
 
-                        {context.organism ?
-                            <div data-test="organism">
-                                <dt>Organism</dt>
-                                <dd>{context.organism.name}</dd>
-                            </div>
-                        : null}
-
                         {context.software_used && context.software_used.length ?
                             <div>
                                 <dt>Software used</dt>
@@ -605,9 +605,6 @@ var Project = React.createClass({
         });
         organisms = _.uniq(organisms);
 
-        // Make a biosample summary string
-        var biosampleSummary = annotationBiosampleSummary(context);
-
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -628,6 +625,13 @@ var Project = React.createClass({
                 <AuditDetail context={context} id="dataset-audit" />
                 <div className="panel data-display">
                     <dl className="key-value">
+                        {context.assay_term_name && context.assay_term_name.length ?
+                            <div data-test="assaytermname">
+                                <dt>Assay(s)</dt>
+                                <dd>{context.assay_term_name.join(', ')}</dd>
+                            </div>
+                        : null}
+
                         <div data-test="accession">
                             <dt>Accession</dt>
                             <dd>{context.accession}</dd>
@@ -640,21 +644,17 @@ var Project = React.createClass({
                             </div>
                         : null}
 
-                        {context.biosample_term_name || biosampleSummary ?
-                            <div data-test="biosample">
-                                <dt>Biosample summary</dt>
-                                <dd>
-                                    {context.biosample_term_name}
-                                    {context.biosample_term_name ? <span>{' '}</span> : null}
-                                    {biosampleSummary ? <span>({biosampleSummary})</span> : null}
-                                </dd>
+                        {context.biosample_term_name && context.biosample_term_name.length ?
+                            <div data-test="biosampletermname">
+                                <dt>Biosample term name</dt>
+                                <dd>{context.biosample_term_name.join(', ')}</dd>
                             </div>
                         : null}
 
-                        {context.biosample_type ?
+                        {context.biosample_type && context.biosample_type.length ?
                             <div data-test="biosampletype">
                                 <dt>Biosample type</dt>
-                                <dd>{context.biosample_type}</dd>
+                                <dd>{context.biosample_type.join(', ')}</dd>
                             </div>
                         : null}
 
