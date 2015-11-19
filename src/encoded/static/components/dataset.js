@@ -877,6 +877,40 @@ var UcscBrowserComposite = React.createClass({
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
+var SeriesTable = React.createClass({
+    render: function() {
+        var experiments = this.props.experiments;
+
+        return (
+            <table className="table table-panel table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>Assay</th>
+                        <th>Target</th>
+                        <th>Description</th>
+                        <th>Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {experiments.map(function (experiment) {
+                    // Ensure this can work with search result columns too
+                    return (
+                        <tr key={experiment['@id']}>
+                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{experiment.assay_term_name}</td>
+                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                            <td>{experiment.description}</td>
+                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+        );
+    }
+});
+
 var TreatmentSeriesTable = React.createClass({
     render: function() {
         var experiments = this.props.experiments;
@@ -1001,9 +1035,9 @@ var OrganismDevelopmentSeriesTable = React.createClass({
 
 
 var seriesComponents = {
-    'MatchedSet': {title: 'matched set series'},
+    'MatchedSet': {title: 'matched set series', table: <SeriesTable />},
     'OrganismDevelopmentSeries': {title: 'organism development series', table: <OrganismDevelopmentSeriesTable />},
-    'ReferenceEpigenome': {title: 'reference epigenome series'},
+    'ReferenceEpigenome': {title: 'reference epigenome series', table: <SeriesTable />},
     'ReplicationTimingSeries': {title: 'replication timing series', table: <ReplicationTimingSeriesTable />},
     'TreatmentConcentrationSeries': {title: 'treatment concentration series', table: <TreatmentSeriesTable />},
     'TreatmentTimeSeries': {title: 'treatment time series', table: <TreatmentSeriesTable />}
