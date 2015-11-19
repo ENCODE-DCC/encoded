@@ -1055,8 +1055,58 @@ var ReplicationTimingSeriesTable = React.createClass({
 
 var OrganismDevelopmentSeriesTable = React.createClass({
     render: function() {
-        console.log(this.props);
-        return null;
+        var experiments = this.props.experiments;
+
+        return (
+            <table className="table table-panel table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>Possible controls</th>
+                        <th>Assay</th>
+                        <th>Synchronization timepoint</th>
+                        <th>Life stage</th>
+                        <th>Target</th>
+                        <th>Description</th>
+                        <th>Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {experiments.map(function (experiment) {
+                    // Get an array of all treatments in all replicates
+                    var biosamples, synchronizationBiosample, lifeStageBiosample;
+                    if (experiment.replicates && experiment.replicates.length) {
+                        biosamples = experiment.replicates.map(function(replicate) {
+                            return replicate.library && replicate.library.biosample;
+                        });
+                    }
+                    if (biosamples && biosamples.length) {
+                        synchronizationBiosample = _(biosamples).find(function(biosample) {
+                            return biosample.synchronization;
+                        });
+                        lifeStageBiosample = _(biosamples).find(function(biosample) {
+                            return biosample.life_stage;
+                        });
+                    }
+                    var possibleControls = experiment.possible_controls.map(function(control, i) {
+                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
+                    });
+                    return (
+                        <tr key={experiment['@id']}>
+                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{possibleControls}</td>
+                            <td>{experiment.assay_term_name}</td>
+                            <td>{synchronizationBiosample ? <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span> : null}</td>
+                            <td>{lifeStageBiosample && lifeStageBiosample.life_stage}</td>
+                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                            <td>{experiment.description}</td>
+                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+        );
     }
 });
 
