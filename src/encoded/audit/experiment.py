@@ -634,7 +634,8 @@ def audit_experiment_antibody_eligible(value, system):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
                             detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                            yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+                            yield AuditFailure('not eligible antibody',
+                                               detail, level='NOT_COMPLIANT')
 
         else:
             biosample_term_id = value['biosample_term_id']
@@ -642,12 +643,20 @@ def audit_experiment_antibody_eligible(value, system):
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
-                if lot_review['status'] == 'eligible for new data':
+                if lot_review['status'] in ['eligible for new data',
+                                            'eligible for new data (via exemption)']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
                         eligible_biosamples.add(eligible_biosample)
+                if lot_review['status'] == 'eligible for new data (via exemption)':
+                    detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
+                                                                             biosample_term_name,
+                                                                             organism)
+                    yield AuditFailure('antibody eligible via exempt', detail, level='WARNING')
+
             if experiment_biosample not in eligible_biosamples:
-                detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
+                detail = '{} is not eligible for {} in {}'.format(antibody["@id"],
+                                                                  biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
 
 
