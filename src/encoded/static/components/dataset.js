@@ -308,6 +308,12 @@ var Annotation = React.createClass({
                     </div>
                 : null}
 
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
+
                 {context.files.length ?
                     <div>
                         <h3>Files in annotation file set {context.accession}</h3>
@@ -566,6 +572,12 @@ var Reference = React.createClass({
                     </div>
                 : null}
 
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
+
                 {context.files.length ?
                     <div>
                         <h3>Files in reference file set {context.accession}</h3>
@@ -715,6 +727,12 @@ var Project = React.createClass({
                     </div>
                 : null}
 
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
+
                 {context.files.length ?
                     <div>
                         <h3>Files in project file set {context.accession}</h3>
@@ -857,6 +875,12 @@ var UcscBrowserComposite = React.createClass({
                         </div>
                     </div>
                 : null}
+
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
 
                 {context.files.length ?
                     <div>
@@ -1151,6 +1175,12 @@ var Series = module.exports.Series = React.createClass({
                         series={seriesComponent ? (seriesComponent.table ? seriesComponent.table : null) : null}
                         items={context.related_datasets}
                         title={'Experiments in ' + seriesTitle + ' ' + context.accession} />
+                : null }
+
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
                 : null }
 
                 {context.files && context.files.length ?
