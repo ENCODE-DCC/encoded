@@ -203,7 +203,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if worm_life_stage is not None:
                     return worm_life_stage
             return 'unknown'
-            
+
     @calculated_property(schema={
         "title": "Synchronization",
         "type": "string",
@@ -255,7 +255,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         "type": "string",
     })
     def age_display(self, request, donor=None, model_organism_age=None,
-                    model_organism_age_units=None):
+                    model_organism_age_units=None, post_synchronization_time=None,
+                    post_synchronization_time_units=None):
+        if post_synchronization_time is not None and post_synchronization_time_units is not None:
+            return u'{sync_time} {sync_time_units}'.format(
+                sync_time=post_synchronization_time,
+                sync_time_units=post_synchronization_time_units)
         if donor is not None:
             donor = request.embed(donor, '@@object')
             if 'age' in donor and 'age_units' in donor:
