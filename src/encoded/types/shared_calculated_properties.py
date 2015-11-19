@@ -313,14 +313,14 @@ class CalculatedSeriesTreatment:
 
 class CalculatedSeriesTarget:
     @calculated_property(condition='related_datasets', schema={
-        "title": "Targets",
+        "title": "Target",
         "type": "array",
         "items": {
             "type": 'string',
             "linkTo": "Target",
         },
     })
-    def targets(self, request, related_datasets):
+    def target(self, request, related_datasets):
         targets = []
         if related_datasets:
             for path in related_datasets:

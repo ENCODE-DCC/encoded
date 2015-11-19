@@ -384,6 +384,9 @@ class Series(Dataset):
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
+        'organism',
+        'target',
+        'target.organism',
         'award.pi.lab',
         'references',
         'related_datasets.lab',
