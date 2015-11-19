@@ -19,10 +19,7 @@ from .shared_calculated_properties import (
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
-    CalculatedSeriesTarget,
-    CalculatedSeriesAge,
-    CalculatedSeriesLifeStage,
-    CalculatedSeriesSynchronization
+    CalculatedSeriesTarget
 )
 
 from itertools import chain
@@ -510,7 +507,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSeriesAssay, CalculatedSeri
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesAge, CalculatedSeriesSynchronization, CalculatedSeriesLifeStage):
+class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded
