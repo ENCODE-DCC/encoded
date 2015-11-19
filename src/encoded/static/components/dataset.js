@@ -311,7 +311,7 @@ var Annotation = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files in annotation file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} />
+                        <FileTable context={context} items={context.files} originating />
                     </div>
                 : null }
 
@@ -447,7 +447,7 @@ var PublicationData = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files for publication file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} />
+                        <FileTable context={context} items={context.files} originating />
                     </div>
                 : null }
 
@@ -569,7 +569,7 @@ var Reference = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files in reference file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} />
+                        <FileTable context={context} items={context.files} originating />
                     </div>
                 : null }
 
@@ -718,7 +718,7 @@ var Project = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files in project file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} />
+                        <FileTable context={context} items={context.files} originating />
                     </div>
                 : null }
 
@@ -861,7 +861,7 @@ var UcscBrowserComposite = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files in UCSC browser composite file set {context.accession}</h3>
-                        <FileTable context={context} items={context.files} />
+                        <FileTable context={context} items={context.files} originating />
                     </div>
                 : null }
 
@@ -1246,7 +1246,8 @@ function humanFileSize(size) {
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
-        items: React.PropTypes.array.isRequired // Array of files to appear in the table
+        items: React.PropTypes.array.isRequired, // Array of files to appear in the table
+        originating: React.PropTypes.bool // TRUE to display originating dataset column
     },
 
     getInitialState: function() {
@@ -1500,7 +1501,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             }
         });
         if (files.raw) {
-            files.raw.sort(this.sortColRaw).forEach(function (file) {
+            files.raw.sort(this.sortColRaw).forEach(file => {
                 rowsRaw[file['@id']] = (
                     <tr>
                         <td>
@@ -1508,7 +1509,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
-                        <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td>
+                        {this.props.originating ? <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td> : null}
                         <td>{file.file_type}</td>
                         <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
                         <td>{file.replicate ? file.replicate.technical_replicate_number : null}</td>
@@ -1524,7 +1525,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             });
         }
         if (files.proc) {
-            files.proc.sort(this.sortColProc).forEach(function (file) {
+            files.proc.sort(this.sortColProc).forEach(file => {
                 rowsProc[file['@id']] = (
                     <tr>
                         <td>
@@ -1532,7 +1533,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
                             {humanFileSize(file.file_size)}
                         </td>
-                        <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td>
+                        {this.props.originating ? <td>{context && (context['@id'] !== file.dataset['@id']) ? <a href={file.dataset['@id']}>{file.dataset.accession}</a> : <span>{file.dataset.accession}</span>}</td> : null}
                         <td>{file.file_type}</td>
                         <td>{file.output_type}</td>
                         <td>{file.biological_replicates ? file.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : null}</td>
@@ -1575,7 +1576,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountRaw}>Raw data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'title')}>Accession<i className={cellClassRaw.title}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'dataset')}>Originating dataset<i className={cellClassRaw.dataset}></i></th>
+                                    {this.props.originating ? <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'dataset')}>Originating dataset<i className={cellClassRaw.dataset}></i></th> : null}
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'file_type')}>File type<i className={cellClassRaw.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'bio_replicate')}>{bioRepTitle} replicate<i className={cellClassRaw.bio_replicate}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'raw', 'tech_replicate')}>Technical replicate<i className={cellClassRaw.tech_replicate}></i></th>
@@ -1607,7 +1608,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                                 <tr className="table-section"><th colSpan={colCountProc}>Processed data</th></tr>
                                 <tr>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'title')}>Accession<i className={cellClassProc.title}></i></th>
-                                    <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'dataset')}>Originating dataset<i className={cellClassProc.dataset}></i></th>
+                                    {this.props.originating ? <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'dataset')}>Originating dataset<i className={cellClassProc.dataset}></i></th> : null}
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'file_type')}>File type<i className={cellClassProc.file_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'output_type')}>Output type<i className={cellClassProc.output_type}></i></th>
                                     <th className="tcell-sortable" onClick={this.sortDir.bind(null, 'proc', 'bio_replicate')}>{bioRepTitle} replicate(s)<i className={cellClassProc.bio_replicate}></i></th>
