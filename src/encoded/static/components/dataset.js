@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react');
+var React = require('react/addons');
 var _ = require('underscore');
 var cx = require('react/lib/cx');
 var moment = require('moment');
@@ -877,13 +877,126 @@ var UcscBrowserComposite = React.createClass({
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-var seriesTitles = {
-    'MatchedSet': 'matched set series',
-    'OrganismDevelopmentSeries': 'organism development series',
-    'ReferenceEpigenome': 'reference epigenome series',
-    'ReplicationTimingSeries': 'replication timing series',
-    'TreatmentConcentrationSeries': 'treatment concentration series',
-    'TreatmentTimeSeries': 'treatment time series'
+var TreatmentSeriesTable = React.createClass({
+    render: function() {
+        var experiments = this.props.experiments;
+
+        return (
+            <table className="table table-panel table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>Assay</th>
+                        <th>Biosample term name</th>
+                        <th>Target</th>
+                        <th>Treatment term name</th>
+                        <th>Treatment duration</th>
+                        <th>Treatment concentration</th>
+                        <th>Description</th>
+                        <th>Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {experiments.map(function (experiment) {
+                    // Get an array of all treatments in all replicates
+                    var treatments = [];
+                    if (experiment.replicates && experiment.replicates.length) {
+                        experiment.replicates.forEach(function(replicate) {
+                            var biosampleTreatments = replicate.library && replicate.library.biosample && replicate.library.biosample.treatments && replicate.library.biosample.treatments;
+                            treatments = treatments.concat(biosampleTreatments);
+                        });
+                    }
+                    var treatmentTermNames = _.uniq(treatments.map(function(treatment) {
+                        return treatment.treatment_term_name;
+                    }));
+                    var treatmentDurations = _.chain(treatments.map(function(treatment) {
+                        return (treatment.duration && treatment.duration_units) ? treatment.duration + ' ' + treatment.duration_units : '';
+                    })).compact().uniq().value();
+                    var treatmentConcentrations = _.chain(treatments.map(function(treatment) {
+                        return (treatment.concentration && treatment.concentration_units) ? treatment.concentration + ' ' + treatment.concentration_units : '';
+                    })).compact().uniq().value();
+                    return (
+                        <tr key={experiment['@id']}>
+                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{experiment.assay_term_name}</td>
+                            <td>{experiment.biosample_term_name}</td>
+                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                            <td>{treatmentTermNames[0]} {treatmentTermNames.length > 1 ? <abbr title={'Multiple term names: ' + treatmentTermNames.join(', ')}>*</abbr> : null}</td>
+                            <td>{treatmentDurations[0]} {treatmentDurations.length > 1 ? <abbr title={'Multiple durations: ' + treatmentDurations.join(', ')}>*</abbr> : null}</td>
+                            <td>{treatmentConcentrations[0]} {treatmentConcentrations.length > 1 ? <abbr title={'Multiple concentrations: ' + treatmentConcentrations.join(', ')}>*</abbr> : null}</td>
+                            <td>{experiment.description}</td>
+                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+        );
+    }
+});
+
+var ReplicationTimingSeriesTable = React.createClass({
+    render: function() {
+        var experiments = this.props.experiments;
+
+        return (
+            <table className="table table-panel table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>Assay</th>
+                        <th>Biosample term name</th>
+                        <th>Biosample phase</th>
+                        <th>Target</th>
+                        <th>Description</th>
+                        <th>Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {experiments.map(function (experiment) {
+                    // Get an array of all treatments in all replicates
+                    var biosamples;
+                    if (experiment.replicates && experiment.replicates.length) {
+                        biosamples = experiment.replicates.map(function(replicate) {
+                            return replicate.library && replicate.library.biosample;
+                        });
+                    }
+                    var phases = _.chain(biosamples.map(function(biosample) {
+                        return biosample.phase;
+                    })).compact().uniq().value();
+                    return (
+                        <tr key={experiment['@id']}>
+                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{experiment.assay_term_name}</td>
+                            <td>{experiment.biosample_term_name}</td>
+                            <td>{phases.join(', ')}</td>
+                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                            <td>{experiment.description}</td>
+                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+        );
+    }
+});
+
+var OrganismDevelopmentSeriesTable = React.createClass({
+    render: function() {
+        console.log(this.props);
+        return null;
+    }
+});
+
+
+var seriesComponents = {
+    'MatchedSet': {title: 'matched set series'},
+    'OrganismDevelopmentSeries': {title: 'organism development series', table: <OrganismDevelopmentSeriesTable />},
+    'ReferenceEpigenome': {title: 'reference epigenome series'},
+    'ReplicationTimingSeries': {title: 'replication timing series', table: <ReplicationTimingSeriesTable />},
+    'TreatmentConcentrationSeries': {title: 'treatment concentration series', table: <TreatmentSeriesTable />},
+    'TreatmentTimeSeries': {title: 'treatment time series', table: <TreatmentSeriesTable />}
 };
 
 var Series = module.exports.Series = React.createClass({
@@ -911,7 +1024,8 @@ var Series = module.exports.Series = React.createClass({
         var altacc = context.alternate_accessions.join(', ');
 
         // Make the series title
-        var seriesTitle = seriesTitles[context['@type'][0]] ? seriesTitles[context['@type'][0]] : 'series';
+        var seriesComponent = seriesComponents[context['@type'][0]];
+        var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         return (
             <div className={itemClass}>
@@ -990,6 +1104,7 @@ var Series = module.exports.Series = React.createClass({
 
                 {context.related_datasets.length ?
                     <ExperimentTable
+                        series={seriesComponent ? (seriesComponent.table ? seriesComponent.table : null) : null}
                         items={context.related_datasets}
                         title={'Experiments in ' + seriesTitle + ' ' + context.accession} />
                 : null }
@@ -1034,6 +1149,17 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
 });
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
+    propTypes: {
+        series: React.PropTypes.object // If table for a series page, component to display the table.
+    },
+
+    renderChildren: function(experiments) {
+        return React.Children.map(this.props.series, series => {
+            return React.addons.cloneWithProps(series, {
+                experiments: experiments
+            });
+        });
+    },
 
     render: function() {
         var experiments;
@@ -1052,49 +1178,54 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
             <div>
                 {this.props.title ? <h3>{this.props.title}</h3> : ''}
                 <div className="table-responsive">
-                    <table className="table table-panel table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Accession</th>
-                                <th>Assay</th>
-                                <th>Biosample term name</th>
-                                <th>Target</th>
-                                <th>Description</th>
-                                <th>Lab</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {experiments.map(function (experiment) {
-                            // Ensure this can work with search result columns too
-                            return (
-                                <tr key={experiment['@id']}>
-                                    <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                                    <td>{experiment.assay_term_name}</td>
-                                    <td>{experiment.biosample_term_name}</td>
-                                    <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                                    <td>{experiment.description}</td>
-                                    <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                    {this.props.series ?
+                        <div>{this.renderChildren(experiments)}</div>
+                    :
+                        <table className="table table-panel table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Accession</th>
+                                    <th>Assay</th>
+                                    <th>Biosample term name</th>
+                                    <th>Target</th>
+                                    <th>Description</th>
+                                    <th>Lab</th>
                                 </tr>
-                            );
-                        })}
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colSpan="6">
-                                    {this.props.limit && (this.props.limit < this.props.total) ?
-                                        <div>
-                                            {'Displaying '}{this.props.limit}{' experiments out of '}{this.props.total}{' total related experiments'}
-                                        </div>
-                                    : ''}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {experiments.map(function (experiment) {
+                                // Ensure this can work with search result columns too
+                                return (
+                                    <tr key={experiment['@id']}>
+                                        <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                                        <td>{experiment.assay_term_name}</td>
+                                        <td>{experiment.biosample_term_name}</td>
+                                        <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                                        <td>{experiment.description}</td>
+                                        <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan="6">
+                                        {this.props.limit && (this.props.limit < this.props.total) ?
+                                            <div>
+                                                {'Displaying '}{this.props.limit}{' experiments out of '}{this.props.total}{' total related experiments'}
+                                            </div>
+                                        : ''}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    }
                 </div>
             </div>
         );
     }
 });
+
 
 function humanFileSize(size) {
     if (size === undefined) return undefined;
