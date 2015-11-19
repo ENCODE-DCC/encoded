@@ -12,6 +12,7 @@ targetBasedAssayList = [
     'RIP-seq',
     'MeDIP-seq',
     'iCLIP',
+    'eCLIP',
     'shRNA knockdown followed by RNA-seq',
     ]
 
@@ -655,7 +656,7 @@ def audit_experiment_antibody_eligible(value, system):
                 detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
                                                                          biosample_term_name,
                                                                          organism)
-                yield AuditFailure('antibody eligible via exempt', detail, level='WARNING')
+                yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
 
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} is not eligible for {} in {}'.format(antibody["@id"],
