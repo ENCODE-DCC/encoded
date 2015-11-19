@@ -222,6 +222,6 @@ module.exports = function(grunt) {
         this.async();
     });
 
-    grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('default', ['browserify']);
     grunt.registerTask('watch', ['browserify:*:watch', 'wait']);
 };
