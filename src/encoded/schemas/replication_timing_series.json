@@ -39,7 +39,7 @@
             "title": "Genome assembly (visualization)",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.donor.organism.scientific_name": {
+        "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
