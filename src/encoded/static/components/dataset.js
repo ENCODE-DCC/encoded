@@ -886,6 +886,7 @@ var TreatmentSeriesTable = React.createClass({
                 <thead>
                     <tr>
                         <th>Accession</th>
+                        <th>Possible controls</th>
                         <th>Assay</th>
                         <th>Biosample term name</th>
                         <th>Target</th>
@@ -915,9 +916,13 @@ var TreatmentSeriesTable = React.createClass({
                     var treatmentConcentrations = _.chain(treatments.map(function(treatment) {
                         return (treatment.concentration && treatment.concentration_units) ? treatment.concentration + ' ' + treatment.concentration_units : '';
                     })).compact().uniq().value();
+                    var possibleControls = experiment.possible_controls.map(function(control, i) {
+                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
+                    });
                     return (
                         <tr key={experiment['@id']}>
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{possibleControls}</td>
                             <td>{experiment.assay_term_name}</td>
                             <td>{experiment.biosample_term_name}</td>
                             <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
@@ -944,6 +949,7 @@ var ReplicationTimingSeriesTable = React.createClass({
                 <thead>
                     <tr>
                         <th>Accession</th>
+                        <th>Possible controls</th>
                         <th>Assay</th>
                         <th>Biosample term name</th>
                         <th>Biosample phase</th>
@@ -964,9 +970,13 @@ var ReplicationTimingSeriesTable = React.createClass({
                     var phases = _.chain(biosamples.map(function(biosample) {
                         return biosample.phase;
                     })).compact().uniq().value();
+                    var possibleControls = experiment.possible_controls.map(function(control, i) {
+                        return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
+                    });
                     return (
                         <tr key={experiment['@id']}>
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{possibleControls}</td>
                             <td>{experiment.assay_term_name}</td>
                             <td>{experiment.biosample_term_name}</td>
                             <td>{phases.join(', ')}</td>
