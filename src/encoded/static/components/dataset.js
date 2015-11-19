@@ -522,6 +522,13 @@ var Reference = React.createClass({
                             </div>
                         : null}
 
+                        {context.organism ?
+                            <div data-test="organism">
+                                <dt>Organism</dt>
+                                <dd>{context.organism.name}</dd>
+                            </div>
+                        : null}
+
                         {context.software_used && context.software_used.length ?
                             <div>
                                 <dt>Software used</dt>
@@ -946,7 +953,6 @@ var TreatmentSeriesTable = React.createClass({
                         <th>Accession</th>
                         <th>Possible controls</th>
                         <th>Assay</th>
-                        <th>Biosample term name</th>
                         <th>Target</th>
                         <th>Treatment term name</th>
                         <th>Treatment duration</th>
@@ -982,7 +988,6 @@ var TreatmentSeriesTable = React.createClass({
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
                             <td>{possibleControls}</td>
                             <td>{experiment.assay_term_name}</td>
-                            <td>{experiment.biosample_term_name}</td>
                             <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
                             <td>{treatmentTermNames[0]} {treatmentTermNames.length > 1 ? <abbr title={'Multiple term names: ' + treatmentTermNames.join(', ')}>*</abbr> : null}</td>
                             <td>{treatmentDurations[0]} {treatmentDurations.length > 1 ? <abbr title={'Multiple durations: ' + treatmentDurations.join(', ')}>*</abbr> : null}</td>
@@ -1009,7 +1014,6 @@ var ReplicationTimingSeriesTable = React.createClass({
                         <th>Accession</th>
                         <th>Possible controls</th>
                         <th>Assay</th>
-                        <th>Biosample term name</th>
                         <th>Biosample phase</th>
                         <th>Target</th>
                         <th>Description</th>
@@ -1036,7 +1040,6 @@ var ReplicationTimingSeriesTable = React.createClass({
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
                             <td>{possibleControls}</td>
                             <td>{experiment.assay_term_name}</td>
-                            <td>{experiment.biosample_term_name}</td>
                             <td>{phases.join(', ')}</td>
                             <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
                             <td>{experiment.description}</td>
