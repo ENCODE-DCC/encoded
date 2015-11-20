@@ -1176,7 +1176,7 @@ var Series = module.exports.Series = React.createClass({
                             </div>
                         : null}
 
-                        {context.biosample_term_name.length ?
+                        {context.biosample_term_name && context.biosample_term_name.length ?
                             <div data-test="description">
                                 <dt>Biosample term name</dt>
                                 <dd>{context.biosample_term_name.join(', ')}</dd>
