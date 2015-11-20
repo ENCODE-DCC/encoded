@@ -54,11 +54,15 @@ var Biosample = module.exports.Biosample = React.createClass({
 
         // Set up the breadcrumbs
         var organismName = <i>{context.organism.scientific_name}</i>;
+        var typeUri = '/search/?type=biosample&biosample_type=' + context.biosample_type;
+        var organismUri = typeUri + '&organism.scientific_name=' + context.organism.scientific_name;
+        var termNameUri = organismUri + '&biosample_term_name=' + context.biosample_term_name;
         var crumbs = [
             {id: 'Biosamples', uri: null},
-            {id: context.biosample_type, uri: '/search/?type=biosample&biosample_type=' + context.biosample_type, tip: 'Search for ' + context.biosample_type + ' in biosamples'},
-            {id: organismName, uri: '/search/?type=biosample&biosample_type=' + context.biosample_type + '&organism.scientific_name=' + context.organism.scientific_name,
-                tip: 'Search for ' + context.biosample_type + ' + ' + context.organism.scientific_name + ' in biosamples'}
+            {id: context.biosample_type, uri: typeUri, tip: 'Search for ' + context.biosample_type + ' in biosamples'},
+            {id: organismName, uri: organismUri,
+                tip: 'Search for ' + context.biosample_type + ' + ' + context.organism.scientific_name + ' in biosamples'},
+            {id: context.biosample_term_name, uri: termNameUri}
         ];
 
         // set up construct documents panels
