@@ -23,15 +23,27 @@ var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
+        annotation: {title: 'Annotation file set'},
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
+        matched_set: {title: 'Matched set series'},
+        organism_development_series: {title: 'Organism development series'},
         publication: {title: 'Publications'},
         page: {title: 'Web page'},
-        software: {title: 'Software'}
+        pipeline: {title: 'Pipeline'},
+        project: {title: 'Project file set'},
+        publication_data: {title: 'Publication file set'},
+        reference: {title: 'Reference file set'},
+        reference_epigenome: {title: 'Reference epigenome series'},
+        replication_timing_series: {title: 'Replication timing series'},
+        software: {title: 'Software'},
+        treatment_concentration_series: {title: 'Treatment concentration series'},
+        treatment_time_series: {title: 'Treatment time series'},
+        ucsc_browser_composite: {title: 'UCSC browser composite file set'}
     };
 
     var Listing = module.exports.Listing = function (props) {
