@@ -274,12 +274,16 @@ class FileSet(Dataset):
     })
     def assembly(self, request, original_files, related_files):
         assembly = []
+        count = 1
         for path in chain(original_files, related_files):
-            properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                    properties['status'] in ['released']:
-                if 'assembly' in properties:
-                    assembly.append(properties['assembly'])
+            # Need to cap this due to the large numbers of files in related_files
+            if count < 100:
+                properties = request.embed(path, '@@object')
+                count = count + 1
+                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
+                        properties['status'] in ['released']:
+                    if 'assembly' in properties:
+                        assembly.append(properties['assembly'])
         return list(set(assembly))
 
 
