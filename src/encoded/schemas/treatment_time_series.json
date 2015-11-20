@@ -48,7 +48,7 @@
             "title": "Target of assay",
             "type": "string"
         },
-        "biosample.biosample_type": {
+        "biosample_type": {
             "title": "Biosample type",
             "type": "string"
         },
