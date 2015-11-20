@@ -6,6 +6,7 @@ from contentbase import (
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from contentbase.resource_views import collection_view_listing_db
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
@@ -36,25 +37,14 @@ audit_facets = [
 
 
 DEFAULT_DOC_TYPES = [
-    'annotation',
-    'antibody_lot',
-    'biosample',
-    'experiment',
-    'matched_set',
-    'organism_development_series',
-    'page',
-    'pipeline',
-    'project',
-    'publication',
-    'publication_data',
-    'reference',
-    'reference_epigenome',
-    'replication_timing_series',
-    'software',
-    'target',
-    'treatment_concentration_series',
-    'treatment_time_series',
-    'ucsc_browser_composite',
+    'AntibodyLot',
+    'Biosample',
+    'Dataset',
+    'Page',
+    'Pipeline',
+    'Publication',
+    'Software',
+    'Target',
 ]
 
 
@@ -88,7 +78,7 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
 
 
 def prepare_search_term(request):
-    search_term = request.params.get('searchTerm', '*')
+    search_term = request.params.get('searchTerm', '').strip() or '*'
     if search_term != '*':
         search_term = sanitize_search_string_re.sub(r'\\\g<0>', search_term.strip())
         search_term_array = search_term.split()
@@ -149,21 +139,22 @@ def load_columns(request, doc_types, result):
         fields = [frame + '.*']
     else:
         frame = 'columns'
-        fields = set()
+        fields = {'embedded.@id', 'embedded.@type'}
         if request.has_permission('search_audit'):
             fields.add('audit.*')
         types = request.registry[TYPES]
         for doc_type in doc_types:
             type_info = types[doc_type]
-            if 'columns' not in (type_info.schema or ()):
-                fields.add('object.*')
+            if 'columns' not in type_info.schema:
+                columns = {
+                    name: type_info.schema['properties'][name]['title']
+                    for name in ['title', 'description', 'name', 'accession']
+                    if name in type_info.schema['properties']
+                }
             else:
                 columns = type_info.schema['columns']
-                fields.update(
-                    ('embedded.@id', 'embedded.@type'),
-                    ('embedded.' + column for column in columns),
-                )
-                result['columns'].update(columns)
+            fields.update('embedded.' + column for column in columns)
+            result['columns'].update(columns)
     return fields
 
 
@@ -255,8 +246,10 @@ def set_facets(facets, used_filters, principals, doc_types):
     """
     aggs = {}
     for field, _ in facets:
+        exclude = []
         if field == 'type':
-            query_field = '_type'
+            query_field = 'embedded.@type.raw'
+            exclude = ['Item']
         elif field.startswith('audit'):
             query_field = field
         else:
@@ -276,9 +269,6 @@ def set_facets(facets, used_filters, principals, doc_types):
             elif q_field != field and q_field.endswith('!'):
                 terms.append({'not': {'terms': {'embedded.' + q_field[:-1] + '.raw': q_terms}}})
 
-        exclude = []
-        if field == '@type':
-            exclude = ['Item']
         aggs[agg_name] = {
             'aggs': {
                 agg_name: {
@@ -317,11 +307,7 @@ def format_results(request, hits):
 
     # columns
     for hit in hits:
-        item_type = hit['_type']
-        if 'columns' in request.registry[TYPES][item_type].schema:
-            item = hit['_source']['embedded']
-        else:
-            item = hit['_source']['object']
+        item = hit['_source']['embedded']
         if 'audit' in hit['_source']:
             item['audit'] = hit['_source']['audit']
         if 'highlight' in hit:
@@ -381,13 +367,26 @@ def format_facets(es_results, facets):
     return result
 
 
+def normalize_query(request):
+    types = request.registry[TYPES]
+    fixed_types = (
+        (k, types[v].name if k == 'type' and v in types else v)
+        for k, v in request.params.items()
+    )
+    qs = urlencode([
+        (k.encode('utf-8'), v.encode('utf-8'))
+        for k, v in fixed_types
+    ])
+    return '?' + qs if qs else ''
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
     Search view connects to ElasticSearch and returns the results
     """
     types = request.registry[TYPES]
-    search_base = ('?' + request.query_string if request.query_string else '')
+    search_base = normalize_query(request)
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': '/search/' + search_base,
@@ -414,11 +413,6 @@ def search(context, request, search_type=None):
 
     search_term = prepare_search_term(request)
 
-    # Handling whitespaces in the search term
-    if not search_term:
-        result['notification'] = 'Please enter search term'
-        return result
-
     if search_type is None:
         doc_types = request.params.getall('type')
         if '*' in doc_types:
@@ -433,9 +427,8 @@ def search(context, request, search_type=None):
     except KeyError:
         # Check for invalid types
         bad_types = [t for t in doc_types if t not in types]
-        result['notification'] = "Invalid type: %s" ', '.join(bad_types)
-        # XXX response code
-        return result
+        msg = "Invalid type: {}".format(', '.join(bad_types))
+        raise HTTPBadRequest(explanation=msg)
 
     # Building query for filters
     if not doc_types:
@@ -487,7 +480,7 @@ def search(context, request, search_type=None):
 
     # Adding facets to the query
     facets = [
-        ('@type', {'title': 'Data Type'}),
+        ('type', {'title': 'Data Type'}),
     ]
     if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
         facets.extend(types[doc_types[0]].schema['facets'].items())
@@ -502,7 +495,12 @@ def search(context, request, search_type=None):
     es_results = es.search(body=query, index=es_index, size=size)
 
     result['total'] = es_results['hits']['total']
-    result['notification'] = 'Success' if result['total'] else 'No results found'
+    if result['total']:
+        result['notification'] = 'Success'
+    else:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
 
     result['facets'] = format_facets(es_results, facets)
     # Show any filters that aren't facets as a fake facet with one entry,
@@ -526,6 +524,7 @@ def search(context, request, search_type=None):
 
     # Format results for JSON-LD
     result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+
     return result
 
 
@@ -551,7 +550,7 @@ def matrix(context, request):
     """
     Return search results aggregated by x and y buckets for building a matrix display.
     """
-    search_base = ('?' + request.query_string if request.query_string else '')
+    search_base = normalize_query(request)
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': request.route_path('matrix', slash='/') + search_base,
@@ -562,16 +561,17 @@ def matrix(context, request):
 
     doc_types = request.params.getall('type')
     if len(doc_types) != 1:
-        result['notification'] = 'Search result matrix currently requires specifying a single type.'
-        return result
+        msg = 'Search result matrix currently requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
     item_type = doc_types[0]
     types = request.registry[TYPES]
     if item_type not in types:
-        result['notification'] = 'Invalid type: {}'.format(item_type)
+        msg = 'Invalid type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
     type_info = types[item_type]
     if not hasattr(type_info.factory, 'matrix'):
-        result['notification'] = 'No matrix configured for type: {}'.format(item_type)
-        return result
+        msg = 'No matrix configured for type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
     schema = type_info.schema
     result['title'] = type_info.name + ' Matrix'
 
@@ -586,11 +586,6 @@ def matrix(context, request):
     es_index = request.registry.settings['contentbase.elasticsearch.index']
 
     search_term = prepare_search_term(request)
-
-    # Handling whitespaces in the search term
-    if not search_term:
-        result['notification'] = 'Please enter search term'
-        return result
 
     search_fields, highlights = get_search_fields(request, doc_types)
 
@@ -694,5 +689,11 @@ def matrix(context, request):
 
     # Adding total
     result['total'] = es_results['hits']['total']
-    result['notification'] = 'Success' if result['total'] else 'No results found'
+    if result['total']:
+        result['notification'] = 'Success'
+    else:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
+
     return result

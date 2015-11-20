@@ -786,9 +786,7 @@ var AuditMixin = audit.AuditMixin;
             if (this.props.mode == 'picker') {
                 hideTypes = false;
             } else {
-                hideTypes = filters.filter(function(filter) {
-                    return filter.field == 'type';
-                }).length;
+                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && facets.length > 1;
             }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
@@ -901,9 +899,6 @@ var AuditMixin = audit.AuditMixin;
                         specificFilter = specificFilter ? '' : filter.term;
                     }
                 });
-                if (typeof specificFilter === 'string' && specificFilter.length) {
-                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
-                }
             }
 
             return (
@@ -984,7 +979,7 @@ var AuditMixin = audit.AuditMixin;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.context.location_href).search || '';
-            var facetdisplay = context.facets.some(function(facet) {
+            var facetdisplay = context.facets && context.facets.some(function(facet) {
                 return facet.total > 0;
             });
             return (

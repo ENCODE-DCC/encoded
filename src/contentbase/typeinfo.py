@@ -27,6 +27,8 @@ def extract_schema_links(schema):
 
 
 class AbstractTypeInfo(object):
+    factory = None
+
     def __init__(self, registry, name):
         self.types = registry[TYPES]
         self.name = name

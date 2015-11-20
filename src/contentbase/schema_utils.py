@@ -331,8 +331,12 @@ def combine_schemas(a, b):
                 combined[name][k] = b[name][k]
         elif name == 'items':
             combined[name] = combine_schemas(a[name], b[name])
-    for name in set(a.keys()).difference(b.keys()):
+        elif name in ('boost_values', 'columns'):
+            combined[name] = {}
+            combined[name].update(a[name])
+            combined[name].update(b[name])
+    for name in set(a.keys()).difference(b.keys(), ['facets']):
         combined[name] = a[name]
-    for name in set(b.keys()).difference(a.keys()):
+    for name in set(b.keys()).difference(a.keys(), ['facets']):
         combined[name] = b[name]
     return combined
