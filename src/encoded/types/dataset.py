@@ -386,7 +386,10 @@ class Series(Dataset):
     embedded = Dataset.embedded + [
         'award.pi.lab',
         'references',
-        'related_datasets.files'
+        'related_datasets.files',
+        'related_datasets.files.analysis_step_version',
+        'related_datasets.files.analysis_step_version.analysis_step',
+        'related_datasets.files.analysis_step_version.analysis_step.pipelines',
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',
