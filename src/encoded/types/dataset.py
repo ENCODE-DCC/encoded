@@ -293,7 +293,7 @@ class FileSet(Dataset):
 class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'targets', 'files.dataset']
 
 
 @collection(
@@ -306,7 +306,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
 class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded + ['files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
 @collection(
@@ -319,7 +319,7 @@ class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssa
 class Reference(FileSet):
     item_type = 'reference'
     schema = load_schema('encoded:schemas/reference.json')
-    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism']
+    embedded = FileSet.embedded + ['software_used', 'software_used.software', 'organism', 'files.dataset']
 
 
 @collection(
@@ -332,7 +332,7 @@ class Reference(FileSet):
 class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
-    embedded = FileSet.embedded + ['organism']
+    embedded = FileSet.embedded + ['organism', 'files.dataset']
 
     @calculated_property(condition='files', schema={
         "title": "Organism",
@@ -373,7 +373,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
 class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
-    embedded = FileSet.embedded + ['files.replicate.experiment.target', 'organism']
+    embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
 class Series(Dataset):
@@ -386,6 +386,10 @@ class Series(Dataset):
         'target.organism',
         'award.pi.lab',
         'references',
+        'related_datasets.files',
+        'related_datasets.files.analysis_step_version',
+        'related_datasets.files.analysis_step_version.analysis_step',
+        'related_datasets.files.analysis_step_version.analysis_step.pipelines',
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',

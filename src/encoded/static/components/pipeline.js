@@ -6,12 +6,14 @@ var graph = require('./graph');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
 
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -353,18 +355,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
-                            <dd>
-                                {swVersions.map(function(version, i) {
-                                    return (
-                                        <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                            <span className="software">{version.software.title}</span>
-                                            {version.version ?
-                                                <span className="version">{version.version === 'unknown' ? 'version unknown' : version.version}</span>
-                                            : null}
-                                        </a>
-                                    );
-                                })}
-                            </dd>
+                            <dd>{SoftwareVersionList(swVersions)}</dd>
                         </div>
                     :
                         <div>
@@ -375,19 +366,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                             return (
                                                 <div data-test="swversions" key={version['@id']}>
                                                     <dt>Version {version.version} — software</dt>
-                                                    <dd>
-                                                        {version.software_versions.map(function(version, i) {
-                                                            var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                                            return (
-                                                                <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                                                    <span className="software">{version.software.title}</span>
-                                                                    {version.version ?
-                                                                        <span className="version">{versionNum}</span>
-                                                                    : null}
-                                                                </a>
-                                                            );
-                                                        })}
-                                                    </dd>
+                                                    <dd>{SoftwareVersionList(version.software_versions)}</dd>
                                                 </div>
                                             );
                                         } else {
