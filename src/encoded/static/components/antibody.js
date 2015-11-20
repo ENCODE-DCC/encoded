@@ -73,7 +73,7 @@ var Lot = module.exports.Lot = React.createClass({
 
             // Add to the information on gene names from the targets
             if (geneName && geneName !== 'unknown') {
-                geneComponents.push(<span>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
+                geneComponents.push(<span key={key}>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
                 geneTerms.push('targets.gene_name=' + geneName);
                 geneTips.push(geneName);
             }
@@ -82,10 +82,9 @@ var Lot = module.exports.Lot = React.createClass({
         var organismQuery = organismTerms.join('&');
         var geneQuery = geneTerms.join('&');
         var crumbs = [
-            {id: 'Antibodies', uri: null},
-            {id: organismComponents, uri: '/search/?type=antibody_lot&' + organismQuery, tip: 'Search for ' + organismTips.join(' + ') + ' in antibodies'},
-            {id: geneComponents.length ? geneComponents : null, uri: '/search/?type=antibody_lot&' + organismQuery + '&' + geneQuery,
-                tip: 'Search for ' + organismTips.join(' + ') + ' and ' + geneTips.join(' + ')}
+            {id: 'Antibodies'},
+            {id: organismComponents, query: organismQuery, tip: organismTips.join(' + ')},
+            {id: geneComponents.length ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ')}
         ];
 
         // Make string of alternate accessions
@@ -95,7 +94,7 @@ var Lot = module.exports.Lot = React.createClass({
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=antibody_lot' crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>

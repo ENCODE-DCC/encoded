@@ -27,13 +27,13 @@ var Publication = module.exports.Panel = React.createClass({
         });
         var crumbs = [
             {id: 'Publications'},
-            {id: context.categories ? context.categories.join(' + ') : null, uri: '/search/?type=publication&' + (categoryTerms && categoryTerms.join('&')),
-                tip: 'Search for ' + (context.categories && context.categories.join(' + ')) + ' in publications'}
+            {id: context.categories ? context.categories.join(' + ') : null, query: (categoryTerms && categoryTerms.join('&')),
+                tip: context.categories && context.categories.join(' + ')}
         ];
 
         return (
             <div className={itemClass}>
-                <Breadcrumbs crumbs={crumbs} />
+                <Breadcrumbs root='/search/?type=publication' crumbs={crumbs} />
                 <h2>{context.title}</h2>
                 <AuditIndicators audits={context.audit} id="publication-audit" />
                 <AuditDetail context={context} id="publication-audit" />

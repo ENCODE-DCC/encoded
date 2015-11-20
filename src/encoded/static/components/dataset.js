@@ -50,8 +50,8 @@ var Dataset = module.exports.Dataset = React.createClass({
 
         // Set up the breadcrumbs
         var crumbs = [
-            {id: 'Datasets', uri: null},
-            {id: context.dataset_type, uri: '/search/?type=dataset&dataset_type=' + context.dataset_type, tip: 'Search for ' + context.dataset_type + ' in datasets'}
+            {id: 'Datasets'},
+            {id: context.dataset_type, query: 'dataset_type=' + context.dataset_type, tip: context.dataset_type}
         ];
 
         // Build up array of documents attached to this dataset
@@ -67,7 +67,7 @@ var Dataset = module.exports.Dataset = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?@type=Dataset' crumbs={crumbs} />
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">

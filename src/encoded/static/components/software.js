@@ -37,8 +37,8 @@ var Software = module.exports.Software = React.createClass({
         });
         var crumbs = [
             {id: 'Software'},
-            {id: context.software_type ? context.software_type.join(' + ') : null, uri: '/search/?type=software&' + (typeTerms && typeTerms.join('&')),
-                tip: 'Search for ' + (context.software_type && context.software_type.join(' + ')) + ' in software'}
+            {id: context.software_type ? context.software_type.join(' + ') : null, query: typeTerms && typeTerms.join('&'),
+                tip: context.software_type && context.software_type.join(' + ')}
         ];
 
         var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
@@ -63,7 +63,7 @@ var Software = module.exports.Software = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=software' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />

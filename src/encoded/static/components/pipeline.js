@@ -161,8 +161,8 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var crumbs = [
-            {id: 'Pipelines', uri: null},
-            {id: assayName, uri: '/search/?type=pipeline&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' in pipelines'}
+            {id: 'Pipelines'},
+            {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
         ];
 
         var documents = {};
@@ -188,7 +188,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=pipeline' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">

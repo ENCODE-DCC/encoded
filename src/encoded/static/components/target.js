@@ -45,16 +45,16 @@ var Target = module.exports.Target = React.createClass({
         });
         var crumbs = [
             {id: 'Targets'},
-            {id: context.investigated_as.join(' + '), uri: '/search/?type=target&' + assayTargets.join('&'), tip: 'Search for ' + context.investigated_as.join(' + ') + ' in targets'},
-            {id: <i>{context.organism.scientific_name}</i>, uri: '/search/?type=target&' + assayTargets.join('&') + '&organism.scientific_name=' + context.organism.scientific_name,
-                tip: 'Search for ' + context.investigated_as.join(' + ') + ' and ' + context.organism.scientific_name + ' in targets'}
+            {id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ')},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name,
+                tip: context.investigated_as.join(' + ') + ' and ' + context.organism.scientific_name}
         ];
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=target' crumbs={crumbs} />
                         <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
                     </div>
                 </header>

@@ -33,7 +33,7 @@ var Panel = function (props) {
         props = {context: context, key: context['@id']};
     }
     var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView {...props} />;
+    return <PanelView key={props.context.uuid} {...props} />;
 };
 
 
@@ -53,16 +53,11 @@ var Biosample = module.exports.Biosample = React.createClass({
         var aliasList = context.aliases.join(", ");
 
         // Set up the breadcrumbs
-        var organismName = <i>{context.organism.scientific_name}</i>;
-        var typeUri = '/search/?type=biosample&biosample_type=' + context.biosample_type;
-        var organismUri = typeUri + '&organism.scientific_name=' + context.organism.scientific_name;
-        var termNameUri = organismUri + '&biosample_term_name=' + context.biosample_term_name;
         var crumbs = [
-            {id: 'Biosamples', uri: null},
-            {id: context.biosample_type, uri: typeUri, tip: 'Search for ' + context.biosample_type + ' in biosamples'},
-            {id: organismName, uri: organismUri,
-                tip: 'Search for ' + context.biosample_type + ' + ' + context.organism.scientific_name + ' in biosamples'},
-            {id: context.biosample_term_name, uri: termNameUri}
+            {id: 'Biosamples'},
+            {id: context.biosample_type, query: 'biosample_type=' + context.biosample_type, tip: context.biosample_type},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name, tip: context.organism.scientific_name},
+            {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
         ];
 
         // set up construct documents panels
@@ -116,7 +111,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -194,7 +189,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <dd>
                                     {context.depleted_in_term_name.map(function(termName, i) {
                                         return (
-                                            <span>
+                                            <span key={i}>
                                                 {i > 0 ? ', ' : ''}
                                                 {termName}
                                             </span>
@@ -774,11 +769,9 @@ var Donor = module.exports.Donor = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Set up breadcrumbs
-        var name = context.organism.name;
-        var scientificName = context.organism.scientific_name;
         var crumbs = [
             {id: 'Donors'},
-            {id: <i>{scientificName}</i>}
+            {id: <i>{context.organism.scientific_name}</i>}
         ];
 
         return (

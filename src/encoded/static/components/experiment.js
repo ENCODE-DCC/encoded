@@ -63,14 +63,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
         var aliasList = context.aliases.join(", ");
 
-        // Set up the breadcrumbs
-        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        var assayName = context[assayTerm];
-        var crumbs = [
-            {id: 'Experiments', uri: null},
-            {id: assayName, uri: '/search/?type=experiment&' + assayTerm + '=' + assayName, tip: 'Search for ' + assayName + ' in experiments'}
-        ];
-
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
@@ -136,6 +128,29 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
+        // Set up the breadcrumbs
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var assayQuery = assayTerm + '=' + assayName;
+        var organismNames = _.chain(biosamples.map(function(biosample) {
+            return biosample.donor ? biosample.donor.organism.scientific_name : '';
+        })).compact().uniq().value();
+        var nameQuery = '';
+        var nameTip = '';
+        var names = organismNames.map(function(organismName, i) {
+            nameTip += (nameTip.length ? ' + ' : '') + organismName;
+            nameQuery += (nameQuery.length ? '&' : '') + 'replicates.library.biosample.donor.organism.scientific_name=' + organismName;
+            return <span>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+        });
+        var biosampleTermName = context.biosample_term_name;
+        var biosampleTermQuery = biosampleTermName ? 'biosample_term_name=' + biosampleTermName : '';
+        var crumbs = [
+            {id: 'Experiments'},
+            {id: assayName, query: assayQuery, tip: assayName},
+            {id: names.length ? names : null, query: nameQuery, tip: nameTip},
+            {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
+        ];
+
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // XXX This makes no sense.
@@ -144,7 +159,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
