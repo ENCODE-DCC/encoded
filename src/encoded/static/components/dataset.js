@@ -143,7 +143,7 @@ globals.content_views.register(Dataset, 'Dataset');
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 var annotationBiosampleSummary = module.exports.annotationBiosampleSummary = function(annotation) {
-    var organismName = annotation.organism.scientific_name ? <i>{annotation.organism.scientific_name}</i> : <span>{annotation.organism.name}</span>;
+    var organismName = (annotation.organism && annotation.organism.scientific_name) ? <i>{annotation.organism.scientific_name}</i> : null;
     var lifeStageString = (annotation.relevant_life_stage && annotation.relevant_life_stage !== 'unknown') ? <span>{annotation.relevant_life_stage}</span> : null;
     var timepointString = annotation.relevant_timepoint ? <span>{annotation.relevant_timepoint + (annotation.relevant_timepoint_units ? ' ' +  annotation.relevant_timepoint_units : '')}</span> : null;
 
