@@ -56,39 +56,35 @@ var Lot = module.exports.Lot = React.createClass({
         var targetKeys = Object.keys(targets);
 
         // Set up the breadcrumbs
-        var targetOrganisms = [];
-        var targetGenes = [];
+        var organismComponents = [];
+        var organismTerms = [];
+        var organismTips = [];
+        var geneComponents = [];
+        var geneTerms = [];
+        var geneTips = [];
         targetKeys.forEach(function(key, i) {
             var scientificName = targets[key].organism.scientific_name;
             var geneName = targets[key].gene_name;
 
             // Add to the information on organisms from the targets
-            targetOrganisms.push({
-                component: <span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>,
-                term: 'targets.organism.scientific_name=' + scientificName,
-                tip: scientificName
-            });
+            organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);
+            organismTerms.push('targets.organism.scientific_name=' + scientificName);
+            organismTips.push(scientificName);
 
             // Add to the information on gene names from the targets
-            if (geneName && geneName !== 'unknown'){
-                targetGenes.push({
-                    component: <span>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>,
-                    term: 'targets.gene_name=' + geneName,
-                    tip: geneName
-                });
+            if (geneName && geneName !== 'unknown') {
+                geneComponents.push(<span>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
+                geneTerms.push('targets.gene_name=' + geneName);
+                geneTips.push(geneName);
             }
         });
 
-        var targetOrganismQuery = targetOrganisms.map(function(organism) {
-            
-        });
-
-        var targetOrganismQuery = targetOrganismTerms.join('&');
-        var targetGeneQuery = targetGeneTerms && targetGeneTerms.join('&');
+        var organismQuery = organismTerms.join('&');
+        var geneQuery = geneTerms.join('&');
         var crumbs = [
             {id: 'Antibodies', uri: null},
-            {id: targetOrganisms, uri: '/search/?type=antibody_lot&' + targetOrganismQuery, tip: 'Search for ' + targetOrganismTips.join(' + ') + ' in antibodies'},
-            {id: targetGenes, uri: '/search/?type=antibody_lot&' + targetOrganismQuery + '&' + targetGeneQuery}
+            {id: organismComponents, uri: '/search/?type=antibody_lot&' + organismQuery, tip: 'Search for ' + organismTips.join(' + ') + ' in antibodies'},
+            {id: geneComponents.length ? geneComponents : null, uri: '/search/?type=antibody_lot&' + organismQuery + '&' + geneQuery}
         ];
 
         // Make string of alternate accessions
