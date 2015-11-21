@@ -191,6 +191,7 @@ module.exports = NavBar;
 // Each crumb in the crumbs array: {
 //     id: Title string to display in each breadcrumb. If falsy, does not get included, not even as an empty breadcrumb
 //     query: query string property and value, or null to display unlinked id
+//     uri: Alternative to 'query' property. Specify the complete URI instead of accreting query string variables
 //     tip: Text to display as part of uri tooltip.
 // }
 var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
@@ -217,7 +218,7 @@ var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
                     // Render the breadcrumbs
                     return (
                         <li key={i}>
-                            {crumb.query ? <a href={this.props.root + accretingQuery} title={'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
+                            {(crumb.query || crumb.uri) ? <a href={this.props.uri ? this.props.uri : this.props.root + accretingQuery} title={'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
                         </li>
                     );
                 })}
