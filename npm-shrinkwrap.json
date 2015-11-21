@@ -2666,11 +2666,6 @@
         }
       }
     },
-    "grunt-contrib-copy": {
-      "version": "0.5.0",
-      "from": "https://registry.npmjs.org/grunt-contrib-copy/-/grunt-contrib-copy-0.5.0.tgz",
-      "resolved": "https://registry.npmjs.org/grunt-contrib-copy/-/grunt-contrib-copy-0.5.0.tgz"
-    },
     "immutable": {
       "version": "3.7.5",
       "from": "https://registry.npmjs.org/immutable/-/immutable-3.7.5.tgz",
@@ -4153,11 +4148,6 @@
       "version": "2.10.6",
       "from": "https://registry.npmjs.org/moment/-/moment-2.10.6.tgz",
       "resolved": "https://registry.npmjs.org/moment/-/moment-2.10.6.tgz"
-    },
-    "node-ckeditor": {
-      "version": "4.3.2",
-      "from": "https://registry.npmjs.org/node-ckeditor/-/node-ckeditor-4.3.2.tgz",
-      "resolved": "https://registry.npmjs.org/node-ckeditor/-/node-ckeditor-4.3.2.tgz"
     },
     "react": {
       "version": "0.12.2",

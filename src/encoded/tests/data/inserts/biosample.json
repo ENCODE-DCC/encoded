@@ -247,6 +247,10 @@
         "organism": "human",
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
+        "talens": [
+            "TL-1008",
+            "TL-1009"
+        ],
         "transfection_type": "stable",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
     },
