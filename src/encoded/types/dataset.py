@@ -19,10 +19,7 @@ from .shared_calculated_properties import (
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
-    CalculatedSeriesTarget,
-    CalculatedSeriesAge,
-    CalculatedSeriesLifeStage,
-    CalculatedSeriesSynchronization
+    CalculatedSeriesTarget
 )
 
 from itertools import chain
@@ -277,12 +274,16 @@ class FileSet(Dataset):
     })
     def assembly(self, request, original_files, related_files):
         assembly = []
+        count = 1
         for path in chain(original_files, related_files):
-            properties = request.embed(path, '@@object')
-            if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
-                    properties['status'] in ['released']:
-                if 'assembly' in properties:
-                    assembly.append(properties['assembly'])
+            # Need to cap this due to the large numbers of files in related_files
+            if count < 100:
+                properties = request.embed(path, '@@object')
+                count = count + 1
+                if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak', 'bedRnaElements', 'bedMethyl', 'bedLogR'] and \
+                        properties['status'] in ['released']:
+                    if 'assembly' in properties:
+                        assembly.append(properties['assembly'])
         return list(set(assembly))
 
 
@@ -384,8 +385,15 @@ class Series(Dataset):
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
     embedded = Dataset.embedded + [
+        'organism',
+        'target',
+        'target.organism',
         'award.pi.lab',
         'references',
+        'related_datasets.files',
+        'related_datasets.files.analysis_step_version',
+        'related_datasets.files.analysis_step_version.analysis_step',
+        'related_datasets.files.analysis_step_version.analysis_step.pipelines',
         'related_datasets.lab',
         'related_datasets.submitted_by',
         'related_datasets.award.pi.lab',
@@ -510,7 +518,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSeriesAssay, CalculatedSeri
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesAge, CalculatedSeriesSynchronization, CalculatedSeriesLifeStage):
+class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded

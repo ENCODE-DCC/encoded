@@ -138,8 +138,8 @@ def experiment_5_6(value, system):
 def dataset_6_7(value, system):
     if 'dataset_type' in value:
         if value['dataset_type'] == 'paired set':
-            del value['related_files']
-            del value['contributing_files']
-            del value['revoked_files']
+            value.pop('related_files', None)
+            value.pop('contributing_files', None)
+            value.pop('revoked_files', None)
             value['related_datasets'] = []
         del value['dataset_type']
