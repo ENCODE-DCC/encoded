@@ -356,8 +356,8 @@ def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_repl
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        for e in errors[error_type]:
-            print (e)
+        #for e in errors[error_type]:
+        #    print (e)
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
@@ -517,8 +517,6 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        print (error_type)
-        print (errors[error_type])
     assert any(error['category'] == 'mismatched age' for error in errors_list)
 
 
