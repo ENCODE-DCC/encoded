@@ -500,7 +500,7 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
                                                         mouse_donor_1,
                                                         mouse_donor_2):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_2['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
@@ -517,6 +517,8 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
+        print (error_type)
+        print (errors[error_type])
     assert any(error['category'] == 'mismatched age' for error in errors_list)
 
 
