@@ -66,4 +66,4 @@ def select_distinct_values(request, value_path, *from_paths):
         value_lists = (ensurelist(obj.get(name, [])) for obj in objs)
         values = {value for value_list in value_lists for value in value_list}
 
-    return values
+    return list(values)
