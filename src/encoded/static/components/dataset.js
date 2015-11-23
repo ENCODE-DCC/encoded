@@ -1067,7 +1067,7 @@ var OrganismDevelopmentSeriesTable = React.createClass({
                         <th>Accession</th>
                         <th>Possible controls</th>
                         <th>Assay</th>
-                        <th>Synchronization timepoint</th>
+                        <th>Relative age</th>
                         <th>Life stage</th>
                         <th>Target</th>
                         <th>Description</th>
@@ -1077,7 +1077,7 @@ var OrganismDevelopmentSeriesTable = React.createClass({
                 <tbody>
                 {experiments.map(function (experiment) {
                     // Get an array of all treatments in all replicates
-                    var biosamples, synchronizationBiosample, lifeStageBiosample;
+                    var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
                     if (experiment.replicates && experiment.replicates.length) {
                         biosamples = experiment.replicates.map(function(replicate) {
                             return replicate.library && replicate.library.biosample;
@@ -1090,6 +1090,11 @@ var OrganismDevelopmentSeriesTable = React.createClass({
                         lifeStageBiosample = _(biosamples).find(function(biosample) {
                             return biosample.life_stage;
                         });
+                        if (!synchronizationBiosample) {
+                            ages = _.chain(biosamples.map(function(biosample) {
+                                return biosample.age_display;
+                            })).compact().uniq().value();
+                        }
                     }
                     var possibleControls = experiment.possible_controls.map(function(control, i) {
                         return <span>{i > 0 ? ', ' : ''}<a key={control.uuid} href={control['@id']}>{control.accession}</a></span>;
@@ -1099,7 +1104,13 @@ var OrganismDevelopmentSeriesTable = React.createClass({
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
                             <td>{possibleControls}</td>
                             <td>{experiment.assay_term_name}</td>
-                            <td>{synchronizationBiosample ? <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span> : null}</td>
+                            <td>
+                                {synchronizationBiosample ?
+                                    <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
+                                :
+                                    <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
+                                }
+                            </td>
                             <td>{lifeStageBiosample && lifeStageBiosample.life_stage}</td>
                             <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
                             <td>{experiment.description}</td>
