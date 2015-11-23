@@ -236,8 +236,11 @@ class Experiment(Dataset):
             return 'isogenic'
 
         # Since we are not looking for model organisms here, we likely need audits
-        if biosample_species != '/organisms/human/' and len(set(biosample_donor_list)) == 1:
-            return 'isogenic'
+        if biosample_species != '/organisms/human/':
+            if len(set(biosample_donor_list)) == 1:
+                return 'isogenic'
+            else:
+                return 'anisogenic'
 
         if len(set(biosample_donor_list)) == 0:
             return None
