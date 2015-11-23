@@ -3,7 +3,7 @@ from contentbase.util import ensurelist
 
 
 class CalculatedBiosampleSlims:
-    @calculated_property(define=True, condition='biosample_term_id', schema={
+    @calculated_property(condition='biosample_term_id', schema={
         "title": "Organ slims",
         "type": "array",
         "items": {
@@ -18,7 +18,7 @@ class CalculatedBiosampleSlims:
                 slims.update(registry['ontology'][term_id]['organs'])
         return list(slims)
 
-    @calculated_property(define=True, condition='biosample_term_id', schema={
+    @calculated_property(condition='biosample_term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
@@ -33,7 +33,7 @@ class CalculatedBiosampleSlims:
                 slims.update(registry['ontology'][term_id]['systems'])
         return list(slims)
 
-    @calculated_property(define=True, condition='biosample_term_id', schema={
+    @calculated_property(condition='biosample_term_id', schema={
         "title": "Developmental slims",
         "type": "array",
         "items": {
@@ -59,11 +59,11 @@ class CalculatedBiosampleSynonyms:
     })
     def biosample_synonyms(self, registry, biosample_term_id):
         biosample_term_id = ensurelist(biosample_term_id)
-        slims = set()
+        syns = set()
         for term_id in biosample_term_id:
             if term_id in registry['ontology']:
-                slims.update(registry['ontology'][term_id]['synonyms'])
-        return list(slims)
+                syns.update(registry['ontology'][term_id]['synonyms'])
+        return list(syns)
 
 
 class CalculatedAssaySynonyms:
@@ -75,15 +75,18 @@ class CalculatedAssaySynonyms:
         },
     })
     def assay_synonyms(self, registry, assay_term_id):
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['synonyms'] + [
-                registry['ontology'][assay_term_id]['name'],
-            ]
-        return []
+        assay_term_id = ensurelist(assay_term_id)
+        syns = set()
+        for term_id in assay_term_id:
+            if term_id in registry['ontology']:
+                syns.update(registry['ontology'][term_id]['synonyms'] + [
+                    registry['ontology'][term_id]['name'],
+                ])
+        return list(syns)
 
 
 class CalculatedFileSetBiosample:
-    @calculated_property(define=True, condition='files', schema={
+    @calculated_property(condition='files', schema={
         "title": "Biosample term name",
         "type": "array",
         "items": {
@@ -95,6 +98,17 @@ class CalculatedFileSetBiosample:
             'replicate.experiment.biosample_term_name', *files)
 
     @calculated_property(define=True, condition='files', schema={
+        "title": "Biosample term id",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def biosample_term_id(self, request, files):
+        return request.select_distinct_values(
+            'replicate.experiment.biosample_term_id', *files)
+
+    @calculated_property(condition='files', schema={
         "title": "Biosample type",
         "type": "array",
         "items": {
@@ -130,6 +144,17 @@ class CalculatedFileSetAssay:
         return request.select_distinct_values(
             'replicate.experiment.assay_term_name', *files)
 
+    @calculated_property(define=True, condition='files', schema={
+        "title": "Assay term id",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_id(self, request, files):
+        return request.select_distinct_values(
+            'replicate.experiment.assay_term_id', *files)
+
 
 class CalculatedSeriesAssay:
     @calculated_property(condition='related_datasets', schema={
@@ -142,6 +167,17 @@ class CalculatedSeriesAssay:
     def assay_term_name(self, request, related_datasets):
         return request.select_distinct_values(
             'assay_term_name', *related_datasets)
+
+    @calculated_property(define=True, condition='related_datasets', schema={
+        "title": "Assay term id",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def assay_term_id(self, request, related_datasets):
+        return request.select_distinct_values(
+            'assay_term_id', *related_datasets)
 
 
 class CalculatedSeriesBiosample:
@@ -156,7 +192,7 @@ class CalculatedSeriesBiosample:
         return request.select_distinct_values(
             'biosample_term_name', *related_datasets)
 
-    @calculated_property(condition='related_datasets', schema={
+    @calculated_property(define=True, condition='related_datasets', schema={
         "title": "Biosample term id",
         "type": "array",
         "items": {

@@ -50,7 +50,7 @@
             "title": "Biosample type",
             "type": "string"
         },
-        "related_datasets.replicates.library.biosample.organ_slims": {
+        "organ_slims": {
             "title": "Organ",
             "type": "array"
         },

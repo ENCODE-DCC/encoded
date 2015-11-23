@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
+    CalculatedAssaySynonyms,
     CalculatedFileSetAssay,
     CalculatedFileSetBiosample,
     CalculatedSeriesAssay,
@@ -307,7 +308,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay):
+class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
     embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
@@ -333,7 +334,7 @@ class Reference(FileSet):
         'title': "UCSC browser composite file set",
         'description': 'A set of files that comprise a composite at the UCSC genome browser.',
     })
-class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
+class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynonyms):
     item_type = 'ucsc_browser_composite'
     schema = load_schema('encoded:schemas/ucsc_browser_composite.json')
     embedded = FileSet.embedded + ['organism', 'files.dataset']
@@ -374,13 +375,13 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay):
         'title': "Project file set",
         'description': 'A set of files that comprise a project.',
     })
-class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
+class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'project'
     schema = load_schema('encoded:schemas/project.json')
     embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
-class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment):
+class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')

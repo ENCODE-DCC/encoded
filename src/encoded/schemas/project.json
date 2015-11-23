@@ -63,6 +63,10 @@
             "title": "Biosample type",
             "type": "string"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
         "files.analysis_step_version.analysis_step.pipelines.title": {
             "title": "Pipeline",
             "type": "string"
