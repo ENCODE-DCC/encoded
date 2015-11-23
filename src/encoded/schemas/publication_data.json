@@ -111,10 +111,6 @@
         "organism.scientific_name": {
             "title": "Species",
             "type": "array"
-        },
-        "files.length": {
-            "title": "Files",
-            "type": "array"
         }
     },
     "boost_values": {

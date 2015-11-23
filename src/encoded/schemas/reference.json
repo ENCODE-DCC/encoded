@@ -125,10 +125,6 @@
         "software_used.software.name": {
             "title": "Software used",
             "type": "array"
-        },
-        "files.length": {
-            "title": "Files",
-            "type": "array"
         }
     },
     "boost_values": {
