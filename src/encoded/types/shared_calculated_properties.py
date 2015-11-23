@@ -1,10 +1,9 @@
-from contentbase import (
-    calculated_property
-)
+from contentbase import calculated_property
+from contentbase.util import ensurelist
 
 
 class CalculatedBiosampleSlims:
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "Organ slims",
         "type": "array",
         "items": {
@@ -12,11 +11,14 @@ class CalculatedBiosampleSlims:
         },
     })
     def organ_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['organs']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['organs'])
+        return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
@@ -24,11 +26,14 @@ class CalculatedBiosampleSlims:
         },
     })
     def system_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['systems']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['systems'])
+        return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "Developmental slims",
         "type": "array",
         "items": {
@@ -36,9 +41,12 @@ class CalculatedBiosampleSlims:
         },
     })
     def developmental_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['developmental']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['developmental'])
+        return list(slims)
 
 
 class CalculatedBiosampleSynonyms:
@@ -50,9 +58,12 @@ class CalculatedBiosampleSynonyms:
         },
     })
     def biosample_synonyms(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['synonyms']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['synonyms'])
+        return list(slims)
 
 
 class CalculatedAssaySynonyms:
@@ -146,6 +157,17 @@ class CalculatedSeriesBiosample:
             'biosample_term_name', *related_datasets)
 
     @calculated_property(condition='related_datasets', schema={
+        "title": "Biosample term id",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def biosample_term_id(self, request, related_datasets):
+        return request.select_distinct_values(
+            'biosample_term_id', *related_datasets)
+
+    @calculated_property(condition='related_datasets', schema={
         "title": "Biosample type",
         "type": "array",
         "items": {
@@ -180,18 +202,6 @@ class CalculatedSeriesTreatment:
     def treatment_term_name(self, request, related_datasets):
         return request.select_distinct_values(
             'replicates.library.biosample.treatments.treatment_term_name',
-            *related_datasets)
-
-    @calculated_property(condition='related_datasets', schema={
-        "title": "Treatment type",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def treatment_type(self, request, related_datasets):
-        return request.select_distinct_values(
-            'replicates.library.biosample.treatments.treatment_type',
             *related_datasets)
 
 
