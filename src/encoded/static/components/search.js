@@ -46,6 +46,21 @@ var AuditMixin = audit.AuditMixin;
         ucsc_browser_composite: {title: 'UCSC browser composite file set'}
     };
 
+    var datasetTypes = {
+        'Annotation': types['annotation'].title,
+        'Dataset': types['dataset'].title,
+        'MatchedSet': types['matched_set'].title,
+        'OrganismDevelopmentSeries': types['organism_development_series'].title,
+        'Project': types['project'].title,
+        'PublicationData': types['publication_data'].title,
+        'Reference': types['reference'].title,
+        'ReferenceEpigenome': types['reference_epigenome'].title,
+        'ReplicationTimingSeries': types['replication_timing_series'].title,
+        'TreatmentConcentrationSeries': types['treatment_concentration_series'].title,
+        'TreatmentTimeSeries': types['treatment_time_series'].title,
+        'UcscBrowserComposite': types['ucsc_browser_composite'].title
+    };
+
     var Listing = module.exports.Listing = function (props) {
         // XXX not all panels have the same markup
         var context;
@@ -431,7 +446,7 @@ var AuditMixin = audit.AuditMixin;
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
-                            <a href={result['@id']}>{result['description']}</a>
+                            <a href={result['@id']}>{datasetTypes[result['@type'][0]]}</a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
