@@ -472,12 +472,15 @@ var AuditMixin = audit.AuditMixin;
                 lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
             }
 
+            var haveSeries = result['@type'].indexOf('Series') >= 0;
+            var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
             return (
                 <li>
                     <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
-                            <p className="type meta-title">Dataset</p>
+                            <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
