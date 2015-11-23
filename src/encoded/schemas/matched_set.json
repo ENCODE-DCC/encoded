@@ -50,6 +50,10 @@
             "title": "Biosample type",
             "type": "string"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
         "biosample_term_name": {
             "title": "Biosample term name",
             "type": "string"

@@ -50,6 +50,10 @@
             "title": "Biosample type",
             "type": "string"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
         "files.file_type": {
             "title": "Available data",
             "type": "string"
@@ -110,10 +114,6 @@
         },
         "organism.scientific_name": {
             "title": "Species",
-            "type": "array"
-        },
-        "files.length": {
-            "title": "Files",
             "type": "array"
         }
     },
