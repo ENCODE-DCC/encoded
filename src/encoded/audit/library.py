@@ -15,19 +15,6 @@ moleculeDict = {
     }
 
 
-@audit_checker('library', frame=['object'])
-def audit_library_biosample(value, system):
-    '''
-    The library should be linked to biosample 
-    '''
-    if value['status'] in ['deleted']:
-        return
-    if 'biosample' not in value:
-        detail = 'Library {} has no biosample'.format(
-            value['@id'])
-        raise AuditFailure('missing biosample', detail, level='ERROR')
-
-
 @audit_checker('library', frame='object')
 def audit_library_nucleic_acid(value, system):
     '''
@@ -71,26 +58,7 @@ def audit_library_documents(value, system):
             detail = 'Library {} method specifies "see document" yet has no document'.format(
                 value['@id']
                 )
-            raise AuditFailure('missing documents', detail, level='WARNING')
-
-
-
-
-@audit_checker('library', frame='object')
-def audit_library_RNA_size_range(value, system):
-    '''
-    An RNA library should have a size_range specified.
-    This needs to accomodate the rfa
-    '''
-
-    if value['status'] in ['deleted']:
-        return
-
-    RNAs = ['SO:0000356', 'SO:0000871']
-
-    if (value['nucleic_acid_term_id'] in RNAs) and ('size_range' not in value):
-        detail = 'RNA library {} requires a value for size_range'.format(value['@id'])
-        raise AuditFailure('missing size_range', detail, level='ERROR')
+            raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('library', frame='object')
