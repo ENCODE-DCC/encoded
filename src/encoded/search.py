@@ -163,7 +163,7 @@ def set_filters(request, query, result):
     query_filters = query['filter']['and']['filters']
     used_filters = {}
     for field, term in request.params.items():
-        if field in ['type', 'limit', 'y.limit', 'x.limit' 'mode', 'annotation',
+        if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome']:
             continue
 
