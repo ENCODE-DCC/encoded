@@ -4,6 +4,7 @@ var _ = require('underscore');
 var cx = require('react/lib/cx');
 var moment = require('moment');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dbxref = require('./dbxref');
 var fetched = require('./fetched');
 var audit = require('./audit');
@@ -12,6 +13,7 @@ var graph = require('./graph');
 var reference = require('./reference');
 var software = require('./software');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var FetchedItems = fetched.FetchedItems;
@@ -48,6 +50,12 @@ var Dataset = module.exports.Dataset = React.createClass({
         });
         experiments = _.values(experiments);
 
+        // Set up the breadcrumbs
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: context.dataset_type, query: 'dataset_type=' + context.dataset_type, tip: context.dataset_type}
+        ];
+
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document, i) {
@@ -61,6 +69,7 @@ var Dataset = module.exports.Dataset = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?@type=Dataset' crumbs={crumbs} />
                         <h2>Dataset {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">

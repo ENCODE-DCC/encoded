@@ -12,6 +12,7 @@ targetBasedAssayList = [
     'RIP-seq',
     'MeDIP-seq',
     'iCLIP',
+    'eCLIP',
     'shRNA knockdown followed by RNA-seq',
     ]
 
@@ -102,9 +103,9 @@ def audit_experiment_replicates_with_no_libraries(value, system):
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
-            yield AuditFailure('replicate with no library', detail, level='DCC_ACTION')
+            yield AuditFailure('replicate with no library', detail, level='NOT_COMPLIANT')
     return
-  
+
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library.biosample', 'replicates.library.biosample.donor', 'replicates.library.biosample.donor.organism' ])
 def audit_experiment_isogeneity(value, system):
@@ -208,36 +209,44 @@ def audit_experiment_technical_replicates_same_library(value, system):
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library', 'replicates.library.biosample'])
+@audit_checker('experiment', frame=['replicates', 
+                                    'replicates.library', 'replicates.library.biosample'])
 def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
     biosamples_list = []
+    assay_name = 'unknown'
+    if 'assay_term_name' in value:
+        assay_name = value['assay_term_name']
+
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
         tech_rep_num = rep['technical_replicate_number']
-        if 'library' in rep and 'biosample' in rep['library']:         
-            biosample = rep['library']['biosample'] 
+        if 'library' in rep and 'biosample' in rep['library']:
+            biosample = rep['library']['biosample']
 
-            if not bio_rep_num in biological_replicates_dict:
-                biological_replicates_dict[bio_rep_num]=biosample['accession']
+            if bio_rep_num not in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num] = biosample['accession']
                 if biosample['accession'] in biosamples_list:
-                    detail = 'Experiment {} has multiple biological replicates associated with the same biosample {}'.format(
+                    detail = 'Experiment {} has multiple biological replicates \
+                              associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    raise AuditFailure('biological replicates with identical biosample', detail, level='DCC_ACTION')
+                    raise AuditFailure('biological replicates with identical biosample',
+                                       detail, level='DCC_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
-            else:     
-                if biosample['accession'] !=  biological_replicates_dict[bio_rep_num]:
-                    detail = 'Experiment {} has technical replicates associated with the different biosamples'.format(
+            else:
+                if biosample['accession'] != biological_replicates_dict[bio_rep_num] and \
+                   assay_name != 'single cell isolation followed by RNA-seq':
+                    detail = 'Experiment {} has technical replicates \
+                              associated with the different biosamples'.format(
                         value['@id'])
-                    raise AuditFailure('technical replicates with not identical biosample', detail, level='DCC_ACTION')
+                    raise AuditFailure('technical replicates with not identical biosample',
+                                       detail, level='ERROR')
 
-
-    
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_documents(value, system):
@@ -263,7 +272,7 @@ def audit_experiment_documents(value, system):
     # If there are no library documents anywhere, then we say something
     if lib_docs == 0:
         detail = 'Experiment {} has no attached documents'.format(value['@id'])
-        raise AuditFailure('missing documents', detail, level='WARNING')
+        raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('experiment', frame='object')
@@ -626,18 +635,82 @@ def audit_experiment_antibody_eligible(value, system):
                     for lot_organism in lot_review['organisms']:
                         if organism == lot_organism:
                             detail = '{} is not eligible for {}'.format(antibody["@id"], organism)
-                            yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+                            yield AuditFailure('not eligible antibody',
+                                               detail, level='NOT_COMPLIANT')
 
         else:
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = (biosample_term_id, organism)
             eligible_biosamples = set()
+            warning_flag = False
             for lot_review in antibody['lot_reviews']:
-                if lot_review['status'] == 'eligible for new data':
+                if lot_review['status'] in ['eligible for new data',
+                                            'eligible for new data (via exemption)']:
                     for lot_organism in lot_review['organisms']:
                         eligible_biosample = (lot_review['biosample_term_id'], lot_organism)
                         eligible_biosamples.add(eligible_biosample)
+                if lot_review['status'] == 'eligible for new data (via exemption)':
+                    warning_flag = True
+            if warning_flag is True:
+                detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
+                                                                         biosample_term_name,
+                                                                         organism)
+                yield AuditFailure('antibody eligible via exemption', detail, level='WARNING')
+
             if experiment_biosample not in eligible_biosamples:
-                detail = '{} is not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
+                detail = '{} is not eligible for {} in {}'.format(antibody["@id"],
+                                                                  biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='NOT_COMPLIANT')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'replicates',
+        'replicates.library'])
+def audit_experiment_library_biosample(value, system):
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+        return
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            continue
+
+        lib = rep['library']
+        if 'biosample' not in lib:
+            detail = '{} is missing biosample'.format(
+                lib['@id'])
+            yield AuditFailure('missing biosample', detail, level='ERROR')
+
+
+@audit_checker(
+    'experiment',
+    frame=[
+        'replicates',
+        'replicates.library'])
+def audit_library_RNA_size_range(value, system):
+    '''
+    An RNA library should have a size_range specified.
+    This needs to accomodate the rfa
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if value.get('assay_term_name') == 'transcription profiling by array assay':
+        return
+
+    if value['status'] in ['deleted']:
+        return
+
+    RNAs = ['SO:0000356', 'SO:0000871']
+
+    for rep in value['replicates']:
+        if 'library' not in rep:
+            continue
+        lib = rep['library']
+        if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
+            detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
+            raise AuditFailure('missing size_range', detail, level='ERROR')
