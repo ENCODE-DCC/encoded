@@ -64,7 +64,7 @@ def audit_experiment_release_date(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'award'],
-               condition=rfa("ENCODE2", "ENCODE3", "modERN",
+               condition=rfa("ENCODE3", "modERN",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
