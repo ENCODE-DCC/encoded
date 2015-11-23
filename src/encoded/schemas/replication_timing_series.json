@@ -26,7 +26,7 @@
             "default": "7"
         }
     },
-        "facets": {
+    "facets": {
         "related_datasets.assay_term_name": {
             "title": "Assay",
             "type": "string"
@@ -129,6 +129,10 @@
             "title": "Description",
             "type": "string"
         },
+        "biosample_term_name": {
+            "title": "Description",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -141,7 +145,7 @@
             "title": "Status",
             "type": "string"
         },
-         "related_datasets.replicates.antibody.accession": {
+        "related_datasets.replicates.antibody.accession": {
             "title": "Linked Antibody",
             "type": "string"
         },

@@ -435,6 +435,17 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
+            var biosampleTerm;
+
+            // Determine whether the dataset is a series or not
+            var seriesDataset = result['@type'].indexOf('Series') >= 0;
+
+            // Get the biosample_term_name if any. Can be string or array. If array, only use if 1 term name exists
+            if (seriesDataset) {
+                biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
+                    ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+            }
+
             return (
                 <li>
                     <div className="clearfix">
@@ -446,7 +457,14 @@ var AuditMixin = audit.AuditMixin;
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
-                            <a href={result['@id']}>{datasetTypes[result['@type'][0]]}</a>
+                            <a href={result['@id']}>
+                                {datasetTypes[result['@type'][0]]}
+                                {seriesDataset ?
+                                    <span>{biosampleTerm ? <span>{' in ' + biosampleTerm}</span> : null}</span>
+                                :
+                                    <span>{result.description ? <span>{': ' + result.description}</span> : null}</span>
+                                }
+                            </a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}

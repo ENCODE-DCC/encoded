@@ -130,6 +130,10 @@
             "title": "Description",
             "type": "string"
         },
+        "biosample_term_name": {
+            "title": "Biosample term name",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -142,7 +146,7 @@
             "title": "Status",
             "type": "string"
         },
-         "related_datasets.replicates.antibody.accession": {
+        "related_datasets.replicates.antibody.accession": {
             "title": "Linked Antibody",
             "type": "string"
         },

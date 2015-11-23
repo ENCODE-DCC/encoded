@@ -46,10 +46,6 @@
             "title": "Target of assay",
             "type": "string"
         },
-        "biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
-        },
         "organ_slims": {
             "title": "Organ",
             "type": "array"
@@ -110,6 +106,10 @@
     "columns": {
         "accession": {
             "title": "Accession",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Biosample term name",
             "type": "string"
         },
         "related_datasets.assay_term_name": {

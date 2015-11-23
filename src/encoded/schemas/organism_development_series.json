@@ -140,7 +140,11 @@
             "title": "Status",
             "type": "string"
         },
-         "related_datasets.replicates.antibody.accession": {
+        "biosample_term_name": {
+            "title": "Biosample term name",
+            "type": "string"
+        },
+        "related_datasets.replicates.antibody.accession": {
             "title": "Linked Antibody",
             "type": "string"
         },
