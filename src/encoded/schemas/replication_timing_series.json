@@ -133,6 +133,10 @@
             "title": "Description",
             "type": "string"
         },
+        "organism.scientific_name": {
+            "title": "Organism scientific name",
+            "type": "string"
+        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -157,13 +161,9 @@
             "title": "Life stage",
             "type": "array"
         },
-        "related_datasets.replicates.library.biosample.age": {
-            "title": "Age",
-            "type": "array"
-        },
-        "related_datasets.replicates.library.biosample.age_units": {
-            "title": "Age Units",
-            "type": "array"
+        "related_datasets.replicates.library.biosample.age_display": {
+            "title": "Age display",
+            "type": "string"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Treatment",

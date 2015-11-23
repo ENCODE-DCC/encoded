@@ -38,10 +38,6 @@
             "title": "Genome assembly (visualization)",
             "type": "string"
         },
-        "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
-        },
         "target.investigated_as": {
             "title": "Target of assay",
             "type": "string"
@@ -152,16 +148,12 @@
             "title": "Species",
             "type": "array"
         },
+        "related_datasets.replicates.library.biosample.age_display": {
+            "title": "Age display",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage",
-            "type": "array"
-        },
-        "related_datasets.replicates.library.biosample.age": {
-            "title": "Age",
-            "type": "array"
-        },
-        "related_datasets.replicates.library.biosample.age_units": {
-            "title": "Age Units",
             "type": "array"
         },
         "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
