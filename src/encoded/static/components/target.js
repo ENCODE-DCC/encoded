@@ -2,10 +2,12 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var item = require('./item');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var ExperimentTable = dataset.ExperimentTable;
@@ -36,10 +38,23 @@ var Target = module.exports.Target = React.createClass({
                 geneLink = baseUrl + baseName;
             }
         }
+
+        // Set up breadcrumbs
+        var assayTargets = context.investigated_as.map(function(assayTarget) {
+            return 'investigated_as=' + assayTarget;
+        });
+        var crumbs = [
+            {id: 'Targets'},
+            {id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ')},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name,
+                tip: context.investigated_as.join(' + ') + ' and ' + context.organism.scientific_name}
+        ];
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=target' crumbs={crumbs} />
                         <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
                     </div>
                 </header>
