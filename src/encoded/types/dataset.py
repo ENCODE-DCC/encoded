@@ -380,7 +380,7 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample):
     embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
-class Series(Dataset):
+class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
     schema = load_schema('encoded:schemas/series.json')
@@ -479,7 +479,7 @@ class Series(Dataset):
         'title': "Matched Set Series",
         'description': 'A series that groups two or more datasets (experiments) together with shared properties',
     })
-class MatchedSet(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
+class MatchedSet(Series):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded
@@ -492,7 +492,7 @@ class MatchedSet(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calcu
         'title': "Treatment time series",
         'description': 'A series that varies on treatment duration across an applied treatment.',
     })
-class TreatmentTimeSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment):
+class TreatmentTimeSeries(Series):
     item_type = 'treatment_time_series'
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded
@@ -505,7 +505,7 @@ class TreatmentTimeSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosamp
         'title': "Treatment concentration series",
         'description': 'A series that varies on treatment concentration across an applied treatment.',
     })
-class TreatmentConcentrationSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget, CalculatedSeriesTreatment):
+class TreatmentConcentrationSeries(Series):
     item_type = 'treatment_concentration_series'
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded
@@ -518,7 +518,7 @@ class TreatmentConcentrationSeries(Series, CalculatedSeriesAssay, CalculatedSeri
         'title': "Organism development series",
         'description': 'A series that varies age/life stage of an organism.',
     })
-class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
+class OrganismDevelopmentSeries(Series):
     item_type = 'organism_development_series'
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded
@@ -531,7 +531,7 @@ class OrganismDevelopmentSeries(Series, CalculatedSeriesAssay, CalculatedSeriesB
         'title': "Replication timing series",
         'description': 'A series tracking replication timing over the cell cycle.',
     })
-class ReplicationTimingSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
+class ReplicationTimingSeries(Series):
     item_type = 'replication_timing_series'
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded
@@ -544,7 +544,7 @@ class ReplicationTimingSeries(Series, CalculatedSeriesAssay, CalculatedSeriesBio
         'title': "Reference epigenomes",
         'description': 'A series made up of complimentary assays that define a reference epigenome according to IHEC.',
     })
-class ReferenceEpigenome(Series, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedSeriesTarget):
+class ReferenceEpigenome(Series):
     item_type = 'reference_epigenome'
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded

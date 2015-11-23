@@ -196,18 +196,6 @@
         "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
             "title": "Post-synchronization time units",
             "type": "string"
-        },
-        "related_datasets.length": {
-            "title": "Datasets",
-            "type": "array"
-        },
-        "files.length": {
-            "title": "Files",
-            "type": "array"
-        },
-        "encode2_dbxrefs": {
-            "title": "Dbxrefs",
-            "type": "array"
         }
     },
     "boost_values": {

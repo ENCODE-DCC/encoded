@@ -1,14 +1,9 @@
-from contentbase import (
-    calculated_property
-)
-
-from .base import (
-    paths_filtered_by_status,
-)
+from contentbase import calculated_property
+from contentbase.util import ensurelist
 
 
 class CalculatedBiosampleSlims:
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "Organ slims",
         "type": "array",
         "items": {
@@ -16,11 +11,14 @@ class CalculatedBiosampleSlims:
         },
     })
     def organ_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['organs']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['organs'])
+        return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "System slims",
         "type": "array",
         "items": {
@@ -28,11 +26,14 @@ class CalculatedBiosampleSlims:
         },
     })
     def system_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['systems']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['systems'])
+        return list(slims)
 
-    @calculated_property(condition='biosample_term_id', schema={
+    @calculated_property(define=True, condition='biosample_term_id', schema={
         "title": "Developmental slims",
         "type": "array",
         "items": {
@@ -40,9 +41,12 @@ class CalculatedBiosampleSlims:
         },
     })
     def developmental_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['developmental']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['developmental'])
+        return list(slims)
 
 
 class CalculatedBiosampleSynonyms:
@@ -54,9 +58,12 @@ class CalculatedBiosampleSynonyms:
         },
     })
     def biosample_synonyms(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['synonyms']
-        return []
+        biosample_term_id = ensurelist(biosample_term_id)
+        slims = set()
+        for term_id in biosample_term_id:
+            if term_id in registry['ontology']:
+                slims.update(registry['ontology'][term_id]['synonyms'])
+        return list(slims)
 
 
 class CalculatedAssaySynonyms:
@@ -84,18 +91,8 @@ class CalculatedFileSetBiosample:
         },
     })
     def biosample_term_name(self, request, files):
-        biosamples = []
-        for idx, path in enumerate(files):
-            # Need to cap this due to the large numbers of files in related_files
-            if idx < 100:
-                f = request.embed(path, '@@object')
-                if 'replicate' in f:
-                    rep = request.embed(f['replicate'], '@@object')
-                    if 'experiment' in rep:
-                        expt = request.embed(rep['experiment'], '@@object')
-                        if 'biosample_term_name' in expt:
-                            biosamples.append(expt['biosample_term_name'])
-        return list(set(biosamples))
+        return request.select_distinct_values(
+            'replicate.experiment.biosample_term_name', *files)
 
     @calculated_property(define=True, condition='files', schema={
         "title": "Biosample type",
@@ -105,18 +102,8 @@ class CalculatedFileSetBiosample:
         },
     })
     def biosample_type(self, request, files):
-        biosamples = []
-        for idx, path in enumerate(files):
-            # Need to cap this due to the large numbers of files in related_files
-            if idx < 100:
-                f = request.embed(path, '@@object')
-                if 'replicate' in f:
-                    rep = request.embed(f['replicate'], '@@object')
-                    if 'experiment' in rep:
-                        expt = request.embed(rep['experiment'], '@@object')
-                        if 'biosample_type' in expt:
-                            biosamples.append(expt['biosample_type'])
-        return list(set(biosamples))
+        return request.select_distinct_values(
+            'replicate.experiment.biosample_type', *files)
 
     @calculated_property(condition='files', schema={
         "title": "Organism",
@@ -127,24 +114,8 @@ class CalculatedFileSetBiosample:
         },
     })
     def organism(self, request, files):
-        organisms = []
-        if files:
-            for idx, path in enumerate(files):
-                # Need to cap this due to the large numbers of files in related_files
-                if idx < 100:
-                    f = request.embed(path, '@@object')
-                    if 'replicate' in f:
-                        rep = request.embed(f['replicate'], '@@object')
-                        if 'library' in rep:
-                            lib = request.embed(rep['library'], '@@object')
-                            if 'biosample' in lib:
-                                bio = request.embed(lib['biosample'], '@@object')
-                                if 'organism' in bio:
-                                    organisms.append(bio['organism'])
-            if organisms:
-                return paths_filtered_by_status(request, list(set(organisms)))
-            else:
-                return organisms
+        return request.select_distinct_values(
+            'replicate.library.biosample.organism', *files)
 
 
 class CalculatedFileSetAssay:
@@ -156,18 +127,8 @@ class CalculatedFileSetAssay:
         },
     })
     def assay_term_name(self, request, files):
-        assays = []
-        for idx, path in enumerate(files):
-            # Need to cap this due to the large numbers of files in related_files
-            if idx < 100:
-                f = request.embed(path, '@@object')
-                if 'replicate' in f:
-                    rep = request.embed(f['replicate'], '@@object')
-                    if 'experiment' in rep:
-                        expt = request.embed(rep['experiment'])
-                        if 'assay_term_name' in expt:
-                            assays.append(expt['assay_term_name'])
-        return list(set(assays))
+        return request.select_distinct_values(
+            'replicate.experiment.assay_term_name', *files)
 
 
 class CalculatedSeriesAssay:
@@ -179,15 +140,8 @@ class CalculatedSeriesAssay:
         },
     })
     def assay_term_name(self, request, related_datasets):
-        assays = []
-        for path in related_datasets:
-            properties = request.embed(path, '@@object')
-            if 'assay_term_name' in properties:
-                assays.append(properties['assay_term_name'])
-        if assays:
-            return list(set(assays))
-        else:
-            return assays
+        return request.select_distinct_values(
+            'assay_term_name', *related_datasets)
 
 
 class CalculatedSeriesBiosample:
@@ -199,15 +153,19 @@ class CalculatedSeriesBiosample:
         },
     })
     def biosample_term_name(self, request, related_datasets):
-        biosamples = []
-        for path in related_datasets:
-            properties = request.embed(path, '@@object')
-            if 'biosample_term_name' in properties:
-                biosamples.append(properties['biosample_term_name'])
-        if biosamples:
-            return list(set(biosamples))
-        else:
-            return biosamples
+        return request.select_distinct_values(
+            'biosample_term_name', *related_datasets)
+
+    @calculated_property(condition='related_datasets', schema={
+        "title": "Biosample term id",
+        "type": "array",
+        "items": {
+            "type": 'string',
+        },
+    })
+    def biosample_term_id(self, request, related_datasets):
+        return request.select_distinct_values(
+            'biosample_term_id', *related_datasets)
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Biosample type",
@@ -217,16 +175,8 @@ class CalculatedSeriesBiosample:
         },
     })
     def biosample_type(self, request, related_datasets):
-        biosample_types = []
-        for path in related_datasets:
-            properties = request.embed(path, '@@object')
-            if 'biosample_type' in properties:
-                biosample_types.append(properties['biosample_type'])
-        if biosample_types:
-            return list(set(biosample_types))
-        else:
-            return biosample_types
-
+        return request.select_distinct_values(
+            'biosample_type', *related_datasets)
 
     @calculated_property(condition='related_datasets', schema={
         "title": "Organism",
@@ -237,22 +187,8 @@ class CalculatedSeriesBiosample:
         },
     })
     def organism(self, request, related_datasets):
-        organisms = []
-        for path in related_datasets:
-            dataset = request.embed(path, '@@object')
-            if 'replicates' in dataset:
-                for rep_path in dataset['replicates']:
-                    rep = request.embed(rep_path, '@@object')
-                    if 'library' in rep:
-                        lib = request.embed(rep['library'], '@@object')
-                        if 'biosample' in lib:
-                            bio = request.embed(lib['biosample'], '@@object')
-                            if 'organism' in bio:
-                                organisms.append(bio['organism'])
-        if organisms:
-            return paths_filtered_by_status(request, list(set(organisms)))
-        else:
-            return organisms
+        return request.select_distinct_values(
+            'replicates.library.biosample.organism', *related_datasets)
 
 
 class CalculatedSeriesTreatment:
@@ -264,51 +200,9 @@ class CalculatedSeriesTreatment:
         },
     })
     def treatment_term_name(self, request, related_datasets):
-        treatments = []
-        if related_datasets:
-            for path in related_datasets:
-                dataset = request.embed(path, '@@object')
-                if 'replicates' in dataset:
-                    for rep_path in dataset['replicates']:
-                        rep = request.embed(rep_path, '@@object')
-                        if 'library' in rep:
-                            lib = request.embed(rep['library'], '@@object')
-                            if 'biosample' in lib:
-                                bio = request.embed(lib['biosample'], '@@object')
-                                if 'treatments' in bio:
-                                    for treat_path in bio['treatments']:
-                                        treatment = request.embed(treat_path, '@@object')
-                                        if 'treatment_term_name' in treatment:
-                                            treatments.append(treatment['treatment_term_name'])
-            return list(set(treatments))
-        return []
-
-    @calculated_property(condition='related_datasets', schema={
-        "title": "Treatment type",
-        "type": "array",
-        "items": {
-            "type": 'string',
-        },
-    })
-    def treatment_type(self, request, related_datasets):
-        treatment_types = []
-        if related_datasets:
-            for path in related_datasets:
-                dataset = request.embed(path, '@@object')
-                if 'replicates' in dataset:
-                    for rep_path in dataset['replicates']:
-                        rep = request.embed(rep_path, '@@object')
-                        if 'library' in rep:
-                            lib = request.embed(rep['library'], '@@object')
-                            if 'biosample' in lib:
-                                bio = request.embed(lib['biosample'], '@@object')
-                                if 'treatments' in bio:
-                                    for treat_path in bio['treatments']:
-                                        treatment = request.embed(treat_path, '@@object')
-                                        if 'treatment_type' in treatment:
-                                            treatment_types.append(treatment['treatment_type'])
-            return list(set(treatment_types))
-        return []
+        return request.select_distinct_values(
+            'replicates.library.biosample.treatments.treatment_term_name',
+            *related_datasets)
 
 
 class CalculatedSeriesTarget:
@@ -321,13 +215,4 @@ class CalculatedSeriesTarget:
         },
     })
     def target(self, request, related_datasets):
-        targets = []
-        if related_datasets:
-            for path in related_datasets:
-                properties = request.embed(path, '@@object')
-                if 'target' in properties:
-                    targets.append(properties['target'])
-
-            if targets:
-                return paths_filtered_by_status(request, list(set(targets)))
-        return []
+        return request.select_distinct_values('target', *related_datasets)
