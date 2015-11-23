@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -12,6 +13,7 @@ var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
@@ -31,7 +33,7 @@ var Panel = function (props) {
         props = {context: context, key: context['@id']};
     }
     var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView {...props} />;
+    return <PanelView key={props.context.uuid} {...props} />;
 };
 
 
@@ -49,6 +51,14 @@ var Biosample = module.exports.Biosample = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var aliasList = context.aliases.join(", ");
+
+        // Set up the breadcrumbs
+        var crumbs = [
+            {id: 'Biosamples'},
+            {id: context.biosample_type, query: 'biosample_type=' + context.biosample_type, tip: context.biosample_type},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name, tip: context.organism.scientific_name},
+            {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
+        ];
 
         // set up construct documents panels
         var constructs = _.sortBy(context.constructs, function(item) {
@@ -101,13 +111,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Biosamples</li>
-                            <li>{context.biosample_type}</li>
-                            {context.donor ?
-                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
-                            : null }
-                        </ul>
+                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -185,7 +189,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <dd>
                                     {context.depleted_in_term_name.map(function(termName, i) {
                                         return (
-                                            <span>
+                                            <span key={i}>
                                                 {i > 0 ? ', ' : ''}
                                                 {termName}
                                             </span>
@@ -764,14 +768,17 @@ var Donor = module.exports.Donor = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Set up breadcrumbs
+        var crumbs = [
+            {id: 'Donors'},
+            {id: <i>{context.organism.scientific_name}</i>}
+        ];
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Donors</li>
-                            <li className="active"><em>{context.organism.scientific_name}</em></li>
-                        </ul>
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">

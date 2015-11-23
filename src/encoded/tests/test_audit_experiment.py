@@ -4,6 +4,15 @@ RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
 
+@pytest.fixture
+def library_no_biosample(testapp, lab, award):
+    item = {
+        'nucleic_acid_term_id': 'SO:0000352',
+        'nucleic_acid_term_name': 'DNA',
+        'lab': lab['@id'],
+        'award': award['@id']
+    }
+    return testapp.post_json('/library', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -589,3 +598,55 @@ def test_audit_experiment_isogenic_biological_replicates(testapp, base_experimen
         errors_list.extend(errors[error_type])       
     assert all(error['category'] != 'anisogenic biological replicates, matched sex and age' for error in errors_list)
 
+
+def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
+                                                         library_no_biosample):
+    testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing biosample' for error in errors_list)
+
+
+def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
+                                                         base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id':
+                                             'SO:0000356', 'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing size_range' for error in errors_list)
+
+
+def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
+                                                           base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
+                                             'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing size_range' for error in errors_list)
+
+
+def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
+                                                            base_replicate,
+                                                            base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
+                                             'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name':
+                                                'transcription profiling by array assay'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing size_range' for error in errors_list)

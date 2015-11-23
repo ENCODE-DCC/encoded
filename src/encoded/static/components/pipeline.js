@@ -3,6 +3,7 @@ var React = require('react');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
@@ -11,6 +12,7 @@ var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var SoftwareVersionList = software.SoftwareVersionList;
@@ -158,6 +160,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
 
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var crumbs = [
+            {id: 'Pipelines'},
+            {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
+        ];
+
         var documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
@@ -181,6 +190,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=pipeline' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">

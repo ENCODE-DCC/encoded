@@ -3,8 +3,10 @@ var React = require('react');
 var globals = require('./globals');
 var search = require('./search');
 var statuslabel = require('./statuslabel');
+var navbar = require('./navbar');
 
 var StatusLabel = statuslabel.StatusLabel;
+var Breadcrumbs = navbar.Breadcrumbs;
 
 
 var Panel = function (props) {
@@ -26,14 +28,16 @@ var TalenPage = React.createClass({
         var talen = Panel({context: context});
         var itemClass = globals.itemClass(context, 'view-item');
 
+        var crumbs = [
+            {id: 'TALENs'},
+            {id: context.talen_platform, query: 'talen_platform=' + context.talen_platform, tip: context.talen_platform}
+        ];
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>TALEN</li>
-                            <li>{context.talen_platform}</li>
-                        </ul>
+                        <Breadcrumbs root='/search/?type=talen' crumbs={crumbs} />
                         <h2>TALEN summary for {context.name}</h2>
                         <div className="status-line">
                             <div className="characterization-status-labels">
