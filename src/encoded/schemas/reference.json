@@ -29,7 +29,6 @@
             "title": "Type",
             "description": "The category that best describes the reference set.",
             "type": "string",
-            "default": "index",
             "enum": [
                 "index",
                 "spike-in",
