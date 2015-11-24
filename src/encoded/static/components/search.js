@@ -620,7 +620,7 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + term
+                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>

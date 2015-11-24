@@ -16,15 +16,15 @@ Feature: Search
         Then I should see at least 15 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 5 elements with the css selector "div.box.facets > div.facet"
 
-        When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo sapiens"
+        When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo+sapiens"
         And I wait for the content to load
         Then I should see at least 10 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo%20sapiens&clonality=polyclonal"
+        When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo+sapiens&clonality=polyclonal"
         And I wait for the content to load
         Then I should see at least 7 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Antibodylot&targets.organism.scientific_name=Homo%20sapiens&clonality=polyclonal&clonality=monoclonal"
+        When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo+sapiens&clonality=polyclonal&clonality=monoclonal"
         And I wait for the content to load
         Then I should see at least 10 elements with the css selector "ul.nav.result-table > li"
 
@@ -40,7 +40,7 @@ Feature: Search
         And I wait for the content to load
         Then I should see at least 1 elements with the css selector "ul.nav.result-table > li"
 
-        When I click the link to "?type=Biosample&sex=unknown&organism.scientific_name=Homo sapiens"
+        When I click the link to "?type=Biosample&sex=unknown&organism.scientific_name=Homo+sapiens"
         And I wait for the content to load
         Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
 
