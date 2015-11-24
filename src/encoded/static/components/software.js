@@ -3,7 +3,6 @@ var React = require('react');
 var globals = require('./globals');
 var navbar = require('./navbar');
 var search = require('./search');
-var pipeline = require('./pipeline');
 var fetched = require('./fetched');
 var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
@@ -12,7 +11,6 @@ var _ = require('underscore');
 var url = require('url');
 
 var Breadcrumbs = navbar.Breadcrumbs;
-var PipelineTable = pipeline.PipelineTable;
 var FetchedItems = fetched.FetchedItems;
 var PubReferenceList = reference.PubReferenceList;
 var AuditIndicators = audit.AuditIndicators;
@@ -124,20 +122,6 @@ var Software = module.exports.Software = React.createClass({
     }
 });
 globals.content_views.register(Software, 'Software');
-
-// Commenting out until pipelines are used.
-
-var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Pipelines using software {context.title}</h3>
-                <PipelineTable {...this.props} softwareId={context['@id']}/>
-            </div>
-        );
-    }
-});
 
 
 var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({

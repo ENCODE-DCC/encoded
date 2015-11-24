@@ -873,7 +873,6 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var facets = context['facets'];
             var total = context['total'];
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
@@ -881,13 +880,14 @@ var AuditMixin = audit.AuditMixin;
             var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            _.each(facets, function(facet) {
+
+            var facets = context['facets'].map(function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
+                    facet = _.clone(facet);
                     facet.restrictions = this.props.restrictions[facet.field];
-                    facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.key);
-                    }.bind(this));
+                    facet.terms = facet.terms.filter(term => _.contains(facet.restrictions, term.key));
                 }
+                return facet;
             }.bind(this));
 
             // See if a specific result type was requested ('type=x')
@@ -911,7 +911,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} {label} {context.matrix && <a href={context.matrix} title="View result matrix"><i className="icon icon-table"></i></a>}
+                                        Showing {results.length} of {total} {label}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
