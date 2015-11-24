@@ -146,11 +146,11 @@ def load_columns(request, doc_types, result):
         for doc_type in doc_types:
             type_info = types[doc_type]
             if 'columns' not in type_info.schema:
-                columns = {
-                    name: type_info.schema['properties'][name]['title']
-                    for name in ['title', 'description', 'name', 'accession']
+                columns = OrderedDict(
+                    (name, type_info.schema['properties'][name]['title'])
+                    for name in ['@id', 'title', 'description', 'name', 'accession', 'aliases']
                     if name in type_info.schema['properties']
-                }
+                )
             else:
                 columns = type_info.schema['columns']
             fields.update('embedded.' + column for column in columns)
