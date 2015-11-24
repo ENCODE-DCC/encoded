@@ -147,7 +147,7 @@ def load_columns(request, doc_types, result):
             type_info = types[doc_type]
             if 'columns' not in type_info.schema:
                 columns = OrderedDict(
-                    (name, type_info.schema['properties'][name]['title'])
+                    (name, type_info.schema['properties'][name].get('title', name))
                     for name in ['@id', 'title', 'description', 'name', 'accession', 'aliases']
                     if name in type_info.schema['properties']
                 )
