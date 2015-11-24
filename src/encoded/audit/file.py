@@ -235,7 +235,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     expt = value['dataset']
     if 'Experiment' not in expt['@type']:
         return
-    
+
     if expt['assay_term_id'] != 'OBI:0000716':
         return
 

@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/assay"}
+        { "$ref": "mixins.json#/assay"},
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -66,18 +67,6 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
-        },
-        "documents": {
-            "title": "Documents",
-            "description": "Documents that provide additional information about the pipeline.",
-            "type": "array",
-            "items": {
-                "title": "Document",
-                "description": "A document that provides additional information about the pipeline.",
-                "type": "string",
-                "comment": "See document.json for available identifiers.",
-                "linkTo": "Document"
-            }
         }
     },
     "facets": {

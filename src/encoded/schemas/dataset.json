@@ -1,4 +1,3 @@
-
 {
     "title": "Dataset",
     "description": "Schema for submitting metadata for a dataset.",
@@ -17,11 +16,12 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "SR"
@@ -31,20 +31,6 @@
             "description": "A plain text description of the dataset.",
             "type": "string",
             "default": ""
-        },
-        "dataset_type": {
-            "title": "Type",
-            "description": "The category that best describes the dataset.",
-            "type": "string",
-            "default": "project",
-            "enum": [
-                "project",
-                "composite",
-                "publication",
-                "reference",
-                "paired set",
-                "annotation"
-            ]
         },
         "dbxrefs": {
             "@type": "@id",
@@ -58,31 +44,6 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^((UCSC-GB-mm9|UCSC-GB-hg19):\\S+|GEO:(GSM|GSE)\\d+|UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+)$"
-            }
-        },
-        "documents": {
-            "title": "Documents",
-            "description": "Documents that provide additional information about the dataset (not data files).",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Document",
-                "description": "A document that provides additional information about the dataset (not data files).",
-                "type": "string",
-                "comment": "See document.json for available identifiers.",
-                "linkTo": "Document"
-            }
-        },
-        "related_files": {
-            "title": "Additional data files",
-            "description": "List of data files to be associated with the dataset.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for available identifiers.",
-                "type": "string",
-                "linkTo": "File"
             }
         },
         "date_released": {
@@ -116,12 +77,24 @@
         }
     },
     "facets": {
-        "dataset_type": {
-            "title": "Dataset type",
+        "status": {
+            "title": "Dataset status",
             "type": "string"
         },
+        "files.file_type": {
+            "title": "Available data",
+            "type": "string"
+        },
+        "date_released": {
+            "title": "Date released",
+            "type": "string"
+        },  
         "lab.title": {
             "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
             "type": "string"
         }
     },
@@ -132,10 +105,6 @@
         },
         "description": {
             "title": "Description",
-            "type": "string"
-        },
-        "dataset_type": {
-            "title": "Dataset type",
             "type": "string"
         },
         "lab.title": {
@@ -156,7 +125,6 @@
         "alternate_accessions": 1.0,
         "aliases": 1.3,
         "description": 1.0,
-        "dataset_type": 1.0,
         "dbxrefs": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,

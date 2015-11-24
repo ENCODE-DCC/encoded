@@ -59,5 +59,70 @@
         "duration_units": "hour",
         "treatment_term_name": "Serratia marcescens subsp. marcescens Db11",
         "duration": 48
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "c7e1c1bc-1f9d-4fd4-92d2-cad2e95e2365",
+        "treatment_term_id": "CHEBI:41879",
+        "treatment_type": "chemical",
+        "lab": "robert-waterston",
+        "duration_units": "hour",
+        "treatment_term_name": "dexamethasone",
+        "duration": 8,
+        "concentration": 100,
+        "concentration_units": "nM",
+        "aliases": ["robert-waterston:100mM_dex_8hr"]
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "377de739-7d3a-434b-867f-dc40f619fb2c",
+        "treatment_term_id": "CHEBI:41879",
+        "treatment_type": "chemical",
+        "lab": "robert-waterston",
+        "duration_units": "hour",
+        "treatment_term_name": "dexamethasone",
+        "duration": 10,
+        "concentration": 100,
+        "concentration_units": "nM",
+        "aliases": ["robert-waterston:100mM_dex_10hr"]
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "b49c1344-6078-4a1b-b4d2-daa8fb3fd471",
+        "treatment_term_id": "CHEBI:41879",
+        "treatment_type": "chemical",
+        "lab": "robert-waterston",
+        "duration_units": "hour",
+        "treatment_term_name": "dexamethasone",
+        "duration": 12,
+        "concentration": 100,
+        "concentration_units": "nM",
+        "aliases": ["robert-waterston:100mM_dex_12hr"]
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "6959b077-3e57-4edc-aef4-eb6d63d8be11",
+        "treatment_term_id": "CHEBI:41879",
+        "treatment_type": "chemical",
+        "lab": "robert-waterston",
+        "duration_units": "hour",
+        "treatment_term_name": "dexamethasone",
+        "duration": 8,
+        "concentration": 80,
+        "concentration_units": "nM",
+        "aliases": ["robert-waterston:80mM_dex_8hr"]
+    },
+    {
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "uuid": "add5f3ec-5084-48d8-a877-e32253b90e63",
+        "treatment_term_id": "CHEBI:41879",
+        "treatment_type": "chemical",
+        "lab": "robert-waterston",
+        "duration_units": "hour",
+        "treatment_term_name": "dexamethasone",
+        "duration": 8,
+        "concentration": 60,
+        "concentration_units": "nM",
+        "aliases": ["robert-waterston:60mM_dex_8hr"]
     }
 ]

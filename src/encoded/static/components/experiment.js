@@ -14,6 +14,7 @@ var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var biosample = require('./biosample');
+var software = require('./software');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -30,6 +31,7 @@ var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = biosample.SingleTreatment;
+var SoftwareVersionList = software.SoftwareVersionList;
 
 
 var anisogenicValues = [
@@ -1333,19 +1335,7 @@ var FileDetailView = function(node) {
                 {selectedFile.analysis_step_version ?
                     <div>
                         <dt>Software</dt>
-                        <dd>
-                            {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
-                                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                return (
-                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                        <span className="software">{version.software.name}</span>
-                                        {version.version ?
-                                            <span className="version">{versionNum}</span>
-                                        : null}
-                                    </a>
-                                );
-                            })}
-                        </dd>
+                        <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                     </div>
                 : null}
 

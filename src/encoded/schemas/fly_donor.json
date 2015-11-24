@@ -19,7 +19,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/strains"},
-        { "$ref": "mixins.json#/genomic_alterations"}
+        { "$ref": "mixins.json#/genomic_alterations"},
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -27,19 +28,6 @@
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
-        },
-        "documents": {
-            "title": "Strain documents",
-            "description": "Documents that describe the strain and its generation.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Strain document",
-                "description": "A document that describes the strain and/or its generation.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
         },
         "organism":{ 
             "linkEnum": [
