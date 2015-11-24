@@ -178,7 +178,7 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='hub', category='page', schema={
-        "title": "Visualuze at UCSC",
+        "title": "Visualize at UCSC",
         "type": "string",
     })
     def visualize_ucsc(self, request, hub):
