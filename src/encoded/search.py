@@ -614,9 +614,10 @@ def matrix(context, request):
     matrix_terms = []
     for q_field, q_terms in used_filters.items():
         matrix_terms.append({'terms': {'embedded.' + q_field + '.raw': q_terms}})
-    matrix_terms.append(
-        {'terms': {'principals_allowed.view': principals}}
-    )
+    matrix_terms.extend((
+        {'terms': {'principals_allowed.view': principals}},
+        {'terms': {'embedded.@type.raw': doc_types}},
+    ))
     x_grouping = matrix['x']['group_by']
     y_groupings = matrix['y']['group_by']
     x_agg = {
