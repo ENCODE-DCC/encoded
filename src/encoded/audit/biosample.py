@@ -70,13 +70,15 @@ gtexDonorsList = ['ENCDO845WKR', 'ENCDO451RUA', 'ENCDO793LXB', 'ENCDO271OUW']
 
 
 @audit_checker('biosample', frame=['object'])
-def audit_biosample_type(value, system):
+def audit_biosample_term_id(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
     biosample_prefix = value['biosample_term_id'].split(':')[0]
     if biosample_prefix not in ontology_dict[value['biosample_type']]:
         detail = 'Biosample {} has '.format(value['@id']) + \
                  'biosample_term_id {} '.format(value['biosample_term_id']) + \
                  'that is not one of {}'.format(ontology_dict[value['biosample_type']])
-        raise AuditFailure('Invalid biosample term id', detail, level='DCC_ACTION')
+        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
 
 
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])

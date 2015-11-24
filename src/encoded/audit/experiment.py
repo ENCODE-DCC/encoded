@@ -4,6 +4,16 @@ from contentbase import (
 )
 from .conditions import rfa
 
+ontology_dict = {
+    'tissue': ['UBERON', 'EFO'],
+    'whole organisms': ['UBERON'],
+    'primary cell': ['CL'],
+    'stem cell': ['CL'],
+    'immortalized cell line': ['EFO'],
+    'in vitro differentiated cells': ['CL', 'EFO'],
+    'induced pluripotent stem cell line': ['EFO']
+}
+
 targetBasedAssayList = [
     'ChIP-seq',
     'RNA Bind-n-Seq',
@@ -50,6 +60,31 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
+
+
+@audit_checker('experiment', frame=['object'])
+def audit_experiment_biosample_term_id(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if value['status'] not in ['preliminary', 'proposed']:
+        if 'biosample_term_id' not in value:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'has no biosample_term_id'
+            yield AuditFailure('experiment missing biosample_term_id', detail, level='DCC_ACTION')
+
+        if 'biosmple_type' not in value:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'has no biosample_type'
+            yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
+    if 'biosample_type' in value and 'biosample_term_id' in value:
+        biosample_prefix = value['biosample_term_id'].split(':')[0]
+        if biosample_prefix not in ontology_dict[value['biosample_type']]:
+            detail = 'Experiment {} has '.format(value['@id']) + \
+                     'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'that is not one of {}'.format(ontology_dict[value['biosample_type']])
+            yield AuditFailure('experiment with invalid biosample term id', detail,
+                               level='DCC_ACTION')
+    return
 
 
 @audit_checker('experiment', frame='object')

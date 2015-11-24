@@ -4,6 +4,27 @@ from contentbase import (
 )
 from .conditions import rfa
 
+ontology_dict = {
+    'tissue': ['UBERON', 'EFO'],
+    'whole organisms': ['UBERON'],
+    'primary cell': ['CL'],
+    'stem cell': ['CL'],
+    'immortalized cell line': ['EFO'],
+    'in vitro differentiated cells': ['CL', 'EFO'],
+    'induced pluripotent stem cell line': ['EFO']
+}
+
+@audit_checker('biosample', frame=['object'])
+def audit_biosample_term_id(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    biosample_prefix = value['biosample_term_id'].split(':')[0]
+    if biosample_prefix not in ontology_dict[value['biosample_type']]:
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                 'that is not one of {}'.format(ontology_dict[value['biosample_type']])
+        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
+
 
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
 def audit_antibody_characterization_review(value, system):
