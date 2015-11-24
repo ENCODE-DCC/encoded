@@ -873,7 +873,6 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var facets = context['facets'];
             var total = context['total'];
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
@@ -881,13 +880,14 @@ var AuditMixin = audit.AuditMixin;
             var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            _.each(facets, function(facet) {
+
+            var facets = context['facets'].map(function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
+                    facet = _.clone(facet);
                     facet.restrictions = this.props.restrictions[facet.field];
-                    facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.key);
-                    }.bind(this));
+                    facet.terms = facet.terms.filter(term => _.contains(facet.restrictions, term.key));
                 }
+                return facet;
             }.bind(this));
 
             // See if a specific result type was requested ('type=x')
