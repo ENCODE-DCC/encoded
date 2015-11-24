@@ -322,7 +322,7 @@ def search_result_actions(request, doc_types, es_results):
     aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
-    if doc_types == ['experiment'] and any(
+    if doc_types == ['Experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in aggregations['assembly']['assembly']['buckets']):
         search_params = request.query_string.replace('&', ',,')
@@ -332,7 +332,7 @@ def search_result_actions(request, doc_types, es_results):
         actions['batch_hub'] = hgConnect + hub
 
     # generate batch download URL for experiments
-    if doc_types == ['experiment'] and any(
+    if doc_types == ['Experiment'] and any(
             bucket['doc_count'] > 0
             for bucket in aggregations['files-file_type']['files-file_type']['buckets']):
         actions['batch_download'] = request.route_url(
