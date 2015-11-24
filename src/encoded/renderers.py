@@ -168,20 +168,21 @@ def canonical_redirect(event):
     if request.path_info == '/':
         return
 
-    canonical_path = event.rendering_val.get('@id', None)
-    if canonical_path is None:
+    canonical = event.rendering_val.get('@id', None)
+    if canonical is None:
         return
-    canonical_path = canonical_path.split('?', 1)[0]
+    canonical_path, _, canonical_qs = canonical.partition('?')
 
     request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
     if (request_path == canonical_path.rstrip('/') and
-            request.path_info.endswith('/') == canonical_path.endswith('/')):
+            request.path_info.endswith('/') == canonical_path.endswith('/') and
+            (canonical_qs in ('', request.query_string))):
         return
 
     if '/@@' in request.path_info:
         return
 
-    qs = request.query_string
+    qs = canonical_qs or request.query_string
     location = canonical_path + ('?' if qs else '') + qs
     raise HTTPMovedPermanently(location=location)
 

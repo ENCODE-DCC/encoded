@@ -16,7 +16,7 @@ from jsonschema import (
 )
 from jsonschema.exceptions import ValidationError
 from uuid import UUID
-from .interfaces import TYPES
+from .util import ensurelist
 
 
 SERVER_DEFAULTS = {}
@@ -306,3 +306,37 @@ def schema_validator(filename):
         return validate_request(schema, request)
 
     return validator
+
+
+def combine_schemas(a, b):
+    if a == b:
+        return a
+    if not a:
+        return b
+    if not b:
+        return a
+    combined = {}
+    for name in set(a.keys()).intersection(b.keys()):
+        if a[name] == b[name]:
+            combined[name] = a[name]
+        elif name == 'type':
+            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
+        elif name == 'properties':
+            combined[name] = {}
+            for k in set(a[name].keys()).intersection(b[name].keys()):
+                combined[name][k] = combine_schemas(a[name][k], b[name][k])
+            for k in set(a[name].keys()).difference(b[name].keys()):
+                combined[name][k] = a[name][k]
+            for k in set(b[name].keys()).difference(a[name].keys()):
+                combined[name][k] = b[name][k]
+        elif name == 'items':
+            combined[name] = combine_schemas(a[name], b[name])
+        elif name in ('boost_values', 'columns'):
+            combined[name] = {}
+            combined[name].update(a[name])
+            combined[name].update(b[name])
+    for name in set(a.keys()).difference(b.keys(), ['facets']):
+        combined[name] = a[name]
+    for name in set(b.keys()).difference(a.keys(), ['facets']):
+        combined[name] = b[name]
+    return combined

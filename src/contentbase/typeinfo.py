@@ -1,9 +1,11 @@
 from collections import defaultdict
+from functools import reduce
 from pyramid.decorator import reify
 from .interfaces import (
     CALCULATED_PROPERTIES,
     TYPES,
 )
+from .schema_utils import combine_schemas
 
 
 def includeme(config):
@@ -25,6 +27,8 @@ def extract_schema_links(schema):
 
 
 class AbstractTypeInfo(object):
+    factory = None
+
     def __init__(self, registry, name):
         self.types = registry[TYPES]
         self.name = name
@@ -35,6 +39,11 @@ class AbstractTypeInfo(object):
             ti.name for ti in self.types.by_item_type.values()
             if self.name in ([ti.name] + ti.base_types)
         ]
+
+    @reify
+    def schema(self):
+        subschemas = (self.types[name].schema for name in self.subtypes)
+        return reduce(combine_schemas, subschemas)
 
 
 class TypeInfo(AbstractTypeInfo):
