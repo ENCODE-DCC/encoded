@@ -14,16 +14,7 @@ ontology_dict = {
     'induced pluripotent stem cell line': ['EFO']
 }
 
-@audit_checker('biosample', frame=['object'])
-def audit_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    biosample_prefix = value['biosample_term_id'].split(':')[0]
-    if biosample_prefix not in ontology_dict[value['biosample_type']]:
-        detail = 'Biosample {} has '.format(value['@id']) + \
-                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
-                 'that is not one of {}'.format(ontology_dict[value['biosample_type']])
-        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
+
 
 
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
@@ -53,20 +44,25 @@ def audit_antibody_characterization_review(value, system):
                 raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                detail = 'Antibody characterization {} contains a biosample_term_id {} that is not in the ontology'.format(
-                    value['@id'],
-                    term_id
-                    )
+                detail = 'Antibody characterization {} contains '.format(value['@id']) + \
+                         'a biosample_term_id {} that is not in the ontology'.format(term_id)
                 raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                detail = 'Antibody characterization {} has a mismatched term {} - {} expected {}'.format(
-                    value['@id'],
-                    term_id,
-                    term_name,
-                    ontology_term_name)
+                detail = 'Antibody characterization {} '.format(value['@id']) + \
+                         'has a mismatched term {} - {} expected {}'.format(term_id,
+                                                                            term_name,
+                                                                            ontology_term_name)
                 raise AuditFailure('mismatched term_name', detail, level='ERROR')
+
+            biosample_prefix = term_id.split(':')[0]
+            if biosample_prefix not in ontology_dict[review['biosample_type']]:
+                detail = 'Antibody characterization {} has '.format(value['@id']) + \
+                         'biosample_term_id {} '.format(term_id) + \
+                         'that is not one of {}'.format(ontology_dict[review['biosample_type']])
+                raise AuditFailure('characterization review with invalid biosample term id', detail,
+                                   level='DCC_ACTION')
 
 
 @audit_checker('antibody_characterization', frame=[
