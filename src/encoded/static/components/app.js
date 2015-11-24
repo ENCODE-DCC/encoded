@@ -13,7 +13,6 @@ var portal = {
     global_sections: [
         {id: 'data', title: 'Data', children: [
             {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
-            {id: 'matrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
             {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
