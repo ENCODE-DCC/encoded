@@ -666,6 +666,13 @@ var Project = React.createClass({
                             </div>
                         : null}
 
+                        {context.project_type ?
+                            <div data-test="type">
+                                <dt>Project type</dt>
+                                <dd className="sentence-case">{context.project_type}</dd>
+                            </div>
+                        : null}
+
                         {context.biosample_term_name && context.biosample_term_name.length ?
                             <div data-test="biosampletermname">
                                 <dt>Biosample term name</dt>
