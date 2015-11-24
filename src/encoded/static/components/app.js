@@ -12,34 +12,34 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
-            {id: 'matrix', title: 'Matrix', url: '/matrix/?type=experiment'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
-            {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'},
-            {id: 'region-search', title: 'Search by region', url: '/region-search'}
+            {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
+            {id: 'matrix', title: 'Matrix', url: '/matrix/?type=Experiment'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
+//            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
         ]},
         {id: 'methods', title: 'Methods', children: [
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
-            {id: 'softwaretools', title: 'Software tools', url: '/software'},
-            {id: 'pipelines', title: 'Pipelines', url: '/pipelines'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},
+            {id: 'softwaretools', title: 'Software tools', url: '/software/'},
+            {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines/'}
         ]},
         {id: 'about', title: 'About', children: [
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'news', title: 'News', url: '/news'},
-            {id: 'publications', title: 'Publications', url: '/publications'},
-            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
+            {id: 'publications', title: 'Publications', url: '/publications/'},
+            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
         ]},
         {id: 'help', title: 'Help', children: [
-            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started'},
-            {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
+            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
+            {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
             {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
-            {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},
-            {id: 'contact', title: 'Contact', url: '/help/contacts'}
+            {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
+            {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
 };
@@ -193,7 +193,7 @@ var App = React.createClass({
         var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
         var key = context && context['@id'];
-        var current_action = this.currentAction()
+        var current_action = this.currentAction();
         if (!current_action && context.default_page) {
             context = context.default_page;
         }

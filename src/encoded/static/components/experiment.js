@@ -3,6 +3,7 @@ var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
@@ -13,7 +14,9 @@ var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var biosample = require('./biosample');
+var software = require('./software');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
@@ -28,6 +31,7 @@ var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = biosample.SingleTreatment;
+var SoftwareVersionList = software.SoftwareVersionList;
 
 
 var anisogenicValues = [
@@ -126,6 +130,29 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
+        // Set up the breadcrumbs
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var assayQuery = assayTerm + '=' + assayName;
+        var organismNames = _.chain(biosamples.map(function(biosample) {
+            return biosample.donor ? biosample.donor.organism.scientific_name : '';
+        })).compact().uniq().value();
+        var nameQuery = '';
+        var nameTip = '';
+        var names = organismNames.map(function(organismName, i) {
+            nameTip += (nameTip.length ? ' + ' : '') + organismName;
+            nameQuery += (nameQuery.length ? '&' : '') + 'replicates.library.biosample.donor.organism.scientific_name=' + organismName;
+            return <span>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+        });
+        var biosampleTermName = context.biosample_term_name;
+        var biosampleTermQuery = biosampleTermName ? 'biosample_term_name=' + biosampleTermName : '';
+        var crumbs = [
+            {id: 'Experiments'},
+            {id: assayName, query: assayQuery, tip: assayName},
+            {id: names.length ? names : null, query: nameQuery, tip: nameTip},
+            {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
+        ];
+
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // XXX This makes no sense.
@@ -134,10 +161,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Experiment</li>
-                            <li className="active">{context.assay_term_name}</li>
-                        </ul>
+                        <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
@@ -1311,19 +1335,7 @@ var FileDetailView = function(node) {
                 {selectedFile.analysis_step_version ?
                     <div>
                         <dt>Software</dt>
-                        <dd>
-                            {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
-                                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                return (
-                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                        <span className="software">{version.software.name}</span>
-                                        {version.version ?
-                                            <span className="version">{versionNum}</span>
-                                        : null}
-                                    </a>
-                                );
-                            })}
-                        </dd>
+                        <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                     </div>
                 : null}
 

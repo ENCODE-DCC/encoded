@@ -126,3 +126,20 @@ def experiment_5_6(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('experiment', '6', '7')
+@upgrade_step('annotation', '6', '7')
+@upgrade_step('matched_set', '6', '7')
+@upgrade_step('project', '6', '7')
+@upgrade_step('publication_data', '6', '7')
+@upgrade_step('reference', '6', '7')
+@upgrade_step('ucsc_browser_composite', '6', '7')
+def dataset_6_7(value, system):
+    if 'dataset_type' in value:
+        if value['dataset_type'] == 'paired set':
+            value.pop('related_files', None)
+            value.pop('contributing_files', None)
+            value.pop('revoked_files', None)
+            value['related_datasets'] = []
+        del value['dataset_type']

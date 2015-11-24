@@ -62,7 +62,7 @@ def audit_file_platform(value, system):
 
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['@id'])
-        raise AuditFailure('missing platform', detail, level='ERROR')
+        raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
@@ -79,7 +79,7 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='ERROR')
+        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
 
 
 @audit_checker('file',
@@ -139,7 +139,7 @@ def audit_file_controlled_by(value, system):
                 ff['@id'],
                 ff['dataset']['@id']
                 )
-            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
+            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
 
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
@@ -235,7 +235,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     expt = value['dataset']
     if 'Experiment' not in expt['@type']:
         return
-    
+
     if expt['assay_term_id'] != 'OBI:0000716':
         return
 

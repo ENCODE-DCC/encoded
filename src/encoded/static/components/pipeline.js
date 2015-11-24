@@ -3,15 +3,19 @@ var React = require('react');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -156,6 +160,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
 
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var crumbs = [
+            {id: 'Pipelines'},
+            {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
+        ];
+
         var documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
@@ -179,6 +190,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=pipeline' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">
@@ -353,18 +365,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                     {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
-                            <dd>
-                                {swVersions.map(function(version, i) {
-                                    return (
-                                        <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                            <span className="software">{version.software.title}</span>
-                                            {version.version ?
-                                                <span className="version">{version.version === 'unknown' ? 'version unknown' : version.version}</span>
-                                            : null}
-                                        </a>
-                                    );
-                                })}
-                            </dd>
+                            <dd>{SoftwareVersionList(swVersions)}</dd>
                         </div>
                     :
                         <div>
@@ -375,19 +376,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                             return (
                                                 <div data-test="swversions" key={version['@id']}>
                                                     <dt>Version {version.version} — software</dt>
-                                                    <dd>
-                                                        {version.software_versions.map(function(version, i) {
-                                                            var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                                            return (
-                                                                <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                                                    <span className="software">{version.software.title}</span>
-                                                                    {version.version ?
-                                                                        <span className="version">{versionNum}</span>
-                                                                    : null}
-                                                                </a>
-                                                            );
-                                                        })}
-                                                    </dd>
+                                                    <dd>{SoftwareVersionList(version.software_versions)}</dd>
                                                 </div>
                                             );
                                         } else {

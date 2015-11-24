@@ -36,6 +36,7 @@ def includeme(config):
 class Resource(object):
 
     @calculated_property(name='@id', schema={
+        "title": "ID",
         "type": "string",
     })
     def jsonld_id(self, request):
@@ -97,6 +98,7 @@ class Root(Resource):
         return self.properties.copy()
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",
@@ -175,6 +177,7 @@ class AbstractCollection(Resource, Mapping):
         return self.properties.copy()
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",
@@ -321,6 +324,7 @@ class Item(Resource):
         connection.update(self.model, properties, sheets, unique_keys, links)
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",

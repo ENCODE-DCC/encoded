@@ -7,6 +7,10 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
+from .shared_calculated_properties import (
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms
+)
 
 
 @collection(
@@ -16,7 +20,7 @@ from .base import (
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     })
-class Biosample(Item):
+class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     item_type = 'biosample'
     schema = load_schema('encoded:schemas/biosample.json')
     name_key = 'accession'
@@ -75,54 +79,6 @@ class Biosample(Item):
         'talens.documents.submitted_by',
     ]
 
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Organ slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def organ_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['organs']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "System slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def system_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['systems']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Developmental slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def developmental_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['developmental']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Ontology synonyms",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def synonyms(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['synonyms']
-        return []
-
     @calculated_property(schema={
         "title": "Sex",
         "type": "string"
@@ -174,7 +130,7 @@ class Biosample(Item):
                 return model_organism_age
             else:
                 return 'unknown'
-    
+
     @calculated_property(schema={
         "title": "Age units",
         "type": "string",
@@ -247,7 +203,7 @@ class Biosample(Item):
                 if worm_life_stage is not None:
                     return worm_life_stage
             return 'unknown'
-            
+
     @calculated_property(schema={
         "title": "Synchronization",
         "type": "string",
@@ -299,7 +255,12 @@ class Biosample(Item):
         "type": "string",
     })
     def age_display(self, request, donor=None, model_organism_age=None,
-                    model_organism_age_units=None):
+                    model_organism_age_units=None, post_synchronization_time=None,
+                    post_synchronization_time_units=None):
+        if post_synchronization_time is not None and post_synchronization_time_units is not None:
+            return u'{sync_time} {sync_time_units}'.format(
+                sync_time=post_synchronization_time,
+                sync_time_units=post_synchronization_time_units)
         if donor is not None:
             donor = request.embed(donor, '@@object')
             if 'age' in donor and 'age_units' in donor:

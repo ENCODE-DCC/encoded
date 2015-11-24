@@ -23,15 +23,42 @@ var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
+        annotation: {title: 'Annotation file set'},
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
+        matched_set: {title: 'Matched set series'},
+        organism_development_series: {title: 'Organism development series'},
         publication: {title: 'Publications'},
         page: {title: 'Web page'},
-        software: {title: 'Software'}
+        pipeline: {title: 'Pipeline'},
+        project: {title: 'Project file set'},
+        publication_data: {title: 'Publication file set'},
+        reference: {title: 'Reference file set'},
+        reference_epigenome: {title: 'Reference epigenome series'},
+        replication_timing_series: {title: 'Replication timing series'},
+        software: {title: 'Software'},
+        treatment_concentration_series: {title: 'Treatment concentration series'},
+        treatment_time_series: {title: 'Treatment time series'},
+        ucsc_browser_composite: {title: 'UCSC browser composite file set'}
+    };
+
+    var datasetTypes = {
+        'Annotation': types['annotation'].title,
+        'Dataset': types['dataset'].title,
+        'MatchedSet': types['matched_set'].title,
+        'OrganismDevelopmentSeries': types['organism_development_series'].title,
+        'Project': types['project'].title,
+        'PublicationData': types['publication_data'].title,
+        'Reference': types['reference'].title,
+        'ReferenceEpigenome': types['reference_epigenome'].title,
+        'ReplicationTimingSeries': types['replication_timing_series'].title,
+        'TreatmentConcentrationSeries': types['treatment_concentration_series'].title,
+        'TreatmentTimeSeries': types['treatment_time_series'].title,
+        'UcscBrowserComposite': types['ucsc_browser_composite'].title
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -408,18 +435,75 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
+            var biosampleTerm, organism, lifeSpec, lifeStages = [], ages = [];
+
+            // Determine whether the dataset is a series or not
+            var seriesDataset = result['@type'].indexOf('Series') >= 0;
+
+            // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+            if (seriesDataset) {
+                biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
+                    ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+                var organisms = _.uniq(result.organism && result.organism.length && result.organism.map(function(organism) {
+                    return organism.scientific_name;
+                }));
+                if (organisms.length === 1) {
+                    organism = organisms[0];
+                }
+
+                // Dig through the biosample life stages and ages
+                if (result.related_datasets && result.related_datasets.length) {
+                    result.related_datasets.forEach(function(dataset) {
+                        if (dataset.replicates && dataset.replicates.length) {
+                            dataset.replicates.forEach(function(replicate) {
+                                if (replicate.library && replicate.library.biosample) {
+                                    var biosample = replicate.library.biosample;
+                                    var lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+
+                                    if (lifeStage) { lifeStages.push(lifeStage); }
+                                    if (biosample.age_display) { ages.push(biosample.age_display); }
+                                }
+                            });
+                        }
+                    });
+                    lifeStages = _.uniq(lifeStages);
+                    ages = _.uniq(ages);
+                }
+                lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+            }
+
+            var haveSeries = result['@type'].indexOf('Series') >= 0;
+            var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
             return (
                 <li>
                     <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
-                            <p className="type meta-title">Dataset</p>
+                            <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
-                            <a href={result['@id']}>{result['description']}</a>
+                            <a href={result['@id']}>
+                                {datasetTypes[result['@type'][0]]}
+                                {seriesDataset ?
+                                    <span>
+                                        {biosampleTerm ? <span>{' in ' + biosampleTerm}</span> : null}
+                                        {organism || lifeSpec.length > 0 ?
+                                            <span>
+                                                {' ('}
+                                                {organism ? <i>{organism}</i> : null}
+                                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                                {')'}
+                                            </span>
+                                        : null}
+                                    </span>
+                                :
+                                    <span>{result.description ? <span>{': ' + result.description}</span> : null}</span>
+                                }
+                            </a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
@@ -536,7 +620,7 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + term
+                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
@@ -702,9 +786,7 @@ var AuditMixin = audit.AuditMixin;
             if (this.props.mode == 'picker') {
                 hideTypes = false;
             } else {
-                hideTypes = filters.filter(function(filter) {
-                    return filter.field == 'type';
-                }).length;
+                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && facets.length > 1;
             }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
@@ -817,9 +899,6 @@ var AuditMixin = audit.AuditMixin;
                         specificFilter = specificFilter ? '' : filter.term;
                     }
                 });
-                if (typeof specificFilter === 'string' && specificFilter.length) {
-                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
-                }
             }
 
             return (
@@ -900,7 +979,7 @@ var AuditMixin = audit.AuditMixin;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.context.location_href).search || '';
-            var facetdisplay = context.facets.some(function(facet) {
+            var facetdisplay = context.facets && context.facets.some(function(facet) {
                 return facet.total > 0;
             });
             return (

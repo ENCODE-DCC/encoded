@@ -268,5 +268,271 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "technical_replicate_number": 1,
         "uuid": "befa63a2-a597-4521-8dec-8acce5d2af01"
+    },
+    {
+        "_test": "Paired set 1 rep 1",
+        "experiment": "ENCSR706IDL",
+        "biological_replicate_number": 1,
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "technical_replicate_number": 1,
+        "library": "ENCLB376WDO",
+        "status": "released",
+        "uuid": "e383d84a-3f86-453b-836f-2565de891e8c",
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR706IDL-1-1"
+        ]
+    },
+    {
+        "_test": "Paired set 2 rep 1",
+        "uuid": "952fc6c6-f155-47e8-ab0f-d44d48880d11",
+        "experiment": "ENCSR751YPU",
+        "library": "ENCLB033CJI",
+        "biological_replicate_number": 1,
+        "technical_replicate_number": 1,
+        "aliases": [
+            "john-stamatoyannopoulos:ENCSR751YPU-1-1"
+        ],
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "organism development series 1 rep 1",
+        "aliases": [
+            "robert-waterston:replicate:RB884_80_1_1"
+        ],
+        "library": "ENCLB857STI",
+        "experiment": "/experiments/ENCSR374GSQ/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "uuid": "c97bc58c-0a16-4b5f-b4b3-d84813cfea0b",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "organism development series 2 rep 1",
+        "aliases": [
+            "robert-waterston:replicate:RB884_680_1_1"
+        ],
+        "library": "ENCLB332ELH",
+        "experiment": "/experiments/ENCSR862BAF/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "uuid": "ece9d1cd-6243-4156-bf41-d79f1b93fb86",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "organism development series 3 rep 1",
+        "aliases": [
+            "robert-waterston:MT13544_880_1_rep1"
+        ],
+        "library": "ENCLB595GWE",
+        "experiment": "/experiments/ENCSR787DGZ/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "aliases": ["robert-waterston:replicate:RB884_880_1_1"],
+        "uuid": "925d5bac-e428-4603-a09e-0987bb884be5",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
+    },
+    {
+        "_test": "treatment time series 1 rep 1",
+        "experiment": "/experiments/ENCSR001SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001SER",
+        "uuid": "43700156-5bc7-4084-97fa-2653ddd14bf7"
+    },
+    {
+        "_test": "treatment time series 2 rep 1",
+        "experiment": "/experiments/ENCSR002SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002SER",
+        "uuid": "982b0033-204d-484d-adde-8b141356871b"
+    },
+        {
+        "_test": "treatment time series 3 rep 1",
+        "experiment": "/experiments/ENCSR003SER/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003SER",
+        "uuid": "e26ef779-bcc2-4878-b8f6-43b69d921a62"
+    },
+        {
+        "_test": "treatment concentration series 1 rep 1",
+        "experiment": "/experiments/ENCSR001CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001CON",
+        "uuid": "13f603e5-5bfd-4cd4-a352-83d6f7155bea"
+    },
+    {
+        "_test": "treatment concentration series 2 rep 1",
+        "experiment": "/experiments/ENCSR002CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002CON",
+        "uuid": "60ee5509-882c-4617-bc5a-81143d3f5fae"
+    },
+        {
+        "_test": "treatment concentration series 3 rep 1",
+        "experiment": "/experiments/ENCSR003CON/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003CON",
+        "uuid": "5cc02cd5-1e4f-499f-a448-7ef6b7bda29e"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 RNA-seq",
+        "experiment": "/experiments/ENCSR001EPI/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001EPI",
+        "uuid": "2cc2e28e-8821-4236-b9df-ef69cd9a9ea4"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 WGBS",
+        "experiment": "/experiments/ENCSR002EPI/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002EPI",
+        "uuid": "9883e919-1651-40ea-a505-068733d63aa4"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K4me1",
+        "experiment": "/experiments/ENCSR003EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003EPI",
+        "uuid": "e0558c7e-add5-46ae-acef-b96a0e2e9535"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K4me3",
+        "experiment": "/experiments/ENCSR004EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB004EPI",
+        "uuid": "1be45e03-da0e-4a69-934e-1eb2dd39b214"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K27ac",
+        "experiment": "/experiments/ENCSR005EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB005EPI",
+        "uuid": "a02299d7-d2a2-4a79-9f7f-9e9e2becadc8"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K36me3",
+        "experiment": "/experiments/ENCSR006EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB006EPI",
+        "uuid": "531ebe66-0160-4f9e-aca7-d071322eb5d7"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K27me3",
+        "experiment": "/experiments/ENCSR007EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB007EPI",
+        "uuid": "d04fd880-c5a9-4d01-b475-395676abf28d"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 H3K9me3",
+        "experiment": "/experiments/ENCSR008EPI/",
+        "antibody": "ENCAB000AUU",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB008EPI",
+        "uuid": "ae1d1892-8826-4a04-ae40-86dd3516393d"
+    },
+    {
+        "_test": "reference epigenome series 1 rep 1 control",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR009EPI/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB009EPI",
+        "uuid": "5fb43a3c-1fef-42ac-93a3-69b5afd14a7f"
+    },
+    {
+        "_test": "replication timing series 1 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR001REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB001REP",
+        "uuid": "72246397-64e5-4151-8159-25219f4127ac"
+    },
+    {
+        "_test": "replication timing series 2 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR002REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB002REP",
+        "uuid": "fd7a0ee5-61db-4ae3-9421-b25455c62cb9"
+    },
+    {
+        "_test": "replication timing series 3 rep 1",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR003REP/",
+        "technical_replicate_number": 1,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003REP",
+        "uuid": "6b481766-5b86-45af-b40b-e1e3eded9f6f"
+    },
+    {
+        "_test": "replication timing series 3 rep 2",
+        "antibody": "ENCAB000AUU",
+        "experiment": "/experiments/ENCSR003REP/",
+        "technical_replicate_number": 2,
+        "biological_replicate_number": 1,
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "library": "ENCLB003REP",
+        "uuid": "3ed9da01-3ca5-4102-89d9-4933fa49f7e4"
     }
 ]
