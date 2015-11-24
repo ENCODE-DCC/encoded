@@ -144,3 +144,13 @@ def test_audit_biosample_status(testapp, base_biosample, construct):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched status' for error in errors_list)
+
+
+def test_audit_biosample_term_id(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:349829'})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'Invalid biosample term id' for error in errors_list)
