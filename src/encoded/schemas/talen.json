@@ -188,5 +188,23 @@
             "title": "Project",
             "type": "string"
         }
+    },
+    "columns": {
+        "name": {
+            "title": "Construct name",
+            "description": "The name of the TALEN construct."
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the TALEN construct."
+        },
+        "talen_platform": {
+            "title": "TALEN platform",
+            "description": "The TALEN platform used to make the construct. E.g. Golden Gate"
+        },
+        "target_genomic_coordinates": {
+            "title": "Genome assembly",
+            "description": "The GRC genome assembly to which the target coordinates relate.  E.g. GRCh38"
+        }
     }
 }
