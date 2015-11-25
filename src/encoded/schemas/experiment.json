@@ -83,6 +83,10 @@
             "title": "Assay",
             "type": "string"
         },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        },
         "status": {
             "title": "Experiment status",
             "type": "string"
@@ -155,10 +159,11 @@
             "title": "Lab",
             "type": "string"
         },
-        "award.project": {
-            "title": "Project",
-            "type": "string"
+        "replication_type": {
+            "title": "Replication type",
+            "type": "array"
         }
+        
     },
     "columns": {
         "accession": {
