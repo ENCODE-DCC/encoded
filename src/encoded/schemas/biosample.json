@@ -441,6 +441,7 @@
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
+            "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "male",
                 "female",
@@ -452,6 +453,7 @@
         "mouse_life_stage": {
             "title": "Mouse life stage",
             "type": "string",
+            "comment": "mouse_life_stage is not valid for a human biosample.",
             "enum": [
                 "adult",
                 "unknown",
@@ -462,6 +464,7 @@
         "fly_life_stage": {
             "title": "Fly life stage",
             "type": "string",
+            "comment": "fly_life_stage is not valid for a human biosample.",
             "enum": [
                 "embryonic",
                 "larva",
@@ -512,6 +515,7 @@
         "worm_life_stage":{
             "title": "Worm life stage",
             "type": "string",
+            "comment": "worm_life_stage is not valid for a human biosample.",
             "enum": [
                 "early embryonic",
                 "midembryonic",
@@ -546,11 +550,13 @@
             "title": "Model organism donor age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
+            "comment": "model_organism_age is not valid for a human biosample.",
             "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
             "title": "Model organism donor age units",
             "type": "string",
+            "comment": "model_organism_age_units are not valid for a human biosample.",
             "enum": [
                 "minute",
                 "hour",
@@ -563,7 +569,8 @@
         },
         "model_organism_health_status": {
             "title": "Model organism donor health status",
-            "type": "string"
+            "type": "string",
+            "comment": "model_organism_halth_status is not valid for a human biosample."
         },
         "status": {
             "enum" : [
