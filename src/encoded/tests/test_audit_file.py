@@ -203,6 +203,16 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam ):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 @pytest.fixture
+def pipeline_short_rna(testapp, lab, award, analysis_step_bam ):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "Small RNA-seq single-end pipeline",
+        'analysis_steps': [analysis_step_bam['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+@pytest.fixture
 def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
     item = {
         'analysis_step': analysis_step_bam['@id'],
@@ -325,6 +335,20 @@ def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_ba
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing quality metrics' for error in errors_list)
+
+
+def test_audit_file_needs_pipeline(testapp, file4,  analysis_step_run_bam,
+                               analysis_step_version_bam, analysis_step_bam):
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file4['@id'], {'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file4['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+        print (error_type)
+        print (errors[error_type])
+    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
 
 
 def test_audit_file_read_depth(testapp, file6, file4, bam_quality_metric, analysis_step_run_bam,

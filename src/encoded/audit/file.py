@@ -337,6 +337,131 @@ def audit_file_paired_ended_run_type(value, system):
             raise AuditFailure('missing mate pair', detail, level='DCC_ACTION')
 
 
+@audit_checker('file', frame=['analysis_step_version',
+                              'analysis_step_version.analysis_step',
+                              'analysis_step_version.analysis_step.pipelines',
+                              'dataset', 'dataset.target', 'dataset.replicates',
+                              'dataset.replicates.library'],
+               condition=rfa('ENCODE3'))
+def audit_file_needs_pipeline(value, system):
+
+    if value['file_format'] != 'fastq':  # I assume this audit is only for fastq files?
+        return
+
+    if value['status'] not in ['released', 'release ready']:
+        return
+
+    if 'assay_term_name' not in value['dataset']:
+        return
+
+    if value['dataset']['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
+                                                   'ChIP-seq',
+                                                   'RNA-seq',
+                                                   'shRNA knockdown followed by RNA-seq',
+                                                   'RAMPAGE']:
+            return
+
+    if 'analysis_step_version' not in value:
+        return
+    if 'analysis_step' not in value['analysis_step_version']:
+        return
+    if 'pipelines' not in value['analysis_step_version']['analysis_step']:
+        return
+
+    pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
+                      'RNA-seq-long-paired': 'RNA-seq of long RNAs (paired-end, stranded)',
+                      'RNA-seq-long-single': 'RNA-seq of long RNAs (single-end, unstranded)',
+                      'RNA-seq-short': 'Small RNA-seq single-end pipeline',
+                      'RAMPAGE': 'RAMPAGE (paired-end, stranded)',
+                      'ChIP': 'Histone ChIP-seq'
+                      }
+
+    if value['dataset']['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if 'title' in pipeline and pipeline['title'] == pipelines_dict['WGBS']:
+                return
+        detail = 'File {} '.format(value['@id']) + \
+                 'belongs to {} '.format(value['dataset']['@id']) + \
+                 ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
+        raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+    if 'relicates' not in value['dataset']:
+        return
+
+    file_size_range = 0
+
+    size_flag = False
+
+    for rep in value['dataset']['replicates']:
+        if 'library' in rep:
+            if 'size_range' in rep['library']:
+                file_size_range = rep['library']['size_range']
+                size_flag = True
+                break
+
+    if size_flag is False:
+        return
+
+    if 'run_type' not in value:
+        return
+
+    if value['dataset']['assay_term_name'] == 'RAMPAGE' and \
+       value['run_type'] == 'paired-ended' and \
+       file_size_range == '>200':
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if 'title' in pipeline and pipeline['title'] == pipelines_dict['RAMPAGE']:
+                return
+        detail = 'File {} '.format(value['@id']) + \
+                 'belongs to {} '.format(value['dataset']['@id']) + \
+                 ' needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
+        raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+    if value['dataset']['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       value['run_type'] == 'single-ended' and \
+       file_size_range == '>200':
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if 'title' in pipeline and pipeline['title'] == pipelines_dict['RNA-seq-long-single']:
+                return
+        detail = 'File {} '.format(value['@id']) + \
+                 'belongs to {} '.format(value['dataset']['@id']) + \
+                 ' needs to be processed by ' + \
+                 'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
+        raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+    if value['dataset']['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       value['run_type'] == 'paired-ended' and \
+       file_size_range == '>200':
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if 'title' in pipeline and pipeline['title'] == pipelines_dict['RNA-seq-long-paired']:
+                return
+        detail = 'File {} '.format(value['@id']) + \
+                 'belongs to {} '.format(value['dataset']['@id']) + \
+                 ' needs to be processed by ' + \
+                 'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
+        raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+    if value['dataset']['assay_term_name'] == 'RNA-seq' and \
+       value['run_type'] == 'single-ended' and \
+       file_size_range == '<200':
+        for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+            if 'title' in pipeline and pipeline['title'] == pipelines_dict['RNA-seq-short']:
+                return
+        detail = 'File {} '.format(value['@id']) + \
+                 'belongs to {} '.format(value['dataset']['@id']) + \
+                 ' needs to be processed by pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
+        raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+    if value['dataset']['assay_term_name'] == 'ChIP-seq':
+        if 'target' in value and 'histone modification' in value['target']['investigate_as']:
+            for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+                if 'title' in pipeline and pipeline['title'] == pipelines_dict['ChIP']:
+                    return
+            detail = 'File {} '.format(value['@id']) + \
+                     'belongs to {} '.format(value['dataset']['@id']) + \
+                     ' needs to be processed by pipeline {}.'.format(pipelines_dict['ChIP'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+
+
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',
                               'analysis_step_version.analysis_step',
