@@ -6,6 +6,7 @@ from contentbase import (
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from contentbase.resource_views import collection_view_listing_db
+from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
@@ -380,6 +381,25 @@ def normalize_query(request):
     return '?' + qs if qs else ''
 
 
+def iter_long_json(name, iterable, **other):
+    import json
+
+    before = (json.dumps(other)[:-1] + ',') if other else '{'
+    yield before + json.dumps(name) + ':['
+
+    it = iter(iterable)
+    try:
+        first = next(it)
+    except StopIteration:
+        pass
+    else:
+        yield json.dumps(first)
+        for value in it:
+            yield ',' + json.dumps(value)
+
+    yield ']}'
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
@@ -404,7 +424,7 @@ def search(context, request, search_type=None):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = 99999
+        size = -1
     else:
         try:
             size = int(size)
@@ -488,6 +508,22 @@ def search(context, request, search_type=None):
     if search_audit:
         for audit_facet in audit_facets:
             facets.append(audit_facet)
+
+    if size == -1 or size > 1000:
+        hits = scan(es, query=query, index=es_index, size=size)
+        graph = format_results(request, hits)
+        if search_type is not None or request.__parent__ is not None:
+            result['@graph'] = list(graph)
+            return result
+
+        # XXX BeforeRender event listeners not called.
+        app_iter = iter_long_json('@graph', graph, **result)
+        request.response.content_type = 'application/json'
+        if str is bytes:  # Python 2 vs 3 wsgi differences
+            request.response.app_iter = app_iter
+        else:
+            request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+        return request.response
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
