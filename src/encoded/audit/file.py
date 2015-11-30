@@ -533,21 +533,22 @@ def audit_file_read_depth(value, system):
                              '{} and target {} require '.format(pipeline['title'], target_name) + \
                              '{}'.format(marks['broad'])
                     raise AuditFailure('insufficient read depth', detail, level='ERROR')
-
-        if special_assay_name != 'empty':  # either shRNA or single cell
-            if read_depth < read_depths_special[special_assay_name]:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                             read_depth) + \
-                         'uniquely mapped reads. Replicates for this assay ' + \
-                         '{} require '.format(pipeline['title']) + \
-                         '{}'.format(read_depths_special[special_assay_name])
-                raise AuditFailure('insufficient read depth', detail, level='ERROR')
-        if (read_depth < read_depths[pipeline['title']]):
-            detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
-                     'uniquely mapped reads. Replicates for this ' + \
-                     'assay {} require {}'.format(pipeline['title'],
-                                                  read_depths[pipeline['title']])
-            raise AuditFailure('insufficient read depth', detail, level='ERROR')
+        else:
+            if special_assay_name != 'empty':  # either shRNA or single cell
+                if read_depth < read_depths_special[special_assay_name]:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. Replicates for this assay ' + \
+                             '{} require '.format(pipeline['title']) + \
+                             '{}'.format(read_depths_special[special_assay_name])
+                    raise AuditFailure('insufficient read depth', detail, level='ERROR')
+            else:
+                if (read_depth < read_depths[pipeline['title']]):
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
+                             'uniquely mapped reads. Replicates for this ' + \
+                             'assay {} require {}'.format(pipeline['title'],
+                                                          read_depths[pipeline['title']])
+                    raise AuditFailure('insufficient read depth', detail, level='ERROR')
 
 
 @audit_checker('file', frame=['quality_metrics',
