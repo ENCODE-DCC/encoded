@@ -21,26 +21,38 @@ paired_end_assays = [
     'DNA-PET',
     ]
 
-broadPeaksTargets = [
-    'H3K4me1-human',
-    'H3K36me3-human',
-    'H3K79me2-human',
-    'H3K27me3-human',
-    'H3K9me1-human',
-    'H3K9me3-human'
-    ]
-
 narrowPeaksTargets = [
+    'H3K4me2-mouse',
+    'H3K4me3-mouse',
+    'H3K9ac-mouse',
+    'H3K27ac-mouse',
+    'H2AFZ-mouse',
     'H3K4me2-human',
     'H3K4me3-human',
     'H3K9ac-human',
     'H3K27ac-human',
     'H2AFZ-human',
-    'Control-human',
-    'H3F3A-human',
-    'H4K20me1-human'
+    'Control-human'
     ]
 
+broadPeaksTargets = [
+    'H3K4me1-mouse',
+    'H3K36me3-mouse',
+    'H3K79me2-mouse',
+    'H3K27me3-mouse',
+    'H3K9me1-mouse',
+    'H3K9me3-mouse',
+    'Control-mouse',
+    'H3K4me1-human',
+    'H3K36me3-human',
+    'H3K79me2-human',
+    'H3K27me3-human',
+    'H3K9me1-human',
+    'H3K9me3-human',
+    'H3F3A-human',
+    'H4K20me1-human',
+    'Control-human'
+    ]
 
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
@@ -513,11 +525,17 @@ def audit_file_read_depth(value, system):
             return
         if pipeline['title'] == 'Histone ChIP-seq':  # do the chipseq narrow broad ENCODE3
             if target_name not in narrowPeaksTargets and target_name not in broadPeaksTargets:
-                detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
-                         'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
-                         'with target {} that is not '.format(target_name) + \
-                         'included in narrow or broad marks list.'
-                raise AuditFailure('unlisted target name', detail, level='ERROR')
+                if target_name == 'empty':
+                    detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                             'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
+                             'with no target specified.'
+                    raise AuditFailure('ChIP-seq missing target', detail, level='ERROR')
+                else:
+                    detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                             'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
+                             'with target {} that is not '.format(target_name) + \
+                             'included in narrow or broad marks list.'
+                    raise AuditFailure('unlisted target name', detail, level='ERROR')
             else:
                 if target_name in narrowPeaksTargets and read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],

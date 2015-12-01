@@ -387,7 +387,7 @@ def test_audit_file_read_depth_chip_seq_paired_end_no_target(testapp, file_exp, 
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unlisted target name' for error in errors_list)
+    assert any(error['category'] == 'ChIP-seq missing target' for error in errors_list)
 
 
 def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
