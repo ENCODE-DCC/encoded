@@ -65,7 +65,7 @@ def audit_experiment_release_date(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'award'],
-               condition=rfa("ENCODE3", "modERN",
+               condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
@@ -85,12 +85,27 @@ def audit_experiment_replicated(value, system):
         num_bio_reps.add(rep['biological_replicate_number'])
 
     if len(num_bio_reps) <= 1:
-        if value['status'] in ['released']:
-            detail = 'Experiment {} has only one biological replicate and is released. Check for proper annotation of this state in the metadata'.format(value['@id'])
-            raise AuditFailure('unreplicated experiment', detail, level='DCC_ACTION')
-        if value['status'] in ['ready for review', 'release ready']:
-            detail = 'Experiment {} has only one biological replicate, more than one is typically expected before release'.format(value['@id'])
-            raise AuditFailure('unreplicated experiment', detail, level='WARNING')
+        # different levels of severity for different rfas
+        if value['award']['rfa'] in ['ENCODE3', 'GGR']:
+            if value['status'] in ['released']:
+                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                         'replicate and is released. Check for proper annotation ' + \
+                         'of this state in the metadata'
+                raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+            if value['status'] in ['ready for review', 'release ready']:
+                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                         'replicate, more than one is typically expected before release'
+                raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+        else:
+            if value['status'] in ['released']:
+                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                         'replicate and is released. Check for proper annotation ' + \
+                         'of this state in the metadata'
+                raise AuditFailure('unreplicated experiment', detail, level='WARNING')
+            if value['status'] in ['ready for review', 'release ready']:
+                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                         'replicate, more than one is typically expected before release'
+                raise AuditFailure('unreplicated experiment', detail, level='WARNING')
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_replicates_with_no_libraries(value, system):
@@ -103,7 +118,7 @@ def audit_experiment_replicates_with_no_libraries(value, system):
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
-            yield AuditFailure('replicate with no library', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('replicate with no library', detail, level='ERROR')
     return
 
 
@@ -176,19 +191,20 @@ def audit_experiment_technical_replicates_same_library(value, system):
     biological_replicates_dict = {}
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
-        tech_rep_num = rep['technical_replicate_number']
-        if 'library' in rep:         
-            library = rep['library']            
-            if not bio_rep_num in biological_replicates_dict:
-                biological_replicates_dict[bio_rep_num]=[]            
-            if library['accession'] in biological_replicates_dict[bio_rep_num]:               
-                detail = 'Experiment {} has different technical replicates associated with the same library'.format(value['@id'])
-                raise AuditFailure('technical replicates with identical library', detail, level='DCC_ACTION')
+        if 'library' in rep:
+            library = rep['library']
+            if bio_rep_num not in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num] = []
+            if library['accession'] in biological_replicates_dict[bio_rep_num]:
+                detail = 'Experiment {} has '.format(value['@id']) + \
+                         'different technical replicates associated with the same library'
+                raise AuditFailure('sequencing runs labeled as technical replicates', detail,
+                                   level='DCC_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
 
-@audit_checker('experiment', frame=['replicates', 
+@audit_checker('experiment', frame=['replicates', 'award',
                                     'replicates.library', 'replicates.library.biosample'])
 def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -212,8 +228,13 @@ def audit_experiment_replicates_biosample(value, system):
                               associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    raise AuditFailure('biological replicates with identical biosample',
-                                       detail, level='DCC_ACTION')
+                    # different levels of severity for different rfas
+                    if value['award']['rfa'] in ['ENCODE3', 'GGR', 'modERN']:
+                        raise AuditFailure('biological replicates with identical biosample',
+                                           detail, level='ERROR')
+                    else:
+                        raise AuditFailure('biological replicates with identical biosample',
+                                           detail, level='DCC_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
@@ -534,7 +555,7 @@ def audit_experiment_biosample_term(value, system):
                 lib['@id'],
                 term_name
                 )
-            yield AuditFailure('missing biosample', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing biosample', detail, level='ERROR')
             continue
 
         biosample = lib['biosample']
