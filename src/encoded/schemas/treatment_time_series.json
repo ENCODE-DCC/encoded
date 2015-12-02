@@ -18,8 +18,6 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "dataset.json#/properties" },
-        { "$ref": "mixins.json#/treatment_classification" },
-        { "$ref": "dataset.json#/properties" },
         { "$ref": "series.json#/properties" }
     ],
     "properties": {
