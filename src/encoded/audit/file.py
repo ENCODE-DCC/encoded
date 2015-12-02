@@ -31,8 +31,7 @@ narrowPeaksTargets = [
     'H3K4me3-human',
     'H3K9ac-human',
     'H3K27ac-human',
-    'H2AFZ-human',
-    'Control-human'
+    'H2AFZ-human'
     ]
 
 broadPeaksTargets = [
@@ -42,7 +41,6 @@ broadPeaksTargets = [
     'H3K27me3-mouse',
     'H3K9me1-mouse',
     'H3K9me3-mouse',
-    'Control-mouse',
     'H3K4me1-human',
     'H3K36me3-human',
     'H3K79me2-human',
@@ -51,7 +49,8 @@ broadPeaksTargets = [
     'H3K9me3-human',
     'H3F3A-human',
     'H4K20me1-human',
-    'Control-human'
+    'H3K79me3-human',
+    'H3K79me3-mouse',
     ]
 
 
@@ -516,7 +515,7 @@ def audit_file_read_depth(value, system):
     }
 
     marks = {
-        'narrow': 25000000,
+        'narrow': 20000000,
         'broad': 50000000
     }
 
