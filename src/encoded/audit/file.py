@@ -507,7 +507,7 @@ def audit_file_read_depth(value, system):
 
     marks = {
         'narrow': 20000000,
-        'broad': 50000000
+        'broad': 45000000
     }
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
