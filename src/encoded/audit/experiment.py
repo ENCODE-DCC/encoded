@@ -87,32 +87,22 @@ def audit_experiment_replicated(value, system):
     if len(num_bio_reps) <= 1:
         # different levels of severity for different rfas
         if value['award']['rfa'] in ['ENCODE3', 'GGR']:
-            if value['status'] in ['released']:
-                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                         'replicate and is released. Check for proper annotation ' + \
-                         'of this state in the metadata'
-                raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
-            if value['status'] in ['ready for review', 'release ready']:
-                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                         'replicate, more than one is typically expected before release'
-                raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                     'replicate and is released. Check for proper annotation ' + \
+                     'of this state in the metadata'
+            raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
         else:
-            if value['status'] in ['released']:
-                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                         'replicate and is released. Check for proper annotation ' + \
-                         'of this state in the metadata'
-                raise AuditFailure('unreplicated experiment', detail, level='WARNING')
-            if value['status'] in ['ready for review', 'release ready']:
-                detail = 'Experiment {} has only one biological '.format(value['@id']) + \
-                         'replicate, more than one is typically expected before release'
-                raise AuditFailure('unreplicated experiment', detail, level='WARNING')
+            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                     'replicate, more than one is typically expected before release'
+            raise AuditFailure('unreplicated experiment', detail, level='WARNING')
+
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_replicates_with_no_libraries(value, system):
-    if value['status'] in ['deleted','replaced','revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-    if len(value['replicates'])==0:
-        return 
+    if len(value['replicates']) == 0:
+        return
     for rep in value['replicates']:
         if 'library' not in rep:
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
