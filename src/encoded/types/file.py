@@ -302,13 +302,25 @@ def post_upload(context, request):
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
-    external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
+    accession_or_external = properties.get('accession') or properties['external_accession']
+    external = context.propsheets.get('external', None)
+
+    if external is None:
+        # Handle objects initially posted as another state.
+        bucket = request.registry.settings['file_upload_bucket']
+        uuid = context.uuid
+        mapping = context.schema['file_format_file_extension']
+        file_extension = mapping[properties['file_format']]
+        date = properties['date_created'].split('T')[0].replace('-', '/')
+        key = '{date}/{uuid}/{accession_or_external}{file_extension}'.format(
+            accession_or_external=accession_or_external,
+            date=date, file_extension=file_extension, uuid=uuid, **properties)
+    elif external.get('service') == 's3':
+        bucket = external['bucket']
+        key = external['key']
+    else:
         raise ValueError(external.get('service'))
 
-    bucket = external['bucket']
-    key = external['key']
-    accession_or_external = properties.get('accession') or properties['external_accession']
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
         time=time.time(), **properties)  # max 32 chars
