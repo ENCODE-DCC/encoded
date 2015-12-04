@@ -167,7 +167,9 @@ class File(Item):
         "type": "object",
     })
     def upload_credentials(self):
-        return self.propsheets['external']['upload_credentials']
+        external = self.propsheets.get('external', None)
+        if external is not None:
+            return external['upload_credentials']
 
     @calculated_property(schema={
         "title": "Read length units",
