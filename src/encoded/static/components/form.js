@@ -36,31 +36,6 @@ var makeValidationResult = function(validation) {
 };
 
 
-var ReadOnlyField = React.createClass({
-    render: function() {
-        var ReactForms = require('react-forms');
-        var value;
-        if (this.props.preview) {
-            var url = this.props.value.value;
-            value = (
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={url} />
-                    <ItemPreview />
-                </fetched.FetchedData>
-            );
-        } else {
-            value = this.props.value.value;
-        }
-        return (
-            <div>
-                <ReactForms.Label label={this.props.value.node.props.get('label')} />
-                <span>{value}</span>
-            </div>
-        );
-    },
-});
-
-
 var RepeatingItem = React.createClass({
 
   render: function() {

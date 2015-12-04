@@ -148,7 +148,7 @@ var Listing = React.createClass({
                         <a href={result['@id']}>{result.name}</a>
                     </div>
                     <div className="data-row">
-                        <div>{result.description}</div>
+                        {result.description ? <div>{result.description}</div> : null}
                         <div><strong>Platform: </strong>{result.talen_platform}</div>
                         <div>
                             <strong>Genomic coordinates: </strong>
@@ -160,4 +160,5 @@ var Listing = React.createClass({
         );
     }
 });
+
 globals.listing_views.register(Listing, 'TALEN');
