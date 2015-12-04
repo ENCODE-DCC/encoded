@@ -608,3 +608,18 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing size_range' for error in errors_list)
+
+'''
+def test_audit_file_needs_pipeline(testapp, file4, file_rep2, library, file_exp2):
+
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(file_rep2['@id'], {'library': library['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(file4['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
+'''
