@@ -77,7 +77,7 @@ def audit_experiment_replicate_with_no_files(value, system):
     for file_object in value['original_files']:
         if 'replicate' in file_object:
             file_replicate = file_object['replicate']
-            rep_dictionary[file_replicate['@id']] = file_object['file_format']
+            rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
 
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
