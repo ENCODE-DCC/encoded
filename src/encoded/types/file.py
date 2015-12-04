@@ -323,7 +323,7 @@ def post_upload(context, request):
 
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
-        time=time.time(), **properties)  # max 32 chars
+        time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
     creds = external_creds(bucket, key, name, profile_name)
 
