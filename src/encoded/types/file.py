@@ -287,12 +287,10 @@ class File(Item):
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
-        raise ValueError(external.get('service'))
     return {
         '@graph': [{
             '@id': request.resource_path(context),
-            'upload_credentials': external['upload_credentials'],
+            'upload_credentials': external.get('upload_credentials'),
         }],
     }
 
