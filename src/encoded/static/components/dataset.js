@@ -189,6 +189,15 @@ var Annotation = React.createClass({
         // Make a biosample summary string
         var biosampleSummary = annotationBiosampleSummary(context);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -196,6 +205,7 @@ var Annotation = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -357,6 +367,15 @@ var PublicationData = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -364,6 +383,7 @@ var PublicationData = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for publication file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -492,6 +512,15 @@ var Reference = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -499,6 +528,7 @@ var Reference = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for reference file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -627,6 +657,15 @@ var Project = React.createClass({
         });
         organisms = _.uniq(organisms);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -634,6 +673,7 @@ var Project = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for project file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -790,6 +830,15 @@ var UcscBrowserComposite = React.createClass({
         });
         organisms = _.uniq(organisms);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -797,6 +846,7 @@ var UcscBrowserComposite = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -1162,6 +1212,15 @@ var Series = module.exports.Series = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var id1 = context['@type'][1];
+        var id0 = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
+            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -1173,6 +1232,7 @@ var Series = module.exports.Series = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
