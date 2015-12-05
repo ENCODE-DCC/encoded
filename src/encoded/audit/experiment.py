@@ -52,7 +52,7 @@ non_seq_assays = [
     ]
 
 
-@audit_checker('file', frame=['original_files', 'target',
+@audit_checker('experiment', frame=['original_files', 'target',
                               'original_files.analysis_step_version',
                               'original_files.analysis_step_version.analysis_step',
                               'original_files.analysis_step_version.analysis_step.pipelines',
@@ -75,9 +75,6 @@ def audit_experiment_needs_pipeline(value, system):
 
     if 'original_files' not in value or len(value['original_files']) == 0:
         #  possible ERROR to throw
-        #  possible ERROR to throw
-        #  possible ERROR to throw
-
         return
 
     pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
@@ -155,7 +152,7 @@ def audit_experiment_needs_pipeline(value, system):
             raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
         else:
             return
-  
+
     if value['assay_term_name'] == 'RNA-seq' and \
        run_type == 'single-ended' and \
        file_size_range == '<200':

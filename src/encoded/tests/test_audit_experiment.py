@@ -609,17 +609,37 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing size_range' for error in errors_list)
 
-'''
-def test_audit_file_needs_pipeline(testapp, file4, file_rep2, library, file_exp2):
 
+def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
+    testapp.patch_json(experiment['@id'], {'status': 'released'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
-    testapp.patch_json(file_rep2['@id'], {'library': library['@id']})
-    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
-    testapp.patch_json(file_exp2['@id'], {'assay_term_name': 'RNA-seq'})
-    res = testapp.get(file4['@id'] + '@@index-data')
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'needs pipeline run' for error in errors_list)
-'''
+
+
+def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
+                                                     experiment, fastq_file, bam_file,
+                                                     analysis_step_run_bam,
+                                                     analysis_step_version_bam, analysis_step_bam,
+                                                     pipeline_bam):
+    testapp.patch_json(experiment['@id'], {'status': 'released'})
+    testapp.patch_json(library['@id'], {'size_range': '>200'})
+    testapp.patch_json(replicate['@id'], {'library': library['@id']})
+    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'RNA-seq of long RNAs (single-end, unstranded)'})
+    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    res = testapp.get(experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'needs pipeline run' for error in errors_list)
