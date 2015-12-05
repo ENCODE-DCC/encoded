@@ -7,7 +7,7 @@ ontology_dict = {
     'tissue': ['UBERON', 'EFO'],
     'whole organisms': ['UBERON'],
     'primary cell': ['CL'],
-    'stem cell': ['EFO'],
+    'stem cell': ['EFO', 'CL'],
     'immortalized cell line': ['EFO'],
     'in vitro differentiated cells': ['CL', 'EFO'],
     'induced pluripotent stem cell line': ['EFO']
