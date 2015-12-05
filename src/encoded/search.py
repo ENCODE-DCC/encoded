@@ -519,6 +519,8 @@ def search(context, request, search_type=None):
         body=query, index=es_index, size=size,
         search_type=('count' if do_scan else 'query_then_fetch'))
 
+    result['total'] = es_results['hits']['total']
+
     result['facets'] = format_facets(es_results, facets)
     # Show any filters that aren't facets as a fake facet with one entry,
     # so that the filter can be viewed and removed
@@ -538,8 +540,6 @@ def search(context, request, search_type=None):
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
-
-    result['total'] = es_results['hits']['total']
 
     # Add all link for collections
     if size != -1 and size < result['total']:
