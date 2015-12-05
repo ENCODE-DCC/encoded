@@ -215,7 +215,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Analysis Step Version",
         "type": "string",
-        "linkTo": "analysis_step_version"
+        "linkTo": "AnalysisStepVersion"
     })
     def analysis_step_version(self, request, root, step_run=None):
         if step_run is None:
