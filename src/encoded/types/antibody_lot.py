@@ -105,7 +105,7 @@ class AntibodyLot(SharedItem):
                 "items": {
                     "comment": "See organism.json for available identifiers.",
                     "type": "string",
-                    "linkTo": "organism"
+                    "linkTo": "Organism"
                 }
             },
             "targets": {
@@ -117,7 +117,7 @@ class AntibodyLot(SharedItem):
                         "the antibody.",
                     "comment": "See target.json for available identifiers.",
                     "type": "string",
-                    "linkTo": "target"
+                    "linkTo": "Target"
                 }
             },
             "status": {
