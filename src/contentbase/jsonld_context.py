@@ -197,7 +197,7 @@ def context_from_schema(schema, prefix, class_name, base_types):
         if '@id' not in prop_ld:
             prop_ld['@id'] = '%s:%s' % (prefix, quote(name, safe=''))
 
-        subschema.get('items', subschema)
+        subschema = subschema.get('items', subschema)
         if '@type' in prop_ld:
             pass
         elif 'linkTo' in subschema:
