@@ -29,7 +29,6 @@
             "uniqueKey": "platform:term_id"
         },
         "term_name": {
-            "@id": null,
             "title": "Platform name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the measurement device.",
             "type":  "string",
