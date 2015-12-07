@@ -114,16 +114,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if organism is not None:
             organismObject = request.embed(organism, '@@object')
-            dict_of_phrases['scientific_name'] = organismObject['scientific_name']
+            if 'scientific_name' in organismObject:
+                dict_of_phrases['organism_name'] = organismObject['scientific_name']
 
-            if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
-                if donor is not None:
-                    donorObject = request.embed(donor, '@@object')
-                    if 'strain_name' in donorObject:
-                        dict_of_phrases['strain_name'] = donorObject['strain_name']
+                if organismObject['scientific_name'] != 'Homo sapiens':  # model organism
+                    if donor is not None:
+                        donorObject = request.embed(donor, '@@object')
+                        if 'strain_name' in donorObject:
+                            dict_of_phrases['strain_name'] = donorObject['strain_name']
 
         if age is not None and age_units is not None:
-            dict_of_phrases['age_display'] = str(age) + ' ' + age_units
+            dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
 
         if life_stage is not None and life_stage != 'unknown':
             dict_of_phrases['life_stage'] = life_stage
@@ -132,10 +133,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['sex'] = sex
 
         if biosample_term_name is not None:
-            dict_of_phrases['biosample_term_name'] = biosample_term_name
+            dict_of_phrases['sample_term_name'] = biosample_term_name
 
         if biosample_type is not None and biosample_type != 'whole organisms':
-            dict_of_phrases['biosample_type'] = biosample_type
+            dict_of_phrases['sample_type'] = biosample_type
 
         if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
@@ -151,7 +152,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
             dict_of_phrases['synchronization'] = (post_synchronization_time +
                                                   ' ' + post_synchronization_time_units +
-                                                  ' post synchronization')
+                                                  's post synchronization')
 
         if treatments is not None and len(treatments) > 0:
             treatments_list = []
@@ -231,7 +232,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                                       targetObject['title'])
             dict_of_phrases['rnais'] = 'rnais '+str(rnais_list)
 
-        return dict_of_phrases
+        return str(dict_of_phrases)
 
     @calculated_property(schema={
         "title": "Sex",
