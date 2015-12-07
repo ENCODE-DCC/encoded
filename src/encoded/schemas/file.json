@@ -498,6 +498,7 @@
                 "hg19",
                 "GRCh38",
                 "ce10",
+                "ce11",
                 "dm3",
                 "dm6"
                 ]
@@ -512,12 +513,15 @@
                 "M2",
                 "M3",
                 "M4",
+                "M7",
                 "V3c",
                 "V7",
                 "V10",
                 "V19",
                 "ENSEMBL V65",
-                "miRBase V21"
+                "miRBase V21",
+                "WS235",
+                "WS245"
                 ]
         },
         "submitted_file_name": {

@@ -225,7 +225,6 @@
             "type": "integer"
         },
         "depleted_in_term_name": {
-            "@id": null,
             "type": "array",
             "items": {
                 "title": "Depleted in term",
@@ -314,7 +313,6 @@
             "type": "string"
         },
         "subcellular_fraction_term_name": {
-            "@id": null,
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",

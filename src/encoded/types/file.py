@@ -167,7 +167,9 @@ class File(Item):
         "type": "object",
     })
     def upload_credentials(self):
-        return self.propsheets['external']['upload_credentials']
+        external = self.propsheets.get('external', None)
+        if external is not None:
+            return external['upload_credentials']
 
     @calculated_property(schema={
         "title": "Read length units",
@@ -213,7 +215,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Analysis Step Version",
         "type": "string",
-        "linkTo": "analysis_step_version"
+        "linkTo": "AnalysisStepVersion"
     })
     def analysis_step_version(self, request, root, step_run=None):
         if step_run is None:
@@ -285,12 +287,10 @@ class File(Item):
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
-        raise ValueError(external.get('service'))
     return {
         '@graph': [{
             '@id': request.resource_path(context),
-            'upload_credentials': external['upload_credentials'],
+            'upload_credentials': external.get('upload_credentials'),
         }],
     }
 
@@ -302,16 +302,28 @@ def post_upload(context, request):
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
-    external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
+    accession_or_external = properties.get('accession') or properties['external_accession']
+    external = context.propsheets.get('external', None)
+
+    if external is None:
+        # Handle objects initially posted as another state.
+        bucket = request.registry.settings['file_upload_bucket']
+        uuid = context.uuid
+        mapping = context.schema['file_format_file_extension']
+        file_extension = mapping[properties['file_format']]
+        date = properties['date_created'].split('T')[0].replace('-', '/')
+        key = '{date}/{uuid}/{accession_or_external}{file_extension}'.format(
+            accession_or_external=accession_or_external,
+            date=date, file_extension=file_extension, uuid=uuid, **properties)
+    elif external.get('service') == 's3':
+        bucket = external['bucket']
+        key = external['key']
+    else:
         raise ValueError(external.get('service'))
 
-    bucket = external['bucket']
-    key = external['key']
-    accession_or_external = properties.get('accession') or properties['external_accession']
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
-        time=time.time(), **properties)  # max 32 chars
+        time=time.time(), **properties)[:32]  # max 32 chars
     profile_name = request.registry.settings.get('file_upload_profile_name')
     creds = external_creds(bucket, key, name, profile_name)
 

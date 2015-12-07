@@ -209,7 +209,7 @@ class FileSet(Dataset):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
     def contributing_files(self, request, original_files, related_files, status):
@@ -237,7 +237,7 @@ class FileSet(Dataset):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
     def files(self, request, original_files, related_files, status):
@@ -257,7 +257,7 @@ class FileSet(Dataset):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
     def revoked_files(self, request, original_files, related_files):
@@ -448,7 +448,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "file",
+            "linkTo": "File",
         },
     })
     def revoked_datasets(self, request, related_datasets):
