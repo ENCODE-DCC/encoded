@@ -424,7 +424,7 @@ def search(context, request, search_type=None):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = -1
+        size = None
     else:
         try:
             size = int(size)
@@ -512,12 +512,13 @@ def search(context, request, search_type=None):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Decide whether to use scan for results.
-    do_scan = size == -1 or size > 1000
+    do_scan = size is None or size > 1000
 
     # Execute the query
-    es_results = es.search(
-        body=query, index=es_index, size=size,
-        search_type=('count' if do_scan else 'query_then_fetch'))
+    if do_scan:
+        es_results = es.search(body=query, index=es_index, search_type='count')
+    else:
+        es_results = es.search(body=query, index=es_index, size=size)
 
     result['total'] = es_results['hits']['total']
 
@@ -542,7 +543,7 @@ def search(context, request, search_type=None):
     result.update(search_result_actions(request, doc_types, es_results))
 
     # Add all link for collections
-    if size != -1 and size < result['total']:
+    if size is not None and size < result['total']:
         params = [(k, v) for k, v in request.params.items() if k != 'limit']
         params.append(('limit', 'all'))
         result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
@@ -563,7 +564,10 @@ def search(context, request, search_type=None):
 
     # Scan large result sets.
     del query['aggs']
-    hits = scan(es, query=query, index=es_index, size=size)
+    if size is None:
+        hits = scan(es, query=query, index=es_index)
+    else:
+        hits = scan(es, query=query, index=es_index, size=size)
     graph = format_results(request, hits)
 
     # Support for request.embed()
