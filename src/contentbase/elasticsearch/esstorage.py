@@ -170,4 +170,5 @@ class ElasticSearchStorage(object):
         query = {
             'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
-        return self.es.count(index=self.index, body=query)
+        result = self.es.count(index=self.index, body=query)
+        return result['count']
