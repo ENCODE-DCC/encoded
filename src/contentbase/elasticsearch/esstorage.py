@@ -150,22 +150,21 @@ class ElasticSearchStorage(object):
                 {'terms': {'item_type': item_types}},
             ]}
         query = {
-            'fields': ['uuid'],
+            'fields': [],
             'filter': filter_,
-            'version': True,
         }
         data = self.es.search(index=self.index, body=query, size=SEARCH_MAX)
         return [
-            hit['fields']['uuid'][0] for hit in data['hits']['hits']
+            hit['_id'] for hit in data['hits']['hits']
         ]
 
     def __iter__(self, *item_types):
         query = {
-            'fields': ['uuid'],
+            'fields': [],
             'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
         for hit in scan(self.es, query=query):
-            yield hit['fields']['uuid'][0]
+            yield hit['_id']
 
     def __len__(self, *item_types):
         query = {
