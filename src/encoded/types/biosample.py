@@ -458,4 +458,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for t in dict_of_phrases['treatments']:
                 summary_phrase += t + ', '
 
+        if 'depleted_in' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['depleted_in'] + ', '
+
         return (str(dict_of_phrases), str(summary_phrase))
