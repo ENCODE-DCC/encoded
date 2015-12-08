@@ -436,8 +436,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += dict_of_phrases['organism_name'] + ' '
         if 'strain_name' in dict_of_phrases:
             summary_phrase += '(' + dict_of_phrases['strain_name'] + ') '
-        if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
-            summary_phrase += dict_of_phrases['sample_term_name'] + ' '
+        if 'sample_term_name' in dict_of_phrases:   
+            if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
+                summary_phrase += dict_of_phrases['sample_term_name'] + ' '
         if 'sample_type' in dict_of_phrases:
             summary_phrase += dict_of_phrases['sample_type'] + ' of '
         if 'sex' in dict_of_phrases:
