@@ -82,10 +82,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'talens.documents.submitted_by',
     ]
 
-    @calculated_property(schema={
-        "title": "Sex",
-        "type": "string"
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Sex",
+                                 "type": "string"})
     def sex(self, request, donor=None, model_organism_sex=None, organism=None):
         humanFlag = False
         if organism is not None:
@@ -108,10 +107,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             else:
                 return 'unknown'
 
-    @calculated_property(schema={
-        "title": "Age",
-        "type": "string"
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Age",
+                                 "type": "string"})
     def age(self, request, donor=None, model_organism_age=None, organism=None):
         humanFlag = False
         if organism is not None:
@@ -134,10 +132,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             else:
                 return 'unknown'
 
-    @calculated_property(schema={
-        "title": "Age units",
-        "type": "string",
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Age units",
+                                 "type": "string"})
     def age_units(self, request, donor=None, model_organism_age_units=None, organism=None):
         humanFlag = False
         if organism is not None:
@@ -157,10 +154,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         else:
             return model_organism_age_units
 
-    @calculated_property(schema={
-        "title": "Health status",
-        "type": "string",
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Health status",
+                                 "type": "string"})
     def health_status(self, request, donor=None, model_organism_health_status=None, organism=None):
         humanFlag = False
         if organism is not None:
@@ -179,10 +175,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 return model_organism_health_status
             return None
 
-    @calculated_property(schema={
-        "title": "Life stage",
-        "type": "string",
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Life stage",
+                                 "type": "string"})
     def life_stage(self, request, donor=None, mouse_life_stage=None, fly_life_stage=None,
                    worm_life_stage=None, organism=None):
         humanFlag = False
@@ -207,10 +202,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     return worm_life_stage
             return 'unknown'
 
-    @calculated_property(schema={
-        "title": "Synchronization",
-        "type": "string",
-    })
+    @calculated_property(define=True,
+                         schema={"title": "Synchronization",
+                                 "type": "string"})
     def synchronization(self, request, donor=None, mouse_synchronization_stage=None,
                         fly_synchronization_stage=None, worm_synchronization_stage=None):
         # XXX mouse_synchronization_stage does not exist
@@ -237,7 +231,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             "type": "string",
             "linkTo": "Construct",
         },
-    })
+    }, define=True)
     def model_organism_donor_constructs(self, request, donor=None):
         if donor is not None:
             return request.embed(donor, '@@object').get('constructs')
@@ -436,11 +430,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += dict_of_phrases['organism_name'] + ' '
         if 'strain_name' in dict_of_phrases:
             summary_phrase += '(' + dict_of_phrases['strain_name'] + ') '
-        if 'sample_term_name' in dict_of_phrases:   
+        if 'sample_term_name' in dict_of_phrases:
             if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
                 summary_phrase += dict_of_phrases['sample_term_name'] + ' '
         if 'sample_type' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['sample_type'] + ' of '
+            summary_phrase += dict_of_phrases['sample_type'] + ' '
         if 'sex' in dict_of_phrases:
             if dict_of_phrases['sex'] == 'mixed':
                 summary_phrase += dict_of_phrases['sex'] + ' sex, '
