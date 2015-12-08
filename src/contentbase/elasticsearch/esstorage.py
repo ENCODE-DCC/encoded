@@ -7,6 +7,8 @@ from .interfaces import (
     ICachedItem,
 )
 
+SEARCH_MAX = (2 ** 31) - 1
+
 
 def includeme(config):
     from contentbase import STORAGE
@@ -151,7 +153,7 @@ class ElasticSearchStorage(object):
             'filter': filter_,
             'version': True,
         }
-        data = self.es.search(index=self.index, body=query)
+        data = self.es.search(index=self.index, body=query, size=SEARCH_MAX)
         return [
             hit['fields']['uuid'][0] for hit in data['hits']['hits']
         ]
