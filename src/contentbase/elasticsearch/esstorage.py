@@ -1,3 +1,4 @@
+import elasticsearch.exceptions
 from contentbase.util import get_root_request
 from elasticsearch.helpers import scan
 from pyramid.threadlocal import get_current_request
@@ -127,11 +128,11 @@ class ElasticSearchStorage(object):
         return model
 
     def get_by_uuid(self, uuid):
-        query = {
-            'filter': {'term': {'uuid': uuid}},
-            'version': True,
-        }
-        return self._one(query)
+        try:
+            hit = self.es.get(index=self.index, id=str(uuid))
+        except elasticsearch.exceptions.NotFoundError:
+            return None
+        return CachedModel(hit)
 
     def get_by_unique_key(self, unique_key, name):
         term = 'unique_keys.' + unique_key
