@@ -311,6 +311,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         donorObject = request.embed(donor, '@@object')
                         if 'strain_name' in donorObject:
                             dict_of_phrases['strain_name'] = donorObject['strain_name']
+                        if 'genotype' in donorObject:
+                            dict_of_phrases['genotype'] = donorObject['genotype']
 
         if age is not None and age_units is not None:
             dict_of_phrases['age_display'] = str(age) + ' ' + age_units + 's'
@@ -450,14 +452,16 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
 
-        summary_phrase += ' | '
-
-        if 'sample_type' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['sample_type'] + ':'
+        term_phrase = ''
 
         if 'sample_term_name' in dict_of_phrases:
             if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
-                summary_phrase += dict_of_phrases['sample_term_name'] + ' | '
+                term_phrase += dict_of_phrases['sample_term_name'] + ' '
+
+        if 'sample_type' in dict_of_phrases:
+            term_phrase += dict_of_phrases['sample_type']
+
+        summary_phrase += ' '.join(set(term_phrase.split(' '))) + ' | '
 
         if 'phase' in dict_of_phrases:
             summary_phrase += dict_of_phrases['phase'] + ' | '
@@ -465,17 +469,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'fractionated' in dict_of_phrases:
             summary_phrase += dict_of_phrases['fractionated'] + ' | '
 
-        if 'life_stage' in dict_of_phrases:
-            summary_phrase += 'life stage:' + dict_of_phrases['life_stage'] + ' | '
-
         if 'sex' in dict_of_phrases:
-            summary_phrase += 'sex:' + dict_of_phrases['sex'] + ' | '
+            if dict_of_phrases['sex'] == 'mixed':
+                summary_phrase += dict_of_phrases['sex'] + ' sex '
+            else:
+                summary_phrase += dict_of_phrases['sex'] + ' '
+
+        stage_phrase = ''
+        if 'life_stage' in dict_of_phrases:
+            stage_phrase += dict_of_phrases['life_stage']
+
+        summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
 
         if 'age_display' in dict_of_phrases:
-            summary_phrase += 'age:' + dict_of_phrases['age_display'] + ' | '
+            summary_phrase += '(' + dict_of_phrases['age_display'] + ') '
         else:
             if 'synchronization' in dict_of_phrases:
-                summary_phrase += dict_of_phrases['synchronization'] + ' | '
+                summary_phrase += '(' + dict_of_phrases['synchronization'] + ') '
 
         if 'part_of' in dict_of_phrases:
             summary_phrase += dict_of_phrases['part_of'] + ' | '
@@ -484,8 +494,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += dict_of_phrases['derived_from'] + ' | '
 
         if 'transfection' in dict_of_phrases:
-            summary_phrase += 'the sample was prepared using ' + \
-                              dict_of_phrases['transfection'] + ' | '
+            summary_phrase += dict_of_phrases['transfection'] + ' | '
         if 'treatments' in dict_of_phrases:
             for t in dict_of_phrases['treatments']:
                 summary_phrase += t + ', '
