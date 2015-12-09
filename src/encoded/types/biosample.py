@@ -331,7 +331,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
 
         if phase is not None:
-            dict_of_phrases['phase'] = 'in cell phase '+phase
+            dict_of_phrases['phase'] = 'cell phase '+phase
 
         if subcellular_fraction_term_name is not None:
             dict_of_phrases['fractionated'] = 'fractionated to '+subcellular_fraction_term_name
@@ -390,6 +390,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             constructs_list = []
             for c in constructs:
                 constructObject = request.embed(c, '@@object')
+                # should be sequential addition
                 if 'construct_type' in constructObject and \
                    'vector_backbone_name' in constructObject and \
                    'target' in constructObject:
@@ -425,57 +426,60 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                                       targetObject['title'])
             dict_of_phrases['rnais'] = 'rnais '+str(rnais_list)
 
+        '''
+        
+| depleted | treatment | constructs | rnais
+
+
+        '''
+
         summary_phrase = ''
 
         if 'organism_name' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['organism_name'] + ' | '
+            summary_phrase += dict_of_phrases['organism_name']
 
         if 'strain_name' in dict_of_phrases:
-            summary_phrase += '(' + dict_of_phrases['strain_name'] + '), '
+            summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
+
+        summary_phrase += ' |'
+
+        if 'sample_type' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['sample_type'] + ':'
 
         if 'sample_term_name' in dict_of_phrases:
             if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
                 summary_phrase += dict_of_phrases['sample_term_name'] + ' | '
 
-        if 'sample_type' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['sample_type'] + ' | '
+        if 'phase' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['phase'] + ' | '
 
         if 'life_stage' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['life_stage'] + ' '
+            summary_phrase += 'life stage ' + dict_of_phrases['life_stage'] + ' | '
 
         if 'sex' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                summary_phrase += dict_of_phrases['sex'] + ' sex, '
-            else:
-                summary_phrase += dict_of_phrases['sex'] + '(s), '
+            summary_phrase += 'sex:' + dict_of_phrases['sex'] + ' | '
 
         if 'age_display' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['age_display'] + ' old '
+            summary_phrase += dict_of_phrases['age_display'] + ' old | '
         else:
             if 'synchronization' in dict_of_phrases:
-                summary_phrase += dict_of_phrases['synchronization'] + ' '
-
-        if 'phase' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['phase'] + ', '
-        else:
-            summary_phrase += ', '
+                summary_phrase += dict_of_phrases['synchronization'] + ' | '
 
         if 'part_of' in dict_of_phrases:
-            summary_phrase += 'the sample is ' + dict_of_phrases['part_of'] + ', '
+            summary_phrase += dict_of_phrases['part_of'] + ' | '
 
         if 'derived_from' in dict_of_phrases:
-            summary_phrase += 'the sample is ' + dict_of_phrases['derived_from'] + ', '
+            summary_phrase += dict_of_phrases['derived_from'] + ' | '
 
         if 'transfection' in dict_of_phrases:
             summary_phrase += 'the sample was prepared using ' + \
-                              dict_of_phrases['transfection'] + ', '
-
+                              dict_of_phrases['transfection'] + ' | '
         if 'treatments' in dict_of_phrases:
             for t in dict_of_phrases['treatments']:
                 summary_phrase += t + ', '
 
         if 'depleted_in' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['depleted_in'] + ', '
+            summary_phrase += dict_of_phrases['depleted_in'] + ' | '
 
         if 'talens' in dict_of_phrases:
             summary_phrase += dict_of_phrases['talens'] + ' | '
