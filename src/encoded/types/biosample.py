@@ -331,10 +331,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
 
         if phase is not None:
-            dict_of_phrases['phase'] = 'cell phase '+phase
+            dict_of_phrases['phase'] = 'cell phase:'+phase
 
         if subcellular_fraction_term_name is not None:
-            dict_of_phrases['fractionated'] = 'fractionated to '+subcellular_fraction_term_name
+            dict_of_phrases['fractionated'] = 'subcellular fraction:'+subcellular_fraction_term_name
 
         # relevant only in worms and flys
 
@@ -390,27 +390,37 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             constructs_list = []
             for c in constructs:
                 constructObject = request.embed(c, '@@object')
-                # should be sequential addition
-                if 'construct_type' in constructObject and \
-                   'vector_backbone_name' in constructObject and \
-                   'target' in constructObject:
+                to_add = ''
+                if 'construct_type' in constructObject:
+                    to_add += constructObject['construct_type'] + ' '
+                if 'vector_backbone_name' in constructObject:
+                    to_add += constructObject['vector_backbone_name'] + ' '
+                if 'target' in constructObject:
                     targetObject = request.embed(constructObject['target'], '@@object')
-                    constructs_list.append(constructObject['construct_type'] + ' ' +
-                                           constructObject['vector_backbone_name'] + ' ' +
-                                           targetObject['title'])
+                    to_add += targetObject['title']
+
+                if to_add != '':
+                    constructs_list.append(to_add)
+
             dict_of_phrases['constructs'] = 'biosample constructs: '+str(constructs_list)
 
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
             constructs_list = []
             for c in model_organism_donor_constructs:
                 constructObject = request.embed(c, '@@object')
-                if 'construct_type' in constructObject and \
-                   'vector_backbone_name' in constructObject and \
-                   'target' in constructObject:
+                to_add = ''
+                if 'construct_type' in constructObject:
+                    to_add += constructObject['construct_type'] + ' '
+                if 'vector_backbone_name' in constructObject:
+                    to_add += constructObject['vector_backbone_name'] + ' '
+
+                if 'target' in constructObject:
                     targetObject = request.embed(constructObject['target'], '@@object')
-                    constructs_list.append(constructObject['construct_type'] + ' ' +
-                                           constructObject['vector_backbone_name'] + ' ' +
-                                           targetObject['title'])
+                    to_add += targetObject['title']
+
+                if to_add != '':
+                    constructs_list.append(to_add)
+
             dict_of_phrases['model_organism_constructs'] = ('biosample model ' +
                                                             'organism donor constructs: ' +
                                                             str(constructs_list))
@@ -419,19 +429,18 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             rnais_list = []
             for r in rnais:
                 rnaiObject = request.embed(r, '@@object')
-                if 'rnai_type' in rnaiObject and \
-                   'target' in rnaiObject:
+                to_add = ''
+                if 'rnai_type' in rnaiObject:
+                    to_add += rnaiObject['rnai_type'] + ' '
+
+                if 'target' in rnaiObject:
                     targetObject = request.embed(rnaiObject['target'], '@@object')
-                    rnais_list.append(rnaiObject['rnai_type'] + ' ' +
-                                      targetObject['title'])
+                    to_add += targetObject['title']
+
+                if to_add != '':
+                    rnais_list.append(to_add)
+
             dict_of_phrases['rnais'] = 'rnais '+str(rnais_list)
-
-        '''
-        
-| depleted | treatment | constructs | rnais
-
-
-        '''
 
         summary_phrase = ''
 
@@ -441,7 +450,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
 
-        summary_phrase += ' |'
+        summary_phrase += ' | '
 
         if 'sample_type' in dict_of_phrases:
             summary_phrase += dict_of_phrases['sample_type'] + ':'
@@ -453,14 +462,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'phase' in dict_of_phrases:
             summary_phrase += dict_of_phrases['phase'] + ' | '
 
+        if 'fractionated' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['fractionated'] + ' | '
+
         if 'life_stage' in dict_of_phrases:
-            summary_phrase += 'life stage ' + dict_of_phrases['life_stage'] + ' | '
+            summary_phrase += 'life stage:' + dict_of_phrases['life_stage'] + ' | '
 
         if 'sex' in dict_of_phrases:
             summary_phrase += 'sex:' + dict_of_phrases['sex'] + ' | '
 
         if 'age_display' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['age_display'] + ' old | '
+            summary_phrase += 'age:' + dict_of_phrases['age_display'] + ' | '
         else:
             if 'synchronization' in dict_of_phrases:
                 summary_phrase += dict_of_phrases['synchronization'] + ' | '
