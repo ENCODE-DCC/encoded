@@ -410,7 +410,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     constructs_list.append(constructObject['construct_type'] + ' ' +
                                            constructObject['vector_backbone_name'] + ' ' +
                                            targetObject['title'])
-            dict_of_phrases['model_organism_constructs'] = ('biosample model' +
+            dict_of_phrases['model_organism_constructs'] = ('biosample model ' +
                                                             'organism donor constructs: ' +
                                                             str(constructs_list))
 
@@ -476,5 +476,15 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if 'depleted_in' in dict_of_phrases:
             summary_phrase += dict_of_phrases['depleted_in'] + ', '
+
+        if 'talens' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['talens'] + ' | '
+
+        if 'constructs' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['constructs'] + ' | '
+        if 'model_organism_constructs' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['model_organism_constructs'] + ' | '
+        if 'rnais' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['rnais'] + ' | '
 
         return (str(dict_of_phrases), str(summary_phrase))
