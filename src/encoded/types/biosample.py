@@ -386,7 +386,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 talenObject = request.embed(t, '@@object')
                 if 'name' in talenObject:
                     talens_list.append(talenObject['name'])
-            dict_of_phrases['talens'] = 'modified with talens: '+str(talens_list)
+            dict_of_phrases['talens'] = 'talens: '+str(talens_list)
 
         if constructs is not None and len(constructs) > 0:
             constructs_list = []
@@ -423,8 +423,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if to_add != '':
                     constructs_list.append(to_add)
 
-            dict_of_phrases['model_organism_constructs'] = ('biosample model ' +
-                                                            'organism donor constructs: ' +
+            dict_of_phrases['model_organism_constructs'] = ('biosample constructs: ' +
                                                             str(constructs_list))
 
         if rnais is not None and len(rnais) > 0:
@@ -461,7 +460,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'sample_type' in dict_of_phrases:
             term_phrase += dict_of_phrases['sample_type']
 
-        summary_phrase += ' '.join(set(term_phrase.split(' '))) + ' | '
+        term_dict = {}
+        new_term_phrase = ''
+        for w in term_phrase.split():
+            if w not in term_dict:
+                term_dict[w] = 1
+                new_term_phrase += w + ' '
+
+        summary_phrase += ' ' + new_term_phrase
 
         if 'phase' in dict_of_phrases:
             summary_phrase += dict_of_phrases['phase'] + ' | '
