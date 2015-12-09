@@ -52,11 +52,11 @@ non_seq_assays = [
     ]
 
 
-@audit_checker('experiment', frame=['original_files', 'target',
-                              'original_files.analysis_step_version',
-                              'original_files.analysis_step_version.analysis_step',
-                              'original_files.analysis_step_version.analysis_step.pipelines',
-                              'replicates', 'replicates.library'],
+@audit_checker('Experiment', frame=['original_files', 'target',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'replicates', 'replicates.library'],
                condition=rfa('ENCODE3'))
 def audit_experiment_needs_pipeline(value, system):
 
