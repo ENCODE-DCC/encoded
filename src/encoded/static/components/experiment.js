@@ -43,13 +43,55 @@ var anisogenicValues = [
 
 
 var testTableConfig = {
-    title: 'Raw data',
+    title: 'Processed data',
     columns: {
         'accession': {
             title: 'Accession'
         },
-        'dataset': {
-            title: 'Originating dataset'
+        'file_type': {
+            title: 'File type'
+        },
+        'output_type': {
+            title: 'Output type'
+        },
+        'biological_replicates': {
+            title: 'Biological replicates',
+            getValue: function(item) {
+                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
+            },
+            sorter: function(a, b) {
+                // Sort by the minimum value of each array
+                var aMin = _.min(a.biological_replicates);
+                var bMin = _.min(b.biological_replicates);
+                return aMin - bMin;
+            }
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: function(item) {
+                return item.replicate ? item.replicate.technical_replicate_number : null;
+            },
+            sorter: function(a, b) {
+                if (a.replicate && b.replicate) {
+                    return a.replicate.technical_replicate_number - b.replicate.technical_replicate_number;
+                }
+                return (a.replicate && -a.replicate.technical_replicate_number) || (b.replicate && b.replicate.technical_replicate_number);
+            }
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'genome_annotation': {
+            title: 'Genome annotation'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            },
+            sorter: function(a, b) {
+                return a.lab.title > b.lab.title ? 1 : -1;
+            }
         }
     }
 };
@@ -1441,7 +1483,7 @@ var TableSortable = React.createClass({
         if (this.props.sortColumn) {
             sortColumn = this.props.sortColumn;
         } else {
-            sortColumn = Object.keys(this.props.config.columns)[0]
+            sortColumn = Object.keys(this.props.config.columns)[0];
         }
 
         return {
@@ -1456,8 +1498,22 @@ var TableSortable = React.createClass({
         this.setState({sortColumn: column, reversed: reversed});
     },
 
+    // Called when any column needs sorting. If the column's config has a sorter function, call it
+    // to handle its sorting. Otherwise assume the values can be retrieved from the currently sorted column ID.
     sortColumn: function(a, b) {
-        return 1;
+        var result;
+        var columnId = this.state.sortColumn;
+        var sorter = this.props.config.columns[columnId].sorter;
+        if (sorter) {
+            result = sorter(a, b);
+        } else {
+            if (a[columnId] && b[columnId]) {
+                result = a[columnId] > b[columnId] ? 1 : -1;
+            } else {
+                result = a[columnId] ? -1 : (b[columnId] ? 1 : 0);
+            }
+        }
+        return this.state.reversed ? -result : result;
     },
 
     render: function() {
@@ -1490,8 +1546,9 @@ var TableSortable = React.createClass({
                         return (
                             <tr key={item.uuid}>
                                 {columnIds.map(function(columnId) {
+                                    var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
                                     return (
-                                        <td key={columnId}>{item[columnId]}</td>
+                                        <td key={columnId}>{itemValue}</td>
                                     );
                                 })}
                             </tr>
