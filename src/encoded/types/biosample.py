@@ -363,7 +363,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if part_of is not None:
             part_ofObject = request.embed(part_of, '@@object')
-            dict_of_phrases['part_of'] = 'part of biosample '+part_ofObject['accession']
+            dict_of_phrases['part_of'] = 'separated from biosample '+part_ofObject['accession']
 
         if derived_from is not None:
             derived_fromObject = request.embed(derived_from, '@@object')
@@ -426,33 +426,49 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['rnais'] = 'rnais '+str(rnais_list)
 
         summary_phrase = ''
+
         if 'organism_name' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['organism_name'] + ' '
+            summary_phrase += dict_of_phrases['organism_name'] + ' | '
+
         if 'strain_name' in dict_of_phrases:
-            summary_phrase += '(' + dict_of_phrases['strain_name'] + ') '
+            summary_phrase += '(' + dict_of_phrases['strain_name'] + '), '
+
         if 'sample_term_name' in dict_of_phrases:
             if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
-                summary_phrase += dict_of_phrases['sample_term_name'] + ' '
+                summary_phrase += dict_of_phrases['sample_term_name'] + ' | '
+
         if 'sample_type' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['sample_type'] + ' '
+            summary_phrase += dict_of_phrases['sample_type'] + ' | '
+
+        if 'life_stage' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['life_stage'] + ' '
+
         if 'sex' in dict_of_phrases:
             if dict_of_phrases['sex'] == 'mixed':
                 summary_phrase += dict_of_phrases['sex'] + ' sex, '
             else:
-                summary_phrase += dict_of_phrases['sex'] + ', '
+                summary_phrase += dict_of_phrases['sex'] + '(s), '
+
         if 'age_display' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['age_display'] + ', '
+            summary_phrase += dict_of_phrases['age_display'] + ' old '
         else:
             if 'synchronization' in dict_of_phrases:
-                summary_phrase += dict_of_phrases['synchronization'] + ', '
+                summary_phrase += dict_of_phrases['synchronization'] + ' '
+
+        if 'phase' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['phase'] + ', '
+        else:
+            summary_phrase += ', '
+
         if 'part_of' in dict_of_phrases:
-            summary_phrase += ' was ' + dict_of_phrases['part_of'] + ', '
+            summary_phrase += 'the sample is ' + dict_of_phrases['part_of'] + ', '
 
         if 'derived_from' in dict_of_phrases:
-            summary_phrase += ' was ' + dict_of_phrases['derived_from'] + ', '
+            summary_phrase += 'the sample is ' + dict_of_phrases['derived_from'] + ', '
 
         if 'transfection' in dict_of_phrases:
-            summary_phrase += 'sample was prepared using ' + dict_of_phrases['transfection'] + ', '
+            summary_phrase += 'the sample was prepared using ' + \
+                              dict_of_phrases['transfection'] + ', '
 
         if 'treatments' in dict_of_phrases:
             for t in dict_of_phrases['treatments']:
