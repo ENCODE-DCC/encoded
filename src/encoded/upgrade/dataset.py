@@ -143,3 +143,8 @@ def dataset_6_7(value, system):
             value.pop('revoked_files', None)
             value['related_datasets'] = []
         del value['dataset_type']
+
+
+@upgrade_step('experiment', '7', '8')
+def experiment_7_8(value, system):
+    value.pop('related_files', None)
