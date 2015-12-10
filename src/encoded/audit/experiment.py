@@ -54,7 +54,7 @@ non_seq_assays = [
 
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN",
+               condition=rfa("ENCODE3", "modERN", "ENCODE2",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
