@@ -74,7 +74,14 @@ ORDER = [
     'phantompeaktools_spp_quality_metric',
     'samtools_stats_quality_metric',
     'image',
-    'page'
+    'page',
+    'reference_epigenome',
+    'organism_development_series',
+    'matched_set',
+    'replication_timing_series',
+    'project',
+    'treatment_time_series',
+    'treatment_concentration_series',
 ]
 
 ##############################################################################
