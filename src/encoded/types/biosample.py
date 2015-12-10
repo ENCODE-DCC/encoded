@@ -333,7 +333,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
 
         if phase is not None:
-            dict_of_phrases['phase'] = 'cell phase:'+phase
+            dict_of_phrases['phase'] = 'phase:'+phase
 
         if subcellular_fraction_term_name is not None:
             dict_of_phrases['fractionated'] = 'subcellular fraction:'+subcellular_fraction_term_name
@@ -451,26 +451,34 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'strain_name' in dict_of_phrases:
             summary_phrase += ' (' + dict_of_phrases['strain_name'] + ')'
 
-        term_phrase = ''
+        term_name = ''
 
         if 'sample_term_name' in dict_of_phrases:
             if dict_of_phrases['sample_term_name'] != 'multi-cellular organism':
-                term_phrase += dict_of_phrases['sample_term_name'] + ' '
+                term_name += dict_of_phrases['sample_term_name']
+
+        term_type = ''
 
         if 'sample_type' in dict_of_phrases:
-            term_phrase += dict_of_phrases['sample_type']
+            term_type += dict_of_phrases['sample_type']
 
         term_dict = {}
-        new_term_phrase = ''
-        for w in term_phrase.split():
+        for w in term_type.split():
             if w not in term_dict:
                 term_dict[w] = 1
-                new_term_phrase += w + ' '
 
-        summary_phrase += ' ' + new_term_phrase
+        term_phrase = ''
+        for w in term_name:
+            if w not in term_dict or (w+'s') not in term_dict:
+                term_dict[w] = 1
+                term_phrase += w + ' '
+
+        term_phrase += term_type
+
+        summary_phrase += ' ' + term_phrase + ' '
 
         if 'phase' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['phase'] + ' | '
+            summary_phrase += 'at ' + dict_of_phrases['phase'] + ' | '
 
         if 'fractionated' in dict_of_phrases:
             summary_phrase += dict_of_phrases['fractionated'] + ' | '
