@@ -358,6 +358,14 @@ def lot_reviews(characterizations, targets, request):
         characterized_targets = set()
         output = list()
 
+        base_histone_review = {
+            'biosample_term_name': 'all cell types and tissues',
+            'biosample_term_id': 'NTR:99999999',
+            'organisms': sorted(not_characterized_organisms),
+            'targets': sorted(not_characterized_targets),
+            'status': 'awaiting lab characterization'
+        }
+
         if not_characterized_organisms:
             for not_characterized_organism in not_characterized_organisms:
                 for target in antibody_targets:
@@ -373,7 +381,7 @@ def lot_reviews(characterizations, targets, request):
             if compliant_secondary or exempted_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(just_exempted_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data (via exemption)'
@@ -383,7 +391,7 @@ def lot_reviews(characterizations, targets, request):
             if compliant_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(characterized_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data'
@@ -391,21 +399,17 @@ def lot_reviews(characterizations, targets, request):
             if exempted_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(characterized_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data (via exemption)'
                 })
         if not_characterized_organisms:
-            output.append({
-                'biosample_term_name': 'all cell types and tissues',
-                'biosample_term_id': 'NTR:00000000',
-                'organisms': sorted(not_characterized_organisms),
-                'targets': sorted(not_characterized_targets),
-                'status': 'awaiting lab characterization'
-            })
+            output.append(base_histone_review)
 
         if not output:
+            base_review['biosample_term_name'] = 'all cell types and tissues'
+            base_review['biosample_term_id'] = 'NTR:99999990'
             return [base_review]
 
         return output
