@@ -26,7 +26,7 @@ ALLOW_EVERYONE_VIEW = [
 ]
 
 ALLOW_SUBMITTER_ADD = [
-    (Allow, 'group.submitter', 'add') 
+    (Allow, 'group.submitter', 'add')
 ]
 
 ALLOW_VIEWING_GROUP_VIEW = [
