@@ -242,7 +242,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // Extract three kinds of file arrays
-        var files = _(this.props.items).groupBy(function(file) {
+        var files = _(context.files).groupBy(function(file) {
             if (file.output_category === 'raw data') {
                 return 'raw';
             } else if (file.output_category === 'reference') {
@@ -433,6 +433,13 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {context.files.length ?
                     <div>
+                        <h3>Old Files linked to {context.accession}</h3>
+                        <FileTable items={context.files} encodevers={encodevers} anisogenic={anisogenic} />
+                    </div>
+                : null }
+
+                {context.files.length ?
+                    <div>
                         <h3>Files linked to {context.accession}</h3>
                         <SortTablePanel>
                             <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: encodevers, anisogenic: anisogenic}} />
@@ -445,10 +452,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
-
-                <TableSortablePanel>
-                    <TableSortable list={context.files} config={testTableConfig} />
-                </TableSortablePanel>
             </div>
         );
     }
