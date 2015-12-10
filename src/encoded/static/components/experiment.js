@@ -74,7 +74,11 @@ var processTableConfig = {
             title: 'Output type'
         },
         'biological_replicates': {
-            title: 'Biological replicates',
+            title: function(list, config, meta) {
+                return (
+                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
+                );
+            },
             getValue: function(item) {
                 return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
             },
@@ -89,12 +93,6 @@ var processTableConfig = {
             title: 'Technical replicate',
             getValue: function(item) {
                 return item.replicate ? item.replicate.technical_replicate_number : null;
-            },
-            sorter: function(a, b) {
-                if (a.replicate && b.replicate) {
-                    return a.replicate.technical_replicate_number - b.replicate.technical_replicate_number;
-                }
-                return (a.replicate && -a.replicate.technical_replicate_number) || (b.replicate && b.replicate.technical_replicate_number);
             }
         },
         'assembly': {
@@ -107,9 +105,6 @@ var processTableConfig = {
             title: 'Lab',
             getValue: function(item) {
                 return item.lab && item.lab.title ? item.lab.title : null;
-            },
-            sorter: function(a, b) {
-                return a.lab.title > b.lab.title ? 1 : -1;
             }
         },
         'date_created': {
@@ -123,6 +118,16 @@ var processTableConfig = {
                 }
                 return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
+        },
+        'status': {
+            title: 'Validation status',
+            display: function(item) {
+                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
+            },
+            hide: function(list, config, meta) {
+                return meta.encodevers !== '3';
+            },
+            sorter: false
         }
     }
 };
@@ -442,7 +447,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <div>
                         <h3>Files linked to {context.accession}</h3>
                         <SortTablePanel>
-                            <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: encodevers, anisogenic: anisogenic}} />
+                            <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: '3', anisogenic: anisogenic}} />
                         </SortTablePanel>
                     </div>
                 : null }
