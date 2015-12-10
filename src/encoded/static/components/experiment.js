@@ -42,11 +42,27 @@ var anisogenicValues = [
 ];
 
 
+function humanFileSize(size) {
+    if (size === undefined) return undefined;
+    var i = Math.floor( Math.log(size) / Math.log(1024) );
+    return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+}
+
+
 var testTableConfig = {
     title: 'Processed data',
     columns: {
         'accession': {
-            title: 'Accession'
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
         },
         'file_type': {
             title: 'File type'
@@ -91,6 +107,18 @@ var testTableConfig = {
             },
             sorter: function(a, b) {
                 return a.lab.title > b.lab.title ? 1 : -1;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            sorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
             }
         }
     }
@@ -1545,7 +1573,12 @@ var TableSortable = React.createClass({
                     {list.sort(this.sortColumn).map(item => {
                         return (
                             <tr key={item.uuid}>
-                                {columnIds.map(function(columnId) {
+                                {columnIds.map(columnId => {
+                                    if (columns[columnId].display) {
+                                        return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                    }
+
+                                    // No custom display function; just display the standard way
                                     var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
                                     return (
                                         <td key={columnId}>{itemValue}</td>
