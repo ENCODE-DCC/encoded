@@ -75,9 +75,12 @@ def audit_experiment_replicate_with_no_files(value, system):
         rep_dictionary[rep['@id']] = []
 
     for file_object in value['original_files']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
         if 'replicate' in file_object:
             file_replicate = file_object['replicate']
-            rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
+            if file_replicate['@id'] in rep_dictionary:
+                rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
 
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
