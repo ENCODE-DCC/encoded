@@ -405,6 +405,9 @@ def lot_reviews(characterizations, targets, request):
                 'status': 'awaiting lab characterization'
             })
 
+        if not output:
+            return [base_review]
+
         return output
 
     return list(char_reviews.values())
