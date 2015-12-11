@@ -52,6 +52,89 @@ function humanFileSize(size) {
 }
 
 
+// Configuration for process file table
+var rawTableConfig = {
+    title: 'Raw data',
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
+        },
+        'file_type': {
+            title: 'File type'
+        },
+        'biological_replicates': {
+            title: function(list, config, meta) {
+                return (
+                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
+                );
+            },
+            getValue: function(item) {
+                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
+            }
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: function(item) {
+                return item.replicate ? item.replicate.technical_replicate_number : null;
+            }
+        },
+        'read_length': {
+            title: 'Read length',
+            display: function(item) {
+                return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
+            }
+        },
+        'run_type': {
+            title: 'Run type'
+        },
+        'paired_end': {
+            title: 'Paired end'
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            objSorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        },
+        'status': {
+            title: 'Validation status',
+            display: function(item) {
+                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
+            },
+            hide: function(list, config, meta) {
+                return meta.encodevers !== '3';
+            },
+            sorter: false
+        }
+    }
+};
+
+
+// Configuration for process file table
 var processTableConfig = {
     title: 'Processed data',
     columns: {
@@ -81,12 +164,6 @@ var processTableConfig = {
             },
             getValue: function(item) {
                 return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-            },
-            sorter: function(a, b) {
-                // Sort by the minimum value of each array
-                var aMin = _.min(a.biological_replicates);
-                var bMin = _.min(b.biological_replicates);
-                return aMin - bMin;
             }
         },
         'technical_replicate_number': {
@@ -447,7 +524,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                     <div>
                         <h3>Files linked to {context.accession}</h3>
                         <SortTablePanel>
-                            <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: '3', anisogenic: anisogenic}} />
+                            <SortTable list={files.raw} config={rawTableConfig} meta={{encodevers: encodevers, anisogenic: anisogenic}} />
+                            <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: encodevers, anisogenic: anisogenic}} />
                         </SortTablePanel>
                     </div>
                 : null }

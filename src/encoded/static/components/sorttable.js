@@ -43,13 +43,19 @@
 //                                      two parameters the Javascript sorting function gets. This function must
 //                                      return neg, 0, or pos the same way the JS sorting function returns.
 //                                      If `sorter` specifically gets the value FALSE, that causes this
-//                                      column to not be sortable at all.
+//                                      column to not be sortable at all. Note that if you have a getValue
+//                                      function defined, it gets called for the two comparison values, and
+//                                      they get passed in to this function
+//
+//     objSorter -- (function or boolean): Same as `sorter` above, but instead of passing the result of
+//                                         getValue as the two values, it passes the objects from `list`.
+//                                         This is useful when you have getValue() returning one kind of value
+//                                         while you need to sort on another.
 //
 //     hide -- (function): In some cases a column might need to be hidden. This function, if given, returns
 //                         TRUE to hid this column based on some criteria. This function gets passed the same
 //                         list, config, and meta that <SortTable> itself gets.
 // }
-
 
 var React = require('react');
 var _ = require('underscore');
@@ -107,6 +113,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         var aVal, bVal, result;
         var columnId = this.state.sortColumn;
         var sorter = this.props.config.columns[columnId].sorter;
+        var objSorter = this.props.config.columns[columnId].objSorter;
         var getValue = this.props.config.columns[columnId].getValue;
 
         // If the config for this column has `getValue` defined, use it to get the cell's value. Otherwise
@@ -122,6 +129,8 @@ var SortTable = module.exports.SortTable = React.createClass({
         // If we have a custom sorting function, call it with the cell values to handle sorting. Otherwise
         if (sorter && (sorter !== false)) {
             result = sorter(aVal, bVal);
+        } else if (objSorter) {
+            result = objSorter(a, b);
         } else {
             if (aVal && bVal) {
                 result = aVal > bVal ? 1 : -1;
@@ -146,63 +155,66 @@ var SortTable = module.exports.SortTable = React.createClass({
             hiddenColumns[columnId] = !!(columns[columnId].hide && columns[columnId].hide(list, config, meta));
         });
 
-        return (
-            <table className="table table-striped">
+        if (list) {
+            return (
+                <table className="table table-striped">
 
-                <thead>
-                    <tr className="table-section"><th colSpan={colCount}>{config.title}</th></tr>
-                    <tr>
-                        {columnIds.map(columnId => {
-                            if (!hiddenColumns[columnId]) {
-                                var columnClass;
+                    <thead>
+                        <tr className="table-section"><th colSpan={colCount}>{config.title}</th></tr>
+                        <tr>
+                            {columnIds.map(columnId => {
+                                if (!hiddenColumns[columnId]) {
+                                    var columnClass;
 
-                                if (columns[columnId].sorter !== false) {
-                                    columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
-                                } else {
-                                    columnClass = null;
+                                    if (columns[columnId].sorter !== false) {
+                                        columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
+                                    } else {
+                                        columnClass = null;
+                                    }
+                                    var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, config, meta) : columns[columnId].title;
+                                    var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
+
+                                    return (
+                                        <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
+                                            <span>{title}<i className={columnClass}></i></span>
+                                        </th>
+                                    );
                                 }
-                                var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, config, meta) : columns[columnId].title;
-                                var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
 
-                                return (
-                                    <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
-                                        <span>{title}<i className={columnClass}></i></span>
-                                    </th>
-                                );
-                            }
+                                // Column hidden
+                                return null;
+                            })}
+                        </tr>
+                    </thead>
 
-                            // Column hidden
-                            return null;
-                        })}
-                    </tr>
-                </thead>
+                    <tbody>
+                        {list.sort(this.sortColumn).map(item => {
+                            return (
+                                <tr key={item.uuid}>
+                                    {columnIds.map(columnId => {
+                                        if (!hiddenColumns[columnId]) {
+                                            if (columns[columnId].display) {
+                                                return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                            }
 
-                <tbody>
-                    {list.sort(this.sortColumn).map(item => {
-                        return (
-                            <tr key={item.uuid}>
-                                {columnIds.map(columnId => {
-                                    if (!hiddenColumns[columnId]) {
-                                        if (columns[columnId].display) {
-                                            return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                            // No custom display function; just display the standard way
+                                            var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
+                                            return (
+                                                <td key={columnId}>{itemValue}</td>
+                                            );
                                         }
 
-                                        // No custom display function; just display the standard way
-                                        var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
-                                        return (
-                                            <td key={columnId}>{itemValue}</td>
-                                        );
-                                    }
+                                        // Column hidden
+                                        return null;
+                                    })}
+                                </tr>
+                            );
+                        })}
+                    </tbody>
 
-                                    // Column hidden
-                                    return null;
-                                })}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-
-            </table>
-        );
+                </table>
+            );
+        }
+        return null;
     }
 });
