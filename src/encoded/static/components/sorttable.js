@@ -4,6 +4,9 @@
 //         <SortTable list={array of objects} config={object describing table} meta={table-specific data} />
 //     </SortTablePanel>
 //
+// <SortTablePanel> supports multiple <SortTable> components as children, so you can have multiple tables,
+// each with their own header, inside the table panel.
+//
 // The list array (required) must be an array of objects whose properties get displayed in each cell of the
 // table. The meta object (optional) has any extra data relevant to the specific table and doesn't get
 // processed -- only passed on -- by the SortTable code.
@@ -36,7 +39,8 @@
 //
 //     getValue -- (function): If the property to display can't be retrieved directly through item[config.key],
 //                             this function retrieves and returns the value to be displayed in the cell. It
-//                             must be a simple value, or you should use `display` above instead.
+//                             must be a simple value, or you should use `display` above instead. This value
+//                             is used for sorting, either with default sorting or the `sorter` method.
 //
 //     sorter -- (function or boolean): <SortTable> can handle basic sorting of two values. But if something
 //                                      more complex needs to happen, this function gets called with the same
@@ -50,7 +54,8 @@
 //     objSorter -- (function or boolean): Same as `sorter` above, but instead of passing the result of
 //                                         getValue as the two values, it passes the objects from `list`.
 //                                         This is useful when you have getValue() returning one kind of value
-//                                         while you need to sort on another.
+//                                         while you need to sort on another. You should not specify both
+//                                         `sorter` and `objSorter`.
 //
 //     hide -- (function): In some cases a column might need to be hidden. This function, if given, returns
 //                         TRUE to hid this column based on some criteria. This function gets passed the same
@@ -147,15 +152,22 @@ var SortTable = module.exports.SortTable = React.createClass({
         var meta = this.props.meta;
         var columns = config.columns;
         var columnIds = Object.keys(columns);
-        var colCount = columnIds.length;
         var hiddenColumns = {};
+        var hiddenCount = 0;
 
-        // See if any columns hidden by making an array keyed by column ID that's true for each hidden column
+        // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
+        // Also keep a count of hidden columns so we can calculate colspan later.
         columnIds.forEach(function(columnId) {
-            hiddenColumns[columnId] = !!(columns[columnId].hide && columns[columnId].hide(list, config, meta));
+            var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, config, meta));
+            hiddenColumns[columnId] = hidden;
+            hiddenCount += hidden ? 1 : 0;
         });
 
-        if (list) {
+        // Calculate the colspan for the table
+        var colCount = columnIds.length - hiddenCount;
+
+        // Now display the table, but only if we were passed a non-empty list
+        if (list && list.length) {
             return (
                 <table className="table table-striped">
 
@@ -212,9 +224,15 @@ var SortTable = module.exports.SortTable = React.createClass({
                         })}
                     </tbody>
 
+                    <tfoot>
+                        <tr><td colSpan={colCount}></td></tr>
+                    </tfoot>
+
                 </table>
             );
         }
+
+        // Empty list; render nothing.
         return null;
     }
 });
