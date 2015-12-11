@@ -66,7 +66,7 @@ class AnalysisStep(Item):
         "type": "array",
         "items": {
             "type": 'string',
-            "linkTo": "pipeline",
+            "linkTo": "Pipeline",
         },
     })
     def pipelines(self, request, pipelines):
@@ -75,7 +75,7 @@ class AnalysisStep(Item):
     @calculated_property(schema={
         "title": "Current version",
         "type": "string",
-        "linkTo": "analysis_step_version",
+        "linkTo": "AnalysisStepVersion",
     })
     def current_version(self, request, versions):
         version_objects = [
@@ -91,7 +91,7 @@ class AnalysisStep(Item):
         "type": "array",
         "items": {
             "type": 'string',
-            "linkTo": "analysis_step_version",
+            "linkTo": "AnalysisStepVersion",
         },
     })
     def versions(self, request, versions):

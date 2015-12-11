@@ -142,7 +142,7 @@ def page_view_page(context, request):
     schema={
         "title": "Default page",
         "type": "string",
-        "linkTo": "page",
+        "linkTo": "Page",
     })
 def collection_default_page(context, request):
     try:
@@ -158,7 +158,7 @@ def collection_default_page(context, request):
     schema={
         "title": "Default page",
         "type": "string",
-        "linkTo": "page",
+        "linkTo": "Page",
     })
 def root_default_page(context, request):
     try:

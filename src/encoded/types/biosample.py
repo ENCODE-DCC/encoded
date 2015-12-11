@@ -232,7 +232,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             "(not RNAi) into a donor organism.",
             "comment": "See contstruct.json for available identifiers.",
             "type": "string",
-            "linkTo": "construct",
+            "linkTo": "Construct",
         },
     })
     def model_organism_donor_constructs(self, request, donor=None):
