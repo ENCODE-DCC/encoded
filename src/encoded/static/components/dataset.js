@@ -373,7 +373,7 @@ var PublicationData = React.createClass({
         var crumbs = [
             {id: 'Datasets'},
             {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
         ];
 
         // Make string of alternate accessions
@@ -836,7 +836,7 @@ var UcscBrowserComposite = React.createClass({
         var crumbs = [
             {id: 'Datasets'},
             {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
         ];
 
         // Make string of alternate accessions
@@ -1218,7 +1218,7 @@ var Series = module.exports.Series = React.createClass({
         var crumbs = [
             {id: 'Datasets'},
             {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
         ];
 
         // Make string of alternate accessions
@@ -1861,3 +1861,9 @@ var FileTable = module.exports.FileTable = React.createClass({
         );
     }
 });
+
+
+// Break the given camel-cased name into space-separated words just before the interior capital letters.
+function breakSetName(name) {
+    return name.replace(/(\S)([A-Z])/g, '$1 $2');
+}
