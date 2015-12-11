@@ -1467,7 +1467,7 @@ var rawTableConfig = {
 
 
 // Configuration for process file table
-var processTableConfig = {
+var procTableConfig = {
     title: 'Processed data',
     columns: {
         'accession': {
@@ -1542,6 +1542,56 @@ var processTableConfig = {
 };
 
 
+// Configuration for reference file table
+var refTableConfig = {
+    title: 'Reference data',
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
+        },
+        'file_type': {
+            title: 'File type'
+        },
+        'output_type': {
+            title: 'Output type'
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'genome_annotation': {
+            title: 'Genome annotation'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            sorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        }
+    }
+};
+
+
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
@@ -1564,7 +1614,8 @@ var FileTable = module.exports.FileTable = React.createClass({
         return (
             <SortTablePanel>
                 <SortTable list={files.raw} config={rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable list={files.proc} config={processTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable list={files.proc} config={procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable list={files.ref} config={refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
         );
     }
