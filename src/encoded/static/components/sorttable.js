@@ -85,7 +85,7 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
 // Displays one table within a <SortTablePanel></SortTablePanel>.
 var SortTable = module.exports.SortTable = React.createClass({
     propTypes: {
-        list: React.PropTypes.array.isRequired, // Array of objects to display in the table
+        list: React.PropTypes.array, // Array of objects to display in the table
         config: React.PropTypes.object.isRequired, // Defines the columns of the table
         sortColumn: React.PropTypes.string // ID of column to sort by default; first column if not given
     },
