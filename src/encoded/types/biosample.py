@@ -284,6 +284,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 sex=None,
                 biosample_term_name=None,
                 biosample_type=None,
+                starting_amount=None,
+                starting_amount_units=None,
                 depleted_in_term_name=None,
                 phase=None,
                 subcellular_fraction_term_name=None,
@@ -326,8 +328,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if biosample_term_name is not None:
             dict_of_phrases['sample_term_name'] = biosample_term_name
 
-        if biosample_type is not None and biosample_type != 'whole organisms':
+        if biosample_type is not None and \
+           biosample_type not in ['whole organisms', 'whole organism']:
             dict_of_phrases['sample_type'] = biosample_type
+
+        if starting_amount is not None and starting_amount_units is not None:
+            if starting_amount_units[-1] != 's':
+                dict_of_phrases['sample_type'] = str(starting_amount) + ' ' + \
+                    str(starting_amount_units) + 's'
+            else:
+                dict_of_phrases['sample_type'] = str(starting_amount) + ' ' + \
+                    str(starting_amount_units)
 
         if depleted_in_term_name is not None and len(depleted_in_term_name) > 0:
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
@@ -336,8 +347,26 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['phase'] = 'phase:'+phase
 
         if subcellular_fraction_term_name is not None:
-            dict_of_phrases['fractionated'] = 'subcellular fraction:'+subcellular_fraction_term_name
-
+            if subcellular_fraction_term_name == 'nucleus':
+                dict_of_phrases['fractionated'] = 'nuclear fraction'
+            if subcellular_fraction_term_name == 'cytosol':
+                dict_of_phrases['fractionated'] = 'cytosolic fraction'
+            if subcellular_fraction_term_name == 'chromatin':
+                dict_of_phrases['fractionated'] = 'chromatin fraction'
+            if subcellular_fraction_term_name == 'membrane':
+                dict_of_phrases['fractionated'] = 'membranous fraction'
+            if subcellular_fraction_term_name == 'mitochondria':
+                dict_of_phrases['fractionated'] = 'mitochondrial fraction'
+            if subcellular_fraction_term_name == 'nuclear matrix':
+                dict_of_phrases['fractionated'] = 'nuclear matrix fraction'
+            if subcellular_fraction_term_name == 'nucleolus':
+                dict_of_phrases['fractionated'] = 'nucleolus fraction'
+            if subcellular_fraction_term_name == 'nucleoplasm':
+                dict_of_phrases['fractionated'] = 'nucleoplasmic fraction'
+            if subcellular_fraction_term_name == 'polysome':
+                dict_of_phrases['fractionated'] = 'polysomic fraction'
+            if subcellular_fraction_term_name == 'insoluble cytoplasmic fraction':
+                dict_of_phrases['fractionated'] = 'insoluble cytoplasmic fraction'
         # relevant only in worms and flys
 
         if post_synchronization_time is not None and post_synchronization_time_units is not None:
@@ -349,17 +378,24 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             treatments_list = []
             for t in treatments:
                 treatmentObject = request.embed(t, '@@object')
+                to_add = ''
                 if 'concentration' in treatmentObject and \
-                   'concentration_units' in treatmentObject and \
-                   'treatment_term_name' in treatmentObject and \
-                   'duration' in treatmentObject and \
+                   'concentration_units' in treatmentObject:
+                    to_add += str(treatmentObject['concentration']) + ' ' + \
+                        treatmentObject['concentration_units'] + ' '
+                if 'treatment_term_name' in treatmentObject:
+                    to_add += treatmentObject['treatment_term_name'] + ' '
+                if 'duration' in treatmentObject and \
                    'duration_units' in treatmentObject:
-                    treatments_list.append('treated with ' +
-                                           str(treatmentObject['concentration']) + ' ' +
-                                           treatmentObject['concentration_units'] + ' ' +
-                                           treatmentObject['treatment_term_name'] + ' for ' +
-                                           str(treatmentObject['duration']) + ' ' +
-                                           treatmentObject['duration_units'] + 's')
+                    if treatmentObject['duration_units'][-1] == 's':
+                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                            treatmentObject['duration_units']
+                    else:
+                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                            treatmentObject['duration_units'] + 's '
+                if to_add != '':
+                    treatments_list.append(to_add)
+
             if len(treatments_list) > 0:
                 dict_of_phrases['treatments'] = treatments_list
 
@@ -369,8 +405,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if derived_from is not None:
             derived_fromObject = request.embed(derived_from, '@@object')
-            dict_of_phrases['derived_from'] = ('derived from biosample ' +
-                                               derived_fromObject['accession'])
+            if 'biosample_term_name' in derived_fromObject:
+                dict_of_phrases['derived_from'] = ('derived from ' +
+                                                   derived_fromObject['biosample_term_name'] + ' ' +
+                                                   derived_fromObject['accession'])
+            else:
+                dict_of_phrases['derived_from'] = ('derived from biosample ' +
+                                                   derived_fromObject['accession'])
 
         if transfection_method is not None and transfection_type is not None:
             if transfection_method == 'chemical':
@@ -463,12 +504,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             term_type += dict_of_phrases['sample_type']
 
         term_dict = {}
-        for w in term_type.split():
+        for w in term_type.split(' '):
             if w not in term_dict:
                 term_dict[w] = 1
 
         term_phrase = ''
-        for w in term_name:
+        for w in term_name.split(' '):
             if w not in term_dict or (w+'s') not in term_dict:
                 term_dict[w] = 1
                 term_phrase += w + ' '
@@ -478,10 +519,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         summary_phrase += ' ' + term_phrase + ' '
 
         if 'phase' in dict_of_phrases:
-            summary_phrase += 'at ' + dict_of_phrases['phase'] + ' | '
+            summary_phrase += 'at ' + dict_of_phrases['phase'] + ', '
 
         if 'fractionated' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['fractionated'] + ' | '
+            summary_phrase += dict_of_phrases['fractionated'] + ', '
 
         if 'sex' in dict_of_phrases:
             if dict_of_phrases['sex'] == 'mixed':
@@ -496,34 +537,36 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
 
         if 'age_display' in dict_of_phrases:
-            summary_phrase += '(' + dict_of_phrases['age_display'] + ') '
+            summary_phrase += '(' + dict_of_phrases['age_display'] + '), '
         else:
             if 'synchronization' in dict_of_phrases:
-                summary_phrase += '(' + dict_of_phrases['synchronization'] + ') '
+                summary_phrase += '(' + dict_of_phrases['synchronization'] + '), '
+            else:
+                summary_phrase += ', '
 
         if 'part_of' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['part_of'] + ' | '
+            summary_phrase += dict_of_phrases['part_of'] + ', '
 
         if 'derived_from' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['derived_from'] + ' | '
+            summary_phrase += dict_of_phrases['derived_from'] + ', '
 
         if 'transfection' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['transfection'] + ' | '
+            summary_phrase += dict_of_phrases['transfection'] + ', '
+
         if 'treatments' in dict_of_phrases:
-            for t in dict_of_phrases['treatments']:
-                summary_phrase += t + ', '
+            summary_phrase += 'treatment(s): ' + str(dict_of_phrases['treatments']) + ', '
 
         if 'depleted_in' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['depleted_in'] + ' | '
+            summary_phrase += dict_of_phrases['depleted_in'] + ', '
 
         if 'talens' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['talens'] + ' | '
+            summary_phrase += dict_of_phrases['talens'] + ', '
 
         if 'constructs' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['constructs'] + ' | '
+            summary_phrase += dict_of_phrases['constructs'] + ', '
         if 'model_organism_constructs' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['model_organism_constructs'] + ' | '
+            summary_phrase += dict_of_phrases['model_organism_constructs'] + ', '
         if 'rnais' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['rnais'] + ' | '
+            summary_phrase += dict_of_phrases['rnais'] + ' '
 
-        return (str(dict_of_phrases), str(summary_phrase))
+        return str(summary_phrase)
