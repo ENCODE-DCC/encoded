@@ -12,11 +12,7 @@
 // processed -- only passed on -- by the SortTable code.
 //
 // The config object (required) describes the columns of the table, and optionally how they get displayed,
-// sorted, and hidden. It has two properties:
-// {
-//     title: (string title of entire table)
-//     config: (Describes each column of the table)
-// }
+// sorted, and hidden.
 //
 // 'config' has one sub-object per table column. The key for each sub-object must be unique as the code uses
 // them to loop through the columns, though they never get displayed. Each sub-object has these properties:
@@ -85,6 +81,10 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
 // Displays one table within a <SortTablePanel></SortTablePanel>.
 var SortTable = module.exports.SortTable = React.createClass({
     propTypes: {
+        title: React.PropTypes.oneOfType([ // Title to display in table header
+            React.PropTypes.string, // When title is a simple string
+            React.PropTypes.object // When title is JSX
+        ]),
         list: React.PropTypes.array, // Array of objects to display in the table
         config: React.PropTypes.object.isRequired, // Defines the columns of the table
         sortColumn: React.PropTypes.string // ID of column to sort by default; first column if not given
@@ -97,7 +97,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         if (this.props.sortColumn) {
             sortColumn = this.props.sortColumn;
         } else {
-            sortColumn = Object.keys(this.props.config.columns)[0];
+            sortColumn = Object.keys(this.props.config)[0];
         }
 
         return {
@@ -117,9 +117,9 @@ var SortTable = module.exports.SortTable = React.createClass({
     sortColumn: function(a, b) {
         var aVal, bVal, result;
         var columnId = this.state.sortColumn;
-        var sorter = this.props.config.columns[columnId].sorter;
-        var objSorter = this.props.config.columns[columnId].objSorter;
-        var getValue = this.props.config.columns[columnId].getValue;
+        var sorter = this.props.config[columnId].sorter;
+        var objSorter = this.props.config[columnId].objSorter;
+        var getValue = this.props.config[columnId].getValue;
 
         // If the config for this column has `getValue` defined, use it to get the cell's value. Otherwise
         // just get it from the passed objects directly.
@@ -150,15 +150,14 @@ var SortTable = module.exports.SortTable = React.createClass({
         var list = this.props.list;
         var config = this.props.config;
         var meta = this.props.meta;
-        var columns = config.columns;
-        var columnIds = Object.keys(columns);
+        var columnIds = Object.keys(config);
         var hiddenColumns = {};
         var hiddenCount = 0;
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.
         columnIds.forEach(function(columnId) {
-            var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, config, meta));
+            var hidden = !!(config[columnId].hide && config[columnId].hide(list, config, meta));
             hiddenColumns[columnId] = hidden;
             hiddenCount += hidden ? 1 : 0;
         });
@@ -172,19 +171,19 @@ var SortTable = module.exports.SortTable = React.createClass({
                 <table className="table table-striped">
 
                     <thead>
-                        <tr className="table-section"><th colSpan={colCount}>{config.title}</th></tr>
+                        {this.props.title ? <tr className="table-section"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
                         <tr>
                             {columnIds.map(columnId => {
                                 if (!hiddenColumns[columnId]) {
                                     var columnClass;
 
-                                    if (columns[columnId].sorter !== false) {
+                                    if (config[columnId].sorter !== false) {
                                         columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
                                     } else {
                                         columnClass = null;
                                     }
-                                    var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, config, meta) : columns[columnId].title;
-                                    var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
+                                    var title = (typeof config[columnId].title === 'function') ? config[columnId].title(list, config, meta) : config[columnId].title;
+                                    var thClass = (config[columnId].sorter !== false) ? 'tcell-sortable' : null;
 
                                     return (
                                         <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
@@ -205,12 +204,12 @@ var SortTable = module.exports.SortTable = React.createClass({
                                 <tr key={item.uuid}>
                                     {columnIds.map(columnId => {
                                         if (!hiddenColumns[columnId]) {
-                                            if (columns[columnId].display) {
-                                                return <td key={columnId}>{columns[columnId].display(item)}</td>;
+                                            if (config[columnId].display) {
+                                                return <td key={columnId}>{config[columnId].display(item)}</td>;
                                             }
 
                                             // No custom display function; just display the standard way
-                                            var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item) : item[columnId];
+                                            var itemValue = config[columnId].getValue ? config[columnId].getValue(item) : item[columnId];
                                             return (
                                                 <td key={columnId}>{itemValue}</td>
                                             );
