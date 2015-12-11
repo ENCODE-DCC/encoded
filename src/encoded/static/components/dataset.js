@@ -12,6 +12,7 @@ var statuslabel = require('./statuslabel');
 var graph = require('./graph');
 var reference = require('./reference');
 var software = require('./software');
+var sortTable = require('./sorttable');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -23,6 +24,8 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var SortTablePanel = sortTable.SortTablePanel;
+var SortTable = sortTable.SortTable;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
