@@ -694,26 +694,3 @@ def audit_library_RNA_size_range(value, system):
         if (lib['nucleic_acid_term_id'] in RNAs) and ('size_range' not in lib):
             detail = 'RNA library {} requires a value for size_range'.format(rep['library']['@id'])
             raise AuditFailure('missing size_range', detail, level='ERROR')
-
-
-@audit_checker('experiment', frame=['object'])
-def audit_temp_unique_array_items(value, system):
-    '''
-    Array values should not be duplicated
-    '''
-
-    if 'dbxrefs' in value:
-        if len(value['dbxrefs']) != len(set(value['dbxrefs'])):
-            detail = 'Duplicated dbxrefs in {}'.format(value['@id'])
-            yield AuditFailure('duplicated expt dbxrefs', detail, level='DCC_ACTION')
-
-    if 'possible_controls' in value:
-        if len(value['possible_controls']) != len(set(value['possible_controls'])):
-            detail = 'Duplicated possible_controls in {}'.format(value['@id'])
-            yield AuditFailure('duplicated controls', detail, level='DCC_ACTION')
-
-    if 'documents' in value:
-        if len(value['documents']) != len(set(value['documents'])):
-            detail = 'Duplicated documents in {}'.format(value['@id'])
-            yield AuditFailure('duplicated expt docs', detail, level='DCC_ACTION')
-            return
