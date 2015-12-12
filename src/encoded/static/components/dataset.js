@@ -1299,17 +1299,37 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
     }
 });
 
+
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     propTypes: {
         series: React.PropTypes.object // If table for a series page, component to display the table.
     },
 
-    renderChildren: function(experiments) {
-        return React.Children.map(this.props.series, series => {
-            return React.addons.cloneWithProps(series, {
-                experiments: experiments
-            });
-        });
+    tableConfig: {
+        'accession': {
+            title: 'Accession'
+        },
+        'assay_term_name': {
+            title: 'Assay'
+        },
+        'biosample_term_name': {
+            title: 'Biosample term name'
+        },
+        'target': {
+            title: 'Target',
+            getValue: function(item) {
+                return item.target && item.target.label;
+            }
+        },
+        'description': {
+            title: 'Description'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        }
     },
 
     render: function() {
@@ -1326,53 +1346,9 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
         }
 
         return (
-            <div>
-                {this.props.title ? <h3>{this.props.title}</h3> : ''}
-                <div className="table-responsive">
-                    {this.props.series ?
-                        <div>{this.renderChildren(experiments)}</div>
-                    :
-                        <table className="table table-panel table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Accession</th>
-                                    <th>Assay</th>
-                                    <th>Biosample term name</th>
-                                    <th>Target</th>
-                                    <th>Description</th>
-                                    <th>Lab</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {experiments.map(function (experiment) {
-                                // Ensure this can work with search result columns too
-                                return (
-                                    <tr key={experiment['@id']}>
-                                        <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                                        <td>{experiment.assay_term_name}</td>
-                                        <td>{experiment.biosample_term_name}</td>
-                                        <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                                        <td>{experiment.description}</td>
-                                        <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
-                                    </tr>
-                                );
-                            })}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colSpan="6">
-                                        {this.props.limit && (this.props.limit < this.props.total) ?
-                                            <div>
-                                                {'Displaying '}{this.props.limit}{' experiments out of '}{this.props.total}{' total related experiments'}
-                                            </div>
-                                        : ''}
-                                    </td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    }
-                </div>
-            </div>
+            <SortTablePanel>
+                <SortTable list={experiments} config={this.tableConfig} />
+            </SortTablePanel>
         );
     }
 });
