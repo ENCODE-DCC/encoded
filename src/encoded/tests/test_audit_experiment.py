@@ -7,7 +7,6 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 @pytest.fixture
 def library_no_biosample(testapp, lab, award):
     item = {
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id']
@@ -20,7 +19,6 @@ def base_library(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -186,7 +184,6 @@ def library_1(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -196,7 +193,6 @@ def library_2(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -570,8 +566,7 @@ def test_audit_experiment_with_library_without_biosample(testapp, base_experimen
 
 def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
                                                          base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id':
-                                             'SO:0000356', 'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -583,8 +578,7 @@ def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experimen
 
 def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
                                                            base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
-                                             'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -597,8 +591,7 @@ def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experim
 def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
                                                             base_replicate,
                                                             base_library):
-    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
-                                             'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'transcription profiling by array assay'})
