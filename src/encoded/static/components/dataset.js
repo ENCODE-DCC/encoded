@@ -1301,13 +1301,12 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
-    propTypes: {
-        series: React.PropTypes.object // If table for a series page, component to display the table.
-    },
-
     tableConfig: {
         'accession': {
-            title: 'Accession'
+            title: 'Accession',
+            display: function(item) {
+                return <a href={item['@id']} title={'View page for experiment ' + item.accession}>{item.accession}</a>;
+            }
         },
         'assay_term_name': {
             title: 'Assay'
