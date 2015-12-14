@@ -1301,7 +1301,7 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
-    tableConfig: {
+    tableColumns: {
         'accession': {
             title: 'Accession',
             display: function(item) {
@@ -1346,7 +1346,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable list={experiments} columns={this.tableConfig} />
+                <SortTable list={experiments} columns={this.tableColumns} footer={this.props.footer} />
             </SortTablePanel>
         );
     }
@@ -1368,7 +1368,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     // Configuration for raw file table
-    rawTableConfig: {
+    rawTableColumns: {
         'accession': {
             title: 'Accession',
             display: function(item) {
@@ -1446,7 +1446,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     // Configuration for process file table
-    procTableConfig: {
+    procTableColumns: {
         'accession': {
             title: 'Accession',
             display: function(item) {
@@ -1518,7 +1518,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     },
 
     // Configuration for reference file table
-    refTableConfig: {
+    refTableColumns: {
         'accession': {
             title: 'Accession',
             display: function(item) {
@@ -1577,9 +1577,9 @@ var FileTable = module.exports.FileTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} columns={this.rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} columns={this.procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} columns={this.refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Raw data" list={files.raw} columns={this.rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Processed data" list={files.proc} columns={this.procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Reference data" list={files.ref} columns={this.refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
         );
     }

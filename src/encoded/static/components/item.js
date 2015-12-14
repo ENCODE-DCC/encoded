@@ -178,6 +178,21 @@ globals.content_views.register(ItemEdit, 'Item', 'edit');
 globals.content_views.register(ItemEdit, 'Collection', 'add');
 
 
+// Display a count of experiments in the footer, with a link to the corresponding search if needed
+var RelatedItemsFooter = React.createClass({
+    render: function() {
+        var {items, total, url} = this.props;
+
+        return (
+            <div>
+                <span>Displaying {items.length} of {total} </span>
+                {items.length < total ? <a className="btn btn-info btn-sm pull-right" href={url}>View all</a> : null}
+            </div>
+        );
+    }
+});
+
+
 var FetchedRelatedItems = React.createClass({
     getDefaultProps: function() {
         return {Component: Table};
@@ -192,12 +207,8 @@ var FetchedRelatedItems = React.createClass({
 
         return (
             <section>
-                <span className="pull-right">
-                    Displaying {items.length} of {total}{' '}
-                    {items.length < total ? <a className="btn btn-info btn-sm" href={url}>View all</a> : ''}
-                </span>
                 <h3>{title}</h3>
-                <Component {...props} context={context} items={items} showControls={false} />
+                <Component {...props} context={context} items={items} showControls={false} footer={<RelatedItemsFooter items={items} total={total} url={url} />} />
             </section>
         );
     },
