@@ -1346,7 +1346,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable list={experiments} config={this.tableConfig} />
+                <SortTable list={experiments} columns={this.tableConfig} />
             </SortTablePanel>
         );
     }
@@ -1385,7 +1385,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'File type'
         },
         'biological_replicates': {
-            title: function(list, config, meta) {
+            title: function(list, columns, meta) {
                 return (
                     <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
                 );
@@ -1438,7 +1438,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             display: function(item) {
                 return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
             },
-            hide: function(list, config, meta) {
+            hide: function(list, columns, meta) {
                 return meta.encodevers !== '3';
             },
             sorter: false
@@ -1466,7 +1466,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             title: 'Output type'
         },
         'biological_replicates': {
-            title: function(list, config, meta) {
+            title: function(list, columns, meta) {
                 return (
                     <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
                 );
@@ -1510,7 +1510,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             display: function(item) {
                 return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
             },
-            hide: function(list, config, meta) {
+            hide: function(list, columns, meta) {
                 return meta.encodevers !== '3';
             },
             sorter: false
@@ -1577,9 +1577,9 @@ var FileTable = module.exports.FileTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} config={this.rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} config={this.procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} config={this.refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Raw data" list={files.raw} columns={this.rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Processed data" list={files.proc} columns={this.procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Reference data" list={files.ref} columns={this.refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
         );
     }
