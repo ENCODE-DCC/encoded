@@ -142,7 +142,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var names = organismNames.map(function(organismName, i) {
             nameTip += (nameTip.length ? ' + ' : '') + organismName;
             nameQuery += (nameQuery.length ? '&' : '') + 'replicates.library.biosample.donor.organism.scientific_name=' + organismName;
-            return <span>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+            return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
         });
         var biosampleTermName = context.biosample_term_name;
         var biosampleTermQuery = biosampleTermName ? 'biosample_term_name=' + biosampleTermName : '';
