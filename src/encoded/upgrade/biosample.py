@@ -167,3 +167,14 @@ def biosample_10_11(value, system):
 
     if value.get('worm_synchronization_stage') == 'starved L1 larva':
         value['worm_synchronization_stage'] = 'L1 larva starved after bleaching'
+
+
+@upgrade_step('biosample', '11', '12')
+def biosample_11_12(value, system):
+    # http://redmine.encodedcc.org/issues/2491
+
+    if 'subcellular_fraction_term_id' in value:
+        value.pop('subcellular_fraction_term_id')
+
+    if 'depleted_in_term_id' in value:
+        value.pop('depleted_in_term_id')

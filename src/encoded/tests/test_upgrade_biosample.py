@@ -114,6 +114,20 @@ def biosample_10(root, biosample):
     return properties
 
 
+@pytest.fixture
+def biosample_11(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'subcellular_fraction_term_name': 'cytosol',
+        'subcellular_fraction_term_id': 'GO:0005829',
+        'depleted_in_term_name': ['head'],
+        'depleted_in_term_id': ['UBERON:0000033']
+    })
+    return properties
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -303,3 +317,19 @@ def test_biosample_worm_synch_stage(root, upgrader, biosample, biosample_10, dum
     value = upgrader.upgrade('biosample', biosample_10, target_version='11', context=context)
     assert value['schema_version'] == '11'
     assert value['worm_synchronization_stage'] == 'L1 larva starved after bleaching'
+
+
+def test_biosample_subcellular_id(root, upgrader, biosample, biosample_11, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_11, target_version='12', context=context)
+    assert value['schema_version'] == '12'
+    assert 'subcellular_fraction_term_id' not in value
+
+
+def test_biosample_depleted_in_id(root, upgrader, biosample, biosample_11, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_11, target_version='12', context=context)
+    assert value['schema_version'] == '12'
+    assert 'depleted_in_term_id' not in value
