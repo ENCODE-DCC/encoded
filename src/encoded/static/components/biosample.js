@@ -201,10 +201,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        <div data-test="sourcetitle">
-                            <dt>Source</dt>
-                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
-                        </div>
+                        {context.source.title ?
+                            <div data-test="sourcetitle">
+                                <dt>Source</dt>
+                                <dd>
+                                    {context.source.url ?
+                                        <a href={context.source.url}>{context.source.title}</a>
+                                    :
+                                        <span>{context.source.title}</span>
+                                    }
+                                </dd>
+                            </div>
+                        : null}
 
                         {context.product_id ?
                             <div data-test="productid">
@@ -452,8 +460,8 @@ globals.content_views.register(Biosample, 'Biosample');
 
 var MaybeLink = React.createClass({
     render() {
-        if (this.props.href == 'N/A') {
-            return this.props.children;
+        if (!this.props.href || this.props.href === 'N/A') {
+            return <span>{this.props.children}</span>;
         } else {
             return (
                 <a {...this.props}>{this.props.children}</a>
@@ -927,10 +935,26 @@ var RNAi = module.exports.RNAi = React.createClass({
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
 
                 {context.source && context.source.title ? <dt>Source</dt> : null}
-                {context.source && context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.source && context.source.title ?
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
+                {context.product_id ?
+                    <dd>
+                        {context.url ?
+                            <a href={context.url}>{context.product_id}</a>
+                        :
+                            <span>{context.product_id}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}
