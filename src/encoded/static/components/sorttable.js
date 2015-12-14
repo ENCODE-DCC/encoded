@@ -54,7 +54,7 @@
 //                                         `sorter` and `objSorter`.
 //
 //     hide -- (function): In some cases a column might need to be hidden. This function, if given, returns
-//                         TRUE to hid this column based on some criteria. This function gets passed the same
+//                         TRUE to hide this column based on some criteria. This function gets passed the same
 //                         list, config, and meta that <SortTable> itself gets.
 // }
 

@@ -12,6 +12,7 @@ var audit = require('./audit');
 var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
+var objectutils = require('./objectutils');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -23,6 +24,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
+var SingleTreatment = objectutils.SingleTreatment;
 
 
 var Panel = function (props) {
@@ -803,21 +805,6 @@ var Donor = module.exports.Donor = React.createClass({
 });
 
 globals.content_views.register(Donor, 'Donor');
-
-
-
-var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
-    var treatmentText = '';
-
-    if (treatment.concentration) {
-        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-    }
-    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-    if (treatment.duration) {
-        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-    }
-    return treatmentText;
-};
 
 
 var Treatment = module.exports.Treatment = React.createClass({
