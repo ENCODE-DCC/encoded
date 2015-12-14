@@ -1385,7 +1385,7 @@ function humanFileSize(size) {
 }
 
 // Configuration for process file table
-var rawTableConfig = {
+var rawTableColumns = {
     'accession': {
         title: 'Accession',
         display: function(item) {
@@ -1402,7 +1402,7 @@ var rawTableConfig = {
         title: 'File type'
     },
     'biological_replicates': {
-        title: function(list, config, meta) {
+        title: function(list, columns, meta) {
             return (
                 <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
             );
@@ -1455,7 +1455,7 @@ var rawTableConfig = {
         display: function(item) {
             return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
         },
-        hide: function(list, config, meta) {
+        hide: function(list, columns, meta) {
             return meta.encodevers !== '3';
         },
         sorter: false
@@ -1464,7 +1464,7 @@ var rawTableConfig = {
 
 
 // Configuration for process file table
-var procTableConfig = {
+var procTableColumns = {
     'accession': {
         title: 'Accession',
         display: function(item) {
@@ -1484,7 +1484,7 @@ var procTableConfig = {
         title: 'Output type'
     },
     'biological_replicates': {
-        title: function(list, config, meta) {
+        title: function(list, columns, meta) {
             return (
                 <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
             );
@@ -1528,7 +1528,7 @@ var procTableConfig = {
         display: function(item) {
             return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
         },
-        hide: function(list, config, meta) {
+        hide: function(list, columns, meta) {
             return meta.encodevers !== '3';
         },
         sorter: false
@@ -1537,7 +1537,7 @@ var procTableConfig = {
 
 
 // Configuration for reference file table
-var refTableConfig = {
+var refTableColumns = {
     'accession': {
         title: 'Accession',
         display: function(item) {
@@ -1604,9 +1604,9 @@ var FileTable = module.exports.FileTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} config={rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} config={procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} config={refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Raw data" list={files.raw} columns={rawTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Processed data" list={files.proc} columns={procTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Reference data" list={files.ref} columns={refTableColumns} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
         );
     }

@@ -77,7 +77,7 @@ describe('Software', function() {
             var files = [file0];
             table = TestUtils.renderIntoDocument(
                 <SortTablePanel>
-                    <SortTable list={files} config={tableConfig} />
+                    <SortTable list={files} columns={tableConfig} />
                 </SortTablePanel>
             );
 
