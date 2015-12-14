@@ -360,12 +360,8 @@ var ControllingExperiments = React.createClass({
 
         return (
             <div>
-                <span className="pull-right">
-                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
-                </span>
-
                 <ExperimentTable
-                    {...this.props} limit={5}
+                    items={this.props.items} limit={5}
                     title={'Experiments with ' + context.accession + ' as a control:'} />
             </div>
         );

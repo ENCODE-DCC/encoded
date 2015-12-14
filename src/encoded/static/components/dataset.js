@@ -1345,9 +1345,12 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
         }
 
         return (
-            <SortTablePanel>
-                <SortTable list={experiments} columns={this.tableColumns} footer={this.props.footer} />
-            </SortTablePanel>
+            <div>
+                {this.props.title ? <h3>{this.props.title}</h3> : null}
+                <SortTablePanel>
+                    <SortTable list={experiments} columns={this.tableColumns} footer={this.props.footer} />
+                </SortTablePanel>
+            </div>
         );
     }
 });
