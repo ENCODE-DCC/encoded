@@ -176,24 +176,6 @@ class Platform(Item):
 
 
 @collection(
-    name='libraries',
-    unique_key='accession',
-    properties={
-        'title': 'Libraries',
-        'description': 'Listing of Libraries',
-    })
-class Library(Item):
-    item_type = 'library'
-    schema = load_schema('encoded:schemas/library.json')
-    name_key = 'accession'
-    embedded = [
-        'biosample',
-        'biosample.donor',
-        'biosample.donor.organism',
-    ]
-
-
-@collection(
     name='rnais',
     properties={
         'title': 'RNAi',
