@@ -79,3 +79,14 @@ def library_3_4(value, system):
             value['fragmentation_method'] = 'sonication (generic microtip)'
         else:
             value['fragmentation_method'] = 'see document'
+
+
+@upgrade_step('library', '4', '5')
+def library_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/2491
+
+    if 'nucleic_acid_term_id' in value:
+        value.pop('nucleic_acid_term_id')
+
+    if 'depleted_in_term_id' in value:
+        value.pop('depleted_in_term_id')

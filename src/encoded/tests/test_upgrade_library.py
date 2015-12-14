@@ -42,6 +42,19 @@ def library_3(library):
     return item
 
 
+@pytest.fixture
+def library_4(library):
+    item = library.copy()
+    item.update({
+        'schema_version': '4',
+        'nucleic_acid_term_name': 'RNA',
+        'nucleic_acid_term_id': 'SO:0000356',
+        'depleted_in_term_name': ['rRNA'],
+        'depleted_in_term_id': ['SO:0000252']
+    })
+    return item
+
+
 def test_library_upgrade(upgrader, library_1):
     value = upgrader.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
@@ -72,3 +85,15 @@ def test_library_fragmentation(upgrader, library_3):
     value = upgrader.upgrade('library', library_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['fragmentation_method'] == 'shearing (Covaris generic)'
+
+
+def test_library_nucleic_acid_id(upgrader, library_4):
+    value = upgrader.upgrade('library', library_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert 'nucleic_acid_term_id' not in value
+
+
+def test_library_depleted_in_id(upgrader, library_4):
+    value = upgrader.upgrade('library', library_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert 'depleted_in_term_id' not in value
