@@ -1360,210 +1360,208 @@ function humanFileSize(size) {
     return ( size / Math.pow(1024, i) ).toPrecision(3) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
 }
 
-// Configuration for process file table
-var rawTableConfig = {
-    'accession': {
-        title: 'Accession',
-        display: function(item) {
-            return (
-                <span>
-                    {item.title}<br />
-                    <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                    {humanFileSize(item.file_size)}
-                </span>
-            );
-        }
-    },
-    'file_type': {
-        title: 'File type'
-    },
-    'biological_replicates': {
-        title: function(list, config, meta) {
-            return (
-                <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-            );
-        },
-        getValue: function(item) {
-            return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-        }
-    },
-    'technical_replicate_number': {
-        title: 'Technical replicate',
-        getValue: function(item) {
-            return item.replicate ? item.replicate.technical_replicate_number : null;
-        }
-    },
-    'read_length': {
-        title: 'Read length',
-        display: function(item) {
-            return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
-        }
-    },
-    'run_type': {
-        title: 'Run type'
-    },
-    'paired_end': {
-        title: 'Paired end'
-    },
-    'assembly': {
-        title: 'Mapping assembly'
-    },
-    'title': {
-        title: 'Lab',
-        getValue: function(item) {
-            return item.lab && item.lab.title ? item.lab.title : null;
-        }
-    },
-    'date_created': {
-        title: 'Date added',
-        getValue: function(item) {
-            return moment.utc(item.date_created).format('YYYY-MM-DD');
-        },
-        objSorter: function(a, b) {
-            if (a.date_created && b.date_created) {
-                return Date.parse(a.date_created) - Date.parse(b.date_created);
-            }
-            return a.date_created ? -1 : (b.date_created ? 1 : 0);
-        }
-    },
-    'status': {
-        title: 'Validation status',
-        display: function(item) {
-            return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-        },
-        hide: function(list, config, meta) {
-            return meta.encodevers !== '3';
-        },
-        sorter: false
-    }
-};
-
-
-// Configuration for process file table
-var procTableConfig = {
-    'accession': {
-        title: 'Accession',
-        display: function(item) {
-            return (
-                <span>
-                    {item.title}<br />
-                    <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                    {humanFileSize(item.file_size)}
-                </span>
-            );
-        }
-    },
-    'file_type': {
-        title: 'File type'
-    },
-    'output_type': {
-        title: 'Output type'
-    },
-    'biological_replicates': {
-        title: function(list, config, meta) {
-            return (
-                <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
-            );
-        },
-        getValue: function(item) {
-            return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
-        }
-    },
-    'technical_replicate_number': {
-        title: 'Technical replicate',
-        getValue: function(item) {
-            return item.replicate ? item.replicate.technical_replicate_number : null;
-        }
-    },
-    'assembly': {
-        title: 'Mapping assembly'
-    },
-    'genome_annotation': {
-        title: 'Genome annotation'
-    },
-    'title': {
-        title: 'Lab',
-        getValue: function(item) {
-            return item.lab && item.lab.title ? item.lab.title : null;
-        }
-    },
-    'date_created': {
-        title: 'Date added',
-        getValue: function(item) {
-            return moment.utc(item.date_created).format('YYYY-MM-DD');
-        },
-        sorter: function(a, b) {
-            if (a.date_created && b.date_created) {
-                return Date.parse(a.date_created) - Date.parse(b.date_created);
-            }
-            return a.date_created ? -1 : (b.date_created ? 1 : 0);
-        }
-    },
-    'status': {
-        title: 'Validation status',
-        display: function(item) {
-            return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
-        },
-        hide: function(list, config, meta) {
-            return meta.encodevers !== '3';
-        },
-        sorter: false
-    }
-};
-
-
-// Configuration for reference file table
-var refTableConfig = {
-    'accession': {
-        title: 'Accession',
-        display: function(item) {
-            return (
-                <span>
-                    {item.title}<br />
-                    <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
-                    {humanFileSize(item.file_size)}
-                </span>
-            );
-        }
-    },
-    'file_type': {
-        title: 'File type'
-    },
-    'output_type': {
-        title: 'Output type'
-    },
-    'assembly': {
-        title: 'Mapping assembly'
-    },
-    'genome_annotation': {
-        title: 'Genome annotation'
-    },
-    'title': {
-        title: 'Lab',
-        getValue: function(item) {
-            return item.lab && item.lab.title ? item.lab.title : null;
-        }
-    },
-    'date_created': {
-        title: 'Date added',
-        getValue: function(item) {
-            return moment.utc(item.date_created).format('YYYY-MM-DD');
-        },
-        sorter: function(a, b) {
-            if (a.date_created && b.date_created) {
-                return Date.parse(a.date_created) - Date.parse(b.date_created);
-            }
-            return a.date_created ? -1 : (b.date_created ? 1 : 0);
-        }
-    }
-};
-
 
 var FileTable = module.exports.FileTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Optional parent object of file list
         items: React.PropTypes.array.isRequired, // Array of files to appear in the table
         originating: React.PropTypes.bool // TRUE to display originating dataset column
+    },
+
+    // Configuration for raw file table
+    rawTableConfig: {
+        'accession': {
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
+        },
+        'file_type': {
+            title: 'File type'
+        },
+        'biological_replicates': {
+            title: function(list, config, meta) {
+                return (
+                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
+                );
+            },
+            getValue: function(item) {
+                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
+            }
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: function(item) {
+                return item.replicate ? item.replicate.technical_replicate_number : null;
+            }
+        },
+        'read_length': {
+            title: 'Read length',
+            display: function(item) {
+                return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
+            }
+        },
+        'run_type': {
+            title: 'Run type'
+        },
+        'paired_end': {
+            title: 'Paired end'
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            objSorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        },
+        'status': {
+            title: 'Validation status',
+            display: function(item) {
+                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
+            },
+            hide: function(list, config, meta) {
+                return meta.encodevers !== '3';
+            },
+            sorter: false
+        }
+    },
+
+    // Configuration for process file table
+    procTableConfig: {
+        'accession': {
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
+        },
+        'file_type': {
+            title: 'File type'
+        },
+        'output_type': {
+            title: 'Output type'
+        },
+        'biological_replicates': {
+            title: function(list, config, meta) {
+                return (
+                    <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>
+                );
+            },
+            getValue: function(item) {
+                return item.biological_replicates ? item.biological_replicates.sort(function(a,b){ return a - b; }).join(', ') : '';
+            }
+        },
+        'technical_replicate_number': {
+            title: 'Technical replicate',
+            getValue: function(item) {
+                return item.replicate ? item.replicate.technical_replicate_number : null;
+            }
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'genome_annotation': {
+            title: 'Genome annotation'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            sorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        },
+        'status': {
+            title: 'Validation status',
+            display: function(item) {
+                return <div className="characterization-meta-data"><StatusLabel status="pending" /></div>;
+            },
+            hide: function(list, config, meta) {
+                return meta.encodevers !== '3';
+            },
+            sorter: false
+        }
+    },
+
+    // Configuration for reference file table
+    refTableConfig: {
+        'accession': {
+            title: 'Accession',
+            display: function(item) {
+                return (
+                    <span>
+                        {item.title}<br />
+                        <a href={item.href} download={item.href.substr(item.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a><br />
+                        {humanFileSize(item.file_size)}
+                    </span>
+                );
+            }
+        },
+        'file_type': {
+            title: 'File type'
+        },
+        'output_type': {
+            title: 'Output type'
+        },
+        'assembly': {
+            title: 'Mapping assembly'
+        },
+        'genome_annotation': {
+            title: 'Genome annotation'
+        },
+        'title': {
+            title: 'Lab',
+            getValue: function(item) {
+                return item.lab && item.lab.title ? item.lab.title : null;
+            }
+        },
+        'date_created': {
+            title: 'Date added',
+            getValue: function(item) {
+                return moment.utc(item.date_created).format('YYYY-MM-DD');
+            },
+            sorter: function(a, b) {
+                if (a.date_created && b.date_created) {
+                    return Date.parse(a.date_created) - Date.parse(b.date_created);
+                }
+                return a.date_created ? -1 : (b.date_created ? 1 : 0);
+            }
+        }
     },
 
     render: function() {
@@ -1580,9 +1578,9 @@ var FileTable = module.exports.FileTable = React.createClass({
 
         return (
             <SortTablePanel>
-                <SortTable title="Raw data" list={files.raw} config={rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Processed data" list={files.proc} config={procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
-                <SortTable title="Reference data" list={files.ref} config={refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Raw data" list={files.raw} config={this.rawTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Processed data" list={files.proc} config={this.procTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
+                <SortTable title="Reference data" list={files.ref} config={this.refTableConfig} meta={{encodevers: this.props.encodevers, anisogenic: this.props.anisogenic}} />
             </SortTablePanel>
         );
     }
