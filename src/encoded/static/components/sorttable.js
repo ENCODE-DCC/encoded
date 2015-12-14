@@ -87,7 +87,8 @@ var SortTable = module.exports.SortTable = React.createClass({
         ]),
         list: React.PropTypes.array, // Array of objects to display in the table
         columns: React.PropTypes.object.isRequired, // Defines the columns of the table
-        sortColumn: React.PropTypes.string // ID of column to sort by default; first column if not given
+        sortColumn: React.PropTypes.string, // ID of column to sort by default; first column if not given
+        footer: React.PropTypes.object // Optional component to display in the footer
     },
 
     getInitialState: function() {
@@ -224,7 +225,11 @@ var SortTable = module.exports.SortTable = React.createClass({
                     </tbody>
 
                     <tfoot>
-                        <tr><td colSpan={colCount}></td></tr>
+                        <tr>
+                            <td colSpan={colCount}>
+                                {this.props.footer}
+                            </td>
+                        </tr>
                     </tfoot>
 
                 </table>
