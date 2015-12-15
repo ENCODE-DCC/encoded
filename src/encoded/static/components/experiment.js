@@ -361,7 +361,7 @@ var ControllingExperiments = React.createClass({
         return (
             <div>
                 <ExperimentTable
-                    items={this.props.items} limit={5}
+                    items={this.props.items} limit={5} url={this.props.url}
                     title={'Experiments with ' + context.accession + ' as a control:'} />
             </div>
         );

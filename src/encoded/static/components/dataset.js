@@ -1300,6 +1300,21 @@ var UnreleasedFiles = module.exports.UnreleasedFiles = React.createClass({
 });
 
 
+// Display a count of experiments in the footer, with a link to the corresponding search if needed
+var ExperimentTableFooter = React.createClass({
+    render: function() {
+        var {items, total, url} = this.props;
+
+        return (
+            <div>
+                <span>Displaying {items.length} of {total} </span>
+                {items.length < total ? <a className="btn btn-info btn-sm pull-right" href={url}>View all</a> : null}
+            </div>
+        );
+    }
+});
+
+
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     tableColumns: {
         'accession': {
@@ -1348,7 +1363,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
             <div>
                 {this.props.title ? <h3>{this.props.title}</h3> : null}
                 <SortTablePanel>
-                    <SortTable list={experiments} columns={this.tableColumns} footer={this.props.footer} />
+                    <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.items.length} url={this.props.url} />} />
                 </SortTablePanel>
             </div>
         );
