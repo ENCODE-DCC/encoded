@@ -13,6 +13,7 @@ var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
 var objectutils = require('./objectutils');
+var sortTable = require('./sorttable');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -25,6 +26,8 @@ var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
 var SingleTreatment = objectutils.SingleTreatment;
+var SortTablePanel = sortTable.SortTablePanel;
+var SortTable = sortTable.SortTable;
 
 
 var Panel = function (props) {
@@ -39,12 +42,23 @@ var Panel = function (props) {
 };
 
 
-var biosample_columns = {
-    accession: {title: 'Accession'},
-    biosample_type: {title: 'Type'},
-    biosample_term_name: {title: 'Term'},
-    description: {title: 'Description'},
-};
+// Display a table of retrieved biosamples related to the displayed biosample
+var BiosampleTable = React.createClass({
+    columns: {
+        'accession': {title: 'Accession'},
+        'biosample_type': {title: 'Type'},
+        'biosample_term_name': {title: 'Term'},
+        'description': {title: 'Description', sorter: false}
+    },
+
+    render: function() {
+        return (
+            <SortTablePanel>
+                <SortTable list={this.props.items} columns={this.columns} />
+            </SortTablePanel>
+        );
+    }
+});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -440,15 +454,15 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -805,7 +819,7 @@ var Donor = module.exports.Donor = React.createClass({
 
                 <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );

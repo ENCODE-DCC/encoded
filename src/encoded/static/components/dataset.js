@@ -1640,9 +1640,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                 );
             }
         },
-        'file_type': {
-            title: 'File type'
-        },
+        'file_type': {title: 'File type'},
         'biological_replicates': {
             title: function(list, columns, meta) {
                 return (
@@ -1665,15 +1663,9 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return <span>{item.read_length ? <span>{item.read_length + ' ' + item.read_length_units}</span> : null}</span>;
             }
         },
-        'run_type': {
-            title: 'Run type'
-        },
-        'paired_end': {
-            title: 'Paired end'
-        },
-        'assembly': {
-            title: 'Mapping assembly'
-        },
+        'run_type': {title: 'Run type'},
+        'paired_end': {title: 'Paired end'},
+        'assembly': {title: 'Mapping assembly'},
         'title': {
             title: 'Lab',
             getValue: function(item) {
@@ -1718,12 +1710,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                 );
             }
         },
-        'file_type': {
-            title: 'File type'
-        },
-        'output_type': {
-            title: 'Output type'
-        },
+        'file_type': {title: 'File type'},
+        'output_type': {title: 'Output type'},
         'biological_replicates': {
             title: function(list, columns, meta) {
                 return (
@@ -1740,12 +1728,8 @@ var FileTable = module.exports.FileTable = React.createClass({
                 return item.replicate ? item.replicate.technical_replicate_number : null;
             }
         },
-        'assembly': {
-            title: 'Mapping assembly'
-        },
-        'genome_annotation': {
-            title: 'Genome annotation'
-        },
+        'assembly': {title: 'Mapping assembly'},
+        'genome_annotation': {title: 'Genome annotation'},
         'title': {
             title: 'Lab',
             getValue: function(item) {
@@ -1790,18 +1774,10 @@ var FileTable = module.exports.FileTable = React.createClass({
                 );
             }
         },
-        'file_type': {
-            title: 'File type'
-        },
-        'output_type': {
-            title: 'Output type'
-        },
-        'assembly': {
-            title: 'Mapping assembly'
-        },
-        'genome_annotation': {
-            title: 'Genome annotation'
-        },
+        'file_type': {title: 'File type'},
+        'output_type': {title: 'Output type'},
+        'assembly': {title: 'Mapping assembly'},
+        'genome_annotation': {title: 'Genome annotation'},
         'title': {
             title: 'Lab',
             getValue: function(item) {
