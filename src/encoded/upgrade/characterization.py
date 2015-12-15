@@ -136,3 +136,32 @@ def characterization_4_5(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('biosample_characterization', '5', '6')
+@upgrade_step('donor_characterization', '5', '6')
+@upgrade_step('rnai_characterization', '5', '6')
+@upgrade_step('construct_characterization', '5', '6')
+def characterization_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))
+
+
+@upgrade_step('antibody_characterization', '6', '7')
+def antibody_characterization_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))

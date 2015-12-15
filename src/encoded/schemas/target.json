@@ -15,13 +15,14 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "dbxref": {
             "title": "External identifiers",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
 	        "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
@@ -52,6 +53,7 @@
         },
         "investigated_as": {
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Target project investigation context",
                 "description": "The context(s) the target was investigated in",

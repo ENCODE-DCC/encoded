@@ -18,3 +18,10 @@ def source_0_2(value, system):
 
     if 'award' in value:
         del value['award']
+
+
+@upgrade_step('source', '2', '3')
+def source_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))

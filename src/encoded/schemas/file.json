@@ -112,7 +112,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "FF"
@@ -211,6 +211,7 @@
             "title": "File format specifications documents",
             "description": "Text or .as files the further explain the file format",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See document.json for a list of available identifiers.",
                     "type": "string",
@@ -440,6 +441,7 @@
             "title": "Derived from",
             "description": "The files participating as inputs into software to produce this output file.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
@@ -450,6 +452,7 @@
             "title": "Controlled by",
             "description": "The files that control this file. ",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
@@ -460,6 +463,7 @@
             "title": "Supercedes" ,
             "description": "The files that this file replaces.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
@@ -552,6 +556,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",

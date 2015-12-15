@@ -24,7 +24,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
@@ -58,6 +58,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
