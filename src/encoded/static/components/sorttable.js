@@ -116,35 +116,41 @@ var SortTable = module.exports.SortTable = React.createClass({
     // Called when any column needs sorting. If the column has a sorter function, call it
     // to handle its sorting. Otherwise assume the values can be retrieved from the currently sorted column ID.
     sortColumn: function(a, b) {
-        var aVal, bVal, result;
         var columnId = this.state.sortColumn;
         var sorter = this.props.columns[columnId].sorter;
-        var objSorter = this.props.columns[columnId].objSorter;
-        var getValue = this.props.columns[columnId].getValue;
 
-        // If the columns for this column has `getValue` defined, use it to get the cell's value. Otherwise
-        // just get it from the passed objects directly.
-        if (getValue) {
-            aVal = getValue(a);
-            bVal = getValue(b);
-        } else {
-            aVal = a[columnId];
-            bVal = b[columnId];
-        }
+        if (sorter !== false) {
+            var aVal, bVal, result;
+            var objSorter = this.props.columns[columnId].objSorter;
+            var getValue = this.props.columns[columnId].getValue;
 
-        // If we have a custom sorting function, call it with the cell values to handle sorting. Otherwise
-        if (sorter && (sorter !== false)) {
-            result = sorter(aVal, bVal);
-        } else if (objSorter) {
-            result = objSorter(a, b);
-        } else {
-            if (aVal && bVal) {
-                result = aVal > bVal ? 1 : -1;
+            // If the columns for this column has `getValue` defined, use it to get the cell's value. Otherwise
+            // just get it from the passed objects directly.
+            if (getValue) {
+                aVal = getValue(a);
+                bVal = getValue(b);
             } else {
-                result = aVal ? -1 : (bVal ? 1 : 0);
+                aVal = a[columnId];
+                bVal = b[columnId];
             }
+
+            // If we have a custom sorting function, call it with the cell values to handle sorting. Otherwise
+            if (sorter) {
+                result = sorter(aVal, bVal);
+            } else if (objSorter) {
+                result = objSorter(a, b);
+            } else {
+                if (aVal && bVal) {
+                    result = aVal > bVal ? 1 : -1;
+                } else {
+                    result = aVal ? -1 : (bVal ? 1 : 0);
+                }
+            }
+            return this.state.reversed ? -result : result;
         }
-        return this.state.reversed ? -result : result;
+
+        // Column doesn't sort
+        return 0;
     },
 
     render: function() {

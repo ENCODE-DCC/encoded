@@ -1135,17 +1135,239 @@ var OrganismDevelopmentSeriesTable = React.createClass({
 });
 
 
-var seriesComponents = {
-    'MatchedSet': {title: 'matched set series', table: <SeriesTable />},
-    'OrganismDevelopmentSeries': {title: 'organism development series', table: <OrganismDevelopmentSeriesTable />},
-    'ReferenceEpigenome': {title: 'reference epigenome series', table: <SeriesTable />},
-    'ReplicationTimingSeries': {title: 'replication timing series', table: <ReplicationTimingSeriesTable />},
-    'TreatmentConcentrationSeries': {title: 'treatment concentration series', table: <TreatmentSeriesTable />},
-    'TreatmentTimeSeries': {title: 'treatment time series', table: <TreatmentSeriesTable />}
+var getValuePossibleControls = function(item) {
+    if (item.possible_controls && item.possible_controls.length) {
+        return item.possible_controls.map(function(control) {
+            return control.accession;
+        }).join(', ');
+    }
+    return null;
+};
+
+
+var displayPossibleControls = function(item) {
+    if (item.possible_controls && item.possible_controls.length) {
+        return (
+            <span>
+                {item.possible_controls.map(function(control, i) {
+                    return (
+                        <span key={control.uuid}>
+                            {i > 0 ? <span>, </span> : null}
+                            <a href={control['@id']}>{control.accession}</a>
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+    return null;
+};
+
+var basicTableColumns = {
+    'accession': {
+        title: 'Accession',
+        display: function(experiment) {
+            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
+        }
+    },
+    'assay_term_name': {
+        title: 'Assay'
+    },
+    'target': {
+        title: 'Target',
+        getValue: function(experiment) {
+            return experiment.target ? experiment.target.label : null;
+        }
+    },
+    'description': {
+        title: 'Description'
+    },
+    'lab': {
+        title: 'Lab',
+        getValue: function(experiment) {
+            return experiment.lab ? experiment.lab.title : null;
+        }
+    }
+};
+
+var treatmentSeriesTableColumns = {
+    'accession': {
+        title: 'Accession',
+        display: function(experiment) {
+            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
+        }
+    },
+    'possible_controls': {
+        title: 'Possible controls',
+        display: displayPossibleControls,
+        sorter: false
+    },
+    'assay_term_name': {
+        title: 'Assay'
+    },
+    'target': {
+        title: 'Target',
+        getValue: function(experiment) {
+            return experiment.target ? experiment.target.label : null;
+        }
+    },
+    'description': {
+        title: 'Description'
+    },
+    'lab': {
+        title: 'Lab',
+        getValue: function(experiment) {
+            return experiment.lab ? experiment.lab.title : null;
+        }
+    }
+};
+
+var replicationTimingSeriesTableColumns = {
+    'accession': {
+        title: 'Accession',
+        display: function(item) {
+            return <a href={item['@id']} title={'View page for experiment ' + item.accession}>{item.accession}</a>;
+        }
+    },
+    'possible_controls': {
+        title: 'Possible controls',
+        display: displayPossibleControls,
+        sorter: false
+    },
+    'assay_term_name': {
+        title: 'Assay'
+    },
+    'phase': {
+        title: 'Biosample phase',
+        display: function(experiment) {
+            var phases = [];
+
+            if (experiment.replicates && experiment.replicates.length) {
+                var biosamples = experiment.replicates.map(function(replicate) {
+                    return replicate.library && replicate.library.biosample;
+                });
+                phases = _.chain(biosamples.map(function(biosample) {
+                    return biosample.phase;
+                })).compact().uniq().value();
+            }
+            return phases.join(', ');
+        },
+        sorter: false
+    },
+    'target': {
+        title: 'Target',
+        getValue: function(experiment) {
+            return experiment.target ? experiment.target.label : null;
+        }
+    },
+    'description': {
+        title: 'Description'
+    },
+    'lab': {
+        title: 'Lab',
+        getValue: function(experiment) {
+            return experiment.lab ? experiment.lab.title : null;
+        }
+    }
+};
+
+var organismDevelopmentSeriesTableColumns = {
+    'accession': {
+        title: 'Accession',
+        display: function(experiment) {
+            return <a href={experiment['@id']} title={'View page for experiment ' + experiment.accession}>{experiment.accession}</a>;
+        }
+    },
+    'possible_controls': {
+        title: 'Possible controls',
+        display: displayPossibleControls,
+        sorter: false
+    },
+    'assay_term_name': {
+        title: 'Assay'
+    },
+    'relative_age': {
+        title: 'Relative age',
+        display: function(experiment) {
+            var biosamples, synchronizationBiosample, lifeStageBiosample, ages;
+            if (experiment.replicates && experiment.replicates.length) {
+                biosamples = experiment.replicates.map(function(replicate) {
+                    return replicate.library && replicate.library.biosample;
+                });
+            }
+            if (biosamples && biosamples.length) {
+                synchronizationBiosample = _(biosamples).find(function(biosample) {
+                    return biosample.synchronization;
+                });
+                lifeStageBiosample = _(biosamples).find(function(biosample) {
+                    return biosample.life_stage;
+                });
+                if (!synchronizationBiosample) {
+                    ages = _.chain(biosamples.map(function(biosample) {
+                        return biosample.age_display;
+                    })).compact().uniq().value();
+                }
+            }
+            return (
+                <span>
+                    {synchronizationBiosample ?
+                        <span>{synchronizationBiosample.synchronization + ' + ' + synchronizationBiosample.age_display}</span>
+                    :
+                        <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
+                    }
+                </span>
+            );
+        },
+        sorter: false
+    },
+    'life_stage': {
+        title: 'Life stage',
+        getValue: function(experiment) {
+            var biosamples, lifeStageBiosample;
+
+            if (experiment.replicates && experiment.replicates.length) {
+                biosamples = experiment.replicates.map(function(replicate) {
+                    return replicate.library && replicate.library.biosample;
+                });
+            }
+            if (biosamples && biosamples.length) {
+                lifeStageBiosample = _(biosamples).find(function(biosample) {
+                    return biosample.life_stage;
+                });
+            }
+            return lifeStageBiosample.life_stage;
+        }
+    },
+    'target': {
+        title: 'Target',
+        getValue: function(item) {
+            return item.target ? item.target.label : null;
+        }
+    },
+    'description': {
+        title: 'Description'
+    },
+    'lab': {
+        title: 'Lab',
+        getValue: function(item) {
+            return item.lab ? item.lab.title : null;
+        }
+    }
 };
 
 var Series = module.exports.Series = React.createClass({
     mixins: [AuditMixin],
+
+    // Map series @id to title and table columns
+    seriesComponents: {
+        'MatchedSet': {title: 'matched set series', table: basicTableColumns},
+        'OrganismDevelopmentSeries': {title: 'organism development series', table: organismDevelopmentSeriesTableColumns},
+        'ReferenceEpigenome': {title: 'reference epigenome series', table: basicTableColumns},
+        'ReplicationTimingSeries': {title: 'replication timing series', table: replicationTimingSeriesTableColumns},
+        'TreatmentConcentrationSeries': {title: 'treatment concentration series', table: treatmentSeriesTableColumns},
+        'TreatmentTimeSeries': {title: 'treatment time series', table: treatmentSeriesTableColumns}
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -1169,7 +1391,7 @@ var Series = module.exports.Series = React.createClass({
         var altacc = context.alternate_accessions.join(', ');
 
         // Make the series title
-        var seriesComponent = seriesComponents[context['@type'][0]];
+        var seriesComponent = this.seriesComponents[context['@type'][0]];
         var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         return (
@@ -1248,10 +1470,12 @@ var Series = module.exports.Series = React.createClass({
                 : null}
 
                 {context.related_datasets.length ?
-                    <ExperimentTable
-                        series={seriesComponent ? (seriesComponent.table ? seriesComponent.table : null) : null}
-                        items={context.related_datasets}
-                        title={'Experiments in ' + seriesTitle + ' ' + context.accession} />
+                    <div>
+                        <h3>{'Experiments in ' + seriesTitle + ' ' + context.accession}</h3>
+                        <SortTablePanel>
+                            <SortTable list={context.related_datasets} columns={seriesComponent.table} />
+                        </SortTablePanel>
+                    </div>
                 : null }
 
                 {context.visualize_ucsc  && context.status == "released" ?
