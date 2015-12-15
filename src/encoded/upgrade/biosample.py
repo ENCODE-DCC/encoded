@@ -4,6 +4,7 @@ from past.builtins import long
 import re
 from pyramid.traversal import find_root
 
+
 def number(value):
     if isinstance(value, (int, long, float, complex)):
         return value
@@ -178,3 +179,31 @@ def biosample_11_12(value, system):
 
     if 'depleted_in_term_id' in value:
         value.pop('depleted_in_term_id')
+
+    # http://redmine.encodedcc.org/issues/3063
+    if 'constructs' in value:
+        value['constructs'] = list(set(value['constructs']))
+
+    if 'rnais' in value:
+        value['rnais'] = list(set(value['rnais']))
+
+    if 'talens' in value:
+        value['talens'] = list(set(value['talens']))
+
+    if 'treatments' in value:
+        value['treatments'] = list(set(value['treatments']))
+
+    if 'protocol_documents' in value:
+        value['protocol_documents'] = list(set(value['protocol_documents']))
+
+    if 'pooled_from' in value:
+        value['pooled_from'] = list(set(value['pooled_from']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))

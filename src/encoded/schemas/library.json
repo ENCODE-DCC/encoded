@@ -45,6 +45,7 @@
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items" : {
                 "title": "A spike-ins dataset.",
                 "description": "A specific spike-ins type dataset",
@@ -88,6 +89,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -218,6 +220,7 @@
             "title": "Treatments",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",

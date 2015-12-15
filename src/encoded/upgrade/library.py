@@ -84,9 +84,24 @@ def library_3_4(value, system):
 @upgrade_step('library', '4', '5')
 def library_4_5(value, system):
     # http://redmine.encodedcc.org/issues/2491
-
     if 'nucleic_acid_term_id' in value:
         value.pop('nucleic_acid_term_id')
 
     if 'depleted_in_term_id' in value:
         value.pop('depleted_in_term_id')
+
+    # http://redmine.encodedcc.org/issues/3063
+    if 'spikeins_used' in value:
+        value['spikeins_used'] = list(set(value['spikeins_used']))
+
+    if 'treatments' in value:
+        value['treatments'] = list(set(value['treatments']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))

@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "target": {
             "title": "Target",
@@ -41,6 +41,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -56,6 +57,7 @@
             "description": "Experiments that contain files that can serve as scientific controls for this experiment.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Control",
                 "description": "An experiment that contains files that can serve as a scientific control for this experiment.",

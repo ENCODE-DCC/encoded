@@ -119,3 +119,16 @@ def target_2_3(value, system):
         value['investigated_as'] = ['histone modification']
     else:
         value['investigated_as'] = ['transcription factor']
+
+
+@upgrade_step('target', '3', '4')
+def target_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'investigated_as' in value:
+        value['investigated_as'] = list(set(value['investigated_as']))

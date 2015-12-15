@@ -120,10 +120,15 @@ def biosample_11(root, biosample):
     properties = item.properties.copy()
     properties.update({
         'schema_version': '11',
+<<<<<<< HEAD
         'subcellular_fraction_term_name': 'cytosol',
         'subcellular_fraction_term_id': 'GO:0005829',
         'depleted_in_term_name': ['head'],
         'depleted_in_term_id': ['UBERON:0000033']
+=======
+        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
+        'aliases': ['testing:123', 'testing:123']
+>>>>>>> 3063-array-unique-items
     })
     return properties
 
@@ -302,7 +307,7 @@ def test_biosample_age_pattern2(upgrader, biosample_8):
     assert value['model_organism_age'] == '15-16'
 
 
-def test_biosample_references(root, upgrader, biosample,  biosample_9, publication, threadlocals, dummy_request):
+def test_biosample_references(root, upgrader, biosample, biosample_9, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
     value = upgrader.upgrade('biosample', biosample_9, target_version='10', context=context)
@@ -322,7 +327,7 @@ def test_biosample_worm_synch_stage(root, upgrader, biosample, biosample_10, dum
 def test_biosample_subcellular_id(root, upgrader, biosample, biosample_11, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('biosample', biosample_11, target_version='12', context=context)
+    value = upgrader.upgrade('biosample', biosample_11, current_version='11', target_version='12', context=context)
     assert value['schema_version'] == '12'
     assert 'subcellular_fraction_term_id' not in value
 
@@ -330,6 +335,12 @@ def test_biosample_subcellular_id(root, upgrader, biosample, biosample_11, dummy
 def test_biosample_depleted_in_id(root, upgrader, biosample, biosample_11, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('biosample', biosample_11, target_version='12', context=context)
+    value = upgrader.upgrade('biosample', biosample_11, current_version='11', target_version='12', context=context)
     assert value['schema_version'] == '12'
     assert 'depleted_in_term_id' not in value
+
+
+def test_biosample_unique_array(upgrader, biosample_11):
+    value = upgrader.upgrade('biosample', biosample_11, current_version='11', target_version='12')
+    assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
+    assert len(value['aliases']) == len(set(value['aliases']))

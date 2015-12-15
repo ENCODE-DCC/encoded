@@ -133,6 +133,7 @@
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "DNA Constructs",
                 "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
@@ -146,6 +147,7 @@
             "description": "RNAi vectors stably or transiently transfected.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "RNAi Vector",
                 "description": "RNAi vector stably or transiently transfected.",
@@ -159,6 +161,7 @@
             "description": "TALEN constructs used to modify the biosample",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "TALEN",
                 "description": "TALEN used to modify the biosample",
@@ -171,6 +174,7 @@
             "title": "Treatments",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
@@ -185,6 +189,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -197,6 +202,7 @@
             "description": "Documents that describe the biosample preparation.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Protocol document",
                 "description": "A document that describes the biosample preparation.",
@@ -267,6 +273,7 @@
             "description": "The biosamples from which aliquots were pooled to form the biosample.",
             "type":  "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "description": "A biosample from which an aliquot was taken to form the biosample.",
                 "comment": "See biosample.json for available identifiers.",
