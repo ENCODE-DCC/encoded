@@ -45,7 +45,12 @@ var Panel = function (props) {
 // Display a table of retrieved biosamples related to the displayed biosample
 var BiosampleTable = React.createClass({
     columns: {
-        'accession': {title: 'Accession'},
+        'accession': {
+            title: 'Accession',
+            display: function(biosample) {
+                return <a href={biosample['@id']}>{biosample.accession}</a>;
+            }
+        },
         'biosample_type': {title: 'Type'},
         'biosample_term_name': {title: 'Term'},
         'description': {title: 'Description', sorter: false}
