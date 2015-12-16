@@ -7,7 +7,6 @@ def library(lab, award):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'nucleic_acid_term_name': 'DNA',
-        'nucleic_acid_term_id': 'SO:0000352'
     }
 
 
