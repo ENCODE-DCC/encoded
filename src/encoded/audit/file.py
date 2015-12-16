@@ -192,7 +192,6 @@ def audit_file_controlled_by(value, system):
                 raise AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
 
 
-
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
 def audit_file_flowcells(value, system):
     '''
