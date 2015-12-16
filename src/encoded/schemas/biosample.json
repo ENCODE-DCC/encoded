@@ -1,4 +1,4 @@
-f{
+{
     "title": "Biosample",
     "description": "Schema for submitting a biosample.",
     "id": "/profiles/biosample.json",
