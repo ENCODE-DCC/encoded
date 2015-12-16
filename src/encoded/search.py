@@ -6,6 +6,7 @@ from contentbase import (
 )
 from contentbase.elasticsearch import ELASTIC_SEARCH
 from contentbase.resource_views import collection_view_listing_db
+from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
@@ -380,6 +381,25 @@ def normalize_query(request):
     return '?' + qs if qs else ''
 
 
+def iter_long_json(name, iterable, **other):
+    import json
+
+    before = (json.dumps(other)[:-1] + ',') if other else '{'
+    yield before + json.dumps(name) + ':['
+
+    it = iter(iterable)
+    try:
+        first = next(it)
+    except StopIteration:
+        pass
+    else:
+        yield json.dumps(first)
+        for value in it:
+            yield ',' + json.dumps(value)
+
+    yield ']}'
+
+
 @view_config(route_name='search', request_method='GET', permission='search')
 def search(context, request, search_type=None):
     """
@@ -404,7 +424,7 @@ def search(context, request, search_type=None):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = 99999
+        size = None
     else:
         try:
             size = int(size)
@@ -491,16 +511,16 @@ def search(context, request, search_type=None):
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
+    # Decide whether to use scan for results.
+    do_scan = size is None or size > 1000
+
     # Execute the query
-    es_results = es.search(body=query, index=es_index, size=size)
+    if do_scan:
+        es_results = es.search(body=query, index=es_index, search_type='count')
+    else:
+        es_results = es.search(body=query, index=es_index, size=size)
 
     result['total'] = es_results['hits']['total']
-    if result['total']:
-        result['notification'] = 'Success'
-    else:
-        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
-        request.response.status_code = 404
-        result['notification'] = 'No results found'
 
     result['facets'] = format_facets(es_results, facets)
     # Show any filters that aren't facets as a fake facet with one entry,
@@ -522,10 +542,48 @@ def search(context, request, search_type=None):
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
 
-    # Format results for JSON-LD
-    result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+    # Add all link for collections
+    if size is not None and size < result['total']:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
 
-    return result
+    if not result['total']:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
+        result['@graph'] = []
+        return result
+
+    result['notification'] = 'Success'
+
+    # Format results for JSON-LD
+    if not do_scan:
+        result['@graph'] = list(format_results(request, es_results['hits']['hits']))
+        return result
+
+    # Scan large result sets.
+    del query['aggs']
+    if size is None:
+        hits = scan(es, query=query, index=es_index)
+    else:
+        hits = scan(es, query=query, index=es_index, size=size)
+    graph = format_results(request, hits)
+
+    # Support for request.embed()
+    if request.__parent__ is not None:
+        result['@graph'] = list(graph)
+        return result
+
+    # Stream response using chunked encoding.
+    # XXX BeforeRender event listeners not called.
+    app_iter = iter_long_json('@graph', graph, **result)
+    request.response.content_type = 'application/json'
+    if str is bytes:  # Python 2 vs 3 wsgi differences
+        request.response.app_iter = app_iter  # Python 2
+    else:
+        request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+    return request.response
 
 
 @view_config(context=AbstractCollection, permission='list', request_method='GET',
@@ -535,14 +593,7 @@ def collection_view_listing_es(context, request):
     if request.datastore != 'elasticsearch':
         return collection_view_listing_db(context, request)
 
-    result = search(context, request, context.type_info.name)
-
-    if len(result['@graph']) < result['total']:
-        params = [(k, v) for k, v in request.params.items() if k != 'limit']
-        params.append(('limit', 'all'))
-        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
-
-    return result
+    return search(context, request, context.type_info.name)
 
 
 @view_config(route_name='matrix', request_method='GET', permission='search')

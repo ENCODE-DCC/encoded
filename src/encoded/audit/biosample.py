@@ -301,3 +301,19 @@ def audit_biosample_transfection_type(value, system):
     if (value['constructs']) and ('transfection_type' not in value):
         detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
+
+
+@audit_checker('biosample', frame=['part_of'])
+def audit_biosample_part_of_consistency(value, system):
+    if 'part_of' not in value:
+        return
+    else:
+        part_of_biosample = value['part_of']
+        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
+            detail = 'Biosample {} '.format(value['@id']) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                     'that has different ' + \
+                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
+            yield AuditFailure('inconsistent biosample_term_id', detail,
+                               level='ERROR')

@@ -52,6 +52,50 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('experiment',
+               frame=['replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2",
+                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+def audit_experiment_replicate_with_no_files(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    if len(value['replicates']) == 0:
+        return
+    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        return
+
+    seq_assay_flag = False
+    if value['assay_term_name'] in seq_assays:
+        seq_assay_flag = True
+
+    rep_dictionary = {}
+    for rep in value['replicates']:
+        rep_dictionary[rep['@id']] = []
+
+    for file_object in value['original_files']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
+        if 'replicate' in file_object:
+            file_replicate = file_object['replicate']
+            if file_replicate['@id'] in rep_dictionary:
+                rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
+
+    for key in rep_dictionary.keys():
+        if len(rep_dictionary[key]) == 0:
+            detail = 'Experiment {} replicate '.format(value['@id']) + \
+                     '{} does not have files associated with'.format(key)
+            yield AuditFailure('missing file in replicate', detail, level='ERROR')
+        else:
+            if seq_assay_flag is True:
+                if 'fastq' not in rep_dictionary[key]:
+                    detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                             '{} does not have FASTQ files associated with'.format(key)
+                    yield AuditFailure('missing FASTQ file in replicate', detail, level='ERROR')
+    return
+
+
 @audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):
     '''
@@ -118,7 +162,7 @@ def audit_experiment_isogeneity(value, system):
 
     if value.get('replication_type') is None:
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
-        raise AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
+        yield AuditFailure('undetermined replication_type', detail, level='DCC_ACTION')
 
     biosample_dict = {}
     biosample_age_list = []
@@ -154,19 +198,20 @@ def audit_experiment_isogeneity(value, system):
         detail = 'In experiment {} the biosamples have varying strains {}'.format(
             value['@id'],
             biosample_donor_list)
-        raise AuditFailure('mismatched donor', detail, level='ERROR')
+        yield AuditFailure('mismatched donor', detail, level='ERROR')
 
     if len(set(biosample_age_list)) > 1:
         detail = 'In experiment {} the biosamples have varying ages {}'.format(
             value['@id'],
             biosample_age_list)
-        raise AuditFailure('mismatched age', detail, level='ERROR')
+        yield AuditFailure('mismatched age', detail, level='ERROR')
 
     if len(set(biosample_sex_list)) > 1:
         detail = 'In experiment {} the biosamples have varying sexes {}'.format(
             value['@id'],
             repr(biosample_sex_list))
-        raise AuditFailure('mismatched sex', detail, level='ERROR')
+        yield AuditFailure('mismatched sex', detail, level='ERROR')
+    return
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])

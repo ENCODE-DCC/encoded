@@ -28,6 +28,7 @@
             "description": "List of datasets to be associated with the series.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Dataset",
                 "comment": "See dataset.json for available identifiers.",
