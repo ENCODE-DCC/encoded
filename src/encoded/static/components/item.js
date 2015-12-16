@@ -188,12 +188,11 @@ var FetchedRelatedItems = React.createClass({
         if (context === undefined) return null;
         var items = context['@graph'];
         if (!items.length) return null;
-        var total = context['total'];
 
         return (
             <section>
                 <h3>{title}</h3>
-                <Component {...props} context={context} items={items} url={url} showControls={false} />
+                <Component {...props} context={context} total={context.total} items={items} url={url} showControls={false} />
             </section>
         );
     },

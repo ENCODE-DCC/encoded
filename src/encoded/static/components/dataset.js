@@ -1604,7 +1604,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
             <div>
                 {this.props.title ? <h3>{this.props.title}</h3> : null}
                 <SortTablePanel>
-                    <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.context.total} url={this.props.url} />} />
+                    <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
                 </SortTablePanel>
             </div>
         );
