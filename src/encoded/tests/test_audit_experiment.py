@@ -255,6 +255,37 @@ def biosample_2(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def file_fastq(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']], 'assay_term_name': 'ChIP-seq', 'assay_term_id': 'OBI:0000716'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -356,6 +387,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
+
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
@@ -365,9 +397,8 @@ def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_repl
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        #for e in errors[error_type]:
-        #    print (e)
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
@@ -624,6 +655,21 @@ def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experimen
     assert any(error['category'] == 'needs pipeline run' for error in errors_list)
 
 
+def test_audit_experiment_replicate_with_file(testapp, file_fastq,
+                                              base_experiment,
+                                              base_replicate,
+                                              base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(((error['category'] != 'missing file in replicate') and
+               (error['category'] != 'missing FASTQ file in replicate')) for error in errors_list)
+
+
 def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
                                                      experiment, fastq_file, bam_file,
                                                      analysis_step_run_bam,
@@ -643,3 +689,31 @@ def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, librar
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'needs pipeline run' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_files(testapp,
+                                                  base_experiment,
+                                                  base_replicate,
+                                                  base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing FASTQ file in replicate' for error in errors_list)

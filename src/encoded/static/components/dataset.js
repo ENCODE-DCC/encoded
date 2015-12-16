@@ -1217,6 +1217,23 @@ var Series = module.exports.Series = React.createClass({
                             </div>
                         : null}
 
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
+                        {context.award.pi && context.award.pi.lab ?
+                            <div data-test="awardpi">
+                                <dt>Award PI</dt>
+                                <dd>{context.award.pi.lab.title}</dd>
+                            </div>
+                        : null}
+
+                        <div data-test="project">
+                            <dt>Project</dt>
+                            <dd>{context.award.project}</dd>
+                        </div>
+
                         <div data-type="externalresources">
                             <dt>External resources</dt>
                             <dd>
