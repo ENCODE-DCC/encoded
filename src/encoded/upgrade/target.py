@@ -127,8 +127,8 @@ def target_3_4(value, system):
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
 
-    if 'dbxrefs' in value:
-        value['dbxrefs'] = list(set(value['dbxrefs']))
+    if 'dbxref' in value:
+        value['dbxref'] = list(set(value['dbxref']))
 
     if 'investigated_as' in value:
         value['investigated_as'] = list(set(value['investigated_as']))
