@@ -45,11 +45,6 @@ def test_biosample_depleted_in(testapp, biosample_depleted_in):
     testapp.post_json('/biosample', biosample_depleted_in)
 
 
-def test_biosample_depleted_in_name_required(testapp, biosample_depleted_in):
-    del biosample_depleted_in['depleted_in_term_name']
-    testapp.post_json('/biosample', biosample_depleted_in,  status=422)
-
-
 def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_in):
     biosample_depleted_in['biosample_type'] = 'immortalized cell line'
     testapp.post_json('/biosample', biosample_depleted_in,  status=422)
