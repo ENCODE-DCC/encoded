@@ -120,15 +120,12 @@ def biosample_11(root, biosample):
     properties = item.properties.copy()
     properties.update({
         'schema_version': '11',
-<<<<<<< HEAD
         'subcellular_fraction_term_name': 'cytosol',
         'subcellular_fraction_term_id': 'GO:0005829',
         'depleted_in_term_name': ['head'],
-        'depleted_in_term_id': ['UBERON:0000033']
-=======
+        'depleted_in_term_id': ['UBERON:0000033'],
         'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
         'aliases': ['testing:123', 'testing:123']
->>>>>>> 3063-array-unique-items
     })
     return properties
 
