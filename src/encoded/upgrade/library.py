@@ -105,3 +105,6 @@ def library_4_5(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

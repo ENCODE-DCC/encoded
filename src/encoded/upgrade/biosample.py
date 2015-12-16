@@ -207,3 +207,6 @@ def biosample_11_12(value, system):
 
     if 'references' in value:
         value['references'] = list(set(value['references']))
+
+    if 'depleted_in_term_name' in value:
+        value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))

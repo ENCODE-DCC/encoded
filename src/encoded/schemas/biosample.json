@@ -1,4 +1,4 @@
-{
+f{
     "title": "Biosample",
     "description": "Schema for submitting a biosample.",
     "id": "/profiles/biosample.json",
@@ -230,6 +230,7 @@
         },
         "depleted_in_term_name": {
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Depleted in term",
                 "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
