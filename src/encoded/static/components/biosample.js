@@ -12,6 +12,8 @@ var audit = require('./audit');
 var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
+var objectutils = require('./objectutils');
+var sortTable = require('./sorttable');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -23,6 +25,9 @@ var ExperimentTable = dataset.ExperimentTable;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
+var SingleTreatment = objectutils.SingleTreatment;
+var SortTablePanel = sortTable.SortTablePanel;
+var SortTable = sortTable.SortTable;
 
 
 var Panel = function (props) {
@@ -37,12 +42,28 @@ var Panel = function (props) {
 };
 
 
-var biosample_columns = {
-    accession: {title: 'Accession'},
-    biosample_type: {title: 'Type'},
-    biosample_term_name: {title: 'Term'},
-    description: {title: 'Description'},
-};
+// Display a table of retrieved biosamples related to the displayed biosample
+var BiosampleTable = React.createClass({
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(biosample) {
+                return <a href={biosample['@id']}>{biosample.accession}</a>;
+            }
+        },
+        'biosample_type': {title: 'Type'},
+        'biosample_term_name': {title: 'Term'},
+        'description': {title: 'Description', sorter: false}
+    },
+
+    render: function() {
+        return (
+            <SortTablePanel>
+                <SortTable list={this.props.items} columns={this.columns} />
+            </SortTablePanel>
+        );
+    }
+});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -199,10 +220,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        <div data-test="sourcetitle">
-                            <dt>Source</dt>
-                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
-                        </div>
+                        {context.source.title ?
+                            <div data-test="sourcetitle">
+                                <dt>Source</dt>
+                                <dd>
+                                    {context.source.url ?
+                                        <a href={context.source.url}>{context.source.title}</a>
+                                    :
+                                        <span>{context.source.title}</span>
+                                    }
+                                </dd>
+                            </div>
+                        : null}
 
                         {context.product_id ?
                             <div data-test="productid">
@@ -430,15 +459,15 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -450,8 +479,8 @@ globals.content_views.register(Biosample, 'Biosample');
 
 var MaybeLink = React.createClass({
     render() {
-        if (this.props.href == 'N/A') {
-            return this.props.children;
+        if (!this.props.href || this.props.href === 'N/A') {
+            return <span>{this.props.children}</span>;
         } else {
             return (
                 <a {...this.props}>{this.props.children}</a>
@@ -795,7 +824,7 @@ var Donor = module.exports.Donor = React.createClass({
 
                 <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -803,21 +832,6 @@ var Donor = module.exports.Donor = React.createClass({
 });
 
 globals.content_views.register(Donor, 'Donor');
-
-
-
-var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
-    var treatmentText = '';
-
-    if (treatment.concentration) {
-        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-    }
-    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-    if (treatment.duration) {
-        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-    }
-    return treatmentText;
-};
 
 
 var Treatment = module.exports.Treatment = React.createClass({
@@ -940,10 +954,26 @@ var RNAi = module.exports.RNAi = React.createClass({
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
 
                 {context.source && context.source.title ? <dt>Source</dt> : null}
-                {context.source && context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.source && context.source.title ?
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
+                {context.product_id ?
+                    <dd>
+                        {context.url ?
+                            <a href={context.url}>{context.product_id}</a>
+                        :
+                            <span>{context.product_id}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}
