@@ -177,12 +177,10 @@ def audit_biosample_term(value, system):
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = 'Biosample {} has a mismatch between biosample_term_id "{}" and biosample_term_name "{}"'.format(
-            value['@id'],
-            term_id,
-            term_name,
-            )
-        raise AuditFailure('mismatched biosample_term', detail, level='DCC_ACTION')
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'a mismatch between biosample_term_id {} '.format(term_id) + \
+                 'and biosample_term_name {}'.format(term_name)
+        raise AuditFailure('mismatched biosample_term', detail, level='ERROR')
 
 
 @audit_checker('biosample', frame='object')
