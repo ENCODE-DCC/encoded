@@ -344,7 +344,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             dict_of_phrases['depleted_in'] = 'depleted in '+str(depleted_in_term_name)
 
         if phase is not None:
-            dict_of_phrases['phase'] = 'phase:'+phase
+            dict_of_phrases['phase'] = phase + ' phase'
 
         if subcellular_fraction_term_name is not None:
             if subcellular_fraction_term_name == 'nucleus':
@@ -394,7 +394,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
                             treatmentObject['duration_units'] + 's '
                 if to_add != '':
-                    treatments_list.append(to_add)
+                    treatments_list.append('treated with '+to_add)
 
             if len(treatments_list) > 0:
                 dict_of_phrases['treatments'] = treatments_list
@@ -407,19 +407,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             derived_fromObject = request.embed(derived_from, '@@object')
             if 'biosample_term_name' in derived_fromObject:
                 dict_of_phrases['derived_from'] = ('derived from ' +
-                                                   derived_fromObject['biosample_term_name'] + ' ' +
-                                                   derived_fromObject['accession'])
-            else:
-                dict_of_phrases['derived_from'] = ('derived from biosample ' +
-                                                   derived_fromObject['accession'])
+                                                   derived_fromObject['biosample_term_name'])
 
-        if transfection_method is not None and transfection_type is not None:
-            if transfection_method == 'chemical':
-                dict_of_phrases['transfection'] = (transfection_type + ' ' +
-                                                   transfection_method + ' transfection')
-            else:
-                dict_of_phrases['transfection'] = (transfection_type +
-                                                   ' transfection via ' + transfection_method)
+        if transfection_type is not None:  # stable/transient
+                dict_of_phrases['transfection'] = transfection_type
 
         if talens is not None and len(talens) > 0:
             talens_list = []
@@ -434,38 +425,28 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for c in constructs:
                 constructObject = request.embed(c, '@@object')
                 to_add = ''
-                if 'construct_type' in constructObject:
-                    to_add += constructObject['construct_type'] + ' '
-                if 'vector_backbone_name' in constructObject:
-                    to_add += constructObject['vector_backbone_name'] + ' '
                 if 'target' in constructObject:
                     targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['title']
-
+                    to_add += targetObject['name']
                 if to_add != '':
                     constructs_list.append(to_add)
 
-            dict_of_phrases['constructs'] = 'biosample constructs: '+str(constructs_list)
+            dict_of_phrases['constructs'] = 'expressing '+str(constructs_list)[1:-1]
 
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
             constructs_list = []
             for c in model_organism_donor_constructs:
                 constructObject = request.embed(c, '@@object')
                 to_add = ''
-                if 'construct_type' in constructObject:
-                    to_add += constructObject['construct_type'] + ' '
-                if 'vector_backbone_name' in constructObject:
-                    to_add += constructObject['vector_backbone_name'] + ' '
-
                 if 'target' in constructObject:
                     targetObject = request.embed(constructObject['target'], '@@object')
-                    to_add += targetObject['title']
+                    to_add += targetObject['name']
 
                 if to_add != '':
                     constructs_list.append(to_add)
 
-            dict_of_phrases['model_organism_constructs'] = ('biosample constructs: ' +
-                                                            str(constructs_list))
+            dict_of_phrases['model_organism_constructs'] = ('expressing ' +
+                                                            str(constructs_list)[1:-1])
 
         if rnais is not None and len(rnais) > 0:
             rnais_list = []
@@ -482,7 +463,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if to_add != '':
                     rnais_list.append(to_add)
 
-            dict_of_phrases['rnais'] = 'rnais '+str(rnais_list)
+            dict_of_phrases['rnais'] = rnais_list
 
         summary_phrase = ''
 
@@ -524,37 +505,36 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'fractionated' in dict_of_phrases:
             summary_phrase += dict_of_phrases['fractionated'] + ', '
 
-        if 'sex' in dict_of_phrases:
-            if dict_of_phrases['sex'] == 'mixed':
-                summary_phrase += dict_of_phrases['sex'] + ' sex '
+        if dict_of_phrases['sample_type'] != 'immortalized cell line':
+            if 'sex' in dict_of_phrases:
+                if dict_of_phrases['sex'] == 'mixed':
+                    summary_phrase += dict_of_phrases['sex'] + ' sex '
+                else:
+                    summary_phrase += dict_of_phrases['sex'] + ' '
+
+            stage_phrase = ''
+            if 'life_stage' in dict_of_phrases:
+                stage_phrase += dict_of_phrases['life_stage']
+
+            summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
+
+            if 'age_display' in dict_of_phrases:
+                summary_phrase += '(' + dict_of_phrases['age_display'] + '), '
             else:
-                summary_phrase += dict_of_phrases['sex'] + ' '
-
-        stage_phrase = ''
-        if 'life_stage' in dict_of_phrases:
-            stage_phrase += dict_of_phrases['life_stage']
-
-        summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
-
-        if 'age_display' in dict_of_phrases:
-            summary_phrase += '(' + dict_of_phrases['age_display'] + '), '
-        else:
-            if 'synchronization' in dict_of_phrases:
-                summary_phrase += '(' + dict_of_phrases['synchronization'] + '), '
-            else:
-                summary_phrase += ', '
-
-        if 'part_of' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['part_of'] + ', '
+                if 'synchronization' in dict_of_phrases:
+                    summary_phrase += '(' + dict_of_phrases['synchronization'] + '), '
+                else:
+                    summary_phrase += ', '
 
         if 'derived_from' in dict_of_phrases:
             summary_phrase += dict_of_phrases['derived_from'] + ', '
 
-        if 'transfection' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['transfection'] + ', '
+        if 'transfection' in dict_of_phrases and 'rnais' in dict_of_phrases:
+            summary_phrase += dict_of_phrases['transfection'] + \
+                ' RNAi knockdown ' + dict_of_phrases['rnais'][1:-1] + ', '
 
         if 'treatments' in dict_of_phrases:
-            summary_phrase += 'treatment(s): ' + str(dict_of_phrases['treatments']) + ', '
+            summary_phrase += str(dict_of_phrases['treatments'])[1:-1] + ', '
 
         if 'depleted_in' in dict_of_phrases:
             summary_phrase += dict_of_phrases['depleted_in'] + ', '
@@ -566,7 +546,5 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += dict_of_phrases['constructs'] + ', '
         if 'model_organism_constructs' in dict_of_phrases:
             summary_phrase += dict_of_phrases['model_organism_constructs'] + ', '
-        if 'rnais' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['rnais'] + ' '
 
         return str(summary_phrase)
