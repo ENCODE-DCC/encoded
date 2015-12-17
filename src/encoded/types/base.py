@@ -39,6 +39,12 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.lab_submitter', 'edit'),
 ]
 
+ALLOW_CURRENT_AND_SUBMITTER_EDIT = [
+    (Allow, Everyone, 'view'),
+    (Allow, 'group.admin', 'edit'),
+    (Allow, 'role.lab_submitter', 'edit')
+]
+
 ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
     (Allow, 'group.admin', 'edit'),
@@ -126,6 +132,7 @@ class Item(contentbase.Item):
         # dataset / experiment
         'release ready': ALLOW_VIEWING_GROUP_VIEW,
         'revoked': ALLOW_CURRENT,
+        'in review': ALLOW_CURRENT_AND_SUBMITTER_EDIT,
 
         # publication
         'published': ALLOW_CURRENT,
