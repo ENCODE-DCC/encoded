@@ -394,7 +394,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
                             treatmentObject['duration_units'] + 's'
                 if to_add != '':
-                    treatments_list.append('treated with '+to_add)
+                    treatments_list.append(to_add)
 
             if len(treatments_list) > 0:
                 dict_of_phrases['treatments'] = treatments_list
@@ -422,6 +422,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         '''* * * *
         * transfection is true also for constructs !!!!
+        * still have to solve multile similar words problem in bio_type/term for exmple
+        * Homo sapiens endothelial cell of umbilical vein primary cell newborn
         * * * *'''
 
         if constructs is not None and len(constructs) > 0:
@@ -504,7 +506,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         term_phrase = ''
         for w in term_name.split(' '):
-            if w not in term_dict or (w+'s') not in term_dict:
+            if w not in term_dict and (w+'s') not in term_dict:
                 term_dict[w] = 1
                 term_phrase += w + ' '
 
@@ -539,7 +541,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if 'synchronization' in dict_of_phrases:
                     summary_phrase += '(' + dict_of_phrases['synchronization'] + '); '
                 else:
-                    summary_phrase += ', '
+                    summary_phrase += '; '
 
         if 'derived_from' in dict_of_phrases:
             summary_phrase += dict_of_phrases['derived_from'] + '; '
@@ -555,10 +557,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
 
         if 'treatments' in dict_of_phrases:
             if len(dict_of_phrases['treatments']) == 1:
-                summary_phrase += dict_of_phrases['treatments'][0] + '; '
+                summary_phrase += 'treated with '+dict_of_phrases['treatments'][0] + '; '
             else:
                 if len(dict_of_phrases['treatments']) > 1:
-                    summary_phrase += ', '.join(map(str, dict_of_phrases['treatments'])) + '; '
+                    summary_phrase += 'treated with ' + \
+                                      ', '.join(map(str, dict_of_phrases['treatments'])) + '; '
 
         # need to rephrase later on I guess
         if 'depleted_in' in dict_of_phrases:
