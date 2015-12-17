@@ -63,8 +63,7 @@ def audit_experiment_biosample_term_id(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_term_id'
             yield AuditFailure('experiment missing biosample_term_id', detail, level='DCC_ACTION')
-
-        if 'biosmple_type' not in value:
+        if 'biosample_type' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
             yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')

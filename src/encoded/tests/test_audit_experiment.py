@@ -693,6 +693,27 @@ def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
                'experiment missing biosample_term_id' for error in errors_list)
 
 
+def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'experiment missing biosample_type' for error in errors_list)
+
+
+def test_audit_experiment_with_biosample_type(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'experiment missing biosample_type' for error in errors_list)
+
+
 def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
                                                         base_experiment,
                                                         base_replicate,
