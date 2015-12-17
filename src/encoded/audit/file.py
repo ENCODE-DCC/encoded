@@ -160,7 +160,7 @@ def audit_file_controlled_by(value, system):
             raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'GGR'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -347,7 +347,7 @@ def audit_file_paired_ended_run_type(value, system):
         if 'paired_end' not in value:
             detail = 'File {} has a paired-ended run_type '.format(value['@id']) + \
                      'but is missing its paired_end value'
-            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+            raise AuditFailure('missing paired_end', detail, level='ERROR')
 
         if (value['paired_end'] == 1) and 'paired_with' not in value:
             detail = 'File {} has a paired-ended '.format(value['@id']) + \
