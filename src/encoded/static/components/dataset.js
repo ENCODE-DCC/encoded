@@ -193,12 +193,12 @@ var Annotation = React.createClass({
         var biosampleSummary = annotationBiosampleSummary(context);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
         ];
 
         // Make string of alternate accessions
@@ -371,12 +371,12 @@ var PublicationData = React.createClass({
         }, this);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
         ];
 
         // Make string of alternate accessions
@@ -516,12 +516,12 @@ var Reference = React.createClass({
         }, this);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
         ];
 
         // Make string of alternate accessions
@@ -661,12 +661,12 @@ var Project = React.createClass({
         organisms = _.uniq(organisms);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: id0, uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
         ];
 
         // Make string of alternate accessions
@@ -834,12 +834,12 @@ var UcscBrowserComposite = React.createClass({
         organisms = _.uniq(organisms);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
         ];
 
         // Make string of alternate accessions
@@ -1438,12 +1438,12 @@ var Series = module.exports.Series = React.createClass({
         }, this);
 
         // Set up the breadcrumbs
-        var id1 = context['@type'][1];
-        var id0 = context['@type'][0];
+        var datasetType = context['@type'][1];
+        var seriesType = context['@type'][0];
         var crumbs = [
             {id: 'Datasets'},
-            {id: id1, uri: '/search/?type=' + id1, wholeTip: 'Search for ' + id1},
-            {id: breakSetName(id0), uri: '/search/?type=' + id0, wholeTip: 'Search for ' + id0}
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(seriesType), uri: '/search/?type=' + seriesType, wholeTip: 'Search for ' + seriesType}
         ];
 
         // Make string of alternate accessions
