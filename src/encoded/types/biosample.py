@@ -572,4 +572,4 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'model_organism_constructs' in dict_of_phrases:
             summary_phrase += dict_of_phrases['model_organism_constructs'] + '; '
 
-        return (str(dict_of_phrases), str(summary_phrase))
+        return (str(summary_phrase))#, str(dict_of_phrases))
