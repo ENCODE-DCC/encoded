@@ -23,8 +23,5 @@ def construct_2_3(value, system):
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
 
-    if 'tags' in value:
-        value['tags'] = list(set(value['tags']))
-
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
