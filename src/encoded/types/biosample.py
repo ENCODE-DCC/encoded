@@ -420,9 +420,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     talens_list.append(talenObject['name'])
             dict_of_phrases['talens'] = 'talens: '+str(talens_list)
 
-* * * *
-* transfection is true also for constructs !!!!
-* * * *
+        '''* * * *
+        * transfection is true also for constructs !!!!
+        * * * *'''
 
         if constructs is not None and len(constructs) > 0:
             constructs_list = []
@@ -513,11 +513,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         summary_phrase += ' ' + term_phrase + ' '
 
         if 'phase' in dict_of_phrases:
-            summary_phrase += 'at ' + dict_of_phrases['phase'] + '(phase comma) '
+            summary_phrase += 'at ' + dict_of_phrases['phase'] + '; '
 
         if 'fractionated' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['fractionated'] + '(fraction comma) '
-        
+            summary_phrase += dict_of_phrases['fractionated'] + '; '
+
         if ('sample_type' in dict_of_phrases and
             dict_of_phrases['sample_type'] != 'immortalized cell line') or \
            ('sample_type' not in dict_of_phrases):
@@ -534,15 +534,15 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
 
             if 'age_display' in dict_of_phrases:
-                summary_phrase += '(' + dict_of_phrases['age_display'] + ')(age comma) '
+                summary_phrase += '(' + dict_of_phrases['age_display'] + '); '
             else:
                 if 'synchronization' in dict_of_phrases:
-                    summary_phrase += '(' + dict_of_phrases['synchronization'] + ')(sync comma) '
+                    summary_phrase += '(' + dict_of_phrases['synchronization'] + '); '
                 else:
                     summary_phrase += ', '
-        
+
         if 'derived_from' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['derived_from'] + '(derived comma) '
+            summary_phrase += dict_of_phrases['derived_from'] + '; '
 
         if 'transfection' in dict_of_phrases and 'rnais' in dict_of_phrases:
             if len(dict_of_phrases['rnais']) == 1:
@@ -551,24 +551,25 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             else:
                 if len(dict_of_phrases['rnais']) > 1:
                     summary_phrase += dict_of_phrases['transfection'] + ' RNAi knockdown ' + \
-                        ', '.join(map(str, dict_of_phrases['rnais']))
-        
+                        ', '.join(map(str, dict_of_phrases['rnais'])) + '; '
+
         if 'treatments' in dict_of_phrases:
             if len(dict_of_phrases['treatments']) == 1:
-                summary_phrase += dict_of_phrases['treatments'][0] + ' '
+                summary_phrase += dict_of_phrases['treatments'][0] + '; '
             else:
                 if len(dict_of_phrases['treatments']) > 1:
-                    summary_phrase += ', '.join(map(str, dict_of_phrases['treatments'])) + ', '
+                    summary_phrase += ', '.join(map(str, dict_of_phrases['treatments'])) + '; '
 
+        # need to rephrase later on I guess
         if 'depleted_in' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['depleted_in'] + ', '
+            summary_phrase += dict_of_phrases['depleted_in'] + '; '
 
         if 'talens' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['talens'] + ', '
+            summary_phrase += dict_of_phrases['talens'] + '; '
 
         if 'constructs' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['constructs'] + ', '
+            summary_phrase += dict_of_phrases['constructs'] + '; '
         if 'model_organism_constructs' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['model_organism_constructs'] + ', '
+            summary_phrase += dict_of_phrases['model_organism_constructs'] + '; '
 
         return (str(dict_of_phrases), str(summary_phrase))
