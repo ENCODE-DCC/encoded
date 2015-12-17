@@ -146,7 +146,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="term-name">
                             <dt>Term name</dt>
@@ -165,21 +165,17 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        {context.donor && context.donor.organism.name !== 'human' ?
-                            <div>
-                                {context.life_stage ?
-                                    <div data-test="life-stage">
-                                        <dt>Life stage</dt>
-                                        <dd className="sentence-case">{context.life_stage}</dd>
-                                    </div>
-                                : null}
+                        {context.donor && context.donor.organism.name !== 'human' && context.life_stage ?
+                            <div data-test="life-stage">
+                                <dt>Life stage</dt>
+                                <dd className="sentence-case">{context.life_stage}</dd>
+                            </div>
+                        : null}
 
-                                {context.age ?
-                                    <div data-test="age">
-                                        <dt>Age</dt>
-                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
-                                    </div>
-                                : null}
+                        {context.donor && context.donor.organism.name !== 'human' && context.age ?
+                            <div data-test="age">
+                                <dt>Age</dt>
+                                <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
                             </div>
                         : null}
 
@@ -842,11 +838,15 @@ var Treatment = module.exports.Treatment = React.createClass({
         treatmentText = SingleTreatment(context);
         return (
             <dl className="key-value">
-                <dt>Treatment</dt>
-                <dd>{treatmentText}</dd>
+                <div>
+                    <dt>Treatment</dt>
+                    <dd>{treatmentText}</dd>
+                </div>
 
-                <dt>Type</dt>
-                <dd>{context.treatment_type}</dd>
+                <div>
+                    <dt>Type</dt>
+                    <dd>{context.treatment_type}</dd>
+                </div>
             </dl>
         );
     }
@@ -947,39 +947,59 @@ var RNAi = module.exports.RNAi = React.createClass({
         var context = this.props.context;
         return (
              <dl className="key-value">
-                {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                {context.target ?
+                    <div>
+                        <dt>Target</dt>
+                        <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
+                    </div>
+                : null}
 
-                {context.rnai_type ? <dt>RNAi type</dt> : null}
-                {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
+                {context.rnai_type ?
+                    <div>
+                        <dt>RNAi type</dt>
+                        <dd>{context.rnai_type}</dd>
+                    </div>
+                : null}
 
-                {context.source && context.source.title ? <dt>Source</dt> : null}
                 {context.source && context.source.title ?
-                    <dd>
-                        {context.source.url ?
-                            <a href={context.source.url}>{context.source.title}</a>
-                        :
-                            <span>{context.source.title}</span>
-                        }
-                    </dd>
+                    <div>
+                        <dt>Source</dt>
+                        <dd>
+                            {context.source.url ?
+                                <a href={context.source.url}>{context.source.title}</a>
+                            :
+                                <span>{context.source.title}</span>
+                            }
+                        </dd>
+                    </div>
                 : null}
 
-                {context.product_id ? <dt>Product ID</dt> : null}
                 {context.product_id ?
-                    <dd>
-                        {context.url ?
-                            <a href={context.url}>{context.product_id}</a>
-                        :
-                            <span>{context.product_id}</span>
-                        }
-                    </dd>
+                    <div>
+                        <dt>Product ID</dt>
+                        <dd>
+                            {context.url ?
+                                <a href={context.url}>{context.product_id}</a>
+                            :
+                                <span>{context.product_id}</span>
+                            }
+                        </dd>
+                    </div>
                 : null}
 
-                {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
-                {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}
+                {context.rnai_target_sequence ?
+                    <div>
+                        <dt>Target sequence</dt>
+                        <dd>{context.rnai_target_sequence}</dd>
+                    </div>
+                : null}
 
-                {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
-                {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}                
+                {context.vector_backbone_name ?
+                    <div>
+                        <dt>Vector backbone</dt>
+                        <dd>{context.vector_backbone_name}</dd>
+                    </div>
+                : null}
             </dl>
         );
     }

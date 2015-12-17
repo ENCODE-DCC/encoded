@@ -10,37 +10,52 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-.key-value {
+dl.key-value {
     margin: 0;
 
-    > div {
-        @extend .clearfix;
+    dt, dd {
+        display: block;
+        float: none;
+        margin: 0;
+        line-height: 1.3;
+        text-align: left;
+        vertical-align: top;
+        width: auto;
     }
 
     dt {
-        padding-top: 0;
-        padding-bottom: 2px;
-        text-align: left;
-
-        &:after {
-            content: ": ";
-        }
-    }
-
-    dt, dd {
-        margin-left: 0;
-        padding-top: 0;
-        margin-bottom: 0px;
-        @include font-size(1);
+        font-weight: bold;
     }
 
     dd {
-        margin-bottom: 10px;
-        padding-bottom: 0;
+    }
 
-        a.stacked-link {
-            display: block;
+    & > div {
+        clear: both;
+        margin: 6px 0;
+    }
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: table;
+
+        dt, dd {
+            display: table-cell;
         }
+
+        dt {
+            min-width: 140px;
+            padding: 5px 0;
+        }
+
+        dd {
+            padding: 5px 0 5px 10px;
+        }
+
+        & > div {
+            clear: none;
+            display: table-row;
+        }
+
     }
 }
 
