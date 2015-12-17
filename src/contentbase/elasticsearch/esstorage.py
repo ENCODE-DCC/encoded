@@ -1,3 +1,4 @@
+import elasticsearch.exceptions
 from contentbase.util import get_root_request
 from elasticsearch.helpers import scan
 from pyramid.threadlocal import get_current_request
@@ -6,6 +7,8 @@ from .interfaces import (
     ELASTIC_SEARCH,
     ICachedItem,
 )
+
+SEARCH_MAX = (2 ** 31) - 1
 
 
 def includeme(config):
@@ -125,11 +128,11 @@ class ElasticSearchStorage(object):
         return model
 
     def get_by_uuid(self, uuid):
-        query = {
-            'filter': {'term': {'uuid': uuid}},
-            'version': True,
-        }
-        return self._one(query)
+        try:
+            hit = self.es.get(index=self.index, id=str(uuid))
+        except elasticsearch.exceptions.NotFoundError:
+            return None
+        return CachedModel(hit)
 
     def get_by_unique_key(self, unique_key, name):
         term = 'unique_keys.' + unique_key
@@ -147,25 +150,25 @@ class ElasticSearchStorage(object):
                 {'terms': {'item_type': item_types}},
             ]}
         query = {
-            'fields': ['uuid'],
+            'fields': [],
             'filter': filter_,
-            'version': True,
         }
-        data = self.es.search(index=self.index, body=query)
+        data = self.es.search(index=self.index, body=query, size=SEARCH_MAX)
         return [
-            hit['fields']['uuid'][0] for hit in data['hits']['hits']
+            hit['_id'] for hit in data['hits']['hits']
         ]
 
     def __iter__(self, *item_types):
         query = {
-            'fields': ['uuid'],
+            'fields': [],
             'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
         for hit in scan(self.es, query=query):
-            yield hit['fields']['uuid'][0]
+            yield hit['_id']
 
     def __len__(self, *item_types):
         query = {
             'filter': {'terms': {'item_type': item_types}} if item_types else {'match_all': {}},
         }
-        return self.es.count(index=self.index, body=query)
+        result = self.es.count(index=self.index, body=query)
+        return result['count']
