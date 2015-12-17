@@ -354,7 +354,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             if subcellular_fraction_term_name == 'chromatin':
                 dict_of_phrases['fractionated'] = 'chromatin fraction'
             if subcellular_fraction_term_name == 'membrane':
-                dict_of_phrases['fractionated'] = 'membranous fraction'
+                dict_of_phrases['fractionated'] = 'membrane fraction'
             if subcellular_fraction_term_name == 'mitochondria':
                 dict_of_phrases['fractionated'] = 'mitochondrial fraction'
             if subcellular_fraction_term_name == 'nuclear matrix':
@@ -392,7 +392,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                             treatmentObject['duration_units']
                     else:
                         to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units'] + 's '
+                            treatmentObject['duration_units'] + 's'
                 if to_add != '':
                     treatments_list.append('treated with '+to_add)
 
@@ -420,6 +420,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                     talens_list.append(talenObject['name'])
             dict_of_phrases['talens'] = 'talens: '+str(talens_list)
 
+* * * *
+* transfection is true also for constructs !!!!
+* * * *
+
         if constructs is not None and len(constructs) > 0:
             constructs_list = []
             for c in constructs:
@@ -431,7 +435,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if to_add != '':
                     constructs_list.append(to_add)
 
-            dict_of_phrases['constructs'] = 'expressing '+str(constructs_list)[1:-1]
+            if len(constructs_list) == 1:
+                dict_of_phrases['constructs'] = 'expressing ' + constructs_list[0]
+            else:
+                if len(constructs_list) > 1:
+                    dict_of_phrases['constructs'] = 'expressing ' + \
+                        ', '.join(map(str, constructs_list))
 
         if model_organism_donor_constructs is not None and len(model_organism_donor_constructs) > 0:
             constructs_list = []
@@ -445,8 +454,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if to_add != '':
                     constructs_list.append(to_add)
 
-            dict_of_phrases['model_organism_constructs'] = ('expressing ' +
-                                                            str(constructs_list)[1:-1])
+            if len(constructs_list) == 1:
+                dict_of_phrases['model_organism_constructs'] = 'expressing ' + constructs_list[0]
+            else:
+                if len(constructs_list) > 1:
+                    dict_of_phrases['model_organism_constructs'] = 'expressing ' + \
+                        ', '.join(map(str, constructs_list))
 
         if rnais is not None and len(rnais) > 0:
             rnais_list = []
@@ -500,12 +513,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         summary_phrase += ' ' + term_phrase + ' '
 
         if 'phase' in dict_of_phrases:
-            summary_phrase += 'at ' + dict_of_phrases['phase'] + ', '
+            summary_phrase += 'at ' + dict_of_phrases['phase'] + '(phase comma) '
 
         if 'fractionated' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['fractionated'] + ', '
-
-        if dict_of_phrases['sample_type'] != 'immortalized cell line':
+            summary_phrase += dict_of_phrases['fractionated'] + '(fraction comma) '
+        
+        if ('sample_type' in dict_of_phrases and
+            dict_of_phrases['sample_type'] != 'immortalized cell line') or \
+           ('sample_type' not in dict_of_phrases):
             if 'sex' in dict_of_phrases:
                 if dict_of_phrases['sex'] == 'mixed':
                     summary_phrase += dict_of_phrases['sex'] + ' sex '
@@ -519,22 +534,31 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             summary_phrase += stage_phrase.replace("embryonic", "embryo") + ' '
 
             if 'age_display' in dict_of_phrases:
-                summary_phrase += '(' + dict_of_phrases['age_display'] + '), '
+                summary_phrase += '(' + dict_of_phrases['age_display'] + ')(age comma) '
             else:
                 if 'synchronization' in dict_of_phrases:
-                    summary_phrase += '(' + dict_of_phrases['synchronization'] + '), '
+                    summary_phrase += '(' + dict_of_phrases['synchronization'] + ')(sync comma) '
                 else:
                     summary_phrase += ', '
-
+        
         if 'derived_from' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['derived_from'] + ', '
+            summary_phrase += dict_of_phrases['derived_from'] + '(derived comma) '
 
         if 'transfection' in dict_of_phrases and 'rnais' in dict_of_phrases:
-            summary_phrase += dict_of_phrases['transfection'] + \
-                ' RNAi knockdown ' + dict_of_phrases['rnais'][1:-1] + ', '
-
+            if len(dict_of_phrases['rnais']) == 1:
+                summary_phrase += dict_of_phrases['transfection'] + ' RNAi knockdown ' + \
+                    dict_of_phrases['rnais'][0]
+            else:
+                if len(dict_of_phrases['rnais']) > 1:
+                    summary_phrase += dict_of_phrases['transfection'] + ' RNAi knockdown ' + \
+                        ', '.join(map(str, dict_of_phrases['rnais']))
+        
         if 'treatments' in dict_of_phrases:
-            summary_phrase += str(dict_of_phrases['treatments'])[1:-1] + ', '
+            if len(dict_of_phrases['treatments']) == 1:
+                summary_phrase += dict_of_phrases['treatments'][0] + ' '
+            else:
+                if len(dict_of_phrases['treatments']) > 1:
+                    summary_phrase += ', '.join(map(str, dict_of_phrases['treatments'])) + ', '
 
         if 'depleted_in' in dict_of_phrases:
             summary_phrase += dict_of_phrases['depleted_in'] + ', '
@@ -547,4 +571,4 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if 'model_organism_constructs' in dict_of_phrases:
             summary_phrase += dict_of_phrases['model_organism_constructs'] + ', '
 
-        return str(summary_phrase)
+        return (str(dict_of_phrases), str(summary_phrase))
