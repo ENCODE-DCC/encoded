@@ -128,7 +128,7 @@ def audit_file_controlled_by(value, system):
             value['@id'],
             value['dataset']['assay_term_name']
             )
-        raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
 
     possible_controls = value['dataset'].get('possible_controls')
@@ -147,7 +147,7 @@ def audit_file_controlled_by(value, system):
                     value['@id'],
                     ff['@id'],
                     control_bs)
-                raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
                 return
 
             if ff['file_format'] != value['file_format']:
@@ -157,7 +157,8 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['file_format']
                     )
-                raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                return
 
             if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
                 detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
@@ -165,7 +166,8 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['dataset']['@id']
                     )
-                raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                return
 
             if (run_type is None) or (control_run is None):
                 continue
@@ -180,7 +182,7 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     control_run
                     )
-                raise AuditFailure('mismatched controlled_by run_type', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by run_type', detail, level='WARNING')
 
             if read_length != control_length:
                 detail = 'File {} is {} but its control file {} is {}'.format(
@@ -189,7 +191,8 @@ def audit_file_controlled_by(value, system):
                     ff['@id'],
                     ff['read_length']
                     )
-                raise AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
+                yield AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
+                return
 
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
