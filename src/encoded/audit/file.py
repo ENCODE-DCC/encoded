@@ -518,17 +518,18 @@ def audit_file_read_depth(value, system):
                 if read_depth < marks['broad']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'uniquely mapped reads. Replicates for this assay ' + \
-                             '{} and target {} require '.format(pipeline['title'], target_name) + \
-                             '{} (broad-marks)'.format(marks['broad'])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                             'uniquely mapped reads. It can not be used as a control ' + \
+                             'in experiments studying broad histone marks, which ' + \
+                             'require {} uniquely mapped reads.'.format(marks['broad'])
+                    yield AuditFailure('insufficient read depth', detail, level='WARNING')
                 if read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'uniquely mapped reads. Replicates for this assay ' + \
-                             '{} and target {} require '.format(pipeline['title'], target_name) + \
-                             '{} (narrow-marks)'.format(marks['narrow'])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                             'uniquely mapped reads. It can not be used as a control, ' + \
+                             'due to insufficient read depth, narrow histone marks assays ' + \
+                             'require {} uniquely mapped reads.'.format(marks['narrow'])
+                    yield AuditFailure('insufficient read depth',
+                                       detail, level='NOT_COMPLIANT')
                 return
             if target_name == 'empty':
                 detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
@@ -540,19 +541,28 @@ def audit_file_read_depth(value, system):
                 if read_depth < marks['broad']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'uniquely mapped reads. Replicates for this assay ' + \
-                             '{} and target {} require '.format(pipeline['title'], target_name) + \
+                             'uniquely mapped reads. Replicates for ChIP-seq ' + \
+                             'assay and target {} require '.format(target_name) + \
                              '{}'.format(marks['broad'])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
             else:
+                if read_depth < (marks['narrow']+5000000) and read_depth > marks['narrow']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. ' + \
+                             'The recommended numer of uniquely mapped reads for ChIP-seq assay ' + \
+                             'and target {} would be '.format(target_name) + \
+                             '{}'.format(marks['narrow']+5000000)
+                    yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                    return
                 if read_depth < marks['narrow']:
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
-                             'uniquely mapped reads. Replicates for this assay ' + \
-                             '{} and target {} require '.format(pipeline['title'], target_name) + \
+                             'uniquely mapped reads. Replicates for ChIP-seq assay ' + \
+                             'and target {} require '.format(target_name) + \
                              '{}'.format(marks['narrow'])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
         else:
             if special_assay_name != 'empty':  # either shRNA or single cell
@@ -562,7 +572,7 @@ def audit_file_read_depth(value, system):
                              'uniquely mapped reads. Replicates for this assay ' + \
                              '{} require '.format(pipeline['title']) + \
                              '{}'.format(read_depths_special[special_assay_name])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
             else:
                 if (read_depth < read_depths[pipeline['title']]):
@@ -570,7 +580,7 @@ def audit_file_read_depth(value, system):
                              'uniquely mapped reads. Replicates for this ' + \
                              'assay {} require {}'.format(pipeline['title'],
                                                           read_depths[pipeline['title']])
-                    yield AuditFailure('insufficient read depth', detail, level='ERROR')
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
 
 
