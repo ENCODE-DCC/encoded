@@ -98,26 +98,31 @@
 
 
 /**********************************************************/
-// Flexbox temporary classes
+// Flexbox temporary classes; might be able to change or
+// remove with Bootstrap 4
 
 .flexrow {
     @extend .row;
 
-    .flexbox & {
-        display: flex;
+    @media screen and (min-width: $screen-sm-min) {
+        .flexbox & {
+            display: flex;
+        }
     }
 }
 
 .flexcol-sm-6 {
     @extend .col-sm-6;
 
-    .flexbox & {
-        flex: 1 1 0px;
-        width: auto;
-        border-left: 1px solid #c0c0c0;
+    @media screen and (min-width: $screen-sm-min) {
+        .flexbox & {
+            flex: 1 1 0px;
+            width: auto;
+            border-left: 1px solid #c0c0c0;
 
-        &:first-child {
-            border-left: none;
+            &:first-child {
+                border-left: none;
+            }
         }
     }
 }
