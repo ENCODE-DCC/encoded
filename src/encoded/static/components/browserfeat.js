@@ -7,14 +7,25 @@ module.exports.BrowserFeat = {
     // Return object with browser capabilities; return from cache if available
     getBrowserCaps: function (feat) {
         if (Object.keys(this.feat).length === 0) {
+            // Detect SVG
             this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+
+            // Detect <canvas>
             this.feat.canvas = (function() {
                 var elem = document.createElement('canvas');
                 return !!(elem.getContext && elem.getContext('2d'));
             })();
+
+            // Detect toDataURL
             this.feat.todataurlpng = (function() {
                 var canvas = document.createElement('canvas');
                 return !!(canvas && canvas.toDataURL && canvas.toDataURL('image/png').indexOf('data:image/png') === 0);
+            })();
+
+            // Detect FlexBox
+            this.feat.flexbox = (function() {
+                var elem = document.createElement('tspan');
+                return 'flexBasis' in elem.style
             })();
 
             // UA checks; should be retired as soon as possible

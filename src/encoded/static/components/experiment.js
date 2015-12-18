@@ -176,8 +176,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
                 <div className="panel">
-                    <div className="row">
-                        <div className="col-sm-6">
+                    <div className="flexrow">
+                        <div className="flexcol-sm-6">
                             <dl className="key-value">
                                 <div data-test="assay">
                                     <dt>Assay</dt>
@@ -240,7 +240,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </dl>
                         </div>
 
-                        <div className="col-sm-6">
+                        <div className="flexcol-sm-6">
                             <dl className="key-value">
                                 <div data-test="lab">
                                     <dt>Lab</dt>
