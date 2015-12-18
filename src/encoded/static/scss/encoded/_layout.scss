@@ -95,3 +95,29 @@
         text-align: right;
     }
 }
+
+
+/**********************************************************/
+// Flexbox temporary classes
+
+.flexrow {
+    @extend .row;
+
+    .flexbox & {
+        display: flex;
+    }
+}
+
+.flexcol-sm-6 {
+    @extend .col-sm-6;
+
+    .flexbox & {
+        flex: 1 1 0px;
+        width: auto;
+        border-left: 1px solid #c0c0c0;
+
+        &:first-child {
+            border-left: none;
+        }
+    }
+}
