@@ -71,7 +71,7 @@ var Software = module.exports.Software = React.createClass({
                 </header>
                 <AuditDetail context={context} id="publication-audit" />
 
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="title">
                             <dt>Title</dt>

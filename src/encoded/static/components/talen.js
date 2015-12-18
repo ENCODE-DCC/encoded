@@ -83,7 +83,7 @@ var Talen = React.createClass({
 
                     <div data-test="rvd">
                         <dt>RVD sequence</dt>
-                        <dd>{context.RVD_sequence}</dd>
+                        <dd className="sequence">{context.RVD_sequence}</dd>
                     </div>
 
                     <div data-test="targetsequence">
