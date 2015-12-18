@@ -79,3 +79,22 @@ def library_3_4(value, system):
             value['fragmentation_method'] = 'sonication (generic microtip)'
         else:
             value['fragmentation_method'] = 'see document'
+
+
+@upgrade_step('library', '4', '5')
+def library_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'spikeins_used' in value:
+        value['spikeins_used'] = list(set(value['spikeins_used']))
+
+    if 'treatments' in value:
+        value['treatments'] = list(set(value['treatments']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))

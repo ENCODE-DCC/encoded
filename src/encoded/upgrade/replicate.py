@@ -46,3 +46,10 @@ def replicate_4_5(value, system):
         value['notes'] = value['notes'] + " " + repr(details)
     else:
         value['notes'] = repr(details)
+
+
+@upgrade_step('replicate', '5', '6')
+def replicate_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))

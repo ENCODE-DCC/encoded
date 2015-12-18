@@ -35,6 +35,7 @@
             "description": "Documents that are related to the donor.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Donor document",
                 "description": "A document that relates to the donor.",

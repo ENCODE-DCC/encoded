@@ -49,3 +49,16 @@ def document_3_4(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('document', '4', '5')
+def document_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'urls' in value:
+        value['urls'] = list(set(value['urls']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))
