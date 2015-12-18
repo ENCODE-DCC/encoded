@@ -175,7 +175,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                    </div>
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
-                <div className="panel">
+                <div className="panel data-display">
                     <div className="flexrow">
                         <div className="flexcol-sm-6">
                             <dl className="key-value">

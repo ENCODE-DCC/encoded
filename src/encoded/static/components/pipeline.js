@@ -201,7 +201,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
-                <div className="panel">
+                <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="title">
                             <dt>Title</dt>

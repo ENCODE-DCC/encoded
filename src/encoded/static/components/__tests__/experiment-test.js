@@ -44,12 +44,12 @@ describe('Experiment Page', function() {
 
         it('has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(9);
-            expect(defDescs.length).toEqual(9);
+            expect(defTerms.length).toEqual(8);
+            expect(defDescs.length).toEqual(8);
         });
 
         it('has proper biosample summary for no-biosample case (code adds space always)', function() {
-            expect(defDescs[1].textContent).toEqual('K562 ');
+            expect(defDescs[2].textContent).toEqual('K562 ');
         });
 
         it('has proper links in dbxrefs key-value', function() {
@@ -59,15 +59,8 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper links in Publications key-values', function() {
-            var dbxrefs = defDescs[7].getElementsByTagName('a');
-            expect(dbxrefs.length).toEqual(2);
-            expect(dbxrefs[0].getAttribute('href')).toEqual('/publications/b163ba10-bd4a-11e4-bb52-0800200c9a66/');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('/publications/4cb65ec0-bd49-11e4-bb52-0800200c9a66/');
-        });
-
         it('has proper release date', function() {
-            expect(defDescs[8].textContent).toEqual('2011-10-29');
+            expect(defDescs[7].textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
@@ -200,16 +193,11 @@ describe('Experiment Page', function() {
         it('has proper biosample summary ', function() {
             var summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
             var defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
-            expect(defDescs[1].textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
-            var italics = defDescs[1].getElementsByTagName('em');
+            expect(defDescs[2].textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
+            var italics = defDescs[2].getElementsByTagName('em');
             expect(italics.length).toEqual(2);
             expect(italics[0].textContent).toEqual('Homo sapiens');
             expect(italics[1].textContent).toEqual('Mus musculus');
-
-            // Treatments
-            var item = summary[0].getDOMNode().querySelector('[data-test="treatment"]');
-            var treatments = item.getElementsByTagName('dd')[0];
-            expect(treatments.textContent).toEqual('97.2 nM doxycycline hyclate (CHEBI:34730) for 6 hour');
         });
 
         it('has two replicate panels', function() {

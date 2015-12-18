@@ -84,7 +84,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel">
+                <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>

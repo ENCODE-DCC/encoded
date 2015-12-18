@@ -124,7 +124,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </div>
                 }
 
-                <div className="panel">
+                <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="source">
                             <dt>Source (vendor)</dt>
