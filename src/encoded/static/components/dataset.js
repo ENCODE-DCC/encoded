@@ -192,6 +192,15 @@ var Annotation = React.createClass({
         // Make a biosample summary string
         var biosampleSummary = annotationBiosampleSummary(context);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -199,6 +208,7 @@ var Annotation = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -360,6 +370,15 @@ var PublicationData = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -367,6 +386,7 @@ var PublicationData = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for publication file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -495,6 +515,15 @@ var Reference = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -502,6 +531,7 @@ var Reference = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for reference file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -630,6 +660,15 @@ var Project = React.createClass({
         });
         organisms = _.uniq(organisms);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -637,6 +676,7 @@ var Project = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for project file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -793,6 +833,15 @@ var UcscBrowserComposite = React.createClass({
         });
         organisms = _.uniq(organisms);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var filesetType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(filesetType), uri: '/search/?type=' + filesetType, wholeTip: 'Search for ' + filesetType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -800,6 +849,7 @@ var UcscBrowserComposite = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -1387,6 +1437,15 @@ var Series = module.exports.Series = React.createClass({
             datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
+        // Set up the breadcrumbs
+        var datasetType = context['@type'][1];
+        var seriesType = context['@type'][0];
+        var crumbs = [
+            {id: 'Datasets'},
+            {id: datasetType, uri: '/search/?type=' + datasetType, wholeTip: 'Search for ' + datasetType},
+            {id: breakSetName(seriesType), uri: '/search/?type=' + seriesType, wholeTip: 'Search for ' + seriesType}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
@@ -1398,6 +1457,7 @@ var Series = module.exports.Series = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -1819,3 +1879,9 @@ var FileTable = module.exports.FileTable = React.createClass({
         );
     }
 });
+
+
+// Break the given camel-cased name into space-separated words just before the interior capital letters.
+function breakSetName(name) {
+    return name.replace(/(\S)([A-Z])/g, '$1 $2');
+}

@@ -65,6 +65,18 @@ def experiment_6():
     }
 
 
+@pytest.fixture
+def experiment_7(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '7',
+        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
+        'aliases': ['testing:123', 'testing:123']
+    })
+    return properties
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -164,3 +176,12 @@ def test_experiment_upgrade_no_dataset_type(root, upgrader, experiment_6, thread
     value = upgrader.upgrade('experiment', experiment_6, current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert 'dataset_type' not in value
+
+
+def test_experiment_unique_array(root, upgrader, experiment, experiment_7, dummy_request):
+    context = root.get_by_uuid(experiment['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('experiment', experiment_7, current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
+    assert len(value['aliases']) == len(set(value['aliases']))

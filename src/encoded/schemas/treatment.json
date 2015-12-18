@@ -21,7 +21,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "lab": {
             "title": "Lab",
@@ -35,6 +35,7 @@
             "description": "Documents that describe the treatment protocol.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Protocol document",
                 "description": "A document that describes the treatment protocol.",
@@ -49,6 +50,7 @@
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
+            "uniqueItems": true,
             "default": [],
             "items": {
                 "title": "External identifier",
