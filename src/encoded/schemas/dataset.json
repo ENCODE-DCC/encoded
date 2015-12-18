@@ -72,7 +72,8 @@
                 "deleted",
                 "replaced",
                 "revoked",
-                "ready for review"
+                "ready for review",
+                "in review"
             ]
         }
     },
