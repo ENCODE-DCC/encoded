@@ -26,12 +26,21 @@ dl.key-value {
 
     dt {
         font-weight: bold;
+
+        &:after {
+            content: ":";
+        }
     }
 
     dd {
+        // For things like gene sequences that are multi-line sequences with no spaces
+        &.sequence {
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
     }
 
-    & > div {
+    [data-test] {
         clear: both;
         margin: 6px 0;
     }
@@ -52,7 +61,7 @@ dl.key-value {
             padding: 5px 0 5px 10px;
         }
 
-        & > div {
+        [data-test] {
             clear: none;
             display: table-row;
         }
@@ -206,13 +215,21 @@ dd ul, .multi-value {
     line-height: 1.6 !important;
 }
 
+.sw-step-versions {
+    display: inline-block;
+    margin-top: 8px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
 .software-version-list {
-    @extend .clearfix;
+    display: inline;
 }
 
 .software-version {
-    display: block;
-    float: left;
+    display: inline-block;
     padding: 0;
     margin-right: 5px;
     @include border-radius(2px);
@@ -232,12 +249,10 @@ dd ul, .multi-value {
     }
 
     .software {
-        float: left;
         padding: 0 5px;
     }
 
     .version {
-        float: left;
         padding: 0 5px;
         font-weight: bold;
         background-color: #e0e0e0;

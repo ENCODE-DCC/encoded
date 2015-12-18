@@ -513,8 +513,10 @@ var Replicate = module.exports.Replicate = function (props) {
             <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
             <div className="panel">
                 <dl className="key-value">
-                    <dt data-test="techreplicate">Technical replicate</dt>
-                    <dd>{replicate.technical_replicate_number}</dd>
+                    <div data-test="techreplicate">
+                        <dt>Technical replicate</dt>
+                        <dd>{replicate.technical_replicate_number}</dd>
+                    </div>
 
                     {concentration ?
                         <div data-test="proteinconcentration">
@@ -1263,17 +1265,25 @@ var FileDetailView = function(node) {
                 : null}
 
                 {selectedFile.replicate ?
-                    <div data-test="replicate">
-                        <dt>Biological Replicate(s)</dt>
+                    <div data-test="bioreplicate">
+                        <dt>Biological replicate(s)</dt>
                         <dd>{'[' + selectedFile.replicate.biological_replicate_number + ']'}</dd>
-                        <dt>Technical Replicate</dt>
+                    </div>
+                : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
+                    <div data-test="bioreplicate">
+                        <dt>Biological replicate(s)</dt>
+                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
+                    </div>
+                : null}
+
+                {selectedFile.replicate ?
+                    <div data-test="techreplicate">
+                        <dt>Technical replicate</dt>
                         <dd>{selectedFile.replicate.technical_replicate_number}</dd>
                     </div>
                 : selectedFile.biological_replicates && selectedFile.biological_replicates.length ?
-                    <div data-test="replicate">
-                        <dt>Biological Replicate(s)</dt>
-                        <dd>{'[' + selectedFile.biological_replicates.join(', ') + ']'}</dd>
-                        <dt>Technical Replicate</dt>
+                    <div data-test="techreplicate">
+                        <dt>Technical replicate</dt>
                         <dd>{'-'}</dd>
                     </div>
                 : null}
@@ -1307,14 +1317,14 @@ var FileDetailView = function(node) {
                 : null}
 
                 {selectedFile.analysis_step_version ?
-                    <div>
+                    <div data-test="software">
                         <dt>Software</dt>
                         <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                     </div>
                 : null}
 
                 {node.metadata.contributing && selectedFile.dataset ?
-                    <div>
+                    <div data-test="contributedfrom">
                         <dt>Contributed from</dt>
                         <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
                     </div>

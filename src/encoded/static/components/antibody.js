@@ -124,7 +124,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </div>
                 }
 
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="source">
                             <dt>Source (vendor)</dt>
@@ -196,7 +196,7 @@ var Lot = module.exports.Lot = React.createClass({
                         {context.antigen_sequence ?
                             <div data-test="antigensequence">
                                 <dt>Antigen sequence</dt>
-                                <dd>{context.antigen_sequence}</dd>
+                                <dd className="sequence">{context.antigen_sequence}</dd>
                             </div>
                         : null}
 

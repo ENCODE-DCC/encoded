@@ -391,7 +391,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                             {context.rnais.map(Panel)}
                         </section>
                     : null}
-
                 </div>
 
                 {context.donor ?
@@ -838,12 +837,12 @@ var Treatment = module.exports.Treatment = React.createClass({
         treatmentText = SingleTreatment(context);
         return (
             <dl className="key-value">
-                <div>
+                <div data-test="treatment">
                     <dt>Treatment</dt>
                     <dd>{treatmentText}</dd>
                 </div>
 
-                <div>
+                <div data-test="type">
                     <dt>Type</dt>
                     <dd>{context.treatment_type}</dd>
                 </div>
@@ -948,21 +947,21 @@ var RNAi = module.exports.RNAi = React.createClass({
         return (
              <dl className="key-value">
                 {context.target ?
-                    <div>
+                    <div data-test="target">
                         <dt>Target</dt>
                         <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
                     </div>
                 : null}
 
                 {context.rnai_type ?
-                    <div>
+                    <div data-test="type">
                         <dt>RNAi type</dt>
                         <dd>{context.rnai_type}</dd>
                     </div>
                 : null}
 
                 {context.source && context.source.title ?
-                    <div>
+                    <div data-test="source">
                         <dt>Source</dt>
                         <dd>
                             {context.source.url ?
@@ -975,7 +974,7 @@ var RNAi = module.exports.RNAi = React.createClass({
                 : null}
 
                 {context.product_id ?
-                    <div>
+                    <div data-test="productid">
                         <dt>Product ID</dt>
                         <dd>
                             {context.url ?
@@ -988,14 +987,14 @@ var RNAi = module.exports.RNAi = React.createClass({
                 : null}
 
                 {context.rnai_target_sequence ?
-                    <div>
+                    <div data-test="targetsequence">
                         <dt>Target sequence</dt>
                         <dd>{context.rnai_target_sequence}</dd>
                     </div>
                 : null}
 
                 {context.vector_backbone_name ?
-                    <div>
+                    <div data-test="vectorbackbone">
                         <dt>Vector backbone</dt>
                         <dd>{context.vector_backbone_name}</dd>
                     </div>
@@ -1089,19 +1088,17 @@ var Document = module.exports.Document = React.createClass({
                         </div>
                         {download}
                         <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
-                            {excerpt ?
-                                <div>
-                                    {characterization ?
-                                        <div data-test="caption">
-                                            <dt>Caption</dt>
-                                            <dd>{context.caption}</dd>
-                                        </div>
-                                    :
-                                        <div data-test="caption">
-                                            <dt>Description</dt>
-                                            <dd>{context.description}</dd>
-                                        </div>
-                                    }
+                            {excerpt && characterization ?
+                                <div data-test="caption">
+                                    <dt>Caption</dt>
+                                    <dd>{context.caption}</dd>
+                                </div>
+                            : null}
+
+                            {excerpt && !characterization ?
+                                <div data-test="caption">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
                                 </div>
                             : null}
 

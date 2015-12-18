@@ -201,7 +201,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="title">
                             <dt>Title</dt>
@@ -270,7 +270,7 @@ globals.content_views.register(Pipeline, 'Pipeline');
 
 var AnalysisStep = module.exports.AnalysisStep = React.createClass({
     render: function() {
-        var stepVersions, swVersions;
+        var stepVersions, swVersions, swStepVersions;
         var step = this.props.step;
         var node = this.props.node;
         var typesList = step.analysis_step_types.join(", ");
@@ -282,6 +282,14 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
         } else {
             // Get the analysis_step_version array from the step for pipeline graph display.
             stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
+            swStepVersions = _.compact(stepVersions.map(function(version) {
+                if (version.software_versions && version.software_versions.length) {
+                    return (
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
+                    );
+                }
+                return null;
+            }));
         }
 
         return (
@@ -367,26 +375,12 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>Software</dt>
                             <dd>{SoftwareVersionList(swVersions)}</dd>
                         </div>
-                    :
-                        <div>
-                            {stepVersions && stepVersions.length ?
-                                <div>
-                                    {stepVersions.map(function(version) {
-                                        if (version.software_versions && version.software_versions.length) {
-                                            return (
-                                                <div data-test="swversions" key={version['@id']}>
-                                                    <dt>Version {version.version} — software</dt>
-                                                    <dd>{SoftwareVersionList(version.software_versions)}</dd>
-                                                </div>
-                                            );
-                                        } else {
-                                            return null;
-                                        }
-                                    })}
-                                </div>
-                            : null}
+                    : stepVersions && stepVersions.length ?
+                        <div data-test="swstepversions">
+                            <dt>Software</dt>
+                            <dd>{swStepVersions}</dd>
                         </div>
-                    }
+                    : null}
 
                     {step.documents && step.documents.length ?
                         <div data-test="documents">

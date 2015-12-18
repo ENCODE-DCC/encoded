@@ -84,7 +84,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
@@ -210,7 +210,7 @@ var Annotation = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
                             <div data-test="assaytermname">
@@ -378,7 +378,7 @@ var PublicationData = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
                             <div data-test="assaytermname">
@@ -513,7 +513,7 @@ var Reference = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         <div data-test="accession">
                             <dt>Accession</dt>
@@ -648,7 +648,7 @@ var Project = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
                             <div data-test="assaytermname">
@@ -811,7 +811,7 @@ var UcscBrowserComposite = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
                             <div data-test="assays">
@@ -1409,7 +1409,7 @@ var Series = module.exports.Series = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="dataset-audit" />
-                <div className="panel data-display">
+                <div className="panel">
                     <dl className="key-value">
                         {context.assay_term_name && context.assay_term_name.length ?
                             <div data-test="description">
