@@ -6,6 +6,7 @@ var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
+var plotly = require('../libs/plotly');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
