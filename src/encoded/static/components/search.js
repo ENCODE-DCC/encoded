@@ -6,7 +6,6 @@ var OverlayMixin = require('react-bootstrap/lib/OverlayMixin');
 var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
-var plotly = require('../libs/plotly');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
@@ -879,6 +878,37 @@ var AuditMixin = audit.AuditMixin;
             };
         },
 
+        componentDidMount: function() {
+            var $script = require('scriptjs');
+            $script('dagre', function() {
+                var Chart = require('chart.js');
+                var colorList = [
+                    '#1F518B',
+                    '#1488C8',
+                    '#F7E041',
+                    '#E2413E',
+                    '#B5292A'
+                ];
+                var data = [];
+
+                var facets = this.props.context.facets;
+                var assayFacet = facets.find(function(facet) {
+                    return facet.field === 'assay_term_name';
+                });
+                assayFacet.terms.forEach(function(term, i) {
+                    var obj = {
+                        value: term.doc_count,
+                        color: colorList[i % colorList.length],
+                        highlight: colorList[i % colorList.length],
+                        label: term.key
+                    };
+                    data.push(obj);
+                });
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var myPieChart = new Chart(ctx).Pie(data, {});
+            }.bind(this));
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
@@ -918,6 +948,7 @@ var AuditMixin = audit.AuditMixin;
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
                             </div> : ''}
                             <div className="col-sm-7 col-md-8 col-lg-9">
+                                <canvas id="myChart" width="400" height="400"></canvas>
                                 {context['notification'] === 'Success' ?
                                     <h4>
                                         Showing {results.length} of {total} {label}

@@ -51,6 +51,23 @@ module.exports = function(grunt) {
                     }],
                 ],
             },
+            chart: {
+                dest: './src/encoded/static/build/chart.js',
+                require: [
+                    'chart.js',
+                ],
+                options: {
+                    debug: true,
+                },
+                plugin: [
+                    ['minifyify', {
+                        map: 'cbart.js.map',
+                        output: './src/encoded/static/build/chart.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: NODE_ENV == 'production'},
+                    }],
+                ],
+            },
             inline: {
                 dest: './src/encoded/static/build/inline.js',
                 src: [
@@ -86,6 +103,7 @@ module.exports = function(grunt) {
                     'brace/theme/solarized_light',
                     'dagre-d3',
                     'd3',
+                    'chart',
                     'scriptjs',
                     'google-analytics',
                 ],
@@ -132,6 +150,7 @@ module.exports = function(grunt) {
                     'brace/theme/solarized_light',
                     'dagre-d3',
                     'd3',
+                    'chart',
                     'source-map-support',
                 ],
                 ignore: [
