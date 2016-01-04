@@ -305,6 +305,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>{context.date_released}</dd>
                             </div>
                         : null}
+
+                        {context.related_series && context.related_series.length ?
+                            <div data-test="relatedseries">
+                                <dt>Related datasets</dt>
+                                <dd><RelatedSeriesList seriesList={context.related_series} /></dd>
+                            </div>
+                        : null}
                     </dl>
                 </div>
 
@@ -711,6 +718,56 @@ var biosampleSummaries = function(biosamples) {
 
     return fullSummary;
 };
+
+
+// Display a list of datasets related to the experiment
+var RelatedSeriesList = React.createClass({
+    propTypes: {
+        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+    },
+
+    handleInfoClick: function() {
+        this.setState({currInfoItem: true});
+    },
+
+    render: function() {
+        var seriesList = this.props.seriesList;
+
+        return (
+            <span>
+                {seriesList.map((series, i) => {
+                    return (
+                        <span key={series.uuid}>
+                            {i > 0 ? <span>, </span> : null}
+                            <RelatedSeriesItem series={series} />
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+});
+
+
+// Display a one dataset related to the experiment
+var RelatedSeriesItem = React.createClass({
+    propTypes: {
+        series: React.PropTypes.object.isRequired, // Series object to display
+        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: React.PropTypes.func.isRequired // Function to call to handle click in info icon
+    },
+
+    render: function() {
+        var {series, detailOpen} = this.props;
+
+        return (
+            <span>
+                <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
+                <i className="icon icon-info-circle" onClick={this.props.handleInfoClick}></i>
+            </span>
+        )
+    }
+});
 
 
 // Handle graphing throws
