@@ -193,6 +193,7 @@ module.exports = NavBar;
 //     query: query string property and value, or null to display unlinked id
 //     uri: Alternative to 'query' property. Specify the complete URI instead of accreting query string variables
 //     tip: Text to display as part of uri tooltip.
+//     wholeTip: Alternative to 'tip' property. The complete tooltip to display
 // }
 var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
     propTypes: {
@@ -211,14 +212,20 @@ var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
         return (
             <ol className="breadcrumb">
                 {crumbs.map((crumb, i) => {
-                    // Build up the query string
-                    accretingQuery += crumb.query ? '&' + crumb.query : '';
-                    accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    // Build up the query string if not specified completely
+                    if (!crumb.uri) {
+                        accretingQuery += crumb.query ? '&' + crumb.query : '';
+                    }
+
+                    // Build up tooltip if not specified completely
+                    if (!crumb.wholeTip) {
+                        accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    }
 
                     // Render the breadcrumbs
                     return (
                         <li key={i}>
-                            {(crumb.query || crumb.uri) ? <a href={this.props.uri ? this.props.uri : this.props.root + accretingQuery} title={'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
+                            {(crumb.query || crumb.uri) ? <a href={crumb.uri ? crumb.uri : this.props.root + accretingQuery} title={crumb.wholeTip ? crumb.wholeTip : 'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
                         </li>
                     );
                 })}

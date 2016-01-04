@@ -147,11 +147,22 @@ def test_audit_biosample_status(testapp, base_biosample, construct):
     assert any(error['category'] == 'mismatched status' for error in errors_list)
 
 
+def test_audit_biosample_term_id(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:349829'})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'invalid biosample term id' for error in errors_list)
+
+
 def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample,):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'UBERON:0002369',
                                                'biosample_term_name': 'adrenal gland',
                                                'biosample_type': 'tissue',
                                                'part_of': biosample['@id']})
+
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
