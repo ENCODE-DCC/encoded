@@ -138,6 +138,21 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     assert any(error['category'] == 'mismatched term_name' for error in errors_list)
 
 
+def test_audit_antibody_invalid_term_in_review(testapp, base_antibody_characterization):
+    characterization_review_list = base_antibody_characterization.get('characterization_reviews')
+    characterization_review_list[0]['biosample_term_id'] = 'UBERON:0001264'
+    characterization_review_list[0]['biosample_term_name'] = 'pancreas'
+    testapp.patch_json(base_antibody_characterization['@id'],
+                       {'characterization_reviews': characterization_review_list})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'characterization review with invalid biosample term id' for error in errors_list)
+
+
 def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_characterization, base_characterization_review, base_document):
     characterization_review_list = base_antibody_characterization.get('characterization_reviews')
     characterization_review_list.append(base_characterization_review)

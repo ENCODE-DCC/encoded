@@ -3,6 +3,9 @@ from contentbase import (
     audit_checker,
 )
 
+from .ontology_data import biosampleType_ontologyPrefix
+
+
 
 term_mapping = {
     "head": "UBERON:0000033",
@@ -57,6 +60,19 @@ gtexParentsList = ['ENCBS380GWR', 'ENCBS001XKZ', 'ENCBS564MPZ', 'ENCBS192JQI',
                    'ENCBS853AVG']
 
 gtexDonorsList = ['ENCDO845WKR', 'ENCDO451RUA', 'ENCDO793LXB', 'ENCDO271OUW']
+
+
+@audit_checker('biosample', frame=['object'])
+def audit_biosample_term_id(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    biosample_prefix = value['biosample_term_id'].split(':')[0]
+    if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                 'that is not one of ' + \
+                 '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
+        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
 
 
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
@@ -161,12 +177,10 @@ def audit_biosample_term(value, system):
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-        detail = 'Biosample {} has a mismatch between biosample_term_id "{}" and biosample_term_name "{}"'.format(
-            value['@id'],
-            term_id,
-            term_name,
-            )
-        raise AuditFailure('mismatched biosample_term', detail, level='DCC_ACTION')
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'a mismatch between biosample_term_id {} '.format(term_id) + \
+                 'and biosample_term_name {}'.format(term_name)
+        raise AuditFailure('mismatched biosample_term', detail, level='ERROR')
 
 
 @audit_checker('biosample', frame='object')
@@ -301,3 +315,19 @@ def audit_biosample_transfection_type(value, system):
     if (value['constructs']) and ('transfection_type' not in value):
         detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
+
+
+@audit_checker('biosample', frame=['part_of'])
+def audit_biosample_part_of_consistency(value, system):
+    if 'part_of' not in value:
+        return
+    else:
+        part_of_biosample = value['part_of']
+        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
+            detail = 'Biosample {} '.format(value['@id']) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                     'that has different ' + \
+                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
+            yield AuditFailure('inconsistent biosample_term_id', detail,
+                               level='ERROR')

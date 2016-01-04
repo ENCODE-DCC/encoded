@@ -50,6 +50,7 @@
             "description": "Lab specific identifiers to reference an object.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "uniqueKey": "alias",
                 "title": "Lab alias",
@@ -129,6 +130,7 @@
             "description": "The publications that provide more information about the object.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Reference",
                 "description": "A publication that provide smore information about the object.",
@@ -304,6 +306,7 @@
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "DNA Constructs",
                 "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
@@ -367,6 +370,7 @@
             "description": "Documents that provide additional information (not data file).",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Document",
                 "description": "A document that provides additional information (not data file).",

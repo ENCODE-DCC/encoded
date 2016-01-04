@@ -3,6 +3,8 @@ from contentbase import (
     audit_checker,
 )
 from .conditions import rfa
+from .ontology_data import biosampleType_ontologyPrefix
+
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -52,6 +54,75 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('experiment', frame=['object'])
+def audit_experiment_biosample_term_id(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if value['status'] not in ['preliminary', 'proposed']:
+        if 'biosample_term_id' not in value:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'has no biosample_term_id'
+            yield AuditFailure('experiment missing biosample_term_id', detail, level='DCC_ACTION')
+        if 'biosample_type' not in value:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'has no biosample_type'
+            yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
+    if 'biosample_type' in value and 'biosample_term_id' in value:
+        biosample_prefix = value['biosample_term_id'].split(':')[0]
+        if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
+            detail = 'Experiment {} has '.format(value['@id']) + \
+                     'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'that is not one of ' + \
+                     '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
+            yield AuditFailure('experiment with invalid biosample term id', detail,
+                               level='DCC_ACTION')
+    return
+
+
+@audit_checker('experiment',
+               frame=['replicates', 'original_files', 'original_files.replicate'],
+               condition=rfa("ENCODE3", "modERN", "ENCODE2",
+                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
+def audit_experiment_replicate_with_no_files(value, system):
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+    if 'replicates' not in value:
+        return
+    if len(value['replicates']) == 0:
+        return
+    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+        return
+
+    seq_assay_flag = False
+    if value['assay_term_name'] in seq_assays:
+        seq_assay_flag = True
+
+    rep_dictionary = {}
+    for rep in value['replicates']:
+        rep_dictionary[rep['@id']] = []
+
+    for file_object in value['original_files']:
+        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
+            continue
+        if 'replicate' in file_object:
+            file_replicate = file_object['replicate']
+            if file_replicate['@id'] in rep_dictionary:
+                rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
+
+    for key in rep_dictionary.keys():
+        if len(rep_dictionary[key]) == 0:
+            detail = 'Experiment {} replicate '.format(value['@id']) + \
+                     '{} does not have files associated with'.format(key)
+            yield AuditFailure('missing file in replicate', detail, level='ERROR')
+        else:
+            if seq_assay_flag is True:
+                if 'fastq' not in rep_dictionary[key]:
+                    detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                             '{} does not have FASTQ files associated with'.format(key)
+                    yield AuditFailure('missing FASTQ file in replicate', detail, level='ERROR')
+    return
+
+
 @audit_checker('experiment', frame='object')
 def audit_experiment_release_date(value, system):
     '''
@@ -65,7 +136,7 @@ def audit_experiment_release_date(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'award'],
-               condition=rfa("ENCODE3", "modERN",
+               condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
@@ -85,25 +156,30 @@ def audit_experiment_replicated(value, system):
         num_bio_reps.add(rep['biological_replicate_number'])
 
     if len(num_bio_reps) <= 1:
-        if value['status'] in ['released']:
-            detail = 'Experiment {} has only one biological replicate and is released. Check for proper annotation of this state in the metadata'.format(value['@id'])
-            raise AuditFailure('unreplicated experiment', detail, level='DCC_ACTION')
-        if value['status'] in ['ready for review', 'release ready']:
-            detail = 'Experiment {} has only one biological replicate, more than one is typically expected before release'.format(value['@id'])
+        # different levels of severity for different rfas
+        if value['award']['rfa'] in ['ENCODE3', 'GGR']:
+            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                     'replicate and is released. Check for proper annotation ' + \
+                     'of this state in the metadata'
+            raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+        else:
+            detail = 'Experiment {} has only one biological '.format(value['@id']) + \
+                     'replicate, more than one is typically expected before release'
             raise AuditFailure('unreplicated experiment', detail, level='WARNING')
+
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
 def audit_experiment_replicates_with_no_libraries(value, system):
-    if value['status'] in ['deleted','replaced','revoked']:
+    if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed']:
         return
-    if len(value['replicates'])==0:
-        return 
+    if len(value['replicates']) == 0:
+        return
     for rep in value['replicates']:
         if 'library' not in rep:
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
-            yield AuditFailure('replicate with no library', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('replicate with no library', detail, level='ERROR')
     return
 
 
@@ -177,19 +253,20 @@ def audit_experiment_technical_replicates_same_library(value, system):
     biological_replicates_dict = {}
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
-        tech_rep_num = rep['technical_replicate_number']
-        if 'library' in rep:         
-            library = rep['library']            
-            if not bio_rep_num in biological_replicates_dict:
-                biological_replicates_dict[bio_rep_num]=[]            
-            if library['accession'] in biological_replicates_dict[bio_rep_num]:               
-                detail = 'Experiment {} has different technical replicates associated with the same library'.format(value['@id'])
-                raise AuditFailure('technical replicates with identical library', detail, level='DCC_ACTION')
+        if 'library' in rep:
+            library = rep['library']
+            if bio_rep_num not in biological_replicates_dict:
+                biological_replicates_dict[bio_rep_num] = []
+            if library['accession'] in biological_replicates_dict[bio_rep_num]:
+                detail = 'Experiment {} has '.format(value['@id']) + \
+                         'different technical replicates associated with the same library'
+                raise AuditFailure('sequencing runs labeled as technical replicates', detail,
+                                   level='DCC_ACTION')
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
 
-@audit_checker('experiment', frame=['replicates', 
+@audit_checker('experiment', frame=['replicates', 'award',
                                     'replicates.library', 'replicates.library.biosample'])
 def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -213,8 +290,13 @@ def audit_experiment_replicates_biosample(value, system):
                               associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    raise AuditFailure('biological replicates with identical biosample',
-                                       detail, level='DCC_ACTION')
+                    # different levels of severity for different rfas
+                    if value['award']['rfa'] in ['ENCODE3', 'GGR', 'modERN']:
+                        raise AuditFailure('biological replicates with identical biosample',
+                                           detail, level='ERROR')
+                    else:
+                        raise AuditFailure('biological replicates with identical biosample',
+                                           detail, level='DCC_ACTION')
                 else:
                     biosamples_list.append(biosample['accession'])
 
@@ -535,7 +617,7 @@ def audit_experiment_biosample_term(value, system):
                 lib['@id'],
                 term_name
                 )
-            yield AuditFailure('missing biosample', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing biosample', detail, level='ERROR')
             continue
 
         biosample = lib['biosample']

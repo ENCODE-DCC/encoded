@@ -11,12 +11,12 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
-var biosample = require('./biosample');
+var objectutils = require('./objectutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
-var SingleTreatment = biosample.SingleTreatment;
+var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -435,7 +435,7 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
-            var biosampleTerm, organism, lifeSpec, lifeStages = [], ages = [];
+            var biosampleTerm, organism, lifeSpec, targets, lifeStages = [], ages = [];
 
             // Determine whether the dataset is a series or not
             var seriesDataset = result['@type'].indexOf('Series') >= 0;
@@ -470,6 +470,13 @@ var AuditMixin = audit.AuditMixin;
                     ages = _.uniq(ages);
                 }
                 lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+
+                // Get list of target labels
+                if (result.target) {
+                    targets = _.uniq(result.target.map(function(target) {
+                        return target.label;
+                    }));
+                }
             }
 
             var haveSeries = result['@type'].indexOf('Series') >= 0;
@@ -507,6 +514,7 @@ var AuditMixin = audit.AuditMixin;
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
+                            {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             <div><strong>Project: </strong>{result.award.project}</div>
                         </div>
