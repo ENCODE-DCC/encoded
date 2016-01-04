@@ -3,6 +3,7 @@ from contentbase import (
     audit_checker,
 )
 from .conditions import rfa
+from .ontology_data import biosampleType_ontologyPrefix
 
 
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
@@ -32,20 +33,28 @@ def audit_antibody_characterization_review(value, system):
                 raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
 
             if term_id not in ontology:
-                detail = '{} contains a biosample_term_id {} that is not in the ontology'.format(
-                    value['@id'],
-                    term_id
-                    )
+                detail = 'Antibody characterization {} contains '.format(value['@id']) + \
+                         'a biosample_term_id {} that is not in the ontology'.format(term_id)
+
                 raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
 
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
-                detail = '{} has a mismatched term {} - {} expected {}'.format(
-                    value['@id'],
-                    term_id,
-                    term_name,
-                    ontology_term_name)
+                detail = 'Antibody characterization {} '.format(value['@id']) + \
+                         'has a mismatched term {} - {} expected {}'.format(term_id,
+                                                                            term_name,
+                                                                            ontology_term_name)
+
                 raise AuditFailure('mismatched term_name', detail, level='ERROR')
+
+            biosample_prefix = term_id.split(':')[0]
+            if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
+                detail = 'Antibody characterization {} has '.format(value['@id']) + \
+                         'biosample_term_id {} '.format(term_id) + \
+                         'that is not one of ' + \
+                         '{}'.format(biosampleType_ontologyPrefix[review['biosample_type']])
+                raise AuditFailure('characterization review with invalid biosample term id', detail,
+                                   level='DCC_ACTION')
 
 
 @audit_checker('antibody_characterization', frame=[

@@ -56,7 +56,6 @@
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002001",
             "GEO:GSM798326",
-            "GEO:GSM798326",
             "GEO:GSE32218"
         ],
         "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
@@ -80,7 +79,6 @@
         "biosample_type": "immortalized cell line",
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
             "GEO:GSM798327",
             "GEO:GSE32218"
         ],
@@ -108,7 +106,6 @@
         "biosample_type": "immortalized cell line",
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002004",
-            "GEO:GSM798327",
             "GEO:GSM798327",
             "GEO:GSE32218"
         ],
