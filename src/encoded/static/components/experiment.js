@@ -722,8 +722,19 @@ var RelatedSeriesList = React.createClass({
         seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
     },
 
-    handleInfoClick: function() {
-        this.setState({currInfoItem: true});
+    getInitialState: function() {
+        return {
+            currInfoItem: '' // Accession of item whose detail info appears; empty string to display no detail info
+        }
+    },
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display
+    handleInfoClick: function(series) {
+        if (this.state.currInfoItem === series.accession) {
+            this.setState({currInfoItem: ''});
+        } else {
+            this.setState({currInfoItem: series.accession});
+        }
     },
 
     render: function() {
@@ -735,7 +746,7 @@ var RelatedSeriesList = React.createClass({
                     return (
                         <span key={series.uuid}>
                             {i > 0 ? <span>, </span> : null}
-                            <RelatedSeriesItem series={series} />
+                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession} handleInfoClick={this.handleInfoClick} />
                         </span>
                     );
                 })}
@@ -759,9 +770,18 @@ var RelatedSeriesItem = React.createClass({
         return (
             <span>
                 <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
-                <i className="icon icon-info-circle" onClick={this.props.handleInfoClick}></i>
+                <i className="icon icon-info-circle tooltip-trigger-icon" onClick={this.props.handleInfoClick.bind(null, series)}>
+                    {detailOpen ?
+                        <div className="tooltip bottom">
+                            <div className="tooltip-arrow"></div>
+                            <div className="tooltip-inner">
+                                {series.description}
+                            </div>
+                        </div>
+                    : null}
+                </i>
             </span>
-        )
+        );
     }
 });
 
