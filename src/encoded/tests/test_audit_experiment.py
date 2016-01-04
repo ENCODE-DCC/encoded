@@ -641,7 +641,6 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     assert all(error['category'] != 'missing size_range' for error in errors_list)
 
 
-<<<<<<< HEAD
 def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
     testapp.patch_json(experiment['@id'], {'status': 'released'})
     testapp.patch_json(library['@id'], {'size_range': '>200'})
@@ -649,23 +648,24 @@ def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experimen
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
-=======
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
+
+
 def test_audit_experiment_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
                                                 'biosample_type': 'tissue',
                                                 'status': 'released'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
->>>>>>> master
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-<<<<<<< HEAD
-    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
-=======
     assert any(error['category'] ==
                'experiment with invalid biosample term id' for error in errors_list)
->>>>>>> master
 
 
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
