@@ -54,7 +54,6 @@ non_seq_assays = [
     ]
 
 
-<<<<<<< HEAD
 @audit_checker('Experiment', frame=['original_files', 'target',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
@@ -205,7 +204,7 @@ def scanFilesForPipeline(files_to_scan, pipeline_title):
     return False
 
 
-=======
+
 @audit_checker('experiment', frame=['object'])
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -231,7 +230,6 @@ def audit_experiment_biosample_term_id(value, system):
     return
 
 
->>>>>>> master
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'],
                condition=rfa("ENCODE3", "modERN", "ENCODE2",
