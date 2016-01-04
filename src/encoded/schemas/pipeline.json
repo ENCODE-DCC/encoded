@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "PL"
@@ -54,6 +54,7 @@
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Analysis step",
                 "description": "A particular computational analysis step used by the pipeline.",

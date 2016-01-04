@@ -71,6 +71,7 @@
         "uuid": "95befcc1-9f85-415a-8eb5-e0f69756f053"
     },
     {
+        "_test": "has mismatched read length with the file it controls",
         "accession": "ENCFF001MYM",
         "award":"U41HG006992",
         "dataset": "ENCSR000ADH",
@@ -87,6 +88,7 @@
         "md5sum": "f7acb742cf7e0637878651b2b949aad1",
         "content_md5sum": "2935b742cf7e0637878651b2b949aad1",
         "output_type": "reads",
+        "read_length": 50,
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "cc236116-825a-465f-ae0c-5ab21f01a6b3",
         "status": "released",
@@ -112,7 +114,7 @@
         "content_md5sum": "4de806a76a65b24682adec5c0121df57",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "replicate": "cc236116-825a-465f-ae0c-5ab21f01a6b3",
+        "replicate": "d990fa42-09e9-4b24-b5f9-44efbdbf4363",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData2.fastq.gz",
@@ -146,7 +148,7 @@
         "md5sum": "db26f3cb885ebe9fc84a99ba9104de80",
         "output_type": "alignments",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "replicate": "1d404385-21a6-443c-8a10-1ea69f524662",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k04me3IggyaleAlnRep1.bam",
@@ -241,6 +243,7 @@
         "uuid": "8af32b39-f97f-4979-9c21-728b0b8a2112"
     },
     {
+        "_test": "has run read length and controlled_by",
         "accession": "ENCFF001MXF",
         "award":"U41HG006992",
         "dataset": "ENCSR000ADI",
@@ -259,6 +262,8 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
         "status": "released",
+        "read_length": 36,
+        "controlled_by": ["ENCFF001MYM"],
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
         "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc"
@@ -279,7 +284,7 @@
         "md5sum": "5fce47e031a0af4b67d356b5bd4c348a",
         "output_type": "reads",
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
-        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "replicate": "1d404385-21a6-443c-8a10-1ea69f524662",
         "status": "released",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
@@ -349,7 +354,7 @@
         "md5sum": "3a35713488522b0ea8a4d9635b5afa41",
         "output_type": "reads",
         "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
-        "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
+        "replicate": "fcd40126-a6ba-43aa-a2d7-98fdad21f834",
         "status": "in progress",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
@@ -663,7 +668,7 @@
    },
    {
         "_project": "encode3",
-        "accession": "ENCFF001RDR",
+        "accession": "ENCFFM",
         "award":"U41HG006992",
         "dataset": "ENCSR000AER",
         "date_created": "2013-06-13",
@@ -1433,7 +1438,7 @@
     },
     {
         "_test": "raw file for reference epigenome series RNA seq",
-        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_1_1_1.pair1.fastq.gz",
+        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_2_1_1.pair1.fastq.gz",
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
@@ -1473,7 +1478,7 @@
     },
     {
         "_test": "raw file for reference epigenome series WGBS",
-        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_1_1_1.pair1.fastq.gz",
+        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_3_1_1.pair1.fastq.gz",
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
@@ -1513,7 +1518,7 @@
     },
     {
         "_test": "raw file for reference epigenome series H3K4me1",
-        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_1_1_1.pair1.fastq.gz",
+        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_4_1_1.pair1.fastq.gz",
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
@@ -1537,7 +1542,7 @@
     },
     {
         "_test": "raw file for reference epigenome series H3K4me3",
-        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_1_1_1.pair1.fastq.gz",
+        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_5_1_1.pair1.fastq.gz",
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
@@ -1561,7 +1566,7 @@
     },
     {
         "_test": "raw file for reference epigenome series H3K27ac",
-        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_1_1_1.pair1.fastq.gz",
+        "submitted_file_name": "/net/waterston/vol9/RNASeq/alhigdon/RB884_DS3/RB884_80_1_1/MiSeq_1/MiSeq_RB884_80_6_1_1.pair1.fastq.gz",
         "read_length": 50,
         "file_format": "fastq",
         "status": "released",
