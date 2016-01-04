@@ -15,6 +15,11 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     white-space: normal;
     text-align: center;
     opacity: 1;
+
+    .no-csstransforms & {
+        left: 0;
+        padding: 0;
+    }
 }
 
 .tooltip-inner {
@@ -25,6 +30,8 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     background-color: $tooltip-color;
     @include box-shadow(0 2px 4px 0 rgba(0,0,0,0.3));
     max-width: $tooltip-width;
+    cursor: auto;
+    font-family: $font-family-sans-serif;
 }
 
 .tooltip.bottom .tooltip-arrow {
@@ -63,4 +70,8 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
     margin-left: 5px;
     @include font-size(1.2);
     cursor: default;
+}
+
+.no-csstransforms .tooltip-arrow {
+    display: none;
 }

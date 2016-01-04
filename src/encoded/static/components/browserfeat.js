@@ -17,6 +17,12 @@ module.exports.BrowserFeat = {
                 return !!(canvas && canvas.toDataURL && canvas.toDataURL('image/png').indexOf('data:image/png') === 0);
             })();
 
+            // Detect CSS transforms
+            this.feat.csstransforms = (function() {
+                var elem = document.createElement('tspan');
+                return 'transform' in elem.style
+            })();
+
             // UA checks; should be retired as soon as possible
             this.feat.uaTrident = (function() {
                 return navigator.userAgent.indexOf('Trident') > 0;
