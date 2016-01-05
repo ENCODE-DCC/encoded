@@ -62,6 +62,21 @@ gtexParentsList = ['ENCBS380GWR', 'ENCBS001XKZ', 'ENCBS564MPZ', 'ENCBS192JQI',
 gtexDonorsList = ['ENCDO845WKR', 'ENCDO451RUA', 'ENCDO793LXB', 'ENCDO271OUW']
 
 
+@audit_checker('biosample', frame=['part_of'])
+def audit_biosample_part_of_consistency(value, system):
+    if 'part_of' not in value:
+        return
+    else:
+        part_of_biosample = value['part_of']
+        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
+            detail = 'Biosample {} '.format(value['@id']) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                     'that has different ' + \
+                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
+            yield AuditFailure('inconsistent biosample_term_id', detail,
+                               level='ERROR')
+
 @audit_checker('biosample', frame=['object'])
 def audit_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -73,6 +88,7 @@ def audit_biosample_term_id(value, system):
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
         raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
+
 
 
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
