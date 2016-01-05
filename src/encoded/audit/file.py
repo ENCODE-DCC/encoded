@@ -45,7 +45,6 @@ broadPeaksTargets = [
 
 @audit_checker('file', frame=['replicate', 'derived_from', 'derived_from.replicate'])
 def audit_file_biological_replicate_number_match(value, system):
-    
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
