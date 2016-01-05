@@ -377,7 +377,7 @@ def lot_reviews(characterizations, targets, request):
             if compliant_secondary or exempted_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(just_exempted_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data (via exemption)'
@@ -387,7 +387,7 @@ def lot_reviews(characterizations, targets, request):
             if compliant_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(characterized_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data'
@@ -395,7 +395,7 @@ def lot_reviews(characterizations, targets, request):
             if exempted_secondary:
                 output.append({
                     'biosample_term_name': 'all cell types and tissues',
-                    'biosample_term_id': 'NTR:00000000',
+                    'biosample_term_id': 'NTR:99999999',
                     'organisms': sorted(characterized_organisms),
                     'targets': sorted(characterized_targets),
                     'status': 'eligible for new data (via exemption)'
@@ -403,14 +403,14 @@ def lot_reviews(characterizations, targets, request):
         if not_characterized_organisms:
             output.append({
                 'biosample_term_name': 'all cell types and tissues',
-                'biosample_term_id': 'NTR:00000000',
+                'biosample_term_id': 'NTR:99999999',
                 'organisms': sorted(not_characterized_organisms),
                 'targets': sorted(not_characterized_targets),
                 'status': 'awaiting lab characterization'
             })
         if not output:
             output.append({
-                'biosample_term_name': 'all cell types and tissues',
+                'biosample_term_name': 'not specified',
                 'biosample_term_id': 'NTR:00000000',
                 'organisms': sorted(organisms),
                 'targets': sorted(review_targets),
