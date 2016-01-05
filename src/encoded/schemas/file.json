@@ -146,6 +146,7 @@
                         "csv",
                         "sam",
                         "tar",
+                        "vcf",
                         "wig",
                         "bedpe"
                     ]
@@ -710,6 +711,7 @@
         "tar": ".tar.gz",
         "tsv": ".tsv",
         "csv": ".csv",
+        "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },
