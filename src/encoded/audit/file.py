@@ -43,6 +43,35 @@ broadPeaksTargets = [
     ]
 
 
+@audit_checker('file', frame=['replicate', 'derived_from', 'derived_from.replicate'])
+def audit_file_biological_replicate_number_match(value, system):
+    
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    if 'derived_from' not in value or len(value['derived_from']) == 0:
+        return
+
+    bio_rep_number = value['replicate']['biological_replicate_number']
+    derived_from_files = value['derived_from']
+
+    for derived_from_file in derived_from_files:
+        if 'replicate' in derived_from_file:
+            derived_bio_rep_num = derived_from_file['replicate']['biological_replicate_number']
+            if derived_bio_rep_num != bio_rep_number:
+                detail = 'Biological replicate number of the file {} '.format(value['@id']) + \
+                         'is {}'.format(bio_rep_number) + \
+                         ', it is inconsistent with the biological replicate number ' +\
+                         '{} of the file {} it was derived from'.format(derived_bio_rep_num,
+                                                                        derived_from_file['@id'])
+                raise AuditFailure('inconsistent biological replicate number',
+                                   detail, level='ERROR')
+
+
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
