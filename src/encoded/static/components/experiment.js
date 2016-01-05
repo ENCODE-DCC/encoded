@@ -775,7 +775,7 @@ var RelatedSeriesItem = React.createClass({
                         <div className="tooltip bottom">
                             <div className="tooltip-arrow"></div>
                             <div className="tooltip-inner">
-                                {series.description}
+                                {series.description ? <span>{series.description}</span> : <em>No description available</em>}
                             </div>
                         </div>
                     : null}
