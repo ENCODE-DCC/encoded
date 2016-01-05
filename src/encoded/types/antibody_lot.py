@@ -411,7 +411,7 @@ def lot_reviews(characterizations, targets, request):
         if not output:
             output.append({
                 'biosample_term_name': 'all cell types and tissues',
-                'biosample_term_id': 'NTR:99999999',
+                'biosample_term_id': 'NTR:00000000',
                 'organisms': sorted(organisms),
                 'targets': sorted(review_targets),
                 'status': 'awaiting lab characterization'
