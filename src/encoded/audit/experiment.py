@@ -114,7 +114,7 @@ def audit_experiment_needs_pipeline(value, system):
     run_type = 'unknown'
 
     for f in value['original_files']:
-        if 'run_type' in f:
+        if f['status'] not in ['deleted', 'replaced', 'revoked'] and 'run_type' in f:
             run_type = f['run_type']
             break
 
