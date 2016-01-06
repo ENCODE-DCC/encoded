@@ -366,6 +366,9 @@ $characterization-figure-height: 200px;
     // SUBMITTED (blue)
     .#{$item}.status-submitted        { background-color: $brand-info; }
     .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
+    // IN REVIEW (blue)
+    .#{$item}.status-in-review        { background-color: $brand-info; }
+    .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
     // PROPOSED (blue)
     .#{$item}.status-proposed        { background-color: $brand-info; }
     .#{$item}.status-proposed[href]   { background-color: darken($brand-info, 10%); }

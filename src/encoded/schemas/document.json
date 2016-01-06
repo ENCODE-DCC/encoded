@@ -20,16 +20,13 @@
     ],
     "facets": {
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "document_type": {
-            "title": "Document type",
-            "type": "string"
+            "title": "Document type"
         }
     },
     "properties": {
