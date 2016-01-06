@@ -496,14 +496,14 @@ def audit_file_read_depth(value, system):
     for metric in quality_metrics:
         if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
             read_depth = metric['Uniquely mapped reads number']
-            continue
+            break  # continue
         else:
             if "total" in metric:
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
                     read_depth = metric['total']/2
-                continue
+                break  # continue
 
     if read_depth == 0:
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
