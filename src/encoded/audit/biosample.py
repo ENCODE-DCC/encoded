@@ -86,15 +86,22 @@ def audit_biosample_human_no_model_organism_properties(value, system):
 
     if value['organism']['scientific_name'] != 'Homo sapiens':
         return
-
+    terms_list = []
     for term in model_organism_terms:
         if term in value:
-            detail = 'Human biosample {}'.format(value['@id']) + \
-                     ' contains model organism fileld {}'.format(term)
-            yield AuditFailure('model organism term in human biosample', detail,
-                               level='ERROR')
-    return
-
+            terms_list.append(term)
+    if len(terms_list) == 1:
+        detail = 'Human biosample {}'.format(value['@id']) + \
+                 ' contains model organism fileld {}'.format(terms_list[0])
+        yield AuditFailure('model organism term in human biosample', detail,
+                           level='ERROR')
+        return
+    if len(terms_list) > 1:
+        detail = 'Human biosample {}'.format(value['@id']) + \
+                 ' contains model organism filelds {}'.format(terms_list)
+        yield AuditFailure('model organism term in human biosample', detail,
+                           level='ERROR')
+        return
 
 @audit_checker('biosample', frame=['part_of'])
 def audit_biosample_part_of_consistency(value, system):
