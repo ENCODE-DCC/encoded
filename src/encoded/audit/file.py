@@ -701,7 +701,7 @@ def audit_file_chip_seq_library_complexity(value, system):
                     else:
                         if PBC2_value <= 10:
                             detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
-                                     'was generated from a library with PBC1 value of {}'.format(PBC2_value) + \
+                                     'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                                      ', while the recommended value would be >10'
                             yield AuditFailure('insufficient library complexity', detail,
                                                level='WARNING')
