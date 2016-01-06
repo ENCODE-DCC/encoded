@@ -507,6 +507,22 @@ def test_audit_file_biological_replicate_number_match(testapp,
                                                       file1,
                                                       file_rep1_2,
                                                       file1_2):
+    testapp.patch_json(file1['@id'], {'derived_from': [file1['@id']]})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent biological replicate number'
+               for error in errors_list)
+
+
+def test_audit_file_biological_replicate_number_mismatch(testapp,
+                                                         file_exp,
+                                                         file_rep,
+                                                         file1,
+                                                         file_rep1_2,
+                                                         file1_2):
     testapp.patch_json(file1['@id'], {'derived_from': [file1_2['@id']]})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
