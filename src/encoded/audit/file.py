@@ -56,16 +56,26 @@ def audit_file_biological_replicate_number_match(value, system):
         return
 
     bio_rep_number = value['replicate']['biological_replicate_number']
+    tech_rep_number = value['replicate']['technical_replicate_number']
+    file_replicate = (bio_rep_number, tech_rep_number)
+    file_exp_accession = value['replicate']['experiment']['accession']
     derived_from_files = value['derived_from']
 
     for derived_from_file in derived_from_files:
         if 'replicate' in derived_from_file:
+
+            # excluding control files from different experiments
+            if derived_from_file['replicate']['experiment']['accession'] != file_exp_accession:
+                continue
+
             derived_bio_rep_num = derived_from_file['replicate']['biological_replicate_number']
-            if derived_bio_rep_num != bio_rep_number:
+            derived_tech_rep_num = derived_from_file['replicate']['technical_replicate_number']
+            derived_replicate = (derived_bio_rep_num, derived_tech_rep_num)
+            if file_replicate != derived_replicate:
                 detail = 'Biological replicate number of the file {} '.format(value['@id']) + \
-                         'is {}'.format(bio_rep_number) + \
+                         'is {}'.format(file_replicate) + \
                          ', it is inconsistent with the biological replicate number ' +\
-                         '{} of the file {} it was derived from'.format(derived_bio_rep_num,
+                         '{} of the file {} it was derived from'.format(derived_replicate,
                                                                         derived_from_file['@id'])
                 raise AuditFailure('inconsistent biological replicate number',
                                    detail, level='ERROR')
