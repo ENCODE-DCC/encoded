@@ -418,7 +418,7 @@ def test_audit_file_library_complexity_chip_seq(testapp, file_exp, file6, file4,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insuficcient library complexity' for error in errors_list)
+    assert any(error['category'] == 'insufficient library complexity' for error in errors_list)
 
 
 def test_audit_file_good_library_complexity_chip_seq(testapp, file_exp, file6, file4,
@@ -437,7 +437,7 @@ def test_audit_file_good_library_complexity_chip_seq(testapp, file_exp, file6, f
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'insuficcient library complexity' for error in errors_list)
+    assert all(error['category'] != 'insufficient library complexity' for error in errors_list)
 
 
 def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,

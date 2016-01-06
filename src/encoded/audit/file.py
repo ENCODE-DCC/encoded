@@ -668,14 +668,14 @@ def audit_file_chip_seq_library_complexity(value, system):
                         detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                  'was generated from a library with NRF value of {}'.format(NRF_value) + \
                                  ', while the recommended value would be >0.9'
-                        yield AuditFailure('insuficcient library complexity', detail, level='ERROR')
+                        yield AuditFailure('insufficient library complexity', detail, level='ERROR')
 
                     else:
                         if NRF_value <= 0.9:
                             detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                      'was generated from a library with NRF value of {}'.format(NRF_value) + \
                                      ', while the recommended value would be >0.9'
-                            yield AuditFailure('insuficcient library complexity', detail,
+                            yield AuditFailure('insufficient library complexity', detail,
                                                level='WARNING')
                 if 'PBC1' in metric:
                     PBC1_value = float(metric['PBC1'])
@@ -683,13 +683,13 @@ def audit_file_chip_seq_library_complexity(value, system):
                         detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                  'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                                  ', while the recommended value would be >0.9'
-                        yield AuditFailure('insuficcient library complexity', detail, level='ERROR')
+                        yield AuditFailure('insufficient library complexity', detail, level='ERROR')
                     else:
                         if PBC1_value <= 0.9:
                             detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                      'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
                                      ', while the recommended value would be >0.9'
-                            yield AuditFailure('insuficcient library complexity', detail,
+                            yield AuditFailure('insufficient library complexity', detail,
                                                level='WARNING')
                 if 'PBC2' in metric:
                     PBC2_value = float(metric['PBC2'])
@@ -697,13 +697,13 @@ def audit_file_chip_seq_library_complexity(value, system):
                         detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                  'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
                                  ', while the recommended value would be >10'
-                        yield AuditFailure('insuficcient library complexity', detail, level='ERROR')
+                        yield AuditFailure('insufficient library complexity', detail, level='ERROR')
                     else:
                         if PBC2_value <= 10:
                             detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                      'was generated from a library with PBC1 value of {}'.format(PBC2_value) + \
                                      ', while the recommended value would be >10'
-                            yield AuditFailure('insuficcient library complexity', detail,
+                            yield AuditFailure('insufficient library complexity', detail,
                                                level='WARNING')
     return
 
