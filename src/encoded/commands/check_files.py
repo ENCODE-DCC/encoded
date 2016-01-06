@@ -175,7 +175,8 @@ def check_format(item, path):
         ('sam', None): None,
         ('wig', None): None,
         ('hdf5', None): None,
-        ('gff', None): None
+        ('gff', None): None,
+        ('vcf', None): None
     }
 
     validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))
