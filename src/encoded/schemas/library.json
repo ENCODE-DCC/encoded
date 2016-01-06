@@ -23,8 +23,7 @@
     ],
     "facets": {
         "status": {
-            "title": "Library status",
-            "type": "string"
+            "title": "Library status"
         }
     },
     "dependencies": {
@@ -279,28 +278,22 @@
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "award": {
-            "title": "Award",
-            "type": "string"
+            "title": "Award"
         },
         "lab": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "biosample.biosample_term_name": {
-            "title": "Biosample",
-            "type": "string"
+            "title": "Biosample"
         },
         "biosample.organism.name": {
-            "title": "Species",
-            "type": "string"
+            "title": "Species"
         },
         "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term Name",
-            "type": "string"
+            "title": "Nucleic Acid Term Name"
         }
     },
     "boost_values": {

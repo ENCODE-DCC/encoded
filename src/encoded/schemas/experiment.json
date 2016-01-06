@@ -82,191 +82,146 @@
     },
     "facets": {
         "assay_term_name": {
-            "title": "Assay",
-            "type": "string"
+            "title": "Assay"
         },
         "award.project": {
             "title": "Project",
             "type": "string"
         },
         "status": {
-            "title": "Experiment status",
-            "type": "string"
+            "title": "Experiment status"
         },
         "assembly": {
-            "title": "Genome assembly (visualization)",
-            "type": "string"
+            "title": "Genome assembly (visualization)"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "target.investigated_as": {
-            "title": "Target of assay",
-            "type": "string"
+            "title": "Target of assay"
         },
         "replicates.library.biosample.biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
+            "title": "Biosample type"
         },
         "organ_slims": {
-            "title": "Organ",
-            "type": "array"
+            "title": "Organ"
         },
         "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "array"
+            "title": "Biosample treatment"
         },
         "files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline",
-            "type": "string"
+            "title": "Pipeline"
         },
         "files.file_type": {
-            "title": "Available data",
-            "type": "string"
+            "title": "Available data"
         },
         "files.run_type": {
-            "title": "Run type",
-            "type": "string"
+            "title": "Run type"
         },
         "files.read_length": {
-            "title": "Read length (nt)",
-            "type": "string"
+            "title": "Read length (nt)"
         },
         "replicates.library.size_range": {
-            "title": "Library insert size (nt)",
-            "type": "string"
+            "title": "Library insert size (nt)"
         },
         "replicates.library.nucleic_acid_term_name": {
-            "title": "Library made from",
-            "type": "string"
+            "title": "Library made from"
         },
         "replicates.library.depleted_in_term_name": {
-            "title": "Library depleted in",
-            "type": "string"
+            "title": "Library depleted in"
         },
         "replicates.library.treatments.treatment_term_name": {
-            "title": "Library treatment",
-            "type": "array"
+            "title": "Library treatment"
         },
         "month_released": {
-            "title": "Date released",
-            "type": "string"
+            "title": "Date released"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "replication_type": {
-            "title": "Replication type",
-            "type": "array"
+            "title": "Replication type"
         }
         
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "assay_term_name": {
-            "title": "Assay Type",
-            "type": "string"
+            "title": "Assay Type"
         },
         "target.label": {
-            "title": "Target",
-            "type": "string"
+            "title": "Target"
         },
         "biosample_term_name": {
-            "title": "Biosample",
-            "type": "string"
+            "title": "Biosample"
         },
         "description": {
-            "title": "Description",
-            "type": "string"
+            "title": "Description"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "replicates.antibody.accession": {
-            "title": "Linked Antibody",
-            "type": "string"
+            "title": "Linked Antibody"
         },
         "replicates.library.biosample.organism.scientific_name": {
-            "title": "Species",
-            "type": "array"
+            "title": "Species"
         },
         "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
-            "type": "array"
+            "title": "Life stage"
         },
         "replicates.library.biosample.age": {
-            "title": "Age",
-            "type": "array"
+            "title": "Age"
         },
         "replicates.library.biosample.age_units": {
-            "title": "Age Units",
-            "type": "array"
+            "title": "Age Units"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Treatment",
-            "type": "string"
+            "title": "Treatment"
         },
         "replicates.library.biosample.treatments.treatment_term_id": {
-            "title": "Term ID",
-            "type": "string"
+            "title": "Term ID"
         },
         "replicates.library.biosample.treatments.concentration": {
-            "title": "Concentration",
-            "type": "number"
+            "title": "Concentration"
         },
         "replicates.library.biosample.treatments.concentration_units": {
-            "title": "Concentration units",
-            "type": "string"
+            "title": "Concentration units"
         },
         "replicates.library.biosample.treatments.duration": {
-            "title": "Duration",
-            "type": "number"
+            "title": "Duration"
         },
         "replicates.library.biosample.treatments.duration_units": {
-            "title": "Duration units",
-            "type": "string"
+            "title": "Duration units"
         },
         "replicates.library.biosample.synchronization": {
-            "title": "Synchronization",
-            "type": "string"
+            "title": "Synchronization"
         },
         "replicates.library.biosample.post_synchronization_time": {
-            "title": "Post-synchronization time",
-            "type": "string"
+            "title": "Post-synchronization time"
         },
         "replicates.library.biosample.post_synchronization_time_units": {
-            "title": "Post-synchronization time units",
-            "type": "string"
+            "title": "Post-synchronization time units"
         },       
         "replicates.length": {
-            "title": "Replicates",
-            "type": "array"
+            "title": "Replicates"
         },
         "files.length": {
-            "title": "Files",
-            "type": "array"
+            "title": "Files"
         },
         "encode2_dbxrefs": {
-            "title": "Dbxrefs",
-            "type": "array"
+            "title": "Dbxrefs"
         }
     },
     "boost_values": {
