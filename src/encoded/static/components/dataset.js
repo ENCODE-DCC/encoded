@@ -1454,7 +1454,7 @@ var Series = module.exports.Series = React.createClass({
         var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         // Calculate the biosample summary
-        var speciesRender;
+        var speciesRender = null;
         if (context.organism && context.organism.length) {
             var speciesList = _.uniq(context.organism.map(organism => {
                 return organism.scientific_name;
@@ -1506,7 +1506,7 @@ var Series = module.exports.Series = React.createClass({
                             </div>
                         : null}
 
-                        {terms.length || species.length ?
+                        {terms.length || speciesRender ?
                             <div data-test="biosamplesummary">
                                 <dt>Biosample summary</dt>
                                 <dd>
