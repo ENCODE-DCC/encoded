@@ -2,7 +2,6 @@
 	{
         "_test": "reference epigenome",
         "accession": "ENCSR300EPI",
-        "aliases": ["john-stamatoyannopoulos:RE1", "john-stamatoyannopoulos:RE2"],
         "award": "ENCODE2",
         "description": "Reference epigenome of the K562 cell line.",
         "lab": "bradley-bernstein",
@@ -17,8 +16,7 @@
             "/experiments/ENCSR006EPI",
             "/experiments/ENCSR007EPI",
             "/experiments/ENCSR008EPI",
-            "/experiments/ENCSR009EPI",
-            "/experiments/ENCSR374GSQ"
+            "/experiments/ENCSR009EPI"
         ],
         "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7"
     }
