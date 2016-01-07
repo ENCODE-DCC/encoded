@@ -110,16 +110,29 @@ def audit_experiment_replicate_with_no_files(value, system):
                 rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
 
     for key in rep_dictionary.keys():
-        if len(rep_dictionary[key]) == 0:
-            detail = 'Experiment {} replicate '.format(value['@id']) + \
-                     '{} does not have files associated with'.format(key)
-            yield AuditFailure('missing file in replicate', detail, level='ERROR')
+        if value['status'] in ['proposed', 'preliminary', 'in progress', 'started', 'submitted']:
+            if len(rep_dictionary[key]) == 0:
+                detail = 'Experiment {} replicate '.format(value['@id']) + \
+                         '{} does not have files associated with'.format(key)
+                yield AuditFailure('missing file in replicate', detail, level='WARNING')
+            else:
+                if seq_assay_flag is True:
+                    if 'fastq' not in rep_dictionary[key]:
+                        detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                                 '{} does not have FASTQ files associated with'.format(key)
+                        yield AuditFailure('missing FASTQ file in replicate',
+                                           detail, level='WARNING')
         else:
-            if seq_assay_flag is True:
-                if 'fastq' not in rep_dictionary[key]:
-                    detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
-                             '{} does not have FASTQ files associated with'.format(key)
-                    yield AuditFailure('missing FASTQ file in replicate', detail, level='ERROR')
+            if len(rep_dictionary[key]) == 0:
+                detail = 'Experiment {} replicate '.format(value['@id']) + \
+                         '{} does not have files associated with'.format(key)
+                yield AuditFailure('missing file in replicate', detail, level='ERROR')
+            else:
+                if seq_assay_flag is True:
+                    if 'fastq' not in rep_dictionary[key]:
+                        detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
+                                 '{} does not have FASTQ files associated with'.format(key)
+                        yield AuditFailure('missing FASTQ file in replicate', detail, level='ERROR')
     return
 
 
