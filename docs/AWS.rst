@@ -18,11 +18,13 @@ To deploy your currently checked out branch, run::
 
 After a few moments, it will return the domain name of your instance::
 
-    ec2...compute.amazonaws.com
+    branchname-789abc-username.instance.encodedcc.org
 
 The deployment can take some time, especially if it's been a while since the last full database backup.
 
-To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair.
+To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair::
+
+    $ ssh-keygen -s demo_users_ca -I user_myusername -n ubuntu -V +520w myusername.pub 
 
 Note that you need a fairly recent version of OpenSSH for this to work, Mac OS 10.6 and CentOS 6.4 are known not to work (though you can install a newer openssh with homebrew) but Ubuntu 14.04 and Mac OS 10.9 do work.
 
@@ -42,7 +44,5 @@ Authorization of Demo Machines
 
 Demo machines restore their database from the current Postgres WAL archive stored in S3 by WAL-E.
 The demo machines are granted read access via `IAM roles`_ assigned to them by the deploy script.
-
-    $ ssh-keygen -s demo_users_ca -I user_myusername -n ubuntu -V +520w myusername.pub 
 
 .. _IAM roles: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
