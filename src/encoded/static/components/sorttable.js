@@ -208,7 +208,7 @@ var SortTable = module.exports.SortTable = React.createClass({
                     <tbody>
                         {list.sort(this.sortColumn).map(item => {
                             return (
-                                <tr key={item.uuid}>
+                                <tr key={item['@id']}>
                                     {columnIds.map(columnId => {
                                         if (!hiddenColumns[columnId]) {
                                             if (columns[columnId].display) {
