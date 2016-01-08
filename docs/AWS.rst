@@ -43,4 +43,6 @@ Authorization of Demo Machines
 Demo machines restore their database from the current Postgres WAL archive stored in S3 by WAL-E.
 The demo machines are granted read access via `IAM roles`_ assigned to them by the deploy script.
 
+    $ ssh-keygen -s demo_users_ca -I user_myusername -n ubuntu -V +520w myusername.pub 
+
 .. _IAM roles: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
