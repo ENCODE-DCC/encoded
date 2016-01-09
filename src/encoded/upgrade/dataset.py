@@ -178,3 +178,6 @@ def dataset_7_8(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+    if 'related_files' in value:
+        value['related_files'] = list(set(value['related_files']))
