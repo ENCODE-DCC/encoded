@@ -54,6 +54,10 @@
             "title": "Organ",
             "type": "array"
         },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
         "related_datasets.replicates.library.biosample.life_stage": {
             "title": "Life stage",
             "type": "string"
