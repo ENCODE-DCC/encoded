@@ -209,7 +209,7 @@ def audit_mapping():
         },
         'detail': {
             'type': 'string',
-            'index': 'analyzed',
+            'index': 'analyzed', 
         },
         'level_name': {
             'type': 'string',
