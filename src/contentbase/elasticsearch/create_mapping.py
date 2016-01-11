@@ -18,7 +18,6 @@ from .interfaces import ELASTIC_SEARCH
 import collections
 import json
 import logging
-import pdb
 
 EPILOG = __doc__
 
@@ -49,7 +48,6 @@ def sorted_dict(d):
 
 
 def schema_mapping(name, schema):
-    # pdb.set_trace()
     if 'linkFrom' in schema:
         type_ = 'string'
     else:
