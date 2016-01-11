@@ -112,6 +112,10 @@
             "title": "Accession",
             "type": "string"
         },
+        "biosample_term_name" : {
+            "title": "Biosample term",
+            "type": "string"
+        },
         "related_datasets.assay_term_name": {
             "title": "Assay Type",
             "type": "string"
