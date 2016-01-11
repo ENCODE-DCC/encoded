@@ -724,16 +724,25 @@ var RelatedSeriesList = React.createClass({
 
     getInitialState: function() {
         return {
-            currInfoItem: '' // Accession of item whose detail info appears; empty string to display no detail info
+            currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            clicked: false // True if info button was clicked (vs hovered)
         }
     },
 
-    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display
+    // Handle the mouse entering an info icon. Ignore if the info tooltip is open because the icon had been clicked.
+    handleInfoHover: function(series, entering) {
+        if (!this.state.clicked) {
+            this.setState({currInfoItem: entering ? series.accession : ''});
+        }
+    },
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
+    // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
     handleInfoClick: function(series) {
-        if (this.state.currInfoItem === series.accession) {
-            this.setState({currInfoItem: ''});
+        if (this.state.currInfoItem === series.accession && this.state.clicked) {
+            this.setState({currInfoItem: '', clicked: false});
         } else {
-            this.setState({currInfoItem: series.accession});
+            this.setState({currInfoItem: series.accession, clicked: true});
         }
     },
 
@@ -746,7 +755,8 @@ var RelatedSeriesList = React.createClass({
                     return (
                         <span key={series.uuid}>
                             {i > 0 ? <span>, </span> : null}
-                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession} handleInfoClick={this.handleInfoClick} />
+                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession}
+                                handleInfoHover={this.handleInfoHover} handleInfoClick={this.handleInfoClick} />
                         </span>
                     );
                 })}
@@ -761,7 +771,8 @@ var RelatedSeriesItem = React.createClass({
     propTypes: {
         series: React.PropTypes.object.isRequired, // Series object to display
         detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
-        handleInfoClick: React.PropTypes.func.isRequired // Function to call to handle click in info icon
+        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
     },
 
     render: function() {
@@ -770,7 +781,10 @@ var RelatedSeriesItem = React.createClass({
         return (
             <span>
                 <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
-                <i className="icon icon-info-circle tooltip-trigger-icon" onClick={this.props.handleInfoClick.bind(null, series)}>
+                <i className="icon icon-info-circle tooltip-trigger-icon"
+                    onClick={this.props.handleInfoClick.bind(null, series)}
+                    onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                    onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}>
                     {detailOpen ?
                         <div className="tooltip bottom">
                             <div className="tooltip-arrow"></div>
