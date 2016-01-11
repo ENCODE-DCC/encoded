@@ -339,7 +339,10 @@ def test_audit_experiment_technical_replicates_same_library(testapp, base_experi
 
     assert any(error['category'] == 'sequencing runs labeled as technical replicates' for error in errors_list)
 
-def test_audit_experiment_biological_replicates_biosample(testapp, base_experiment,base_biosample, library_1, library_2, replicate_1_1, replicate_2_1):
+def test_audit_experiment_biological_replicates_biosample(testapp, base_experiment,
+                                                          base_biosample, library_1,
+                                                          library_2, replicate_1_1,
+                                                          replicate_2_1):
     testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
@@ -348,8 +351,47 @@ def test_audit_experiment_biological_replicates_biosample(testapp, base_experime
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])        
-    assert any(error['category'] == 'biological replicates with identical biosample' for error in errors_list)
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'biological replicates with identical biosample' for
+               error in errors_list)
+
+
+def test_audit_experiment_ggr_biological_replicates_biosample(testapp, base_experiment,
+                                                              base_biosample, library_1,
+                                                              library_2, replicate_1_1,
+                                                              replicate_2_1, ggr_award):
+    testapp.patch_json(base_experiment['@id'], {'award': ggr_award['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        if error_type == 'ERROR':
+            errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'biological replicates with identical biosample' for
+               error in errors_list)
+
+
+def test_audit_experiment_en2_biological_replicates_biosample(testapp, base_experiment,
+                                                              base_biosample, library_1,
+                                                              library_2, replicate_1_1,
+                                                              replicate_2_1, encode2_award):
+    testapp.patch_json(base_experiment['@id'], {'award': encode2_award['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        if error_type == 'DCC_ACTION':
+            errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'biological replicates with identical biosample' for
+               error in errors_list)
 
 
 def test_audit_experiment_technical_replicates_biosample(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_1_2):

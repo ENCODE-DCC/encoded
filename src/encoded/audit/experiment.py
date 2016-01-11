@@ -284,7 +284,6 @@ def audit_experiment_replicates_biosample(value, system):
 
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
-        tech_rep_num = rep['technical_replicate_number']
         if 'library' in rep and 'biosample' in rep['library']:
             biosample = rep['library']['biosample']
 
@@ -296,7 +295,9 @@ def audit_experiment_replicates_biosample(value, system):
                         value['@id'],
                         biosample['@id'])
                     # different levels of severity for different rfas
-                    if value['award']['rfa'] in ['ENCODE3', 'GGR', 'modERN']:
+                    if ('rfa' in value['award'] and
+                       value['award']['rfa'] in ['ENCODE3', 'modERN']) or \
+                       (value['award']['project'] == 'GGR'):
                         raise AuditFailure('biological replicates with identical biosample',
                                            detail, level='ERROR')
                     else:

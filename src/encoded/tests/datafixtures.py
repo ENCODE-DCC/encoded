@@ -116,6 +116,18 @@ def encode2_award(testapp):
 
 
 @pytest.fixture
+def ggr_award(testapp):
+    item = {
+        # upgrade/shared.py ENCODE2_AWARDS
+        'uuid': 'e3a6b4ab-b1b1-4752-86d4-51e8f6176f4a',
+        'name': 'ggr-award',
+        'project': 'GGR',
+        'viewing_group': 'GGR',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
+
+
+@pytest.fixture
 def source(testapp):
     item = {
         'name': 'sigma',
