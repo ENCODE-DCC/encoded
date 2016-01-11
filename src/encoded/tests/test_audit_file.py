@@ -51,6 +51,31 @@ def file_rep2(replicate, file_exp2, testapp):
 
 
 @pytest.fixture
+def file_rep1_2(replicate, file_exp, testapp):
+    item = {
+        'experiment': file_exp['uuid'],
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1
+        }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file1_2(file_exp, award, lab, file_rep1_2, testapp):
+    item = {
+        'dataset': file_exp['uuid'],
+        'replicate': file_rep1_2['uuid'],
+        'file_format': 'fastq',
+        'md5sum': '100d8c998f00b204e9r800998ecf8427e',
+        'output_type': 'raw data',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'released'
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def file2(file_exp2, award, lab, file_rep2, testapp):
     item = {
         'dataset': file_exp2['uuid'],
@@ -474,3 +499,35 @@ def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, ana
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'wrong step_run for peaks' for error in errors_list)
+
+
+def test_audit_file_biological_replicate_number_match(testapp,
+                                                      file_exp,
+                                                      file_rep,
+                                                      file1,
+                                                      file_rep1_2,
+                                                      file1_2):
+    testapp.patch_json(file1['@id'], {'derived_from': [file1['@id']]})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent biological replicate number'
+               for error in errors_list)
+
+
+def test_audit_file_biological_replicate_number_mismatch(testapp,
+                                                         file_exp,
+                                                         file_rep,
+                                                         file1,
+                                                         file_rep1_2,
+                                                         file1_2):
+    testapp.patch_json(file1['@id'], {'derived_from': [file1_2['@id']]})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent biological replicate number'
+               for error in errors_list)
