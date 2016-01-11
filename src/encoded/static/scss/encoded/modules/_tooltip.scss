@@ -3,22 +3,29 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
 
 
 // Generic tooltips with clickable triggers
-.tooltip-trigger-icon {
+.tooltip-trigger {
     position: relative;
-    cursor: pointer;
+    cursor: default;
 }
 
 .tooltip {
+    position: absolute;
     left: 50%;
     margin-right: -$tooltip-width;
+    visibility: hidden;
     transform: translateX(-50%);
     white-space: normal;
     text-align: center;
     opacity: 1;
+    z-index: 100;
 
     .no-csstransforms & {
         left: 0;
         padding: 0;
+    }
+
+    &.tooltip-open {
+        visibility: visible;
     }
 }
 

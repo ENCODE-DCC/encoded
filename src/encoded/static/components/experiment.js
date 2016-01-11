@@ -729,7 +729,8 @@ var RelatedSeriesList = React.createClass({
         }
     },
 
-    // Handle the mouse entering an info icon. Ignore if the info tooltip is open because the icon had been clicked.
+    // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
+    // been clicked. 'entering' is true if the mouse entered the icon, and false if exiting.
     handleInfoHover: function(series, entering) {
         if (!this.state.clicked) {
             this.setState({currInfoItem: entering ? series.accession : ''});
@@ -781,19 +782,18 @@ var RelatedSeriesItem = React.createClass({
         return (
             <span>
                 <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
-                <i className="icon icon-info-circle tooltip-trigger-icon"
-                    onClick={this.props.handleInfoClick.bind(null, series)}
-                    onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
-                    onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}>
-                    {detailOpen ?
-                        <div className="tooltip bottom">
-                            <div className="tooltip-arrow"></div>
-                            <div className="tooltip-inner">
-                                {series.description ? <span>{series.description}</span> : <em>No description available</em>}
-                            </div>
+                <span className="tooltip-trigger">
+                    <i className="icon icon-info-circle"
+                        onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                        onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
+                        onClick={this.props.handleInfoClick.bind(null, series)}></i>
+                    <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
                         </div>
-                    : null}
-                </i>
+                    </div>
+                </span>
             </span>
         );
     }
