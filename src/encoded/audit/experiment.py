@@ -81,7 +81,7 @@ def audit_experiment_biosample_term_id(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2",
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
