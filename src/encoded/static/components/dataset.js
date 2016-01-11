@@ -1609,7 +1609,7 @@ var ExperimentTableFooter = React.createClass({
         return (
             <div>
                 <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-sm pull-right" href={url}>View all</a> : null}
+                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
             </div>
         );
     }
