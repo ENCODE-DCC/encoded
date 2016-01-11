@@ -72,80 +72,60 @@
     },
     "facets": {
         "assay_term_name": {
-            "title": "Assay",
-            "type": "string"
+            "title": "Assay"
         },
         "status": {
-            "title": "Pipeline status",
-            "type": "string"
+            "title": "Pipeline status"
         },
         "title": {
-            "title": "Pipeline groups",
-            "type": "string"
+            "title": "Pipeline groups"
         },
         "analysis_steps.software_versions.software.title": {
-            "title": "Software",
-            "type": "array"
+            "title": "Software"
         },
         "lab.title": {
-            "title": "Developed by",
-            "type": "string"
+            "title": "Developed by"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "title": {
-            "title": "Pipeline",
-            "type": "string"
+            "title": "Pipeline"
         },
         "assay_term_name": {
-            "title": "Assay type",
-            "type": "string"
+            "title": "Assay type"
         },
         "version": {
-            "title": "Version",
-            "type": "string"
+            "title": "Version"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "analysis_steps.software_versions.version": {
-            "title": "Software",
-            "type": "string"
+            "title": "Software"
         },
         "analysis_steps.software_versions.downloaded_url": {
-            "title": "URL",
-            "type": "string",
-            "format": "uri"
+            "title": "URL"
         },
         "analysis_steps.software_versions.download_checksum": {
-            "title": "Checksum",
-            "type": "string",
-            "format": "hex"
+            "title": "Checksum"
         },
         "analysis_steps.software_versions.software.title": {
-            "title": "Software",
-            "type": "string"
+            "title": "Software"
         },
         "analysis_steps.software_versions.downloaded_url": {
-            "title": "Download URL",
-            "type": "string"
+            "title": "Download URL"
         },
         "analysis_steps.software_versions.download_checksum": {
-            "title": "Download checksum",
-            "type": "string"
+            "title": "Download checksum"
         },
         "analysis_steps.software_versions.software.@id": {
-            "title": "ID",
-            "type": "string"
+            "title": "ID"
         },
         "analysis_steps.software_versions.software.references.published_by": {
-            "title": "Created by",
-            "type": "string"
+            "title": "Created by"
         }
     },
     "boost_values": {
