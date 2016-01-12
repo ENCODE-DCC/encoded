@@ -69,7 +69,37 @@ var Experiment = module.exports.Experiment = React.createClass({
                 return (library.depleted_in_term_name && library.depleted_in_term_name.length) ? library.depleted_in_term_name.join : '';
             }
         },
-        'lysis_method': {title: 'Lysis method'}
+        'lysis_method': {title: 'Lysis method'},
+        'extraction_method': {title: 'Extraction method'},
+        'fragmentation_method': {title: 'Fragmentation method'},
+        'library_size_selection_method': {title: 'Size selection method'},
+        'treatments': {
+            title: 'Treatments',
+            getValue: function(library) {
+                if (library.treatments && library.treatments.length) {
+                    return library.treatments.map(treatment => {
+                        return treatment.treatment_term_name;
+                    }).join(', ');
+                }
+                return '';
+            }
+        },
+        'spikeins_used': {
+            title: 'Spike-ins datasets',
+            display: function(library) {
+                if (library.spikeins_used && library.spikeins_used.length) {
+                    library.spikeins_used.map((dataset, i) => {
+                        return (
+                            <span key={dataset['@id']}>
+                                {i > 0 ? <span>, </span> : null}
+                                <a href={dataset['@id']}>{dataset.accession}</a>
+                            </span>
+                        );
+                    });
+                }
+            },
+            sorter: false
+        }
     },
 
     render: function() {
@@ -315,7 +345,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                     </PanelBody>
 
-                    <SortTable list={libraries} columns={this.libraryColumns} />
+                    {libraries && libraries.length ?
+                        <SortTable list={libraries} columns={this.libraryColumns} />
+                    : null}
                 </Panel>
 
                 {AssayDetails({context: context, replicates: replicates})}
