@@ -15,6 +15,7 @@ var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var software = require('./software');
+var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 
 var Breadcrumbs = navbar.Breadcrumbs;
@@ -33,6 +34,7 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
+var SortTable = sortTable.SortTable;
 var Panel = panel.Panel;
 var PanelBody = panel.PanelBody;
 
@@ -60,6 +62,16 @@ var PanelLookup = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
+    libraryColumns: {
+        'depleted': {
+            title: 'Depleted in',
+            getValue: function(library) {
+                return (library.depleted_in_term_name && library.depleted_in_term_name.length) ? library.depleted_in_term_name.join : '';
+            }
+        },
+        'lysis_method': {title: 'Lysis method'}
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -78,6 +90,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Get the first replicate's library for items needing one library
         var lib = (replicates && replicates.length) ? replicates[0].library : null;
+        var libraries = _.compact(replicates.map(replicate => {
+            return replicate.library ? replicate.library : null;
+        }));
 
         // Make array of all replicate biosamples, not including biosample-less replicates.
         var biosamples = _.compact(replicates.map(function(replicate) {
@@ -299,6 +314,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         </div>
                     </PanelBody>
+
+                    <SortTable list={libraries} columns={this.libraryColumns} />
                 </Panel>
 
                 {AssayDetails({context: context, replicates: replicates})}
