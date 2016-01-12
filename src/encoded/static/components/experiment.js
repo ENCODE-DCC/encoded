@@ -77,67 +77,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 return replicate.library ? replicate.library.accession : '';
             }
         },
-        'depleted': {
-            title: 'Depleted in',
-            getValue: function(replicate) {
-                if (replicate.library) {
-                    var library = replicate.library;
-                    return (library.depleted_in_term_name && library.depleted_in_term_name.length) ? library.depleted_in_term_name.join(', ') : '';
-                }
-                return '';
-            }
-        },
-        'lysis_method': {
-            title: 'Lysis method',
-            getValue: function(replicate) {
-                return replicate.library && replicate.library.lysis_method;
-            }
-        },
-        'extraction_method': {
-            title: 'Extraction method',
-            getValue: function(replicate) {
-                return replicate.library && replicate.library.extraction_method;
-            }
-        },
-        'fragmentation_method': {
-            title: 'Fragmentation method',
-            getValue: function(replicate) {
-                return replicate.library && replicate.library.fragmentation_method;
-            }
-        },
-        'library_size_selection_method': {
-            title: 'Size selection method',
-            getValue: function(replicate) {
-                return replicate.library && replicate.library.library_size_selection_method;
-            }
-        },
-        'treatments': {
-            title: 'Treatments',
-            getValue: function(replicate) {
-                if (replicate.library && replicate.library.treatments && replicate.library.treatments.length) {
-                    return replicate.library.treatments.map(treatment => {
-                        return treatment.treatment_term_name;
-                    }).join(', ');
-                }
-                return '';
-            }
-        },
-        'spikeins_used': {
-            title: 'Spike-ins datasets',
-            display: function(replicate) {
-                if (replicate.library && replicate.library.spikeins_used && replicate.library.spikeins_used.length) {
-                    replicate.library.spikeins_used.map((dataset, i) => {
-                        return (
-                            <span key={dataset['@id']}>
-                                {i > 0 ? <span>, </span> : null}
-                                <a href={dataset['@id']}>{dataset.accession}</a>
-                            </span>
-                        );
-                    });
-                }
-            },
-            sorter: false
-        }
     },
 
     render: function() {
@@ -384,11 +323,19 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
 
                     {replicates && replicates.length ?
-                        <SortTable list={replicates} columns={this.replicateColumns} />
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <SortTable title="Replicates" list={replicates} columns={this.replicateColumns} />
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <h4>Assay details</h4>
+                                {AssayDetails({context: context, replicates: replicates})}
+                            </div>
+                        </div>
                     : null}
                 </Panel>
 
-                {AssayDetails({context: context, replicates: replicates})}
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -501,87 +448,80 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     }
 
     return (
-        <div className = "panel-assay">
-            <h3>Assay details</h3>
-            <Panel>
-                <PanelBody>
-                    <dl className="key-value">
-                        {depleted.length ?
-                            <div data-test="depletedin">
-                                <dt>Depleted in</dt>
-                                <dd>{depleted.join(', ')}</dd>
-                            </div>
-                        : null}
+        <dl className="key-value">
+            {depleted.length ?
+                <div data-test="depletedin">
+                    <dt>Depleted in</dt>
+                    <dd>{depleted.join(', ')}</dd>
+                </div>
+            : null}
 
-                        {lib.lysis_method ?
-                            <div data-test="lysismethod">
-                                <dt>Lysis method</dt>
-                                <dd>{lib.lysis_method}</dd>
-                            </div>
-                        : null}
+            {lib.lysis_method ?
+                <div data-test="lysismethod">
+                    <dt>Lysis method</dt>
+                    <dd>{lib.lysis_method}</dd>
+                </div>
+            : null}
 
-                        {lib.extraction_method ?
-                            <div data-test="extractionmethod">
-                                <dt>Extraction method</dt>
-                                <dd>{lib.extraction_method}</dd>
-                            </div>
-                        : null}
+            {lib.extraction_method ?
+                <div data-test="extractionmethod">
+                    <dt>Extraction method</dt>
+                    <dd>{lib.extraction_method}</dd>
+                </div>
+            : null}
 
-                        {lib.fragmentation_method ?
-                            <div data-test="fragmentationmethod">
-                                <dt>Fragmentation method</dt>
-                                <dd>{lib.fragmentation_method}</dd>
-                            </div>
-                        : null}
+            {lib.fragmentation_method ?
+                <div data-test="fragmentationmethod">
+                    <dt>Fragmentation method</dt>
+                    <dd>{lib.fragmentation_method}</dd>
+                </div>
+            : null}
 
-                        {lib.library_size_selection_method ?
-                            <div data-test="sizeselectionmethod">
-                                <dt>Size selection method</dt>
-                                <dd>{lib.library_size_selection_method}</dd>
-                            </div>
-                        : null}
+            {lib.library_size_selection_method ?
+                <div data-test="sizeselectionmethod">
+                    <dt>Size selection method</dt>
+                    <dd>{lib.library_size_selection_method}</dd>
+                </div>
+            : null}
 
-                        {treatments.length ?
-                            <div data-test="treatments">
-                                <dt>Treatments</dt>
-                                <dd>
-                                    {treatments.join(', ')}
-                                </dd>
-                            </div>
-                        : null}
+            {treatments.length ?
+                <div data-test="treatments">
+                    <dt>Treatments</dt>
+                    <dd>
+                        {treatments.join(', ')}
+                    </dd>
+                </div>
+            : null}
 
-                        {platformKeys.length ?
-                            <div data-test="platform">
-                                <dt>Platform</dt>
-                                <dd>
-                                    {platformKeys.map(function(platformId) {
-                                        return(
-                                            <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
-                                        );
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
+            {platformKeys.length ?
+                <div data-test="platform">
+                    <dt>Platform</dt>
+                    <dd>
+                        {platformKeys.map(function(platformId) {
+                            return(
+                                <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
+                            );
+                        })}
+                    </dd>
+                </div>
+            : null}
 
-                        {lib.spikeins_used && lib.spikeins_used.length ?
-                            <div data-test="spikeins">
-                                <dt>Spike-ins datasets</dt>
-                                <dd>
-                                    {lib.spikeins_used.map(function(dataset, i) {
-                                        return (
-                                            <span key={i}>
-                                                {i > 0 ? ', ' : ''}
-                                                <a href={dataset['@id']}>{dataset.accession}</a>
-                                            </span>
-                                        );
-                                    })}
-                                </dd>
-                            </div>
-                        : null}
-                    </dl>
-                </PanelBody>
-            </Panel>
-        </div>
+            {lib.spikeins_used && lib.spikeins_used.length ?
+                <div data-test="spikeins">
+                    <dt>Spike-ins datasets</dt>
+                    <dd>
+                        {lib.spikeins_used.map(function(dataset, i) {
+                            return (
+                                <span key={i}>
+                                    {i > 0 ? ', ' : ''}
+                                    <a href={dataset['@id']}>{dataset.accession}</a>
+                                </span>
+                            );
+                        })}
+                    </dd>
+                </div>
+            : null}
+        </dl>
     );
 };
 

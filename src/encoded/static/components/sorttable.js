@@ -175,7 +175,7 @@ var SortTable = module.exports.SortTable = React.createClass({
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
             return (
-                <table className="table table-striped">
+                <table className="table table-striped table-sortable">
 
                     <thead>
                         {this.props.title ? <tr className="table-section"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
