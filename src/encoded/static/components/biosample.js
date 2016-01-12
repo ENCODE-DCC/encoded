@@ -1051,11 +1051,7 @@ var Document = module.exports.Document = React.createClass({
     render: function() {
 
         var context = this.props.context;
-        var keyClass = cx({
-            "key-value-left": true,
-            "document-slider": true,
-            "active": this.state.panelOpen
-        });
+        var keyClass = 'document-slider' + (this.state.panelOpen ? ' active' : '');
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
@@ -1113,41 +1109,43 @@ var Document = module.exports.Document = React.createClass({
                             </dl>
                         </div>
                         {download}
-                        <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
-                            {excerpt && characterization ?
-                                <div data-test="caption">
-                                    <dt>Caption</dt>
-                                    <dd>{context.caption}</dd>
+                        <div className={keyClass}>
+                            <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                                {excerpt && characterization ?
+                                    <div data-test="caption">
+                                        <dt>Caption</dt>
+                                        <dd>{context.caption}</dd>
+                                    </div>
+                                : null}
+
+                                {excerpt && !characterization ?
+                                    <div data-test="caption">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
+                                    </div>
+                                : null}
+
+                                {context.submitted_by && context.submitted_by.title ?
+                                    <div data-test="submitted-by">
+                                        <dt>Submitted by</dt>
+                                        <dd>{context.submitted_by.title}</dd>
+                                    </div>
+                                : null}
+
+                                <div data-test="lab">
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
                                 </div>
-                            : null}
 
-                            {excerpt && !characterization ?
-                                <div data-test="caption">
-                                    <dt>Description</dt>
-                                    <dd>{context.description}</dd>
-                                </div>
-                            : null}
+                                {context.award && context.award.name ?
+                                    <div data-test="award">
+                                        <dt>Grant</dt>
+                                        <dd>{context.award.name}</dd>
+                                    </div>
+                                : null}
 
-                            {context.submitted_by && context.submitted_by.title ?
-                                <div data-test="submitted-by">
-                                    <dt>Submitted by</dt>
-                                    <dd>{context.submitted_by.title}</dd>
-                                </div>
-                            : null}
-
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-
-                            {context.award && context.award.name ?
-                                <div data-test="award">
-                                    <dt>Grant</dt>
-                                    <dd>{context.award.name}</dd>
-                                </div>
-                            : null}
-
-                        </dl>
+                            </dl>
+                        </div>
                     </div>
 
                     <button onClick={this.handleClick} className="key-value-trigger panel-footer" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">

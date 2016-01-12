@@ -62,23 +62,6 @@ var PanelLookup = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
-    replicateColumns: {
-        'biological_replicate_number': {title: 'Biological replicate'},
-        'technical_replicate_number': {title: 'Technical replicate'},
-        'antibody': {
-            title: 'Antibody',
-            getValue: function(replicate) {
-                return replicate.antibody ? replicate.antibody.accession : '';
-            }
-        },
-        'library': {
-            title: 'Library',
-            getValue: function(replicate) {
-                return replicate.library ? replicate.library.accession : '';
-            }
-        },
-    },
-
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -321,21 +304,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         </div>
                     </PanelBody>
-
-                    {replicates && replicates.length ?
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <SortTable title="Replicates" list={replicates} columns={this.replicateColumns} />
-                            </div>
-
-                            <div className="flexcol-sm-6">
-                                <h4>Assay details</h4>
-                                {AssayDetails({context: context, replicates: replicates})}
-                            </div>
-                        </div>
-                    : null}
                 </Panel>
-
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
