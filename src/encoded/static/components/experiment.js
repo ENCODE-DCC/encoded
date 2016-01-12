@@ -62,22 +62,60 @@ var PanelLookup = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
-    libraryColumns: {
-        'depleted': {
-            title: 'Depleted in',
-            getValue: function(library) {
-                return (library.depleted_in_term_name && library.depleted_in_term_name.length) ? library.depleted_in_term_name.join : '';
+    replicateColumns: {
+        'biological_replicate_number': {title: 'Biological replicate'},
+        'technical_replicate_number': {title: 'Technical replicate'},
+        'antibody': {
+            title: 'Antibody',
+            getValue: function(replicate) {
+                return replicate.antibody ? replicate.antibody.accession : '';
             }
         },
-        'lysis_method': {title: 'Lysis method'},
-        'extraction_method': {title: 'Extraction method'},
-        'fragmentation_method': {title: 'Fragmentation method'},
-        'library_size_selection_method': {title: 'Size selection method'},
+        'library': {
+            title: 'Library',
+            getValue: function(replicate) {
+                return replicate.library ? replicate.library.accession : '';
+            }
+        },
+        'depleted': {
+            title: 'Depleted in',
+            getValue: function(replicate) {
+                if (replicate.library) {
+                    var library = replicate.library;
+                    return (library.depleted_in_term_name && library.depleted_in_term_name.length) ? library.depleted_in_term_name.join(', ') : '';
+                }
+                return '';
+            }
+        },
+        'lysis_method': {
+            title: 'Lysis method',
+            getValue: function(replicate) {
+                return replicate.library && replicate.library.lysis_method;
+            }
+        },
+        'extraction_method': {
+            title: 'Extraction method',
+            getValue: function(replicate) {
+                return replicate.library && replicate.library.extraction_method;
+            }
+        },
+        'fragmentation_method': {
+            title: 'Fragmentation method',
+            getValue: function(replicate) {
+                return replicate.library && replicate.library.fragmentation_method;
+            }
+        },
+        'library_size_selection_method': {
+            title: 'Size selection method',
+            getValue: function(replicate) {
+                return replicate.library && replicate.library.library_size_selection_method;
+            }
+        },
         'treatments': {
             title: 'Treatments',
-            getValue: function(library) {
-                if (library.treatments && library.treatments.length) {
-                    return library.treatments.map(treatment => {
+            getValue: function(replicate) {
+                if (replicate.library && replicate.library.treatments && replicate.library.treatments.length) {
+                    return replicate.library.treatments.map(treatment => {
                         return treatment.treatment_term_name;
                     }).join(', ');
                 }
@@ -86,9 +124,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         },
         'spikeins_used': {
             title: 'Spike-ins datasets',
-            display: function(library) {
-                if (library.spikeins_used && library.spikeins_used.length) {
-                    library.spikeins_used.map((dataset, i) => {
+            display: function(replicate) {
+                if (replicate.library && replicate.library.spikeins_used && replicate.library.spikeins_used.length) {
+                    replicate.library.spikeins_used.map((dataset, i) => {
                         return (
                             <span key={dataset['@id']}>
                                 {i > 0 ? <span>, </span> : null}
@@ -345,8 +383,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                     </PanelBody>
 
-                    {libraries && libraries.length ?
-                        <SortTable list={libraries} columns={this.libraryColumns} />
+                    {replicates && replicates.length ?
+                        <SortTable list={replicates} columns={this.replicateColumns} />
                     : null}
                 </Panel>
 
