@@ -25,9 +25,7 @@
             "title": "Number",
             "description": "The official grant number from the NIH database, if applicable",
             "type": "string",
-            "enum": [
-
-            ],
+            "pattern": "^[A-Za-z0-9\\-]+$",
             "uniqueKey": true
        },
         "description": {
