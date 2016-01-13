@@ -251,6 +251,9 @@
             "TL-1008",
             "TL-1009"
         ],
+        "rnais": [
+            "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
+        ],
         "transfection_type": "stable",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
     },

@@ -14,6 +14,7 @@ require('./experiment');
 require('./footer');
 require('./globals');
 require('./graph');
+require('./doc');
 require('./home');
 require('./item');
 require('./page');

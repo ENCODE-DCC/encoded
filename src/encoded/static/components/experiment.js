@@ -11,14 +11,14 @@ var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
-var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
-var document = require('./document');
+var doc = require('./doc');
 
+var AuditMixin = audit.AuditMixin;
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
@@ -36,6 +36,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var SortTable = sortTable.SortTable;
+var DocumentPanel = doc.DocumentPanel;
 var {Panel, PanelBody} = panel;
 
 
@@ -81,19 +82,31 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Get the first replicate's library for items needing one library
         var lib = (replicates && replicates.length) ? replicates[0].library : null;
-        var libraries = _.compact(replicates.map(replicate => {
-            return replicate.library ? replicate.library : null;
-        }));
 
         // Make array of all replicate biosamples, not including biosample-less replicates.
-        var biosamples = _.compact(replicates.map(function(replicate) {
-            return replicate.library && replicate.library.biosample;
+        // Also collect library and protocol documents since we're delving into libraries and biosamples anyway.
+        var libraryDocs = [];
+        var biosamples = _.compact(replicates.map(replicate => {
+            if (replicate.library) {
+                if (replicate.library.documents && replicate.library.documents.length){
+                    libraryDocs = libraryDocs.concat(replicate.library.documents);
+                }
+                return replicate.library.biosample;
+            }
+            return null;
         }));
 
-        // Build the text of the Treatment, synchronization, and mutatedGene string arrays
+        // Build the text of the Treatment, synchronization, characterization docs, and mutatedGene string arrays
         var treatments;
         var synchText = [];
-        biosamples.map(function(biosample) {
+        var biosampleCharacterizationDocs = [];
+        var biosampleDocs = [];
+        var biosampleTalenDocs = [];
+        var biosampleRnaiDocs = [];
+        var biosampleConstructDocs = [];
+        var biosampleDonorDocs = [];
+        var biosampleDonorCharacterizations = [];
+        biosamples.forEach(biosample => {
             // Collect treatments
             treatments = treatments || !!(biosample.treatments && biosample.treatments.length);
 
@@ -104,16 +117,66 @@ var Experiment = module.exports.Experiment = React.createClass({
                         ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
                     : ''));
             }
+
+            // Collect biosample characterizations
+            if (biosample.characterizations && biosample.characterizations.length) {
+                biosampleCharacterizationDocs = biosampleCharacterizationDocs.concat(biosample.characterizations);
+            }
+
+            // Collect biosample protocol documents
+            if (biosample.protocol_documents && biosample.protocol_documents.length) {
+                biosampleDocs = biosampleDocs.concat(biosample.protocol_documents);
+            }
+
+            // Collect TALEN documents
+            if (biosample.talens && biosample.talens.length) {
+                biosample.talens.forEach(talen => {
+                    if (talen.documents && talen.documents.length) {
+                        biosampleTalenDocs = biosampleTalenDocs.concat(talen.documents)
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.rnais && biosample.rnais.length) {
+                biosample.rnais.forEach(rnai => {
+                    if (rnai.documents && rnai.documents.length) {
+                        biosampleRnaiDocs = biosampleRnaiDocs.concat(rnai.documents)
+                    }
+                });
+            }
+
+            // Collect RNAi documents
+            if (biosample.constructs && biosample.constructs.length) {
+                biosample.constructs.forEach(construct => {
+                    if (construct.documents && construct.documents.length) {
+                        biosampleConstructDocs = biosampleConstructDocs.concat(construct.documents)
+                    }
+                });
+            }
+
+            // Collect donor documents
+            if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
+                biosampleDonorDocs = biosampleDonorDocs.concat(biosample.donor.donor_documents);
+            }
+
+            // Collect donor documents
+            if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
+                biosampleDonorCharacterizations = biosampleDonorCharacterizations.concat(biosample.donor.characterizations);
+            }
         });
         synchText = synchText && _.uniq(synchText);
+        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? _.uniq(biosampleCharacterizationDocs) : [];
+        biosampleDocs = biosampleDocs.length ? _.uniq(biosampleDocs) : [];
+        biosampleTalenDocs = biosampleTalenDocs.length ? _.uniq(biosampleTalenDocs) : [];
+        biosampleRnaiDocs = biosampleRnaiDocs.length ? _.uniq(biosampleRnaiDocs) : [];
+        biosampleConstructDocs = biosampleConstructDocs.length ? _.uniq(biosampleConstructDocs) : [];
+        biosampleDonorDocs = biosampleDonorDocs.length ? _.uniq(biosampleDonorDocs) : [];
+        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? _.uniq(biosampleDonorCharacterizations) : [];
 
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
 
-        // Adding experiment specific documents
-        context.documents.forEach(function (document, i) {
-            //documents[document['@id']] = PanelLookup({context: document, key: i + 1});
-        });
         var antibodies = {};
         replicates.forEach(function (replicate) {
             if (replicate.antibody) {
@@ -165,7 +228,17 @@ var Experiment = module.exports.Experiment = React.createClass({
             {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
         ];
 
-        var documentList = [{title: 'Documents', documents: documents}];
+        // Compmile the document list
+        var documentList = [
+            {title: 'Characterizations', documents: biosampleCharacterizationDocs},
+            {title: 'Library documents', documents: libraryDocs},
+            {title: 'Biosample documents', documents: biosampleDocs},
+            {title: 'TALEN documents', documents: biosampleTalenDocs},
+            {title: 'RNAi documents', documents: biosampleRnaiDocs},
+            {title: 'Construct documents', documents: biosampleConstructDocs},
+            {title: 'Donor documents', documents: biosampleDonorDocs},
+            {title: 'Donor characterizations', documents: biosampleDonorCharacterizations}
+        ];
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
