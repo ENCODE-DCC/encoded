@@ -25,7 +25,9 @@
             "title": "Number",
             "description": "The official grant number from the NIH database, if applicable",
             "type": "string",
-            "pattern": "^[A-Za-z0-9\\-]+$",
+            "enum": [
+
+            ],
             "uniqueKey": true
        },
         "description": {
@@ -69,12 +71,29 @@
         "rfa": {
             "title": "Phase",
             "description": "The name of the bioproject phase.",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "ENCODE2",
+                "ENCODE2-Mouse",
+                "ENCODE3",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
+            ]
         },
         "project": {
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
+            ]
         },
         "viewing_group": {
             "title": "View access group",
