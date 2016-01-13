@@ -119,20 +119,6 @@ def audit_biosample_part_of_consistency(value, system):
                                level='ERROR')
 
 
-@audit_checker('biosample', frame=['object'])
-def audit_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    biosample_prefix = value['biosample_term_id'].split(':')[0]
-    if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
-        detail = 'Biosample {} has '.format(value['@id']) + \
-                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
-                 'that is not one of ' + \
-                 '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
-
-
-
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
     '''
@@ -225,21 +211,31 @@ def audit_biosample_term(value, system):
             value['@id'],
             term_id,
             term_name)
-        raise AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+        return
+
+    biosample_prefix = term_id.split(':')[0]
+    if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                 'that is not one of ' + \
+                 '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
+        yield AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
+        return
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
             value['@id'],
             term_id)
-        raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
-
+        yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+        return
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = 'Biosample {} has '.format(value['@id']) + \
                  'a mismatch between biosample_term_id {} '.format(term_id) + \
                  'and biosample_term_name {}'.format(term_name)
-        raise AuditFailure('mismatched biosample_term', detail, level='ERROR')
-
+        yield AuditFailure('mismatched biosample_term', detail, level='ERROR')
+        return
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_culture_date(value, system):

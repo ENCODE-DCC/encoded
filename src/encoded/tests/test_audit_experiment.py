@@ -654,6 +654,19 @@ def test_audit_experiment_biosample_term_id(testapp, base_experiment):
                'experiment with invalid biosample term id' for error in errors_list)
 
 
+def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
+                                                'biosample_type': 'tissue',
+                                                'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'experiment with invalid biosample term id' for error in errors_list)
+
+
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
