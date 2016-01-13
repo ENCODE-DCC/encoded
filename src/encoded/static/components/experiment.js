@@ -17,6 +17,7 @@ var reference = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
+var document = require('./document');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -35,8 +36,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var SortTable = sortTable.SortTable;
-var Panel = panel.Panel;
-var PanelBody = panel.PanelBody;
+var {Panel, PanelBody} = panel;
 
 
 var anisogenicValues = [
@@ -70,12 +70,13 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
         var aliasList = context.aliases.join(", ");
 
-        var documents = {};
+        var documents = [];
         replicates.forEach(function (replicate) {
-            if (!replicate.library) return;
-            replicate.library.documents.forEach(function (doc, i) {
-                documents[doc['@id']] = PanelLookup({context: doc, key: i + 1});
-            });
+            if (replicate.library) {
+                replicate.library.documents.forEach(doc => {
+                    documents.push(doc);
+                });
+            }
         });
 
         // Get the first replicate's library for items needing one library
@@ -111,7 +112,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Adding experiment specific documents
         context.documents.forEach(function (document, i) {
-            documents[document['@id']] = PanelLookup({context: document, key: i + 1});
+            //documents[document['@id']] = PanelLookup({context: document, key: i + 1});
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -163,6 +164,8 @@ var Experiment = module.exports.Experiment = React.createClass({
             {id: names.length ? names : null, query: nameQuery, tip: nameTip},
             {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
         ];
+
+        var documentList = [{title: 'Documents', documents: documents}];
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
@@ -306,14 +309,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {Object.keys(documents).length ?
-                    <div data-test="protocols">
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {documents}
-                        </div>
-                    </div>
-                : null}
+                <DocumentPanel documentList={documentList} />
 
                 {replicates.map(function (replicate, index) {
                     return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
