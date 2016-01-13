@@ -69,29 +69,12 @@
         "rfa": {
             "title": "Phase",
             "description": "The name of the bioproject phase.",
-            "type": "string",
-            "enum": [
-                "ENCODE",
-                "ENCODE2",
-                "ENCODE2-Mouse",
-                "ENCODE3",
-                "GGR",
-                "Roadmap",
-                "modENCODE",
-                "modERN"
-            ]
+            "type": "string"
         },
         "project": {
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
-            "type": "string",
-            "enum": [
-                "ENCODE",
-                "GGR",
-                "Roadmap",
-                "modENCODE",
-                "modERN"
-            ]
+            "type": "string"
         },
         "viewing_group": {
             "title": "View access group",
