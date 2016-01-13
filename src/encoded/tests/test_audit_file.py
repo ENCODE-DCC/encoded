@@ -501,6 +501,18 @@ def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, ana
     assert any(error['category'] == 'wrong step_run for peaks' for error in errors_list)
 
 
+def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file2['@id'], {'dataset': file_exp['@id'], 'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'unexpected step_run' for error in errors_list)
+
+
 def test_audit_file_biological_replicate_number_match(testapp,
                                                       file_exp,
                                                       file_rep,
