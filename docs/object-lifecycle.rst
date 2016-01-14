@@ -12,9 +12,14 @@ The object and embedded frames are indexed in elasticsearch, the page properties
 
 Objects are stored in the DB "raw" - with only the properties that are submitted with links as uuids.
 
+
 * frame=object
 
-This is the raw object with additional "@properties" (@id, @type) and calculated properties (defined in python code "types" package).  
+This is the raw object with additional "@properties" (@id, @type) and calculated properties (defined in python code "types" package). 
+
+* frame=edit
+
+This is the frame=object without calculated properties
 
 * frame=embedded
 
