@@ -9,6 +9,9 @@ var image = require('./image');
 var {Panel, PanelBody} = panel;
 var Attachment = image.Attachment;
 
+const EXCERPT_LENGTH = 90; // Maximum number of characters in an excerpt
+
+
 // To add more @types for document panels, see the bottom of this file.
 
 // <DocumentsPanel> displays groups of documents within a panel. Each group gets its own title and shows
@@ -122,7 +125,7 @@ var Document = module.exports.Document = React.createClass({
 // Document header component -- default
 var DocumentHeader = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -139,7 +142,7 @@ var DocumentHeader = React.createClass({
 // Document header component -- Characterizations
 var CharacterizationHeader = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -157,14 +160,14 @@ var CharacterizationHeader = React.createClass({
 // Document caption component -- default
 var DocumentCaption = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
         var doc = this.props.doc;
         var excerpt, caption = doc.description;
-        if (caption && caption.length > 60) {
-            excerpt = globals.truncateString(caption, 60);
+        if (caption && caption.length > EXCERPT_LENGTH) {
+            excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
         }
 
         return (
@@ -183,14 +186,14 @@ var DocumentCaption = React.createClass({
 // Document caption component -- Characterizations
 var CharacterizationCaption = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
         var doc = this.props.doc;
         var excerpt, caption = doc.caption;
-        if (caption && caption.length > 60) {
-            excerpt = globals.truncateString(caption, 60);
+        if (caption && caption.length > EXCERPT_LENGTH) {
+            excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
         }
 
         return (
@@ -210,7 +213,7 @@ var CharacterizationCaption = React.createClass({
 // Document preview component -- default
 var DocumentPreview = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -226,7 +229,7 @@ var DocumentPreview = React.createClass({
 // Document file component -- default
 var DocumentFile = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object // Document object to render
+        doc: React.PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -258,7 +261,7 @@ var DocumentFile = React.createClass({
 // Document detail component -- default
 var DocumentDetail = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object, // Document object to render
+        doc: React.PropTypes.object.isRequired, // Document object to render
         detailOpen: React.PropTypes.bool, // True if detail panel is visible
         key: React.PropTypes.string // Unique key for identification
     },
@@ -266,7 +269,7 @@ var DocumentDetail = React.createClass({
     render: function() {
         var doc = this.props.doc;
         var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
-        var excerpt = doc.description && doc.description.length > 100;
+        var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (
             <div className={keyClass}>
@@ -305,7 +308,7 @@ var DocumentDetail = React.createClass({
 // Document detail component -- default
 var CharacterizationDetail = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object, // Document object to render
+        doc: React.PropTypes.object.isRequired, // Document object to render
         detailOpen: React.PropTypes.bool, // True if detail panel is visible
         key: React.PropTypes.string // Unique key for identification
     },
@@ -313,7 +316,7 @@ var CharacterizationDetail = React.createClass({
     render: function() {
         var doc = this.props.doc;
         var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
-        var excerpt = doc.description && doc.description.length > 100;
+        var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (
             <div className={keyClass}>
