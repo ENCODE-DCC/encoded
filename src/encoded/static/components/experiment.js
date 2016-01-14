@@ -36,7 +36,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var SortTable = sortTable.SortTable;
-var DocumentPanel = doc.DocumentPanel;
+var DocumentsPanel = doc.DocumentsPanel;
 var {Panel, PanelBody} = panel;
 
 
@@ -258,7 +258,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         ];
 
         // Compmile the document list
-        var documentList = [
+        var documentSpecs = [
             {title: 'Characterizations', documents: biosampleCharacterizationDocs},
             {title: 'Library documents', documents: libraryDocs},
             {title: 'Biosample documents', documents: biosampleDocs},
@@ -441,7 +441,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
 
-                <DocumentPanel documentList={documentList} />
+                <DocumentsPanel documentSpecs={documentSpecs} />
             </div>
         );
     }

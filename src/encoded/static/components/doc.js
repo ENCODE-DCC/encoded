@@ -11,10 +11,16 @@ var Attachment = image.Attachment;
 
 // To add more @types for document panels, see the bottom of this file.
 
-// 'documents' Object
+// <DocumentsPanel> displays groups of documents within a panel. Each group gets its own title and shows
+// one subpanel for each document within that group. The @type of each document must contain 'Document'
+// somewhere.
 //
-// This object is mostly an array of arrays. The inner arrays holds the list of documents
-// of one type, while the outer array holds all the types of arrays along with their section titles.
+// <DocumentsPanel> property: documentsList
+//
+// This object is mostly an array of arrays. The inner arrays holds the list of documents of one type,
+// while the outer array holds all the types of arrays along with their section titles. Literally though,
+// documentList is an array of objects, including the array of documents and the title to display above
+// those documents within the panel.
 //
 // [
 //     {
@@ -26,27 +32,27 @@ var Attachment = image.Attachment;
 //     }
 // ]
 
-var DocumentPanel = module.exports.DocumentPanel = React.createClass({
+var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
     propTypes: {
-        documentList: React.PropTypes.array.isRequired // List of document arrays and their titles
+        documentSpecs: React.PropTypes.array.isRequired // List of document arrays and their titles
     },
 
     render: function() {
-        var documentList = this.props.documentList.length && _.compact(this.props.documentList.map(docObj => {
-            return docObj.documents.length ? docObj : null;
+        var documentSpecs = this.props.documentSpecs.length && _.compact(this.props.documentSpecs.map(documentSpecs => {
+            return documentSpecs.documents.length ? documentSpecs : null;
         }));
 
-        if (documentList && documentList.length) {
+        if (documentSpecs.length) {
             return (
                 <div>
                     <h3>Documents</h3>
                     <Panel addClasses="clearfix">
-                        {this.props.documentList.map(docObj => {
-                            if (docObj.documents.length) {
+                        {documentSpecs.map(documentSpec => {
+                            if (documentSpec.documents.length) {
                                 return (
                                     <PanelBody>
-                                        <h4>{docObj.title}</h4>
-                                        {docObj.documents.map(doc => {
+                                        {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
+                                        {documentSpec.documents.map(doc => {
                                             var PanelView = globals.panel_views.lookup(doc);
                                             return <PanelView key={doc['@id']} context={doc} />;
                                         })}
@@ -81,100 +87,26 @@ var Document = module.exports.Document = React.createClass({
 
     render: function() {
         var context = this.props.context;
-        var keyClass = 'document-slider' + (this.state.panelOpen ? ' active' : '');
-        var figure = <Attachment context={this.props.context} className="characterization" />;
 
-        var attachmentHref, download;
-        if (context.attachment && context.attachment.href && context.attachment.download) {
-            attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            var dlFileTitle = "Download file " + context.attachment.download;
-            download = (
-                <div className="dl-bar">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={context.attachment.download}>
-                        {context.attachment.download}
-                    </a>
-                </div>
-            );
-        } else {
-            download = (
-                <div className="dl-bar">
-                    <em>Document not available</em>
-                </div>
-            );
-        }
-
-        var characterization = context['@type'].indexOf('Characterization') >= 0;
-        var caption = characterization ? context.caption : context.description;
-        var excerpt;
-        if (caption && caption.length > 100) {
-            excerpt = globals.truncateString(caption, 100);
-        }
-        var panelClass = 'view-item view-detail status-none panel';
+        // Set up rendering components
+        var DocumentHeaderView = globals.document_views.header.lookup(context);
+        var DocumentCaptionView = globals.document_views.caption.lookup(context);
+        var DocumentPreviewView = globals.document_views.preview.lookup(context);
+        var DocumentFileView = globals.document_views.file.lookup(context);
+        var DocumentDetailView = globals.document_views.detail.lookup(context);
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4 doc-panel">
-                <div className={globals.itemClass(context, panelClass)}>
-                    <div className="panel-header document-title sentence-case">
-                        {characterization ? context.characterization_method : context.document_type}
-                    </div>
+                <div className={globals.itemClass(context, 'view-item view-detail status-none panel')}>
+                    <DocumentHeaderView doc={context} />
                     <div className="panel-body">
                         <div className="document-header">
-                            <figure>
-                                {figure}
-                            </figure>
-
-                            <dl className="document-intro document-meta-data key-value-left">
-                                {excerpt || caption ?
-                                    <div data-test="caption">
-                                        {characterization ?
-                                            <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
-                                        :
-                                            <dt>{excerpt ? 'Description excerpt' : 'Description'}</dt>
-                                        }
-                                        <dd>{excerpt ? excerpt : caption}</dd>
-                                    </div>
-                                : null}
-                            </dl>
+                            <DocumentPreviewView doc={context} />
+                            <DocumentCaptionView doc={context} />
                         </div>
-                        {download}
-                        <div className={keyClass}>
-                            <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
-                                {excerpt && characterization ?
-                                    <div data-test="caption">
-                                        <dt>Caption</dt>
-                                        <dd>{context.caption}</dd>
-                                    </div>
-                                : null}
-
-                                {excerpt && !characterization ?
-                                    <div data-test="caption">
-                                        <dt>Description</dt>
-                                        <dd>{context.description}</dd>
-                                    </div>
-                                : null}
-
-                                {context.submitted_by && context.submitted_by.title ?
-                                    <div data-test="submitted-by">
-                                        <dt>Submitted by</dt>
-                                        <dd>{context.submitted_by.title}</dd>
-                                    </div>
-                                : null}
-
-                                <div data-test="lab">
-                                    <dt>Lab</dt>
-                                    <dd>{context.lab.title}</dd>
-                                </div>
-
-                                {context.award && context.award.name ?
-                                    <div data-test="award">
-                                        <dt>Grant</dt>
-                                        <dd>{context.award.name}</dd>
-                                    </div>
-                                : null}
-                            </dl>
-                        </div>
+                        <DocumentFileView doc={this.props.context} />
+                        <DocumentDetailView doc={this.props.context} detailOpen={this.state.panelOpen} key={this.props.key} />
                     </div>
 
                     <button onClick={this.handleClick} className="key-value-trigger panel-footer" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">
@@ -187,7 +119,263 @@ var Document = module.exports.Document = React.createClass({
 });
 
 
+// Document header component -- default
+var DocumentHeader = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        return (
+            <div className="panel-header document-title sentence-case">
+                {doc.document_type}
+            </div>
+        );
+    }
+});
+
+// Document header component -- Characterizations
+var CharacterizationHeader = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        return (
+            <div className="panel-header document-title sentence-case">
+                {doc.characterization_method}
+            </div>
+        );
+    }
+});
+
+
+// Document caption component -- default
+var DocumentCaption = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var excerpt, caption = doc.description;
+        if (caption && caption.length > 60) {
+            excerpt = globals.truncateString(caption, 60);
+        }
+
+        return (
+            <div className="document-intro document-meta-data key-value-left">
+                {excerpt || caption ?
+                    <div data-test="caption">
+                        <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
+                        {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
+                    </div>
+                : <em>No description</em>}
+            </div>
+        );
+    }
+});
+
+// Document caption component -- Characterizations
+var CharacterizationCaption = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var excerpt, caption = doc.caption;
+        if (caption && caption.length > 60) {
+            excerpt = globals.truncateString(caption, 60);
+        }
+
+        return (
+            <dl className="document-intro document-meta-data key-value-left">
+                {excerpt || caption ?
+                    <div data-test="caption">
+                        <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
+                        {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
+                    </div>
+                : <em>No caption</em>}
+            </dl>
+        );
+    }
+});
+
+
+// Document preview component -- default
+var DocumentPreview = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        return (
+            <figure>
+                <Attachment context={this.props.doc} className="characterization" />
+            </figure>
+        );
+    }
+});
+
+
+// Document file component -- default
+var DocumentFile = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        if (doc.attachment && doc.attachment.href && doc.attachment.download) {
+            var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+            var dlFileTitle = "Download file " + doc.attachment.download;
+
+            return (
+                <div className="dl-bar">
+                    <i className="icon icon-download"></i>&nbsp;
+                    <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
+                        {doc.attachment.download}
+                    </a>
+                </div>
+            );
+        }
+
+        return (
+            <div className="dl-bar">
+                <em>Document not available</em>
+            </div>
+        );
+    }
+});
+
+
+// Document detail component -- default
+var DocumentDetail = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        key: React.PropTypes.string // Unique key for identification
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var excerpt = doc.description && doc.description.length > 100;
+
+        return (
+            <div className={keyClass}>
+                <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                    {excerpt ?
+                        <div data-test="caption">
+                            <dt>Description</dt>
+                            <dd>{doc.description}</dd>
+                        </div>
+                    : null}
+
+                    {doc.submitted_by && doc.submitted_by.title ?
+                        <div data-test="submitted-by">
+                            <dt>Submitted by</dt>
+                            <dd>{doc.submitted_by.title}</dd>
+                        </div>
+                    : null}
+
+                    <div data-test="lab">
+                        <dt>Lab</dt>
+                        <dd>{doc.lab.title}</dd>
+                    </div>
+
+                    {doc.award && doc.award.name ?
+                        <div data-test="award">
+                            <dt>Grant</dt>
+                            <dd>{doc.award.name}</dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
+    }
+});
+
+// Document detail component -- default
+var CharacterizationDetail = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        key: React.PropTypes.string // Unique key for identification
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var excerpt = doc.description && doc.description.length > 100;
+
+        return (
+            <div className={keyClass}>
+                <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                    {excerpt ?
+                        <div data-test="caption">
+                            <dt>Caption</dt>
+                            <dd>{doc.caption}</dd>
+                        </div>
+                    : null}
+
+                    {doc.submitted_by && doc.submitted_by.title ?
+                        <div data-test="submitted-by">
+                            <dt>Submitted by</dt>
+                            <dd>{doc.submitted_by.title}</dd>
+                        </div>
+                    : null}
+
+                    <div data-test="lab">
+                        <dt>Lab</dt>
+                        <dd>{doc.lab.title}</dd>
+                    </div>
+
+                    {doc.award && doc.award.name ?
+                        <div data-test="award">
+                            <dt>Grant</dt>
+                            <dd>{doc.award.name}</dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
+    }
+});
+
+
 // Register document @types so they display in the standard document panel
 globals.panel_views.register(Document, 'Document');
 globals.panel_views.register(Document, 'BiosampleCharacterization');
 globals.panel_views.register(Document, 'DonorCharacterization');
+
+// Register document header rendering components
+globals.document_views.header.register(DocumentHeader, 'Document');
+globals.document_views.header.register(CharacterizationHeader, 'BiosampleCharacterization');
+globals.document_views.header.register(CharacterizationHeader, 'DonorCharacterization');
+
+// Register document caption rendering components
+globals.document_views.caption.register(DocumentCaption, 'Document');
+globals.document_views.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
+globals.document_views.caption.register(CharacterizationCaption, 'DonorCharacterization');
+
+// Register document preview rendering components
+globals.document_views.preview.register(DocumentPreview, 'Document');
+globals.document_views.preview.register(DocumentPreview, 'BiosampleCharacterization');
+globals.document_views.preview.register(DocumentPreview, 'DonorCharacterization');
+
+// Register document file rendering components
+globals.document_views.file.register(DocumentFile, 'Document');
+globals.document_views.file.register(DocumentFile, 'BiosampleCharacterization');
+globals.document_views.file.register(DocumentFile, 'DonorCharacterization');
+
+// Register document detail rendering components
+globals.document_views.detail.register(DocumentDetail, 'Document');
+globals.document_views.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
+globals.document_views.detail.register(CharacterizationDetail, 'DonorCharacterization');

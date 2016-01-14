@@ -19,6 +19,26 @@ module.exports.blocks = new Registry();
 // Graph detail view
 module.exports.graph_detail = new Registry();
 
+// Document panel components
+// +---------------------------------------+
+// | header                                |
+// +---------------------------+-----------+
+// |                           |           |
+// |          caption          |  preview  |
+// |                           |           |
+// +---------------------------+-----------+
+// | file                                  |
+// +---------------------------------------+
+// | detail                                |
+// +---------------------------------------+
+var document_views = {};
+document_views.header = new Registry();
+document_views.caption = new Registry();
+document_views.preview = new Registry();
+document_views.file = new Registry();
+document_views.detail = new Registry();
+module.exports.document_views = document_views;
+
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
