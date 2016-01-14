@@ -2,8 +2,30 @@
 The object lifecycle
 ====================
 
+Retrieval (GET)
+---------------
 
-Submission
+Data can be retrieved from the database in one of a few "frames" which specify how much data is in the returned object.
+They are all indexed individually for performance.  Usually you will specify format=json (or set content-type: application/json) if you wish to return a JSON object directly.
+
+* frame=raw
+
+Objects are stored in the DB "raw" - with only the properties that are submitted with links as uuids.
+
+* frame=object
+
+This is the raw object with additional "@properties" (@id, @type) and calculated properties (defined in python code "types" package).  
+
+* frame=embedded
+
+This is the frame=object object with all the embedded properties (also specified in the "types" package)
+
+* frame=page
+
+This is the default object returned if frame is not specified.  It is the frame=embedded object with several UI and form properties added including @context, audit, and actions.
+
+
+Submission (POST)
 ----------
 
 POST /biosample::

@@ -1,7 +1,7 @@
 Demo Machines
 =============
 
-To launch a demo machine you need an access key (log into AWS console to create one under IAM) which you place in ``~/.aws/credentials`` which is shared with the aws cli utility::
+To launch a demo machine you need an access key (log into AWS console to create one under IAM) which you place in ``~/.aws/credentials`` (see _aws getting started) which is shared with the aws cli utility::
 
     [default]
     aws_access_key_id=AKIA...
@@ -37,6 +37,8 @@ You can then follow the deployment progress with::
     $ tail -f /var/log/cloud-init-output.log
 
 .. _sign your ssh public key: https://www.digitalocean.com/community/articles/how-to-create-an-ssh-ca-to-validate-hosts-and-clients-with-ubuntu
+
+.. _aws getting started: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
 
 
 Authorization of Demo Machines
