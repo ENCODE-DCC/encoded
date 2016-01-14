@@ -4,7 +4,7 @@ from contentbase import (
 )
 from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
-
+from .gtex_data import gtexDonorsList
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -52,6 +52,50 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
+
+
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample'])
+def audit_experiment_gtex_biosample(value, system):
+    '''
+    Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
+    associated with
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if len(value['replicates']) < 2:
+        return
+
+    biosample_set = set()
+    donor_set = set()
+
+    for rep in value['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+
+            biosampleObject = rep['library']['biosample']
+            donorObject = biosampleObject['donor']
+
+            biosample_set.add(biosampleObject['accession'])
+            donor_set.add(donorObject['accession'])
+
+    gtex_experiment_flag = False
+    for entry in donor_set:
+        if entry in gtexDonorsList:
+            gtex_experiment_flag = True
+
+    if gtex_experiment_flag is False:
+        return
+
+    if len(biosample_set) > 1:
+        detail = 'GTEx experiment {} '.format(value['@id']) + \
+                 'contains {} '.format(len(biosample_set)) + \
+                 'biosamples, while acording to HRWG decision it should have only 1'
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='ERROR')
+
+    return
 
 
 @audit_checker('experiment', frame=['object'])
