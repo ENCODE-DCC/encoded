@@ -413,8 +413,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                <DocumentPanel documentList={documentList} />
-
                 {replicates.map(function (replicate, index) {
                     return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
                 })}
@@ -442,6 +440,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                 : null}
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
+
+                <DocumentPanel documentList={documentList} />
             </div>
         );
     }
