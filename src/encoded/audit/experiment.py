@@ -93,7 +93,7 @@ def audit_experiment_gtex_biosample(value, system):
     if len(biosample_set) > 1:
         detail = 'GTEx experiment {} '.format(value['@id']) + \
                  'contains {} '.format(len(biosample_set)) + \
-                 'biosamples, while acording to HRWG decision it should have only 1'
+                 'biosamples, while according to HRWG decision it should have only 1'
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='ERROR')
 
     return
