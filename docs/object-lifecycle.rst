@@ -6,7 +6,7 @@ Retrieval (GET)
 ---------------
 
 Data can be retrieved from the database in one of a few "frames" which specify how much data is in the returned object.
-They are all indexed individually for performance.  Usually you will specify format=json (or set content-type: application/json) if you wish to return a JSON object directly.
+The object and embedded frames are indexed in elasticsearch, the page properties are applied at "GET".  Usually you will specify format=json (or set content-type: application/json) if you wish to return a JSON object directly.
 
 * frame=raw
 
