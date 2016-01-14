@@ -56,7 +56,8 @@ non_seq_assays = [
 
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
-                                    'replicates.library.biosample'])
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
     '''
     Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
