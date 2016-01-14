@@ -96,7 +96,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             return null;
         }));
 
-        // Build the text of the Treatment, synchronization, characterization docs, and mutatedGene string arrays
+        // Build the text of the Treatment, synchronization, and mutatedGene string arrays; collect biosample docs
         var treatments;
         var synchText = [];
         var biosampleCharacterizationDocs = [];
@@ -160,7 +160,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 biosampleDonorDocs = biosampleDonorDocs.concat(biosample.donor.donor_documents);
             }
 
-            // Collect donor documents
+            // Collect donor characterizations
             if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
                 biosampleDonorCharacterizations = biosampleDonorCharacterizations.concat(biosample.donor.characterizations);
             }
@@ -173,6 +173,35 @@ var Experiment = module.exports.Experiment = React.createClass({
         biosampleConstructDocs = biosampleConstructDocs.length ? _.uniq(biosampleConstructDocs) : [];
         biosampleDonorDocs = biosampleDonorDocs.length ? _.uniq(biosampleDonorDocs) : [];
         biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? _.uniq(biosampleDonorCharacterizations) : [];
+
+        // Collect pipeline-related documents
+        var analysisStepDocs = [];
+        var pipelineDocs = [];
+        if (context.files && context.files.length) {
+            context.files.forEach(file => {
+                var fileAnalysisStepVersion = file.analysis_step_version;
+                if (fileAnalysisStepVersion) {
+                    var fileAnalysisStep = fileAnalysisStepVersion.analysis_step;
+                    if (fileAnalysisStep) {
+                        // Collect analysis step docs
+                        if (fileAnalysisStep.documents && fileAnalysisStep.documents.length) {
+                            analysisStepDocs = analysisStepDocs.concat(fileAnalysisStep.documents);
+                        }
+
+                        // Collect pipeline docs
+                        if (fileAnalysisStep.pipelines && fileAnalysisStep.pipelines.length) {
+                            fileAnalysisStep.pipelines.forEach(pipeline => {
+                                if (pipeline.documents && pipeline.documents.length) {
+                                    pipelineDocs = pipelineDocs.concat(pipeline.documents);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
 
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
@@ -237,7 +266,9 @@ var Experiment = module.exports.Experiment = React.createClass({
             {title: 'RNAi documents', documents: biosampleRnaiDocs},
             {title: 'Construct documents', documents: biosampleConstructDocs},
             {title: 'Donor documents', documents: biosampleDonorDocs},
-            {title: 'Donor characterizations', documents: biosampleDonorCharacterizations}
+            {title: 'Donor characterizations', documents: biosampleDonorCharacterizations},
+            {title: 'Pipeline documents', documents: pipelineDocs},
+            {title: 'Analysis step documents', documents: analysisStepDocs}
         ];
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;

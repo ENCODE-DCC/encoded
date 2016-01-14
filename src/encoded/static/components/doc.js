@@ -32,27 +32,34 @@ var DocumentPanel = module.exports.DocumentPanel = React.createClass({
     },
 
     render: function() {
-        return (
-            <div>
-                <h3>Documents</h3>
-                <Panel addClasses="clearfix">
-                    {this.props.documentList.map(docObj => {
-                        if (docObj.documents.length) {
-                            return (
-                                <PanelBody>
-                                    <h4>{docObj.title}</h4>
-                                    {docObj.documents.map(doc => {
-                                        var PanelView = globals.panel_views.lookup(doc);
-                                        return <PanelView key={doc['@id']} context={doc} />;
-                                    })}
-                                </PanelBody>
-                            );
-                        }
-                        return null;
-                    })}
-                </Panel>
-            </div>
-        );
+        var documentList = this.props.documentList.length && _.compact(this.props.documentList.map(docObj => {
+            return docObj.documents.length ? docObj : null;
+        }));
+
+        if (documentList && documentList.length) {
+            return (
+                <div>
+                    <h3>Documents</h3>
+                    <Panel addClasses="clearfix">
+                        {this.props.documentList.map(docObj => {
+                            if (docObj.documents.length) {
+                                return (
+                                    <PanelBody>
+                                        <h4>{docObj.title}</h4>
+                                        {docObj.documents.map(doc => {
+                                            var PanelView = globals.panel_views.lookup(doc);
+                                            return <PanelView key={doc['@id']} context={doc} />;
+                                        })}
+                                    </PanelBody>
+                                );
+                            }
+                            return null;
+                        })}
+                    </Panel>
+                </div>
+            );
+        }
+        return null;
     }
 });
 
@@ -73,7 +80,6 @@ var Document = module.exports.Document = React.createClass({
     },
 
     render: function() {
-
         var context = this.props.context;
         var keyClass = 'document-slider' + (this.state.panelOpen ? ' active' : '');
         var figure = <Attachment context={this.props.context} className="characterization" />;
