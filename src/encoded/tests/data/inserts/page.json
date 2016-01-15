@@ -94,6 +94,29 @@
         }
     },
     {
+        "parent": "/test-section",
+        "name": "subpage-in-progress",
+        "title": "Subpage in progress not visible to users",
+        "status": "in progress",
+        "uuid": "83173355-31ff-4ca7-a259-e4af0f3a0169",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Subpage in progress</h1>"
+                }
+            ]
+        }
+    },
+    {
         "name": "images",
         "title": "Images",
         "status": "released",
