@@ -258,17 +258,20 @@ var Experiment = module.exports.Experiment = React.createClass({
         ];
 
         // Compile the document list
+        var combinedDocuments = [].concat(
+            biosampleCharacterizationDocs,
+            libraryDocs,
+            biosampleDocs,
+            biosampleTalenDocs,
+            biosampleRnaiDocs,
+            biosampleConstructDocs,
+            biosampleDonorDocs,
+            biosampleDonorCharacterizations,
+            pipelineDocs,
+            analysisStepDocs
+        );
         var documentSpecs = [
-            {title: 'Characterizations', documents: biosampleCharacterizationDocs},
-            {title: 'Library documents', documents: libraryDocs},
-            {title: 'Biosample documents', documents: biosampleDocs},
-            {title: 'TALEN documents', documents: biosampleTalenDocs},
-            {title: 'RNAi documents', documents: biosampleRnaiDocs},
-            {title: 'Construct documents', documents: biosampleConstructDocs},
-            {title: 'Donor documents', documents: biosampleDonorDocs},
-            {title: 'Donor characterizations', documents: biosampleDonorCharacterizations},
-            {title: 'Pipeline documents', documents: pipelineDocs},
-            {title: 'Analysis step documents', documents: analysisStepDocs}
+            {documents: combinedDocuments}
         ];
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
