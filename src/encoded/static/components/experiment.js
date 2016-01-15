@@ -257,7 +257,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
         ];
 
-        // Compmile the document list
+        // Compile the document list
         var documentSpecs = [
             {title: 'Characterizations', documents: biosampleCharacterizationDocs},
             {title: 'Library documents', documents: libraryDocs},

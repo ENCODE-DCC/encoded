@@ -13,6 +13,7 @@ var item = require('./item');
 var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
+var {Document, DocumentPreview, DocumentFile} = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -1029,3 +1030,118 @@ var RNAi = module.exports.RNAi = React.createClass({
 });
 
 globals.panel_views.register(RNAi, 'RNAi');
+
+
+//**********************************************************************
+// Biosample and donor characterization documents
+
+const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
+
+// Document header component -- Characterizations
+var CharacterizationHeader = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+
+        return (
+            <div className="panel-header document-title sentence-case">
+                {doc.characterization_method}
+            </div>
+        );
+    }
+});
+
+// Document caption component -- Characterizations
+var CharacterizationCaption = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired // Document object to render
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var excerpt, caption = doc.caption;
+        if (caption && caption.length > EXCERPT_LENGTH) {
+            excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
+        }
+
+        return (
+            <div className="document-intro document-meta-data">
+                {excerpt || caption ?
+                    <div data-test="caption">
+                        <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
+                        {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
+                    </div>
+                : <em>No caption</em>}
+            </div>
+        );
+    }
+});
+
+// Document detail component -- default
+var CharacterizationDetail = React.createClass({
+    propTypes: {
+        doc: React.PropTypes.object.isRequired, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        key: React.PropTypes.string // Unique key for identification
+    },
+
+    render: function() {
+        var doc = this.props.doc;
+        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
+
+        return (
+            <div className={keyClass}>
+                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                    {excerpt ?
+                        <div data-test="caption">
+                            <dt>Caption</dt>
+                            <dd>{doc.caption}</dd>
+                        </div>
+                    : null}
+
+                    {doc.submitted_by && doc.submitted_by.title ?
+                        <div data-test="submitted-by">
+                            <dt>Submitted by</dt>
+                            <dd>{doc.submitted_by.title}</dd>
+                        </div>
+                    : null}
+
+                    <div data-test="lab">
+                        <dt>Lab</dt>
+                        <dd>{doc.lab.title}</dd>
+                    </div>
+
+                    {doc.award && doc.award.name ?
+                        <div data-test="award">
+                            <dt>Grant</dt>
+                            <dd>{doc.award.name}</dd>
+                        </div>
+                    : null}
+                </dl>
+            </div>
+        );
+    }
+});
+
+// Parts of individual document panels
+globals.panel_views.register(Document, 'BiosampleCharacterization');
+globals.panel_views.register(Document, 'DonorCharacterization');
+
+globals.document_views.header.register(CharacterizationHeader, 'BiosampleCharacterization');
+globals.document_views.header.register(CharacterizationHeader, 'DonorCharacterization');
+
+globals.document_views.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
+globals.document_views.caption.register(CharacterizationCaption, 'DonorCharacterization');
+
+globals.document_views.preview.register(DocumentPreview, 'BiosampleCharacterization');
+globals.document_views.preview.register(DocumentPreview, 'DonorCharacterization');
+
+globals.document_views.file.register(DocumentFile, 'BiosampleCharacterization');
+globals.document_views.file.register(DocumentFile, 'DonorCharacterization');
+
+globals.document_views.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
+globals.document_views.detail.register(CharacterizationDetail, 'DonorCharacterization');
