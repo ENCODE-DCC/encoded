@@ -641,13 +641,57 @@ $characterization-figure-height: 64px;
     padding: 10px;
 }
 
+
+// ***************************************
+// Document download file bar classes
+$dl-bar-height: 30px;
+
+// THe file bar itself
 .dl-bar {
-    height: 32px;
+    position: relative;
+    height: $dl-bar-height;
     padding: 0 10px 0 10px;
-    line-height: 32px;
+    line-height: $dl-bar-height;
     border-bottom: 1px solid #e8e8e8;
     white-space: nowrap;
     overflow: hidden;
+}
+
+// Box containing the switch to drop down the details panel
+.detail-switch {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: $dl-bar-height;
+    height: $dl-bar-height;
+    background-color: #fff;
+    border-left: 1px solid #e8e8e8;
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+
+    &.open {
+        transition: 0.1s linear;
+        background-color: #c0c0c0;
+    }
+}
+
+// Icon within .detail-switch to show the current state of the switch
+.detail-trigger {
+    @extend .icon-caret-left;
+    display: block;
+    height: $dl-bar-height;
+    line-height: $dl-bar-height;
+    font-size: 1.4rem;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.1s linear;
+
+    &.open {
+        transform: rotate(-90deg);
+    }
 }
 
 
@@ -688,7 +732,7 @@ $characterization-figure-height: 64px;
 .document-slider {
     display: none;
     margin: 0;
-    padding: 10px 5px 0;
+    padding: 10px 5px;
     border-bottom: 1px solid #e8e8e8;
 
     &.active {

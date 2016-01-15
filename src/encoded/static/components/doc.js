@@ -9,7 +9,7 @@ var image = require('./image');
 var {Panel, PanelBody} = panel;
 var Attachment = image.Attachment;
 
-const EXCERPT_LENGTH = 90; // Maximum number of characters in an excerpt
+const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 
 // To add more @types for document panels, see the bottom of this file.
@@ -55,10 +55,12 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                                 return (
                                     <PanelBody>
                                         {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
-                                        {documentSpec.documents.map(doc => {
-                                            var PanelView = globals.panel_views.lookup(doc);
-                                            return <PanelView key={doc['@id']} context={doc} />;
-                                        })}
+                                        <div className="row multi-columns-row">
+                                            {documentSpec.documents.map(doc => {
+                                                var PanelView = globals.panel_views.lookup(doc);
+                                                return <PanelView key={doc['@id']} context={doc} />;
+                                            })}
+                                        </div>
                                     </PanelBody>
                                 );
                             }
@@ -73,6 +75,8 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
 });
 
 
+// Display a single document within a <DocumentPanel>. This routine requires that you register display components for each
+// of the five major parts of a single document panel. See globals.js for a guide to the parts.
 var Document = module.exports.Document = React.createClass({
     getInitialState: function() {
         return {panelOpen: false};
@@ -108,13 +112,9 @@ var Document = module.exports.Document = React.createClass({
                             <DocumentPreviewView doc={context} />
                             <DocumentCaptionView doc={context} />
                         </div>
-                        <DocumentFileView doc={this.props.context} />
+                        <DocumentFileView doc={this.props.context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
                         <DocumentDetailView doc={this.props.context} detailOpen={this.state.panelOpen} key={this.props.key} />
                     </div>
-
-                    <button onClick={this.handleClick} className="key-value-trigger panel-footer" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">
-                        {this.state.panelOpen ? 'Less' : 'More'}
-                    </button>
                 </div>
             </section>
         );
@@ -229,11 +229,13 @@ var DocumentPreview = React.createClass({
 // Document file component -- default
 var DocumentFile = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: React.PropTypes.object.isRequired, // Document object to render
+        detailOpen: React.PropTypes.bool, // True if detail panel is visible
+        detailSwitch: React.PropTypes.func // Parent component function to call when detail switch clicked
     },
 
     render: function() {
-        var doc = this.props.doc;
+        var {doc, detailOpen, detailSwitch} = this.props;
 
         if (doc.attachment && doc.attachment.href && doc.attachment.download) {
             var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
@@ -245,6 +247,11 @@ var DocumentFile = React.createClass({
                     <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
                         {doc.attachment.download}
                     </a>
+                    {detailSwitch ?
+                        <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
+                            <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}></i>
+                        </div>
+                    : null}
                 </div>
             );
         }
@@ -273,7 +280,7 @@ var DocumentDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Description</dt>
@@ -320,7 +327,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>

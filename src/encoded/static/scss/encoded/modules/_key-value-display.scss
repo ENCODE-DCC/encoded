@@ -10,7 +10,7 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-dl.key-value {
+dl.key-value, dl.key-value-doc {
     margin: 0;
 
     dt, dd {
@@ -44,7 +44,9 @@ dl.key-value {
         clear: both;
         margin: 6px 0;
     }
+}
 
+dl.key-value {
     @media screen and (min-width: $screen-sm-min) {
         display: table;
 
