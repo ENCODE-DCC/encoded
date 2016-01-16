@@ -54,13 +54,7 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                             if (documentSpec.documents.length) {
                                 return (
                                     <PanelBody>
-                                        {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
-                                        <div className="row multi-columns-row">
-                                            {documentSpec.documents.map(doc => {
-                                                var PanelView = globals.panel_views.lookup(doc);
-                                                return <PanelView key={doc['@id']} context={doc} />;
-                                            })}
-                                        </div>
+                                        <DocumentsSubpanels documentSpec={documentSpec} />
                                     </PanelBody>
                                 );
                             }
@@ -71,6 +65,29 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
             );
         }
         return null;
+    }
+});
+
+
+var DocumentsSubpanels = module.exports.DocumentsSubpanels = React.createClass({
+    propTypes: {
+        documentSpec: React.PropTypes.object.isRequired // List of document arrays and their titles
+    },
+
+    render: function() {
+        var documentSpec = this.props.documentSpec;
+
+        return (
+            <div>
+                {documentSpec.title ? <h4>{documentSpec.title}</h4> : null}
+                <div className="row multi-columns-row">
+                    {documentSpec.documents.map(doc => {
+                        var PanelView = globals.panel_views.lookup(doc);
+                        return <PanelView key={doc['@id']} context={doc} />;
+                    })}
+                </div>
+            </div>
+        );
     }
 });
 

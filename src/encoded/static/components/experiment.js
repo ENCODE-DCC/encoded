@@ -71,15 +71,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
         var aliasList = context.aliases.join(", ");
 
-        var documents = [];
-        replicates.forEach(function (replicate) {
-            if (replicate.library) {
-                replicate.library.documents.forEach(doc => {
-                    documents.push(doc);
-                });
-            }
-        });
-
         // Get the first replicate's library for items needing one library
         var lib = (replicates && replicates.length) ? replicates[0].library : null;
 
@@ -89,7 +80,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var biosamples = _.compact(replicates.map(replicate => {
             if (replicate.library) {
                 if (replicate.library.documents && replicate.library.documents.length){
-                    libraryDocs = libraryDocs.concat(replicate.library.documents);
+                    Array.prototype.push.apply(libraryDocs, replicate.library.documents);
                 }
                 return replicate.library.biosample;
             }
@@ -132,7 +123,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (biosample.talens && biosample.talens.length) {
                 biosample.talens.forEach(talen => {
                     if (talen.documents && talen.documents.length) {
-                        biosampleTalenDocs = biosampleTalenDocs.concat(talen.documents)
+                        Array.prototype.push.apply(biosampleTalenDocs, talen.documents)
                     }
                 });
             }
@@ -141,7 +132,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (biosample.rnais && biosample.rnais.length) {
                 biosample.rnais.forEach(rnai => {
                     if (rnai.documents && rnai.documents.length) {
-                        biosampleRnaiDocs = biosampleRnaiDocs.concat(rnai.documents)
+                        Array.prototype.push.apply(biosampleRnaiDocs, rnai.documents);
                     }
                 });
             }
@@ -150,29 +141,29 @@ var Experiment = module.exports.Experiment = React.createClass({
             if (biosample.constructs && biosample.constructs.length) {
                 biosample.constructs.forEach(construct => {
                     if (construct.documents && construct.documents.length) {
-                        biosampleConstructDocs = biosampleConstructDocs.concat(construct.documents)
+                        Array.prototype.push.apply(biosampleConstructDocs, construct.documents);
                     }
                 });
             }
 
             // Collect donor documents
             if (biosample.donor && biosample.donor.donor_documents && biosample.donor.donor_documents.length) {
-                biosampleDonorDocs = biosampleDonorDocs.concat(biosample.donor.donor_documents);
+                Array.prototype.push.apply(biosampleDonorDocs, biosample.donor.donor_documents);
             }
 
             // Collect donor characterizations
             if (biosample.donor && biosample.donor.characterizations && biosample.donor.characterizations.length) {
-                biosampleDonorCharacterizations = biosampleDonorCharacterizations.concat(biosample.donor.characterizations);
+                Array.prototype.push.apply(biosampleDonorCharacterizations, biosample.donor.characterizations);
             }
         });
         synchText = synchText && _.uniq(synchText);
-        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? _.uniq(biosampleCharacterizationDocs) : [];
-        biosampleDocs = biosampleDocs.length ? _.uniq(biosampleDocs) : [];
-        biosampleTalenDocs = biosampleTalenDocs.length ? _.uniq(biosampleTalenDocs) : [];
-        biosampleRnaiDocs = biosampleRnaiDocs.length ? _.uniq(biosampleRnaiDocs) : [];
-        biosampleConstructDocs = biosampleConstructDocs.length ? _.uniq(biosampleConstructDocs) : [];
-        biosampleDonorDocs = biosampleDonorDocs.length ? _.uniq(biosampleDonorDocs) : [];
-        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? _.uniq(biosampleDonorCharacterizations) : [];
+        biosampleCharacterizationDocs = biosampleCharacterizationDocs.length ? globals.uniqueObjectsArray(biosampleCharacterizationDocs) : [];
+        biosampleDocs = biosampleDocs.length ? globals.uniqueObjectsArray(biosampleDocs) : [];
+        biosampleTalenDocs = biosampleTalenDocs.length ? globals.uniqueObjectsArray(biosampleTalenDocs) : [];
+        biosampleRnaiDocs = biosampleRnaiDocs.length ? globals.uniqueObjectsArray(biosampleRnaiDocs) : [];
+        biosampleConstructDocs = biosampleConstructDocs.length ? globals.uniqueObjectsArray(biosampleConstructDocs) : [];
+        biosampleDonorDocs = biosampleDonorDocs.length ? globals.uniqueObjectsArray(biosampleDonorDocs) : [];
+        biosampleDonorCharacterizations = biosampleDonorCharacterizations.length ? globals.uniqueObjectsArray(biosampleDonorCharacterizations) : [];
 
         // Collect pipeline-related documents
         var analysisStepDocs = [];
@@ -200,8 +191,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
             });
         }
-        analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
-        pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
+        analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
 
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
@@ -444,7 +435,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
 
-                <DocumentsPanel documentSpecs={documentSpecs} />
+                <DocumentsPanel documentSpec={{documents: combinedDocuments}} />
             </div>
         );
     }

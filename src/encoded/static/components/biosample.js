@@ -13,7 +13,7 @@ var item = require('./item');
 var reference = require('./reference');
 var objectutils = require('./objectutils');
 var sortTable = require('./sorttable');
-var {Document, DocumentPreview, DocumentFile} = require('./doc');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -27,6 +27,7 @@ var RelatedItems = item.RelatedItems;
 var SingleTreatment = objectutils.SingleTreatment;
 var SortTablePanel = sortTable.SortTablePanel;
 var SortTable = sortTable.SortTable;
+var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 
 
 var Panel = function (props) {
@@ -106,27 +107,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
         ];
 
-        // set up construct documents panels
-        var constructs = _.sortBy(context.constructs, function(item) {
-            return item.uuid;
-        });
-        var construct_documents = {};
-        constructs.forEach(function (construct) {
-            construct.documents.forEach(function (doc, i) {
-                construct_documents[doc['@id']] = Panel({context: doc, key: i + 1});
-            });
-        });
 
-        // set up RNAi documents panels
-        var rnais = _.sortBy(context.rnais, function(item) {
-            return item.uuid; //may need to change
-        });
-        var rnai_documents = {};
-        rnais.forEach(function (rnai) {
-            rnai.documents.forEach(function (doc, i) {
-                rnai_documents[doc['@id']] = Panel({context: doc, key: i + 1});
-            });
-        });
 
         // Build the text of the synchronization string
         var synchText;
@@ -137,10 +118,41 @@ var Biosample = module.exports.Biosample = React.createClass({
                 : '');
         }
 
-        var protocol_documents = {};
-        context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc});
-        });
+        // Collect up the various biosample documents
+        var protocol_documents = [];
+        if (context.protocol_documents && context.protocol_documents.length) {
+            protocol_documents = globals.uniqueObjectsArray(context.protocol_documents);
+        }
+        var characterizations = [];
+        if (context.characterizations && context.characterizations.length) {
+            characterizations = globals.uniqueObjectsArray(context.characterizations);
+        }
+        var construct_documents = [];
+        if (context.constructs && context.constructs.length) {
+            context.constructs.forEach(construct => {
+                if (construct.documents && construct.documents.length) {
+                    Array.prototype.push.apply(construct_documents, construct.documents);
+                }
+            });
+        }
+        construct_documents = globals.uniqueObjectsArray(construct_documents);
+        var rnai_documents = [];
+        if (context.rnais && context.rnais.length) {
+            rnais.forEach(rnai => {
+                if (rnai.documents && rnai.documents.length) {
+                    Array.prototype.push.apply(rnai_documents, rnai.documents);
+                }
+            });
+        }
+        rnai_documents = globals.uniqueObjectsArray(rnai_documents);
+
+        // Put together the document list for rendering
+        var documentSpecs = [
+            {title: 'Protocol documents', documents: protocol_documents},
+            {title: 'Characterizations', documents: characterizations},
+            {title: 'Construct documents', documents: construct_documents},
+            {title: 'RNAi documents', documents: rnai_documents}
+        ];
 
         // Set up TALENs panel for multiple TALENs
         var talens = null;
@@ -436,41 +448,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                {Object.keys(protocol_documents).length ?
-                    <div>
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {protocol_documents}
-                        </div>
-                    </div>
-                : null}
-
-                {context.characterizations.length ?
-                    <div>
-                        <h3>Characterizations</h3>
-                        <div className="row multi-columns-row">
-                            {context.characterizations.map(Panel)}
-                        </div>
-                    </div>
-                : null}
-
-                {Object.keys(construct_documents).length ?
-                    <div>
-                        <h3>Construct documents</h3>
-                        <div className="row multi-columns-row">
-                            {construct_documents}
-                        </div>
-                    </div>
-                : null}
-
-                {Object.keys(rnai_documents).length ?
-                    <div>
-                        <h3>RNAi documents</h3>
-                        <div className="row multi-columns-row">
-                            {rnai_documents}
-                        </div>
-                    </div>
-                : null}
+                <DocumentsPanel documentSpecs={documentSpecs} />
 
                 <RelatedItems
                     title={'Experiments using biosample ' + context.accession}
@@ -598,6 +576,16 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
             donorUrlDomain = donorUrl.hostname || '';
         }
 
+        // Collect the characterization documents
+        var characterizations = [];
+        if (biosample && biosample.donor.characterizations && biosample.donor.characterizations.length) {
+            characterizations = biosample.donor.characterizations;
+        }
+        var documentSpec;
+        if (characterizations.length) {
+            documentSpec = {title: 'Construct documents', documents: characterizations};
+        }
+
         return (
             <div>
                 <dl className="key-value">
@@ -669,22 +657,14 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         </div>
                     : null}
 
-                    {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                        <section className="multi-columns-row">
-                            <hr />
-                            <h4>Characterizations</h4>
-                            <div className="row multi-columns-row">
-                                {biosample.donor.characterizations.map(Panel)}
-                            </div>
-                        </section>
-                    : null}
-
                     {context.references && context.references.length ?
                         <div data-test="references">
                             <dt>References</dt>
                             <dd><PubReferenceList values={context.references} /></dd>
                         </div>
                     : null}
+
+                    <DocumentsSubpanels documentSpec={documentSpec} />
                 </dl>
             </div>
         );
@@ -699,11 +679,22 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
-        var donor_constructs = {};
-        if (biosample && biosample.model_organism_donor_constructs) {
-            biosample.model_organism_donor_constructs.forEach(function (construct) {
-                donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
-            });
+
+        // Collect donor construct documents
+        var donorConstructs = [];
+        if (biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
+            donor_constructs = biosample.model_organism_donor_constructs;
+        }
+        var donorCharacterizations = [];
+        if (biosample && biosample.donor.characterizations && biosample.donor.characterizations.length) {
+            donorCharacterizations = biosample.donor.characterizations;
+        }
+        var constructSpec = {}, characterizationSpec = {};
+        if (donorConstructs.length) {
+            constructSpec = {title: 'Construct documents', documents: donorConstructs};
+        }
+        if (donorCharacterizations.length) {
+            characterizationSpec = {title: 'Characterizations', documents: donorCharacterizations};
         }
 
         // Get the domain name of the donor URL
@@ -784,24 +775,8 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     : null}
                 </dl>
 
-                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
-                    <section>
-                        <hr />
-                        <h4>Construct details</h4>
-                        {donor_constructs}
-                    </section>
-                : null}
-
-                {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                    <section className="multi-columns-row">
-                        <hr />
-                        <h4>Characterizations</h4>
-                        <div className="row multi-columns-row">
-                            {biosample.donor.characterizations.map(Panel)}
-                        </div>
-                    </section>
-                : null}
-
+                <DocumentsSubpanels documentSpec={constructSpec} />
+                <DocumentsSubpanels documentSpes={characterizationSpec} />
             </div>
         );
     }

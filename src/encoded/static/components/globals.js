@@ -1,5 +1,6 @@
 'use strict';
 var Registry = require('../libs/registry');
+var _ = require('underscore');
 
 // Item pages
 module.exports.content_views = new Registry();
@@ -72,6 +73,14 @@ module.exports.truncateString = function (str, len) {
         str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…'; // Back up to word boundary
     }
     return str;
+};
+
+// Given an array of objects with @id properties, this returns the same array but with any
+// duplicate @id objects removed.
+module.exports.uniqueObjectsArray = function(objects) {
+    return _(objects).uniq(object => {
+        return object['@id'];
+    });
 };
 
 module.exports.bindEvent = function (el, eventName, eventHandler) {
