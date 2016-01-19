@@ -89,30 +89,24 @@
     },
     "facets": {
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "investigated_as": {
-            "title": "Target of assay",
-            "type": "string"
+            "title": "Target of assay"
         }
     },
     "columns": {
         "label": {
-            "title": "Target",
-            "type": "string"
+            "title": "Target"
         },
         "organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
+            "title": "Species"
         },
         "dbxref": {
-            "title": "External resources",
-            "type": "array"
+            "title": "External resources"
         },
         "gene_name": {
-            "title": "Gene name",
-            "type": "string"
+            "title": "Gene name"
         }
     },
     "boost_values": {

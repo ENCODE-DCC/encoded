@@ -86,20 +86,16 @@
     },
     "columns": {
         "@id": {
-            "title": "Path",
-            "type": "string"
+            "title": "Path"
         },
         "title": {
-            "title": "Title",
-            "type": "string"
+            "title": "Title"
         },
         "date_created": {
-            "title": "Created",
-            "type": "datetime"
+            "title": "Created"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         }
     },
     "boost_values": {

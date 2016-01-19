@@ -80,46 +80,36 @@
     },
     "facets": {
         "status": {
-            "title": "Dataset status",
-            "type": "string"
+            "title": "Dataset status"
         },
         "files.file_type": {
-            "title": "Available data",
-            "type": "string"
+            "title": "Available data"
         },
         "date_released": {
-            "title": "Date released",
-            "type": "string"
+            "title": "Date released"
         },  
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "description": {
-            "title": "Description",
-            "type": "string"
+            "title": "Description"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         }
     },
     "boost_values": {

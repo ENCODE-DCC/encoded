@@ -118,58 +118,45 @@
     },
     "facets": {
         "software_type": {
-            "title": "Software type",
-            "type": "array"
+            "title": "Software type"
         },
         "purpose": {
-            "title": "Purpose in project",
-            "type": "string"
+            "title": "Purpose in project"
         },
         "references.published_by": {
-            "title": "Created by",
-            "type": "array"
+            "title": "Created by"
         }
     },
    "columns": {
         "title": {
-            "title": "Title",
-            "type": "string"
+            "title": "Title"
         },
         "name": {
-            "title": "Name",
-            "type": "string"
+            "title": "Name"
         },
         "status": {
-            "title": "Publication status",
-            "type": "string"
+            "title": "Publication status"
         },
         "url": {
-            "title": "URL",
-            "type": "string"
+            "title": "URL"
         },
         "description": {
-            "title": "Description",
-            "type": "string"
+            "title": "Description"
         },
         "source_url": {
-            "title": "Source URL",
-            "type": "string"
+            "title": "Source URL"
         },
         "references": {
-            "title": "references",
-            "type": "array"
+            "title": "references"
         },
         "used_by": {
-            "title": "Use by project",
-            "type": "array"
+            "title": "Use by project"
         },
         "software_type": {
-            "title": "The classification of the software",
-            "type": "array"
+            "title": "The classification of the software"
         },
         "purpose": {
-            "title": "Purpose in project",
-            "type": "array"
+            "title": "Purpose in project"
         }
     },
     "boost_values": {

@@ -35,7 +35,7 @@ class Page(Item):
     schema = load_schema('encoded:schemas/page.json')
     name_key = 'name'
     STATUS_ACL = {
-        'in progress': [],
+        'in progress': ONLY_ADMIN_VIEW,
         'released': ALLOW_EVERYONE_VIEW,
         'deleted': ONLY_ADMIN_VIEW,
     }

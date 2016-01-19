@@ -232,7 +232,7 @@ def audit_experiment_biosample_term_id(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2",
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -260,17 +260,22 @@ def audit_experiment_replicate_with_no_files(value, system):
             if file_replicate['@id'] in rep_dictionary:
                 rep_dictionary[file_replicate['@id']].append(file_object['file_format'])
 
+    audit_level = 'ERROR'
+    if value['status'] in ['proposed', 'preliminary', 'in progress', 'started', 'submitted']:
+        audit_level = 'WARNING'
+
     for key in rep_dictionary.keys():
         if len(rep_dictionary[key]) == 0:
             detail = 'Experiment {} replicate '.format(value['@id']) + \
                      '{} does not have files associated with'.format(key)
-            yield AuditFailure('missing file in replicate', detail, level='ERROR')
+            yield AuditFailure('missing file in replicate', detail, level=audit_level)
         else:
             if seq_assay_flag is True:
                 if 'fastq' not in rep_dictionary[key]:
                     detail = 'Sequencing experiment {} replicate '.format(value['@id']) + \
                              '{} does not have FASTQ files associated with'.format(key)
-                    yield AuditFailure('missing FASTQ file in replicate', detail, level='ERROR')
+                    yield AuditFailure('missing FASTQ file in replicate',
+                                       detail, level=audit_level)
     return
 
 
@@ -430,7 +435,6 @@ def audit_experiment_replicates_biosample(value, system):
 
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
-        tech_rep_num = rep['technical_replicate_number']
         if 'library' in rep and 'biosample' in rep['library']:
             biosample = rep['library']['biosample']
 

@@ -591,154 +591,117 @@
     },
     "facets": {
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "status": {
-            "title": "Biosample status",
-            "type": "string"
+            "title": "Biosample status"
         },
         "biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
+            "title": "Biosample type"
         },
         "organ_slims": {
-            "title": "Organ",
-            "type": "array"
+            "title": "Organ"
         },
         "sex": {
-            "title": "Sex",
-            "type": "string"
+            "title": "Sex"
         },
         "life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "subcellular_fraction_term_name": {
-            "title": "Subcellular fraction",
-            "type": "string"
+            "title": "Subcellular fraction"
         },
         "phase": {
-            "title": "Cell cycle phase",
-            "type": "string"
+            "title": "Cell cycle phase"
         },
         "treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "array"
+            "title": "Biosample treatment"
         },
         "transfection_type": {
-            "title": "Transfection type",
-            "type": "string"
+            "title": "Transfection type"
         },
         "transfection_method": {
-            "title": "Transfection method",
-            "type": "string"
+            "title": "Transfection method"
         },
         "source.title": {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "description": {
-            "title": "Description",
-            "type": "string"
+            "title": "Description"
         },
         "age": {
-            "title": "Age",
-            "type": "string"
+            "title": "Age"
         },
         "age_units": {
-            "title": "Age Units",
-            "type": "string"
+            "title": "Age Units"
         },
         "biosample_term_name": {
-            "title": "Term",
-            "type": "string"
+            "title": "Term"
         },
         "biosample_type": {
-            "title": "Type",
-            "type": "string"
+            "title": "Type"
         },
         "synchronization": {
-            "title": "Synchronization",
-            "type": "string"
+            "title": "Synchronization"
         },
         "post_synchronization_time": {
-            "title": "Post-synchronization time",
-            "type": "string"
+            "title": "Post-synchronization time"
         },
         "post_synchronization_time_units": {
-            "title": "Post-synchronization time units",
-            "type": "string"
+            "title": "Post-synchronization time units"
         },       
         "organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
+            "title": "Species"
         },
         "source.title": {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "lab.title": {
-            "title": "Submitter",
-            "type": "string"
+            "title": "Submitter"
         },
         "life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "rnais.target.label": {
-            "title": "RNAi target",
-            "type": "string"
+            "title": "RNAi target"
         },
         "treatments.treatment_term_name": {
-            "title": "Treatment",
-            "type": "string"
+            "title": "Treatment"
         },
         "constructs.target.label": {
-            "title": "Construct",
-            "type": "string"
+            "title": "Construct"
         },
         "culture_harvest_date": {
-            "title": "Culture harvest date",
-            "type": "string"
+            "title": "Culture harvest date"
         },
         "date_obtained": {
-            "title": "Date obtained",
-            "type": "string"
+            "title": "Date obtained"
         },
         "model_organism_donor_constructs.target.label": {
-            "title": "Constructs",
-            "type": "string"
+            "title": "Constructs"
         },
         "donor.mutated_gene.label": {
-            "title": "Mutated gene",
-            "type": "string"
+            "title": "Mutated gene"
         },
         "treatments.length": {
-            "title": "Treatments length",
-            "type": "array"
+            "title": "Treatments length"
         },
         "constructs.length": {
-            "title": "Constructs",
-            "type": "array"
+            "title": "Constructs"
         }
     },
     "boost_values": {

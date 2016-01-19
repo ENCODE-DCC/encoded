@@ -59,8 +59,49 @@ gtexParentsList = ['ENCBS380GWR', 'ENCBS001XKZ', 'ENCBS564MPZ', 'ENCBS192JQI',
                    'ENCBS280LSO', 'ENCBS825XXY', 'ENCBS131WCD', 'ENCBS468RPZ',
                    'ENCBS853AVG']
 
+model_organism_terms = ['model_organism_mating_status',
+                        'model_organism_sex',
+                        'mouse_life_stage',
+                        'fly_life_stage',
+                        'fly_synchronization_stage',
+                        'post_synchronization_time',
+                        'post_synchronization_time_units',
+                        'worm_life_stage',
+                        'worm_synchronization_stage',
+                        'model_organism_age',
+                        'model_organism_age_units',
+                        'model_organism_health_status',
+                        'model_organism_donor_constructs']
+
 gtexDonorsList = ['ENCDO845WKR', 'ENCDO451RUA', 'ENCDO793LXB', 'ENCDO271OUW']
 
+
+@audit_checker('biosample', frame=['organism'])
+def audit_biosample_human_no_model_organism_properties(value, system):
+    '''
+    human bioamples shouldn't have model organism properties initiated
+    '''
+    if 'organism' not in value:
+        return
+
+    if value['organism']['scientific_name'] != 'Homo sapiens':
+        return
+    terms_list = []
+    for term in model_organism_terms:
+        if term in value:
+            terms_list.append(term)
+    if len(terms_list) == 1:
+        detail = 'Human biosample {}'.format(value['@id']) + \
+                 ' contains model organism fileld {}'.format(terms_list[0])
+        yield AuditFailure('model organism term in human biosample', detail,
+                           level='ERROR')
+        return
+    if len(terms_list) > 1:
+        detail = 'Human biosample {}'.format(value['@id']) + \
+                 ' contains model organism filelds {}'.format(terms_list)
+        yield AuditFailure('model organism term in human biosample', detail,
+                           level='ERROR')
+        return
 
 @audit_checker('biosample', frame=['part_of'])
 def audit_biosample_part_of_consistency(value, system):
@@ -76,6 +117,7 @@ def audit_biosample_part_of_consistency(value, system):
                      'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
             yield AuditFailure('inconsistent biosample_term_id', detail,
                                level='ERROR')
+
 
 @audit_checker('biosample', frame=['object'])
 def audit_biosample_term_id(value, system):
