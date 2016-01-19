@@ -314,18 +314,18 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
 
-                        <dl className="characterization-intro characterization-meta-data key-value-left">
+                        <dl className="characterization-intro characterization-meta-data">
                             {context.characterization_method ?
-                                <div data-test="method">
-                                    <dt>Method</dt>
-                                    <dd>{context.characterization_method}</dd>
+                                <div>
+                                    <strong>Method: </strong>
+                                    {context.characterization_method}
                                 </div>
                             : null}
 
                             {excerpt || (context.caption && context.caption.length) ?
                                 <div data-test="caption">
-                                    <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
-                                    <dd>{excerpt ? excerpt : context.caption}</dd>
+                                    <strong>{excerpt ? 'Caption excerpt' : 'Caption'}: </strong>
+                                    {excerpt ? excerpt : context.caption}
                                 </div>
                             : null}
                         </dl>
