@@ -542,8 +542,13 @@ def audit_file_read_depth(value, system):
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
+<<<<<<< HEAD
                     read_depth = metric['total']/2
                 break  # continue
+=======
+                    read_depth = int(metric['total']/2)
+                continue
+>>>>>>> master
 
     if read_depth == 0:
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
