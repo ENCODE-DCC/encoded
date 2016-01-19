@@ -105,12 +105,16 @@ def item_view(context, request):
     if getattr(request, '__parent__', None) is None:
         # We need the response headers from non subrequests
         try:
-            return render_view_to_response(context, request, name=frame)
+            response = render_view_to_response(context, request, name=frame)
         except PredicateMismatch:
             # Avoid this view emitting PredicateMismatch
             exc_class, exc, tb = sys.exc_info()
             exc.__class__ = HTTPNotFound
             raise_with_traceback(exc, tb)
+        else:
+            if response is None:
+                raise HTTPNotFound('?frame=' + frame)
+            return response
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
         path += '?' + request.query_string
