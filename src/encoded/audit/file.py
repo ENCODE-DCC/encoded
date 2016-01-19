@@ -737,7 +737,7 @@ def audit_file_mad_qc_spearman_correlation(value, system):
         if pipeline['title'] in spearman_pipelines:
             audit_level = "WARNING"
             if spearman_correlation < (required_value - 0.0713512755834):
-                audit_level = "ERROR"
+                audit_level = "NOT_COMPLIANT"
             if spearman_correlation <= required_value:
                 detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
                          'has Spearman correlaton of {} '.format(spearman_correlation) + \
