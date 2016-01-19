@@ -140,7 +140,7 @@ def audit_experiment_release_date(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award'],
+               frame=['replicates', 'award', 'target'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -155,6 +155,11 @@ def audit_experiment_replicated(value, system):
     '''
     if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
         return
+
+    if 'target' in value:
+        target = value['target']
+        if 'control' in target['investigated_as']:
+            return
 
     num_bio_reps = set()
     for rep in value['replicates']:
