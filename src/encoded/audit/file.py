@@ -43,6 +43,46 @@ broadPeaksTargets = [
     ]
 
 
+@audit_checker('file', frame=['replicate', 'replicate.experiment',
+                              'derived_from', 'derived_from.replicate',
+                              'derived_from.replicate.experiment'])
+def audit_file_biological_replicate_number_match(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    if 'derived_from' not in value or len(value['derived_from']) == 0:
+        return
+
+    bio_rep_number = value['replicate']['biological_replicate_number']
+    tech_rep_number = value['replicate']['technical_replicate_number']
+    file_replicate = (bio_rep_number, tech_rep_number)
+    file_exp_accession = value['replicate']['experiment']['accession']
+    derived_from_files = value['derived_from']
+
+    for derived_from_file in derived_from_files:
+        if 'replicate' in derived_from_file:
+
+            # excluding control files from different experiments
+            if derived_from_file['replicate']['experiment']['accession'] != file_exp_accession:
+                continue
+
+            derived_bio_rep_num = derived_from_file['replicate']['biological_replicate_number']
+            derived_tech_rep_num = derived_from_file['replicate']['technical_replicate_number']
+            derived_replicate = (derived_bio_rep_num, derived_tech_rep_num)
+            if file_replicate != derived_replicate:
+                detail = 'Biological replicate number of the file {} '.format(value['@id']) + \
+                         'is {}'.format(file_replicate) + \
+                         ', it is inconsistent with the biological replicate number ' +\
+                         '{} of the file {} it was derived from'.format(derived_replicate,
+                                                                        derived_from_file['@id'])
+                raise AuditFailure('inconsistent biological replicate number',
+                                   detail, level='ERROR')
+
+
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
@@ -502,7 +542,7 @@ def audit_file_read_depth(value, system):
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
-                    read_depth = metric['total']/2
+                    read_depth = int(metric['total']/2)
                 continue
 
     if read_depth == 0:
