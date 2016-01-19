@@ -391,5 +391,5 @@ def audit_biosample_part_of_consistency(value, system):
                  'that has different ' + \
                  'biosample_term_id {}'.format(part_of_term_id)
         yield AuditFailure('inconsistent biosample_term_id', detail,
-                           level='ERROR')
+                           level='WARNING')
         return
