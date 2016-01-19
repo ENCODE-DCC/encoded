@@ -331,7 +331,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         </dl>
                     </div>
                     <dl ref="collapse" className={keyClass}>
-                        {excerpt ?
+                        {context.caption && context.caption.length ?
                             <div data-test="caption">
                                 <dt>Caption</dt>
                                 <dd className="sentence-case para-text">{context.caption}</dd>
