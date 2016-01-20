@@ -4,7 +4,7 @@
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "construct_type", "target", "tags", "lab", "award", "source"],
+    "required": [ "construct_type", "target", "lab", "award", "source"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,6 +19,25 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
+    "dependencies": {
+        "construct_type": {
+            "oneOf": [
+                {
+                    "required": ["tags"],
+                    "properties": {
+                        "construct_type": {"enum": ["fusion protein"]}
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "construct_type": {"enum": ["fusion protein"]}
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "3"
@@ -56,13 +75,11 @@
             "title": "Protein tags",
             "description": "Recombinant tags in the construct.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Protein tag",
                 "description": "Recombinant tag in the construct.",
                 "comment": "Submit tag name and tag location.",
                 "type": "object",
-                "default": [],
                 "additionalProperties": false,
                 "properties": {
                     "name": {
