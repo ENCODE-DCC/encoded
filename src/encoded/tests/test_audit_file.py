@@ -11,7 +11,8 @@ def file_exp(lab, award, testapp, experiment):
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
         'possible_controls': [experiment['uuid']],
-        'status': 'released'
+        'status': 'released',
+        'date_released': '2016-01-01'
         }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -35,7 +36,8 @@ def file_exp2(lab, award, testapp):
         'assay_term_id': 'OBI:0001864',
         'biosample_term_id': 'NTR:000013',
         'biosample_term_name': 'Some other body part',
-        'status': 'released'
+        'status': 'released',
+        'date_released': '2016-01-01'
         }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

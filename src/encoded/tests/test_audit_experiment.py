@@ -391,7 +391,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -644,7 +644,8 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
 def test_audit_experiment_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
                                                 'biosample_type': 'tissue',
-                                                'status': 'released'})
+                                                'status': 'released',
+                                                'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -659,7 +660,7 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_replicate,
                                               base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -674,7 +675,7 @@ def test_audit_experiment_replicate_with_no_files(testapp,
                                                   base_replicate,
                                                   base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -734,7 +735,7 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
                                                         base_replicate,
                                                         base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
