@@ -4,6 +4,7 @@ from contentbase import (
 )
 from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
+from .standard_functions import collectErrors
 
 
 targetBasedAssayList = [
@@ -459,7 +460,16 @@ def audit_experiment_target(value, system):
 
 @audit_checker('experiment', frame=['target', 'possible_controls',
                                     'possible_controls.original_files',
-                                    'possible_controls.original_files.derived_from'])
+                                    'possible_controls.original_files.dataset',
+                                    'possible_controls.original_files.dataset.target',
+                                    'possible_controls.original_files.quality_metrics',
+                                    'possible_controls.original_files.derived_from'
+                                    'possible_controls.original_files.analysis_step_version',
+                                    'possible_controls.original_files.analysis_step_version.software_versions',
+                                    'possible_controls.original_files.analysis_step_version.software_versions.software',
+                                    'possible_controls.original_files.analysis_step_version.analysis_step',
+                                    'possible_controls.original_files.analysis_step_version.analysis_step.pipelines',
+                                    ])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -480,7 +490,8 @@ def audit_experiment_control(value, system):
         detail = '{} experiments require a value in possible_control'.format(
             value['assay_term_name']
             )
-        raise AuditFailure('missing possible_controls', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing possible_controls', detail, level='NOT_COMPLIANT')
+        return
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -489,14 +500,93 @@ def audit_experiment_control(value, system):
                 control.get('biosample_term_name'),
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
-        
-'''
->>>>>>>>>>>>>>
-def check_control_experiment_for_read_depth():
-    go to original files, find bams, query for read_depth
-    return 
->>>>>>>>>>>>>>
-'''
+        if 'original_files' in control:
+            for original_file in control['original_files']:
+                if original_file['status'] in ['deleted', 'replaced', 'revoked']:
+                    return
+                if original_file['file_format'] != 'bam':
+                    return
+                if original_file['output_type'] == 'transcriptome alignments':
+                    return
+                if original_file['lab'] != '/labs/encode-processing-pipeline/':
+                    return
+                if 'analysis_step_version' not in original_file:
+                    return
+                if 'analysis_step' not in original_file['analysis_step_version']:
+                    return
+                if 'pipelines' not in original_file['analysis_step_version']['analysis_step']:
+                    return
+                if 'software_versions' not in original_file['analysis_step_version']:
+                    return
+                if original_file['analysis_step_version']['software_versions'] == []:
+                    return
+                for record in original_file['analysis_step_version']['software_versions']:
+                    if record['software']['title'] == 'TopHat':
+                        return
+
+                read_depth = 0
+
+                derived_from_files = original_file.get('derived_from')
+                if (derived_from_files is None) or (derived_from_files == []):
+                    return
+
+                paring_status_detected = False
+                for derived_from_file in derived_from_files:
+                    if 'file_type' in derived_from_file and derived_from_file['file_type'] == 'fastq' and \
+                       'run_type' in derived_from_file:
+                        if derived_from_file['run_type'] == 'single-ended':
+                            paired_ended_status = False
+                            paring_status_detected = True
+                            break
+                        else:
+                            if derived_from_file['run_type'] == 'paired-ended':
+                                paired_ended_status = True
+                                paring_status_detected = True
+                                break
+
+                if paring_status_detected is False:
+                    return
+
+                quality_metrics = original_file.get('quality_metrics')
+                if (quality_metrics is None) or (quality_metrics == []):
+                    return
+                for metric in quality_metrics:
+                    if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
+                        read_depth = metric['Uniquely mapped reads number']
+                        continue
+                    else:
+                        if "total" in metric:
+                            if paired_ended_status is False:
+                                read_depth = metric['total']
+                            else:
+                                read_depth = int(metric['total']/2)
+                            continue
+
+                if read_depth == 0:
+                    return
+
+                special_assay_name = 'empty'
+                target_name = 'empty'
+
+                if 'dataset' in original_file:
+                    if (original_file['dataset']['assay_term_name'] == 'shRNA knockdown followed by RNA-seq') or \
+                       (original_file['dataset']['assay_term_name'] == 'single cell isolation followed by RNA-seq'):
+                        special_assay_name = original_file['dataset']['assay_term_name']
+                    if 'target' in original_file['dataset']:
+                        target_name = original_file['dataset']['target']['name']
+
+                audit_errors = collectErrors(original_file,
+                                             original_file['analysis_step_version']['analysis_step']['pipelines'],
+                                             read_depth, target_name, special_assay_name)
+                if len(audit_errors) > 0:
+                    for e in audit_errors:
+                        yield AuditFailure('insufficient control read depth', e['detail'],
+                                           level=e['level'])
+
+                return
+
+
+
 @audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'possible_controls.replicates', 'possible_controls.replicates.antibody', 'possible_controls.target'], condition=rfa('ENCODE3'))
 def audit_experiment_ChIP_control(value, system):
 
