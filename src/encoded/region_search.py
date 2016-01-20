@@ -9,7 +9,7 @@ from .search import (
     set_filters,
     set_facets,
     get_filtered_query,
-    load_facets,
+    format_facets,
     hgConnect
 )
 from collections import OrderedDict
@@ -290,7 +290,7 @@ def region_search(context, request):
             body=query, index='encoded', doc_type='experiment', size=size
         )
         format_results(request, es_results, result)
-        load_facets(es_results, _FACETS, result)
+        format_facets(es_results, _FACETS, result)
         if len(result['@graph']):
             result['notification'] = 'Success'
             result['total'] = es_results['hits']['total']
