@@ -683,6 +683,21 @@ def test_audit_experiment_replicate_with_no_files(testapp,
     assert any(error['category'] == 'missing file in replicate' for error in errors_list)
 
 
+def test_audit_experiment_replicate_with_no_files_warning(testapp,
+                                                          base_experiment,
+                                                          base_replicate,
+                                                          base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'proposed'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        if error_type == 'WARNING':
+            errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+
+
 def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
