@@ -58,6 +58,10 @@ non_seq_assays = [
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    # excluding Bind-n-Seq because they dont have biosamples
+    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
+        return
+
     if value['status'] not in ['preliminary', 'proposed']:
         if 'biosample_term_id' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
