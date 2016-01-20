@@ -545,7 +545,7 @@ def audit_file_read_depth(value, system):
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
-                    read_depth = metric['total']/2
+                    read_depth = int(metric['total']/2)
                 continue
 
     if read_depth == 0:
