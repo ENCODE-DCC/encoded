@@ -30,7 +30,8 @@ var portal = {
             {id: 'news', title: 'News', url: '/news'},
             {id: 'publications', title: 'Publications', url: '/publications/'},
             {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'}
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},

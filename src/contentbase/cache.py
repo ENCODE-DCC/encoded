@@ -1,7 +1,10 @@
 from pyramid.threadlocal import manager
 from sqlalchemy.util import LRUCache
+import transaction.interfaces
+from zope.interface import implementer
 
 
+@implementer(transaction.interfaces.ISynchronizer)
 class ManagerLRUCache(object):
     """ Override capacity in settings.
     """
@@ -9,6 +12,7 @@ class ManagerLRUCache(object):
         self.name = name
         self.default_capacity = default_capacity
         self.threshold = threshold
+        transaction.manager.registerSynch(self)
 
     @property
     def cache(self):
@@ -41,3 +45,17 @@ class ManagerLRUCache(object):
         if cache is None:
             return
         self.cache[key] = value
+
+    # ISynchronizer
+
+    def beforeCompletion(self, transaction):
+        pass
+
+    def afterCompletion(self, transaction):
+        # Ensure cache is cleared for retried transactions
+        if manager.stack:
+            threadlocals = manager.stack[0]
+            threadlocals.pop(self.name, None)
+
+    def newTransaction(self, transaction):
+        pass

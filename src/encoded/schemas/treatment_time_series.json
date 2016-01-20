@@ -148,6 +148,10 @@
             "title": "Status",
             "type": "string"
         },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
         "related_datasets.replicates.antibody.accession": {
             "title": "Linked Antibody",
             "type": "string"
