@@ -3,15 +3,19 @@ var React = require('react');
 var url = require('url');
 var _ = require('underscore');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
+var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -68,8 +72,9 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                 });
 
                 // Collect software version titles
-                if (step.software_versions && step.software_versions.length) {
-                    swVersionList = step.software_versions.map(function(version) {
+                if (step.current_version) {
+                    var software_versions = step.current_version.software_versions;
+                    swVersionList = software_versions.map(function(version) {
                         return version.software.title;
                     });
                 }
@@ -83,7 +88,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, label,
-                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: step});
+                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'Step', shape: 'rect', cornerRadius: 4, ref: step});
 
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
@@ -122,7 +127,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
 
                                 // Assemble a single analysis step node.
                                 jsonGraph.addNode(stepId, label,
-                                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'step', shape: 'rect', cornerRadius: 4, ref: parent});
+                                    {cssClass: 'pipeline-node-analysis-step' + (this.state.infoNodeId === stepId ? ' active' : ''), type: 'Step', shape: 'rect', cornerRadius: 4, ref: parent});
                             }
                         }
                     });
@@ -155,6 +160,13 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
 
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var crumbs = [
+            {id: 'Pipelines'},
+            {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
+        ];
+
         var documents = {};
         if (context.documents) {
             context.documents.forEach(function(doc, i) {
@@ -178,6 +190,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=pipeline' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">
@@ -251,34 +264,52 @@ var Pipeline = module.exports.Pipeline = React.createClass({
         );
     }
 });
-globals.content_views.register(Pipeline, 'pipeline');
+globals.content_views.register(Pipeline, 'Pipeline');
 
 
 
 var AnalysisStep = module.exports.AnalysisStep = React.createClass({
     render: function() {
+        var stepVersions, swVersions;
         var step = this.props.step;
         var node = this.props.node;
-        var softwareVersions = step.current_version && step.current_version.software_versions;
         var typesList = step.analysis_step_types.join(", ");
+
+        // node.metadata.stepVersion is set by the experiment file graph. It's undefined for pipeline graphs.
+        if (node.metadata && node.metadata.stepVersion) {
+            // Get the analysis_step_version that this step came from.
+            swVersions = node.metadata.stepVersion.software_versions;
+        } else {
+            // Get the analysis_step_version array from the step for pipeline graph display.
+            stepVersions = step.versions && _(step.versions).sortBy(function(version) { return version.version; });
+        }
 
         return (
             <div>
                 <dl className="key-value">
-                    <div data-test="stepname">
-                        <dt>Name</dt>
-                        <dd>{step.title}</dd>
-                    </div>
+                    {swVersions ?
+                        <div data-test="stepversionname">
+                            <dt>Name</dt>
+                            <dd>{step.title + '— Version ' + node.metadata.stepVersion.version}</dd>
+                        </div>
+                    :
+                        <div data-test="stepversionname">
+                            <dt>Name</dt>
+                            <dd>{step.title}</dd>
+                        </div>
+                    }
 
                     <div data-test="steptype">
                         <dt>Step type</dt>
                         <dd>{step.analysis_step_types.join(', ')}</dd>
                     </div>
 
-                    <div data-test="stepname">
-                        <dt>Step name</dt>
-                        <dd>{step.name}</dd>
-                    </div>
+                    {step.aliases && step.aliases.length ?
+                        <div data-test="stepname">
+                            <dt>Step aliases</dt>
+                            <dd>{step.aliases.join(', ')}</dd>
+                        </div>
+                    : null}
 
                     {step.input_file_types && step.input_file_types.length ?
                         <div data-test="inputtypes">
@@ -292,7 +323,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>Output</dt>
                             <dd>{step.output_file_types.map(function(type, i) {
                                 return (
-                                    <span>
+                                    <span key={i}>
                                         {i > 0 ? <span>{','}<br /></span> : null}
                                         {type}
                                     </span>
@@ -322,7 +353,7 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                             <dt>QA statistics</dt>
                             <dd>{step.qa_stats_generated.map(function(stat, i) {
                                 return (
-                                    <span>
+                                    <span key={i}>
                                         {i > 0 ? <span>{','}<br /></span> : null}
                                         {stat}
                                     </span>
@@ -331,24 +362,31 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                         </div>
                     : null}
 
-                    {softwareVersions && softwareVersions.length ?
+                    {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
-                            <dd>
-                                {softwareVersions.map(function(version, i) {
-                                    var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                    return (
-                                        <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                            <span className="software">{version.software.name}</span>
-                                            {version.version ?
-                                                <span className="version">{versionNum}</span>
-                                            : null}
-                                        </a>
-                                    );
-                                })}
-                            </dd>
+                            <dd>{SoftwareVersionList(swVersions)}</dd>
                         </div>
-                    : null}
+                    :
+                        <div>
+                            {stepVersions && stepVersions.length ?
+                                <div>
+                                    {stepVersions.map(function(version) {
+                                        if (version.software_versions && version.software_versions.length) {
+                                            return (
+                                                <div data-test="swversions" key={version['@id']}>
+                                                    <dt>Version {version.version} — software</dt>
+                                                    <dd>{SoftwareVersionList(version.software_versions)}</dd>
+                                                </div>
+                                            );
+                                        } else {
+                                            return null;
+                                        }
+                                    })}
+                                </div>
+                            : null}
+                        </div>
+                    }
 
                     {step.documents && step.documents.length ?
                         <div data-test="documents">
@@ -359,13 +397,6 @@ var AnalysisStep = module.exports.AnalysisStep = React.createClass({
                                     return (<span>{i > 0 ? ', ' : null}<a href={document['@id']}>{docName}</a></span>);
                                 })}
                             </dd>
-                        </div>
-                    : null}
-
-                    {step.aliases.length ?
-                        <div data-test="aliases">
-                            <dt>Aliases</dt>
-                            <dd>{step.aliases.join(', ')}</dd>
                         </div>
                     : null}
                 </dl>
@@ -389,7 +420,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
     }
 };
 
-globals.graph_detail.register(StepDetailView, 'step');
+globals.graph_detail.register(StepDetailView, 'Step');
 
 
 var Listing = React.createClass({
@@ -443,76 +474,4 @@ var Listing = React.createClass({
         );
     }
 });
-globals.listing_views.register(Listing, 'pipeline');
-
-
-var PipelineTable = module.exports.PipelineTable = React.createClass({
-    render: function() {
-        var pipelines;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the pipelines list by cloning first {limit} elements
-            pipelines = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            pipelines = this.props.items;
-        }
-
-        // Get the software version numbers for all matching software
-        var softwareId = url.parse(this.props.href).pathname;
-        var swVers = [];
-        pipelines.forEach(function(pipeline, i) {
-            return pipeline.analysis_steps.some(function(analysis_step) {
-                // Get the software_version object for any with a software @id matching softwareId, and save to array
-                var matchedSwVers = _(analysis_step.software_versions).find(function(software_version) {
-                    return software_version.software['@id'] === softwareId;
-                });
-                if (matchedSwVers) {
-                    swVers[i] = matchedSwVers;
-                }
-                return matchedSwVers;
-            });
-        });
-
-        return (
-            <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Pipeline</th>
-                            <th>Assay</th>
-                            <th>Version</th>
-                            <th>Download checksum</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {pipelines.map(function (pipeline, i) {
-                        // Ensure this can work with search result columns too
-                        return (
-                            <tr key={pipeline['@id']}>
-                                <td><a href={pipeline['@id']}>{pipeline.accession}</a></td>
-                                <td>{pipeline.assay_term_name}</td>
-                                <td><a href={swVers[i].downloaded_url}>{swVers[i].version}</a></td>
-                                <td>{swVers[i].download_checksum}</td>
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="6">
-                                {this.props.limit && (this.props.limit < this.props.total) ?
-                                    <div>
-                                        {'Displaying '}{this.props.limit}{' pipelines out of '}{this.props.total}{' total related pipelines'}
-                                    </div>
-                                : ''}
-                            </td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        );
-    }
-});
+globals.listing_views.register(Listing, 'Pipeline');

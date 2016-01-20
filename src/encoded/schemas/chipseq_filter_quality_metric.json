@@ -1,0 +1,47 @@
+{
+    "description": "Schema for reporting ChIP library complexity and cross-correlation quality metrics",
+    "id": "/profiles/chipseq_filter_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "NSC": {
+            "type": "number",
+            "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
+        },
+        "RSC": {
+            "type": "number",
+            "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length  and at read length"
+        },
+        "PBC1": {
+            "type": "number",
+            "description": "PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely"
+        },
+        "PBC2": {
+            "type": "number",
+            "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
+        },
+         "fragment length": {
+            "type": "number",
+            "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
+        },
+       "NRF": {
+            "type": "number",
+            "description": "Non redundant fraction (indicates library complexity).  Number of distinct unique mapping reads (i.e. after removing duplicates) / Total number of reads"
+        }
+    }
+}

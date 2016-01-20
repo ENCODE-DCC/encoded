@@ -134,7 +134,6 @@ def test_load_sample_data(
         biosample,
         biosample_characterization,
         construct,
-        dataset,
         document,
         experiment,
         file,
@@ -144,6 +143,7 @@ def test_load_sample_data(
         organism,
         pipeline,
         publication,
+        publication_data,
         quality_metric,
         replicate,
         rnai,
@@ -152,8 +152,14 @@ def test_load_sample_data(
         source,
         submitter,
         target,
+        ucsc_browser_composite,
         ):
     assert True, 'Fixtures have loaded sample data'
+
+
+def test_abstract_collection(testapp, experiment):
+    testapp.get('/Dataset/{accession}'.format(**experiment))
+    testapp.get('/datasets/{accession}'.format(**experiment))
 
 
 @pytest.mark.slow
@@ -290,6 +296,10 @@ def test_page_nested(workbook, anontestapp):
     assert res.json['@id'] == '/test-section/subpage/'
 
 
+def test_page_nested_in_progress(workbook, anontestapp):
+    return anontestapp.get('/test-section/subpage-in-progress/', status=403)
+
+
 def test_page_homepage(workbook, anontestapp):
     res = anontestapp.get('/pages/homepage/', status=200)
     assert res.json['canonical_uri'] == '/'
@@ -312,7 +322,7 @@ def test_antibody_redirect(testapp, antibody_approval):
     res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
     assert 'antibody' in res.json
     res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
-    assert res.json['@type'] == ['antibody_lot', 'item']
+    assert res.json['@type'] == ['AntibodyLot', 'Item']
 
 
 def test_jsonld_context(testapp):
@@ -339,3 +349,8 @@ def test_profiles(testapp, item_type):
     res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
     errors = Draft4Validator.check_schema(res.json)
     assert not errors
+
+
+def test_bad_frame(testapp, human):
+    res = testapp.get(human['@id'] + '?frame=bad', status=404)
+    assert res.json['detail'] == '?frame=bad'

@@ -505,27 +505,6 @@
         "uuid": "6183c69b-e862-41ab-99be-69214fc9f27e"
     },
     {
-        "email": "magnis.dis@eni.tempus",
-        "fax": "000-000-0000",
-        "first_name": "Blandit",
-        "google": "google",
-        "groups": [
-            "admin",
-            "wrangler"
-        ],
-        "job_title": "Data Wrangler",
-        "lab": "J. Michael Cherry, Stanford",
-        "last_name": "Facilisi",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
-        "submits_for": [
-            "J. Michael Cherry, Stanford"
-        ],
-        "timezone": "US/Pacific",
-        "uuid": "6800d05f-7213-48b1-9ad8-254c73c5b83f"
-    },
-    {
         "email": "blandit.orci@conubia.magna",
         "fax": "000-000-0000",
         "first_name": "John",
@@ -1074,5 +1053,55 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "9e889180-9db1-11e4-bd06-0800200c9a66"
+    },
+    {
+        "email": "jseth@stanford.edu",
+        "first_name": "J. Seth",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Strattan",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "6800d05f-7213-48b1-9ad8-254c73c5b83f"
+    },
+    {
+        "email": "gabdank@stanford.edu",
+        "first_name": "Idan",
+        "groups": [
+            "admin",
+            "wrangler"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Gabdank",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "98fb23d3-0d79-4c3d-981d-01539e6589f1"
+    },
+    {
+        "email": "ulugbek@stanford.edu",
+        "first_name": "Ulugbek",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Baymuradov",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "45cd6450-c5f0-49dc-9a68-d233f51039c5"
     }
 ]

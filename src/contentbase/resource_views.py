@@ -17,7 +17,7 @@ from .calculated import calculate_properties
 from .etag import etag_tid
 from .interfaces import CONNECTION
 from .resources import (
-    Collection,
+    AbstractCollection,
     Item,
     Root,
 )
@@ -28,7 +28,7 @@ def includeme(config):
     config.scan(__name__)
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
+@view_config(context=AbstractCollection, permission='list', request_method='GET',
              name='listing')
 def collection_view_listing_db(context, request):
     result = {}
@@ -74,7 +74,7 @@ def home(context, request):
 
 
 @view_config(context=Root, request_method='GET', name='object')
-@view_config(context=Collection, permission='list', request_method='GET', name='object')
+@view_config(context=AbstractCollection, permission='list', request_method='GET', name='object')
 def collection_view_object(context, request):
     properties = context.__json__(request)
     calculated = calculate_properties(context, request, properties)
@@ -82,7 +82,7 @@ def collection_view_object(context, request):
     return properties
 
 
-@view_config(context=Collection, permission='list', request_method='GET', name='page')
+@view_config(context=AbstractCollection, permission='list', request_method='GET', name='page')
 def collection_list(context, request):
     path = request.resource_path(context)
     properties = request.embed(path, '@@object')
@@ -98,19 +98,23 @@ def collection_list(context, request):
 
 
 @view_config(context=Root, request_method='GET')
-@view_config(context=Collection, permission='list', request_method='GET')
+@view_config(context=AbstractCollection, permission='list', request_method='GET')
 @view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     frame = request.params.get('frame', 'page')
     if getattr(request, '__parent__', None) is None:
         # We need the response headers from non subrequests
         try:
-            return render_view_to_response(context, request, name=frame)
+            response = render_view_to_response(context, request, name=frame)
         except PredicateMismatch:
             # Avoid this view emitting PredicateMismatch
             exc_class, exc, tb = sys.exc_info()
             exc.__class__ = HTTPNotFound
             raise_with_traceback(exc, tb)
+        else:
+            if response is None:
+                raise HTTPNotFound('?frame=' + frame)
+            return response
     path = request.resource_path(context, '@@' + frame)
     if request.query_string:
         path += '?' + request.query_string

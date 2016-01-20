@@ -1,0 +1,115 @@
+{
+    "description": "Schema for reporting 'samtools --flagstats' quality metric",
+    "id": "/profiles/samtools_flagstats_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "diff_chroms": {
+            "type": "number",
+            "description": "flagstats: mate mapped different chr (mapQ>=5)"
+        },
+        "diff_chroms_qc_failed": {
+            "type": "number",
+            "description": "flagstats: mate mapped different chr (mapQ>=5) - qc failed"
+        },
+        "duplicates": {
+            "type": "number",
+            "description": "flagstats: duplicates"
+        },
+        "duplicates_qc_failed": {
+            "type": "number",
+            "description": "flagstats: duplicates - qc failed"
+        },
+        "mapped": {
+            "type": "number",
+            "description": "flagstats: mapped"
+        },
+        "mapped_pct": {
+            "type": "string",
+            "description": "flagstats: mapped - percent"
+        },
+        "mapped_qc_failed": {
+            "type": "number",
+            "description": "flagstats: mapped - qc failed"
+        },
+        "paired": {
+            "type": "number",
+            "description": "flagstats: paired"
+        },
+        "paired_properly": {
+            "type": "number",
+            "description": "flagstats: properly paired"
+        },
+        "paired_properly_pct": {
+            "type": "string",
+            "description": "flagstats: properly paired - percent"
+        },
+        "paired_properly_qc_failed": {
+            "type": "number",
+            "description": "flagstats: properly paired - qc failed"
+        },
+        "paired_qc_failed": {
+            "type": "number",
+            "description": "flagstats: paired - qc failed"
+        },
+        "read1": {
+            "type": "number",
+            "description": "flagstats: read1"
+        },
+        "read1_qc_failed": {
+            "type": "number",
+            "description": "flagstats: read1 - qc failed"
+        },
+        "read2": {
+            "type": "number",
+            "description": "flagstats: read2"
+        },
+        "read2_qc_failed": {
+            "type": "number",
+            "description": "flagstats: read2 - qc failed"
+        },
+        "singletons": {
+            "type": "number",
+            "description": "flagstats: singletons"
+        },
+        "singletons_pct": {
+            "type": "string",
+            "description": "flagstats: singletons - percent"
+        },
+        "singletons_qc_failed": {
+            "type": "number",
+            "description": "flagstats: singletons - qc failed"
+        },
+        "total": {
+            "type": "number",
+            "description": "flagstats: total"
+        },
+        "total_qc_failed": {
+            "type": "number",
+            "description": "flagstats: total - qc failed"
+        },
+        "with_itself": {
+            "type": "number",
+            "description": "flagstats: with itself and mate mapped"
+        },
+        "with_itself_qc_failed": {
+            "type": "number",
+            "description": "flagstats: with itself and mate mapped - qc failed"
+        }
+    }
+}

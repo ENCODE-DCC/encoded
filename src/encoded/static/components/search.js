@@ -11,24 +11,54 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
+var objectutils = require('./objectutils');
+
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
+var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
+        annotation: {title: 'Annotation file set'},
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
+        matched_set: {title: 'Matched set series'},
+        organism_development_series: {title: 'Organism development series'},
         publication: {title: 'Publications'},
         page: {title: 'Web page'},
-        software: {title: 'Software'}
+        pipeline: {title: 'Pipeline'},
+        project: {title: 'Project file set'},
+        publication_data: {title: 'Publication file set'},
+        reference: {title: 'Reference file set'},
+        reference_epigenome: {title: 'Reference epigenome series'},
+        replication_timing_series: {title: 'Replication timing series'},
+        software: {title: 'Software'},
+        treatment_concentration_series: {title: 'Treatment concentration series'},
+        treatment_time_series: {title: 'Treatment time series'},
+        ucsc_browser_composite: {title: 'UCSC browser composite file set'}
+    };
+
+    var datasetTypes = {
+        'Annotation': types['annotation'].title,
+        'Dataset': types['dataset'].title,
+        'MatchedSet': types['matched_set'].title,
+        'OrganismDevelopmentSeries': types['organism_development_series'].title,
+        'Project': types['project'].title,
+        'PublicationData': types['publication_data'].title,
+        'Reference': types['reference'].title,
+        'ReferenceEpigenome': types['reference_epigenome'].title,
+        'ReplicationTimingSeries': types['replication_timing_series'].title,
+        'TreatmentConcentrationSeries': types['treatment_concentration_series'].title,
+        'TreatmentTimeSeries': types['treatment_time_series'].title,
+        'UcscBrowserComposite': types['ucsc_browser_composite'].title
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -85,7 +115,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Item, 'item');
+    globals.listing_views.register(Item, 'Item');
 
     // Display one antibody status indicator
     var StatusIndicator = React.createClass({
@@ -238,7 +268,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Antibody, 'antibody_lot');
+    globals.listing_views.register(Antibody, 'AntibodyLot');
 
     var Biosample = module.exports.Biosample = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
@@ -301,7 +331,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Biosample, 'biosample');
+    globals.listing_views.register(Biosample, 'Biosample');
 
 
     var Experiment = module.exports.Experiment = React.createClass({
@@ -353,7 +383,7 @@ var AuditMixin = audit.AuditMixin;
 
             // Get the first treatment if it's there
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
-                    result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
+                    result.replicates[0].library.biosample.treatments[0]) ? SingleTreatment(result.replicates[0].library.biosample.treatments[0]) : '';
 
             return (
                 <li>
@@ -399,26 +429,92 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Experiment, 'experiment');
+    globals.listing_views.register(Experiment, 'Experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
+            var biosampleTerm, organism, lifeSpec, targets, lifeStages = [], ages = [];
+
+            // Determine whether the dataset is a series or not
+            var seriesDataset = result['@type'].indexOf('Series') >= 0;
+
+            // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+            if (seriesDataset) {
+                biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
+                    ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+                var organisms = _.uniq(result.organism && result.organism.length && result.organism.map(function(organism) {
+                    return organism.scientific_name;
+                }));
+                if (organisms.length === 1) {
+                    organism = organisms[0];
+                }
+
+                // Dig through the biosample life stages and ages
+                if (result.related_datasets && result.related_datasets.length) {
+                    result.related_datasets.forEach(function(dataset) {
+                        if (dataset.replicates && dataset.replicates.length) {
+                            dataset.replicates.forEach(function(replicate) {
+                                if (replicate.library && replicate.library.biosample) {
+                                    var biosample = replicate.library.biosample;
+                                    var lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+
+                                    if (lifeStage) { lifeStages.push(lifeStage); }
+                                    if (biosample.age_display) { ages.push(biosample.age_display); }
+                                }
+                            });
+                        }
+                    });
+                    lifeStages = _.uniq(lifeStages);
+                    ages = _.uniq(ages);
+                }
+                lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+
+                // Get list of target labels
+                if (result.target) {
+                    targets = _.uniq(result.target.map(function(target) {
+                        return target.label;
+                    }));
+                }
+            }
+
+            var haveSeries = result['@type'].indexOf('Series') >= 0;
+            var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
             return (
                 <li>
                     <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
-                            <p className="type meta-title">Dataset</p>
+                            <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                             <p className="type">{' ' + result['accession']}</p>
+                            <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
-                            <a href={result['@id']}>{result['description']}</a>
+                            <a href={result['@id']}>
+                                {datasetTypes[result['@type'][0]]}
+                                {seriesDataset ?
+                                    <span>
+                                        {biosampleTerm ? <span>{' in ' + biosampleTerm}</span> : null}
+                                        {organism || lifeSpec.length > 0 ?
+                                            <span>
+                                                {' ('}
+                                                {organism ? <i>{organism}</i> : null}
+                                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                                {')'}
+                                            </span>
+                                        : null}
+                                    </span>
+                                :
+                                    <span>{result.description ? <span>{': ' + result.description}</span> : null}</span>
+                                }
+                            </a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
+                            {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             <div><strong>Project: </strong>{result.award.project}</div>
                         </div>
@@ -428,7 +524,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Dataset, 'dataset');
+    globals.listing_views.register(Dataset, 'Dataset');
 
     var Target = module.exports.Target = React.createClass({
         mixins: [PickerActionsMixin, AuditMixin],
@@ -460,7 +556,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Target, 'target');
+    globals.listing_views.register(Target, 'Target');
 
 
     var Image = module.exports.Image = React.createClass({
@@ -488,7 +584,7 @@ var AuditMixin = audit.AuditMixin;
             );
         }
     });
-    globals.listing_views.register(Image, 'image');
+    globals.listing_views.register(Image, 'Image');
 
 
     // If the given term is selected, return the href for the term
@@ -532,7 +628,7 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + term;
+                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
@@ -566,6 +662,10 @@ var AuditMixin = audit.AuditMixin;
 
 
     var Facet = search.Facet = React.createClass({
+        getDefaultProps: function() {
+            return {width: 'inherit'};
+        },
+
         getInitialState: function () {
             return {
                 facetOpen: false
@@ -603,7 +703,7 @@ var AuditMixin = audit.AuditMixin;
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
             return (
-                <div className="facet" hidden={terms.length === 0}>
+                <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
@@ -631,7 +731,7 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    var TextFilter = React.createClass({
+    var TextFilter = search.TextFilter = React.createClass({
 
         getValue: function(props) {
             var filter = this.props.filters.filter(function(f) {
@@ -680,27 +780,34 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var FacetList = search.FacetList = React.createClass({
+        getDefaultProps: function() {
+            return {orientation: 'vertical'};
+        },
+
         render: function() {
             var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
+            var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
             var hideTypes;
             if (this.props.mode == 'picker') {
                 hideTypes = false;
             } else {
-                hideTypes = filters.filter(function(filter) {
-                    return filter.field == 'type';
-                }).length;
+                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && facets.length > 1;
+            }
+            if (this.props.orientation == 'horizontal') {
+                width = (100 / facets.length) + '%';
             }
             return (
-                <div className="box facets">
-                    {this.props.mode === 'picker' ? <TextFilter {...this.props} filters={filters} /> : ''}
+                <div className={"box facets " + this.props.orientation}>
+                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
                             return <span key={facet.field} />;
                         } else {
-                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} />;
+                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                          width={width} />;
                         }
                     }.bind(this))}
                 </div>
@@ -774,7 +881,6 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var facets = context['facets'];
             var total = context['total'];
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
@@ -782,13 +888,14 @@ var AuditMixin = audit.AuditMixin;
             var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            _.each(facets, function(facet) {
+
+            var facets = context['facets'].map(function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
+                    facet = _.clone(facet);
                     facet.restrictions = this.props.restrictions[facet.field];
-                    facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.key);
-                    }.bind(this));
+                    facet.terms = facet.terms.filter(term => _.contains(facet.restrictions, term.key));
                 }
+                return facet;
             }.bind(this));
 
             // See if a specific result type was requested ('type=x')
@@ -800,18 +907,15 @@ var AuditMixin = audit.AuditMixin;
                         specificFilter = specificFilter ? '' : filter.term;
                     }
                 });
-                if (typeof specificFilter === 'string' && specificFilter.length) {
-                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
-                }
             }
 
             return (
                     <div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3">
+                            {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
                                 <FacetList {...this.props} facets={facets} filters={filters}
                                            searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
-                            </div>
+                            </div> : ''}
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
@@ -873,19 +977,24 @@ var AuditMixin = audit.AuditMixin;
     });
 
     var Search = search.Search = React.createClass({
+        contextTypes: {
+            location_href: React.PropTypes.string,
+            navigate: React.PropTypes.func
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var searchBase = url.parse(this.props.href).search || '';
-            var facetdisplay = context.facets.some(function(facet) {
+            var searchBase = url.parse(this.context.location_href).search || '';
+            var facetdisplay = context.facets && context.facets.some(function(facet) {
                 return facet.total > 0;
             });
             return (
                 <div>
                     {facetdisplay ?
                         <div className="panel data-display main-panel">
-                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.props.navigate} />
+                            <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} />
                         </div>
                     : <h4>{notification}</h4>}
                 </div>
@@ -893,4 +1002,4 @@ var AuditMixin = audit.AuditMixin;
         }
     });
 
-    globals.content_views.register(Search, 'search');
+    globals.content_views.register(Search, 'Search');

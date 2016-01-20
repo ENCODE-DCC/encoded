@@ -1,5 +1,4 @@
 'use strict';
-var reactify = require('./reactify');
 
 module.exports = function(grunt) {
     var path = require('path');
@@ -12,6 +11,8 @@ module.exports = function(grunt) {
         }
         return '../../' + p;
     }
+
+    var NODE_ENV = process.env.NODE_ENV || 'development';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -28,7 +29,7 @@ module.exports = function(grunt) {
                         map: 'brace.js.map',
                         output: './src/encoded/static/build/brace.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -46,7 +47,7 @@ module.exports = function(grunt) {
                         map: 'dagre.js.map',
                         output: './src/encoded/static/build/dagre.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -60,7 +61,6 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
                     'brfs',
                     'envify',
                 ],
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
                         map: '/static/build/inline.js.map',
                         output: './src/encoded/static/build/inline.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV == 'production'},
                     }],
                 ],
             },
@@ -77,7 +77,6 @@ module.exports = function(grunt) {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
-                    './src/encoded/static/libs/sticky_header.js',
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
@@ -91,16 +90,17 @@ module.exports = function(grunt) {
                     'google-analytics',
                 ],
                 transform: [
-                    [{harmony: true, sourceMap: true, target: 'es3'}, reactify],
+                    [{sourceMap: true, loose: "all", optional: ["spec.protoToAssign"]}, 'babelify'],
+                    [{sourceMap: true, loose: "all", optional: ["spec.protoToAssign"], global: true, only: ['react-forms']}, 'babelify'],
                     'brfs',
-                    'envify',
+                    [require('envify/custom')({NODE_ENV: NODE_ENV})],
                 ],
                 plugin: [
                     ['minifyify', {
                         map: 'bundle.js.map',
                         output: './src/encoded/static/build/bundle.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV === 'production'},
                     }],
                 ],
             },
@@ -112,16 +112,17 @@ module.exports = function(grunt) {
                     detectGlobals: false,
                 },
                 transform: [
-                    [{harmony: true, sourceMap: true}, reactify],
+                    [{sourceMap: true}, 'babelify'],
+                    [{sourceMap: true, global: true, only: ['react-forms']}, 'babelify'],
                     'brfs',
-                    'envify',
+                    [require('envify/custom')({NODE_ENV: NODE_ENV})],
                 ],
                 plugin: [
                     ['minifyify', {map:
                         'renderer.js.map',
                         output: './src/encoded/static/build/renderer.js.map',
                         compressPath: compressPath,
-                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                        uglify: {mangle: NODE_ENV === 'production'},
                     }],
                 ],
                 external: [
@@ -134,26 +135,16 @@ module.exports = function(grunt) {
                     'source-map-support',
                 ],
                 ignore: [
-                    'jquery',
                     'scriptjs',
                     'google-analytics',
                     'ckeditor',
                 ],
             },
         },
-        copy: {
-            ckeditor: {
-                expand: true,
-                cwd: 'node_modules/node-ckeditor',
-                src: 'ckeditor/**',
-                dest: 'src/encoded/static/build/',
-            }
-        },
     });
 
     grunt.registerMultiTask('browserify', function (watch) {
         var browserify = require('browserify');
-        var watchify = require('watchify');
         var _ = grunt.util._;
         var path = require('path');
         var fs = require('fs');
@@ -167,7 +158,7 @@ module.exports = function(grunt) {
 
         var b = browserify(options);
         if (watch) {
-            b = watchify(b);
+            b = require('watchify')(b);
         }
 
         var i;
@@ -231,8 +222,6 @@ module.exports = function(grunt) {
         this.async();
     });
 
-    grunt.loadNpmTasks('grunt-contrib-copy');
-
-    grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('default', ['browserify']);
     grunt.registerTask('watch', ['browserify:*:watch', 'wait']);
 };

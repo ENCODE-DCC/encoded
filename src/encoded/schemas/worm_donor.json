@@ -19,11 +19,12 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/strains"},
-        { "$ref": "mixins.json#/genomic_alterations"}
+        { "$ref": "mixins.json#/genomic_alterations"},
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
@@ -39,20 +40,7 @@
             "description": "The strain used for backcrossing.",
             "comment": "For worm strains, see worm_donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "worm_donor"
-        },
-        "documents": {
-            "title": "Strain documents",
-            "description": "Documents that describe the strain and its generation.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Strain document",
-                "description": "A document that describes the strain and/or its generation.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "document"
-            }
+            "linkTo": "WormDonor"
         },
         "organism":{ 
             "linkEnum": [
@@ -73,6 +61,21 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^cgc:.+$"
+            }
         }
     }
 }

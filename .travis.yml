@@ -5,8 +5,13 @@ cache:
     - eggs
     - .npm
 addons:
-  apt_packages:
-  - graphviz
+  apt:
+    sources:
+      - elasticsearch-1.7
+    packages:
+      - bsdtar
+      - elasticsearch
+      - graphviz
 env:
   global:
     - secure: |-
@@ -27,13 +32,14 @@ matrix:
     - python: "3.4"
       env: BROWSER=
 before_install:
-  - whereis elasticsearch
   - postgres --version
   - initdb --version
   - elasticsearch -v
-install:
+  - nvm install 4
+  - node --version
   - npm config set python /usr/bin/python2.7
-  - python bootstrap.py -v 2.3.1 --setuptools-version 15.2
+install:
+  - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - >
@@ -78,4 +84,5 @@ after_script:
         "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID" > /dev/null
       echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
       kill $(cat "$SC_PIDFILE")
+      wait $(cat "$SC_PIDFILE")
     fi

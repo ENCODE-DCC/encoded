@@ -19,6 +19,10 @@ def run(sources, output, parser='json-ld', serializer='xml', base=None):
 def main():
     import argparse
     import sys
+    stdout = sys.stdout
+    if sys.version_info.major > 2:
+        stdout = stdout.buffer
+
     rdflib_parsers = sorted(
         p.name for p in rdflib.plugin.plugins(kind=rdflib.parser.Parser)
         if '/' not in p.name)
@@ -37,7 +41,7 @@ def main():
     parser.add_argument(
         '-b', '--base', default=None, help='Base URL')
     parser.add_argument(
-        '-o', '--output', type=argparse.FileType('w'), default=sys.stdout,
+        '-o', '--output', type=argparse.FileType('wb'), default=stdout,
         help="Output file.")
     args = parser.parse_args()
     run(args.sources, args.output, args.parser, args.serializer, args.base)

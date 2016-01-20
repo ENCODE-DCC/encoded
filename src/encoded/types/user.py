@@ -7,14 +7,12 @@ from pyramid.security import (
     Allow,
     Deny,
     Everyone,
-    effective_principals,
 )
 from .base import (
     Item,
     paths_filtered_by_status,
 )
 from contentbase import (
-    Root,
     calculated_property,
     collection,
     load_schema,
@@ -22,7 +20,6 @@ from contentbase import (
 from contentbase.calculated import calculate_properties
 from contentbase.resource_views import item_view_object
 from contentbase.util import expand_path
-import contentbase
 
 
 @collection(
@@ -45,7 +42,7 @@ class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
     rev = {
-        'access_keys': ('access_key', 'user'),
+        'access_keys': ('AccessKey', 'user'),
     }
     embedded = (
         'lab',
@@ -68,7 +65,7 @@ class User(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "access_key.user",
+            "linkFrom": "AccessKey.user",
         },
     })
     def access_keys(self, request, access_keys):
@@ -102,27 +99,8 @@ def user_basic_view(context, request):
     return filtered
 
 
-@view_config(context=Root, name='current-user', request_method='GET')
-def current_user(request):
-    request.environ['encoded.canonical_redirect'] = False
-    for principal in effective_principals(request):
-        if principal.startswith('userid.'):
-            break
-    else:
-        return {}
-    namespace, userid = principal.split('.', 1)
-    collection = request.root.by_item_type[User.item_type]
-    path = request.resource_path(collection, userid)
-    user = request.embed(path, as_user=True)
-
-    user_actions = calculate_properties(User, request, category='user_action')
-    user['user_actions'] = list(user_actions.values()) if user_actions else []
-
-    return user
-
-
-@contentbase.calculated_property(context=User, category='user_action')
-def impersonate(context, request):
+@calculated_property(context=User, category='user_action')
+def impersonate(request):
     # This is assuming the user_action calculated properties
     # will only be fetched from the current_user view,
     # which ensures that the user represented by 'context' is also an effective principal
@@ -132,3 +110,21 @@ def impersonate(context, request):
             'title': 'Impersonate User…',
             'href': '/#!impersonate-user',
         }
+
+
+@calculated_property(context=User, category='user_action')
+def profile(context, request):
+    return {
+        'id': 'profile',
+        'title': 'Profile',
+        'href': request.resource_path(context),
+    }
+
+
+@calculated_property(context=User, category='user_action')
+def signout(context, request):
+    return {
+        'id': 'signout',
+        'title': 'Sign out',
+        'trigger': 'logout',
+    }

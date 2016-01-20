@@ -37,9 +37,6 @@ packages:
 power_state:
   mode: reboot
 
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
-
 write_files:
 - path: /etc/apt/apt.conf.d/20auto-upgrades
   content: |

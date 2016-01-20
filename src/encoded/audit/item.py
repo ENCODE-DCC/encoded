@@ -9,7 +9,7 @@ from contentbase.schema_utils import validate
 from contentbase.util import simple_path_ids
 
 
-@audit_checker('item', frame='object')
+@audit_checker('Item', frame='object')
 def audit_item_schema(value, system):
     context = system['context']
     registry = system['registry']
@@ -23,7 +23,7 @@ def audit_item_schema(value, system):
         upgrader = registry[UPGRADER]
         try:
             properties = upgrader.upgrade(
-                context.item_type, properties, current_version, target_version,
+                context.type_info.name, properties, current_version, target_version,
                 finalize=False, context=context, registry=registry)
         except RuntimeError:
             raise
@@ -40,7 +40,7 @@ def audit_item_schema(value, system):
         category = 'validation error'
         path = list(error.path)
         if path:
-            category += ': ' + '/'.join(path)
+            category += ': ' + '/'.join(str(elem) for elem in path)
         detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
         yield AuditFailure(category, detail, level='DCC_ACTION')
 
@@ -78,7 +78,7 @@ STATUS_LEVEL = {
 }
 
 
-@audit_checker('item', frame='object')
+@audit_checker('Item', frame='object')
 def audit_item_status(value, system):
     if 'status' not in value:
         return
@@ -102,9 +102,9 @@ def audit_item_status(value, system):
         if linked_value['status'] == 'disabled':
             continue
         if (  # Special case: A revoked file can have a deleted replicate ticket #2938
-            'file' in value['@type'] and
+            'File' in value['@type'] and
             value['status'] == 'revoked' and
-            'replicate' in linked_value['@type'] and
+            'Replicate' in linked_value['@type'] and
             linked_value['status'] == 'deleted'
         ):
             continue

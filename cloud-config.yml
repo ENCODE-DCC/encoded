@@ -4,7 +4,7 @@
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -37,20 +37,83 @@ apt_sources:
     qPDlGRlOgVTd9xUfHFkzB52c70E=
     =92oX
     -----END PGP PUBLIC KEY BLOCK-----
+- source: "deb https://deb.nodesource.com/node_4.x trusty main"
+  key: |
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+    Version: GnuPG v1
+    Comment: GPGTools - https://gpgtools.org
+
+    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
+    =CLGF
+    -----END PGP PUBLIC KEY BLOCK-----
 
 bootcmd:
+- set -ex
 - cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- sysctl "vm.swappiness=0"
-- swapon /swapfile
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 12 ]
+- then
+-    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+- else
+-    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 
 package_upgrade: true
 
 packages:
 - apache2-mpm-worker
+- bsdtar
 - build-essential
 - elasticsearch
 - git
@@ -68,9 +131,7 @@ packages:
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- nodejs-dev
-- nodejs-legacy
-- npm
+- nodejs
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
@@ -94,7 +155,7 @@ output:
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
-- set -e
+- set -ex
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
@@ -123,12 +184,13 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
-- sudo -u encoded python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
+- sudo -u encoded python3.4 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/create-mapping production.ini --app-name app
+## - sudo -u encoded bin/index-annotations production.ini --app-name app
 - ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
@@ -139,13 +201,13 @@ runcmd:
 - a2dissite 000-default
 - a2enconf logging
 - a2disconf charset
-- a2disconf javascript-common
+- a2disconf security
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
 - if test "%(ROLE)s" = "demo"
 - then
--   sudo -u encoded bin/batchupgrade production.ini --app-name app
+-   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
@@ -156,9 +218,6 @@ runcmd:
 # - sudo -i -u postgres /opt/wal-e/bin/wal-e --aws-profile default --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix | tr -d "\n")" backup-push /var/lib/postgresql/9.3/main
 # - sleep 60
 # - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
-
-ssh_authorized_keys:
-- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
 
 users:
 - default
@@ -191,9 +250,11 @@ write_files:
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
 
-- path: /etc/default/elasticsearch
+- path: /etc/elasticsearch/elasticsearch.log
   content: |
-    ES_HEAP_SIZE=4g
+    index.search.slowlog.threshold.query.warn: 8s
+    index.search.slowlog.threshold.fetch.warn: 1s
+    index.indexing.slowlog.threshold.index.warn: 25s
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |

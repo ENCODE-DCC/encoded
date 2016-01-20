@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/datasets/ENCSR000AJW/",
-    "@type": ["dataset", "item"],
+    "@type": ["Dataset", "Item"],
     "accession": "ENCSR000AJW",
     "award": "U54HG004592",
     "dataset_type": "project",

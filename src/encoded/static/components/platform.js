@@ -29,4 +29,4 @@ var Panel = module.exports.Panel = React.createClass({
     }
 });
 
-globals.panel_views.register(Panel, 'platform');
+globals.panel_views.register(Panel, 'Platform');

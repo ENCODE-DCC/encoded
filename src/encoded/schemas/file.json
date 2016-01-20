@@ -19,29 +19,23 @@
     ],
     "facets": {
         "status": {
-            "title": "File status",
-            "type": "string"
+            "title": "File status"
         },
         "output_category": {
-            "title": "Data category",
-            "type": "string"
+            "title": "Data category"
         },
         "output_type": {
-            "title": "Data type",
-            "type": "string"
+            "title": "Data type"
         },
 
         "file_format": {
-            "title": "File format",
-            "type": "string"
+            "title": "File format"
         },
         "file_format_type": {
-            "title": "Specific file format type",
-            "type": "string"
+            "title": "Specific file format type"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         }
     },
     "dependencies": {
@@ -112,7 +106,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "FF"
@@ -146,6 +140,7 @@
                         "csv",
                         "sam",
                         "tar",
+                        "vcf",
                         "wig",
                         "bedpe"
                     ]
@@ -169,8 +164,11 @@
                 {
                     "enum": [
                         "bed3",
+                        "bed3+",
                         "bed6",
+                        "bed6+",
                         "bed9",
+                        "bed9+",
                         "bed12",
                         "bedGraph",
                         "bedLogR",
@@ -180,7 +178,11 @@
                         "gappedPeak",
                         "gff2",
                         "gff3",
-                        "narrowPeak"
+                        "narrowPeak",
+                        "candidate enhancer predictions",
+                        "enhancer predictions",
+                        "tss_peak",
+                        "idr_peak"
                     ]
                 },
                 {
@@ -204,10 +206,11 @@
             "title": "File format specifications documents",
             "description": "Text or .as files the further explain the file format",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See document.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "document"
+                    "linkTo": "Document"
                     }
         },
         "md5sum": {
@@ -234,7 +237,7 @@
             "description": "The measurement device used to collect data.",
             "comment": "See platform.json for available identifiers.",
             "type": "string",
-            "linkTo": "platform"
+            "linkTo": "Platform"
         },
         "read_length": {
             "title": "Read length",
@@ -325,6 +328,7 @@
                         
                         "exon quantifications",
                         "gene quantifications",
+                        "microRNA quantifications",
                         "transcript quantifications",
                         "library fraction",
                         "methylation state at CpG",
@@ -354,7 +358,11 @@
                         "male genome index",
                         "spike-in sequence",
 
-                        "enhancer validation"
+                        "optimal idr thresholded peaks",
+                        "conservative idr thresholded peaks",
+
+                        "enhancer validation",
+                        "semi-automated genome annotation"
 
                     ]
                 },
@@ -394,8 +402,8 @@
                         "reference",
 
                         "predicted transcription start sites",
-                        "optimal idr thresholded peaks",
-                        "conservative idr thresholded peaks",
+                        "minus strand transcription start sites",
+                        "plus strand transcription start sites",
 
                         "validation",
 
@@ -428,30 +436,33 @@
             "title": "Derived from",
             "description": "The files participating as inputs into software to produce this output file.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
                     }
         },
         "controlled_by": {
             "title": "Controlled by",
             "description": "The files that control this file. ",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
             }
         },
         "supercedes": {
             "title": "Supercedes" ,
             "description": "The files that this file replaces.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                     "comment": "See file.json for a list of available identifiers.",
                     "type": "string",
-                    "linkTo": "file"
+                    "linkTo": "File"
             }
         },
         "paired_with": {
@@ -459,21 +470,21 @@
             "description": "The file that corresponds with this file.",
             "comment": "See file.json for a list of available identifiers.",
             "type": "string",
-            "linkTo": "file"
+            "linkTo": "File"
         },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
             "comment": "For experiments, see experiment.json for available identifiers. For datasets, see dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["experiment", "dataset"]
+            "linkTo": ["Experiment", "Dataset", "Reference", "Annotation", "PublicationData", "UcscBrowserComposite"]
         },
         "replicate": {
             "title": "Replicate",
             "description": "The experimental replicate designation for the file.",
             "comment": "See replicate.json for available identifiers.",
             "type": "string",
-            "linkTo": "replicate"
+            "linkTo": "Replicate"
         },
         "assembly": {
             "title": "Mapping assembly",
@@ -486,6 +497,7 @@
                 "hg19",
                 "GRCh38",
                 "ce10",
+                "ce11",
                 "dm3",
                 "dm6"
                 ]
@@ -495,17 +507,20 @@
             "description": "Genome annotation that file was generated with.",
             "comment": "Applies to files created using annotations.",
             "type": "string",
-            "permission": "import_items",
             "enum": [
                 "None",
                 "M2",
                 "M3",
                 "M4",
+                "M7",
                 "V3c",
                 "V7",
                 "V10",
                 "V19",
-                "ENSEMBL V65"
+                "ENSEMBL V65",
+                "miRBase V21",
+                "WS235",
+                "WS245"
                 ]
         },
         "submitted_file_name": {
@@ -536,6 +551,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -548,33 +564,27 @@
             "description": "The run instance of the step the file was generated from.",
             "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
             "type": "string",
-             "linkTo": "analysis_step_run"
+             "linkTo": "AnalysisStepRun"
         }
     },
     "columns": {
         "title": {
-            "title": "Title",
-            "type": "string"
+            "title": "Title"
         },
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "dataset": {
-            "title": "Dataset",
-            "type": "string"
+            "title": "Dataset"
         },
         "file_format": {
-            "title": "File Format",
-            "type": "string"
+            "title": "File Format"
         },
         "md5sum": {
-            "title": "MD5 Sum",
-            "type": "string"
+            "title": "MD5 Sum"
         },
         "output_type": {
-            "title": "Output Type",
-            "type": "string"
+            "title": "Output Type"
         }
     },
     "output_type_output_category": {
@@ -617,6 +627,7 @@
         "library fraction": "quantification",
         "exon quantifications": "quantification",
         "gene quantifications": "quantification",
+        "microRNA quantifications": "quantification",
         "transcript quantifications": "quantification",
         "methylation state at CpG": "quantification",
         "methylation state at CHG": "quantification",
@@ -665,7 +676,8 @@
         "enhancer validation": "validation",
         "validation": "validation",
         
-        "HMM predicted chromatin state": "annotation"
+        "HMM predicted chromatin state": "annotation",
+        "semi-automated genome annotation": "annotation"
         
     },
     "file_format_file_extension": {
@@ -687,6 +699,7 @@
         "tar": ".tar.gz",
         "tsv": ".tsv",
         "csv": ".csv",
+        "vcf": ".vcf.gz",
         "wig": ".wig.gz",
         "sam": ".sam.gz"
     },

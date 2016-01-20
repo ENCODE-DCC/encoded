@@ -45,8 +45,8 @@ def collection(name, **kw):
 
     def set_collection(config, Collection, name, Item, **kw):
         registry = config.registry
-        registry[TYPES].register(Item.item_type, Item)
-        collection = Collection(registry, name, Item.item_type, **kw)
+        ti = registry[TYPES].register(Item)
+        collection = Collection(registry, name, ti, **kw)
         registry[COLLECTIONS].register(name, collection)
 
     def decorate(Item):
@@ -62,11 +62,40 @@ def collection(name, **kw):
     return decorate
 
 
+def abstract_collection(name, **kw):
+    """ Attach a collection at the location ``name``.
+
+    Use as a decorator on Collection subclasses.
+    """
+
+    def set_collection(config, Collection, name, Item, **kw):
+        registry = config.registry
+        ti = registry[TYPES].register_abstract(Item.__name__)
+        registry[TYPES].all[Item] = ti  # XXX Ugly this is here.
+        collection = Collection(registry, name, ti, **kw)
+        registry[COLLECTIONS].register(name, collection)
+
+    def decorate(Item):
+
+        def callback(scanner, factory_name, factory):
+            scanner.config.action(('collection', name), set_collection,
+                                  args=(scanner.config, Item.AbstractCollection, name, Item),
+                                  kw=kw,
+                                  order=PHASE2_CONFIG)
+        venusian.attach(Item, callback, category='pyramid')
+        return Item
+
+    return decorate
+
+
 class CollectionsTool(dict):
     def __init__(self):
         self.by_item_type = {}
 
     def register(self, name, value):
         self[name] = value
-        self[value.item_type] = value
-        self.by_item_type[value.item_type] = value
+        ti = value.type_info
+        self[ti.name] = value
+        if hasattr(ti, 'item_type'):
+            self[ti.item_type] = value
+            self.by_item_type[value.type_info.item_type] = value

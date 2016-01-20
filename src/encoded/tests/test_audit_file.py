@@ -51,6 +51,31 @@ def file_rep2(replicate, file_exp2, testapp):
 
 
 @pytest.fixture
+def file_rep1_2(replicate, file_exp, testapp):
+    item = {
+        'experiment': file_exp['uuid'],
+        'biological_replicate_number': 2,
+        'technical_replicate_number': 1
+        }
+    return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file1_2(file_exp, award, lab, file_rep1_2, testapp):
+    item = {
+        'dataset': file_exp['uuid'],
+        'replicate': file_rep1_2['uuid'],
+        'file_format': 'fastq',
+        'md5sum': '100d8c998f00b204e9r800998ecf8427e',
+        'output_type': 'raw data',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'status': 'released'
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def file2(file_exp2, award, lab, file_rep2, testapp):
     item = {
         'dataset': file_exp2['uuid'],
@@ -102,7 +127,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'dataset': file_exp2['uuid'],
         'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
-        'md5sum': '100d8c998f00b204e9800998ecf8427e',
+        'md5sum': '100d8c998f00b204e9800908ecf8428c',
         'output_type': 'reads',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -110,15 +135,137 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
     }
     return testapp.post_json('/file', item, status=201).json['@graph'][0]
 
+@pytest.fixture
+def encode_lab(testapp):
+    item = {
+        'name': 'encode-processing-pipeline',
+        'title': 'ENCODE Processing Pipeline',
+        'status': 'current'
+        }
+    return testapp.post_json('/lab', item, status=201).json['@graph'][0]
+
+@pytest.fixture
+def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'file_format': 'bam',
+        'file_size': 3,
+        'md5sum': '100d8c998f00b204e9800998ecf8428b',
+        'output_type': 'alignments',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def file7(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
+    item = {
+        'dataset': file_exp2['uuid'],
+        'file_format': 'tsv',
+        'file_size': 3,
+        'md5sum': '100d8c998f00b204e9800998ecf8428b',
+        'output_type': 'gene quantifications',
+        'award': award['uuid'],
+        'lab': encode_lab['uuid'],
+        'status': 'released',
+        'step_run': analysis_step_run_bam['uuid']
+    }
+    return testapp.post_json('/file', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def bam_quality_metric(testapp, analysis_step_run_bam, file6):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file6['@id']],
+        'Uniquely mapped reads number': 1000
+    }
+
+    return testapp.post_json('/star_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def mad_quality_metric(testapp, analysis_step_run_bam, file7):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of':[file7['@id']],
+        'Spearman correlation':0.2
+    }
+
+    return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
+
+@pytest.fixture
+def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of':[file6['@id']],
+        'total':20000000
+    }
+
+    return testapp.post_json('/samtools_flagstats_quality_metric', item).json['@graph'][0]
+
+@pytest.fixture
+def analysis_step_bam(testapp):
+    item = {
+        'name': 'bamqc',
+        'title': 'bamqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation']
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+@pytest.fixture
+def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "Histone ChIP-seq",
+        'analysis_steps': [analysis_step_bam['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]
+
+@pytest.fixture
+def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
+    item = {
+        'analysis_step': analysis_step_bam['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_bam(testapp, analysis_step_version_bam):
+    item = {
+        'analysis_step_version': analysis_step_version_bam['@id'],
+        'status': 'finished',
+        'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-virtual']
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
 
 def test_audit_paired_with(testapp, file1):
-    testapp.patch_json(file1['@id'] + '?validate=false', {'paired_end': '2'})
+    testapp.patch_json(file1['@id'], {'paired_end': '1'})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing paired_with' for error in errors_list)
+
+
+def test_audit_mismatched_paired_with(testapp, file1, file4):
+    testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched paired_with' for error in errors_list)
 
 
 def test_audit_file_size(testapp, file1):
@@ -137,6 +284,15 @@ def test_audit_read_length(testapp, file1):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing read_length' for error in errors_list)
+
+
+def test_audit_run_type(testapp, file1):
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing run_type' for error in errors_list)
 
 
 def test_audit_file_missing_controlled_by(testapp, file3):
@@ -185,3 +341,193 @@ def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing mate pair' for error in errors_list)
+
+
+def test_audit_file_missing_quality_metrics(testapp, file6, analysis_step_run_bam, analysis_step_version_bam, analysis_step_bam, pipeline_bam, software):
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing quality metrics' for error in errors_list)
+
+
+def test_audit_file_read_depth(testapp, file6, file4, bam_quality_metric, analysis_step_run_bam,
+                               analysis_step_version_bam, analysis_step_bam, pipeline_bam):
+    testapp.patch_json(pipeline_bam['@id'],
+                       {'title': 'RNA-seq of long RNAs (paired-end, stranded)'})
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric,
+                                                             analysis_step_run_bam,
+                                                             analysis_step_version_bam,
+                                                             analysis_step_bam, pipeline_bam,
+                                                             software):
+    testapp.patch_json(software['@id'], {'title': 'TopHat'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing quality metrics' for error in errors_list)
+
+
+def test_audit_file_read_depth_inclusion_of_shRNA(testapp, file_exp, file6, file4,
+                                                  bam_quality_metric, analysis_step_run_bam,
+                                                  analysis_step_version_bam, analysis_step_bam,
+                                                  pipeline_bam):
+    testapp.patch_json(pipeline_bam['@id'],
+                       {'title': 'RNA-seq of long RNAs (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'shRNA knockdown followed by RNA-seq'})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'single-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+
+def test_audit_file_read_depth_chip_seq_paired_end_no_target(testapp, file_exp, file6, file4,
+                                                             chipseq_bam_quality_metric,
+                                                             analysis_step_run_bam,
+                                                             analysis_step_version_bam,
+                                                             analysis_step_bam,
+                                                             pipeline_bam):
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'ChIP-seq missing target' for error in errors_list)
+
+
+def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
+                                                   chipseq_bam_quality_metric,
+                                                   analysis_step_run_bam,
+                                                   analysis_step_version_bam,
+                                                   analysis_step_bam, target_H3K27ac,
+                                                   pipeline_bam):
+    testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+
+def test_audit_file_mad_qc_spearman_correlation(testapp, file7,  file_exp,
+                                                mad_quality_metric,
+                                                analysis_step_run_bam,
+                                                analysis_step_version_bam, analysis_step_bam,
+                                                pipeline_bam):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})   
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
+
+
+def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
+                                                  mad_quality_metric,
+                                                  analysis_step_run_bam,
+                                                  analysis_step_version_bam, analysis_step_bam,
+                                                  pipeline_bam):
+    testapp.patch_json(mad_quality_metric['@id'], {'Spearman correlation': 0.99})
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})
+    res = testapp.get(file7['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient spearman correlation' for error in errors_list)
+
+
+def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam', 'output_type': 'alignments'})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing step_run' for error in errors_list)
+
+
+def test_audit_modERN_missing_derived_from(testapp, file_exp, file3, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bam', 'output_type': 'alignments', 'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from' for error in errors_list)
+
+
+def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed', 'file_format_type': 'narrowPeak', 'output_type': 'peaks', 'step_run': analysis_step_run_bam['@id'], 'derived_from': [file4['@id']]})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'wrong step_run for peaks' for error in errors_list)
+
+
+def test_audit_file_biological_replicate_number_match(testapp,
+                                                      file_exp,
+                                                      file_rep,
+                                                      file1,
+                                                      file_rep1_2,
+                                                      file1_2):
+    testapp.patch_json(file1['@id'], {'derived_from': [file1['@id']]})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent biological replicate number'
+               for error in errors_list)
+
+
+def test_audit_file_biological_replicate_number_mismatch(testapp,
+                                                         file_exp,
+                                                         file_rep,
+                                                         file1,
+                                                         file_rep1_2,
+                                                         file1_2):
+    testapp.patch_json(file1['@id'], {'derived_from': [file1_2['@id']]})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent biological replicate number'
+               for error in errors_list)

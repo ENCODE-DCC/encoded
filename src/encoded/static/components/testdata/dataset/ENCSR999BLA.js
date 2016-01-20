@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/datasets/ENCSR999BLA/",
-    "@type": ["dataset", "item"],
+    "@type": ["Dataset", "Item"],
     "accession": "ENCSR999BLA",
     "award": "U54HG004576",
     "dataset_type": "composite",

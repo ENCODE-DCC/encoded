@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/organisms/mouse/",
-    "@type": ["organism", "item"],
+    "@type": ["Organism", "Item"],
     "name": "mouse",
     "scientific_name": "Mus musculus",
     "taxon_id": "10090",

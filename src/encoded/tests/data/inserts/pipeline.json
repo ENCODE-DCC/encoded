@@ -21,6 +21,10 @@
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
+        "references": [
+            "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
+            "b163ba10-bd4a-11e4-bb52-0800200c9a66"
+        ],
         "analysis_steps": [
             "prep-bismark"
         ],

@@ -4,7 +4,6 @@ var globals = require('./globals');
 var parseAndLogError = require('./mixins').parseAndLogError;
 var fetched = require('./fetched');
 var _ = require('underscore');
-var $script = require('scriptjs');
 var ga = require('google-analytics');
 
 
@@ -38,7 +37,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="data" url={url} etagName="etag" />
                     <EditForm {...this.props} />
                 </fetched.FetchedData>
@@ -49,7 +48,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
 
 var EditForm = module.exports.EditForm = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        navigate: React.PropTypes.func
     },
 
     render: function () {
@@ -77,6 +77,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     componentDidMount: function () {
+        var $script = require('scriptjs');
         $script('brace', this.setupEditor);
     },
 
@@ -141,16 +142,16 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     receive: function (data) {
-        var erred = (data['@type'] || []).indexOf('error') > -1;
+        var erred = (data['@type'] || []).indexOf('Error') > -1;
         this.setState({
             data: data,
             communicating: false,
             erred: erred,
             error: erred ? data : undefined
         });
-        if (!erred) this.props.navigate('');
+        if (!erred) this.context.navigate('');
     }
 });
 
 
-globals.content_views.register(ItemEdit, 'item', 'edit-json');
+globals.content_views.register(ItemEdit, 'Item', 'edit-json');

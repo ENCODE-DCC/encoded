@@ -16,7 +16,7 @@ var Error = module.exports.Error = React.createClass({
     }
 });
 
-globals.content_views.register(Error, 'error');
+globals.content_views.register(Error, 'Error');
 
 
 var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
@@ -40,21 +40,21 @@ globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
 
 
 var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
-        if (!this.props.loadingComplete) return (
-            <div className="communicating">
-                <div className="loading-spinner"></div>
-            </div>
-        );
+        var logged_in = this.context.session && this.context.session['auth.userid'];
         return (
             <div className={itemClass}>
                 <div className="row">
                     <div className="col-sm-12">
                         <h1>Not available</h1>
-                        <p>Please sign in to view this page.</p> 
-                        <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>
+                        {logged_in ? <p>Your account is not allowed to view this page.</p> : <p>Please sign in to view this page.</p>}
+                        {logged_in ? null : <p>Or <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a></p>}
                     </div>
                 </div>
             </div>
@@ -63,14 +63,6 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
 });
 
 globals.content_views.register(HTTPForbidden, 'HTTPForbidden');
-
-
-var BlankWhileLoading = module.exports.BlankWhileLoading = function (props) {
-    if (!props.loadingComplete) return "";
-    return props.context.title;
-}
-
-globals.listing_titles.register(BlankWhileLoading, 'HTTPForbidden');
 
 
 var LoginDenied = module.exports.LoginDenied = React.createClass({

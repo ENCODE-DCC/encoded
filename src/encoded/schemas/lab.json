@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "title": "Name",
@@ -33,19 +33,20 @@
             "description": "Principle Investigator of the lab.",
             "comment": "See user.json for available identifiers.",
             "type": "string",
-            "linkTo": "user"
+            "linkTo": "User"
         },
         "awards": {
             "title": "Grants",
             "description": "Grants associated with the lab.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Grant",
                 "description": "A grant associated with the lab.",
                 "comment": "See award.json for available identifiers.",
                 "type": "string",
-                "linkTo": "award"
+                "linkTo": "Award"
             }
         },
         "institute_label": {

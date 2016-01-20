@@ -41,6 +41,7 @@ def test_declarative_config():
     from pyramid.config import Configurator
     from contentbase.interfaces import UPGRADER
     config = Configurator()
+    config.include('contentbase.config')
     config.include('contentbase.upgrader')
     config.include('.testing_upgrader')
     config.commit()

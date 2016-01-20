@@ -1,6 +1,7 @@
 from past.builtins import basestring
 from .typedsheets import cast_row_values
 from functools import reduce
+import io
 import logging
 import os.path
 
@@ -38,7 +39,17 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    'dataset',
+    'annotation',
+    'project',
+    'publication_data',
+    'reference',
+    'ucsc_browser_composite',
+    'matched_set',
+    'treatment_time_series',
+    'treatment_concentration_series',
+    'organism_development_series',
+    'replication_timing_series',
+    'reference_epigenome',
     'software',
     'software_version',
     'analysis_step',
@@ -46,15 +57,24 @@ ORDER = [
     'pipeline',
     'analysis_step_run',
     'file',
-    'star_qc_metric',
-    'bismark_qc_metric',
-    'chipseq_filter_qc_metric',
-    'encode2_chipseq_qc_metric',
-    'fastqc_qc_metric',
-    'flagstats_qc_metric',
-    'mad_cc_lrna_qc_metric',
+    'star_quality_metric',
+    'bismark_quality_metric',
+    'chipseq_filter_quality_metric',
+    'encode2_chipseq_quality_metric',
+    'fastqc_quality_metric',
+    'samtools_flagstats_quality_metric',
+    'mad_quality_metric',
+    'bigwigcorrelate_quality_metric',
+    'dnase_peak_quality_metric',
+    'edwbamstats_quality_metric',
+    'edwcomparepeaks_quality_metric',
+    'hotspot_quality_metric',
+    'idr_summary_quality_metric',
+    'pbc_quality_metric',
+    'phantompeaktools_spp_quality_metric',
+    'samtools_stats_quality_metric',
     'image',
-    'page',
+    'page'
 ]
 
 ##############################################################################
@@ -208,15 +228,15 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = zf.open(name + '.tsv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.tsv'), encoding='utf-8')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = zf.open(name + '.csv', 'rU')
+            stream = io.TextIOWrapper(zf.open(name + '.csv'), encoding='utf-8')
             return read_csv(stream)
 
         if (name + '.json') in names:
-            stream = zf.open(name + '.json', 'r')
+            stream = io.TextIOWrapper(zf.open(name + '.json'), encoding='utf-8')
             return read_json(stream)
 
     if os.path.isdir(path):
@@ -513,14 +533,44 @@ PHASE1_PIPELINES = {
     'library': [
         remove_keys('spikeins_used'),
     ],
-    'dataset': [
-        remove_keys('related_files'),
-    ],
     'experiment': [
-        remove_keys('related_files', 'possible_controls'),
+        remove_keys('possible_controls', 'related_files'),
     ],
     'publication': [
         remove_keys('datasets'),
+    ],
+    'annotation': [
+        remove_keys('related_files', 'software_used'),
+    ],
+    'project': [
+        remove_keys('related_files'),
+    ],
+    'publication_data': [
+        remove_keys('related_files'),
+    ],
+    'reference': [
+        remove_keys('related_files', 'software_used'),
+    ],
+    'ucsc_browser_composite': [
+        remove_keys('related_files'),
+    ],
+    'treatment_time_series': [
+        remove_keys('related_datasets'),
+    ],
+    'treatment_concentration_series': [
+        remove_keys('related_datasets'),
+    ],
+    'organism_development_series': [
+        remove_keys('related_datasets'),
+    ],
+    'replication_timing_series': [
+        remove_keys('related_datasets'),
+    ],
+    'reference_epigenome': [
+        remove_keys('related_datasets'),
+    ],
+    'matched_set': [
+        remove_keys('related_datasets'),
     ]
 }
 
@@ -545,12 +595,42 @@ PHASE2_PIPELINES = {
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls'),
     ],
-    'dataset': [
+    'annotation': [
+        skip_rows_missing_all_keys('related_files', 'software_used'),
+    ],
+    'project': [
         skip_rows_missing_all_keys('related_files'),
+    ],
+    'publication_data': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'reference': [
+        skip_rows_missing_all_keys('related_files', 'software_used'),
+    ],
+    'ucsc_browser_composite': [
+        skip_rows_missing_all_keys('related_files'),
+    ],
+    'treatment_time_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'treatment_concentration_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'organism_development_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'replication_timing_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'reference_epigenome': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'matched_set': [
+        skip_rows_missing_all_keys('related_datasets'),
     ],
     'publication': [
         skip_rows_missing_all_keys('datasets'),
-    ]
+    ],
 }
 
 

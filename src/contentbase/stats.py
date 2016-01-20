@@ -72,7 +72,7 @@ def stats_tween_factory(handler, registry):
             stats['queue_begin'] = queue_begin
             stats['queue_time'] = begin - queue_begin
 
-        xs = response.headers['X-Stats'] = urlencode(sorted(stats.items()))
+        xs = response.headers['X-Stats'] = str(urlencode(sorted(stats.items())))
         if getattr(request, '_stats_html_attribute', False):
             response.set_cookie('X-Stats', xs)
         return response

@@ -22,4 +22,4 @@ var Page = module.exports.Page = React.createClass({
 });
 
 
-globals.content_views.register(Page, 'page');
+globals.content_views.register(Page, 'Page');

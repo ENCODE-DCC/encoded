@@ -1,9 +1,10 @@
-$indicator-eligible:    #00e500;
-$indicator-pending:     #33aaff;
-$indicator-noteligible: #cc0700;
-$indicator-awaiting:    #ebe310;
-$indicator-notreviewed: #1475c9;
-$indicator-notpursued:  #d0d0d0;
+$indicator-eligible:        #00e500;
+$indicator-eligible-exempt: #e38000;
+$indicator-pending:         #33aaff;
+$indicator-noteligible:     #cc0700;
+$indicator-awaiting:        #ebe310;
+$indicator-notreviewed:     #1475c9;
+$indicator-notpursued:      #d0d0d0;
 
 $document-figure-width: 130px;
 $document-figure-height: 130px;
@@ -95,7 +96,7 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-document.view-detail {
+.type-Document.view-detail {
     padding: 0;
 
     figure {
@@ -112,8 +113,8 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-characterization.view-detail {
-    @extend .type-document.view-detail;
+.type-Characterization.view-detail {
+    @extend .type-Document.view-detail;
 
     header {
         margin: 0 15px;
@@ -153,27 +154,27 @@ $characterization-figure-height: 200px;
 }
 
 
-.type-characterization.view-detail.status-compliant {
+.type-Characterization.view-detail.status-compliant {
     @include status-colors($state-success-bg, $state-success-text);
 }
 
-.type-characterization.view-detail.status-not-compliant,
-.type-document.view-detail.status-deleted {
+.type-Characterization.view-detail.status-not-compliant,
+.type-Document.view-detail.status-deleted {
     @include status-colors($state-danger-bg, $state-danger-text);
 }
 
-.type-characterization.view-detail.status-pending-dcc-review {
+.type-Characterization.view-detail.status-pending-dcc-review {
     @include status-colors($state-info-bg, $state-info-text);
 }
 
-.type-characterization.view-detail.status-in-progress,
-.type-characterization.view-detail.status-not-submitted-for-review-by-lab,
-.type-characterization.view-detail.status-not-reviewed,
-.type-document.view-detail.status-none {
+.type-Characterization.view-detail.status-in-progress,
+.type-Characterization.view-detail.status-not-submitted-for-review-by-lab,
+.type-Characterization.view-detail.status-not-reviewed,
+.type-Document.view-detail.status-none {
     @include status-colors($bg: #f7f7f9, $text: #333);
 }
 
-.type-characterization.view-detail.type-antibody_characterization {
+.type-Characterization.view-detail.type-AntibodyCharacterization {
     padding-top: 0;
     padding-left: 0;
     padding-right: 0;
@@ -212,6 +213,9 @@ $characterization-figure-height: 200px;
     }
 }
 
+.characterization-meta-data {
+    padding: 0;
+}
 
 .characterization-status {
     margin-bottom: 8px;
@@ -345,6 +349,9 @@ $characterization-figure-height: 200px;
     // NOT REVIEWED (red)
     .#{$item}.status-not-reviewed         { background-color: #a0a0a0; }
     .#{$item}.status-not-reviewed[href]    { background-color: darken(#a0a0a0, 10%); }
+    // NOT REVIEWED (orange)
+    .#{$item}.status-exempt-from-standards         { background-color: $indicator-eligible-exempt; }
+    .#{$item}.status-exempt-from-standards[href]    { background-color: darken($indicator-eligible-exempt, 10%); }
 
     // Experiment (Dataset) and Biosample states
     // IN PROGRESS (blue)
@@ -358,6 +365,9 @@ $characterization-figure-height: 200px;
     .#{$item}.status-verified[href]   { background-color: darken($brand-info, 10%); }
     // SUBMITTED (blue)
     .#{$item}.status-submitted        { background-color: $brand-info; }
+    .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
+    // IN REVIEW (blue)
+    .#{$item}.status-in-review        { background-color: $brand-info; }
     .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
     // PROPOSED (blue)
     .#{$item}.status-proposed        { background-color: $brand-info; }
@@ -391,6 +401,7 @@ $characterization-figure-height: 200px;
 
 // Status indicator glyph colors
 .indicator.status-eligible-for-new-data { color: $indicator-eligible; }
+.indicator.status-eligible-for-new-data-via-exemption { color: $indicator-eligible-exempt; }
 .indicator.status-pending-dcc-review { color: $indicator-pending; }
 .indicator.status-not-eligible-for-new-data { color: $indicator-noteligible; }
 .indicator.status-awaiting-lab-characterization { color: $indicator-awaiting; }
@@ -564,7 +575,7 @@ $characterization-figure-height: 200px;
     word-break: break-all;
 }
 
-.type-document {
+.type-Document {
     @include type-panel($document-figure-width, $document-figure-height);
 
     .panel-body {
@@ -572,7 +583,7 @@ $characterization-figure-height: 200px;
     }
 }
 
-.type-characterization {
+.type-Characterization {
     @include type-panel($document-figure-width, $document-figure-height);
 
     .panel-body {
@@ -580,7 +591,7 @@ $characterization-figure-height: 200px;
     }
 }
 
-.type-characterization.type-antibody_characterization {
+.type-Characterization.type-AntibodyCharacterization {
     @include type-panel($characterization-figure-width, $characterization-figure-height);
 }
 

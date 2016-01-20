@@ -3,6 +3,7 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var StickyHeader = require('./StickyHeader');
 
 
 var lookup_column = function (result, column) {
@@ -31,7 +32,7 @@ var lookup_column = function (result, column) {
         }
     });
 
-    globals.content_views.register(Collection, 'collection');
+    globals.content_views.register(Collection, 'Collection');
 
 
     class Cell {
@@ -95,25 +96,27 @@ var lookup_column = function (result, column) {
 
     var Table = module.exports.Table = React.createClass({
         contextTypes: {
-            fetch: React.PropTypes.func
+            fetch: React.PropTypes.func,
+            location_href: React.PropTypes.string
         },
 
 
         getDefaultProps: function () {
             return {
-                defaultSortOn: 0
+                defaultSortOn: 0,
+                showControls: true,
             };
         },
 
         getInitialState: function () {
-            var state = this.extractParams(this.props);
+            var state = this.extractParams(this.props, this.context);
             state.columns = this.guessColumns(this.props);
             state.data = new Data([]);  // Tables may be long so render empty first
             state.communicating = true;
             return state;
         },
 
-        componentWillReceiveProps: function (nextProps) {
+        componentWillReceiveProps: function (nextProps, nextContext) {
             var updateData = false;
             if (nextProps.context !== this.props.context) {
                 updateData = true;
@@ -128,14 +131,14 @@ var lookup_column = function (result, column) {
                 var columns = this.guessColumns(nextProps);
                 this.extractData(nextProps, columns);
             }
-            if (nextProps.href !== this.props.href) {
-                this.extractParams(nextProps);
+            if (nextContext.location_href !== this.context.location_href) {
+                this.extractParams(nextProps, nextContext);
             }
 
         },
 
-        extractParams: function(props) {
-            var params = url.parse(props.href, true).query;
+        extractParams: function(props, context) {
+            var params = url.parse(context.location_href, true).query;
             var sorton = parseInt(params.sorton, 10);
             if (isNaN(sorton)) {
                 sorton = props.defaultSortOn;
@@ -150,7 +153,7 @@ var lookup_column = function (result, column) {
         },
 
         guessColumns: function (props) {
-            var column_list = props.context.columns;
+            var column_list = props.columns || props.context.columns;
             var columns = [];
             if (!column_list || Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
@@ -241,7 +244,7 @@ var lookup_column = function (result, column) {
             this.state.searchTerm = searchTerm;
             var titles = context.columns || {};
             var data = this.state.data;
-            var params = url.parse(this.props.href, true).query;
+            var params = url.parse(this.context.location_href, true).query;
             var total = context.count || data.rows.length;
             data.sort(sortOn, reversed);
             var self = this;
@@ -303,8 +306,9 @@ var lookup_column = function (result, column) {
             return (
                 <div className="table-responsive">            
                     <table className={table_class + " table table-striped table-hover table-panel"}>
+                      <StickyHeader>
                         <thead className="sticky-header">
-                            <tr className="nosort table-controls">
+                            {this.props.showControls ? <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>
                                     {loading_or_total}
                                     {actions}
@@ -319,11 +323,12 @@ var lookup_column = function (result, column) {
                                         <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                     </form>
                                 </th>
-                            </tr>
+                            </tr> : ''}
                             <tr className="col-headers">
                                 {headers}
                             </tr>
                         </thead>
+                      </StickyHeader>
                         <tbody>
                             {rows}
                         </tbody>

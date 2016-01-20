@@ -36,7 +36,11 @@ def main():
     args = parser.parse_args()
 
     logging.basicConfig()
-    app = get_app(args.config_uri, args.app_name)
+    options = {
+        'embed_cache.capacity': '5000',
+        'indexer': 'true',
+    }
+    app = get_app(args.config_uri, args.app_name, options)
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)

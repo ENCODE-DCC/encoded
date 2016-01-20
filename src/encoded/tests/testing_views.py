@@ -101,7 +101,7 @@ class TestingLinkSource(Item):
             },
             'target': {
                 'type': 'string',
-                'linkTo': 'testing_link_target',
+                'linkTo': 'TestingLinkTarget',
             },
             'status': {
                 'type': 'string',
@@ -133,7 +133,7 @@ class TestingLinkTarget(Item):
         'additionalProperties': False,
     }
     rev = {
-        'reverse': ('testing_link_source', 'target'),
+        'reverse': ('TestingLinkSource', 'target'),
     }
     embedded = [
         'reverse',
@@ -144,7 +144,7 @@ class TestingLinkTarget(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "testing_link_source.target",
+            "linkFrom": "TestingLinkSource.target",
         },
     })
     def reverse(self, request, reverse):
@@ -198,7 +198,7 @@ class TestingPostPutPatch(Item):
                 # This should be allowed on PUT so long as the linked uuid is
                 # the same
                 'type': 'string',
-                'linkTo': 'testing_link_target',
+                'linkTo': 'TestingLinkTarget',
                 'permission': 'import_items',
             },
         }
@@ -217,7 +217,7 @@ class TestingServerDefault(Item):
             },
             'user': {
                 'serverDefault': 'userid',
-                'linkTo': 'user',
+                'linkTo': 'User',
                 'type': 'string',
             },
             'now': {
@@ -259,7 +259,24 @@ class TestingDependencies(Item):
 @view_config(name='testing-render-error', request_method='GET')
 def testing_render_error(request):
     return {
-        '@type': ['testing_render_error', 'item'],
+        '@type': ['TestingRenderError', 'Item'],
         '@id': request.path,
         'title': 'Item triggering a render error',
+    }
+
+
+@view_config(context=TestingPostPutPatch, name='testing-retry')
+def testing_retry(context, request):
+    from sqlalchemy import inspect
+    from transaction.interfaces import TransientError
+
+    model = context.model
+    request._attempt = getattr(request, '_attempt', 0) + 1
+
+    if request._attempt == 1:
+        raise TransientError()
+
+    return {
+        'attempt': request._attempt,
+        'detached': inspect(model).detached,
     }

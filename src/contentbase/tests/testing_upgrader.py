@@ -1,3 +1,7 @@
+from contentbase import (
+    Item,
+    collection,
+)
 from contentbase.upgrader import (
     upgrade_step,
     upgrade_finalizer,
@@ -7,6 +11,11 @@ from contentbase.upgrader import (
 def includeme(config):
     config.scan(__name__)
     config.add_upgrade('testing_upgrader', '3')
+
+
+@collection('testing-upgrader')
+class TestingUpgrader(Item):
+    item_type = 'testing_upgrader'
 
 
 @upgrade_step('testing_upgrader', '', '2')

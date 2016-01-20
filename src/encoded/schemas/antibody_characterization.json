@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
         "characterization_reviews": ["primary_characterization_method"],
@@ -29,7 +30,7 @@
                             "minItems": 1
                         },
                         "status": {
-                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                            "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
                         }
                     }
                 },
@@ -37,7 +38,7 @@
                     "not": {
                         "properties": {
                             "status": {
-                               "enum": ["pending dcc review", "compliant", "not compliant" ]
+                               "enum": ["pending dcc review", "compliant", "not compliant", "exempt from standards"]
                             }
                         }
                     }
@@ -73,10 +74,18 @@
                     }
                 },
                 {
+                    "required": ["comment", "notes", "reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["exempt from standards"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "status": {
-                                "enum": ["compliant", "not compliant", "not reviewed"]
+                                "enum": ["compliant", "not compliant", "not reviewed", "exempt from standards"]
                             }
                         }
                     }
@@ -86,16 +95,17 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "reviewed_by": {
             "title": "Reviewed by",
             "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
             "comment": "Only admins are allowed to set or update this value.",
             "permission": "import_items",
-            "linkTo": "user",
+            "linkTo": "User",
             "type": "string",
             "linkEnum": [
+                "98fb23d3-0d79-4c3d-981d-01539e6589f1",
                 "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
                 "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
                 "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
@@ -109,7 +119,7 @@
         "characterizes": {
             "title": "Antibody characterized",
             "comment": "See antibody_lot.json for available identifiers.",
-            "linkTo": "antibody_lot"
+            "linkTo": "AntibodyLot"
         },
         "status": {
             "title": "Approval status",
@@ -124,6 +134,7 @@
                 "not compliant",
                 "not reviewed",
                 "not submitted for review by lab",
+                "exempt from standards",
                 "deleted"
             ]
         },
@@ -142,7 +153,7 @@
                         "title": "Organism",
                         "comment": "See organism.json for available identifiers.",
                         "type": "string",
-                        "linkTo": "organism"
+                        "linkTo": "Organism"
                     },
                     "lane": {
                         "title": "Lane",
@@ -157,7 +168,8 @@
                         "enum" : [
                             "pending dcc review",
                             "compliant",
-                            "not compliant"
+                            "not compliant",
+                            "exempt from standards"
                         ]
                     },
                     "biosample_term_id": {
@@ -194,7 +206,7 @@
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
-            "linkTo": "target"
+            "linkTo": "Target"
         },
         "primary_characterization_method": {
             "title": "Primary method",
@@ -225,20 +237,16 @@
     },
     "facets": {
         "status": {
-            "title": "Characterization status",
-            "type": "string"
+            "title": "Characterization status"
         },
         "target.organism.scientific_name": {
-            "title": "Target Organism",
-            "type": "string"
+            "title": "Target Organism"
         },
         "characterization_method":{
-            "title": "Characterization method",
-            "type": "string"
+            "title": "Characterization method"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         }
     }
 }

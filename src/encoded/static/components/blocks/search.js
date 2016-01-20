@@ -60,7 +60,7 @@ var SearchBlock = React.createClass({
                 </fetched.FetchedData>
             );
         } else {
-            var url = '/search/' + this.props.value.search;
+            var url = '/search/' + (this.props.value.search || '');
             var Component = this.props.value.display === 'table' ? Table : SearchResultsLayout;
             return (
                 <fetched.FetchedData> 

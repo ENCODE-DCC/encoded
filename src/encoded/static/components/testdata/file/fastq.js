@@ -1,8 +1,9 @@
 module.exports = {
     "@id": "/files/ENCFF001REQ/",
-    "@type": ["file", "item"],
+    "@type": ["File", "Item"],
     "accession": "ENCFF001REQ",
     "alternate_accessions": [],
+    "biological_replicates": [1, 2],
     "dataset": "/experiments/ENCSR999NOF/",
     "date_created": "2013-06-13",
     "download_path": "2013/6/14/ENCFF001REQ.fastq.gz",

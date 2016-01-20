@@ -1,6 +1,6 @@
 module.exports = {
     "@id":"/antibodies/ENCAB000AUZ/",
-    "@type":["antibody_lot", "item"],
+    "@type":["AntibodyLot", "Item"],
     "accession": "ENCAB000AUZ",
     "clonality": "polyclonal",
     "host_organism": {},

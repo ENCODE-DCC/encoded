@@ -1,25 +1,29 @@
 'use strict';
 var React = require('react');
+var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
-var Layout = require('./layout').Layout;
-var ItemPreview = require('./inputs').ItemPreview;
-var ObjectPicker = require('./inputs').ObjectPicker;
-var FileInput = require('./inputs').FileInput;
 var audit = require('./audit');
+var form = require('./form');
 var _ = require('underscore');
 
 var cx = require('react/lib/cx');
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var JSONSchemaForm = form.JSONSchemaForm;
+var Table = collection.Table;
 
 
 var Fallback = module.exports.Fallback = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
         var url = require('url');
         var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
         return (
             <div className="view-item">
                 <header className="row">
@@ -73,7 +77,7 @@ var Item = module.exports.Item = React.createClass({
     }
 });
 
-globals.content_views.register(Item, 'item');
+globals.content_views.register(Item, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -96,7 +100,7 @@ var Panel = module.exports.Panel = React.createClass({
     }
 });
 
-globals.panel_views.register(Panel, 'item');
+globals.panel_views.register(Panel, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -110,7 +114,7 @@ var title = module.exports.title = function (props) {
     return context.title || context.name || context.accession || context['@id'];
 };
 
-globals.listing_titles.register(title, 'item');
+globals.listing_titles.register(title, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
@@ -119,243 +123,25 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var RepeatingItem = React.createClass({
-
-  render: function() {
-    return (
-      <div {...this.props} className="rf-RepeatingFieldset__item">
-        {this.props.children}
-        <button
-          onClick={this.onRemove}
-          type="button"
-          className="rf-RepeatingFieldset__remove">&times;</button>
-      </div>
-    );
-  },
-
-  onRemove: function(e) {
-    if (!confirm('Are you sure you want to remove this item?')) {
-        e.preventDefault();
-    }
-    if (this.props.onRemove) {
-      this.props.onRemove(this.props.name);
-    }
-  }
-
-});
-
-
-var FetchedFieldset = React.createClass({
-
-    getInitialState: function() {
-        var value = this.props.value;
-        var url = typeof value.value == 'string' ? value.value : null;
-        var externalValidation = value.externalValidation;
-        return {
-            url: url,
-            collapsed: url && !externalValidation.isFailure,
-        };
-    },
-
-    render: function() {
-        var ReactForms = require('react-forms');
-        var schema = this.props.schema;
-        var value = this.props.value;
-        var externalValidation = value.externalValidation;
-        var isFailure = externalValidation.isFailure;
-        externalValidation = isFailure ? externalValidation : null;
-        value = value.value;
-        var url = typeof value == 'string' ? value : null;
-        var preview, fieldset;
-
-        if (this.state.url) {
-            var previewUrl = this.state.url;
-            preview = (
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={previewUrl} />
-                    <ItemPreview />
-                </fetched.FetchedData>
-            );
-            fieldset = (
-                <fetched.FetchedData>
-                    <fetched.Param name="defaultValue" url={this.state.url + '?frame=edit'} />
-                    <ReactForms.Form schema={schema} onUpdate={this.onUpdate}
-                                     externalValidation={externalValidation} />
-                </fetched.FetchedData>
-            );
-        } else {
-            preview = (
-                <ul className="nav result-table">
-                  <li>
-                    <div className="accession">{'New ' + schema.props.get('label')}</div>
-                  </li>
-                </ul>
-            );
-            fieldset = <ReactForms.Form
-                defaultValue={value} schema={schema} onUpdate={this.onUpdate}
-                externalValidation={externalValidation} />;
-        }
-
-        return (
-            <div className="collapsible">
-                <span className="collapsible-trigger" onClick={this.toggleCollapsed}>{this.state.collapsed ? '▶ ' : '▼ '}</span>
-                {isFailure && <ReactForms.Message>{externalValidation.error}</ReactForms.Message>}
-                <div style={{display: this.state.collapsed ? 'block' : 'none'}}>{preview}</div>
-                <div style={{display: this.state.collapsed ? 'none' : 'block'}}>{fieldset}</div>
-            </div>
-        );
-    },
-
-    toggleCollapsed: function() {
-        this.setState({collapsed: !this.state.collapsed});
-    },
-
-    onUpdate: function(value) {
-        value = value.set('@id', this.state.url);
-        this.props.value.setSerialized(value);
-    }
-
-});
-
-
-var jsonSchemaToFormSchema = function(attrs) {
-    var ReactForms = require('react-forms');
-    var schemas = attrs.schemas,
-        p = attrs.jsonNode,
-        props = attrs.props,
-        id = attrs.id,
-        skip = attrs.skip || [];
-    if (props === undefined) {
-        props = {};
-    }
-    if (p.title) props.label = p.title;
-    if (p.description) props.hint = p.description;
-    if (p.type == 'object') {
-        if (p.formInput == 'file') {
-            props.input = <FileInput />;
-            return ReactForms.schema.Scalar(props);
-        } else if (p.formInput == 'layout') {
-            props.input = <Layout editable={true} />;
-            return ReactForms.schema.Scalar(props);
-        } else {
-            props.component = <ReactForms.Fieldset className={props.required ? "required" : ''} />;
-        }
-        var properties = {}, name;
-        for (name in p.properties) {
-            if (name == 'uuid' || name == 'schema_version') continue;
-            if (p.properties[name].calculatedProperty) continue;
-            if (_.contains(skip, name)) continue;
-            var required = _.contains(p.required || [], name);
-            var subprops = {required: required};
-            properties[name] = jsonSchemaToFormSchema({
-                schemas: schemas,
-                jsonNode: p.properties[name],
-                props: subprops,
-            });
-        }
-        return ReactForms.schema.Mapping(props, properties);
-    } else if (p.type == 'array') {
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem} />;
-        return ReactForms.schema.List(props, jsonSchemaToFormSchema({schemas: schemas, jsonNode: p.items}));
-    } else if (p.type == 'boolean') {
-        props.type = 'bool';
-        return ReactForms.schema.Scalar(props);
-    } else {
-        if (props.required) props.component = <ReactForms.Field className="required" />;
-        if (p.pattern) {
-            props.validate = function(schema, value) { return (typeof value == 'string') ? value.match(p.pattern) : true; };
-        }
-        if (p['enum']) {
-            var options = p['enum'].map(v => <option value={v}>{v}</option>);
-            if (!props.required && !p.default) {
-                options = [<option value={null} />].concat(options);
-            }
-            props.input = <select className="form-control">{options}</select>;
-        }
-        if (p.linkTo) {
-            var restrictions = {type: [p.linkTo]};
-            props.input = (
-                <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
-            );
-        } else if (p.linkFrom) {
-            // Backrefs have a linkFrom property in the form
-            // (object type).(property name)
-            var a = p.linkFrom.split('.'), linkType = a[0], linkProp = a[1];
-            // Get the schema for the child object, omitting the attribute that
-            // refers to the parent.
-            var linkFormSchema = jsonSchemaToFormSchema({
-                schemas: schemas,
-                jsonNode: schemas[linkType],
-                skip: [linkProp]
-            });
-            // Use a special FetchedFieldset component which can take either an IRI
-            // or a full object as its value, and render a sub-form using the child
-            // object schema.
-            var component = <FetchedFieldset schema={linkFormSchema} />;
-            // Default value for new children needs to refer to the parent.
-            var defaultValue = jsonSchemaToDefaultValue(schemas[linkType]);
-            defaultValue[linkProp] = id;
-            return ReactForms.schema.Scalar({component: component, defaultValue: defaultValue});
-        }
-        if (p.type == 'integer' || p.type == 'number') {
-            props.type = 'number';
-        }
-        if (p.formInput == 'textarea') {
-            props.input = <textarea rows="4" />;
-        }
-        return ReactForms.schema.Scalar(props);
-    }
-};
-
-
-var jsonSchemaToDefaultValue = function(schema) {
-    var defaultValue = {};
-    _.each(schema.properties, function(property, name) {
-        if (property['default'] !== undefined) {
-            defaultValue[name] = property['default'];
-        }
-    });
-    return defaultValue;
-};
-
-
-var FetchedForm = React.createClass({
-
-    getInitialState: function() {
-        var type = this.props.type;
-        var schemas = this.props.schemas;
-        return {
-            schema: jsonSchemaToFormSchema({
-                schemas: schemas,
-                jsonNode: schemas[type],
-                id: this.props.id
-            }),
-            value: this.props.context || jsonSchemaToDefaultValue(schemas[type]),
-        };
-    },
-
-    render: function() {
-        var Form = require('./form').Form;
-        return <Form {...this.props} defaultValue={this.state.value} schema={this.state.schema} />;
-    }
-
-});
-
-
 var ItemEdit = module.exports.ItemEdit = React.createClass({
+    contextTypes: {
+        navigate: React.PropTypes.func
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
         var action, form, schemaUrl, type;
-        if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
-            type = context['@type'][0].substr(0, context['@type'][0].length - 11);
+        if (context['@type'][0].indexOf('Collection') !== -1) {  // add form
+            type = context['@type'][0].substr(0, context['@type'][0].length - 10);
             title = title + ': Add';
             action = context['@id'];
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} context={null} type={type} action={action} method="POST" />
+                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished}
+                                    showReadOnly={false} />
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -364,10 +150,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             var id = this.props.context['@id'];
             var url = id + '?frame=edit';
             form = (
-                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                <fetched.FetchedData>
                     <fetched.Param name="context" url={url} etagName="etag" />
                     <fetched.Param name="schemas" url="/profiles/" />
-                    <FetchedForm {...this.props} id={id} type={type} action={id} method="PUT" />
+                    <JSONSchemaForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
                 </fetched.FetchedData>
             );
         }
@@ -381,8 +167,53 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                 {form}
             </div>
         );
+    },
+    finished: function(data) {
+      var url = data['@graph'][0]['@id'];
+      this.context.navigate(url);
     }
 });
 
-globals.content_views.register(ItemEdit, 'item', 'edit');
-globals.content_views.register(ItemEdit, 'collection', 'add');
+globals.content_views.register(ItemEdit, 'Item', 'edit');
+globals.content_views.register(ItemEdit, 'Collection', 'add');
+
+
+var FetchedRelatedItems = React.createClass({
+    getDefaultProps: function() {
+        return {Component: Table};
+    },
+
+    render: function() {
+        var {Component, context, title, url, ...props} = this.props;
+        if (context === undefined) return null;
+        var items = context['@graph'];
+        if (!items.length) return null;
+
+        return (
+            <section>
+                <h3>{title}</h3>
+                <Component {...props} context={context} total={context.total} items={items} url={url} showControls={false} />
+            </section>
+        );
+    },
+
+});
+
+
+var RelatedItems = module.exports.RelatedItems = React.createClass({
+    getDefaultProps: function() {
+        return {limit: 5};
+    },
+
+    render: function() {
+        var url = this.props.url + '&status!=deleted&status!=revoked&status!=replaced';
+        var limited_url = url + '&limit=' + this.props.limit;
+        var unlimited_url = url + '&limit=all';
+        return (
+            <fetched.FetchedData>
+                <fetched.Param name="context" url={limited_url} />
+                <FetchedRelatedItems {...this.props} url={unlimited_url} />
+            </fetched.FetchedData>
+        );
+    },
+});

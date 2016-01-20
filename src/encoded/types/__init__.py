@@ -40,6 +40,7 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
+    embedded = ['pi']
 
 
 @collection(
@@ -91,7 +92,7 @@ class Construct(Item):
     schema = load_schema('encoded:schemas/construct.json')
     # XXX 'vector_name' as key?
     rev = {
-        'characterizations': ('construct_characterization', 'characterizes'),
+        'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
     embedded = ['target']
 
@@ -100,7 +101,7 @@ class Construct(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -114,21 +115,28 @@ class Construct(Item):
         'title': 'TALENs',
         'description': 'Listing of TALEN Constructs',
     })
-class Talen(Item):
+class TALEN(Item):
     item_type = 'talen'
     schema = load_schema('encoded:schemas/talen.json')
     name_key = 'name'
     rev = {
-        'characterizations': ('construct_characterization', 'characterizes'),
+        'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
-    embedded = ['lab', 'submitted_by']
+    embedded = [
+        'lab',
+        'submitted_by',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by'
+    ]
 
     @calculated_property(schema={
         "title": "Characterizations",
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -169,6 +177,7 @@ class Platform(Item):
 
 @collection(
     name='libraries',
+    unique_key='accession',
     properties={
         'title': 'Libraries',
         'description': 'Listing of Libraries',
@@ -195,7 +204,7 @@ class RNAi(Item):
     schema = load_schema('encoded:schemas/rnai.json')
     embedded = ['source', 'documents', 'target']
     rev = {
-        'characterizations': ('rnai_characterization', 'characterizes'),
+        'characterizations': ('RNAiCharacterization', 'characterizes'),
     }
 
     @calculated_property(schema={
@@ -203,7 +212,7 @@ class RNAi(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "rnai_characterization",
+            "linkTo": "RNAiCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -252,7 +261,7 @@ class Software(Item):
         'versions'
     ]
     rev = {
-        'versions': ('software_version', 'software')
+        'versions': ('SoftwareVersion', 'software')
     }
 
     @calculated_property(schema={
@@ -260,7 +269,7 @@ class Software(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "software_version",
+            "linkTo": "SoftwareVersion",
         },
     })
     def versions(self, request, versions):

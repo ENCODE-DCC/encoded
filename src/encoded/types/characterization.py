@@ -1,4 +1,5 @@
 from contentbase import (
+    abstract_collection,
     calculated_property,
     collection,
     load_schema,
@@ -10,8 +11,14 @@ from .base import (
 from contentbase.attachment import ItemWithAttachment
 
 
+@abstract_collection(
+    name='characterizations',
+    properties={
+        'title': "Characterizations",
+        'description': 'Listing of all types of characterization.',
+    })
 class Characterization(ItemWithAttachment, Item):
-    base_types = ['characterization'] + Item.base_types
+    base_types = ['Characterization'] + Item.base_types
     embedded = ['lab', 'award', 'submitted_by']
 
 

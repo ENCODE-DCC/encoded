@@ -2,7 +2,6 @@
 var React = require('react');
 var globals = require('../globals');
 var noarg_memoize = require('../../libs/noarg-memoize');
-var $script = require('scriptjs');
 
 
 var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
@@ -22,6 +21,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     },
 
     componentDidMount: function() {
+        var $script = require('scriptjs');
         if (this.context.editable) {
             $script('ckeditor/ckeditor', this.setupEditor);
         }

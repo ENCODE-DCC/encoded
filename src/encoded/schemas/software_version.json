@@ -17,14 +17,14 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "software": {
             "title": "Software",
             "description": "Unique name of the software package.",
             "comment": "See software.json for available identifiers.",
             "type": "string",
-            "linkTo": "software"
+            "linkTo": "Software"
         },
         "version": {
             "title": "Version",

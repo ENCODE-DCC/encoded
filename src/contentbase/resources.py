@@ -36,10 +36,15 @@ def includeme(config):
 class Resource(object):
 
     @calculated_property(name='@id', schema={
+        "title": "ID",
         "type": "string",
     })
     def jsonld_id(self, request):
         return request.resource_path(self)
+
+    @calculated_property(name='@context', category='page')
+    def jsonld_context(self, request):
+        return request.route_path('jsonld_context')
 
     @calculated_property(category='page')
     def actions(self, request):
@@ -93,24 +98,24 @@ class Root(Resource):
         return self.properties.copy()
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
     def jsonld_type(self):
-        return ['portal']
+        return ['Portal']
 
 
-class Collection(Resource, Mapping):
+class AbstractCollection(Resource, Mapping):
     properties = {}
     unique_key = None
 
-    def __init__(self, registry, name, item_type, properties=None, acl=None, unique_key=None):
+    def __init__(self, registry, name, type_info, properties=None, acl=None, unique_key=None):
         self.registry = registry
         self.__name__ = name
-        self.item_type = item_type
-        self.connection = registry[CONNECTION]
+        self.type_info = type_info
         if properties is not None:
             self.properties = properties
         if acl is not None:
@@ -119,12 +124,12 @@ class Collection(Resource, Mapping):
             self.unique_key = unique_key
 
     @reify
-    def __parent__(self):
-        return self.registry[ROOT]
+    def connection(self):
+        return self.registry[CONNECTION]
 
     @reify
-    def type_info(self):
-        return self.registry[TYPES][self.item_type]
+    def __parent__(self):
+        return self.registry[ROOT]
 
     def __getitem__(self, name):
         try:
@@ -138,11 +143,11 @@ class Collection(Resource, Mapping):
         return item
 
     def __iter__(self):
-        for uuid in self.connection.__iter__(self.item_type):
+        for uuid in self.connection.__iter__(*self.type_info.subtypes):
             yield uuid
 
     def __len__(self):
-        return self.connection.__len__(self.item_type)
+        return self.connection.__len__(*self.type_info.subtypes)
 
     def __hash__(self):
         return object.__hash__(self)
@@ -150,16 +155,20 @@ class Collection(Resource, Mapping):
     def __eq__(self, other):
         return self is other
 
+    def _allow_contained(self, resource):
+        return resource.__parent__ is self or \
+            resource.type_info.name in resource.type_info.subtypes
+
     def get(self, name, default=None):
         resource = self.connection.get_by_uuid(name, None)
         if resource is not None:
-            if resource.collection is not self and resource.__parent__ is not self:
+            if not self._allow_contained(resource):
                 return default
             return resource
         if self.unique_key is not None:
             resource = self.connection.get_by_unique_key(self.unique_key, name)
             if resource is not None:
-                if resource.collection is not self and resource.__parent__ is not self:
+                if not self._allow_contained(resource):
                     return default
                 return resource
         return default
@@ -168,6 +177,7 @@ class Collection(Resource, Mapping):
         return self.properties.copy()
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",
@@ -175,19 +185,24 @@ class Collection(Resource, Mapping):
     })
     def jsonld_type(self):
         return [
-            '{item_type}_collection'.format(item_type=self.item_type),
-            'collection',
+            '{type_name}Collection'.format(type_name=self.type_info.name),
+            'Collection',
         ]
 
 
+class Collection(AbstractCollection):
+    ''' Separate class so add views do not apply to AbstractCollection '''
+
+
 class Item(Resource):
-    item_type = 'item'
-    base_types = ['item']
+    item_type = None
+    base_types = ['Item']
     name_key = None
     rev = {}
     embedded = ()
     audit_inherit = None
     schema = None
+    AbstractCollection = AbstractCollection
     Collection = Collection
 
     def __init__(self, registry, model):
@@ -199,12 +214,12 @@ class Item(Resource):
 
     @reify
     def type_info(self):
-        return self.registry[TYPES][self.item_type]
+        return self.registry[TYPES][type(self)]
 
     @reify
     def collection(self):
         collections = self.registry[COLLECTIONS]
-        return collections.by_item_type[self.item_type]
+        return collections[self.type_info.name]
 
     @property
     def __parent__(self):
@@ -239,9 +254,10 @@ class Item(Resource):
         }
 
     def get_rev_links(self, name):
-        item_type, rel = self.rev[name]
-        item_types = self.registry[TYPES].abstract[item_type].subtypes
-        return self.registry[CONNECTION].get_rev_links(self.model, rel, *item_types)
+        types = self.registry[TYPES]
+        type_name, rel = self.rev[name]
+        types = types[type_name].subtypes
+        return self.registry[CONNECTION].get_rev_links(self.model, rel, *types)
 
     def unique_keys(self, properties):
         return {
@@ -257,7 +273,7 @@ class Item(Resource):
             upgrader = self.registry[UPGRADER]
             try:
                 properties = upgrader.upgrade(
-                    self.item_type, properties, current_version, target_version,
+                    self.type_info.name, properties, current_version, target_version,
                     context=self, registry=self.registry)
             except RuntimeError:
                 raise
@@ -280,7 +296,7 @@ class Item(Resource):
 
     @classmethod
     def create(cls, registry, uuid, properties, sheets=None):
-        model = registry[CONNECTION].create(cls.item_type, uuid)
+        model = registry[CONNECTION].create(cls.__name__, uuid)
         self = cls(registry, model)
         self._update(properties, sheets)
         return self
@@ -308,13 +324,14 @@ class Item(Resource):
         connection.update(self.model, properties, sheets, unique_keys, links)
 
     @calculated_property(name='@type', schema={
+        "title": "Type",
         "type": "array",
         "items": {
             "type": "string",
         },
     })
     def jsonld_type(self):
-        return [self.item_type] + self.base_types
+        return [self.type_info.name] + self.base_types
 
     @calculated_property(name='uuid')
     def prop_uuid(self):

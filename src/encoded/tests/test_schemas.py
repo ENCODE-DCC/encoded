@@ -40,7 +40,7 @@ def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
 
 def test_changelogs(testapp, registry):
     from contentbase import TYPES
-    for name, typeinfo in registry[TYPES].types.items():
+    for typeinfo in registry[TYPES].by_item_type.values():
         changelog = typeinfo.schema.get('changelog')
         if changelog is not None:
             res = testapp.get(changelog)

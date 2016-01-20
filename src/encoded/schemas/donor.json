@@ -28,7 +28,21 @@
             "description": "Organism of the donor.",
             "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
-            "linkTo": "organism"
+            "linkTo": "Organism"
+        },
+        "donor_documents": {
+            "title": "Donor documents",
+            "description": "Documents that are related to the donor.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Donor document",
+                "description": "A document that relates to the donor.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "Document"
+            }
         },
         "url": {
             "title": "URL",

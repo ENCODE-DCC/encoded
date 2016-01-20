@@ -12,38 +12,37 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
-            {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
+            {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
+//            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
         ]},
         {id: 'methods', title: 'Methods', children: [
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
-            {id: 'softwaretools', title: 'Software tools', url: '/software'},
-            {id: 'pipelines', title: 'Pipelines', url: '/pipelines'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},
+            {id: 'softwaretools', title: 'Software tools', url: '/software/'},
+            {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines/'}
         ]},
-        {id: 'about', title: 'About ENCODE', children: [
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
+        {id: 'about', title: 'About', children: [
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'news', title: 'News', url: '/news'},
-            {id: 'publications', title: 'Publications', url: '/publications'},
-            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
+            {id: 'publications', title: 'Publications', url: '/publications/'},
+            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
         ]},
         {id: 'help', title: 'Help', children: [
-            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started'},
-            {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
-            {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},
-            {id: 'contact', title: 'Contact', url: '/help/contacts'}
+            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
+            {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
+            {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
+            {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
+            {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
 };
-
-
-var profile_action = {id: 'profile', title: 'Profile', trigger: 'profile'};
-var logout_action = {id: 'signout', title: 'Sign out', trigger: 'logout'};
 
 
 // See https://github.com/facebook/react/issues/2323
@@ -74,7 +73,6 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             errors: [],
-            portal: portal,
             dropdownComponent: undefined
         };
     },
@@ -82,62 +80,30 @@ var App = React.createClass({
     // Dropdown context using React context mechanism.
     childContextTypes: {
         dropdownComponent: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func
+        listActionsFor: React.PropTypes.func,
+        currentResource: React.PropTypes.func,
+        location_href: React.PropTypes.string,
+        onDropdownChange: React.PropTypes.func,
+        portal: React.PropTypes.object
     },
 
     // Retrieve current React context
     getChildContext: function() {
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
-            onDropdownChange: this.handleDropdownChange // Function to process dropdown state change
+            listActionsFor: this.listActionsFor,
+            currentResource: this.currentResource,
+            location_href: this.props.href,
+            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
+            portal: portal
         };
     },
 
-    // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
-    handleDropdownChange: function(componentID) {
-        // Use React _rootNodeID to uniquely identify a dropdown menu;
-        // It's passed in as componentID
-        this.setState({dropdownComponent: componentID});
-    },
-
-    // Handle a click outside a dropdown menu by clearing currently dropped down menu
-    handleLayoutClick: function(e) {
-        if (this.state.dropdownComponent !== undefined) {
-            this.setState({dropdownComponent: undefined});
-        }
-    },
-
-    // If ESC pressed while drop-down menu open, close the menu
-    handleKey: function(e) {
-        if (e.which === 27 && this.state.dropdownComponent !== undefined) {
-            e.preventDefault();
-            this.handleDropdownChange(undefined);
-        }
-    },
-
-    triggerProfile: function() {
-        this.navigate(this.state.session.user_properties['@id']);
-    },
-
-    // Once the app component is mounted, bind keydowns to handleKey function
-    componentDidMount: function() {
-        globals.bindEvent(window, 'keydown', this.handleKey);
-    },
-
-    render: function() {
-        console.log('render app');
-        var content;
-        var context = this.props.context;
-        var href_url = url.parse(this.props.href);
-        var hash = href_url.hash || '';
-        var name;
-        var context_actions = [];
-        if (hash.slice(0, 2) === '#!') {
-            name = hash.slice(2);
-        }
-        // Switching between collections may leave component in place
-        var key = context && context['@id'];
-        if (context) {
+    listActionsFor: function(category) {
+        if (category === 'context') {
+            var context = this.currentResource();
+            var name = this.currentAction();
+            var context_actions = [];
             Array.prototype.push.apply(context_actions, context.actions || []);
             if (!name && context.default_page) {
                 context = context.default_page;
@@ -150,11 +116,90 @@ var App = React.createClass({
                     context_actions.push(action);
                 }
             }
+            return context_actions;
+        }
+        if (category === 'user') {
+            return this.state.session_properties.user_actions || [];
+        }
+        if (category === 'global_sections') {
+            return portal.global_sections;
+        }
+    },
 
-            var ContentView = globals.content_views.lookup(context, name);
-            content = <ContentView {...this.props} context={context}
-                loadingComplete={this.state.loadingComplete} session={this.state.session}
-                portal={this.state.portal} navigate={this.navigate} />;
+    currentResource: function() {
+        return this.props.context;
+    },
+
+    currentAction: function() {
+        var href_url = url.parse(this.props.href);
+        var hash = href_url.hash || '';
+        var name;
+        if (hash.slice(0, 2) === '#!') {
+            name = hash.slice(2);
+        }
+        return name;
+    },
+
+    // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
+    handleDropdownChange: function(componentID) {
+        // Use React _rootNodeID to uniquely identify a dropdown menu;
+        // It's passed in as componentID
+        this.setState({dropdownComponent: componentID});
+    },
+
+    handleAutocompleteChosenChange: function(chosen) {
+        this.setState({autocompleteTermChosen: chosen});
+    },
+
+    handleAutocompleteFocusChange: function(focused) {
+        this.setState({autocompleteFocused: focused});
+    },
+
+    handleAutocompleteHiddenChange: function(hidden) {
+        this.setState({autocompleteHidden: hidden});
+    },
+
+    // Handle a click outside a dropdown menu by clearing currently dropped down menu
+    handleLayoutClick: function(e) {
+        if (this.state.dropdownComponent !== undefined) {
+            this.setState({dropdownComponent: undefined});
+        }
+    },
+
+    // If ESC pressed while drop-down menu open, close the menu
+    handleKey: function(e) {
+        if (e.which === 27) {
+            if (this.state.dropdownComponent !== undefined) {
+                e.preventDefault();
+                this.handleDropdownChange(undefined);
+            } else if (!this.state.autocompleteHidden) {
+                e.preventDefault();
+                this.handleAutocompleteHiddenChange(true);
+            }
+        } else if (e.which === 13 && this.state.autocompleteFocused && !this.state.autocompleteTermChosen) {
+            e.preventDefault();
+        }
+    },
+
+    // Once the app component is mounted, bind keydowns to handleKey function
+    componentDidMount: function() {
+        globals.bindEvent(window, 'keydown', this.handleKey);
+    },
+
+    render: function() {
+        console.log('render app');
+        var content;
+        var context = this.props.context;
+        var href_url = url.parse(this.props.href);
+        // Switching between collections may leave component in place
+        var key = context && context['@id'];
+        var current_action = this.currentAction();
+        if (!current_action && context.default_page) {
+            context = context.default_page;
+        }
+        if (context) {
+            var ContentView = globals.content_views.lookup(context, current_action);
+            content = <ContentView context={context} />;
         }
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
@@ -162,7 +207,7 @@ var App = React.createClass({
 
         var appClass = 'done';
         if (this.props.slow) {
-            appClass = 'communicating'; 
+            appClass = 'communicating';
         }
 
         var title = context.title || context.name || context.accession || context['@id'];
@@ -186,14 +231,6 @@ var App = React.createClass({
         if (({'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1})[canonical]) {
             base = canonical = 'https://www.encodeproject.org/';
             this.historyEnabled = false;
-        }
-
-        // build user menu
-        var session = this.state.session;
-        if (session.user_properties !== undefined) {
-            var user_actions = [profile_action];
-            Array.prototype.push.apply(user_actions, session.user_properties.user_actions || []);
-            user_actions.push(logout_action);
         }
 
         return (
@@ -220,17 +257,14 @@ var App = React.createClass({
                         <div className="loading-spinner"></div>
 
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
-                                <NavBar href={this.props.href} portal={this.state.portal}
-                                        context_actions={context_actions}
-                                        user_actions={user_actions} session={session}
-                                        loadingComplete={this.state.loadingComplete} />
+                                <NavBar />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>
                                 {errors}
                                 <div id="layout-footer"></div>
                             </div>
-                            <Footer session={this.state.session} loadingComplete={this.state.loadingComplete} />
+                            <Footer />
                         </div>
                     </div>
                 </body>
@@ -242,7 +276,7 @@ var App = React.createClass({
         getRenderedProps: function (document) {
             var props = {};
             // Ensure the initial render is exactly the same
-            props.href = document.querySelector('link[rel="canonical"]').href;
+            props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
             var script_props = document.querySelectorAll('script[data-prop-name]');
             for (var i = 0; i < script_props.length; i++) {
                 var elem = script_props[i];

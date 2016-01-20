@@ -2,7 +2,7 @@
     "title": "Grant",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [ "name", "project"],
+    "required": [ "name", "project", "rfa"],
     "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -64,7 +64,7 @@
             "description": "Principle Investigator of the grant.",
             "comment": "See user.json for available identifiers.",
             "type": "string",
-            "linkTo": "user"
+            "linkTo": "User"
         },
         "rfa": {
             "title": "Phase",
@@ -91,7 +91,7 @@
         "name": 1.0,
         "title": 1.0,
         "project": 1.0,
-        "pi": 1.0
+        "pi.title": 1.0
     },
     "changelog": "/profiles/changelogs/award.md"
 }

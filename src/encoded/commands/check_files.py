@@ -90,10 +90,25 @@ def check_format(item, path):
         ('fastq', None): ['-type=fastq'],
         ('bam', None): ['-type=bam', chromInfo],
         ('bigWig', None): ['-type=bigWig', chromInfo],
+        #standard bed formats
         ('bed', 'bed3'): ['-type=bed3', chromInfo],
         ('bigBed', 'bed3'): ['-type=bigBed3', chromInfo],
-        ('bed', 'bed6'): ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
-        ('bigBed', 'bed6'): ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+        ('bed', 'bed6'): ['-type=bed6', chromInfo],
+        ('bigBed', 'bed6'): ['-type=bigBed6', chromInfo],
+        ('bed', 'bed9'): ['-type=bed9', chromInfo],
+        ('bigBed', 'bed9'): ['-type=bigBed9', chromInfo],
+        ('bedGraph', None): ['-type=bedGraph', chromInfo],
+        #extended "bed+" formats, -tab is required to allow for text fields to contain spaces
+        ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
+        ('bed', 'bed6+'): ['-tab', '-type=bed6+', chromInfo],
+        ('bigBed', 'bed6+'): ['-tab', '-type=bigBed6+', chromInfo],
+        ('bed', 'bed9+'): ['-tab', '-type=bed9+', chromInfo],
+        ('bigBed', 'bed9+'): ['-tab', '-type=bigBed9+', chromInfo],
+        #a catch-all shoe-horn (as long as it's tab-delimited)
+        ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
+        ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
+        #special bed types
         ('bed', 'bedLogR'): ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bigBed', 'bedLogR'): ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
         ('bed', 'bedMethyl'): ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
@@ -134,14 +149,21 @@ def check_format(item, path):
         ('bigBed', 'dnase_master_peaks'): ['-tab', '-type=bigBed9+1', chromInfo, '-as=%s/as/dnase_master_peaks.as' % encValData],
         ('bed', 'encode_elements_dnase_tf'): ['-tab', '-type=bed5+1', chromInfo, '-as=%s/as/encode_elements_dnase_tf.as' % encValData],
         ('bigBed', 'encode_elements_dnase_tf'): ['-tab', '-type=bigBed5+1', chromInfo, '-as=%s/as/encode_elements_dnase_tf.as' % encValData],
-        ('bed', 'bed3+'): ['-tab', '-type=bed3+', chromInfo],
-        ('bigBed', 'bed3+'): ['-tab', '-type=bigBed3+', chromInfo],
-        ('bed', 'unknown'): ['-tab', '-type=bed3+', chromInfo],
-        ('bigBed', 'unknown'): ['-tab', '-type=bigBed3+', chromInfo],
-        ('rcc', None): ['-type=rcc'],
-        ('idat', None): ['-type=idat'],
+        ('bed', 'candidate enhancer predictions'): ['-type=bed3+', chromInfo, '-as=%s/as/candidate_enhancer_prediction.as' % encValData],
+        ('bigBed', 'candidate enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/candidate_enhancer_prediction.as' % encValData],
+        ('bed', 'enhancer predictions'): ['-type=bed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
+        ('bigBed', 'enhancer predictions'): ['-type=bigBed3+', chromInfo, '-as=%s/as/enhancer_prediction.as' % encValData],
+        ('bed', 'idr_peak'): ['-type=bed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bigBed', 'idr_peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/idr_peak.as' % encValData],
+        ('bed', 'tss_peak'): ['-type=bed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+        ('bigBed', 'tss_peak'): ['-type=bigBed6+', chromInfo, '-as=%s/as/tss_peak.as' % encValData],
+
+
         ('bedpe', None): ['-type=bed3+', chromInfo],
         ('bedpe', 'mango'): ['-type=bed3+', chromInfo],
+        #non-bed types
+        ('rcc', None): ['-type=rcc'],
+        ('idat', None): ['-type=idat'],
         ('gtf', None): None,
         ('tar', None): None,
         ('tsv', None): None,
@@ -153,7 +175,8 @@ def check_format(item, path):
         ('sam', None): None,
         ('wig', None): None,
         ('hdf5', None): None,
-        ('gff', None): None
+        ('gff', None): None,
+        ('vcf', None): None
     }
 
     validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))
@@ -181,10 +204,11 @@ def check_file(item):
 
     result = None
     errors = {}
-    r = requests.head(
-        urljoin(CONFIG['url'], item['@id'] + '@@download'),
+    r = requests.get(
+        urljoin(CONFIG['url'], item['@id'] + '@@upload'),
         auth=(CONFIG['username'], CONFIG['password']), headers=HEADERS)
-    path = urlparse(r.headers['Location']).path[1:]
+    upload_url = r.json()['@graph'][0]['upload_credentials']['upload_url']
+    path = urlparse(upload_url).path[1:]
     local_path = CONFIG['mirror'] + path
 
     key = BUCKET.get_key(path)

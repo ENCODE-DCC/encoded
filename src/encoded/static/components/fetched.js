@@ -9,7 +9,8 @@ var _ = require('underscore');
 
 var Param = module.exports.Param = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func
+        fetch: React.PropTypes.func,
+        session: React.PropTypes.object
     },
 
     getDefaultProps: function() {
@@ -28,14 +29,17 @@ var Param = module.exports.Param = React.createClass({
 
     componentWillUnmount: function () {
         var xhr = this.state.fetchedRequest;
-        if (xhr) xhr.abort();
+        if (xhr) {
+            console.log('abort param xhr');
+            xhr.abort();
+        }
     },
 
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function (nextProps, nextContext) {
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
-            nextProps.session === this.props.session) return;
+            nextContext.session === this.context.session) return;
         this.fetch(nextProps.url);
     },
 
@@ -99,21 +103,12 @@ var Param = module.exports.Param = React.createClass({
 
 
 var FetchedData = module.exports.FetchedData = React.createClass({
-
-    getDefaultProps: function() {
-        return {loadingComplete: true};
+    contextTypes: {
+        session: React.PropTypes.object
     },
 
     getInitialState: function() {
         return {};
-    },
-
-    shouldComponentUpdate: function(nextProps, nextState) {
-        if (!nextProps.loadingComplete) {
-            return false;
-        } else {
-            return true;
-        }
     },
 
     handleFetch: function(result) {
@@ -130,8 +125,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                     params.push(cloneWithProps(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
-                        handleFetchStart: this.handleFetchStart,
-                        session: this.props.session
                     }));
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
@@ -145,12 +138,16 @@ var FetchedData = module.exports.FetchedData = React.createClass({
         if (!params.length) {
             return null;
         }
-        if (!this.props.loadingComplete) {
-            return <div className="loading-spinner"></div>;
+        if (!this.context.session) {
+            return (
+                <div className="communicating">
+                    <div className="loading-spinner"></div>
+                </div>
+            );
         }
 
         var errors = params.map(param => this.state[param.props.name])
-            .filter(obj => obj && (obj['@type'] || []).indexOf('error') > -1);
+            .filter(obj => obj && (obj['@type'] || []).indexOf('Error') > -1);
 
         if (errors.length) {
             return (
@@ -199,7 +196,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
     
     render: function() {
         return (
-            <FetchedData loadingComplete={this.props.loadingComplete}>
+            <FetchedData>
                 <Param name="data" url={this.props.url} />
                 <Items {...this.props} />
             </FetchedData>

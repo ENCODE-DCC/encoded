@@ -6,7 +6,12 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 
 @upgrade_step('experiment', '', '2')
-@upgrade_step('dataset', '', '2')
+@upgrade_step('annotation', '', '2')
+@upgrade_step('matched_set', '', '2')
+@upgrade_step('project', '', '2')
+@upgrade_step('publication_data', '', '2')
+@upgrade_step('reference', '', '2')
+@upgrade_step('ucsc_browser_composite', '', '2')
 def dataset_0_2(value, system):
     # http://redmine.encodedcc.org/issues/650
     context = system['context']
@@ -21,7 +26,12 @@ def dataset_0_2(value, system):
 
 
 @upgrade_step('experiment', '2', '3')
-@upgrade_step('dataset', '2', '3')
+@upgrade_step('annotation', '2', '3')
+@upgrade_step('matched_set', '2', '3')
+@upgrade_step('project', '2', '3')
+@upgrade_step('publication_data', '2', '3')
+@upgrade_step('reference', '2', '3')
+@upgrade_step('ucsc_browser_composite', '2', '3')
 def dataset_2_3(value, system):
     # http://redmine.encodedcc.org/issues/817
     value['dbxrefs'] = []
@@ -58,7 +68,12 @@ def dataset_2_3(value, system):
 
 
 @upgrade_step('experiment', '3', '4')
-@upgrade_step('dataset', '3', '4')
+@upgrade_step('annotation', '3', '4')
+@upgrade_step('matched_set', '3', '4')
+@upgrade_step('project', '3', '4')
+@upgrade_step('publication_data', '3', '4')
+@upgrade_step('reference', '3', '4')
+@upgrade_step('ucsc_browser_composite', '3', '4')
 def dataset_3_4(value, system):
     # http://redmine.encodedcc.org/issues/1074
     if 'status' in value:
@@ -78,7 +93,12 @@ def dataset_3_4(value, system):
 
 
 @upgrade_step('experiment', '4', '5')
-@upgrade_step('dataset', '4', '5')
+@upgrade_step('annotation', '4', '5')
+@upgrade_step('matched_set', '4', '5')
+@upgrade_step('project', '4', '5')
+@upgrade_step('publication_data', '4', '5')
+@upgrade_step('reference', '4', '5')
+@upgrade_step('ucsc_browser_composite', '4', '5')
 def experiment_4_5(value, system):
     # http://redmine.encodedcc.org/issues/1393
     if value.get('biosample_type') == 'primary cell line':
@@ -86,7 +106,12 @@ def experiment_4_5(value, system):
 
 
 @upgrade_step('experiment', '5', '6')
-@upgrade_step('dataset', '5', '6')
+@upgrade_step('annotation', '5', '6')
+@upgrade_step('matched_set', '5', '6')
+@upgrade_step('project', '5', '6')
+@upgrade_step('publication_data', '5', '6')
+@upgrade_step('reference', '5', '6')
+@upgrade_step('ucsc_browser_composite', '5', '6')
 def experiment_5_6(value, system):
     # http://redmine.encodedcc.org/issues/2591
     context = system['context']
@@ -101,3 +126,58 @@ def experiment_5_6(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('experiment', '6', '7')
+@upgrade_step('annotation', '6', '7')
+@upgrade_step('matched_set', '6', '7')
+@upgrade_step('project', '6', '7')
+@upgrade_step('publication_data', '6', '7')
+@upgrade_step('reference', '6', '7')
+@upgrade_step('ucsc_browser_composite', '6', '7')
+def dataset_6_7(value, system):
+    if 'dataset_type' in value:
+        if value['dataset_type'] == 'paired set':
+            value.pop('related_files', None)
+            value.pop('contributing_files', None)
+            value.pop('revoked_files', None)
+            value['related_datasets'] = []
+        del value['dataset_type']
+
+
+@upgrade_step('experiment', '7', '8')
+@upgrade_step('annotation', '7', '8')
+@upgrade_step('reference', '7', '8')
+@upgrade_step('project', '7', '8')
+@upgrade_step('publication_data', '7', '8')
+@upgrade_step('ucsc_browser_composite', '7', '8')
+@upgrade_step('organism_development_series', '7', '8')
+@upgrade_step('reference_epigenome', '7', '8')
+@upgrade_step('replication_timing_series', '7', '8')
+@upgrade_step('treatment_time_series', '7', '8')
+@upgrade_step('treatment_concentration_series', '7', '8')
+def dataset_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'possible_controls' in value:
+        value['possible_controls'] = list(set(value['possible_controls']))
+
+    if 'targets' in value:
+        value['targets'] = list(set(value['targets']))
+
+    if 'software_used' in value:
+        value['software_used'] = list(set(value['software_used']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))
+
+    if 'related_files' in value:
+        value['related_files'] = list(set(value['related_files']))

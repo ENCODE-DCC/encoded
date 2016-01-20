@@ -9,8 +9,6 @@ import zipfile
 
 
 def cell_value(cell, datemode):
-    """ Convert to a utf-8 encoded string value (csv is not unicode aware)
-    """
     ctype = cell.ctype
     value = cell.value
 
@@ -33,7 +31,7 @@ def cell_value(cell, datemode):
             return datetime.datetime(*value).isoformat()
 
     elif ctype in (xlrd.XL_CELL_TEXT, xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK):
-        return value.encode('utf-8')
+        return value
 
     raise ValueError(repr(cell), 'unknown cell type')
 
@@ -46,7 +44,10 @@ def reader(stream, sheetname=None):
     if sheetname is None:
         sheet, = book.sheets()        
     else:
-        sheet = book.sheet_by_name(sheetname)
+        try:
+            sheet = book.sheet_by_name(sheetname)
+        except xlrd.XLRDError:
+            return
 
     datemode = sheet.book.datemode
     for index in range(sheet.nrows):
@@ -70,7 +71,7 @@ class DictReader:
     def fieldnames(self):
         if self._fieldnames is None:
             try:
-                self._fieldnames = self.reader.next()
+                self._fieldnames = next(self.reader)
             except StopIteration:
                 pass
             else:
@@ -82,18 +83,18 @@ class DictReader:
     def fieldnames(self, value):
         self._fieldnames = value
 
-    def next(self):
+    def __next__(self):
         if self._fieldnames is None:
             # Used only for its side effect.
             self.fieldnames
-        row = self.reader.next()
+        row = next(self.reader)
         self.line_num += 1
 
         # unlike the basic reader, we prefer not to return blanks,
         # because we will typically wind up with a dict full of None
         # values
         while row == []:
-            row = self.reader.next()
+            row = next(self.reader)
         d = dict(zip(self.fieldnames, row))
         lf = len(self.fieldnames)
         lr = len(row)

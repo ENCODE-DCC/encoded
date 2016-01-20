@@ -1,14 +1,20 @@
 from base64 import b64decode
+from hashlib import md5
 from io import BytesIO
 from mimetypes import guess_type
 from PIL import Image
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import (
+    HTTPNotFound,
+    HTTPTemporaryRedirect,
+)
 from pyramid.response import Response
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
+    parse_qs,
     quote,
     unquote,
+    urlparse,
 )
 from contentbase import (
     BLOBS,
@@ -81,19 +87,32 @@ class ItemWithAttachment(Item):
         download_meta = downloads[prop_name] = {}
 
         try:
-            mime_type_declared, charset, data = parse_data_uri(href)
+            mime_type, charset, data = parse_data_uri(href)
         except (ValueError, TypeError):
             msg = 'Could not parse data URI.'
             raise ValidationFailure('body', [prop_name, 'href'], msg)
         if charset is not None:
             download_meta['charset'] = charset
+
+        # Make sure the file extensions matches the mimetype
+        download_meta['download'] = filename = attachment['download']
+        mime_type_from_filename, _ = mimetypes.guess_type(filename)
+        if mime_type_from_filename is None:
+            mime_type_from_filename = 'application/octet-stream'
+        if mime_type:
+            if not mimetypes_are_equal(mime_type, mime_type_from_filename):
+                raise ValidationFailure(
+                    'body', [prop_name, 'href'],
+                    'Wrong file extension for %s mimetype.' % mime_type)
+        else:
+            mime_type = mime_type_from_filename
+
         # Make sure the mimetype appears to be what the client says it is
         mime_type_detected = magic.from_buffer(data, mime=True).decode('utf-8')
-        if mime_type_declared and not mimetypes_are_equal(
-                mime_type_declared, mime_type_detected):
+        if not mimetypes_are_equal(mime_type, mime_type_detected):
             msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
             raise ValidationFailure('body', [prop_name, 'href'], msg)
-        mime_type = mime_type_declared or mime_type_detected
+
         attachment['type'] = mime_type
         if mime_type is not None:
             download_meta['type'] = mime_type
@@ -106,15 +125,7 @@ class ItemWithAttachment(Item):
         else:
             if mime_type not in allowed_types:
                 raise ValidationFailure(
-                    'body', [prop_name, 'href'], 'Mimetype is not allowed.')
-
-        # Make sure the file extensions matches the mimetype
-        download_meta['download'] = filename = attachment['download']
-        mime_type_from_filename, _ = mimetypes.guess_type(filename)
-        if not mimetypes_are_equal(mime_type, mime_type_from_filename):
-            raise ValidationFailure(
-                'body', [prop_name, 'href'],
-                'Wrong file extension for %s mimetype.' % mime_type)
+                    'body', [prop_name, 'href'], 'Mimetype %s is not allowed.' % mime_type)
 
         # Validate images and store height/width
         major, minor = mime_type.split('/')
@@ -124,8 +135,16 @@ class ItemWithAttachment(Item):
             im.verify()
             attachment['width'], attachment['height'] = im.size
 
+        # Validate md5 sum
+        md5sum = md5(data).hexdigest()
+        if 'md5sum' in attachment and attachment['md5sum'] != md5sum:
+            raise ValidationFailure(
+                'body', [prop_name, 'md5sum'], 'MD5 checksum does not match uploaded data.')
+        else:
+            download_meta['md5sum'] = attachment['md5sum'] = md5sum
+
         registry = find_root(self).registry
-        download_meta['blob_id'] = registry[BLOBS].storeBlob(data)
+        registry[BLOBS].store_blob(data, download_meta)
 
         attachment['href'] = '@@download/%s/%s' % (
             prop_name, quote(filename))
@@ -168,11 +187,15 @@ def download(context, request):
     if mimetype is None:
         mimetype = 'application/octet-stream'
 
-    blob = request.registry[BLOBS].getBlob(download_meta['blob_id'])
+    # If blob is external, serve via proxy using X-Accel-Redirect
+    blob_storage = request.registry[BLOBS]
+    if hasattr(blob_storage, 'get_blob_url'):
+        blob_url = blob_storage.get_blob_url(download_meta)
+        return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(blob_url)})
 
+    # Otherwise serve the blob data ourselves
+    blob = request.registry[BLOBS].get_blob(download_meta)
     headers = {
         'Content-Type': mimetype,
     }
-
-    response = Response(body=blob, headers=headers)
-    return response
+    return Response(body=blob, headers=headers)

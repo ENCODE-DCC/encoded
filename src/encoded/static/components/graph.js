@@ -2,7 +2,6 @@
 var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
-var $script = require('scriptjs');
 var BrowserFeat = require('./browserfeat').BrowserFeat;
 
 
@@ -31,10 +30,9 @@ class JsonGraph {
     // Add node to the graph architecture. The caller must keep track that all node IDs
     // are unique -- this code doesn't verify this.
     // id: uniquely identify the node
-    // label: text to display in the node
-    // cssClass: optional CSS class to assign to the SVG object for this node
-    // type: Optional text type to track the type of node this is
-    // parentNode: Optional reference to parent node; defaults to graph root
+    // label: text to display in the node; it can be an array to display a list of labels
+    // options: Object containing options to save in the node that can be used later when displayed
+    // subnodes: Array of nodes to use as subnodes of a regular node.
     addNode(id, label, options, subnodes) { //cssClass, type, shape, cornerRadius, parentNode
         var newNode = {};
         newNode.id = id;
@@ -98,7 +96,7 @@ class JsonGraph {
                     }
                 }
             } else if (nodes[i].nodes.length) {
-                var matching = this.getNode(id, nodes[i]);
+                var matching = this.getSubnode(id, nodes[i]);
                 if (matching) {
                     return matching;
                 }
@@ -115,6 +113,26 @@ class JsonGraph {
             return matching;
         }
         return undefined;
+    }
+
+    // Return array of function results for each node in the graph. The supplied function, fn, gets called with each node
+    // in the graph. An array of these function results is returned.
+    map(fn, context, nodes) {
+        var thisNodes = nodes || this.nodes;
+        var returnArray = [];
+
+        for (var i = 0; i < thisNodes.length; i++) {
+            var node = thisNodes[i];
+
+            // Call the given function and add its return value to the array we're collecting
+            returnArray.push(fn.call(context, node));
+
+            // If the node has its own nodes, recurse
+            if (node.nodes && node.nodes.length) {
+                returnArray = returnArray.concat(this.map(fn, context, node.nodes));
+            }
+        }
+        return returnArray;
     }
 
 }
@@ -211,6 +229,7 @@ var Graph = module.exports.Graph = React.createClass({
     },
 
     componentDidMount: function () {
+        var $script = require('scriptjs');
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances

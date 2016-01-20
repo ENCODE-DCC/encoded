@@ -35,8 +35,9 @@
             "title": "Affiliation",
             "description": "Lab user is primarily associated with.",
             "comment": "See lab.json for available identifiers.",
+            "permission": "import-items",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "Lab"
         },
         "submits_for": {
             "title": "Submits for",
@@ -44,11 +45,12 @@
             "type": "array",
             "default": [],
             "uniqueItems": true,
+            "permission": "import-items",
             "items": {
                 "description": "A lab user is authorized to submit for.",
                 "comment": "See lab.json for available identifiers.",
                 "type": "string",
-                "linkTo": "lab"
+                "linkTo": "Lab"
             }
         },
         "groups": {
@@ -57,6 +59,7 @@
             "type": "array",
             "default": [],
             "uniqueItems": true,
+            "permission": "import-items",
             "items": {
                 "type": "string"
             }
@@ -66,6 +69,7 @@
             "description": "The group that determines which set of data the user has permission to view.",
             "type": "array",
             "uniqueItems": true,
+            "permission": "import-items",
             "items": {
                 "type": "string",
                 "enum": [

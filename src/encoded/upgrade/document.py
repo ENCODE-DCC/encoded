@@ -2,7 +2,6 @@ from past.builtins import basestring
 from contentbase import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from pyramid.traversal import find_root
-from uuid import UUID
 import re
 
 
@@ -50,3 +49,16 @@ def document_3_4(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('document', '4', '5')
+def document_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'urls' in value:
+        value['urls'] = list(set(value['urls']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))

@@ -1,34 +1,22 @@
 'use strict';
 var React = require('react');
 var url = require('url');
-var mixins = require('./mixins');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
 var NavItem = require('../react-bootstrap/NavItem');
 
-// Hide data from NavBarLayout
+
 var NavBar = React.createClass({
-    render: function() {
-        var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
-        return <NavBarLayout
-            loadingComplete={this.props.loadingComplete}
-            portal={this.props.portal}
-            section={section}
-            session={this.props.session}
-            context_actions={this.props.context_actions}
-            user_actions={this.props.user_actions}
-            href={this.props.href}
-            />;
-    }
-});
+    contextTypes: {
+        location_href: React.PropTypes.string,
+        portal: React.PropTypes.object
+    },
 
-
-var NavBarLayout = React.createClass({
     getInitialState: function() {
         return {
-            testWarning: !productionHost[url.parse(this.props.href).hostname]
+            testWarning: !productionHost[url.parse(this.context.location_href).hostname]
         };
     },
 
@@ -49,20 +37,15 @@ var NavBarLayout = React.createClass({
     },
 
     render: function() {
-        console.log('render navbar');
-        var portal = this.props.portal;
-        var section = this.props.section;
-        var session = this.props.session;
-        var user_actions = this.props.user_actions;
-        var context_actions = this.props.context_actions;
+        var portal = this.context.portal;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
-                        <GlobalSections global_sections={portal.global_sections} section={section} />
-                        <UserActions {...this.props} />
-                        {context_actions ? <ContextActions {...this.props} /> : null}
-                        <Search {...this.props} />
+                        <GlobalSections />
+                        <UserActions />
+                        <ContextActions />
+                        <Search />
                     </Navbar>
                 </div>
                 {this.state.testWarning ?
@@ -82,11 +65,16 @@ var NavBarLayout = React.createClass({
 
 
 var GlobalSections = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func,
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
-        var section = this.props.section;
+        var section = url.parse(this.context.location_href).pathname.split('/', 2)[1] || '';
 
         // Render top-level main menu
-        var actions = this.props.global_sections.map(function (action) {
+        var actions = this.context.listActionsFor('global_sections').map(function (action) {
             var subactions;
             if (action.children) {
                 // Has dropdown menu; render it into subactions var
@@ -114,15 +102,22 @@ var GlobalSections = React.createClass({
 });
 
 var ContextActions = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func
+    },
+
     render: function() {
-        var actions = this.props.context_actions.map(function(action) {
+        var actions = this.context.listActionsFor('context').map(function(action) {
             return (
                 <NavItem href={action.href} key={action.name}>
                     <i className="icon icon-pencil"></i> {action.title}
                 </NavItem>
             );
         });
-        if (this.props.context_actions.length > 1) {
+        if (actions.length === 0) {
+            return null;
+        }
+        if (actions.length > 1) {
             actions = (
                 <NavItem dropdown={true}>
                     <i className="icon icon-gear"></i>
@@ -137,13 +132,17 @@ var ContextActions = React.createClass({
 });
 
 var Search = React.createClass({
+    contextTypes: {
+        location_href: React.PropTypes.string
+    },
+
     render: function() {
-        var id = url.parse(this.props.href, true);
+        var id = url.parse(this.context.location_href, true);
         var searchTerm = id.query['searchTerm'] || '';
         return (
             <form className="navbar-form navbar-right" action="/search/">
                 <div className="search-wrapper">
-                    <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search ENCODE" 
+                    <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search..." 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
                 </div>
             </form>
@@ -153,20 +152,25 @@ var Search = React.createClass({
 
 
 var UserActions = React.createClass({
+    contextTypes: {
+        listActionsFor: React.PropTypes.func,
+        session_properties: React.PropTypes.object
+    },
+
     render: function() {
-        var session = this.props.session;
-        var disabled = !this.props.loadingComplete;
-        if (!(session && session['auth.userid'])) {
+        var session_properties = this.context.session_properties;
+        if (!session_properties['auth.userid']) {
             return null;
         }
-        var actions = this.props.user_actions.map(function (action) {
+        var actions = this.context.listActionsFor('user').map(function (action) {
             return (
                 <NavItem href={action.href || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     {action.title}
                 </NavItem>
             );
         });
-        var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
+        var user = session_properties.user;
+        var fullname = (user && user.title) || 'unknown';
         return (
             <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
                 <NavItem dropdown={true}>
@@ -181,3 +185,51 @@ var UserActions = React.createClass({
 });
 
 module.exports = NavBar;
+
+
+// Display breadcrumbs with contents given in 'crumbs' object.
+// Each crumb in the crumbs array: {
+//     id: Title string to display in each breadcrumb. If falsy, does not get included, not even as an empty breadcrumb
+//     query: query string property and value, or null to display unlinked id
+//     uri: Alternative to 'query' property. Specify the complete URI instead of accreting query string variables
+//     tip: Text to display as part of uri tooltip.
+//     wholeTip: Alternative to 'tip' property. The complete tooltip to display
+// }
+var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
+    propTypes: {
+        root: React.PropTypes.string, // Root URI for searches
+        crumbs: React.PropTypes.arrayOf(React.PropTypes.object).isRequired // Object with breadcrumb contents
+    },
+
+    render: function() {
+        var accretingQuery = '';
+        var accretingTip = '';
+
+        // Get an array of just the crumbs with something in their id
+        var crumbs = _.filter(this.props.crumbs, function(crumb) { return crumb.id; });
+        var rootTitle = crumbs[0].id;
+
+        return (
+            <ol className="breadcrumb">
+                {crumbs.map((crumb, i) => {
+                    // Build up the query string if not specified completely
+                    if (!crumb.uri) {
+                        accretingQuery += crumb.query ? '&' + crumb.query : '';
+                    }
+
+                    // Build up tooltip if not specified completely
+                    if (!crumb.wholeTip) {
+                        accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    }
+
+                    // Render the breadcrumbs
+                    return (
+                        <li key={i}>
+                            {(crumb.query || crumb.uri) ? <a href={crumb.uri ? crumb.uri : this.props.root + accretingQuery} title={crumb.wholeTip ? crumb.wholeTip : 'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
+                        </li>
+                    );
+                })}
+            </ol>
+        );
+    }
+});

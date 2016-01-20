@@ -23,19 +23,20 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "littermates": {
             "title": "Littermates",
             "description": "Donors comprising the same litter.",
             "type":  "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Littermate",
                 "description": "A donor member of the same litter.",
                 "comment": "See mouse_donor.json for available identifiers.",
                 "type": "string",
-                "linkTo": "mouse_donor"
+                "linkTo": "MouseDonor"
             }
         },
         "organism": {

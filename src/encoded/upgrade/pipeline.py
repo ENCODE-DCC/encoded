@@ -21,3 +21,19 @@ def pipeline_2_3(value, system):
         value['status'] = 'replaced'
     elif value.get('accession') == 'ENCPL521QAX':
         value['status'] = 'deleted'
+
+
+@upgrade_step('pipeline', '3', '4')
+def pipeline_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'analysis_steps' in value:
+        value['analysis_steps'] = list(set(value['analysis_steps']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'references' in value:
+        value['references'] = list(set(value['references']))

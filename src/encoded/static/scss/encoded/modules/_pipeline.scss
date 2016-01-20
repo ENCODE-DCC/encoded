@@ -1,7 +1,7 @@
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
-    (qc-metric, #f0e0f8);
+    (quality-metric, #f0e0f8);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
@@ -72,8 +72,9 @@ g.cluster {
         stroke: #c0c0c0;
     }
 
-    tspan {
-        @include font-size(1);
+    text {
+        font-size: $font-size-base; // Don't use rems; maintain size on mobile
+        fill: #000;
     }
 }
 
@@ -157,4 +158,34 @@ g.edgePath {
     background-image: url(/static/img/orientation-icons.png);
     background-position: 0 -22px;
     background-size: 36px 44px;
+}
+
+g.pipeline-node-qc-metric {
+    circle {
+        stroke-width: 2px;
+        stroke: #a0a0a0;
+        fill: #80ffc0;
+    }
+
+    text {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-weight: bold;
+        fill: #000;
+    }
+
+    &.active {
+        circle {
+            stroke: #404040;
+            fill: darken(#80ffc0, 50%);
+        }
+
+        text {
+            fill: #fff;
+        }
+    }
+}
+
+.quality-metrics-title {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e0e0e0;
 }

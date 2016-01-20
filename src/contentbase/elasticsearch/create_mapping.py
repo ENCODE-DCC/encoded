@@ -8,11 +8,12 @@ To load the initial data:
 """
 from pyramid.paster import get_app
 from elasticsearch import RequestError
+from functools import reduce
 from contentbase import (
     COLLECTIONS,
     TYPES,
 )
-from contentbase.util import ensurelist
+from contentbase.schema_utils import combine_schemas
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -64,13 +65,13 @@ def schema_mapping(name, schema):
                 properties[k] = mapping
         return {
             'type': 'object',
+            'include_in_all': False,
             'properties': properties,
         }
 
     if type_ == ["number", "string"]:
         return {
             'type': 'string',
-            'include_in_all': False,
             'copy_to': [],
             'index': 'not_analyzed',
             'fields': {
@@ -78,13 +79,11 @@ def schema_mapping(name, schema):
                     'type': 'float',
                     'copy_to': '',
                     'ignore_malformed': True,
-                    'include_in_all': False,
                     'copy_to': []
                 },
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -92,13 +91,11 @@ def schema_mapping(name, schema):
     if type_ in ['string', 'boolean']:
         return {
             'type': 'string',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -106,13 +103,11 @@ def schema_mapping(name, schema):
     if type_ == 'number':
         return {
             'type': 'float',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -120,13 +115,11 @@ def schema_mapping(name, schema):
     if type_ == 'integer':
         return {
             'type': 'long',
-            'include_in_all': False,
             'store': True,
             'fields': {
                 'raw': {
                     'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
+                    'index': 'not_analyzed'
                 }
             }
         }
@@ -135,6 +128,13 @@ def schema_mapping(name, schema):
 def index_settings():
     return {
         'index': {
+            'number_of_shards': 1,
+            'merge': {
+                'policy': {
+                    'max_merged_segment': '2gb',
+                    'max_merge_at_once': 5
+                }
+            },
             'analysis': {
                 'filter': {
                     'substring': {
@@ -212,7 +212,6 @@ def es_mapping(mapping):
                     'path_match': "principals_allowed.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -222,7 +221,6 @@ def es_mapping(mapping):
                     'path_match': "unique_keys.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -232,7 +230,6 @@ def es_mapping(mapping):
                     'path_match': "links.*",
                     'mapping': {
                         'type': 'string',
-                        'include_in_all': False,
                         'index': 'not_analyzed',
                     },
                 },
@@ -241,17 +238,14 @@ def es_mapping(mapping):
         'properties': {
             'uuid': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'tid': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'item_type': {
                 'type': 'string',
-                'include_in_all': False,
                 'index': 'not_analyzed'
             },
             'embedded': mapping,
@@ -340,36 +334,6 @@ def combined_mapping(types, *item_types):
     return combined
 
 
-def combine_schemas(a, b):
-    if a == b:
-        return a
-    if not a:
-        return b
-    if not b:
-        return a
-    combined = {}
-    for name in set(a.keys()).intersection(b.keys()):
-        if a[name] == b[name]:
-            combined[name] = a[name]
-        elif name == 'type':
-            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
-        elif name == 'properties':
-            combined[name] = {}
-            for k in set(a[name].keys()).intersection(b[name].keys()):
-                combined[name][k] = combine_schemas(a[name][k], b[name][k])
-            for k in set(a[name].keys()).difference(b[name].keys()):
-                combined[name][k] = a[name][k]
-            for k in set(b[name].keys()).difference(a[name].keys()):
-                combined[name][k] = b[name][k]
-        elif name == 'items':
-            combined[name] = combine_schemas(a[name], b[name])
-    for name in set(a.keys()).difference(b.keys()):
-        combined[name] = a[name]
-    for name in set(b.keys()).difference(a.keys()):
-        combined[name] = b[name]
-    return combined
-
-
 def type_mapping(types, item_type, embed=True):
     type_info = types[item_type]
     schema = type_info.schema
@@ -403,15 +367,7 @@ def type_mapping(types, item_type, embed=True):
                 s = subschema
                 continue
 
-            ref_types = set(ref_types)
-            abstract = [t for t in ref_types if t in types.abstract]
-            for t in abstract:
-                ref_types.update(types.abstract[t].subtypes)
-            concrete = [t for t in ref_types if t in types.types]
-
-            s = {}
-            for t in concrete:
-                s = combine_schemas(s, types[t].schema)
+            s = reduce(combine_schemas, (types[t].schema for t in ref_types))
 
             # Check if mapping for property is already an object
             # multiple subobjects may be embedded, so be carful here
@@ -427,15 +383,16 @@ def type_mapping(types, item_type, embed=True):
             for prop_name in ['@id', 'title']
             if prop_name in mapping['properties']
         }
-    for value in boost_values:
-        props = value.split('.')
+    for name, boost in boost_values.items():
+        props = name.split('.')
         last = props.pop()
         new_mapping = mapping['properties']
         for prop in props:
             new_mapping = new_mapping[prop]['properties']
+        new_mapping[last]['boost'] = boost
         new_mapping[last]['index_analyzer'] = 'encoded_index_analyzer'
         new_mapping[last]['search_analyzer'] = 'encoded_search_analyzer'
-        new_mapping[last].pop('include_in_all', None)
+        new_mapping[last]['include_in_all'] = True
 
     # Automatic boost for uuid
     if 'uuid' in mapping['properties']:
@@ -465,7 +422,7 @@ def run(app, collections=None, dry_run=False):
         else:
             doc_type = collection_name
             collection = registry[COLLECTIONS].by_item_type[collection_name]
-            mapping = type_mapping(registry[TYPES], collection.item_type)
+            mapping = type_mapping(registry[TYPES], collection.type_info.item_type)
 
         if mapping is None:
             continue  # Testing collections

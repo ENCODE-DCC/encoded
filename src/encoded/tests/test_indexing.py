@@ -95,7 +95,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['updated']
     assert res.json['indexed']
 
-    res = testapp.get('/search/?type=biosample')
+    res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
 
 
@@ -112,7 +112,7 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['indexed'] == 1
     assert res.json['txn_count'] == 1
     assert res.json['updated'] == [uuid]
-    res = testapp.get('/search/?type=testing_post_put_patch')
+    res = testapp.get('/search/?type=TestingPostPutPatch')
     assert res.json['total'] == 2
 
 

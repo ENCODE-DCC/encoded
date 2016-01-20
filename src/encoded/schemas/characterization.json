@@ -14,7 +14,8 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
@@ -41,27 +42,13 @@
                 {"format": "date"}
             ]
         },
-        "documents": {
-            "title": "Documents",
-            "description": "Documents that provide additional information on the characterization.",
-            "type": "array",
-            "items": {
-                "title": "Document",
-                "description": "A document that provides additional information on the characterization.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "document"
-            }
-        },
         "status": {
             "description": "The current state of the characterization."
         },
         "comment": {
             "title": "Comment",
-            "description": "Additional information pertaining to the characterization.",
-            "type": "string",
-            "default": "",
-            "permission": "review"
+            "description": "Additional information pertaining to the characterization that the submitter wishes to disclose.",
+            "type": "string"
         }
     }
 }

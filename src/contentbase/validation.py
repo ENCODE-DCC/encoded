@@ -72,7 +72,7 @@ def failed_validation(exc, request):
     if exc.detail is not None:
         errors.append(exc.detail)
     result = {
-        '@type': [type(exc).__name__, 'error'],
+        '@type': [type(exc).__name__, 'Error'],
         'status': 'error',
         'code': exc.code,
         'title': exc.title,
@@ -91,7 +91,7 @@ def http_error(exc, request):
     request.response.status = exc.status
     request.response.headerlist.extend(exc.headerlist)
     result = {
-        '@type': [type(exc).__name__, 'error'],
+        '@type': [type(exc).__name__, 'Error'],
         'status': 'error',
         'code': exc.code,
         'title': exc.title,

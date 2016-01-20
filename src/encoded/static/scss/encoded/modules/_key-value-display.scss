@@ -14,7 +14,7 @@ dd.h3, dd.h4 {
     margin: 0;
 
     > div {
-        clear: left;
+        @extend .clearfix;
     }
 
     dt {
@@ -63,6 +63,54 @@ dd.h3, dd.h4 {
             margin-left: 200px;
             word-wrap: break-word;
             overflow-wrap: break-word;
+        }
+    }
+}
+
+.key-value-flex {
+    margin: 0;
+
+    dt, dd {
+        display: block;
+        margin: 0;
+    }
+
+    dt {
+        font-weight: bold;
+
+        &:after {
+            content: ": ";
+        }
+    }
+
+    dd {
+        @extend .clearfix;
+    }
+
+    div {
+        clear: both;
+        margin: 6px 0;
+    }
+
+    @media screen and (min-width: $screen-xs-min) {
+        display: table;
+
+        dt, dd {
+            display: table-cell;
+            vertical-align: bottom;
+        }
+
+        dt {
+            padding: 6px 20px 6px 0;
+        }
+
+        dd {
+            padding: 6px 0;
+        }
+
+        div {
+            clear: none;
+            display: table-row;
         }
     }
 }
@@ -142,11 +190,15 @@ dd ul, .multi-value {
     line-height: 1.6 !important;
 }
 
+.software-version-list {
+    @extend .clearfix;
+}
+
 .software-version {
-    display: inline-block;
+    display: block;
+    float: left;
     padding: 0;
     margin-right: 5px;
-    margin-bottom: 2px;
     @include border-radius(2px);
     border: 1px solid #c0c0c0;
     color: #333;

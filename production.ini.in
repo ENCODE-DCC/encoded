@@ -2,10 +2,15 @@
 use = config:base.ini#app
 session.secret = %(here)s/session-secret.b64
 file_upload_bucket = ${file_upload_bucket}
+blob_bucket = ${blob_bucket}
+blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
 
 [composite:indexer]
 use = config:base.ini#indexer
+
+[composite:fileindexer]
+use = config:base.ini#fileindexer
 
 [pipeline:main]
 pipeline =
@@ -27,7 +32,7 @@ port = 6543
 threads = 1
 
 [loggers]
-keys = root, encoded, encoded_listener
+keys = root, encoded, encoded_listener, file_encoded_listener
 
 [handlers]
 keys = console
@@ -49,6 +54,12 @@ propagate = 0
 level = INFO
 handlers = console
 qualname = encoded.commands.es_index_listener
+propagate = 0
+
+[logger_file_encoded_listener]
+level = INFO
+handlers = console
+qualname = encoded.commands.es_file_index_listener
 propagate = 0
 
 [handler_console]

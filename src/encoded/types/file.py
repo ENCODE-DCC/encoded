@@ -1,6 +1,7 @@
 from contentbase import (
     AfterModified,
     BeforeModified,
+    CONNECTION,
     calculated_property,
     collection,
     load_schema,
@@ -36,7 +37,7 @@ def show_upload_credentials(request=None, context=None, status=None):
     return request.has_permission('edit', context)
 
 
-def external_creds(bucket, key, name):
+def external_creds(bucket, key, name, profile_name=None):
     policy = {
         'Version': '2012-10-17',
         'Statement': [
@@ -47,7 +48,7 @@ def external_creds(bucket, key, name):
             }
         ]
     }
-    conn = boto.connect_sts(profile_name='encoded-files-upload')
+    conn = boto.connect_sts(profile_name=profile_name)
     token = conn.get_federation_token(name, policy=json.dumps(policy))
     # 'access_key' 'secret_key' 'expiration' 'session_token'
     credentials = token.credentials.to_dict()
@@ -65,6 +66,21 @@ def external_creds(bucket, key, name):
     }
 
 
+def property_closure(request, propname, root_uuid):
+    # Must avoid cycles
+    conn = request.registry[CONNECTION]
+    seen = set()
+    remaining = {str(root_uuid)}
+    while remaining:
+        seen.update(remaining)
+        next_remaining = set()
+        for uuid in remaining:
+            obj = conn.get_by_uuid(uuid)
+            next_remaining.update(obj.__json__(request).get(propname, ()))
+        remaining = next_remaining - seen
+    return seen
+
+
 @collection(
     name='files',
     unique_key='accession',
@@ -78,8 +94,8 @@ class File(Item):
     name_key = 'accession'
 
     rev = {
-        'paired_with': ('file', 'paired_with'),
-        'qc_metrics': ('quality_metric', 'files'),
+        'paired_with': ('File', 'paired_with'),
+        'quality_metrics': ('QualityMetric', 'quality_metric_of'),
     }
 
     embedded = [
@@ -92,9 +108,12 @@ class File(Item):
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
+        'analysis_step_version.analysis_step.versions',
+        'analysis_step_version.analysis_step.versions.software_versions',
+        'analysis_step_version.analysis_step.versions.software_versions.software',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'qc_metrics.step_run.analysis_step_version.analysis_step',
+        'quality_metrics.step_run.analysis_step_version.analysis_step',
     ]
 
     @property
@@ -148,7 +167,9 @@ class File(Item):
         "type": "object",
     })
     def upload_credentials(self):
-        return self.propsheets['external']['upload_credentials']
+        external = self.propsheets.get('external', None)
+        if external is not None:
+            return external['upload_credentials']
 
     @calculated_property(schema={
         "title": "Read length units",
@@ -162,9 +183,39 @@ class File(Item):
             return "nt"
 
     @calculated_property(schema={
+        "title": "Biological replicates",
+        "type": "array",
+        "items": {
+            "title": "Biological replicate number",
+            "description": "The identifying number of each relevant biological replicate",
+            "type": "integer",
+        }
+    })
+    def biological_replicates(self, request, registry, root, replicate=None):
+        if replicate is not None:
+            replicate_obj = traverse(root, replicate)['context']
+            replicate_biorep = replicate_obj.__json__(request)['biological_replicate_number']
+            return [replicate_biorep]
+
+        conn = registry[CONNECTION]
+        derived_from_closure = property_closure(request, 'derived_from', self.uuid)
+        dataset_uuid = self.__json__(request)['dataset']
+        obj_props = (conn.get_by_uuid(uuid).__json__(request) for uuid in derived_from_closure)
+        replicates = {
+            props['replicate']
+            for props in obj_props
+            if props['dataset'] == dataset_uuid and 'replicate' in props
+        }
+        bioreps = {
+            conn.get_by_uuid(uuid).__json__(request)['biological_replicate_number']
+            for uuid in replicates
+        }
+        return sorted(bioreps)
+
+    @calculated_property(schema={
         "title": "Analysis Step Version",
         "type": "string",
-        "linkTo": "analysis_step_version"
+        "linkTo": "AnalysisStepVersion"
     })
     def analysis_step_version(self, request, root, step_run=None):
         if step_run is None:
@@ -194,11 +245,11 @@ class File(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.analysis_step_run",
+            "linkFrom": "QualityMetric.quality_metric_of",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "File type",
@@ -227,7 +278,8 @@ class File(Item):
                 accession_or_external=accession_or_external,
                 time=time.time(), **properties)[:32]  # max 32 chars
 
-            sheets['external'] = external_creds(bucket, key, name)
+            profile_name = registry.settings.get('file_upload_profile_name')
+            sheets['external'] = external_creds(bucket, key, name, profile_name)
         return super(File, cls).create(registry, uuid, properties, sheets)
 
 
@@ -235,12 +287,10 @@ class File(Item):
              permission='edit')
 def get_upload(context, request):
     external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
-        raise ValueError(external.get('service'))
     return {
         '@graph': [{
             '@id': request.resource_path(context),
-            'upload_credentials': external['upload_credentials'],
+            'upload_credentials': external.get('upload_credentials'),
         }],
     }
 
@@ -252,21 +302,39 @@ def post_upload(context, request):
     if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
-    external = context.propsheets.get('external', {})
-    if external.get('service') != 's3':
+    accession_or_external = properties.get('accession') or properties['external_accession']
+    external = context.propsheets.get('external', None)
+
+    if external is None:
+        # Handle objects initially posted as another state.
+        bucket = request.registry.settings['file_upload_bucket']
+        uuid = context.uuid
+        mapping = context.schema['file_format_file_extension']
+        file_extension = mapping[properties['file_format']]
+        date = properties['date_created'].split('T')[0].replace('-', '/')
+        key = '{date}/{uuid}/{accession_or_external}{file_extension}'.format(
+            accession_or_external=accession_or_external,
+            date=date, file_extension=file_extension, uuid=uuid, **properties)
+    elif external.get('service') == 's3':
+        bucket = external['bucket']
+        key = external['key']
+    else:
         raise ValueError(external.get('service'))
 
-    bucket = external['bucket']
-    key = external['key']
-    accession_or_external = properties.get('accession') or properties['external_accession']
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
-        time=time.time(), **properties)  # max 32 chars
-    creds = external_creds(bucket, key, name)
+        time=time.time(), **properties)[:32]  # max 32 chars
+    profile_name = request.registry.settings.get('file_upload_profile_name')
+    creds = external_creds(bucket, key, name, profile_name)
+
+    new_properties = None
+    if properties['status'] == 'upload failed':
+        new_properties = properties.copy()
+        new_properties['status'] = 'uploading'
 
     registry = request.registry
     registry.notify(BeforeModified(context, request))
-    context.update(None, {'external': creds})
+    context.update(new_properties, {'external': creds})
     registry.notify(AfterModified(context, request))
 
     rendered = request.embed('/%s/@@object' % context.uuid, as_user=True)
@@ -293,12 +361,14 @@ def download(context, request):
 
     proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
 
+    use_download_proxy = request.client_addr not in request.registry['aws_ipset']
+
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
         conn = boto.connect_s3()
         location = conn.generate_url(
             36*60*60, request.method, external['bucket'], external['key'],
-            force_http=proxy, response_headers={
+            force_http=proxy or use_download_proxy, response_headers={
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
@@ -314,6 +384,11 @@ def download(context, request):
 
     if proxy:
         return Response(headers={'X-Accel-Redirect': '/_proxy/' + str(location)})
+
+    # We don't use X-Accel-Redirect here so that client behaviour is similar for
+    # both aws and non-aws users.
+    if use_download_proxy:
+        location = request.registry.settings.get('download_proxy', '') + str(location)
 
     # 307 redirect specifies to keep original method
     raise HTTPTemporaryRedirect(location=location)

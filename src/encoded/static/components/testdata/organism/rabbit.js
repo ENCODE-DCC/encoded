@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/organisms/rabbit/",
-    "@type": ["organism", "item"],
+    "@type": ["Organism", "Item"],
     "status": "current",
     "name": "rabbit",
     "scientific_name": "Oryctolagus cuniculus",

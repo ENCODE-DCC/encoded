@@ -24,7 +24,20 @@ var LAYOUT_CONTEXT = {
 };
 
 var MODAL_CONTEXT = {
-    fetch: React.PropTypes.func
+    // Persona
+    fetch: React.PropTypes.func,
+    session: React.PropTypes.object,
+    session_properties: React.PropTypes.object,
+    // HistoryAndTriggers
+    adviseUnsavedChanges: React.PropTypes.func,
+    navigate: React.PropTypes.func,
+    // App
+    dropdownComponent: React.PropTypes.string,
+    listActionsFor: React.PropTypes.func,
+    currentResource: React.PropTypes.func,
+    location_href: React.PropTypes.string,
+    onDropdownChange: React.PropTypes.func,
+    portal: React.PropTypes.object
 };
 
 

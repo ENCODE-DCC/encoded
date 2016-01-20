@@ -7,9 +7,10 @@ Example.
 
 from webtest import TestApp
 from contentbase import STORAGE
-
+from contentbase.elasticsearch import ELASTIC_SEARCH
 import atexit
 import datetime
+import elasticsearch.exceptions
 import json
 import logging
 import os
@@ -34,7 +35,7 @@ PY2 = sys.version_info[0] == 2
 # https://devcenter.heroku.com/articles/postgresql-concurrency
 
 
-def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_status=None):
+def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, path='/index', control=None, update_status=None):
     assert update_status is not None
 
     timestamp = datetime.datetime.now().isoformat()
@@ -43,6 +44,11 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         timestamp=timestamp,
         timeout=timeout,
     )
+
+    # Make sure elasticsearch is up before trying to index.
+    es = testapp.app.registry[ELASTIC_SEARCH]
+    es.info()
+
     max_xid = 0
     DBSession = testapp.app.registry[STORAGE].write.DBSession
     engine = DBSession.bind  # DBSession.bind is configured by app init
@@ -52,6 +58,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
         connection.detach()
         conn = connection.connection
         conn.autocommit = True
+        conn.set_session(readonly=True)
         sockets = [conn]
         if control is not None:
             sockets.append(control)
@@ -83,7 +90,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, update_st
                 )
 
                 try:
-                    res = testapp.post_json('/index', {
+                    res = testapp.post_json(path, {
                         'record': True,
                         'dry_run': dry_run,
                         'recovery': recovery,
@@ -161,9 +168,9 @@ class ErrorHandlingThread(threading.Thread):
         while True:
             try:
                 self._target(*self._args, **self._kwargs)
-            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError) as e:
+            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError, elasticsearch.exceptions.ConnectionError) as e:
                 # Handle database restart
-                log.exception('Database went away')
+                log.warning('Database not there, maybe starting up: %r', e)
                 timestamp = datetime.datetime.now().isoformat()
                 update_status(
                     timestamp=timestamp,
@@ -198,6 +205,8 @@ def composite(loader, global_conf, **settings):
         if listener:
             log.debug('joining listening thread')
             listener.join()
+
+    path = settings.get('path', '/index')
 
     # Composite app is used so we can load the main app
     app_name = settings.get('app', None)
@@ -236,6 +245,7 @@ def composite(loader, global_conf, **settings):
         'testapp': testapp,
         'control': control,
         'update_status': update_status,
+        'path': path,
     }
     if 'timeout' in settings:
         kwargs['timeout'] = float(settings['timeout'])
@@ -291,6 +301,9 @@ def main():
     parser.add_argument(
         '--poll-interval', type=int, default=DEFAULT_TIMEOUT,
         help="Poll interval between notifications")
+    parser.add_argument(
+        '--path', default='/index',
+        help="Path of indexing view (/index or /index_file)")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
@@ -301,7 +314,7 @@ def main():
     if args.verbose or args.dry_run:
         logging.getLogger('encoded').setLevel(logging.DEBUG)
 
-    return run(testapp, args.poll_interval, args.dry_run)
+    return run(testapp, args.poll_interval, args.dry_run, args.path)
 
 
 if __name__ == '__main__':

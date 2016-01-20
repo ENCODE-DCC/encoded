@@ -91,7 +91,7 @@ var Attachment = module.exports.Attachment = React.createClass({
         if (context.attachment && context.attachment.href && context.attachment.type) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var attachmentType = context.attachment.type.split('/', 1)[0];
-            if (attachmentType == 'image') {
+            if (attachmentType == 'image' && context.attachment.type != 'image/tiff') {
                 var imgClass = this.props.className ? this.props.className + '-img' : '';
                 src = attachmentHref;
                 height = context.attachment.height || 100;
@@ -145,4 +145,4 @@ var Image = React.createClass({
 });
 
 
-globals.content_views.register(Image, 'image');
+globals.content_views.register(Image, 'Image');

@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/biosamples/ENCBS989WPD/",
-    "@type": ["biosample", "item"],
+    "@type": ["Biosample", "Item"],
     "accession": "ENCBS989WPD",
     "award": "/awards/U54HG006998/",
     "biosample_term_id": "UBERON:0002371",

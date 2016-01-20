@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/human-donors/ENCDO000HUM/",
-    "@type": ["human_donor", "donor", "item"],
+    "@type": ["HumanDonor", "Donor", "Item"],
     "accession": "ENCDO000HUM",
     "award": "U41HG006992",
     "ethnicity": "unknown",

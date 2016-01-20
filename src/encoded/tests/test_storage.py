@@ -146,3 +146,47 @@ def test_keys(session):
     session.add(key3)
     with pytest.raises(FlushError):
         session.flush()
+
+
+def test_S3BlobStorage(mocker):
+    from contentbase.storage import S3BlobStorage
+    mocker.patch('boto.connect_s3')
+    bucket = 'test'
+    fake_key = mocker.Mock()
+    storage = S3BlobStorage(bucket)
+    storage.bucket.name = bucket
+    storage.bucket.new_key.return_value = fake_key
+
+    download_meta = {'download': 'test.txt'}
+    storage.store_blob('data', download_meta)
+    assert download_meta['bucket'] == 'test'
+    assert 'key' in download_meta
+    fake_key.set_contents_from_string.assert_called_once_with('data')
+
+    storage.bucket.get_key.return_value = fake_key
+    fake_key.get_contents_as_string.return_value = 'data'
+    data = storage.get_blob(download_meta)
+    assert data == 'data'
+    storage.bucket.get_key.assert_called_once_with(download_meta['key'], validate=False)
+
+    storage.read_conn.generate_url.return_value = 'http://testurl'
+    url = storage.get_blob_url(download_meta)
+    assert url == 'http://testurl'
+    storage.read_conn.generate_url.assert_called_once_with(
+        129600, method='GET', bucket='test', key=download_meta['key']
+    )
+
+
+def test_S3BlobStorage_get_blob_url_for_non_s3_file(mocker):
+    from contentbase.storage import S3BlobStorage
+    mocker.patch('boto.connect_s3')
+    bucket = 'test'
+    storage = S3BlobStorage(bucket)
+    storage.bucket.name = bucket
+    download_meta = {'blob_id': 'blob_id'}
+    storage.read_conn.generate_url.return_value = 'http://testurl'
+    url = storage.get_blob_url(download_meta)
+    assert url == 'http://testurl'
+    storage.read_conn.generate_url.assert_called_once_with(
+        129600, method='GET', bucket='test', key=download_meta['blob_id']
+    )

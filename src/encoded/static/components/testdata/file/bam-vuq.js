@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/files/ENCFF000VUQ/",
-    "@type": ["file", "item"],
+    "@type": ["File", "Item"],
     "accession": "ENCFF000VUQ",
     "assembly": "hg19",
     "award": "U54HG004558",
@@ -13,5 +13,6 @@ module.exports = {
     "status": "released",
     "submitted_by": "amet.fusce@est.fermentum",
     "submitted_file_name": "hg19/wgEncodeSydhTfbs/wgEncodeSydhTfbsGm12878Ebf1sc137065StdAlnRep1.bam",
+    "biological_replicates": [ ],
     "uuid": "054165db-7b03-452e-9b5a-ea7599248e6b"
 };

@@ -28,7 +28,15 @@ var SearchBlockEdit = React.createClass({
                 <ResultTable {...this.props} mode="picker" />
             </div>
         );
-    }
+    },
+
+    componentDidMount: function() {
+        // focus the first "Select" button in the search results
+        var button = this.getDOMNode().querySelector('button.btn-primary');
+        if (button) {
+            button.focus();
+        }
+    },
 });
 
 
@@ -39,7 +47,7 @@ var ItemPreview = module.exports.ItemPreview = React.createClass({
         var Listing = globals.listing_views.lookup(context);
         return (
             <ul className="nav result-table" onClick={openLinksInNewWindow}>
-                <Listing context={context} columns={this.props.data.columns} key={context['@id']} />
+                <Listing context={context} columns={undefined} key={context['@id']} />
             </ul>
         );
     }
@@ -58,8 +66,16 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
     getInitialState: function() {
         return {
             browsing: false,
-            search: this.props.searchBase
+            search: '',
         };
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+        if (!this.props.value && !this.state.searchInput && this.state.searchInput != prevState.searchInput) {
+            this.refs.input.getDOMNode().focus();
+        } else if (this.props.value != prevProps.value) {
+            this.refs.clear.getDOMNode().focus();
+        }
     },
 
     render: function() {
@@ -69,26 +85,55 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         var actions = [
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
+        var searchParams = this.state.searchParams || this.props.searchBase;
+        if (this.state.search) {
+            searchParams += '&searchTerm=' + encodeURIComponent(this.state.search);
+        }
         return (
-            <div className="item-picker">
-                <button className="btn btn-primary pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
-                <div className="item-picker-preview">
-                    {url ? <a className="clear" href="#" onClick={this.handleClear}><i className="icon icon-times"></i></a> : ''}
+            <div className={"item-picker" + (this.props.disabled ? ' disabled' : '')}>
+                <div className="item-picker-preview" style={{display: 'inline-block', width: 'calc(100% - 120px)'}}>
                     {url ?
                         <fetched.FetchedData>
                             <fetched.Param name="data" url={previewUrl} />
                             <ItemPreview {...this.props} />
                         </fetched.FetchedData> : ''}
+                    {!url ? <input value={this.state.searchInput} ref="input" type="text"
+                                   placeholder="Enter a search term (accession, uuid, alias, ...)"
+                                   onChange={this.handleInput} onBlur={this.handleSearch} onKeyDown={this.handleInput}
+                                   disabled={this.props.disabled} /> : ''}
+                    {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
                 </div>
+                {!this.props.disabled &&
+                    <div className="pull-right">
+                        <a className="clear" href="#" ref="clear" onClick={this.handleClear}><i className="icon icon-times"></i></a>
+                        {' '}<button className={"btn btn-primary" + (this.state.browsing ? ' active' : '')} onClick={this.handleBrowse}>Browse&hellip;</button>
+                    </div>
+                }
                 {this.state.browsing ? 
                     <fetched.FetchedData>
-                        <fetched.Param name="context" url={searchUrl} />
+                        <fetched.Param name="context" url={'/search/' + searchParams} />
                         <SearchBlockEdit
-                            searchBase={this.state.search} restrictions={this.props.restrictions}
+                            searchBase={searchParams} restrictions={this.props.restrictions}
+                            hideTextFilter={!url}
                             actions={actions} onChange={this.handleFilter} />
                     </fetched.FetchedData> : ''}
             </div>
         );
+    },
+
+    handleInput: function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            this.handleSearch();
+        }
+        this.setState({searchInput: e.target.value});
+    },
+
+    handleSearch: function(e) {
+        if (this.state.searchInput) {
+            this.setState({search: this.state.searchInput, browsing: true});
+        }
+        this.props.onBlur();
     },
 
     handleBrowse: function(e) {
@@ -97,17 +142,19 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
     },
 
     handleFilter: function(href) {
-        this.setState({search: href});
+        this.setState({searchParams: href});
     },
 
     handleSelect: function(e) {
         var value = e.currentTarget.id;
-        this.setState({browsing: false});
+        this.setState({browsing: false, searchInput: null, search: ''});
         this.props.onChange(value);
     },
 
     handleClear: function(e) {
-        this.props.onChange("");
+        this.props.onBlur();
+        this.props.onChange(null);
+        this.setState({browsing: false, searchInput: '', search: '', searchParams: null});
         e.preventDefault();
     }
 });

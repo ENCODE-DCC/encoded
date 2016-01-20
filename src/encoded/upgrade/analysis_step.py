@@ -98,3 +98,28 @@ def analysis_step_2_3(value, system):
         value['parents'] = ['3cad3827-7f21-4f70-9cbc-e718b5529775', #/analysis-steps/lrna-se-star-alignment-step-v-1/',
                             '9ca04da2-5ef7-4ba1-b78c-41dfc4be0c11'  #/analysis-steps/index-rsem-v-1-0/'
                             ]
+
+
+@upgrade_step('analysis_step', '3', '4')
+def analysis_step_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'analysis_step_types' in value:
+        value['analysis_step_types'] = list(set(value['analysis_step_types']))
+
+    if 'input_file_types' in value:
+        value['input_file_types'] = list(set(value['input_file_types']))
+
+    if 'output_file_types' in value:
+        value['output_file_types'] = list(set(value['output_file_types']))
+
+    if 'qa_stats_generated' in value:
+        value['qa_stats_generated'] = list(set(value['qa_stats_generated']))
+
+    if 'parents' in value:
+        value['parents'] = list(set(value['parents']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))

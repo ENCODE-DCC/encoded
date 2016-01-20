@@ -4,22 +4,24 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
-var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var item = require('./item');
 var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Attachment = image.Attachment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
-var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
 var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
+var RelatedItems = item.RelatedItems;
 
 
 var Lot = module.exports.Lot = React.createClass({
@@ -53,16 +55,46 @@ var Lot = module.exports.Lot = React.createClass({
         }
         var targetKeys = Object.keys(targets);
 
+        // Set up the breadcrumbs
+        var organismComponents = [];
+        var organismTerms = [];
+        var organismTips = [];
+        var geneComponents = [];
+        var geneTerms = [];
+        var geneTips = [];
+        targetKeys.forEach(function(key, i) {
+            var scientificName = targets[key].organism.scientific_name;
+            var geneName = targets[key].gene_name;
+
+            // Add to the information on organisms from the targets
+            organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);
+            organismTerms.push('targets.organism.scientific_name=' + scientificName);
+            organismTips.push(scientificName);
+
+            // Add to the information on gene names from the targets
+            if (geneName && geneName !== 'unknown') {
+                geneComponents.push(<span key={key}>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
+                geneTerms.push('targets.gene_name=' + geneName);
+                geneTips.push(geneName);
+            }
+        });
+
+        var organismQuery = organismTerms.join('&');
+        var geneQuery = geneTerms.join('&');
+        var crumbs = [
+            {id: 'Antibodies'},
+            {id: organismComponents, query: organismQuery, tip: organismTips.join(' + ')},
+            {id: geneComponents.length ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ')}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
-        // To search list of linked experiments
-        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=antibody_lot' crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
@@ -189,33 +221,15 @@ var Lot = module.exports.Lot = React.createClass({
                     {characterizations}
                 </div>
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ExperimentsUsingAntibody} />
+                <RelatedItems title={'Experiments using antibody ' + context.accession}
+                              url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
+                              Component={ExperimentTable} />
             </div>
         );
     }
 });
 
-globals.content_views.register(Lot, 'antibody_lot');
-
-
-var ExperimentsUsingAntibody = React.createClass({
-    render: function () {
-        var context = this.props.context;
-
-        return (
-            <div>
-                <span className="pull-right">
-                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
-                </span>
-
-                <div>
-                    <h3>Experiments using antibody {context.accession}</h3>
-                    <ExperimentTable {...this.props} limit={5} />
-                </div>
-            </div>
-        );
-    }
-});
+globals.content_views.register(Lot, 'AntibodyLot');
 
 
 var Documents = React.createClass({
@@ -227,9 +241,9 @@ var Documents = React.createClass({
                     var docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
                     return (
-                        <div className="multi-dd dl-link">
+                        <div className="multi-dd dl-link" key={doc.uuid}>
                             <i className="icon icon-download"></i>&nbsp;
-                            <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
                                 {docName}
                             </a>
                         </div>
@@ -324,6 +338,20 @@ var Characterization = module.exports.Characterization = React.createClass({
                             </div>
                         : null}
 
+                        {context.comment ?
+                            <div data-test="comment">
+                                <dt>Submitter comment</dt>
+                                <dd className="para-text">{context.comment}</dd>
+                            </div>
+                        : null}
+
+                        {context.notes ?
+                            <div data-test="comment">
+                                <dt>Reviewer comment</dt>
+                                <dd className="para-text">{context.notes}</dd>
+                            </div>
+                        : null}
+
                         {context.submitted_by && context.submitted_by.title ?
                             <div data-test="submitted">
                                 <dt>Submitted by</dt>
@@ -363,7 +391,7 @@ var Characterization = module.exports.Characterization = React.createClass({
     }
 });
 
-globals.panel_views.register(Characterization, 'antibody_characterization');
+globals.panel_views.register(Characterization, 'AntibodyCharacterization');
 
 
 var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
@@ -434,4 +462,4 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     }
 });
 
-globals.panel_views.register(AntibodyStatus, 'antibody_lot');
+globals.panel_views.register(AntibodyStatus, 'AntibodyLot');

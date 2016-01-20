@@ -1,6 +1,6 @@
 module.exports = {
     "@id": "/libraries/ENCLB056ZZZ/",
-    "@type": ["library", "item"],
+    "@type": ["Library", "Item"],
     "accession": "ENCLB056ZZZ",
     "aliases": [
         "thomas-gingeras:SID38807"

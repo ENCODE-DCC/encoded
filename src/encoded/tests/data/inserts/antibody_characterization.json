@@ -30,6 +30,7 @@
         "uuid": "7118e7b4-fab1-4ddb-f038-490c47b73cf2"
     },
     {
+        "_test": "Multiple species and exempt from standards histone species.",
         "attachment": "H3K4me3_Millipore_07-473_lot_DAM1651667_WB.png",
         "award": "U54HG006991",
         "caption": "Western blot analysis of K562 lysate using rabbit polyclonal to H3K4me3",
@@ -42,6 +43,8 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
+        "comment": "We couldn't characterize the antibody in mouse before we ran out of the lot, sorry!",
+        "notes": "Lab ran out of the lot, so I guess we'll have to let it slide?",
         "characterization_reviews": [
             {
                 "organism": "human",
@@ -57,7 +60,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "MEL cell line",
                 "biosample_term_id": "EFO:0003971",
-                "lane_status": "compliant"
+                "lane_status": "exempt from standards"
             },
             {
                 "organism": "human",
@@ -348,6 +351,14 @@
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
                 "lane_status": "compliant"
+            },
+            {
+                "organism": "mouse",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "MEL cell line",
+                "biosample_term_id": "EFO:0003971",
+                "lane_status": "not compliant"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -403,6 +414,7 @@
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
+        "_test": "Exempt from standards IP-mass spec characterization",
         "attachment": "human_TAF1_validation_Myers.pdf",
         "award": "ENCODE2",
         "caption": "IP followed by mass spectrometry: Briefly, K562 whole cell lysates were immunoprecipitated using primary antibody, and the IP fraction was loaded on a 12% acrylamide gel and separated with a Bio-Rad PROTEAN II xi system. Gel was stained with Coomassie Blue in order to visualize marker bands. A gel fragment corresponding to the band indicated above in the western blot image was excised and sent to the University of Alabama at Birmingham Cancer Center Mass Spectrometry/Proteomics Shared Facility. There the sample was run on an LTQ XL Linear Ion Trap Mass Spectrometer by LC-ESI-MS/MS. Peptides were identified using SEQUEST tandem mass spectra analysis, with probability based matching at p < 0.05.   As per ENCODE data standards, all SEQUEST results are attached (ENCODE_HAIB_TAF1_03172011_MassSpec.pdf), including common contaminants. Target protein is listed as hit 5a.",
@@ -411,11 +423,13 @@
         "date": "2013-11-25",
         "lab": "richard-myers",
         "reviewed_by": "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
-        "status": "compliant",
+        "status": "exempt from standards",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
-        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
+        "comment": "The TF was ranked #21, can you just let this one slide?",
+        "notes": "The lab baked me a delicious pie, so I turned a blind eye."
     },
     {
         "attachment": "mouse_H3K4me3_07-473_validation_Hardison.pdf",

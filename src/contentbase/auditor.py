@@ -9,7 +9,10 @@ import venusian
 from past.builtins import basestring
 from pyramid.view import view_config
 from .calculated import calculated_property
-from .interfaces import AUDITOR
+from .interfaces import (
+    AUDITOR,
+    TYPES,
+)
 from .resources import Item
 
 logger = logging.getLogger(__name__)
@@ -17,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 def includeme(config):
     config.include('.calculated')
+    config.include('.typeinfo')
     config.scan(__name__)
     config.registry[AUDITOR] = Auditor()
     config.add_directive('add_audit_checker', add_audit_checker)
@@ -145,21 +149,25 @@ class Auditor(object):
 
 
 # Imperative configuration
-def add_audit_checker(config, checker, item_type, condition=None, frame='embedded'):
-    auditor = config.registry[AUDITOR]
-    config.action(None, auditor.add_audit_checker,
-                  (checker, item_type, condition, frame))
+def add_audit_checker(config, checker, type_, condition=None, frame='embedded'):
+    def callback():
+        types = config.registry[TYPES]
+        ti = types[type_]
+        auditor = config.registry[AUDITOR]
+        auditor.add_audit_checker(checker, ti.name, condition, frame)
+
+    config.action(None, callback)
 
 
 # Declarative configuration
-def audit_checker(item_type, condition=None, frame='embedded'):
+def audit_checker(type_, condition=None, frame='embedded'):
     """ Register an audit checker
     """
 
     def decorate(checker):
         def callback(scanner, factory_name, factory):
             scanner.config.add_audit_checker(
-                checker, item_type, condition, frame)
+                checker, type_, condition, frame)
 
         venusian.attach(checker, callback, category=AUDITOR)
         return checker
@@ -174,7 +182,7 @@ def audit(request, types=None, path=None, context=None, **kw):
     if context is None:
         context = request.context
     if types is None:
-        types = [context.item_type] + context.base_types
+        types = [context.type_info.name] + context.type_info.base_types
     return auditor.audit(
         request=request, types=types, path=path, root=request.root, context=context,
         registry=request.registry, **kw)
@@ -221,7 +229,7 @@ def inherit_audits(request, embedded, embedded_paths):
              name='audit-self')
 def item_view_audit_self(context, request):
     path = request.resource_path(context)
-    types = [context.item_type] + context.base_types
+    types = [context.type_info.name] + context.type_info.base_types
     return {
         '@id': path,
         'audit': request.audit(types=types, path=path),

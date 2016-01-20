@@ -5,6 +5,9 @@
         "lab": "j-michael-cherry",
         "organism": "mouse",
         "strain_background": "CD-1",
+        "donor_documents": [
+            "ENCODE:PanIsletD_Crawford_protocol"
+        ],
         "uuid": "a67605ad-45d9-4ec3-8470-18be07a676f0"
     },
     {
@@ -34,5 +37,13 @@
         "organism": "mouse",
         "strain_background": "unknown",
         "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38"
+    },
+    {
+        "accession": "ENCDO001MUS",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "strain_background": "unknown",
+        "uuid": "f08acb61-5af6-4b7d-a7c8-f08be52d8012"
     }
 ]

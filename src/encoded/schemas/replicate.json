@@ -22,14 +22,14 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "antibody": {
             "title": "Antibody",
             "description": "For Immunoprecipitation assays, the antibody used.",
             "comment": "See antibody_lot.json for available identifiers.",
             "type": "string",
-            "linkTo": "antibody_lot"
+            "linkTo": "AntibodyLot"
         },
         "biological_replicate_number": {
             "title": "Biological replicate",
@@ -48,14 +48,14 @@
             "description": "The experiment the replicate belongs to.",
             "comment": "See experiment.json for available identifiers.",
             "type": "string",
-            "linkTo": "experiment"
+            "linkTo": "Experiment"
         },
         "library": {
             "title": "Library",
             "description": "The nucleic acid library used in this replicate.",
             "comment": "See library.json for available identifiers.",
             "type": "string",
-            "linkTo": "library"
+            "linkTo": "Library"
         },
         "rbns_protein_concentration": {
             "title": "RBNS protein concentration",

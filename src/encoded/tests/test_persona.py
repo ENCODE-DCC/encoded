@@ -1,10 +1,5 @@
 import pytest
 
-pytestmark = [
-    pytest.mark.persona,
-    pytest.mark.slow,
-]
-
 
 def persona_test_data(audience):
     import requests
@@ -21,12 +16,16 @@ def persona_test_data(audience):
     return data
 
 
+@pytest.mark.persona
+@pytest.mark.slow
 @pytest.fixture(scope='session')
 def persona_assertion(app_settings):
     audience = app_settings['persona.audiences']
     return persona_test_data(audience)
 
 
+@pytest.mark.persona
+@pytest.mark.slow
 @pytest.fixture(scope='session')
 def persona_bad_assertion():
     return persona_test_data('http://badaudience')
@@ -78,3 +77,13 @@ def test_login_logout(testapp, anontestapp, persona_assertion):
     assert 'Set-Cookie' in res.headers
     res = anontestapp.get('/session')
     assert 'auth.userid' not in res.json
+
+
+def test_impersonate_user(anontestapp, admin, submitter):
+    res = anontestapp.post_json(
+        '/impersonate-user', {'userid': submitter['email']},
+        extra_environ={'REMOTE_USER': str(admin['email'])}, status=200)
+    assert 'Set-Cookie' in res.headers
+    assert res.json['auth.userid'] == submitter['email']
+    res = anontestapp.get('/session')
+    assert res.json['auth.userid'] == submitter['email']

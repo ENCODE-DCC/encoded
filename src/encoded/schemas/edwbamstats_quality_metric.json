@@ -1,0 +1,87 @@
+{
+    "description": "Schema for reporting 'edwBamStats' output as a quality metric",
+    "id": "/profiles/edwbamstats_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "alignedBy": {
+            "type": "string",
+            "description": "edwBamStats: alignedBy"
+        },
+        "isPaired": {
+            "type": "number",
+            "description": "edwBamStats: isPaired"
+        },
+        "isSortedByTarget": {
+            "type": "number",
+            "description": "edwBamStats: isSortedByTarget"
+        },
+        "mappedCount": {
+            "type": "number",
+            "description": "edwBamStats: mappedCount"
+        },
+        "readBaseCount": {
+            "type": "number",
+            "description": "edwBamStats: readBaseCount"
+        },
+        "readCount": {
+            "type": "number",
+            "description": "edwBamStats: readCount"
+        },
+        "readSizeMax": {
+            "type": "number",
+            "description": "edwBamStats: readSizeMax"
+        },
+        "readSizeMean": {
+            "type": "number",
+            "description": "edwBamStats: readSizeMean"
+        },
+        "readSizeMin": {
+            "type": "number",
+            "description": "edwBamStats: readSizeMin"
+        },
+        "readSizeStd": {
+            "type": "number",
+            "description": "edwBamStats: readSizeStd"
+        },
+        "targetBaseCount": {
+            "type": "number",
+            "description": "edwBamStats: targetBaseCount"
+        },
+        "targetSeqCount": {
+            "type": "number",
+            "description": "edwBamStats: targetSeqCount"
+        },
+        "u4mReadCount": {
+            "type": "number",
+            "description": "edwBamStats: u4mReadCount"
+        },
+        "u4mUniquePos": {
+            "type": "number",
+            "description": "edwBamStats: u4mUniquePos"
+        },
+        "u4mUniqueRatio": {
+            "type": "number",
+            "description": "edwBamStats: u4mUniqueRatio"
+        },
+        "uniqueMappedCount": {
+            "type": "number",
+            "description": "edwBamStats: uniqueMappedCount"
+        }
+    }
+}

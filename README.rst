@@ -10,18 +10,14 @@ ENCODE Metadata Database
 
 Step 1: Verify that homebrew is working properly::
 
-    $ brew doctor
+    $ sudo brew doctor
 
 
 Step 2: Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql graphviz nginx python3
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
-
-Install Node 0.10 from homebrew/versions::
-
-    $ brew tap homebrew/versions
-    $ brew install node010
+    $ brew install node
 
 If you need to update dependencies::
 
@@ -32,7 +28,7 @@ If you need to update dependencies::
 
 Step 3: Run buildout::
 
-    $ python3.4 bootstrap.py -v 2.3.1 --setuptools-version 15.2
+    $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
     $ bin/buildout
 
 
@@ -78,7 +74,7 @@ Run the Pyramid tests with::
 
 Run the Browser tests with::
 
-    $ bin/test -m bdd -v -v
+    $ bin/test -m bdd -v --splinter-webdriver chrome
 
 Run the Javascript tests with::
 

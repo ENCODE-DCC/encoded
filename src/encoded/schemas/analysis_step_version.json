@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "version": {
             "title": "Version",
@@ -29,16 +29,17 @@
             "title": "Analysis Step",
             "description": "Reference to template step in pipeline",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "AnalysisStep"
         },
         "software_versions": {
             "title": "Software version",
             "description": "The software version used in the analysis.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "comment": "See software_version.json for a list of available identifiers.",
                 "type": "string",
-                "linkTo": "software_version"
+                "linkTo": "SoftwareVersion"
             }
         }
     }

@@ -85,6 +85,7 @@ def test_declarative_config(dummy_request):
     from contentbase.interfaces import AUDITOR
     from pyramid.config import Configurator
     config = Configurator()
+    config.include('contentbase.config')
     config.include('contentbase.auditor')
     config.include('.testing_auditor')
     config.commit()
@@ -92,7 +93,7 @@ def test_declarative_config(dummy_request):
     auditor = config.registry[AUDITOR]
     value = {'condition1': True}
     dummy_request._embed['/foo/@@embedded'] = value
-    error, = auditor.audit(request=dummy_request, path='/foo/', types='testing_auditor')
+    error, = auditor.audit(request=dummy_request, path='/foo/', types='TestingLinkSource')
     assert error['detail'] == 'Missing checker1'
     assert error['category'] == 'testchecker'
     assert error['level'] == 0

@@ -27,3 +27,57 @@ def audit_status_replicate(value, system):
             exp_status
             )
         raise AuditFailure('mismatched status', detail, level='DCC_ACTION')
+
+
+@audit_checker('replicate', frame=['experiment', 'library', 'library.biosample'])
+def audit_biosample_concordance(value, system):
+    '''
+    The biosample details of the experiment of a replicate and the library.biosample of a replicate
+    need to match.
+    '''
+
+    if value.get('status') in ['deleted', 'replaced']:
+        return
+
+    if 'library' not in value:
+        return
+
+    if 'biosample' not in value['library']:
+        return
+
+    exp = value['experiment']['@id']
+    exp_type = value['experiment'].get('biosample_type')
+    exp_name = value['experiment'].get('biosample_term_name')
+    exp_id = value['experiment'].get('biosample_term_id')
+
+    bio = value['library']['biosample']['@id']
+    bs_type = value['library']['biosample'].get('biosample_type')
+    bs_name = value['library']['biosample'].get('biosample_term_name')
+    bs_id = value['library']['biosample'].get('biosample_term_id')
+
+    if bs_type != exp_type:
+        detail = '{} has mismatched biosample_type: {}, but {} in {}'.format(
+            exp,
+            exp_type,
+            bs_type,
+            bio
+            )
+        yield AuditFailure('mismatched biosample_type', detail, level='ERROR')
+
+    if bs_name != exp_name:
+        detail = '{} has mismatched biosample_term_name: {}, but {} in {}'.format(
+            exp,
+            exp_name,
+            bs_name,
+            bio
+            )
+        yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+
+    if bs_id != exp_id:
+        detail = '{} has mismatched biosample_term_id: {}, but {} in {}'.format(
+            bio,
+            exp_id,
+            bs_id,
+            bio
+            )
+        yield AuditFailure('mismatched biosample_term_id', detail, level='ERROR')

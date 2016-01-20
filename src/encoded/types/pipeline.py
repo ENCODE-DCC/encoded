@@ -11,6 +11,7 @@ from .base import (
 
 @collection(
     name='pipelines',
+    unique_key='accession',
     properties={
         'title': 'Pipelines',
         'description': 'Listing of Pipelines',
@@ -30,6 +31,9 @@ class Pipeline(Item):
         'analysis_steps.current_version.software_versions',
         'analysis_steps.current_version.software_versions.software',
         'analysis_steps.current_version.software_versions.software.references',
+        'analysis_steps.versions',
+        'analysis_steps.versions.software_versions',
+        'analysis_steps.versions.software_versions.software',
         'lab',
         'award.pi.lab',
     ]
@@ -47,8 +51,8 @@ class AnalysisStep(Item):
     schema = load_schema('encoded:schemas/analysis_step.json')
     name_key = 'name'
     rev = {
-        'pipelines': ('pipeline', 'analysis_steps'),
-        'versions': ('analysis_step_version', 'analysis_step')
+        'pipelines': ('Pipeline', 'analysis_steps'),
+        'versions': ('AnalysisStepVersion', 'analysis_step')
     }
     embedded = [
         'current_version',
@@ -62,7 +66,7 @@ class AnalysisStep(Item):
         "type": "array",
         "items": {
             "type": 'string',
-            "linkTo": "pipeline",
+            "linkTo": "Pipeline",
         },
     })
     def pipelines(self, request, pipelines):
@@ -71,7 +75,7 @@ class AnalysisStep(Item):
     @calculated_property(schema={
         "title": "Current version",
         "type": "string",
-        "linkTo": "analysis_step_version",
+        "linkTo": "AnalysisStepVersion",
     })
     def current_version(self, request, versions):
         version_objects = [
@@ -81,6 +85,17 @@ class AnalysisStep(Item):
         if version_objects:
             current = max(version_objects, key=lambda obj: obj['version'])
             return current['@id']
+
+    @calculated_property(schema={
+        "title": "Versions",
+        "type": "array",
+        "items": {
+            "type": 'string',
+            "linkTo": "AnalysisStepVersion",
+        },
+    })
+    def versions(self, request, versions):
+        return paths_filtered_by_status(request, versions)
 
 
 @collection(
@@ -111,12 +126,12 @@ class AnalysisStepRun(Item):
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step_version.analysis_step',
-        'qc_metrics',
+        'quality_metrics',
         'output_files'
     ]
     rev = {
-        'qc_metrics': ('quality_metric', 'step_run'),
-        'output_files': ('file', 'step_run')
+        'quality_metrics': ('QualityMetric', 'step_run'),
+        'output_files': ('File', 'step_run')
     }
 
     @calculated_property(schema={
@@ -124,30 +139,19 @@ class AnalysisStepRun(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "quality_metric.step_run",
+            "linkFrom": "QualityMetric.step_run",
         },
     })
-    def qc_metrics(self, request, qc_metrics):
-        return paths_filtered_by_status(request, qc_metrics)
+    def quality_metrics(self, request, quality_metrics):
+        return paths_filtered_by_status(request, quality_metrics)
 
     @calculated_property(schema={
         "title": "Output Files",
         "type": "array",
         "items": {
             "type": "string",
-            "linkFrom": "file.step_run",
+            "linkFrom": "File.step_run",
         },
     })
     def output_files(self, request, output_files):
         return paths_filtered_by_status(request, output_files)
-
-
-@collection(
-    name='quality-metrics',
-    properties={
-        'title': "QC metrics",
-        'description': 'Listing of the QC metrics'
-    })
-class QualityMetric(Item):
-    item_type = 'quality_metric'
-    schema = load_schema('encoded:schemas/quality_metric.json')

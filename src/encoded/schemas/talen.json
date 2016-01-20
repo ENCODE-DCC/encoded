@@ -26,11 +26,12 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "name": {
             "title": "Construct name",
@@ -72,19 +73,6 @@
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
             "type": "string"
-        },
-        "documents": {
-            "title": "Construct documents",
-            "description": "Documents that describe the construct.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Construct document",
-                "description": "Document that describes the construct.",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "document"
-            }
         },
         "target_genomic_coordinates": {
             "title": "Target genomic coordinates",
@@ -131,7 +119,7 @@
                         "description": "Other member of the TALEN pair",
                         "comment": "See identifyingProperties in talen.json for valid identifiers",
                         "type": "string",
-                        "linkTo": "talen"
+                        "linkTo": "TALEN"
                     },
                     "edit_type": {
                         "title": "Edit type",
@@ -181,6 +169,42 @@
                     }
                 }
             }
+        }
+    },
+    "facets": {
+        "talen_platform": {
+            "title": "TALEN platform",
+            "type": "string"
+        },
+        "status": {
+            "title": "TALEN status",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "name": {
+            "title": "Construct name",
+            "description": "The name of the TALEN construct."
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the TALEN construct."
+        },
+        "talen_platform": {
+            "title": "TALEN platform",
+            "description": "The TALEN platform used to make the construct. E.g. Golden Gate"
+        },
+        "target_genomic_coordinates": {
+            "title": "Genome assembly",
+            "description": "The GRC genome assembly to which the target coordinates relate.  E.g. GRCh38"
         }
     }
 }

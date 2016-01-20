@@ -16,10 +16,10 @@ def includeme(config):
         """
         upgrader = config.registry[UPGRADER]
         types = config.registry[TYPES]
-        for item_type, type_info in types.types.items():
+        for type_info in types.by_item_type.values():
             version = type_info.schema_version
             if version is not None:
-                upgrader.add_upgrade(item_type, version)
+                upgrader.add_upgrade(type_info.name, version)
 
     config.action('add_upgrades', callback, order=PHASE2_CONFIG)
 
@@ -28,11 +28,11 @@ def includeme(config):
         """
         upgrader = config.registry[UPGRADER]
         types = config.registry[TYPES]
-        for item_type, type_info in types.types.items():
-            if item_type not in upgrader:
+        for type_info in types.by_item_type.values():
+            if type_info.name not in upgrader:
                 continue
-            if not upgrader[item_type].upgrade_steps:
-                upgrader[item_type].add_upgrade_step(run_finalizer)
+            if not upgrader[type_info.name].upgrade_steps:
+                upgrader[type_info.name].add_upgrade_step(run_finalizer)
 
     config.action('add_default_upgrades', default_upgrades, order=LATE)
 

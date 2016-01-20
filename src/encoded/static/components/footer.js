@@ -2,10 +2,13 @@
 var React = require('react');
 
 var Footer = React.createClass({
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
-        console.log('render footer');
-        var session = this.props.session;
-        var disabled = !this.props.loadingComplete;
+        var session = this.context.session;
+        var disabled = !session;
         var userActionRender;
 
         if (!(session && session['auth.userid'])) {

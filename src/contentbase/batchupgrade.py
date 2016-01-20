@@ -80,7 +80,7 @@ def update_item(storage, context):
         properties = deepcopy(properties)
         upgrader = context.registry[UPGRADER]
         properties = upgrader.upgrade(
-            context.item_type, properties, current_version, target_version,
+            context.type_info.name, properties, current_version, target_version,
             context=context, registry=context.registry)
         if 'schema_version' in properties:
             del properties['schema_version']
@@ -109,7 +109,7 @@ def batch_upgrade(request):
         sp = session.begin_nested()
         try:
             item = find_resource(root, uuid)
-            item_type = item.item_type
+            item_type = item.type_info.item_type
             update, errors = update_item(storage, item)
         except Exception:
             logger.exception('Error updating: /%s/%s', item_type, uuid)
@@ -186,7 +186,7 @@ def main():
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('--item-type', dest='types', action='append', default=[])
-    parser.add_argument('--batch-size', type=int, default=500)
+    parser.add_argument('--batch-size', type=int, default=1000)
     parser.add_argument('--processes', type=int)
     parser.add_argument('--username')
     args = parser.parse_args()

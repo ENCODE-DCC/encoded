@@ -1,0 +1,73 @@
+[    
+    {
+        "_test": "enhancer annotation dataset",
+        "accession": "ENCSR356VQT",
+        "award": "U54HG007004",
+        "annotation_type": "enhancer prediction",
+        "description": "Enhancer prediction dataset for Mouse E11.5 heart (whole genome) based on histone, DNase HS, k-mer and GC content (Method 4)",
+        "status": "released",
+        "lab": "j-michael-cherry",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "biosample_type": "tissue",
+        "biosample_term_name": "heart",
+        "biosample_term_id": "UBERON:0000948",
+        "organism": "mouse",
+        "relevant_timepoint": "11.5",
+        "relevant_timepoint_units": "day",
+        "relevant_life_stage": "embryonic",
+        "software_used": ["d44db1ed-3af1-4e3b-ae7a-b0fb1085877f", "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"],
+        "uuid": "24cae57e-a5d7-4da0-a52a-88635fbc318c",
+        "date_released": "2015-02-27"
+    },
+    {
+        "_test": "domain annotation dataset",
+        "accession": "ENCSR575ZXX",
+        "award": "U54HG007004",
+        "annotation_type": "segmentation",
+        "description": "Domain annotation of IMR90 created by Segway with graph-based regularization",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "biosample_type": "immortalized cell line",
+        "organism": "human",
+        "biosample_term_name": "IMR-90",
+        "biosample_term_id": "EFO:0001196",
+        "software_used": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d", "1b071b08-ef76-4a69-8f96-22408e2b380a"],
+        "uuid": "ddff0ede-7f45-486d-9405-e1d889f20dea",
+        "date_released": "2014-07-15"
+    },
+    {
+        "_test": "overlap/synthesis dataset",
+        "accession": "ENCSR122HHF",
+        "award": "U54HG007004",
+        "annotation_type": "overlap",
+        "description": "DNaseI/FAIRE/ChIP synthesis for K562",
+        "lab": "gregory-crawford",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "biosample_type": "immortalized cell line",
+        "organism": "human",
+        "biosample_term_name": "K562",
+        "biosample_term_id": "EFO:0002067",
+        "uuid": "44daa7d2-b2d7-4edf-9283-eb26e52ebeac",
+        "dbxrefs": [
+            "GEO:GSM1002657",
+            "UCSC-ENCODE-hg19:wgEncodeEH001328"
+        ],
+        "date_released": "2011-06-10",
+        "related_files": ["ENCFF001MXB", "ENCFF002COS"]
+    },
+    {
+        "_test": "encyclopedia",
+        "accession": "ENCSR385DCD",
+        "award": "U54HG007004",
+        "annotation_type": "encyclopedia",
+        "description": "ENCODE Annotations v1",
+        "lab": "j-michael-cherry",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "organism": "human",
+        "uuid": "5047a772-d977-4ac8-8ada-9ddc3065d68f",
+        "related_files": ["ENCFF000LSP", "ENCFF000LSQ", "ENCFF690MGJ", "ENCFF145DKR"]
+    }
+]

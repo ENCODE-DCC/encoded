@@ -37,11 +37,11 @@ from contentbase.validators import (
     acl=[
         (Allow, 'role.owner', ['edit', 'view']),
         (Allow, Authenticated, 'add'),
-        (Allow, 'group.admin', 'view'),
-        (Allow, 'group.read-only-admin', 'view'),
-        (Allow, 'remoteuser.INDEXER', 'view'),
-        (Allow, 'remoteuser.EMBED', 'view'),
-        (Deny, Everyone, 'view'),
+        (Allow, 'group.admin', ['list', 'view']),
+        (Allow, 'group.read-only-admin', ['list', 'view']),
+        (Allow, 'remoteuser.INDEXER', ['list', 'view']),
+        (Allow, 'remoteuser.EMBED', ['list', 'view']),
+        (Deny, Everyone, ['list', 'view']),
     ])
 class AccessKey(Item):
     item_type = 'access_key'

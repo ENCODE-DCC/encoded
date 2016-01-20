@@ -2,8 +2,11 @@
 
 jest.autoMockOff();
 
+// Fixes https://github.com/facebook/jest/issues/78
+jest.dontMock('react');
+jest.dontMock('underscore');
+
 require('whatwg-fetch');
-require('es6-promise').polyfill();
 
 
 describe('ItemStore', function() {
@@ -133,7 +136,7 @@ describe('ItemStore', function() {
             view.onError = jest.genMockFunction();
             fetch.mockResponse({message: 'failure'}, {status: 500, headers: new Headers({'Content-Type': 'application/json'})});
 
-            store = new ItemStore(items, view, 'items');
+            var store = new ItemStore(items, view, 'items');
             return store.create('/items/', {}).then(function() {
                 expect(view.onError.mock.calls[0][0].message).toEqual('failure');
             });

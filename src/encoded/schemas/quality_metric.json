@@ -3,7 +3,7 @@
     "id": "/profiles/quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["step_run", "files"],
+    "required": ["step_run"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid"],
     "mixinProperties": [
@@ -21,7 +21,53 @@
             "title": "Analysis Step",
             "description": "Reference to analysis step run in pipeline",
             "type": "string",
-            "linkTo": "analysis_step_run"
+            "linkTo": "AnalysisStepRun"
+        },
+        "quality_metric_of": {
+            "title": "Files",
+            "description": "One or more files that this metric either applies to or is calculated from.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "File",
+                "description": "A particular file associated with this quality metric.",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "File"
+            }
+        },
+        "attachment": {
+            "title": "QC metric document metadata",
+            "type": "object",
+            "additionalProperties": false,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "text/plain"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
         }
     }
 }

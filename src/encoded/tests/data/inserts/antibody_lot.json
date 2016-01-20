@@ -119,7 +119,7 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "url": "http://www.abcam.com/index.html?datasheet=4441",
         "uuid": "f211c027-6613-4998-8cf0-90e9041ad254",
-        "targets": ["H3K9ac-human"],
+        "targets": ["H3K9ac-human", "H3K9ac-mouse"],
         "status": "released"
     },
     {
