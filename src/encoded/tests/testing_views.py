@@ -263,3 +263,20 @@ def testing_render_error(request):
         '@id': request.path,
         'title': 'Item triggering a render error',
     }
+
+
+@view_config(context=TestingPostPutPatch, name='testing-retry')
+def testing_retry(context, request):
+    from sqlalchemy import inspect
+    from transaction.interfaces import TransientError
+
+    model = context.model
+    request._attempt = getattr(request, '_attempt', 0) + 1
+
+    if request._attempt == 1:
+        raise TransientError()
+
+    return {
+        'attempt': request._attempt,
+        'detached': inspect(model).detached,
+    }
