@@ -1,0 +1,23 @@
+[
+	{
+        "_test": "reference epigenome",
+        "accession": "ENCSR300EPI",
+        "award": "ENCODE2",
+        "description": "Reference epigenome of the K562 cell line.",
+        "lab": "bradley-bernstein",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR001EPI",
+            "/experiments/ENCSR002EPI",
+            "/experiments/ENCSR003EPI",
+            "/experiments/ENCSR004EPI",
+            "/experiments/ENCSR005EPI",
+            "/experiments/ENCSR006EPI",
+            "/experiments/ENCSR007EPI",
+            "/experiments/ENCSR008EPI",
+            "/experiments/ENCSR009EPI"
+        ],
+        "uuid": "7ae7b199-e881-4906-b977-2b1b62de70f7"
+    }
+]

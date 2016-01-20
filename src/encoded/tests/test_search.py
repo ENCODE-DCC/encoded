@@ -17,9 +17,9 @@ def test_search_view(workbook, testapp):
 
 
 def test_matrix_view(workbook, testapp):
-    res = testapp.get('/matrix/?type=experiment').json
+    res = testapp.get('/matrix/?type=Experiment').json
     assert res['@type'] == ['Matrix']
-    assert res['@id'] == '/matrix/?type=experiment'
+    assert res['@id'] == '/matrix/?type=Experiment'
     assert res['@context'] == '/terms/'
     assert res['notification'] == 'Success'
     assert res['title'] == 'Experiment Matrix'
@@ -28,7 +28,7 @@ def test_matrix_view(workbook, testapp):
     assert 'filters' in res
     assert 'matrix' in res
     assert res['matrix']['max_cell_doc_count'] > 0
-    assert res['matrix']['search_base'] == '/search/?type=experiment'
+    assert res['matrix']['search_base'] == '/search/?type=Experiment'
     assert res['matrix']['x']['group_by'] == 'assay_term_name'
     assert res['matrix']['x']['label'] == 'Assay'
     assert res['matrix']['x']['limit'] == 20

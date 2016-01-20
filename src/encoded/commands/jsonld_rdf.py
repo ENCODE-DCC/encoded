@@ -41,7 +41,7 @@ def main():
     parser.add_argument(
         '-b', '--base', default=None, help='Base URL')
     parser.add_argument(
-        '-o', '--output', type=argparse.FileType('w'), default=stdout,
+        '-o', '--output', type=argparse.FileType('wb'), default=stdout,
         help="Output file.")
     args = parser.parse_args()
     run(args.sources, args.output, args.parser, args.serializer, args.base)

@@ -38,11 +38,21 @@ def includeme(config):
         '.renderers.normalize_cookie_tween_factory',
         under='.renderers.fix_request_method_tween_factory')
 
-    config.add_tween(
+    renderer_tween = (
         '.renderers.debug_page_or_json'
         if config.registry.settings['pyramid.reload_templates']
-        else '.renderers.page_or_json',
+        else '.renderers.page_or_json'
+    )
+
+    config.add_tween(
+        renderer_tween,
         under='.renderers.normalize_cookie_tween_factory')
+
+    config.add_tween(
+        '.renderers.set_x_request_url_tween_factory',
+        under=renderer_tween,
+    )
+
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
     config.scan(__name__)
 
@@ -144,11 +154,14 @@ def normalize_cookie_tween_factory(handler, registry):
     return normalize_cookie_tween
 
 
-@subscriber(BeforeRender)
-def set_x_request_url(event):
-    # Used by fetch polyfill and server rendering
-    request = event['request']
-    request.response.headers['X-Request-URL'] = request.url
+def set_x_request_url_tween_factory(handler, registry):
+
+    def set_x_request_url_tween(request):
+        response = handler(request)
+        response.headers['X-Request-URL'] = request.url
+        return response
+
+    return set_x_request_url_tween
 
 
 @subscriber(BeforeRender)
@@ -168,20 +181,24 @@ def canonical_redirect(event):
     if request.path_info == '/':
         return
 
-    canonical_path = event.rendering_val.get('@id', None)
-    if canonical_path is None:
+    if not isinstance(event.rendering_val, dict):
         return
-    canonical_path = canonical_path.split('?', 1)[0]
+
+    canonical = event.rendering_val.get('@id', None)
+    if canonical is None:
+        return
+    canonical_path, _, canonical_qs = canonical.partition('?')
 
     request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
     if (request_path == canonical_path.rstrip('/') and
-            request.path_info.endswith('/') == canonical_path.endswith('/')):
+            request.path_info.endswith('/') == canonical_path.endswith('/') and
+            (canonical_qs in ('', request.query_string))):
         return
 
     if '/@@' in request.path_info:
         return
 
-    qs = request.query_string
+    qs = canonical_qs or request.query_string
     location = canonical_path + ('?' if qs else '') + qs
     raise HTTPMovedPermanently(location=location)
 

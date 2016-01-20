@@ -2,7 +2,9 @@ from contentbase import (
     AuditFailure,
     audit_checker,
 )
-from .conditions import rfa
+from .conditions import (
+    rfa,
+)
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -21,6 +23,64 @@ paired_end_assays = [
     'DNA-PET',
     ]
 
+broadPeaksTargets = [
+    'H3K4me1-mouse',
+    'H3K36me3-mouse',
+    'H3K79me2-mouse',
+    'H3K27me3-mouse',
+    'H3K9me1-mouse',
+    'H3K9me3-mouse',
+    'H3K4me1-human',
+    'H3K36me3-human',
+    'H3K79me2-human',
+    'H3K27me3-human',
+    'H3K9me1-human',
+    'H3K9me3-human',
+    'H3F3A-human',
+    'H4K20me1-human',
+    'H3K79me3-human',
+    'H3K79me3-mouse',
+    ]
+
+
+@audit_checker('file', frame=['replicate', 'replicate.experiment',
+                              'derived_from', 'derived_from.replicate',
+                              'derived_from.replicate.experiment'])
+def audit_file_biological_replicate_number_match(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if 'replicate' not in value:
+        return
+
+    if 'derived_from' not in value or len(value['derived_from']) == 0:
+        return
+
+    bio_rep_number = value['replicate']['biological_replicate_number']
+    tech_rep_number = value['replicate']['technical_replicate_number']
+    file_replicate = (bio_rep_number, tech_rep_number)
+    file_exp_accession = value['replicate']['experiment']['accession']
+    derived_from_files = value['derived_from']
+
+    for derived_from_file in derived_from_files:
+        if 'replicate' in derived_from_file:
+
+            # excluding control files from different experiments
+            if derived_from_file['replicate']['experiment']['accession'] != file_exp_accession:
+                continue
+
+            derived_bio_rep_num = derived_from_file['replicate']['biological_replicate_number']
+            derived_tech_rep_num = derived_from_file['replicate']['technical_replicate_number']
+            derived_replicate = (derived_bio_rep_num, derived_tech_rep_num)
+            if file_replicate != derived_replicate:
+                detail = 'Biological replicate number of the file {} '.format(value['@id']) + \
+                         'is {}'.format(file_replicate) + \
+                         ', it is inconsistent with the biological replicate number ' +\
+                         '{} of the file {} it was derived from'.format(derived_replicate,
+                                                                        derived_from_file['@id'])
+                raise AuditFailure('inconsistent biological replicate number',
+                                   detail, level='ERROR')
 
 
 @audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
@@ -62,7 +122,7 @@ def audit_file_platform(value, system):
 
     if 'platform' not in value:
         detail = 'Raw data file {} missing platform information'.format(value['@id'])
-        raise AuditFailure('missing platform', detail, level='ERROR')
+        raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
@@ -79,7 +139,7 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='ERROR')
+        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
 
 
 @audit_checker('file',
@@ -108,41 +168,74 @@ def audit_file_controlled_by(value, system):
             value['@id'],
             value['dataset']['assay_term_name']
             )
-        raise AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
+        return
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset'].get('biosample_term_id')
+    run_type = value.get('run_type', None)
+    read_length = value.get('read_length', None)
 
-    for ff in value['controlled_by']:
-        control_bs = ff['dataset'].get('biosample_term_id')
+    if value['controlled_by']:
+        for ff in value['controlled_by']:
+            control_bs = ff['dataset'].get('biosample_term_id')
+            control_run = ff.get('run_type', None)
+            control_length = ff.get('read_length', None)
 
-        if control_bs != biosample:
-            detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
-                value['@id'],
-                ff['@id'],
-                control_bs)
-            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
-            return
+            if control_bs != biosample:
+                detail = 'File {} has a controlled_by file {} with conflicting biosample {}'.format(
+                    value['@id'],
+                    ff['@id'],
+                    control_bs)
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                return
 
-        if ff['file_format'] != value['file_format']:
-            detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
-                value['@id'],
-                value['file_format'],
-                ff['@id'],
-                ff['file_format']
-                )
-            raise AuditFailure('mismatched controlled_by', detail, level='ERROR')
+            if ff['file_format'] != value['file_format']:
+                detail = 'File {} with file_format {} has a controlled_by file {} with file_format {}'.format(
+                    value['@id'],
+                    value['file_format'],
+                    ff['@id'],
+                    ff['file_format']
+                    )
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                return
 
-        if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
-            detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
-                value['@id'],
-                ff['@id'],
-                ff['dataset']['@id']
-                )
-            raise AuditFailure('mismatched controlled_by', detail, level='DCC_ACTION')
+            if (possible_controls is None) or (ff['dataset']['@id'] not in possible_controls):
+                detail = 'File {} has a controlled_by file {} with a dataset {} that is not in possible_controls'.format(
+                    value['@id'],
+                    ff['@id'],
+                    ff['dataset']['@id']
+                    )
+                yield AuditFailure('mismatched controlled_by', detail, level='ERROR')
+                return
+
+            if (run_type is None) or (control_run is None):
+                continue
+
+            if (read_length is None) or (control_length is None):
+                continue
+
+            if run_type != control_run:
+                detail = 'File {} is {} but its control file {} is {}'.format(
+                    value['@id'],
+                    run_type,
+                    ff['@id'],
+                    control_run
+                    )
+                yield AuditFailure('mismatched controlled_by run_type', detail, level='WARNING')
+
+            if read_length != control_length:
+                detail = 'File {} is {} but its control file {} is {}'.format(
+                    value['@id'],
+                    value['read_length'],
+                    ff['@id'],
+                    ff['read_length']
+                    )
+                yield AuditFailure('mismatched controlled_by read length', detail, level='WARNING')
+                return
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'GGR'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -235,7 +328,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
     expt = value['dataset']
     if 'Experiment' not in expt['@type']:
         return
-    
+
     if expt['assay_term_id'] != 'OBI:0000716':
         return
 
@@ -329,7 +422,7 @@ def audit_file_paired_ended_run_type(value, system):
         if 'paired_end' not in value:
             detail = 'File {} has a paired-ended run_type '.format(value['@id']) + \
                      'but is missing its paired_end value'
-            raise AuditFailure('missing paired_end', detail, level='DCC_ACTION')
+            raise AuditFailure('missing paired_end', detail, level='ERROR')
 
         if (value['paired_end'] == 1) and 'paired_with' not in value:
             detail = 'File {} has a paired-ended '.format(value['@id']) + \
@@ -344,6 +437,7 @@ def audit_file_paired_ended_run_type(value, system):
                               'analysis_step_version.software_versions',
                               'analysis_step_version.software_versions.software',
                               'dataset',
+                              'dataset.target',
                               'derived_from'],
                condition=rfa('ENCODE3', 'ENCODE'))
 def audit_file_read_depth(value, system):
@@ -367,28 +461,33 @@ def audit_file_read_depth(value, system):
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step version'
-        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+        yield AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+        return
 
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no analysis step in {}'.format(value['analysis_step_version']['@id'])
-        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+        yield AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+        return
 
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
-        raise AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+        yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+        return
 
     if 'software_versions' not in value['analysis_step_version']:
         detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
                  'no software_versions in {}'.format(value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software versions', detail, level='DCC_ACTION')
+        yield AuditFailure('missing software versions', detail, level='DCC_ACTION')
+        return
 
     if value['analysis_step_version']['software_versions'] == []:
         detail = 'ENCODE Processed alignment file {} has no '.format(value['@id']) + \
                  'softwares listed in software_versions,' + \
                  ' under {}'.format(value['analysis_step_version']['@id'])
-        raise AuditFailure('missing software', detail, level='DCC_ACTION')
+        yield AuditFailure('missing software', detail, level='DCC_ACTION')
+        return
 
     '''
     excluding bam files from TopHat
@@ -402,14 +501,17 @@ def audit_file_read_depth(value, system):
     if (quality_metrics is None) or (quality_metrics == []):
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(
             value['@id'])
-        raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+        yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+        return
+
     read_depth = 0
 
     derived_from_files = value.get('derived_from')
     if (derived_from_files is None) or (derived_from_files == []):
         detail = 'ENCODE Processed alignment file {} has no derived_from files'.format(
             value['@id'])
-        raise AuditFailure('missing derived_from files', detail, level='DCC_ACTION')
+        yield AuditFailure('missing derived_from files', detail, level='DCC_ACTION')
+        return
 
     paring_status_detected = False
     for derived_from_file in derived_from_files:
@@ -428,15 +530,10 @@ def audit_file_read_depth(value, system):
     if paring_status_detected is False:
         detail = 'ENCODE Processed alignment file {} has no run_type in derived_from files'.format(
             value['@id'])
-        raise AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
+        yield AuditFailure('missing run_type in derived_from files', detail, level='DCC_ACTION')
+        return
 
     for metric in quality_metrics:
-        '''
-        if "uniqueMappedCount" in metric:  # edwbamstats_quality_metric - currently on hold!
-            read_depth = metric['uniqueMappedCount']
-            continue
-        else:
-        '''
         if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
             read_depth = metric['Uniquely mapped reads number']
             continue
@@ -445,69 +542,121 @@ def audit_file_read_depth(value, system):
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
-                    read_depth = metric['total']/2
+                    read_depth = int(metric['total']/2)
                 continue
 
     if read_depth == 0:
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
             value['@id'])
-        raise AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read depth', detail, level='DCC_ACTION')
+        return
 
-    read_depth_criteria = {
-        'Small RNA-seq single-end pipeline': 30000000,
-        'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
-        'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
-        'RAMPAGE (paired-end, stranded)': 25000000,
-        'Histone ChIP-seq': 45000000,
-        'ChIP-seq of histone modifications': 45000000,
-    }
+    special_assay_name = 'empty'
+    target_name = 'empty'
 
-    read_depth_special = {
+    if 'dataset' in value:
+        if (value['dataset']['assay_term_name'] == 'shRNA knockdown followed by RNA-seq') or \
+           (value['dataset']['assay_term_name'] == 'single cell isolation followed by RNA-seq'):
+            special_assay_name = value['dataset']['assay_term_name']
+        if 'target' in value['dataset']:
+            target_name = value['dataset']['target']['name']
+
+    pipeline_titles = [
+        'Small RNA-seq single-end pipeline',
+        'RNA-seq of long RNAs (paired-end, stranded)',
+        'RNA-seq of long RNAs (single-end, unstranded)',
+        'RAMPAGE (paired-end, stranded)',
+        'Histone ChIP-seq'
+    ]
+
+    read_depths_special = {
         'shRNA knockdown followed by RNA-seq': 10000000,
         'single cell isolation followed by RNA-seq': 5000000
     }
+    read_depths = {
+        'Small RNA-seq single-end pipeline': 30000000,
+        'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
+        'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
+        'RAMPAGE (paired-end, stranded)': 25000000
+    }
 
-    '''
-    Finding out if that is shRNA or single Cell to be treated differently
-    '''
-    shRNAFlag = False
-    singleCellFlag = False
-
-    if 'dataset' in value:
-        if value['dataset']['assay_term_name'] == 'shRNA knockdown followed by RNA-seq':
-            shRNAFlag = True
-        if value['dataset']['assay_term_name'] == 'single cell isolation followed by RNA-seq':
-            singleCellFlag = True
+    marks = {
+        'narrow': 20000000,
+        'broad': 45000000
+    }
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-        if pipeline['title'] not in read_depth_criteria:
+        if pipeline['title'] not in pipeline_titles:
             return
-        if ((singleCellFlag is True) and
-           (read_depth < read_depth_special['single cell isolation followed by RNA-seq'])) or \
-           ((shRNAFlag is True) and
-           (read_depth < read_depth_special['shRNA knockdown followed by RNA-seq'])):
-            if shRNAFlag is True:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                             read_depth) + \
-                         'uniquely mapped reads. Replicates for this assay ' + \
-                         '{} require '.format(pipeline['title']) + \
-                         '{}'.format(read_depth_special['shRNA knockdown followed by RNA-seq'])
-                raise AuditFailure('insufficient read depth', detail, level='ERROR')
+        if pipeline['title'] == 'Histone ChIP-seq':  # do the chipseq narrow broad ENCODE3
+            if target_name in ['Control-human', 'Control-mouse']:
+                if read_depth < marks['broad']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. It can not be used as a control ' + \
+                             'in experiments studying broad histone marks, which ' + \
+                             'require {} uniquely mapped reads.'.format(marks['broad'])
+                    yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                if read_depth < marks['narrow']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. It can not be used as a control, ' + \
+                             'due to insufficient read depth, narrow histone marks assays ' + \
+                             'require {} uniquely mapped reads.'.format(marks['narrow'])
+                    yield AuditFailure('insufficient read depth',
+                                       detail, level='NOT_COMPLIANT')
+                return
+            if target_name == 'empty':
+                detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                         'belongs to ChIP-seq experiment {} '.format(value['dataset']['@id']) + \
+                         'with no target specified.'
+                yield AuditFailure('ChIP-seq missing target', detail, level='ERROR')
+                return
+            if target_name in broadPeaksTargets:
+                if read_depth < marks['broad']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. Replicates for ChIP-seq ' + \
+                             'assay and target {} require '.format(target_name) + \
+                             '{}'.format(marks['broad'])
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    return
             else:
-                detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
-                                                                             read_depth) + \
-                         'uniquely mapped reads. Replicates for this ' + \
-                         'assay {} require '.format(pipeline['title']) + \
-                         '{}'.format(read_depth_special['single cell isolation followed by RNA-seq'])
-                raise AuditFailure('insufficient read depth', detail, level='ERROR')
-
-        if (read_depth < read_depth_criteria[pipeline['title']]) and \
-           (singleCellFlag is False) and (shRNAFlag is False):
-            detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
-                     'uniquely mapped reads. Replicates for this ' + \
-                     'assay {} require {}'.format(pipeline['title'],
-                                                  read_depth_criteria[pipeline['title']])
-            raise AuditFailure('insufficient read depth', detail, level='ERROR')
+                if read_depth < (marks['narrow']+5000000) and read_depth > marks['narrow']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. ' + \
+                             'The recommended numer of uniquely mapped reads for ChIP-seq assay ' + \
+                             'and target {} would be '.format(target_name) + \
+                             '{}'.format(marks['narrow']+5000000)
+                    yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                    return
+                if read_depth < marks['narrow']:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. Replicates for ChIP-seq assay ' + \
+                             'and target {} require '.format(target_name) + \
+                             '{}'.format(marks['narrow'])
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    return
+        else:
+            if special_assay_name != 'empty':  # either shRNA or single cell
+                if read_depth < read_depths_special[special_assay_name]:
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
+                                                                                 read_depth) + \
+                             'uniquely mapped reads. Replicates for this assay ' + \
+                             '{} require '.format(pipeline['title']) + \
+                             '{}'.format(read_depths_special[special_assay_name])
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    return
+            else:
+                if (read_depth < read_depths[pipeline['title']]):
+                    detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'], read_depth) + \
+                             'uniquely mapped reads. Replicates for this ' + \
+                             'assay {} require {}'.format(pipeline['title'],
+                                                          read_depths[pipeline['title']])
+                    yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
+                    return
 
 
 @audit_checker('file', frame=['quality_metrics',

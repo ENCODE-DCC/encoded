@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -11,7 +12,10 @@ var audit = require('./audit');
 var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
+var objectutils = require('./objectutils');
+var sortTable = require('./sorttable');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
@@ -21,6 +25,9 @@ var ExperimentTable = dataset.ExperimentTable;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
+var SingleTreatment = objectutils.SingleTreatment;
+var SortTablePanel = sortTable.SortTablePanel;
+var SortTable = sortTable.SortTable;
 
 
 var Panel = function (props) {
@@ -31,16 +38,58 @@ var Panel = function (props) {
         props = {context: context, key: context['@id']};
     }
     var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView {...props} />;
+    return <PanelView key={props.context.uuid} {...props} />;
 };
 
 
-var biosample_columns = {
-    accession: {title: 'Accession'},
-    biosample_type: {title: 'Type'},
-    biosample_term_name: {title: 'Term'},
-    description: {title: 'Description'},
-};
+// Display a table of retrieved biosamples related to the displayed biosample
+var BiosampleTable = React.createClass({
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(biosample) {
+                return <a href={biosample['@id']}>{biosample.accession}</a>;
+            }
+        },
+        'biosample_type': {title: 'Type'},
+        'biosample_term_name': {title: 'Term'},
+        'description': {title: 'Description', sorter: false}
+    },
+
+    render: function() {
+        var biosamples;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the experiment list by cloning first {limit} elements
+            biosamples = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            biosamples = this.props.items;
+        }
+
+        return (
+            <SortTablePanel>
+                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
+            </SortTablePanel>
+        );
+    }
+});
+
+// Display a count of biosamples in the footer, with a link to the corresponding search if needed
+var BiosampleTableFooter = React.createClass({
+    render: function() {
+        var {items, total, url} = this.props;
+
+        return (
+            <div>
+                <span>Displaying {items.length} of {total} </span>
+                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+            </div>
+        );
+    }
+});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -49,6 +98,14 @@ var Biosample = module.exports.Biosample = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var aliasList = context.aliases.join(", ");
+
+        // Set up the breadcrumbs
+        var crumbs = [
+            {id: 'Biosamples'},
+            {id: context.biosample_type, query: 'biosample_type=' + context.biosample_type, tip: context.biosample_type},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name, tip: context.organism.scientific_name},
+            {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
+        ];
 
         // set up construct documents panels
         var constructs = _.sortBy(context.constructs, function(item) {
@@ -101,13 +158,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Biosamples</li>
-                            <li>{context.biosample_type}</li>
-                            {context.donor ?
-                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
-                            : null }
-                        </ul>
+                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -185,7 +236,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <dd>
                                     {context.depleted_in_term_name.map(function(termName, i) {
                                         return (
-                                            <span>
+                                            <span key={i}>
                                                 {i > 0 ? ', ' : ''}
                                                 {termName}
                                             </span>
@@ -195,10 +246,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        <div data-test="sourcetitle">
-                            <dt>Source</dt>
-                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
-                        </div>
+                        {context.source.title ?
+                            <div data-test="sourcetitle">
+                                <dt>Source</dt>
+                                <dd>
+                                    {context.source.url ?
+                                        <a href={context.source.url}>{context.source.title}</a>
+                                    :
+                                        <span>{context.source.title}</span>
+                                    }
+                                </dd>
+                            </div>
+                        : null}
 
                         {context.product_id ?
                             <div data-test="productid">
@@ -426,15 +485,15 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -446,8 +505,8 @@ globals.content_views.register(Biosample, 'Biosample');
 
 var MaybeLink = React.createClass({
     render() {
-        if (this.props.href == 'N/A') {
-            return this.props.children;
+        if (!this.props.href || this.props.href === 'N/A') {
+            return <span>{this.props.children}</span>;
         } else {
             return (
                 <a {...this.props}>{this.props.children}</a>
@@ -764,14 +823,17 @@ var Donor = module.exports.Donor = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Set up breadcrumbs
+        var crumbs = [
+            {id: 'Donors'},
+            {id: <i>{context.organism.scientific_name}</i>}
+        ];
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Donors</li>
-                            <li className="active"><em>{context.organism.scientific_name}</em></li>
-                        </ul>
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -788,7 +850,7 @@ var Donor = module.exports.Donor = React.createClass({
 
                 <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -796,21 +858,6 @@ var Donor = module.exports.Donor = React.createClass({
 });
 
 globals.content_views.register(Donor, 'Donor');
-
-
-
-var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
-    var treatmentText = '';
-
-    if (treatment.concentration) {
-        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-    }
-    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-    if (treatment.duration) {
-        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-    }
-    return treatmentText;
-};
 
 
 var Treatment = module.exports.Treatment = React.createClass({
@@ -933,10 +980,26 @@ var RNAi = module.exports.RNAi = React.createClass({
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
 
                 {context.source && context.source.title ? <dt>Source</dt> : null}
-                {context.source && context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.source && context.source.title ?
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
+                {context.product_id ?
+                    <dd>
+                        {context.url ?
+                            <a href={context.url}>{context.product_id}</a>
+                        :
+                            <span>{context.product_id}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}

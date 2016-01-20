@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "term_id": {
             "@type": "@id",
@@ -29,7 +29,6 @@
             "uniqueKey": "platform:term_id"
         },
         "term_name": {
-            "@id": null,
             "title": "Platform name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the measurement device.",
             "type":  "string",
@@ -43,6 +42,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",

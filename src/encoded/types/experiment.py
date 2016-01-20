@@ -10,7 +10,11 @@ from .base import (
     paths_filtered_by_status,
 )
 from .dataset import Dataset
-import datetime
+from .shared_calculated_properties import (
+    CalculatedBiosampleSlims,
+    CalculatedBiosampleSynonyms,
+    CalculatedAssaySynonyms
+)
 
 
 @collection(
@@ -20,7 +24,7 @@ import datetime
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     })
-class Experiment(Dataset):
+class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
@@ -58,6 +62,7 @@ class Experiment(Dataset):
         'replicates.library.biosample.source',
         'replicates.library.biosample.organism',
         'replicates.library.biosample.rnais',
+        'replicates.library.biosample.donor',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor.mutated_gene',
         'replicates.library.biosample.treatments',
@@ -103,75 +108,6 @@ class Experiment(Dataset):
         'replicates': ('Replicate', 'experiment')
     })
 
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Organ slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def organ_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['organs']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "System slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def system_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['systems']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Developmental slims",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def developmental_slims(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['developmental']
-        return []
-
-    @calculated_property(condition='biosample_term_id', schema={
-        "title": "Biosample synonyms",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def biosample_synonyms(self, registry, biosample_term_id):
-        if biosample_term_id in registry['ontology']:
-            return registry['ontology'][biosample_term_id]['synonyms']
-        return []
-
-    @calculated_property(condition='assay_term_id', schema={
-        "title": "Assay synonyms",
-        "type": "array",
-        "items": {
-            "type": "string",
-        },
-    })
-    def assay_synonyms(self, registry, assay_term_id):
-        if assay_term_id in registry['ontology']:
-            return registry['ontology'][assay_term_id]['synonyms'] + [
-                registry['ontology'][assay_term_id]['name'],
-            ]
-        return []
-
-    @calculated_property(condition='date_released', schema={
-        "title": "Month released",
-        "type": "string",
-    })
-    def month_released(self, date_released):
-        return datetime.datetime.strptime(date_released, '%Y-%m-%d').strftime('%B, %Y')
-
     @calculated_property(schema={
         "title": "Replicates",
         "type": "array",
@@ -195,18 +131,27 @@ class Experiment(Dataset):
         biosample_age_list = []
         biosample_sex_list = []
         biosample_donor_list = []
+        biosample_number_list = []
+        encode2_flag = False
 
         for rep in replicates:
             replicateObject = request.embed(rep, '@@object')
-
+            if replicateObject['status'] == 'deleted':
+                continue
             if 'library' in replicateObject:
                 libraryObject = request.embed(replicateObject['library'], '@@object')
+                if 'award' in libraryObject:
+                    awardObject = request.embed(libraryObject['award'], '@@object')
+                    if 'rfa' in awardObject:
+                        if awardObject['rfa'] == 'ENCODE2':
+                            encode2_flag = True
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     biosample_dict[biosampleObject['accession']] = biosampleObject
                     biosample_age_list.append(biosampleObject.get('age'))
                     biosample_sex_list.append(biosampleObject.get('sex'))
                     biosample_donor_list.append(biosampleObject.get('donor'))
+                    biosample_number_list.append(replicateObject.get('biological_replicate_number'))
                     biosample_species = biosampleObject.get('organism')
                     biosample_type = biosampleObject.get('biosample_type')
                 else:
@@ -219,40 +164,36 @@ class Experiment(Dataset):
                 # I cannot make a call about the replicate structure
                 return None
 
-        if len(biosample_dict.keys()) < 2:
+        #  exclude ENCODE2
+        if (len(set(biosample_number_list)) < 2) and (encode2_flag is not True):
             return 'unreplicated'
 
         if biosample_type == 'immortalized cell line':
             return 'isogenic'
 
-        # I am assuming tech reps have the same biosample, if they do not,
-        # this should generate an audit, not be caught here
-
-        '''
-        Humans and model organisms are modeled differently
-        '''
-
-        if biosample_species == '/organisms/human/':
-            if None in biosample_donor_list:
-                return None
-            if len(set(biosample_donor_list)) == 0:
-                return None
+        # Since we are not looking for model organisms here, we likely need audits
+        if biosample_species != '/organisms/human/':
             if len(set(biosample_donor_list)) == 1:
                 return 'isogenic'
-            # I am not sure we handle unknown well for model organisms
-            if 'unknown' in biosample_age_list:
-                matchedAgeFlag = False
-            if 'unknown' in biosample_sex_list:
-                matchedSexFlag = False
+            else:
+                return 'anisogenic'
 
-        if len(set(biosample_age_list)) > 1:
+        if len(set(biosample_donor_list)) == 0:
+            return None
+        if len(set(biosample_donor_list)) == 1:
+            if None in biosample_donor_list:
+                return None
+            else:
+                return 'isogenic'
+
+        if 'unknown' in biosample_age_list:
             matchedAgeFlag = False
         elif len(set(biosample_age_list)) == 1:
             matchedAgeFlag = True
         else:
             matchedAgeFlag = False
 
-        if len(set(biosample_sex_list)) > 1:
+        if 'unknown' in biosample_sex_list:
             matchedSexFlag = False
         elif len(set(biosample_sex_list)) == 1:
             matchedSexFlag = True
@@ -260,12 +201,7 @@ class Experiment(Dataset):
             matchedSexFlag = False
 
         if matchedAgeFlag and matchedSexFlag:
-            if biosample_species == '/organisms/human/':
-                return 'anisogenic, sex-matched and age-matched'
-            elif len(set(biosample_donor_list)) == 1:
-                return 'isogenic'
-            else:
-                return 'anisogenic, sex-matched and age-matched'
+            return 'anisogenic, sex-matched and age-matched'
         if matchedAgeFlag and not matchedSexFlag:
             return 'anisogenic, age-matched'
         if not matchedAgeFlag and matchedSexFlag:

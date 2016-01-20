@@ -36,31 +36,6 @@ var makeValidationResult = function(validation) {
 };
 
 
-var ReadOnlyField = React.createClass({
-    render: function() {
-        var ReactForms = require('react-forms');
-        var value;
-        if (this.props.preview) {
-            var url = this.props.value.value;
-            value = (
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={url} />
-                    <ItemPreview />
-                </fetched.FetchedData>
-            );
-        } else {
-            value = this.props.value.value;
-        }
-        return (
-            <div>
-                <ReactForms.Label label={this.props.value.node.props.get('label')} />
-                <span>{value}</span>
-            </div>
-        );
-    },
-});
-
-
 var RepeatingItem = React.createClass({
 
   render: function() {
@@ -83,6 +58,90 @@ var RepeatingItem = React.createClass({
     if (this.props.onRemove) {
       this.props.onRemove(this.props.name);
     }
+  }
+
+});
+
+
+// Based on RepeatingFieldset from react-forms, but with validation errors shown
+var RepeatingFieldset = React.createClass({
+
+  render() {
+    var cx = require('react/lib/cx');
+    var cloneWithProps = require('react/lib/cloneWithProps');
+    var ReactForms = require('react-forms');
+    var {
+      item: Item, value, className, noAddButton, noRemoveButton,
+      onAdd, onRemove, noLabel, label, hint, ...props
+    } = this.props;
+    var {validation, isDirty, externalValidation} = value;
+    return (
+      <div {...props} className={cx('rf-RepeatingFieldset', className)}>
+        {!noLabel &&
+          <ReactForms.Label
+            className="rf-RepeatingFieldset__label"
+            label={label || value.node.props.get('label')}
+            hint={hint || value.node.props.get('hint')}
+            />}
+        {validation.isFailure && isDirty &&
+          <ReactForms.Message>{validation.error}</ReactForms.Message>}
+        {externalValidation.isFailure &&
+          <ReactForms.Message>{externalValidation.error}</ReactForms.Message>}
+        <div className="rf-RepeatingFieldset__items">
+          {value.map((value, key) => {
+            var props = {
+              value,
+              key,
+              index: key,
+              ref: key,
+              noRemoveButton,
+              onRemove: this.onRemove.bind(null, key),
+              children: (
+                <ReactForms.Element
+                  className="rf-RepeatingFieldset__child"
+                  value={value}
+                  />
+              )
+            };
+            return React.isValidElement(Item) ?
+              cloneWithProps(Item, props) :
+              <Item {...props} />;
+          })}
+        </div>
+        {!noAddButton &&
+          <button
+            type="button"
+            onClick={this.onAdd}
+            className="rf-RepeatingFieldset__add">
+            Add
+          </button>}
+      </div>
+    );
+  },
+
+  getDefaultProps() {
+    return {
+      item: RepeatingItem,
+      onAdd: function() {},
+      onRemove: function() {}
+    };
+  },
+
+  onAdd() {
+    var defaultValue = require('react-forms').defaultValue;
+    var newIdx = this.props.value.size;
+    var valueToAdd = defaultValue(this.props.value.node.get(newIdx));
+    this.props.value.transform(value => value.push(valueToAdd));
+    this.props.onAdd();
+  },
+
+  onRemove(index) {
+    this.props.value.transform(value => value.splice(index, 1));
+    this.props.onRemove(index);
+  },
+
+  getItemByIndex(index) {
+    return this.refs[index];
   }
 
 });
@@ -218,8 +277,8 @@ var jsonSchemaToFormSchema = function(attrs) {
         if (!subschema) {
             return null;
         }
-        props.component = <ReactForms.RepeatingFieldset className={props.required ? "required" : ""} item={RepeatingItem}
-                                                        noAddButton={readonly} noRemoveButton={readonly} />;
+        props.component = <RepeatingFieldset className={props.required ? "required" : ""}
+                                             noAddButton={readonly} noRemoveButton={readonly} />;
         return ReactForms.schema.List(props, subschema);
     } else if (p.type == 'boolean') {
         props.type = 'bool';
@@ -238,7 +297,6 @@ var jsonSchemaToFormSchema = function(attrs) {
             props.input = <select className="form-control" disabled={disabled}>{options}</select>;
         } else if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
-            var inputs = require('./inputs');
             props.input = (
                 <inputs.ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo}
                                      restrictions={restrictions} disabled={disabled} />

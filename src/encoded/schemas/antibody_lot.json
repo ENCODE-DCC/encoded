@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "AB"
@@ -38,6 +38,7 @@
             "description": "The lot identifiers for this lot deemed to be exactly the same by the vendor.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Lot ID Alias",
                 "description": "The lot identifier for this lot deemed to be exactly the same by the vendor. ",
@@ -71,6 +72,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -122,6 +124,7 @@
             "description": "The purification protocols used to isolate the antibody.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Purification method",
                 "description": "A purification protocol used to isolate the antibody.",
@@ -145,6 +148,7 @@
         "targets": {
             "title": "Targets",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
                 "comment": "See target.json for available identifiers.",
@@ -161,94 +165,72 @@
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Eligibility status",
-            "type": "string"
+            "title": "Eligibility status"
         },
         "targets.organism.scientific_name": {
-            "title": "Target Organism",
-            "type": "string"
+            "title": "Target Organism"
         },
         "targets.investigated_as": {
-            "title": "Target of antibody",
-            "type": "string"
+            "title": "Target of antibody"
         },
         "characterizations.characterization_method": {
-            "title": "Characterization method",
-            "type": "string"
+            "title": "Characterization method"
         },
         "source.title" : {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "clonality": {
-            "title": "Clonality",
-            "type": "string"
+            "title": "Clonality"
         },
         "host_organism.name": {
-            "title": "Host organism",
-            "type": "string"
+            "title": "Host organism"
         },
         "characterizations.lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "lot_reviews.biosample_term_name": {
-            "title": "Ontology term",
-            "type":  "string"
+            "title": "Ontology term"
         },
         "lot_reviews.status": {
-            "title": "Status",
-            "type":  "string"
+            "title": "Status"
         },
         "lot_reviews.organisms.@id": {
-            "title": "Organism ID",
-            "type": "array"
+            "title": "Organism ID"
         },
         "lot_reviews.organisms.scientific_name": {
-            "title": "Organism scientific name",
-            "type": "array"
+            "title": "Organism scientific name"
         },
         "lot_reviews.targets.name": {
-            "title": "Target name",
-            "type":  "array"
+            "title": "Target name"
         },
         "lot_reviews.targets.label": {
-            "title": "Target label",
-            "type":  "array"
+            "title": "Target label"
         },
         "lot_reviews.targets.organism.@id": {
-            "title": "Target organism ID",
-            "type":  "array"
+            "title": "Target organism ID"
         },
         "lot_reviews.targets.organism.scientific_name": {
-            "title": "Target organism scientific name",
-            "type":  "array"
+            "title": "Target organism scientific name"
         },
         "source.title": {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "product_id": {
-            "title": "Product ID",
-            "type": "string"
+            "title": "Product ID"
         },
         "lot_id": {
-            "title": "Lot ID",
-            "type": "string"
+            "title": "Lot ID"
         },
         "host_organism.name": {
-            "title": "Host organism",
-            "type": "string"
+            "title": "Host organism"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         }
     },
     "boost_values": {

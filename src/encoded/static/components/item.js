@@ -188,16 +188,11 @@ var FetchedRelatedItems = React.createClass({
         if (context === undefined) return null;
         var items = context['@graph'];
         if (!items.length) return null;
-        var total = context['total'];
 
         return (
             <section>
-                <span className="pull-right">
-                    Displaying {items.length} of {total}{' '}
-                    {items.length < total ? <a className="btn btn-info btn-sm" href={url}>View all</a> : ''}
-                </span>
                 <h3>{title}</h3>
-                <Component {...props} context={context} items={items} showControls={false} />
+                <Component {...props} context={context} total={context.total} items={items} url={url} showControls={false} />
             </section>
         );
     },

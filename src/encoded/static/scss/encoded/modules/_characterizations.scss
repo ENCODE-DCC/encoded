@@ -213,6 +213,9 @@ $characterization-figure-height: 200px;
     }
 }
 
+.characterization-meta-data {
+    padding: 0;
+}
 
 .characterization-status {
     margin-bottom: 8px;
@@ -362,6 +365,9 @@ $characterization-figure-height: 200px;
     .#{$item}.status-verified[href]   { background-color: darken($brand-info, 10%); }
     // SUBMITTED (blue)
     .#{$item}.status-submitted        { background-color: $brand-info; }
+    .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
+    // IN REVIEW (blue)
+    .#{$item}.status-in-review        { background-color: $brand-info; }
     .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
     // PROPOSED (blue)
     .#{$item}.status-proposed        { background-color: $brand-info; }

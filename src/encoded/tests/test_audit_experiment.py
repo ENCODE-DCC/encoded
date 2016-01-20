@@ -4,6 +4,15 @@ RED_DOT = """data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
 AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
 
+@pytest.fixture
+def library_no_biosample(testapp, lab, award):
+    item = {
+        'nucleic_acid_term_id': 'SO:0000352',
+        'nucleic_acid_term_name': 'DNA',
+        'lab': lab['@id'],
+        'award': award['@id']
+    }
+    return testapp.post_json('/library', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -246,6 +255,37 @@ def biosample_2(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def file_fastq(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'raw data',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def file_bam(testapp, lab, award, base_experiment, base_replicate):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': base_replicate['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'output_type': 'alignments',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']], 'assay_term_name': 'ChIP-seq', 'assay_term_id': 'OBI:0000716'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -297,7 +337,7 @@ def test_audit_experiment_technical_replicates_same_library(testapp, base_experi
     for error_type in errors:
         errors_list.extend(errors[error_type])
 
-    assert any(error['category'] == 'technical replicates with identical library' for error in errors_list)
+    assert any(error['category'] == 'sequencing runs labeled as technical replicates' for error in errors_list)
 
 def test_audit_experiment_biological_replicates_biosample(testapp, base_experiment,base_biosample, library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
@@ -347,6 +387,7 @@ def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
 
+
 def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
@@ -356,9 +397,8 @@ def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_repl
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-        for e in errors[error_type]:
-            print (e)
     assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0001271', 'assay_term_name': 'RNA-seq'})
@@ -458,89 +498,84 @@ def test_audit_experiment_documents(testapp, base_experiment, base_library, base
     assert any(error['category'] == 'missing documents' for error in errors_list)
 
 
-def test_audit_experiment_anisogenic_technical_replicates(testapp, base_experiment, replicate_1_1, replicate_1_2,library_1, library_2, biosample_1, biosample_2, donor_1,donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
+def test_audit_experiment_model_organism_mismatched_sex(testapp,
+                                                        base_experiment,
+                                                        replicate_1_1,
+                                                        replicate_2_1,
+                                                        library_1,
+                                                        library_2,
+                                                        biosample_1,
+                                                        biosample_2,
+                                                        mouse_donor_1):
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'male'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'female'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
+                                            'model_organism_age': '54'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_age_units': 'day',
+                                            'model_organism_age': '54'})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
-    
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
-
     for error_type in errors:
         errors_list.extend(errors[error_type])
-  
-    assert any(error['category'] == 'anisogenic technical replicates' for error in errors_list)
+    assert any(error['category'] == 'mismatched sex' for error in errors_list)
 
-def test_audit_experiment_anisogenic_biological_replicates_unknown_sex_unknown_age(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, donor_1,donor_2):
-    testapp.patch_json(donor_1['@id'], {'age': 'unknown' })
-    testapp.patch_json(donor_2['@id'], {'age_units': 'year', 'age': '54' })
-    testapp.patch_json(donor_1['@id'], {'sex': 'male' })
-    testapp.patch_json(donor_2['@id'], {'sex': 'unknown' })    
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
+
+def test_audit_experiment_model_organism_mismatched_age(testapp,
+                                                        base_experiment,
+                                                        replicate_1_1,
+                                                        replicate_2_1,
+                                                        library_1,
+                                                        library_2,
+                                                        biosample_1,
+                                                        biosample_2,
+                                                        mouse_donor_1,
+                                                        mouse_donor_2):
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_age_units': 'day',
+                                            'model_organism_age': '51'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_age_units': 'day',
+                                            'model_organism_age': '54'})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})   
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert any(error['category'] == 'anisogenic biological replicates, mismatched sex and age' for error in errors_list)
-
-def test_audit_experiment_anisogenic_biological_replicates_matched_sex_age(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, donor_1,donor_2):
-    testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '54'  })
-    testapp.patch_json(donor_2['@id'], {'age_units': 'year', 'age': '54' })
-    testapp.patch_json(donor_1['@id'], {'sex': 'male' })
-    testapp.patch_json(donor_2['@id'], {'sex': 'male' })    
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})   
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert any(error['category'] == 'anisogenic biological replicates, matched sex and age' for error in errors_list)
-
-def test_audit_experiment_anisogenic_biological_replicates_mismatched_sex_age(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, donor_1,donor_2):
-    testapp.patch_json(donor_1['@id'], {'age_units': 'year', 'age': '51' })
-    testapp.patch_json(donor_2['@id'], {'age_units': 'year', 'age': '54' })
-    testapp.patch_json(donor_1['@id'], {'sex': 'male' })
-    testapp.patch_json(donor_2['@id'], {'sex': 'female' })    
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})  
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert any(error['category'] == 'anisogenic biological replicates, mismatched sex and age' for error in errors_list)
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched age' for error in errors_list)
 
 
-def test_audit_experiment_anisogenic_biological_replicates_matched_mixed_sex_mismatched_age(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, mouse_donor_1,mouse_donor_2):
+def test_audit_experiment_model_organism_mismatched_donor(testapp,
+                                                          base_experiment,
+                                                          replicate_1_1,
+                                                          replicate_2_1,
+                                                          library_1,
+                                                          library_2,
+                                                          biosample_1,
+                                                          biosample_2,
+                                                          mouse_donor_1,
+                                                          mouse_donor_2):
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_2['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
-
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
     testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_1['@id'],{'model_organism_age_units': 'day', 'model_organism_age': '51' })
-    testapp.patch_json(biosample_2['@id'],{'model_organism_age_units': 'day', 'model_organism_age': '54' }) 
-
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
@@ -549,43 +584,160 @@ def test_audit_experiment_anisogenic_biological_replicates_matched_mixed_sex_mis
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert any(error['category'] == 'anisogenic biological replicates, matched sex' for error in errors_list)
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'mismatched donor' for error in errors_list)
 
 
-def test_audit_experiment_anisogenic_biological_replicates_matched_mixed_sex_matched_age(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, mouse_donor_1,mouse_donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_2['@id']})
-    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_1['@id'],{'model_organism_age_units': 'day', 'model_organism_age': '54' })
-    testapp.patch_json(biosample_2['@id'],{'model_organism_age_units': 'day', 'model_organism_age': '54' }) 
-
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']}) 
+def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
+                                                         library_no_biosample):
+    testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert any(error['category'] == 'anisogenic biological replicates, matched sex and age' for error in errors_list)
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing biosample' for error in errors_list)
 
-def test_audit_experiment_isogenic_biological_replicates(testapp, base_experiment, replicate_1_1, replicate_2_1,library_1, library_2, biosample_1, biosample_2, mouse_donor_1,mouse_donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(biosample_1['@id'],{'model_organism_age_units': 'day', 'model_organism_age': '54' })
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+
+def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
+                                                         base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id':
+                                             'SO:0000356', 'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
-        errors_list.extend(errors[error_type])       
-    assert all(error['category'] != 'anisogenic biological replicates, matched sex and age' for error in errors_list)
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing size_range' for error in errors_list)
 
+
+def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
+                                                           base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
+                                             'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing size_range' for error in errors_list)
+
+
+def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
+                                                            base_replicate,
+                                                            base_library):
+    testapp.patch_json(base_library['@id'], {'nucleic_acid_term_id': 'SO:0000356',
+                                             'nucleic_acid_term_name': 'RNA'})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name':
+                                                'transcription profiling by array assay'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing size_range' for error in errors_list)
+
+
+def test_audit_experiment_biosample_term_id(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
+                                                'biosample_type': 'tissue',
+                                                'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'experiment with invalid biosample term id' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_file(testapp, file_fastq,
+                                              base_experiment,
+                                              base_replicate,
+                                              base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(((error['category'] != 'missing file in replicate') and
+               (error['category'] != 'missing FASTQ file in replicate')) for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_files(testapp,
+                                                  base_experiment,
+                                                  base_replicate,
+                                                  base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_files_warning(testapp,
+                                                          base_experiment,
+                                                          base_replicate,
+                                                          base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'proposed'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        if error_type == 'WARNING':
+            errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing file in replicate' for error in errors_list)
+
+
+def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'experiment missing biosample_term_id' for error in errors_list)
+
+
+def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'experiment missing biosample_type' for error in errors_list)
+
+
+def test_audit_experiment_with_biosample_type(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'experiment missing biosample_type' for error in errors_list)
+
+
+def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing FASTQ file in replicate' for error in errors_list)
