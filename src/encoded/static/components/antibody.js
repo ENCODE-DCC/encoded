@@ -316,7 +316,7 @@ var Characterization = module.exports.Characterization = React.createClass({
 
                         <dl className="characterization-intro characterization-meta-data">
                             {context.characterization_method ?
-                                <div>
+                                <div data-test="method">
                                     <strong>Method: </strong>
                                     {context.characterization_method}
                                 </div>
