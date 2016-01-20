@@ -349,3 +349,8 @@ def test_profiles(testapp, item_type):
     res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
     errors = Draft4Validator.check_schema(res.json)
     assert not errors
+
+
+def test_bad_frame(testapp, human):
+    res = testapp.get(human['@id'] + '?frame=bad', status=404)
+    assert res.json['detail'] == '?frame=bad'
