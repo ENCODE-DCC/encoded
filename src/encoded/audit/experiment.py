@@ -169,10 +169,8 @@ def audit_experiment_needs_pipeline(value, system):
 
     investigated_as_histones = False
 
-    for f in value['original_files']:
-        if 'target' in f and 'histone modification' in f['target']['investigate_as']:
-            investigated_as_histones = True
-            break
+    if 'target' in value and 'histone modification' in value['target']['investigated_as']:
+        investigated_as_histones = True
 
     if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
         if scanFilesForPipeline(value['original_files'],
