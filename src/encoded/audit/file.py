@@ -6,6 +6,8 @@ from .conditions import (
     rfa,
 )
 
+from .standard_functions import collectErrors
+
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
 raw_data_formats = [
@@ -21,25 +23,6 @@ paired_end_assays = [
     'RNA-PET',
     'ChIA-PET',
     'DNA-PET',
-    ]
-
-broadPeaksTargets = [
-    'H3K4me1-mouse',
-    'H3K36me3-mouse',
-    'H3K79me2-mouse',
-    'H3K27me3-mouse',
-    'H3K9me1-mouse',
-    'H3K9me3-mouse',
-    'H3K4me1-human',
-    'H3K36me3-human',
-    'H3K79me2-human',
-    'H3K27me3-human',
-    'H3K9me1-human',
-    'H3K9me3-human',
-    'H3F3A-human',
-    'H4K20me1-human',
-    'H3K79me3-human',
-    'H3K79me3-mouse',
     ]
 
 
@@ -560,7 +543,7 @@ def audit_file_read_depth(value, system):
             special_assay_name = value['dataset']['assay_term_name']
         if 'target' in value['dataset']:
             target_name = value['dataset']['target']['name']
-
+    '''
     pipeline_titles = [
         'Small RNA-seq single-end pipeline',
         'RNA-seq of long RNAs (paired-end, stranded)',
@@ -584,10 +567,17 @@ def audit_file_read_depth(value, system):
         'narrow': 20000000,
         'broad': 45000000
     }
-
+    '''
+    audit_errors = collectErrors(value,
+                                 value['analysis_step_version']['analysis_step']['pipelines'],
+                                 read_depth, target_name, special_assay_name)
+    for e in audit_errors:
+        yield AuditFailure(e['message'], e['detail'], level=e['level'])
+    return
+    '''
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] not in pipeline_titles:
-            return
+            return  # PROBABLY SHOULD BE CONTINUE!!!
         if pipeline['title'] == 'Histone ChIP-seq':  # do the chipseq narrow broad ENCODE3
             if target_name in ['Control-human', 'Control-mouse']:
                 if read_depth < marks['broad']:
@@ -657,7 +647,7 @@ def audit_file_read_depth(value, system):
                                                           read_depths[pipeline['title']])
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
-
+    '''
 
 @audit_checker('file', frame=['quality_metrics',
                               'analysis_step_version',

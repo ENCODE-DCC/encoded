@@ -457,7 +457,9 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('mismatched target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['target', 'possible_controls'])
+@audit_checker('experiment', frame=['target', 'possible_controls',
+                                    'possible_controls.original_files',
+                                    'possible_controls.original_files.derived_from'])
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -467,7 +469,6 @@ def audit_experiment_control(value, system):
     if value['status'] in ['deleted', 'proposed']:
         return
 
-    # Currently controls are only be required for ChIP-seq
     if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
@@ -488,8 +489,14 @@ def audit_experiment_control(value, system):
                 control.get('biosample_term_name'),
                 value['biosample_term_name'])
             raise AuditFailure('mismatched control', detail, level='ERROR')
-
-
+        
+'''
+>>>>>>>>>>>>>>
+def check_control_experiment_for_read_depth():
+    go to original files, find bams, query for read_depth
+    return 
+>>>>>>>>>>>>>>
+'''
 @audit_checker('experiment', frame=['target', 'possible_controls', 'replicates', 'replicates.antibody', 'possible_controls.replicates', 'possible_controls.replicates.antibody', 'possible_controls.target'], condition=rfa('ENCODE3'))
 def audit_experiment_ChIP_control(value, system):
 
