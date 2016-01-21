@@ -23,6 +23,7 @@ def audit_antibody_characterization_review(value, system):
         for review in value['characterization_reviews']:
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
+            term_type = review['biosample_type']
 
             if term_id.startswith('NTR:'):
                 detail = '{} contains a New Term Request {} - {}'.format(
@@ -49,10 +50,11 @@ def audit_antibody_characterization_review(value, system):
                 return
             biosample_prefix = term_id.split(':')[0]
             if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
-                detail = 'Antibody characterization {} has '.format(value['@id']) + \
-                         'biosample_term_id {} '.format(term_id) + \
+                detail = 'Antibody characterization {} is '.format(value['@id']) + \
+                         'of type {} '.format(term_type) + \
+                         'and has biosample_term_id {} '.format(term_id) + \
                          'that is not one of ' + \
-                         '{}'.format(biosampleType_ontologyPrefix[review['biosample_type']])
+                         '{}'.format(biosampleType_ontologyPrefix[term_type])
                 yield AuditFailure('characterization review with invalid biosample term id', detail,
                                    level='DCC_ACTION')
                 return

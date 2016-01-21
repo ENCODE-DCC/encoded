@@ -643,14 +643,15 @@ def audit_experiment_biosample_term(value, system):
     elif term_id.startswith('NTR:'):
         detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
         yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
-    '''
-    elif (term_id.startswith('NTR:') is False):
+
+    elif 'replicates' not in value or len(value['replicates']) == 0:
         biosample_prefix = term_id.split(':')[0]
         if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
             detail = 'Experiment {} has '.format(value['@id']) + \
-                     'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'a bisample of type {} '.format(term_type) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
                      'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
+                     '{}'.format(biosampleType_ontologyPrefix[term_type])
             yield AuditFailure('experiment with invalid biosample term id', detail,
                                level='DCC_ACTION')
 
@@ -667,7 +668,7 @@ def audit_experiment_biosample_term(value, system):
                     ontology_name
                     )
                 yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
-    '''
+
     for rep in value['replicates']:
         if 'library' not in rep:
             continue
