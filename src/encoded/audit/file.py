@@ -235,7 +235,7 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'GGR'))
+@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.

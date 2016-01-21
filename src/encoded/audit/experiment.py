@@ -103,6 +103,10 @@ def audit_experiment_gtex_biosample(value, system):
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    # excluding Bind-n-Seq because they dont have biosamples
+    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
+        return
+
     if value['status'] not in ['preliminary', 'proposed']:
         if 'biosample_term_id' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
@@ -185,7 +189,7 @@ def audit_experiment_release_date(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award'],
+               frame=['replicates', 'award', 'target'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -200,6 +204,11 @@ def audit_experiment_replicated(value, system):
     '''
     if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
         return
+
+    if 'target' in value:
+        target = value['target']
+        if 'control' in target['investigated_as']:
+            return
 
     num_bio_reps = set()
     for rep in value['replicates']:
