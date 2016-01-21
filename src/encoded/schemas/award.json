@@ -2,7 +2,7 @@
     "title": "Grant",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "required": [ "name", "project"],
+    "required": [ "name", "project", "rfa"],
     "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -69,12 +69,29 @@
         "rfa": {
             "title": "Phase",
             "description": "The name of the bioproject phase.",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "ENCODE2",
+                "ENCODE2-Mouse",
+                "ENCODE3",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
+            ]
         },
         "project": {
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
-            "type": "string"
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "GGR",
+                "Roadmap",
+                "modENCODE",
+                "modERN"
+            ]
         },
         "viewing_group": {
             "title": "View access group",

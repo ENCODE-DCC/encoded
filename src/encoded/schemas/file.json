@@ -213,6 +213,11 @@
                     "linkTo": "Document"
                     }
         },
+        "restricted": {
+            "title": "Restricted file",
+            "description": "A flag to indicate whether this file is subject to restricted access",
+            "type": "boolean"
+        },
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",

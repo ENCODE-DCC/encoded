@@ -4,7 +4,7 @@ from contentbase import (
 )
 from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
-
+from .gtex_data import gtexDonorsList
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -54,10 +54,59 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.donor'])
+def audit_experiment_gtex_biosample(value, system):
+    '''
+    Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
+    associated with
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if len(value['replicates']) < 2:
+        return
+
+    biosample_set = set()
+    donor_set = set()
+
+    for rep in value['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+
+            biosampleObject = rep['library']['biosample']
+            donorObject = biosampleObject['donor']
+
+            biosample_set.add(biosampleObject['accession'])
+            donor_set.add(donorObject['accession'])
+
+    gtex_experiment_flag = False
+    for entry in donor_set:
+        if entry in gtexDonorsList:
+            gtex_experiment_flag = True
+
+    if gtex_experiment_flag is False:
+        return
+
+    if len(biosample_set) > 1:
+        detail = 'GTEx experiment {} '.format(value['@id']) + \
+                 'contains {} '.format(len(biosample_set)) + \
+                 'biosamples, while according to HRWG decision it should have only 1'
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='ERROR')
+
+    return
+
+
 @audit_checker('experiment', frame=['object'])
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    # excluding Bind-n-Seq because they dont have biosamples
+    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
+        return
+
     if value['status'] not in ['preliminary', 'proposed']:
         if 'biosample_term_id' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
@@ -81,7 +130,7 @@ def audit_experiment_biosample_term_id(value, system):
 
 @audit_checker('experiment',
                frame=['replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2",
+               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -140,7 +189,7 @@ def audit_experiment_release_date(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award'],
+               frame=['replicates', 'award', 'target'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -155,6 +204,11 @@ def audit_experiment_replicated(value, system):
     '''
     if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
         return
+
+    if 'target' in value:
+        target = value['target']
+        if 'control' in target['investigated_as']:
+            return
 
     num_bio_reps = set()
     for rep in value['replicates']:
@@ -284,7 +338,6 @@ def audit_experiment_replicates_biosample(value, system):
 
     for rep in value['replicates']:
         bio_rep_num = rep['biological_replicate_number']
-        tech_rep_num = rep['technical_replicate_number']
         if 'library' in rep and 'biosample' in rep['library']:
             biosample = rep['library']['biosample']
 
