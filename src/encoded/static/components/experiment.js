@@ -213,19 +213,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.assay_term_name}</dd>
                                     </div>
 
-                                    {lib && lib.nucleic_acid_term_name ?
-                                        <div data-test="nucleicacid">
-                                            <dt>Nucleic acid type</dt>
-                                            <dd>{lib.nucleic_acid_term_name}</dd>
-                                        </div>
-                                    : null}
-
-                                    {lib && lib.size_range ?
-                                        <div data-test="sizerange">
-                                            <dt>Size range</dt>
-                                            <dd>{lib.size_range}</dd>
-                                        </div>
-                                    : null}
+                                    {AssayDetails(context)}
 
                                     {biosamples.length || context.biosample_term_name ?
                                         <div data-test="biosample-summary">
@@ -323,16 +311,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
 
                     {replicates && replicates.length ?
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <SortTable title="Replicates" list={replicates} columns={this.replicateColumns} />
-                            </div>
-
-                            <div className="flexcol-sm-6">
-                                <h4>Assay details</h4>
-                                {AssayDetails({context: context, replicates: replicates})}
-                            </div>
-                        </div>
+                        <SortTable title="Replicates" list={replicates} columns={this.replicateColumns} />
                     : null}
                 </Panel>
 
@@ -396,14 +375,15 @@ var ControllingExperiments = React.createClass({
 });
 
 
-var AssayDetails = module.exports.AssayDetails = function (props) {
-    var context = props.context;
-
+// Return an array of React components to render into the enclosing panel, given the experiment object in the context parameter
+var AssayDetails = module.exports.AssayDetails = function (context) {
     // No replicates, so no assay panel
-    if (!props.replicates.length) return null;
+    if (!context.replicates.length) {
+        return [];
+    }
 
     // Sort the replicates first by replicate number, then by technical replicate number
-    var replicates = props.replicates.sort(function(a, b) {
+    var replicates = context.replicates.sort(function(a, b) {
         if (b.biological_replicate_number === a.biological_replicate_number) {
             return a.technical_replicate_number - b.technical_replicate_number;
         }
@@ -447,82 +427,97 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         platforms[replicates[0].platform['@id']] = replicates[0].platform;
     }
 
-    return (
-        <dl className="key-value">
-            {depleted.length ?
-                <div data-test="depletedin">
-                    <dt>Depleted in</dt>
-                    <dd>{depleted.join(', ')}</dd>
-                </div>
-            : null}
+    // Now begin the output process -- one React component per array element
+    var components = [
+        (lib && lib.nucleic_acid_term_name ?
+            <div data-test="nucleicacid">
+                <dt>Nucleic acid type</dt>
+                <dd>{lib.nucleic_acid_term_name}</dd>
+            </div>
+        : null),
 
-            {lib.lysis_method ?
-                <div data-test="lysismethod">
-                    <dt>Lysis method</dt>
-                    <dd>{lib.lysis_method}</dd>
-                </div>
-            : null}
+        (lib && lib.size_range ?
+            <div data-test="sizerange">
+                <dt>Size range</dt>
+                <dd>{lib.size_range}</dd>
+            </div>
+        : null),
 
-            {lib.extraction_method ?
-                <div data-test="extractionmethod">
-                    <dt>Extraction method</dt>
-                    <dd>{lib.extraction_method}</dd>
-                </div>
-            : null}
+        (depleted.length ?
+            <div data-test="depletedin">
+                <dt>Depleted in</dt>
+                <dd>{depleted.join(', ')}</dd>
+            </div>
+        : null),
 
-            {lib.fragmentation_method ?
-                <div data-test="fragmentationmethod">
-                    <dt>Fragmentation method</dt>
-                    <dd>{lib.fragmentation_method}</dd>
-                </div>
-            : null}
+        (lib.lysis_method ?
+            <div data-test="lysismethod">
+                <dt>Lysis method</dt>
+                <dd>{lib.lysis_method}</dd>
+            </div>
+        : null),
 
-            {lib.library_size_selection_method ?
-                <div data-test="sizeselectionmethod">
-                    <dt>Size selection method</dt>
-                    <dd>{lib.library_size_selection_method}</dd>
-                </div>
-            : null}
+        (lib.extraction_method ?
+            <div data-test="extractionmethod">
+                <dt>Extraction method</dt>
+                <dd>{lib.extraction_method}</dd>
+            </div>
+        : null),
 
-            {treatments.length ?
-                <div data-test="treatments">
-                    <dt>Treatments</dt>
-                    <dd>
-                        {treatments.join(', ')}
-                    </dd>
-                </div>
-            : null}
+        (lib.fragmentation_method ?
+            <div data-test="fragmentationmethod">
+                <dt>Fragmentation method</dt>
+                <dd>{lib.fragmentation_method}</dd>
+            </div>
+        : null),
 
-            {platformKeys.length ?
-                <div data-test="platform">
-                    <dt>Platform</dt>
-                    <dd>
-                        {platformKeys.map(function(platformId) {
-                            return(
-                                <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
-                            );
-                        })}
-                    </dd>
-                </div>
-            : null}
+        (lib.library_size_selection_method ?
+            <div data-test="sizeselectionmethod">
+                <dt>Size selection method</dt>
+                <dd>{lib.library_size_selection_method}</dd>
+            </div>
+        : null),
 
-            {lib.spikeins_used && lib.spikeins_used.length ?
-                <div data-test="spikeins">
-                    <dt>Spike-ins datasets</dt>
-                    <dd>
-                        {lib.spikeins_used.map(function(dataset, i) {
-                            return (
-                                <span key={i}>
-                                    {i > 0 ? ', ' : ''}
-                                    <a href={dataset['@id']}>{dataset.accession}</a>
-                                </span>
-                            );
-                        })}
-                    </dd>
-                </div>
-            : null}
-        </dl>
-    );
+        (treatments.length ?
+            <div data-test="treatments">
+                <dt>Treatments</dt>
+                <dd>
+                    {treatments.join(', ')}
+                </dd>
+            </div>
+        : null),
+
+        (platformKeys.length ?
+            <div data-test="platform">
+                <dt>Platform</dt>
+                <dd>
+                    {platformKeys.map(function(platformId) {
+                        return(
+                            <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
+                        );
+                    })}
+                </dd>
+            </div>
+        : null),
+
+        (lib.spikeins_used && lib.spikeins_used.length ?
+            <div data-test="spikeins">
+                <dt>Spike-ins datasets</dt>
+                <dd>
+                    {lib.spikeins_used.map(function(dataset, i) {
+                        return (
+                            <span key={i}>
+                                {i > 0 ? ', ' : ''}
+                                <a href={dataset['@id']}>{dataset.accession}</a>
+                            </span>
+                        );
+                    })}
+                </dd>
+            </div>
+        : null)
+    ];
+
+    return components;
 };
 
 
