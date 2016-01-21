@@ -536,14 +536,14 @@ def audit_file_read_depth(value, system):
     for metric in quality_metrics:
         if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
             read_depth = metric['Uniquely mapped reads number']
-            continue
+            break  # continue
         else:
             if "total" in metric:
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
                     read_depth = int(metric['total']/2)
-                continue
+                break
 
     if read_depth == 0:
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
@@ -657,6 +657,116 @@ def audit_file_read_depth(value, system):
                                                           read_depths[pipeline['title']])
                     yield AuditFailure('insufficient read depth', detail, level='NOT_COMPLIANT')
                     return
+
+
+@audit_checker('file', frame=['quality_metrics',
+                              'analysis_step_version',
+                              'analysis_step_version.analysis_step',
+                              'analysis_step_version.analysis_step.pipelines',
+                              'analysis_step_version.software_versions',
+                              'analysis_step_version.software_versions.software',
+                              'dataset'],
+               condition=rfa('ENCODE3', 'ENCODE'))
+def audit_file_chip_seq_library_complexity(value, system):
+    '''
+    An alignment file from the ENCODE ChIP-seq processing pipeline
+    should have minimal library complexity in accordance with the criteria
+    '''
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['file_format'] != 'bam':
+        return
+
+    if value['output_type'] == 'transcriptome alignments':
+        return
+
+    if value['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    if ('quality_metrics' not in value) or (value.get('quality_metrics') == []):
+        return
+
+    if 'analysis_step_version' not in value:
+        return
+
+    if 'analysis_step' not in value['analysis_step_version']:
+        return
+
+    if 'pipelines' not in value['analysis_step_version']['analysis_step']:
+        return
+
+    nrf_end_of_detail = "Non redundant fraction (NRF, Number of reads after " + \
+                        "removing duplicates / Total number of reads). 0.0-0.7 is very " + \
+                        "poor complexity, 0.7-0.8 is poor complexity, 0.8-0.9 moderate " + \
+                        "complexity, and >0.9 high complexity. NRF >0.9 is recommended, " + \
+                        "but >0.8 is acceptable"
+    pbc1_end_of_detail = "PCR Bottlenecking coefficient 1 (PBC1, Number of genomic " + \
+                         "locations where exactly one read maps uniquely/Number of " + \
+                         "distinct genomic locations to which some read maps uniquely). " + \
+                         "0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate " + \
+                         "bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is " + \
+                         "no bottlenecking. PBC1 >0.9 is recommended, but >0.8 is acceptable"
+
+    pbc2_end_of_detail = "PCR Bottlenecking coefficient 2 (PBC2, Number of genomic locations " + \
+                         "where only one read maps uniquely/Number of genomic locations where " + \
+                         "2 reads map uniquely). 0 - 1 is severe bottlenecking, 1 - 3 is " + \
+                         "moderate bottlenecking, 3 -10 is mild bottlenecking, > 10 is no " + \
+                         "bottlenecking. PBC2 >10 is recommended, but >3 is acceptable"
+
+    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+        if pipeline['title'] == 'Histone ChIP-seq':
+            quality_metrics = value.get('quality_metrics')
+            for metric in quality_metrics:
+
+                if 'NRF' in metric:
+                    NRF_value = float(metric['NRF'])
+                    if NRF_value < 0.8:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with NRF value of {}'.format(NRF_value) + \
+                                 '. '+nrf_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+
+                    else:
+                        if NRF_value <= 0.9:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with NRF value of {}'.format(NRF_value) + \
+                                     '. '+nrf_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+                if 'PBC1' in metric:
+                    PBC1_value = float(metric['PBC1'])
+                    if PBC1_value < 0.8:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
+                                 '. '+pbc1_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+                    else:
+                        if PBC1_value <= 0.9:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
+                                     '. '+pbc1_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+                if 'PBC2' in metric:
+                    PBC2_value = float(metric['PBC2'])
+                    if PBC2_value < 3:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
+                                 '. '+pbc2_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+                    else:
+                        if PBC2_value <= 10:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
+                                     '. '+pbc2_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+    return
 
 
 @audit_checker('file', frame=['quality_metrics',
