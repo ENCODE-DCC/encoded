@@ -54,6 +54,154 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('Experiment', frame=['original_files', 'target',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'replicates', 'replicates.library'],
+               condition=rfa('ENCODE3'))
+def audit_experiment_needs_pipeline(value, system):
+
+    if value['status'] not in ['released', 'release ready']:
+        return
+
+    if 'assay_term_name' not in value:
+        return
+
+    if value['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
+                                        'ChIP-seq',
+                                        'RNA-seq',
+                                        'shRNA knockdown followed by RNA-seq',
+                                        'RAMPAGE']:
+        return
+
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        #  possible ERROR to throw
+        return
+
+    pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
+                      'RNA-seq-long-paired': 'RNA-seq of long RNAs (paired-end, stranded)',
+                      'RNA-seq-long-single': 'RNA-seq of long RNAs (single-end, unstranded)',
+                      'RNA-seq-short': 'Small RNA-seq single-end pipeline',
+                      'RAMPAGE': 'RAMPAGE (paired-end, stranded)',
+                      'ChIP': 'Histone ChIP-seq'}
+
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if 'replicates' not in value:
+        return
+
+    file_size_range = 0
+
+    size_flag = False
+
+    for rep in value['replicates']:
+        if 'library' in rep:
+            if 'size_range' in rep['library']:
+                file_size_range = rep['library']['size_range']
+                size_flag = True
+                break
+
+    if size_flag is False:
+        return
+
+    run_type = 'unknown'
+
+    for f in value['original_files']:
+        if f['status'] not in ['deleted', 'replaced', 'revoked'] and 'run_type' in f:
+            run_type = f['run_type']
+            break
+
+    if run_type == 'unknown':
+        return
+
+    if value['assay_term_name'] == 'RAMPAGE' and \
+       run_type == 'paired-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       run_type == 'single-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-long-single']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       run_type == 'paired-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-long-paired']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] == 'RNA-seq' and \
+       run_type == 'single-ended' and \
+       file_size_range == '<200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-short']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    investigated_as_histones = False
+
+    if 'target' in value and 'histone modification' in value['target']['investigated_as']:
+        investigated_as_histones = True
+
+    if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['ChIP']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['ChIP'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+    return
+
+
+def scanFilesForPipeline(files_to_scan, pipeline_title):
+    for f in files_to_scan:
+        if 'analysis_step_version' not in f:
+            continue
+        else:
+            if 'analysis_step' not in f['analysis_step_version']:
+                continue
+            else:
+                if 'pipelines' not in f['analysis_step_version']['analysis_step']:
+                    continue
+                else:
+                    pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+                    for p in pipelines:
+                        if p['title'] == pipeline_title:
+                            return True
+    return False
+
+
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
