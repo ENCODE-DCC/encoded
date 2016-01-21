@@ -4,6 +4,7 @@ $tooltip-color: desaturate(lighten(#0a253d,30%),30%);
 
 // Generic tooltips with clickable triggers
 .tooltip-trigger {
+    display: inline-block;
     position: relative;
     cursor: default;
 }

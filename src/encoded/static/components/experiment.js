@@ -782,7 +782,7 @@ var RelatedSeriesItem = React.createClass({
         return (
             <span>
                 <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
-                <span className="tooltip-trigger">
+                <div className="tooltip-trigger">
                     <i className="icon icon-info-circle"
                         onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
                         onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
@@ -793,7 +793,7 @@ var RelatedSeriesItem = React.createClass({
                             {series.description ? <span>{series.description}</span> : <em>No description available</em>}
                         </div>
                     </div>
-                </span>
+                </div>
             </span>
         );
     }
