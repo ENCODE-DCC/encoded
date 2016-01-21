@@ -795,27 +795,27 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed gene quantification file {} has no analysis step version'.format(
             value['@id'])
-        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+        return
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed gene quantification file {} has no analysis step in {}'.format(
             value['@id'],
             value['analysis_step_version']['@id'])
-        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+        return
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed gene quantification file {} has no pipelines in {}'.format(
             value['@id'],
             value['analysis_step_version']['analysis_step']['@id'])
-        raise AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+        return
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
         detail = 'ENCODE Processed gene quantification file {} has no quality_metrics'.format(
             value['@id'])
-        raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+        return
     spearman_correlation = False
     for metric in quality_metrics:
         if 'Spearman correlation' in metric:
@@ -824,8 +824,8 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if spearman_correlation is False:
         detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
                  'has no MAD quality metric'
-        raise AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
+        return
     spearman_pipelines = ['RAMPAGE (paired-end, stranded)',
                           'Small RNA-seq single-end pipeline',
                           'RNA-seq of long RNAs (single-end, unstranded)',
@@ -845,11 +845,19 @@ def audit_file_mad_qc_spearman_correlation(value, system):
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] in spearman_pipelines:
-            if spearman_correlation <= required_value:
-                detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
+            if spearman_correlation < required_value:
+                border_value = (required_value - 0.0713512755834)
+                detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
                          'has Spearman correlaton of {} '.format(spearman_correlation) + \
-                         ', gene quantification file for {}'.format(experiment_replication_type) + \
-                         ' assay {} '.format(pipeline['title']) + \
-                         'require {}'.format(required_value)
-                raise AuditFailure('insufficient spearman correlation', detail,
-                                   level='NOT_COMPLIANT')
+                         ', for gene quantification files from an {}'.format(experiment_replication_type) + \
+                         ' assay in the {} '.format(pipeline['title']) + \
+                         'pipeline the preferred value is > {}, '.format(required_value) + \
+                         'a borderline is between {} and {}'.format(required_value, border_value)
+                if spearman_correlation > border_value:
+                    yield AuditFailure('borderline spearman correlation', detail,
+                                       level='WARNING')
+                    return
+                else:
+                    yield AuditFailure('poor spearman correlation', detail,
+                                       level='NOT_COMPLIANT')
+                    return
