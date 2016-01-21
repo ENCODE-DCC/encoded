@@ -725,6 +725,7 @@ var RelatedSeriesList = React.createClass({
     getInitialState: function() {
         return {
             currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
             clicked: false // True if info button was clicked (vs hovered)
         }
     },
@@ -739,11 +740,24 @@ var RelatedSeriesList = React.createClass({
 
     // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
     // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
-    handleInfoClick: function(series) {
-        if (this.state.currInfoItem === series.accession && this.state.clicked) {
-            this.setState({currInfoItem: '', clicked: false});
-        } else {
-            this.setState({currInfoItem: series.accession, clicked: true});
+    handleInfoClick: function(series, touch, e) {
+        var currTouchScreen = this.state.touchScreen;
+
+        // Remember if we know we've had a touch event
+        if (touch && !currTouchScreen) {
+            currTouchScreen = true;
+            this.setState({touchScreen: true});
+            console.log('SET TOUCHSCREEN TRUE');
+        }
+
+        // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
+        if (!currTouchScreen || touch) {
+            console.log('STAT: %s:%o', currTouchScreen, touch);
+            if (this.state.currInfoItem === series.accession && this.state.clicked) {
+                this.setState({currInfoItem: '', clicked: false});
+            } else {
+                this.setState({currInfoItem: series.accession, clicked: true});
+            }
         }
     },
 
@@ -776,6 +790,18 @@ var RelatedSeriesItem = React.createClass({
         handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
     },
 
+    getInitialState: function() {
+        return {
+            touchOn: false // True if icon has been touched
+        }
+    },
+
+    // Touch screen
+    touchStart: function(series, e) {
+        this.setState({touchOn: !this.state.touchOn});
+        this.props.handleInfoClick(series, true);
+    },
+
     render: function() {
         var {series, detailOpen} = this.props;
 
@@ -786,7 +812,8 @@ var RelatedSeriesItem = React.createClass({
                     <i className="icon icon-info-circle"
                         onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
                         onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
-                        onClick={this.props.handleInfoClick.bind(null, series)}></i>
+                        onClick={this.props.handleInfoClick.bind(null, series, false)}
+                        onTouchStart={this.touchStart.bind(null, series)}></i>
                     <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
                         <div className="tooltip-arrow"></div>
                         <div className="tooltip-inner">
