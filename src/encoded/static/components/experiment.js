@@ -57,6 +57,10 @@ var Panel = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -129,6 +133,15 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
+
+        // Get a list of related datasets, possibly filtering on their status
+        var seriesList = [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        if (context.related_series && context.related_series.length) {
+            seriesList = _(context.related_series).filter(dataset => {
+                return loggedIn || dataset.status === 'released';
+            });
+        }
 
         // Set up the breadcrumbs
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
@@ -306,10 +319,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.related_series && context.related_series.length ?
+                        {seriesList.length ?
                             <div data-test="relatedseries">
                                 <dt>Related datasets</dt>
-                                <dd><RelatedSeriesList seriesList={context.related_series} /></dd>
+                                <dd><RelatedSeriesList seriesList={seriesList} /></dd>
                             </div>
                         : null}
                     </dl>
