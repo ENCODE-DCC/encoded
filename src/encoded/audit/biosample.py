@@ -103,21 +103,6 @@ def audit_biosample_human_no_model_organism_properties(value, system):
                            level='ERROR')
         return
 
-@audit_checker('biosample', frame=['part_of'])
-def audit_biosample_part_of_consistency(value, system):
-    if 'part_of' not in value:
-        return
-    else:
-        part_of_biosample = value['part_of']
-        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                     'that has different ' + \
-                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
-            yield AuditFailure('inconsistent biosample_term_id', detail,
-                               level='ERROR')
-
 
 @audit_checker('biosample', frame=['object'])
 def audit_biosample_term_id(value, system):
@@ -130,7 +115,6 @@ def audit_biosample_term_id(value, system):
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
         raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
-
 
 
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
@@ -381,11 +365,31 @@ def audit_biosample_part_of_consistency(value, system):
         return
     else:
         part_of_biosample = value['part_of']
-        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                     'that has different ' + \
-                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
-            yield AuditFailure('inconsistent biosample_term_id', detail,
-                               level='ERROR')
+        term_id = value['biosample_term_id']
+        part_of_term_id = part_of_biosample['biosample_term_id']
+
+        if term_id == part_of_term_id:
+            return
+
+        ontology = system['registry']['ontology']
+        if (term_id in ontology) and (part_of_term_id in ontology):
+            ontology_child = ontology[term_id]
+            ontology_parent = ontology[part_of_term_id]
+            if 'name' in ontology_parent and ontology_parent['name'] == 'multi-cellular organism':
+                return
+
+            if 'organs' in ontology_child and 'organs' in ontology_parent:
+                child_organs = ontology_child['organs']
+                parent_organs = ontology_parent['organs']
+                for org in child_organs:
+                    if org in parent_organs:
+                        return
+
+        detail = 'Biosample {} '.format(value['@id']) + \
+                 'with biosample_term_id {} '.format(term_id) + \
+                 'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                 'that has different ' + \
+                 'biosample_term_id {}'.format(part_of_term_id)
+        yield AuditFailure('inconsistent biosample_term_id', detail,
+                           level='WARNING')
+        return
