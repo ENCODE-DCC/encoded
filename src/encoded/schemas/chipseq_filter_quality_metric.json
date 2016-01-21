@@ -32,7 +32,9 @@
             "description": "PCR Bottlenecking coefficient 1 = M1/M_DISTINCT where M1: number of genomic locations where exactly one read maps uniquely, M_DISTINCT: number of distinct genomic locations to which some read maps uniquely"
         },
         "PBC2": {
-            "type": "number",
+            "type": ["number", "string"],
+            "minimum":0,
+            "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = M1/M2 where M1: number of genomic locations where only one read maps uniquely and M2: number of genomic locations where 2 reads map uniquely"
         },
          "fragment length": {
