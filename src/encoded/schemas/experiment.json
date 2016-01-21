@@ -78,7 +78,23 @@
                 "type": "string",
                 "linkTo": "File"
             }
-        }
+        },
+        "internal_status": {
+            "type": "string",
+            "description": "The status of an experiment in the DCC process.",
+            "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment is unrunnable in current pipelines, pipeline ready:experiment is ready for the pipeline, processing:experiment is running through the pipeline, pipeline completed: The pipeline has run all the way through, requires lab review:DCC feels that the lab needs to review, release ready:DCC feels that this is ready for release",
+            "default": "unreviewed",
+            "title": "Status",
+            "enum": [
+                "unreviewed",
+                "unrunnable",
+                "pipeline ready",
+                "processing",
+                "pipeline completed",
+                "requires lab review",
+                "release ready"
+            ]
+        },
     },
     "facets": {
         "assay_term_name": {
