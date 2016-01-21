@@ -530,7 +530,7 @@ def test_audit_file_mad_qc_spearman_correlation_silver(testapp, file7,  file_exp
     for error_type in errors:
         if error_type == 'WARNING':
             errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'poor spearman correlation' for error in errors_list)
+    assert any(error['category'] == 'borderline spearman correlation' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation_silver_2(testapp, file7,  file_exp,
@@ -549,7 +549,7 @@ def test_audit_file_mad_qc_spearman_correlation_silver_2(testapp, file7,  file_e
     for error_type in errors:
         if error_type != 'WARNING':
             errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'poor spearman correlation' for error in errors_list)
+    assert all(error['category'] != 'borderline spearman correlation' for error in errors_list)
 
 
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
