@@ -4,6 +4,8 @@ from contentbase import (
 )
 
 from .ontology_data import biosampleType_ontologyPrefix
+from .gtex_data import gtexDonorsList
+from .gtex_data import gtexParentsList
 
 
 
@@ -32,33 +34,6 @@ term_mapping = {
     "insoluble cytoplasmic fraction": "NTR:0002594"
 }
 
-gtexParentsList = ['ENCBS380GWR', 'ENCBS001XKZ', 'ENCBS564MPZ', 'ENCBS192JQI',
-                   'ENCBS742KKY', 'ENCBS393MMT', 'ENCBS307LZC', 'ENCBS027MVW',
-                   'ENCBS956VSX', 'ENCBS771JCI', 'ENCBS134YYY', 'ENCBS360NWY',
-                   'ENCBS630RYD', 'ENCBS335JSV', 'ENCBS962QGQ', 'ENCBS515ABR',
-                   'ENCBS548ZBZ', 'ENCBS644JRA', 'ENCBS890WYO', 'ENCBS384YBF',
-                   'ENCBS292BAT', 'ENCBS835RCW', 'ENCBS451IRS', 'ENCBS348ASN',
-                   'ENCBS965VNB', 'ENCBS692CGI', 'ENCBS781VBA', 'ENCBS440MMR',
-                   'ENCBS855YAD', 'ENCBS773MXP', 'ENCBS562VSE', 'ENCBS494DUH',
-                   'ENCBS359ZEG', 'ENCBS005MNT', 'ENCBS575GLZ', 'ENCBS728ZLZ',
-                   'ENCBS107AAM', 'ENCBS085XRH', 'ENCBS650PNE', 'ENCBS981HQU',
-                   'ENCBS851KVK', 'ENCBS565LDI', 'ENCBS380CLT', 'ENCBS608JJV',
-                   'ENCBS210YON', 'ENCBS709BQJ', 'ENCBS286VRQ', 'ENCBS836DBQ',
-                   'ENCBS096TKO', 'ENCBS381FCF', 'ENCBS737QQW', 'ENCBS709TEL',
-                   'ENCBS684FGL', 'ENCBS433NGS', 'ENCBS332OXK', 'ENCBS150EDI',
-                   'ENCBS895EZQ', 'ENCBS064VQW', 'ENCBS109RQG', 'ENCBS805KAS',
-                   'ENCBS742RKK', 'ENCBS086ACW', 'ENCBS097NBH', 'ENCBS476FKF',
-                   'ENCBS746YUJ', 'ENCBS284GYA', 'ENCBS712MYW', 'ENCBS707EKQ',
-                   'ENCBS129SWN', 'ENCBS788SPF', 'ENCBS754DNO', 'ENCBS767XRB',
-                   'ENCBS466DBJ', 'ENCBS454XVT', 'ENCBS512EKJ', 'ENCBS192TUB',
-                   'ENCBS934ZQX', 'ENCBS294BEQ', 'ENCBS094ENG', 'ENCBS778FZF',
-                   'ENCBS358ZHI', 'ENCBS958RZD', 'ENCBS862HIX', 'ENCBS324ZYJ',
-                   'ENCBS474OSI', 'ENCBS220XWH', 'ENCBS315ZGI', 'ENCBS335SHX',
-                   'ENCBS269NPN', 'ENCBS991QHU', 'ENCBS168OHS', 'ENCBS246ZPO',
-                   'ENCBS541JSN', 'ENCBS397VQB', 'ENCBS007KAH', 'ENCBS614VNG',
-                   'ENCBS280LSO', 'ENCBS825XXY', 'ENCBS131WCD', 'ENCBS468RPZ',
-                   'ENCBS853AVG']
-
 model_organism_terms = ['model_organism_mating_status',
                         'model_organism_sex',
                         'mouse_life_stage',
@@ -73,7 +48,6 @@ model_organism_terms = ['model_organism_mating_status',
                         'model_organism_health_status',
                         'model_organism_donor_constructs']
 
-gtexDonorsList = ['ENCDO845WKR', 'ENCDO451RUA', 'ENCDO793LXB', 'ENCDO271OUW']
 
 
 @audit_checker('biosample', frame=['organism'])
@@ -103,21 +77,6 @@ def audit_biosample_human_no_model_organism_properties(value, system):
                            level='ERROR')
         return
 
-@audit_checker('biosample', frame=['part_of'])
-def audit_biosample_part_of_consistency(value, system):
-    if 'part_of' not in value:
-        return
-    else:
-        part_of_biosample = value['part_of']
-        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                     'that has different ' + \
-                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
-            yield AuditFailure('inconsistent biosample_term_id', detail,
-                               level='ERROR')
-
 
 @audit_checker('biosample', frame=['object'])
 def audit_biosample_term_id(value, system):
@@ -130,7 +89,6 @@ def audit_biosample_term_id(value, system):
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
         raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
-
 
 
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
@@ -381,11 +339,31 @@ def audit_biosample_part_of_consistency(value, system):
         return
     else:
         part_of_biosample = value['part_of']
-        if part_of_biosample['biosample_term_id'] != value['biosample_term_id']:
-            detail = 'Biosample {} '.format(value['@id']) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'was separated from biosample {} '.format(part_of_biosample['@id']) + \
-                     'that has different ' + \
-                     'biosample_term_id {}'.format(part_of_biosample['biosample_term_id'])
-            yield AuditFailure('inconsistent biosample_term_id', detail,
-                               level='ERROR')
+        term_id = value['biosample_term_id']
+        part_of_term_id = part_of_biosample['biosample_term_id']
+
+        if term_id == part_of_term_id:
+            return
+
+        ontology = system['registry']['ontology']
+        if (term_id in ontology) and (part_of_term_id in ontology):
+            ontology_child = ontology[term_id]
+            ontology_parent = ontology[part_of_term_id]
+            if 'name' in ontology_parent and ontology_parent['name'] == 'multi-cellular organism':
+                return
+
+            if 'organs' in ontology_child and 'organs' in ontology_parent:
+                child_organs = ontology_child['organs']
+                parent_organs = ontology_parent['organs']
+                for org in child_organs:
+                    if org in parent_organs:
+                        return
+
+        detail = 'Biosample {} '.format(value['@id']) + \
+                 'with biosample_term_id {} '.format(term_id) + \
+                 'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                 'that has different ' + \
+                 'biosample_term_id {}'.format(part_of_term_id)
+        yield AuditFailure('inconsistent biosample_term_id', detail,
+                           level='WARNING')
+        return
