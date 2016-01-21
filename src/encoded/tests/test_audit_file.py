@@ -209,7 +209,31 @@ def chipseq_bam_quality_metric(testapp, analysis_step_run_bam, file6):
 
 
 @pytest.fixture
-def pipeline_short_rna(testapp, lab, award, analysis_step_bam ):
+def chipseq_filter_quality_metric(testapp, analysis_step_run_bam, file6):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of':[file6['@id']],
+        'NRF': 0.1,
+        'PBC1': 0.3,
+        'PBC2': 11
+    }
+
+    return testapp.post_json('/chipseq-filter-quality-metrics', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_bam(testapp):
+    item = {
+        'name': 'bamqc',
+        'title': 'bamqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation']
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -384,6 +408,42 @@ def test_audit_file_read_depth_chip_seq_paired_end_no_target(testapp, file_exp, 
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'ChIP-seq missing target' for error in errors_list)
+
+
+def test_audit_file_library_complexity_chip_seq(testapp, file_exp, file6, file4,
+                                                chipseq_filter_quality_metric,
+                                                analysis_step_run_bam,
+                                                analysis_step_version_bam,
+                                                analysis_step_bam,
+                                                pipeline_bam):
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient library complexity' for error in errors_list)
+
+
+def test_audit_file_good_library_complexity_chip_seq(testapp, file_exp, file6, file4,
+                                                     chipseq_filter_quality_metric,
+                                                     analysis_step_run_bam,
+                                                     analysis_step_version_bam,
+                                                     analysis_step_bam,
+                                                     pipeline_bam):
+    testapp.patch_json(chipseq_filter_quality_metric['@id'],
+                       {'NRF': 0.98, 'PBC1': 0.97})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient library complexity' for error in errors_list)
 
 
 def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
