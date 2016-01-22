@@ -390,6 +390,35 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         return a.biological_replicate_number - b.biological_replicate_number;
     });
 
+    // Collect library values to display. Each key holds an array of values from each replicate's library, indexed by the
+    // replicate's biological replicate number.
+    var libraryValues = {
+        nucleic_acid_term_name: [],
+        size_range: []
+    };
+    replicates.forEach(replicate => {
+        var library = replicate.library;
+        if (library) {
+            Object.keys(libraryValues).forEach(key => {
+                if (library[key]) {
+                    libraryValues[key][replicate.biological_replicate_number] = library[key];
+                }
+            });
+        }
+    });
+
+    // Each property of libraryValues now has every value found in every existing library property in every replicate.
+    // Now for each library value in libraryValues, replace the array with a string if all values in the array are
+    // the same.
+    var firstBiologicalReplicate = replicates[0].biological_replicate_number
+    Object.keys(libraryValues).forEach(key => {
+        var firstValue = libraryValues[key][firstBiologicalReplicate];
+        if (_(libraryValues[key]).all(value => value === undefined ? true : value === firstValue)) {
+            // All values for the library value are the same. Replace the array with that value
+            libraryValues[key] = firstValue;
+        }
+    });
+
     // Collect data from the libraries of all of the replicates, ignoring duplicates
     var depleted = [];
     var treatments = [];
@@ -427,94 +456,111 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         platforms[replicates[0].platform['@id']] = replicates[0].platform;
     }
 
+
+
     // Now begin the output process -- one React component per array element
     var components = [
-        (lib && lib.nucleic_acid_term_name ?
+        (libraryValues.nucleic_acid_term_name ?
             <div data-test="nucleicacid">
                 <dt>Nucleic acid type</dt>
-                <dd>{lib.nucleic_acid_term_name}</dd>
-            </div>
-        : null),
-
-        (lib && lib.size_range ?
-            <div data-test="sizerange">
-                <dt>Size range</dt>
-                <dd>{lib.size_range}</dd>
-            </div>
-        : null),
-
-        (depleted.length ?
-            <div data-test="depletedin">
-                <dt>Depleted in</dt>
-                <dd>{depleted.join(', ')}</dd>
-            </div>
-        : null),
-
-        (lib.lysis_method ?
-            <div data-test="lysismethod">
-                <dt>Lysis method</dt>
-                <dd>{lib.lysis_method}</dd>
-            </div>
-        : null),
-
-        (lib.extraction_method ?
-            <div data-test="extractionmethod">
-                <dt>Extraction method</dt>
-                <dd>{lib.extraction_method}</dd>
-            </div>
-        : null),
-
-        (lib.fragmentation_method ?
-            <div data-test="fragmentationmethod">
-                <dt>Fragmentation method</dt>
-                <dd>{lib.fragmentation_method}</dd>
-            </div>
-        : null),
-
-        (lib.library_size_selection_method ?
-            <div data-test="sizeselectionmethod">
-                <dt>Size selection method</dt>
-                <dd>{lib.library_size_selection_method}</dd>
-            </div>
-        : null),
-
-        (treatments.length ?
-            <div data-test="treatments">
-                <dt>Treatments</dt>
                 <dd>
-                    {treatments.join(', ')}
+                    {typeof libraryValues.nucleic_acid_term_name === 'object' ?
+                        <span>
+                            {libraryValues.nucleic_acid_term_name.map((name, rep) => {
+                                return <span key={rep} className="line-item">{name} [{rep}]</span>;
+                            })}
+                        </span>
+                    : <span>{libraryValues.nucleic_acid_term_name}</span>}
                 </dd>
             </div>
         : null),
 
-        (platformKeys.length ?
-            <div data-test="platform">
-                <dt>Platform</dt>
-                <dd>
-                    {platformKeys.map(function(platformId) {
-                        return(
-                            <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
-                        );
-                    })}
-                </dd>
-            </div>
-        : null),
-
-        (lib.spikeins_used && lib.spikeins_used.length ?
-            <div data-test="spikeins">
-                <dt>Spike-ins datasets</dt>
-                <dd>
-                    {lib.spikeins_used.map(function(dataset, i) {
-                        return (
-                            <span key={i}>
-                                {i > 0 ? ', ' : ''}
-                                <a href={dataset['@id']}>{dataset.accession}</a>
-                            </span>
-                        );
-                    })}
-                </dd>
-            </div>
-        : null)
+//        (lib && lib.nucleic_acid_term_name ?
+//            <div data-test="nucleicacid">
+//                <dt>Nucleic acid type</dt>
+//                <dd>{lib.nucleic_acid_term_name}</dd>
+//            </div>
+//        : null),
+//
+//        (lib && lib.size_range ?
+//            <div data-test="sizerange">
+//                <dt>Size range</dt>
+//                <dd>{lib.size_range}</dd>
+//            </div>
+//        : null),
+//
+//        (depleted.length ?
+//            <div data-test="depletedin">
+//                <dt>Depleted in</dt>
+//                <dd>{depleted.join(', ')}</dd>
+//            </div>
+//        : null),
+//
+//        (lib.lysis_method ?
+//            <div data-test="lysismethod">
+//                <dt>Lysis method</dt>
+//                <dd>{lib.lysis_method}</dd>
+//            </div>
+//        : null),
+//
+//        (lib.extraction_method ?
+//            <div data-test="extractionmethod">
+//                <dt>Extraction method</dt>
+//                <dd>{lib.extraction_method}</dd>
+//            </div>
+//        : null),
+//
+//        (lib.fragmentation_method ?
+//            <div data-test="fragmentationmethod">
+//                <dt>Fragmentation method</dt>
+//                <dd>{lib.fragmentation_method}</dd>
+//            </div>
+//        : null),
+//
+//        (lib.library_size_selection_method ?
+//            <div data-test="sizeselectionmethod">
+//                <dt>Size selection method</dt>
+//                <dd>{lib.library_size_selection_method}</dd>
+//            </div>
+//        : null),
+//
+//        (treatments.length ?
+//            <div data-test="treatments">
+//                <dt>Treatments</dt>
+//                <dd>
+//                    {treatments.join(', ')}
+//                </dd>
+//            </div>
+//        : null),
+//
+//        (platformKeys.length ?
+//            <div data-test="platform">
+//                <dt>Platform</dt>
+//                <dd>
+//                    {platformKeys.map(function(platformId) {
+//                        return(
+//                            <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
+//                        );
+//                    })}
+//                </dd>
+//            </div>
+//        : null),
+//
+//        (lib.spikeins_used && lib.spikeins_used.length ?
+//            <div data-test="spikeins">
+//                <dt>Spike-ins datasets</dt>
+//                <dd>
+//                    {lib.spikeins_used.map(function(dataset, i) {
+//                        return (
+//                            <span key={i}>
+//                                {i > 0 ? ', ' : ''}
+//                                <a href={dataset['@id']}>{dataset.accession}</a>
+//                            </span>
+//                        );
+//                    })}
+//                </dd>
+//            </div>
+//        : null)
     ];
 
     return components;

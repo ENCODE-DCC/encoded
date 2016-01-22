@@ -65,7 +65,6 @@ dl.key-value {
             clear: none;
             display: table-row;
         }
-
     }
 }
 
@@ -140,42 +139,15 @@ dl.key-value {
     }
 }
 
-// Left-justified key-value
-.key-value-left {
-    @extend .key-value;
-
-    dt, dd {
-        width: auto;
-        padding-top: 0 !important;
-    }
-
-    dt {
-        float: none !important;
-        display: block !important;
-        text-align: left !important;
-        margin-bottom: 0px !important;
-    }
-
-    dd {
-        margin-left: 0 !important;
-
-        &.key-value-left-indent {
-            margin-left: 20px !important;
-        }
+// When multiple items 
+.line-item {
+    &:before:not(:first-child) {
+        content: '\A';
     }
 }
 
 .unit::before {
     content: " ";
-}
-
-.horizontal-list {
-    @include clearfix;
-
-    li {
-        float: left;
-        margin-right: 0.5em;
-    }
 }
 
 dd ul, .multi-value {
