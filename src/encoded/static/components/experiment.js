@@ -59,6 +59,10 @@ var Panel = function (props) {
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
+    contextTypes: {
+        session: React.PropTypes.object
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -131,6 +135,15 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
+
+        // Get a list of related datasets, possibly filtering on their status
+        var seriesList = [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        if (context.related_series && context.related_series.length) {
+            seriesList = _(context.related_series).filter(dataset => {
+                return loggedIn || dataset.status === 'released';
+            });
+        }
 
         // Set up the breadcrumbs
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
@@ -302,6 +315,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <div data-test="aliases">
                                     <dt>Aliases</dt>
                                     <dd>{aliasList}</dd>
+                                </div>
+                            : null}
+
+                            {seriesList.length ?
+                                <div data-test="relatedseries">
+                                    <dt>Related datasets</dt>
+                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
                                 </div>
                             : null}
 
@@ -714,6 +734,117 @@ var biosampleSummaries = function(biosamples) {
 
     return fullSummary;
 };
+
+
+// Display a list of datasets related to the experiment
+var RelatedSeriesList = React.createClass({
+    propTypes: {
+        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+    },
+
+    getInitialState: function() {
+        return {
+            currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            clicked: false // True if info button was clicked (vs hovered)
+        }
+    },
+
+    // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
+    // been clicked. 'entering' is true if the mouse entered the icon, and false if exiting.
+    handleInfoHover: function(series, entering) {
+        if (!this.state.clicked) {
+            this.setState({currInfoItem: entering ? series.accession : ''});
+        }
+    },
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
+    // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
+    handleInfoClick: function(series, touch, e) {
+        var currTouchScreen = this.state.touchScreen;
+
+        // Remember if we know we've had a touch event
+        if (touch && !currTouchScreen) {
+            currTouchScreen = true;
+            this.setState({touchScreen: true});
+            console.log('SET TOUCHSCREEN TRUE');
+        }
+
+        // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
+        if (!currTouchScreen || touch) {
+            console.log('STAT: %s:%o', currTouchScreen, touch);
+            if (this.state.currInfoItem === series.accession && this.state.clicked) {
+                this.setState({currInfoItem: '', clicked: false});
+            } else {
+                this.setState({currInfoItem: series.accession, clicked: true});
+            }
+        }
+    },
+
+    render: function() {
+        var seriesList = this.props.seriesList;
+
+        return (
+            <span>
+                {seriesList.map((series, i) => {
+                    return (
+                        <span key={series.uuid}>
+                            {i > 0 ? <span>, </span> : null}
+                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession}
+                                handleInfoHover={this.handleInfoHover} handleInfoClick={this.handleInfoClick} />
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+});
+
+
+// Display a one dataset related to the experiment
+var RelatedSeriesItem = React.createClass({
+    propTypes: {
+        series: React.PropTypes.object.isRequired, // Series object to display
+        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
+    },
+
+    getInitialState: function() {
+        return {
+            touchOn: false // True if icon has been touched
+        }
+    },
+
+    // Touch screen
+    touchStart: function(series, e) {
+        this.setState({touchOn: !this.state.touchOn});
+        this.props.handleInfoClick(series, true);
+    },
+
+    render: function() {
+        var {series, detailOpen} = this.props;
+
+        return (
+            <span>
+                <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
+                <div className="tooltip-trigger">
+                    <i className="icon icon-info-circle"
+                        onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                        onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
+                        onClick={this.props.handleInfoClick.bind(null, series, false)}
+                        onTouchStart={this.touchStart.bind(null, series)}></i>
+                    <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
+                        </div>
+                    </div>
+                </div>
+            </span>
+        );
+    }
+});
 
 
 // Handle graphing throws
