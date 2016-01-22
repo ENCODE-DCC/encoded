@@ -94,7 +94,7 @@
                 "requires lab review",
                 "release ready"
             ]
-        },
+        }
     },
     "facets": {
         "assay_term_name": {
