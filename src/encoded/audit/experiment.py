@@ -794,9 +794,10 @@ def audit_experiment_biosample_term(value, system):
 
     elif 'replicates' not in value or len(value['replicates']) == 0:
         biosample_prefix = term_id.split(':')[0]
-        if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
+        if 'biosample_type' in value and \
+           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
             detail = 'Experiment {} has '.format(value['@id']) + \
-                     'a bisample of type {} '.format(term_type) + \
+                     'a biosample of type {} '.format(term_type) + \
                      'with biosample_term_id {} '.format(value['biosample_term_id']) + \
                      'that is not one of ' + \
                      '{}'.format(biosampleType_ontologyPrefix[term_type])
