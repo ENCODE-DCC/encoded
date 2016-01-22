@@ -231,9 +231,10 @@ def lot_reviews(characterizations, targets, request):
         base_review['status'] = 'not pursued'
         return [base_review]
 
-    if len(primary_chars) > 0 and len(secondary_chars) == 0:
-        # There are only primary characterization(s)
-        return [base_review]
+    if histone_mod_target:
+        if len(primary_chars) > 0 and len(secondary_chars) == 0:
+            # There are only primary characterization(s)
+            return [base_review]
 
     if len(primary_chars) == 0 and len(secondary_chars) > 0:
         # There are only secondary characterization(s)
