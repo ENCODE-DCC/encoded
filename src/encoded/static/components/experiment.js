@@ -7,6 +7,7 @@ var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var image = require('./image');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
@@ -32,6 +33,7 @@ var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
+var ProjectBadge = image.ProjectBadge;
 
 
 var anisogenicValues = [
@@ -188,144 +190,149 @@ var Experiment = module.exports.Experiment = React.createClass({
                    </div>
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="assay">
-                            <dt>Assay</dt>
-                            <dd>{context.assay_term_name}</dd>
-                        </div>
-
-                        {context.replication_type ?
-                            <div data-test="replicationtype">
-                                <dt>Replication type</dt>
-                                <dd>{context.replication_type}</dd>
+                <div className="panel panel-default data-display">
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
+                        <dl className="key-value">
+                            <div data-test="assay">
+                                <dt>Assay</dt>
+                                <dd>{context.assay_term_name}</dd>
                             </div>
-                        : null}
 
-                        {biosamples.length || context.biosample_term_name ?
-                            <div data-test="biosample-summary">
-                                <dt>Biosample summary</dt>
-                                <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                            {context.replication_type ?
+                                <div data-test="replicationtype">
+                                    <dt>Replication type</dt>
+                                    <dd>{context.replication_type}</dd>
+                                </div>
+                            : null}
+
+                            {biosamples.length || context.biosample_term_name ?
+                                <div data-test="biosample-summary">
+                                    <dt>Biosample summary</dt>
+                                    <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                                </div>
+                            : null}
+
+                            {synchText.length ?
+                                <div data-test="biosample-synchronization">
+                                    <dt>Synchronization timepoint</dt>
+                                    <dd>
+                                        {synchText.join(', ')}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.biosample_type ?
+                                <div data-test="biosample-type">
+                                    <dt>Type</dt>
+                                    <dd>{context.biosample_type}</dd>
+                                </div>
+                            : null}
+
+                            {treatments ?
+                                <div data-test="treatment">
+                                    <dt>Treatments</dt>
+                                    <dd>{BiosampleTreatments(biosamples)}</dd>
+                                </div>
+                            : null}
+
+                            {context.target ?
+                                <div data-test="target">
+                                    <dt>Target</dt>
+                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                </div>
+                            : null}
+
+                            {Object.keys(antibodies).length ?
+                                <div data-test="antibody">
+                                    <dt>Antibody</dt>
+                                    <dd>{Object.keys(antibodies).map(function(antibody, i) {
+                                        return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                    })}</dd>
+                                </div>
+                            : null}
+
+                            {context.possible_controls && context.possible_controls.length ?
+                                <div data-test="possible-controls">
+                                    <dt>Controls</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.possible_controls.map(function (control) {
+                                                return (
+                                                    <li key={control['@id']} className="multi-comma">
+                                                        <a href={control['@id']}>
+                                                            {control.accession}
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
-                        : null}
 
-                        {synchText.length ?
-                            <div data-test="biosample-synchronization">
-                                <dt>Synchronization timepoint</dt>
-                                <dd>
-                                    {synchText.join(', ')}
-                                </dd>
+                            {context.award.pi && context.award.pi.lab ?
+                                <div data-test="awardpi">
+                                    <dt>Award PI</dt>
+                                    <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.award.project}</dd>
                             </div>
-                        : null}
 
-                        {context.biosample_type ?
-                            <div data-test="biosample-type">
-                                <dt>Type</dt>
-                                <dd>{context.biosample_type}</dd>
-                            </div>
-                        : null}
+                            {context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
 
-                        {treatments ?
-                            <div data-test="treatment">
-                                <dt>Treatments</dt>
-                                <dd>{BiosampleTreatments(biosamples)}</dd>
-                            </div>
-                        : null}
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><PubReferenceList values={context.references} /></dd>
+                                </div>
+                            : null}
 
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{aliasList}</dd>
+                                </div>
+                            : null}
 
-                        {Object.keys(antibodies).length ?
-                            <div data-test="antibody">
-                                <dt>Antibody</dt>
-                                <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                    return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
-                                })}</dd>
-                            </div>
-                        : null}
+                            {seriesList.length ?
+                                <div data-test="relatedseries">
+                                    <dt>Related datasets</dt>
+                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                </div>
+                            : null}
 
-                        {context.possible_controls && context.possible_controls.length ?
-                            <div data-test="possible-controls">
-                                <dt>Controls</dt>
-                                <dd>
-                                    <ul>
-                                        {context.possible_controls.map(function (control) {
-                                            return (
-                                                <li key={control['@id']} className="multi-comma">
-                                                    <a href={control['@id']}>
-                                                        {control.accession}
-                                                    </a>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award.pi && context.award.pi.lab ?
-                            <div data-test="awardpi">
-                                <dt>Award PI</dt>
-                                <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        {context.dbxrefs.length ?
-                            <div data-test="external-resources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{aliasList}</dd>
-                            </div>
-                        : null}
-
-                        {context.date_released ?
-                            <div data-test="date-released">
-                                <dt>Date released</dt>
-                                <dd>{context.date_released}</dd>
-                            </div>
-                        : null}
-
-                        {seriesList.length ?
-                            <div data-test="relatedseries">
-                                <dt>Related datasets</dt>
-                                <dd><RelatedSeriesList seriesList={seriesList} /></dd>
-                            </div>
-                        : null}
-                    </dl>
+                            {context.date_released ?
+                                <div data-test="date-released">
+                                    <dt>Date released</dt>
+                                    <dd>{context.date_released}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
                 </div>
 
                 {AssayDetails({context: context, replicates: replicates})}
