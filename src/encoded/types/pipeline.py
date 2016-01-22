@@ -126,32 +126,6 @@ class AnalysisStepRun(Item):
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step_version.analysis_step',
-        'quality_metrics',
-        'output_files'
     ]
-    rev = {
-        'quality_metrics': ('QualityMetric', 'step_run'),
-        'output_files': ('File', 'step_run')
-    }
-
-    @calculated_property(schema={
-        "title": "QC Metric",
-        "type": "array",
-        "items": {
-            "type": ['string', 'object'],
-            "linkFrom": "QualityMetric.step_run",
-        },
-    })
-    def quality_metrics(self, request, quality_metrics):
-        return paths_filtered_by_status(request, quality_metrics)
-
-    @calculated_property(schema={
-        "title": "Output Files",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkFrom": "File.step_run",
-        },
-    })
-    def output_files(self, request, output_files):
-        return paths_filtered_by_status(request, output_files)
+    # Avoid using reverse links on this object as invalidating a virtual
+    # step_run can cause thousands of objects to be reindexed.
