@@ -139,10 +139,12 @@ dl.key-value {
     }
 }
 
-// When multiple items 
+// When multiple items in a <dd> need to be displayed on their own lines.
+// Apply to each <span> within a <dd> that needs its own line.
 .line-item {
-    &:before:not(:first-child) {
-        content: '\A';
+    &:before {
+        content: ' ';
+        display: block;
     }
 }
 

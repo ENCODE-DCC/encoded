@@ -377,12 +377,18 @@ var ControllingExperiments = React.createClass({
 
 // Return an array of React components to render into the enclosing panel, given the experiment object in the context parameter
 var AssayDetails = module.exports.AssayDetails = function (context) {
-    // No replicates, so no assay panel
+
+    // Little utility to convert a replicate to a unique index we can use for arrays (like libraryValues below)
+    function replicateToIndex(replicate) {
+        return replicate.biological_replicate_number + '-' + replicate.technical_replicate_number;
+    }
+
+    // No replicates, so no assay entries
     if (!context.replicates.length) {
         return [];
     }
 
-    // Sort the replicates first by replicate number, then by technical replicate number
+    // Sort the replicates first by biological replicate number, then by technical replicate number
     var replicates = context.replicates.sort(function(a, b) {
         if (b.biological_replicate_number === a.biological_replicate_number) {
             return a.technical_replicate_number - b.technical_replicate_number;
@@ -390,18 +396,86 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         return a.biological_replicate_number - b.biological_replicate_number;
     });
 
-    // Collect library values to display. Each key holds an array of values from each replicate's library, indexed by the
-    // replicate's biological replicate number.
+    // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
     var libraryValues = {
-        nucleic_acid_term_name: [],
-        size_range: []
+        nucleic_acid_term_name:        {values: [], value: undefined, component: {}, title: 'Nucleic acid type',     test: 'nucleicacid'},
+        size_range:                    {values: [], value: undefined, component: {}, title: 'Size range',            test: 'sizerange'},
+        depleted_in_term_name:         {values: [], value: undefined, component: {}, title: 'Depleted in',           test: 'depletedin'},
+        lysis_method:                  {values: [], value: undefined, component: {}, title: 'Lysis method',          test: 'lysismethod'},
+        extraction_method:             {values: [], value: undefined, component: {}, title: 'Extraction method',     test: 'extractionmethod'},
+        fragmentation_method:          {values: [], value: undefined, component: {}, title: 'Fragmentation method',  test: 'fragmentationmethod'},
+        library_size_selection_method: {values: [], value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod'},
+        treatments:                    {values: [], value: undefined, component: {}, title: 'Treatments',            test: 'treatments'},
+        spikeins_used:                 {values: [], value: undefined, component: {}, title: 'Spike-ins datasets',    test: 'spikeins'}
     };
+
+    // For any library properties that aren't simple values, put functions to process them into simple values in this object,
+    // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
+    // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+    var librarySpecials = {
+        depleted_in_term_name: function(terms) {
+            if (terms && terms.length) {
+                return terms.sort().join(', ');
+            }
+            return undefined;
+        },
+        treatments: function(treatments) {
+            if (treatments && treatments.length) {
+                return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
+            }
+            return undefined;
+        },
+        spikeins_used: function(spikeins) {
+            // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
+            if (spikeins && spikeins.length) {
+                return spikeins.map(spikein => spikein.accession).sort().join();
+            }
+        }
+    };
+
+    var libraryComponents = {
+        spikeins_used: function(spikeins) {
+            return (
+                <span>
+                    {spikeins.map(function(dataset, i) {
+                        return (
+                            <span key={dataset.uuid}>
+                                {i > 0 ? ', ' : ''}
+                                <a href={dataset['@id']}>{dataset.accession}</a>
+                            </span>
+                        );
+                    })}
+                </span>
+            );
+        }
+    }
+
+    // Collect library values to display from each replicate. Each key holds an array of values from each replicate's library,
+    // indexed by the replicate's biological replicate number.
     replicates.forEach(replicate => {
         var library = replicate.library;
+        var replicateIndex = replicateToIndex(replicate);
+
         if (library) {
+            // Handle "normal" library properties
             Object.keys(libraryValues).forEach(key => {
-                if (library[key]) {
-                    libraryValues[key][replicate.biological_replicate_number] = library[key];
+                var libraryValue;
+
+                // For specific library properties, preprocess non-simple values into simple ones using librarySpecials
+                if (librarySpecials[key]) {
+                    // Preprocess complex values into simple ones
+                    libraryValue = librarySpecials[key](library[key]);
+                } else {
+                    // Simple value -- just copy it if it exists (copy undefined if it doesnt')
+                    libraryValue = library[key];
+                }
+
+                // If library property exists, add it to the values we're collecting, keyed by the biological replicate number.
+                // We'll prune it after this replicate loop.
+                libraryValues[key].values[replicateIndex] = libraryValue;
+
+                if (libraryComponents[key]) {
+                    libraryValues[key].component[replicateIndex] = libraryComponents[key](library[key]);
                 }
             });
         }
@@ -410,35 +484,52 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
     // Each property of libraryValues now has every value found in every existing library property in every replicate.
     // Now for each library value in libraryValues, replace the array with a string if all values in the array are
     // the same.
-    var firstBiologicalReplicate = replicates[0].biological_replicate_number
+    var firstBiologicalReplicate = replicateToIndex(replicates[0]);
     Object.keys(libraryValues).forEach(key => {
-        var firstValue = libraryValues[key][firstBiologicalReplicate];
-        if (_(libraryValues[key]).all(value => value === undefined ? true : value === firstValue)) {
+        var firstValue = libraryValues[key].values[firstBiologicalReplicate];
+        if (_(Object.keys(libraryValues[key].values)).all(replicateId => {
+            var value = libraryValues[key].values[replicateId];
+            return value === undefined ? true : value === firstValue;
+        })) {
             // All values for the library value are the same. Replace the array with that value
-            libraryValues[key] = firstValue;
+            libraryValues[key].value = firstValue;
+
+            // If the resulting value is undefined, then all values are undefined for this key. Null out the values array.
+            if (firstValue === undefined) {
+                libraryValues[key].values = [];
+            }
         }
     });
 
-    // Collect data from the libraries of all of the replicates, ignoring duplicates
-    var depleted = [];
-    var treatments = [];
-    var lib = replicates[0].library;
-    if (lib) {
-        // Get the array of depleted_in_term_name strings for display
-        if (lib.depleted_in_term_name && lib.depleted_in_term_name.length) {
-            depleted = lib.depleted_in_term_name;
+    // Now begin the output process -- one React component per array element
+    var components = Object.keys(libraryValues).map(key => {
+        var libraryEntry = libraryValues[key];
+        if (libraryEntry.value !== undefined || (libraryEntry.values && Object.keys(libraryEntry.values).length)) {
+            return (
+                <div data-test={libraryEntry.test}>
+                    <dt>{libraryEntry.title}</dt>
+                    <dd>
+                        {libraryEntry.value !== undefined ?
+                            <span>{Object.keys(libraryEntry.component).length ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
+                        :
+                            <span>
+                                {Object.keys(libraryEntry.values).map((replicateId) => {
+                                    var value = libraryEntry.values[replicateId];
+                                    if (libraryEntry.component[replicateId]) {
+                                        return <span key={replicateId} className="line-item">{libraryEntry.component[replicateId]} [{replicateId}]</span>;
+                                    }
+                                    return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
+                                })}
+                            </span>
+                        }
+                    </dd>
+                </div>
+            );
         }
-
-        // Make an array of treatment term names for display
-        if (lib.treatments && lib.treatments.length) {
-            treatments = lib.treatments.map(function(treatment) {
-                return treatment.treatment_term_name;
-            });
-        }
-    } else {
-        // No libraries, so no assay panel
         return null;
-    }
+    });
+
+    // Now handle a couple more complex properties to display for assay details.
 
     // Create platforms array from file platforms; ignore duplicate platforms
     var platforms = {};
@@ -449,119 +540,17 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
             }
         });
     }
+
+    // Add platforms to the components array
     var platformKeys = Object.keys(platforms);
-
-    // If no platforms found in files, get the platform from the first replicate, if it has one
-    if (Object.keys(platforms).length === 0 && replicates[0].platform) {
-        platforms[replicates[0].platform['@id']] = replicates[0].platform;
-    }
-
-
-
-    // Now begin the output process -- one React component per array element
-    var components = [
-        (libraryValues.nucleic_acid_term_name ?
-            <div data-test="nucleicacid">
-                <dt>Nucleic acid type</dt>
-                <dd>
-                    {typeof libraryValues.nucleic_acid_term_name === 'object' ?
-                        <span>
-                            {libraryValues.nucleic_acid_term_name.map((name, rep) => {
-                                return <span key={rep} className="line-item">{name} [{rep}]</span>;
-                            })}
-                        </span>
-                    : <span>{libraryValues.nucleic_acid_term_name}</span>}
-                </dd>
+    if (platformKeys.length) {
+        components.push(
+            <div data-test="platform">
+                <dt>Platform</dt>
+                <dd>{platformKeys.map(platformId => <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>)}</dd>
             </div>
-        : null),
-
-//        (lib && lib.nucleic_acid_term_name ?
-//            <div data-test="nucleicacid">
-//                <dt>Nucleic acid type</dt>
-//                <dd>{lib.nucleic_acid_term_name}</dd>
-//            </div>
-//        : null),
-//
-//        (lib && lib.size_range ?
-//            <div data-test="sizerange">
-//                <dt>Size range</dt>
-//                <dd>{lib.size_range}</dd>
-//            </div>
-//        : null),
-//
-//        (depleted.length ?
-//            <div data-test="depletedin">
-//                <dt>Depleted in</dt>
-//                <dd>{depleted.join(', ')}</dd>
-//            </div>
-//        : null),
-//
-//        (lib.lysis_method ?
-//            <div data-test="lysismethod">
-//                <dt>Lysis method</dt>
-//                <dd>{lib.lysis_method}</dd>
-//            </div>
-//        : null),
-//
-//        (lib.extraction_method ?
-//            <div data-test="extractionmethod">
-//                <dt>Extraction method</dt>
-//                <dd>{lib.extraction_method}</dd>
-//            </div>
-//        : null),
-//
-//        (lib.fragmentation_method ?
-//            <div data-test="fragmentationmethod">
-//                <dt>Fragmentation method</dt>
-//                <dd>{lib.fragmentation_method}</dd>
-//            </div>
-//        : null),
-//
-//        (lib.library_size_selection_method ?
-//            <div data-test="sizeselectionmethod">
-//                <dt>Size selection method</dt>
-//                <dd>{lib.library_size_selection_method}</dd>
-//            </div>
-//        : null),
-//
-//        (treatments.length ?
-//            <div data-test="treatments">
-//                <dt>Treatments</dt>
-//                <dd>
-//                    {treatments.join(', ')}
-//                </dd>
-//            </div>
-//        : null),
-//
-//        (platformKeys.length ?
-//            <div data-test="platform">
-//                <dt>Platform</dt>
-//                <dd>
-//                    {platformKeys.map(function(platformId) {
-//                        return(
-//                            <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>
-//                        );
-//                    })}
-//                </dd>
-//            </div>
-//        : null),
-//
-//        (lib.spikeins_used && lib.spikeins_used.length ?
-//            <div data-test="spikeins">
-//                <dt>Spike-ins datasets</dt>
-//                <dd>
-//                    {lib.spikeins_used.map(function(dataset, i) {
-//                        return (
-//                            <span key={i}>
-//                                {i > 0 ? ', ' : ''}
-//                                <a href={dataset['@id']}>{dataset.accession}</a>
-//                            </span>
-//                        );
-//                    })}
-//                </dd>
-//            </div>
-//        : null)
-    ];
+        );
+    }
 
     return components;
 };
@@ -572,7 +561,6 @@ var Replicate = module.exports.Replicate = function (props) {
     var concentration = replicate.rbns_protein_concentration;
     var library = replicate.library;
     var biosample = library && library.biosample;
-    var paired_end = replicate.paired_ended;
 
     // Build biosample summary string
     var summary;
