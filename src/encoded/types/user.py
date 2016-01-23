@@ -10,9 +10,9 @@ from pyramid.security import (
 )
 from .base import (
     Item,
-    paths_filtered_by_status,
 )
 from contentbase import (
+    CONNECTION,
     calculated_property,
     collection,
     load_schema,
@@ -41,13 +41,10 @@ from contentbase.util import expand_path
 class User(Item):
     item_type = 'user'
     schema = load_schema('encoded:schemas/user.json')
-    rev = {
-        'access_keys': ('AccessKey', 'user'),
-    }
-    embedded = (
+    # Avoid access_keys reverse link so editing access keys does not reindex content.
+    embedded = [
         'lab',
-        'access_keys',
-    )
+    ]
 
     @calculated_property(schema={
         "title": "Title",
@@ -67,9 +64,13 @@ class User(Item):
             "type": ['string', 'object'],
             "linkFrom": "AccessKey.user",
         },
-    })
-    def access_keys(self, request, access_keys):
-        return paths_filtered_by_status(request, access_keys)
+    }, category='page')
+    def access_keys(self, request):
+        if not request.has_permission('view_details'):
+            return
+        uuids = self.registry[CONNECTION].get_rev_links(self.model, 'user', 'AccessKey')
+        objects = (request.embed('/', str(uuid), '@@object') for uuid in uuids)
+        return [obj for obj in objects if obj['status'] not in ('deleted', 'replaced')]
 
 
 @view_config(context=User, permission='view', request_method='GET', name='page')

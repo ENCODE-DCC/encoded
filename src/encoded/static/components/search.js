@@ -170,9 +170,9 @@ var AuditMixin = audit.AuditMixin;
             var classes = {tooltipopen: this.state.tipOpen};
 
             return (
-                <span className="tooltip-trigger">
+                <span className="tooltip-status-trigger">
                     <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
-                    <div className={"tooltip sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                    <div className={"tooltip-status sentence-case " + cx(classes)} style={this.state.tipStyles}>
                         {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                     </div>
                 </span>
