@@ -159,7 +159,7 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    log.debug('Peak indexer started')
+    log.warn('Peak indexer started')
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
