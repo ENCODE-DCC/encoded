@@ -35,7 +35,7 @@ def includeme(config):
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
 
-    log.debug("Indexer is running")
+    log.warn("Indexer is running")
 
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     # Setting request.datastore here only works because routed views are not traversed.
