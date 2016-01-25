@@ -579,20 +579,20 @@ var Reference = React.createClass({
                         : null}
 
                         {context.lab ?
-                            <div data-type="lab">
+                            <div data-test="lab">
                                 <dt>Lab</dt>
                                 <dd>{context.lab.title}</dd>
                             </div>
                         : null}
                         
                         {context.aliases.length ?
-                            <div data-type="aliases">
+                            <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd><DbxrefList values={context.aliases} /></dd>
                             </div>
                         : null}
 
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
