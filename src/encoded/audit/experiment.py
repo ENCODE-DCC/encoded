@@ -801,7 +801,7 @@ def audit_experiment_biosample_term(value, system):
                      'with biosample_term_id {} '.format(value['biosample_term_id']) + \
                      'that is not one of ' + \
                      '{}'.format(biosampleType_ontologyPrefix[term_type])
-            yield AuditFailure('experiment with invalid biosample term id', detail,
+            yield AuditFailure('experiment with inappropriate biosample term id', detail,
                                level='DCC_ACTION')
 
         elif term_id not in ontology:
