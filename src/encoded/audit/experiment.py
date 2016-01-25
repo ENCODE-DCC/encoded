@@ -264,15 +264,6 @@ def audit_experiment_biosample_term_id(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
             yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
-    if 'biosample_type' in value and 'biosample_term_id' in value:
-        biosample_prefix = value['biosample_term_id'].split(':')[0]
-        if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
-            detail = 'Experiment {} has '.format(value['@id']) + \
-                     'biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-            yield AuditFailure('experiment with invalid biosample term id', detail,
-                               level='DCC_ACTION')
     return
 
 
@@ -796,22 +787,36 @@ def audit_experiment_biosample_term(value, system):
     if term_id is None:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
+
     elif term_id.startswith('NTR:'):
         detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
         yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
-    elif term_id not in ontology:
-        detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
-        yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
-    else:
-        ontology_name = ontology[term_id]['name']
-        if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-            detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
-                value['@id'],
-                term_id,
-                term_name,
-                ontology_name
-                )
-            yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+
+    elif 'replicates' not in value or len(value['replicates']) == 0:
+        biosample_prefix = term_id.split(':')[0]
+        if 'biosample_type' in value and \
+           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
+            detail = 'Experiment {} has '.format(value['@id']) + \
+                     'a biosample of type {} '.format(term_type) + \
+                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                     'that is not one of ' + \
+                     '{}'.format(biosampleType_ontologyPrefix[term_type])
+            yield AuditFailure('experiment with invalid biosample term id', detail,
+                               level='DCC_ACTION')
+
+        elif term_id not in ontology:
+            detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
+            yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+        else:
+            ontology_name = ontology[term_id]['name']
+            if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
+                detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
+                    value['@id'],
+                    term_id,
+                    term_name,
+                    ontology_name
+                    )
+                yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
     for rep in value['replicates']:
         if 'library' not in rep:

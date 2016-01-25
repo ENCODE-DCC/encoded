@@ -88,7 +88,7 @@ def schema_mapping(name, schema):
             }
         }
 
-    if type_ in ['string', 'boolean']:
+    if type_ ==  'boolean':
         return {
             'type': 'string',
             'store': True,
@@ -99,6 +99,26 @@ def schema_mapping(name, schema):
                 }
             }
         }
+
+    if type_ == 'string':
+
+        if schema.get('elasticsearch_mapping_index_type'):
+             if schema.get('elasticsearch_mapping_index_type')['default'] == 'analyzed':
+                return {
+                    'type': 'string',
+                    'store': True,
+                }
+        else:
+            return {
+                'type': 'string',
+                'store': True,
+                'fields': {
+                    'raw': {
+                        'type': 'string',
+                        'index': 'not_analyzed'
+                    }
+                }
+            }
 
     if type_ == 'number':
         return {
@@ -187,7 +207,7 @@ def audit_mapping():
         },
         'detail': {
             'type': 'string',
-            'index': 'not_analyzed',
+            'index': 'analyzed', 
         },
         'level_name': {
             'type': 'string',

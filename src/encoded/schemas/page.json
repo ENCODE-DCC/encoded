@@ -50,7 +50,18 @@
                         "type": "object",
                         "properties": {
                             "body": {
-                                "type": "string"
+                                "type": "string",
+                                "elasticsearch_mapping_index_type": {
+                                    "title": "Field mapping index type",
+                                    "description": "Defines one of three types of indexing available",
+                                    "type": "string",
+                                    "default": "analyzed",
+                                    "enum": [
+                                        "analyzed",
+                                        "not_analyzed",
+                                        "no"
+                                    ]
+                                }
                             },
                             "image": {
                                 "type": "string",
