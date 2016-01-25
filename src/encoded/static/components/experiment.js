@@ -76,7 +76,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             getValue: function(replicate) {
                 return replicate.library ? replicate.library.accession : '';
             }
-        },
+        }
     },
 
     render: function() {
@@ -398,15 +398,15 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
 
     // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
     var libraryValues = {
-        nucleic_acid_term_name:        {values: [], value: undefined, component: {}, title: 'Nucleic acid type',     test: 'nucleicacid'},
-        size_range:                    {values: [], value: undefined, component: {}, title: 'Size range',            test: 'sizerange'},
-        depleted_in_term_name:         {values: [], value: undefined, component: {}, title: 'Depleted in',           test: 'depletedin'},
-        lysis_method:                  {values: [], value: undefined, component: {}, title: 'Lysis method',          test: 'lysismethod'},
-        extraction_method:             {values: [], value: undefined, component: {}, title: 'Extraction method',     test: 'extractionmethod'},
-        fragmentation_method:          {values: [], value: undefined, component: {}, title: 'Fragmentation method',  test: 'fragmentationmethod'},
-        library_size_selection_method: {values: [], value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod'},
-        treatments:                    {values: [], value: undefined, component: {}, title: 'Treatments',            test: 'treatments'},
-        spikeins_used:                 {values: [], value: undefined, component: {}, title: 'Spike-ins datasets',    test: 'spikeins'}
+        nucleic_acid_term_name:        {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',     test: 'nucleicacid'},
+        size_range:                    {values: {}, value: undefined, component: {}, title: 'Size range',            test: 'sizerange'},
+        depleted_in_term_name:         {values: {}, value: undefined, component: {}, title: 'Depleted in',           test: 'depletedin'},
+        lysis_method:                  {values: {}, value: undefined, component: {}, title: 'Lysis method',          test: 'lysismethod'},
+        extraction_method:             {values: {}, value: undefined, component: {}, title: 'Extraction method',     test: 'extractionmethod'},
+        fragmentation_method:          {values: {}, value: undefined, component: {}, title: 'Fragmentation method',  test: 'fragmentationmethod'},
+        library_size_selection_method: {values: {}, value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod'},
+        treatments:                    {values: {}, value: undefined, component: {}, title: 'Treatments',            test: 'treatments'},
+        spikeins_used:                 {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',    test: 'spikeins'}
     };
 
     // For any library properties that aren't simple values, put functions to process them into simple values in this object,
@@ -435,23 +435,28 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
 
     var libraryComponents = {
         spikeins_used: function(spikeins) {
-            return (
-                <span>
-                    {spikeins.map(function(dataset, i) {
-                        return (
-                            <span key={dataset.uuid}>
-                                {i > 0 ? ', ' : ''}
-                                <a href={dataset['@id']}>{dataset.accession}</a>
-                            </span>
-                        );
-                    })}
-                </span>
-            );
+            if (spikeins && spikeins.length) {
+                return (
+                    <span>
+                        {spikeins.map(function(dataset, i) {
+                            return (
+                                <span key={dataset.uuid}>
+                                    {i > 0 ? ', ' : ''}
+                                    <a href={dataset['@id']}>{dataset.accession}</a>
+                                </span>
+                            );
+                        })}
+                    </span>
+                );
+            }
+            return null;
         }
     }
 
     // Collect library values to display from each replicate. Each key holds an array of values from each replicate's library,
-    // indexed by the replicate's biological replicate number.
+    // indexed by the replicate's biological replicate number. After this loop runs, libraryValues.values should all be filled
+    // with objects keyed by <bio rep num>-<tech rep num> and have the corresponding value or undefined if no value exists
+    // for that key. The 'value' properties of each object in libraryValues will all be undefined after this loop runs.
     replicates.forEach(replicate => {
         var library = replicate.library;
         var replicateIndex = replicateToIndex(replicate);
@@ -466,7 +471,7 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
                     // Preprocess complex values into simple ones
                     libraryValue = librarySpecials[key](library[key]);
                 } else {
-                    // Simple value -- just copy it if it exists (copy undefined if it doesnt')
+                    // Simple value -- just copy it if it exists (copy undefined if it doesn't)
                     libraryValue = library[key];
                 }
 
@@ -474,6 +479,7 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
                 // We'll prune it after this replicate loop.
                 libraryValues[key].values[replicateIndex] = libraryValue;
 
+                // If the current key shows a rendering component, call it and save the resulting React object for later rendering.
                 if (libraryComponents[key]) {
                     libraryValues[key].component[replicateIndex] = libraryComponents[key](library[key]);
                 }
@@ -482,16 +488,19 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
     });
 
     // Each property of libraryValues now has every value found in every existing library property in every replicate.
-    // Now for each library value in libraryValues, replace the array with a string if all values in the array are
-    // the same.
+    // Now for each library value in libraryValues, set the 'value' property if all values in the 'values' object are
+    // identical and existing. Otherwise, keep 'value' set to undefined.
     var firstBiologicalReplicate = replicateToIndex(replicates[0]);
     Object.keys(libraryValues).forEach(key => {
+        // Get the first key's value to compare against the others.
         var firstValue = libraryValues[key].values[firstBiologicalReplicate];
+
+        // See if all values in the values array are identical. Treat 'undefined' as a value
         if (_(Object.keys(libraryValues[key].values)).all(replicateId => {
             var value = libraryValues[key].values[replicateId];
-            return value === undefined ? true : value === firstValue;
+            return value === firstValue;
         })) {
-            // All values for the library value are the same. Replace the array with that value
+            // All values for the library value are the same. Set the 'value' field with that value.
             libraryValues[key].value = firstValue;
 
             // If the resulting value is undefined, then all values are undefined for this key. Null out the values array.
@@ -510,15 +519,23 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?
-                            <span>{Object.keys(libraryEntry.component).length ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
+                            /* Single value for this property; render it or its React component */
+                            <span>{(libraryEntry.component && Object.keys(libraryEntry.component).length) ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
                         :
+                            /* Multiple values for this property */
                             <span>
                                 {Object.keys(libraryEntry.values).map((replicateId) => {
                                     var value = libraryEntry.values[replicateId];
-                                    if (libraryEntry.component[replicateId]) {
+                                    if (libraryEntry.component && libraryEntry.component[replicateId]) {
+                                        /* Display the pre-rendered component */
                                         return <span key={replicateId} className="line-item">{libraryEntry.component[replicateId]} [{replicateId}]</span>;
+                                    } else if (value) {
+                                        /* Display the simple value */
+                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
+                                    } else {
+                                        /* No value to display; happens when at least one replicate had a value for this property, but this one doesn't */
+                                        return null;
                                     }
-                                    return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
                                 })}
                             </span>
                         }
@@ -526,6 +543,8 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
                 </div>
             );
         }
+
+        // No value exists for this property in any replicate; display nothing for this property.
         return null;
     });
 
