@@ -103,6 +103,9 @@ def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
+
+    log.warn('endex_peak called')
+
     context = request.embed(uuid)
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
@@ -122,6 +125,9 @@ def index_peaks(uuid, request):
                 break
     if not flag:
         return
+
+    log.warn("qualifying bed file found")
+
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
@@ -143,6 +149,8 @@ def index_peaks(uuid, request):
                     })
                 else:
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+
+    log.warn("file successfully read for indexing")
         
     for key in file_data:
         doc = {
@@ -252,6 +260,9 @@ def index_file(request):
             referencing = {hit['_id'] for hit in res['hits']['hits']}
             invalidated = referencing | updated
     if not dry_run:
+
+        log.warn("Number of invalidated objects {}".format(len(invalidated)))
+
         for uuid in invalidated:
             index_peaks(uuid, request)
     return result
