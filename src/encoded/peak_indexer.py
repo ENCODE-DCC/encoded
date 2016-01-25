@@ -192,7 +192,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es.get(index=INDEX, doc_type='meta', id='indexing')
+            status = es.get(index=INDEX, doc_type='meta', id='indexing_peaks')
         except NotFoundError:
             pass
         else:
