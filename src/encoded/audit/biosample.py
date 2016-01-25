@@ -78,19 +78,6 @@ def audit_biosample_human_no_model_organism_properties(value, system):
         return
 
 
-@audit_checker('biosample', frame=['object'])
-def audit_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    biosample_prefix = value['biosample_term_id'].split(':')[0]
-    if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
-        detail = 'Biosample {} has '.format(value['@id']) + \
-                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
-                 'that is not one of ' + \
-                 '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-        raise AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
-
-
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
     '''
@@ -190,6 +177,14 @@ def audit_biosample_term(value, system):
             value['@id'],
             term_id)
         raise AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+
+    biosample_prefix = term_id
+    if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
+        detail = 'Biosample {} has '.format(value['@id']) + \
+                 'biosample_term_id {} '.format(value['biosample_term_id']) + \
+                 'that is not one of ' + \
+                 '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
+        raise AuditFailure('inappropriate biosample term id', detail, level='DCC_ACTION')
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:

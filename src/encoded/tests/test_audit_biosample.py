@@ -154,7 +154,7 @@ def test_audit_biosample_term_id(testapp, base_biosample):
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'invalid biosample term id' for error in errors_list)
+    assert any(error['category'] == 'inappropriate biosample term id' for error in errors_list)
 
 
 def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample):
