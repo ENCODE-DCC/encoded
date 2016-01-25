@@ -132,23 +132,17 @@ def index_peaks(uuid, request):
     r.release_conn()
     file_data = dict()
 
-    try:
-        with gzip.open(comp, mode="rt") as file:
-            for row in tsvreader(file):
-                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                if isinstance(start, int) and isinstance(end, int):
-                    if chrom in file_data:
-                        file_data[chrom].append({
-                            'start': start + 1,
-                            'end': end + 1
-                        })
-                    else:
-                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-    except Exception as e:
-        log.exception('File could not be indexed')
-        return
-    else:
-        log.info('file was sussfully indexed')
+    with gzip.open(comp, mode="rt") as file:
+        for row in tsvreader(file):
+            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+            if isinstance(start, int) and isinstance(end, int):
+                if chrom in file_data:
+                    file_data[chrom].append({
+                        'start': start + 1,
+                        'end': end + 1
+                    })
+                else:
+                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
         
     for key in file_data:
         doc = {
@@ -165,7 +159,7 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    log.info('Peak indexer started')
+    log.debug('Peak indexer started')
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
@@ -192,7 +186,7 @@ def index_file(request):
         last_xmin = request.json['last_xmin']
     else:
         try:
-            status = es.get(index=INDEX, doc_type='meta', id='indexing_peaks')
+            status = es.get(index=INDEX, doc_type='meta', id='indexing')
         except NotFoundError:
             pass
         else:
@@ -202,6 +196,9 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
+
+    last_xmin = None    # overriding the varible to trigger indexing and avoid _indexer's interference
+
     if last_xmin is None:
         result['types'] = types = request.json.get('types', None)
         invalidated = list(all_uuids(request.root, types))
