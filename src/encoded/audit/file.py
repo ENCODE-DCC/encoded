@@ -626,7 +626,7 @@ def audit_file_read_depth(value, system):
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'uniquely mapped reads. ' + \
-                             'The recommended numer of uniquely mapped reads for ChIP-seq assay ' + \
+                             'The recommended number of uniquely mapped reads for ChIP-seq assay ' + \
                              'and target {} would be '.format(target_name) + \
                              '{}'.format(marks['narrow']+5000000)
                     yield AuditFailure('insufficient read depth', detail, level='WARNING')
