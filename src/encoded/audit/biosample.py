@@ -180,7 +180,7 @@ def audit_biosample_term(value, system):
                  'has biosample_term_id {} '.format(value['biosample_term_id']) + \
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-        yield AuditFailure('inappropriate biosample term id', detail, level='DCC_ACTION')
+        yield AuditFailure('biosample term-type mismatch', detail, level='DCC_ACTION')
         return
 
     if term_id not in ontology:
