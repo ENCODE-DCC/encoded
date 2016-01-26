@@ -165,6 +165,7 @@ def check_format(item, path):
         ('rcc', None): ['-type=rcc'],
         ('idat', None): ['-type=idat'],
         ('gtf', None): None,
+        ('tagAlign', None): ['-type=tagAlign],
         ('tar', None): None,
         ('tsv', None): None,
         ('csv', None): None,
