@@ -141,7 +141,8 @@ def audit_file_read_length(value, system):
 
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
-        raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        yield AuditFailure('missing read_length', detail, level='DCC_ACTION')
+        return
 
     creation_date = value['date_created'][:10].split('-')
     year = int(creation_date[0])
