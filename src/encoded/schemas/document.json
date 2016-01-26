@@ -20,21 +20,18 @@
     ],
     "facets": {
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "document_type": {
-            "title": "Document type",
-            "type": "string"
+            "title": "Document type"
         }
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "document_type": {
             "title": "Type",
@@ -68,7 +65,18 @@
             "title": "Description",
             "description": "A plain text description of the document.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         },
         "urls": {
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -76,6 +84,7 @@
             "description": "External resources with additional information to the document.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "URL",
                 "description": "An external resource with additional information to the document.",

@@ -28,7 +28,6 @@
     "envify": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.5.0",
     "jest-cli": "^0.5.8",
     "minifyify": "^6.2.0",
     "moment": "^2.8.2",
@@ -37,6 +36,7 @@
   "dependencies": {
     "brace": "^0.3.0",
     "ckeditor": "file:node_shims/ckeditor",
+    "color": "^0.10.1",
     "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
     "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#compound-nodes",
@@ -45,7 +45,6 @@
     "google-analytics": "file:node_shims/google-analytics",
     "immutable": "^3.7.5",
     "marked": "^0.3.3",
-    "node-ckeditor": "^4.3.2",
     "react": "^0.12.2",
     "react-bootstrap": "^0.15.1",
     "react-forms": "git+https://github.com/lrowe/react-forms.git#3953a633b1f77640dffb5e3f1d5bbe78a98c3dfe",

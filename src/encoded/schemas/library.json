@@ -18,12 +18,12 @@
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
         "status": {
-            "title": "Library status",
-            "type": "string"
+            "title": "Library status"
         }
     },
     "dependencies": {
@@ -38,7 +38,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "LB"
@@ -48,12 +48,13 @@
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items" : {
                 "title": "A spike-ins dataset.",
                 "description": "A specific spike-ins type dataset",
                 "comment": "See dataset.json for available identifiers.",
                 "type": "string",
-                "linkTo": "Dataset"
+                "linkTo": "Reference"
             }
         },
         "biosample": {
@@ -73,7 +74,6 @@
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
-            "@id": null,
             "title": "Molecule term",
             "description": "SO (Sequence Ontology) term best matching the molecule isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
@@ -99,19 +99,6 @@
                 "SO:0000104"
             ]
         },
-        "documents": {
-            "title": "Protocol documents",
-            "description": "Documents that describe the preparation of the library.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Protocol document",
-                "description": "A document that describe the preparation of the library. ",
-                "comment": "See document.json for available identifiers.",
-                "type": "string",
-                "linkTo": "Document"
-            }
-        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -119,6 +106,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -166,7 +154,8 @@
             "type": "string",
             "enum": [
                 "chemical (generic)",
-                "chemical (DnaseI)",
+                "chemical (DNaseI)",
+                "chemical (RNase III)",
                 "chemical (HindIII/DpnII restriction)",
                 "chemical (Tn5 transposase)",
                 "chemical (micrococcal nuclease)",
@@ -248,6 +237,7 @@
             "title": "Treatments",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
@@ -256,7 +246,6 @@
             }
         },
         "depleted_in_term_name": {
-            "@id": null,
             "type": "array",
             "title": "Depleted in term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
@@ -289,28 +278,22 @@
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "award": {
-            "title": "Award",
-            "type": "string"
+            "title": "Award"
         },
         "lab": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "biosample.biosample_term_name": {
-            "title": "Biosample",
-            "type": "string"
+            "title": "Biosample"
         },
         "biosample.organism.name": {
-            "title": "Species",
-            "type": "string"
+            "title": "Species"
         },
         "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term Name",
-            "type": "string"
+            "title": "Nucleic Acid Term Name"
         }
     },
     "boost_values": {

@@ -2,6 +2,10 @@ from past.builtins import basestring
 from pyramid.threadlocal import manager as threadlocal_manager
 
 
+def includeme(config):
+    config.add_request_method(select_distinct_values)
+
+
 def get_root_request():
     if threadlocal_manager.stack:
         return threadlocal_manager.stack[0]['request']
@@ -50,3 +54,16 @@ def expand_path(request, obj, path):
         if not isinstance(value, dict):
             value = obj[name] = request.embed(value, '@@object')
         expand_path(request, value, remaining)
+
+
+def select_distinct_values(request, value_path, *from_paths):
+    if isinstance(value_path, basestring):
+        value_path = value_path.split('.')
+
+    values = from_paths
+    for name in value_path:
+        objs = (request.embed(member, '@@object') for member in values)
+        value_lists = (ensurelist(obj.get(name, [])) for obj in objs)
+        values = {value for value_list in value_lists for value in value_list}
+
+    return list(values)

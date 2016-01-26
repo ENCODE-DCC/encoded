@@ -1,12 +1,13 @@
 // Entry point for server rendering subprocess
 
 /* jshint strict: false */
-require('source-map-support').install();
 
 if (process.env.NODE_ENV === undefined) {
     require("babel-core/register")({
       only: ['react-forms', 'src/encoded/static'],
     });
+} else {
+    require('source-map-support').install();
 }
 
 require('./libs/react-patches');

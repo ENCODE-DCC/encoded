@@ -30,6 +30,7 @@ from .upgrader import upgrade_step  # noqa
 
 def includeme(config):
     config.include('pyramid_tm')
+    config.include('.util')
     config.include('.stats')
     config.include('.batchupgrade')
     config.include('.calculated')

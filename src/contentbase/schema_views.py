@@ -1,7 +1,10 @@
 from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
-from .interfaces import COLLECTIONS
+from .interfaces import (
+    COLLECTIONS,
+    TYPES,
+)
 
 
 def includeme(config):
@@ -10,10 +13,13 @@ def includeme(config):
     config.scan(__name__)
 
 
-def _annotated_schema(collection, request):
-    schema = collection.type_info.schema.copy()
+def _annotated_schema(type_info, request):
+    schema = type_info.schema.copy()
     schema['@type'] = ['JSONSchema']
+    if type_info.factory is None:
+        return schema
 
+    collection = request.registry[COLLECTIONS][type_info.name]
     properties = OrderedDict()
     # add a 'readonly' flag to fields that the current user cannot write
     for k, v in schema['properties'].items():
@@ -29,20 +35,20 @@ def _annotated_schema(collection, request):
 @view_config(route_name='schema', request_method='GET')
 def schema(context, request):
     type_name = request.matchdict['type_name']
-    collections = request.registry[COLLECTIONS]
+    types = request.registry[TYPES]
     try:
-        collection = collections[type_name]
+        type_info = types[type_name]
     except KeyError:
         raise HTTPNotFound(type_name)
 
-    return _annotated_schema(collection, request)
+    return _annotated_schema(type_info, request)
 
 
 @view_config(route_name='schemas', request_method='GET')
 def schemas(context, request):
-    collections = request.registry[COLLECTIONS]
+    types = request.registry[TYPES]
     schemas = {}
-    for collection in collections.by_item_type.values():
-        name = collection.type_info.name
-        schemas[name] = _annotated_schema(collection, request)
+    for type_info in types.by_item_type.values():
+        name = type_info.name
+        schemas[name] = _annotated_schema(type_info, request)
     return schemas

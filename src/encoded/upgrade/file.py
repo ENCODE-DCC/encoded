@@ -434,3 +434,22 @@ def file_5_6(value, system):
             ]:
 
         value['output_type'] = re.sub('multi-mapped', 'all', value['output_type'])
+
+
+@upgrade_step('file', '6', '7')
+def file_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'file_format_specifications' in value:
+        value['file_format_specifications'] = list(set(value['file_format_specifications']))
+
+    if 'controlled_by' in value:
+        value['controlled_by'] = list(set(value['controlled_by']))
+
+    if 'derived_from' in value:
+        value['derived_from'] = list(set(value['derived_from']))
+
+    if 'supercedes' in value:
+        value['supercedes'] = list(set(value['supercedes']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))

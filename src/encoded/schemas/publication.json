@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "title": {
             "title": "Title",
@@ -84,6 +84,7 @@
             "title": "Identifiers",
             "description": "The identifiers that reference data found in the object.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Identifier",
                 "description": "An identifier that references data found in the object.",
@@ -96,6 +97,7 @@
             "title": "Dataset",
             "description": "The datasets referred to by the publication.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Datasets",
                 "description": "A datasets referred to by the publication.",
@@ -161,6 +163,7 @@
         "categories": {
             "title": "Categories",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Category",
                 "type": "string",
@@ -184,6 +187,7 @@
         "published_by": {
             "title": "Published by",
             "type": "array",
+            "uniqueItems": true,
             "default": ["ENCODE"],
             "items": {
                 "title": "Published by",
@@ -204,90 +208,69 @@
     },
     "facets": {
         "status": {
-            "title": "Publication status",
-            "type": "string"
+            "title": "Publication status"
         },
         "categories": {
-            "title": "Category",
-            "type": "array"
+            "title": "Category"
         },
         "supplementary_data.supplementary_data_type": {
-            "title": "Available supplemental data",
-            "type": "string"
+            "title": "Available supplemental data"
         },
         "publication_year": {
-            "title": "Publication year",
-            "type": "string"
+            "title": "Publication year"
         },
         "journal": {
-            "title": "Journal",
-            "type": "string"
+            "title": "Journal"
         },
         "published_by": {
-            "title": "Published by",
-            "type": "string"
+            "title": "Published by"
         }
     },
     "columns": {
         "title": {
-            "title": "Title",
-            "type": "string"
+            "title": "Title"
         },
         "date_published": {
-            "title": "Publication date",
-            "type": "string"
+            "title": "Publication date"
         },
         "authors": {
-            "title": "Authors",
-            "type": "string"
+            "title": "Authors"
         },
         "status": {
-            "title": "Publication status",
-            "type": "string"
+            "title": "Publication status"
         },
         "journal": {
-            "title": "Journal",
-            "type": "string"
+            "title": "Journal"
         },
         "volume": {
-            "title": "Volume",
-            "type": "string"
+            "title": "Volume"
         },
         "issue": {
-            "title": "Issue",
-            "type": "string"
+            "title": "Issue"
         },
         "page": {
-            "title": "Page",
-            "type": "string"
+            "title": "Page"
         },
         "data_used": {
-            "title": "Data used",
-            "type": "string"
+            "title": "Data used"
         },
         "abstract": {
-            "title": "Abstract",
-            "type": "string"
+            "title": "Abstract"
         },
         "supplementary_data.supplementary_data_type": {
-            "title": "Available data",
-            "type": "string"
+            "title": "Available data"
         },
         "supplementary_data.file_format": {
-            "title": "File format",
-            "type": "string"
+            "title": "File format"
         },
         "supplementary_data.url": {
-            "title": "URL",
-            "type": "string"
+            "title": "URL"
         },
         "supplementary_data.data_summary": {
-            "title": "Data summary",
-            "type": "string"
+            "title": "Data summary"
         },
         "identifiers": {
-            "title": "identifiers",
-            "type": "array"
+            "title": "identifiers"
         }
     },
     "boost_values": {

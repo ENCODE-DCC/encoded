@@ -15,7 +15,7 @@
         "vector_backbone_name": "pEGFP (delGFP-TAL3-truncNLS)",
         "RVD_sequence": "NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
         "target_sequence": "TATTACTGTTGCAAAAGCCT",
-        "talen_platform": "Golden Gate",
+        "talen_platform": "San Rafael",
         "documents": [
             "kevin-white:K562_BAC_transfection_White_protocol",
             "kevin-white:pBACGK1.1_BAC_vector"

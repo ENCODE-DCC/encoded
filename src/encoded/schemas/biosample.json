@@ -119,7 +119,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "accession": {
             "accessionType": "BS"
@@ -128,13 +128,25 @@
             "title": "Description",
             "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
             "type": "string",
-            "default": ""
+            "default": "",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         },
        "constructs": {
             "title": "DNA constructs",
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "DNA Constructs",
                 "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
@@ -148,6 +160,7 @@
             "description": "RNAi vectors stably or transiently transfected.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "RNAi Vector",
                 "description": "RNAi vector stably or transiently transfected.",
@@ -161,6 +174,7 @@
             "description": "TALEN constructs used to modify the biosample",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "TALEN",
                 "description": "TALEN used to modify the biosample",
@@ -173,6 +187,7 @@
             "title": "Treatments",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
@@ -187,6 +202,7 @@
             "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
@@ -199,6 +215,7 @@
             "description": "Documents that describe the biosample preparation.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "Protocol document",
                 "description": "A document that describes the biosample preparation.",
@@ -225,7 +242,6 @@
             "type": "integer"
         },
         "depleted_in_term_name": {
-            "@id": null,
             "type": "array",
             "items": {
                 "title": "Depleted in term",
@@ -294,6 +310,7 @@
             "description": "The biosamples from which aliquots were pooled to form the biosample.",
             "type":  "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "description": "A biosample from which an aliquot was taken to form the biosample.",
                 "comment": "See biosample.json for available identifiers.",
@@ -314,7 +331,6 @@
             "type": "string"
         },
         "subcellular_fraction_term_name": {
-            "@id": null,
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
@@ -441,6 +457,7 @@
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
+            "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "male",
                 "female",
@@ -452,6 +469,7 @@
         "mouse_life_stage": {
             "title": "Mouse life stage",
             "type": "string",
+            "comment": "mouse_life_stage is not valid for a human biosample.",
             "enum": [
                 "adult",
                 "unknown",
@@ -462,6 +480,7 @@
         "fly_life_stage": {
             "title": "Fly life stage",
             "type": "string",
+            "comment": "fly_life_stage is not valid for a human biosample.",
             "enum": [
                 "embryonic",
                 "larva",
@@ -512,6 +531,7 @@
         "worm_life_stage":{
             "title": "Worm life stage",
             "type": "string",
+            "comment": "worm_life_stage is not valid for a human biosample.",
             "enum": [
                 "early embryonic",
                 "midembryonic",
@@ -546,11 +566,13 @@
             "title": "Model organism donor age",
             "description": " The age or age range of the model donor organism when biological material was sampled.",
             "type": "string",
+            "comment": "model_organism_age is not valid for a human biosample.",
             "pattern": "^((\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown))$"
         },
         "model_organism_age_units": {
             "title": "Model organism donor age units",
             "type": "string",
+            "comment": "model_organism_age_units are not valid for a human biosample.",
             "enum": [
                 "minute",
                 "hour",
@@ -563,7 +585,8 @@
         },
         "model_organism_health_status": {
             "title": "Model organism donor health status",
-            "type": "string"
+            "type": "string",
+            "comment": "model_organism_halth_status is not valid for a human biosample."
         },
         "status": {
             "enum" : [
@@ -579,154 +602,117 @@
     },
     "facets": {
         "organism.scientific_name": {
-            "title": "Organism",
-            "type": "string"
+            "title": "Organism"
         },
         "status": {
-            "title": "Biosample status",
-            "type": "string"
+            "title": "Biosample status"
         },
         "biosample_type": {
-            "title": "Biosample type",
-            "type": "string"
+            "title": "Biosample type"
         },
         "organ_slims": {
-            "title": "Organ",
-            "type": "array"
+            "title": "Organ"
         },
         "sex": {
-            "title": "Sex",
-            "type": "string"
+            "title": "Sex"
         },
         "life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "subcellular_fraction_term_name": {
-            "title": "Subcellular fraction",
-            "type": "string"
+            "title": "Subcellular fraction"
         },
         "phase": {
-            "title": "Cell cycle phase",
-            "type": "string"
+            "title": "Cell cycle phase"
         },
         "treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "array"
+            "title": "Biosample treatment"
         },
         "transfection_type": {
-            "title": "Transfection type",
-            "type": "string"
+            "title": "Transfection type"
         },
         "transfection_method": {
-            "title": "Transfection method",
-            "type": "string"
+            "title": "Transfection method"
         },
         "source.title": {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "lab.title": {
-            "title": "Lab",
-            "type": "string"
+            "title": "Lab"
         },
         "award.project": {
-            "title": "Project",
-            "type": "string"
+            "title": "Project"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "description": {
-            "title": "Description",
-            "type": "string"
+            "title": "Description"
         },
         "age": {
-            "title": "Age",
-            "type": "string"
+            "title": "Age"
         },
         "age_units": {
-            "title": "Age Units",
-            "type": "string"
+            "title": "Age Units"
         },
         "biosample_term_name": {
-            "title": "Term",
-            "type": "string"
+            "title": "Term"
         },
         "biosample_type": {
-            "title": "Type",
-            "type": "string"
+            "title": "Type"
         },
         "synchronization": {
-            "title": "Synchronization",
-            "type": "string"
+            "title": "Synchronization"
         },
         "post_synchronization_time": {
-            "title": "Post-synchronization time",
-            "type": "string"
+            "title": "Post-synchronization time"
         },
         "post_synchronization_time_units": {
-            "title": "Post-synchronization time units",
-            "type": "string"
+            "title": "Post-synchronization time units"
         },       
         "organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
+            "title": "Species"
         },
         "source.title": {
-            "title": "Source",
-            "type": "string"
+            "title": "Source"
         },
         "lab.title": {
-            "title": "Submitter",
-            "type": "string"
+            "title": "Submitter"
         },
         "life_stage": {
-            "title": "Life stage",
-            "type": "string"
+            "title": "Life stage"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "rnais.target.label": {
-            "title": "RNAi target",
-            "type": "string"
+            "title": "RNAi target"
         },
         "treatments.treatment_term_name": {
-            "title": "Treatment",
-            "type": "string"
+            "title": "Treatment"
         },
         "constructs.target.label": {
-            "title": "Construct",
-            "type": "string"
+            "title": "Construct"
         },
         "culture_harvest_date": {
-            "title": "Culture harvest date",
-            "type": "string"
+            "title": "Culture harvest date"
         },
         "date_obtained": {
-            "title": "Date obtained",
-            "type": "string"
+            "title": "Date obtained"
         },
         "model_organism_donor_constructs.target.label": {
-            "title": "Constructs",
-            "type": "string"
+            "title": "Constructs"
         },
         "donor.mutated_gene.label": {
-            "title": "Mutated gene",
-            "type": "string"
+            "title": "Mutated gene"
         },
         "treatments.length": {
-            "title": "Treatments length",
-            "type": "array"
+            "title": "Treatments length"
         },
         "constructs.length": {
-            "title": "Constructs",
-            "type": "array"
+            "title": "Constructs"
         }
     },
     "boost_values": {
@@ -737,10 +723,10 @@
         "biosample_term_name": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
-        "synonyms": 1.0,
+        "biosample_synonyms": 1.0,
         "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
-        "phase": 1.0,
+        "phase": 2.0,
         "life_stage": 1.0,
         "synchronization": 1.0,
         "health_status": 1.0,

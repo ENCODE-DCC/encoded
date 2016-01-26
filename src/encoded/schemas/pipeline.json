@@ -16,11 +16,12 @@
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/assay"}
+        { "$ref": "mixins.json#/assay"},
+        { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "PL"
@@ -47,12 +48,24 @@
             "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
             "type": "string",
             "permission": "import_items",
-            "default": ""
+            "default": "",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            }
         },
         "analysis_steps": {
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Analysis step",
                 "description": "A particular computational analysis step used by the pipeline.",
@@ -66,96 +79,64 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
-        },
-        "documents": {
-            "title": "Documents",
-            "description": "Documents that provide additional information about the pipeline.",
-            "type": "array",
-            "items": {
-                "title": "Document",
-                "description": "A document that provides additional information about the pipeline.",
-                "type": "string",
-                "comment": "See document.json for available identifiers.",
-                "linkTo": "Document"
-            }
         }
     },
     "facets": {
         "assay_term_name": {
-            "title": "Assay",
-            "type": "string"
+            "title": "Assay"
         },
         "status": {
-            "title": "Pipeline status",
-            "type": "string"
+            "title": "Pipeline status"
         },
         "title": {
-            "title": "Pipeline groups",
-            "type": "string"
+            "title": "Pipeline groups"
         },
         "analysis_steps.software_versions.software.title": {
-            "title": "Software",
-            "type": "array"
+            "title": "Software"
         },
         "lab.title": {
-            "title": "Developed by",
-            "type": "string"
+            "title": "Developed by"
         }
     },
     "columns": {
         "accession": {
-            "title": "Accession",
-            "type": "string"
+            "title": "Accession"
         },
         "title": {
-            "title": "Pipeline",
-            "type": "string"
+            "title": "Pipeline"
         },
         "assay_term_name": {
-            "title": "Assay type",
-            "type": "string"
+            "title": "Assay type"
         },
         "version": {
-            "title": "Version",
-            "type": "string"
+            "title": "Version"
         },
         "status": {
-            "title": "Status",
-            "type": "string"
+            "title": "Status"
         },
         "analysis_steps.software_versions.version": {
-            "title": "Software",
-            "type": "string"
+            "title": "Software"
         },
         "analysis_steps.software_versions.downloaded_url": {
-            "title": "URL",
-            "type": "string",
-            "format": "uri"
+            "title": "URL"
         },
         "analysis_steps.software_versions.download_checksum": {
-            "title": "Checksum",
-            "type": "string",
-            "format": "hex"
+            "title": "Checksum"
         },
         "analysis_steps.software_versions.software.title": {
-            "title": "Software",
-            "type": "string"
+            "title": "Software"
         },
         "analysis_steps.software_versions.downloaded_url": {
-            "title": "Download URL",
-            "type": "string"
+            "title": "Download URL"
         },
         "analysis_steps.software_versions.download_checksum": {
-            "title": "Download checksum",
-            "type": "string"
+            "title": "Download checksum"
         },
         "analysis_steps.software_versions.software.@id": {
-            "title": "ID",
-            "type": "string"
+            "title": "ID"
         },
         "analysis_steps.software_versions.software.references.published_by": {
-            "title": "Created by",
-            "type": "string"
+            "title": "Created by"
         }
     },
     "boost_values": {

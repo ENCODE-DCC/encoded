@@ -26,3 +26,13 @@ def platform_2_3(value, system):
 
     if 'status' in value:
         value['status'] = value['status'].lower()
+
+
+@upgrade_step('platform', '3', '4')
+def platform_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))

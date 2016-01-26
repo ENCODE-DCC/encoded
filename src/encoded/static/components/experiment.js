@@ -3,17 +3,21 @@ var React = require('react');
 var _ = require('underscore');
 var moment = require('moment');
 var graph = require('./graph');
+var navbar = require('./navbar');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var image = require('./image');
 var statuslabel = require('./statuslabel');
 var audit = require('./audit');
 var fetched = require('./fetched');
 var AuditMixin = audit.AuditMixin;
 var pipeline = require('./pipeline');
 var reference = require('./reference');
-var biosample = require('./biosample');
+var software = require('./software');
+var objectutils = require('./objectutils');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var UnreleasedFiles = dataset.UnreleasedFiles;
@@ -27,7 +31,9 @@ var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
 var PubReferenceList = reference.PubReferenceList;
 var ExperimentTable = dataset.ExperimentTable;
-var SingleTreatment = biosample.SingleTreatment;
+var SingleTreatment = objectutils.SingleTreatment;
+var SoftwareVersionList = software.SoftwareVersionList;
+var ProjectBadge = image.ProjectBadge;
 
 
 var anisogenicValues = [
@@ -52,6 +58,10 @@ var Panel = function (props) {
 
 var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
+
+    contextTypes: {
+        session: React.PropTypes.object
+    },
 
     render: function() {
         var context = this.props.context;
@@ -126,6 +136,38 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
+        // Get a list of related datasets, possibly filtering on their status
+        var seriesList = [];
+        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        if (context.related_series && context.related_series.length) {
+            seriesList = _(context.related_series).filter(dataset => {
+                return loggedIn || dataset.status === 'released';
+            });
+        }
+
+        // Set up the breadcrumbs
+        var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
+        var assayName = context[assayTerm];
+        var assayQuery = assayTerm + '=' + assayName;
+        var organismNames = _.chain(biosamples.map(function(biosample) {
+            return biosample.donor ? biosample.donor.organism.scientific_name : '';
+        })).compact().uniq().value();
+        var nameQuery = '';
+        var nameTip = '';
+        var names = organismNames.map(function(organismName, i) {
+            nameTip += (nameTip.length ? ' + ' : '') + organismName;
+            nameQuery += (nameQuery.length ? '&' : '') + 'replicates.library.biosample.donor.organism.scientific_name=' + organismName;
+            return <span key={i}>{i > 0 ? <span> + </span> : null}<i>{organismName}</i></span>;
+        });
+        var biosampleTermName = context.biosample_term_name;
+        var biosampleTermQuery = biosampleTermName ? 'biosample_term_name=' + biosampleTermName : '';
+        var crumbs = [
+            {id: 'Experiments'},
+            {id: assayName, query: assayQuery, tip: assayName},
+            {id: names.length ? names : null, query: nameQuery, tip: nameTip},
+            {id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName}
+        ];
+
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // XXX This makes no sense.
@@ -134,10 +176,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Experiment</li>
-                            <li className="active">{context.assay_term_name}</li>
-                        </ul>
+                        <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
@@ -151,137 +190,149 @@ var Experiment = module.exports.Experiment = React.createClass({
                    </div>
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="assay">
-                            <dt>Assay</dt>
-                            <dd>{context.assay_term_name}</dd>
-                        </div>
-
-                        {context.replication_type ?
-                            <div data-test="replicationtype">
-                                <dt>Replication type</dt>
-                                <dd>{context.replication_type}</dd>
+                <div className="panel panel-default data-display">
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
+                        <dl className="key-value">
+                            <div data-test="assay">
+                                <dt>Assay</dt>
+                                <dd>{context.assay_term_name}</dd>
                             </div>
-                        : null}
 
-                        {biosamples.length || context.biosample_term_name ?
-                            <div data-test="biosample-summary">
-                                <dt>Biosample summary</dt>
-                                <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                            {context.replication_type ?
+                                <div data-test="replicationtype">
+                                    <dt>Replication type</dt>
+                                    <dd>{context.replication_type}</dd>
+                                </div>
+                            : null}
+
+                            {biosamples.length || context.biosample_term_name ?
+                                <div data-test="biosample-summary">
+                                    <dt>Biosample summary</dt>
+                                    <dd>{context.biosample_term_name ? <span>{context.biosample_term_name}{' '}{fullSummaries}</span> : <span>{fullSummaries}</span>}</dd>
+                                </div>
+                            : null}
+
+                            {synchText.length ?
+                                <div data-test="biosample-synchronization">
+                                    <dt>Synchronization timepoint</dt>
+                                    <dd>
+                                        {synchText.join(', ')}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.biosample_type ?
+                                <div data-test="biosample-type">
+                                    <dt>Type</dt>
+                                    <dd>{context.biosample_type}</dd>
+                                </div>
+                            : null}
+
+                            {treatments ?
+                                <div data-test="treatment">
+                                    <dt>Treatments</dt>
+                                    <dd>{BiosampleTreatments(biosamples)}</dd>
+                                </div>
+                            : null}
+
+                            {context.target ?
+                                <div data-test="target">
+                                    <dt>Target</dt>
+                                    <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                </div>
+                            : null}
+
+                            {Object.keys(antibodies).length ?
+                                <div data-test="antibody">
+                                    <dt>Antibody</dt>
+                                    <dd>{Object.keys(antibodies).map(function(antibody, i) {
+                                        return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                    })}</dd>
+                                </div>
+                            : null}
+
+                            {context.possible_controls && context.possible_controls.length ?
+                                <div data-test="possible-controls">
+                                    <dt>Controls</dt>
+                                    <dd>
+                                        <ul>
+                                            {context.possible_controls.map(function (control) {
+                                                return (
+                                                    <li key={control['@id']} className="multi-comma">
+                                                        <a href={control['@id']}>
+                                                            {control.accession}
+                                                        </a>
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.description ?
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd>{context.description}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
-                        : null}
 
-                        {synchText.length ?
-                            <div data-test="biosample-synchronization">
-                                <dt>Synchronization timepoint</dt>
-                                <dd>
-                                    {synchText.join(', ')}
-                                </dd>
+                            {context.award.pi && context.award.pi.lab ?
+                                <div data-test="awardpi">
+                                    <dt>Award PI</dt>
+                                    <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.award.project}</dd>
                             </div>
-                        : null}
 
-                        {context.biosample_type ?
-                            <div data-test="biosample-type">
-                                <dt>Type</dt>
-                                <dd>{context.biosample_type}</dd>
-                            </div>
-                        : null}
+                            {context.dbxrefs.length ?
+                                <div data-test="external-resources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
 
-                        {treatments ?
-                            <div data-test="treatment">
-                                <dt>Treatments</dt>
-                                <dd>{BiosampleTreatments(biosamples)}</dd>
-                            </div>
-                        : null}
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><PubReferenceList values={context.references} /></dd>
+                                </div>
+                            : null}
 
-                        {context.target ?
-                            <div data-test="target">
-                                <dt>Target</dt>
-                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                            </div>
-                        : null}
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{aliasList}</dd>
+                                </div>
+                            : null}
 
-                        {Object.keys(antibodies).length ?
-                            <div data-test="antibody">
-                                <dt>Antibody</dt>
-                                <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                    return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
-                                })}</dd>
-                            </div>
-                        : null}
+                            {seriesList.length ?
+                                <div data-test="relatedseries">
+                                    <dt>Related datasets</dt>
+                                    <dd><RelatedSeriesList seriesList={seriesList} /></dd>
+                                </div>
+                            : null}
 
-                        {context.possible_controls && context.possible_controls.length ?
-                            <div data-test="possible-controls">
-                                <dt>Controls</dt>
-                                <dd>
-                                    <ul>
-                                        {context.possible_controls.map(function (control) {
-                                            return (
-                                                <li key={control['@id']} className="multi-comma">
-                                                    <a href={control['@id']}>
-                                                        {control.accession}
-                                                    </a>
-                                                </li>
-                                            );
-                                        })}
-                                    </ul>
-                                </dd>
-                            </div>
-                        : null}
-
-                        {context.description ?
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd>{context.description}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award.pi && context.award.pi.lab ?
-                            <div data-test="awardpi">
-                                <dt>Award PI</dt>
-                                <dd>{context.award.pi.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        {context.dbxrefs.length ?
-                            <div data-test="external-resources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{aliasList}</dd>
-                            </div>
-                        : null}
-
-                        {context.date_released ?
-                            <div data-test="date-released">
-                                <dt>Date released</dt>
-                                <dd>{context.date_released}</dd>
-                            </div>
-                        : null}
-                    </dl>
+                            {context.date_released ?
+                                <div data-test="date-released">
+                                    <dt>Date released</dt>
+                                    <dd>{context.date_released}</dd>
+                                </div>
+                            : null}
+                        </dl>
+                    </div>
                 </div>
 
                 {AssayDetails({context: context, replicates: replicates})}
@@ -336,12 +387,8 @@ var ControllingExperiments = React.createClass({
 
         return (
             <div>
-                <span className="pull-right">
-                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
-                </span>
-
-                <ExperimentTable
-                    {...this.props} limit={5}
+                <ExperimentTable {...this.props}
+                    items={this.props.items} limit={5} url={this.props.url}
                     title={'Experiments with ' + context.accession + ' as a control:'} />
             </div>
         );
@@ -689,6 +736,117 @@ var biosampleSummaries = function(biosamples) {
 };
 
 
+// Display a list of datasets related to the experiment
+var RelatedSeriesList = React.createClass({
+    propTypes: {
+        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+    },
+
+    getInitialState: function() {
+        return {
+            currInfoItem: '', // Accession of item whose detail info appears; empty string to display no detail info
+            touchScreen: false, // True if we know we got a touch event; ignore clicks without touch indiciation
+            clicked: false // True if info button was clicked (vs hovered)
+        }
+    },
+
+    // Handle the mouse entering/existing an info icon. Ignore if the info tooltip is open because the icon had
+    // been clicked. 'entering' is true if the mouse entered the icon, and false if exiting.
+    handleInfoHover: function(series, entering) {
+        if (!this.state.clicked) {
+            this.setState({currInfoItem: entering ? series.accession : ''});
+        }
+    },
+
+    // Handle click in info icon by setting the currInfoItem state to the accession of the item to display.
+    // If opening the tooltip, note that hover events should be ignored until the icon is clicked to close the tooltip.
+    handleInfoClick: function(series, touch, e) {
+        var currTouchScreen = this.state.touchScreen;
+
+        // Remember if we know we've had a touch event
+        if (touch && !currTouchScreen) {
+            currTouchScreen = true;
+            this.setState({touchScreen: true});
+            console.log('SET TOUCHSCREEN TRUE');
+        }
+
+        // Now handle the click. Ignore if we know we have a touch screen, but this wasn't a touch event
+        if (!currTouchScreen || touch) {
+            console.log('STAT: %s:%o', currTouchScreen, touch);
+            if (this.state.currInfoItem === series.accession && this.state.clicked) {
+                this.setState({currInfoItem: '', clicked: false});
+            } else {
+                this.setState({currInfoItem: series.accession, clicked: true});
+            }
+        }
+    },
+
+    render: function() {
+        var seriesList = this.props.seriesList;
+
+        return (
+            <span>
+                {seriesList.map((series, i) => {
+                    return (
+                        <span key={series.uuid}>
+                            {i > 0 ? <span>, </span> : null}
+                            <RelatedSeriesItem series={series} detailOpen={this.state.currInfoItem === series.accession}
+                                handleInfoHover={this.handleInfoHover} handleInfoClick={this.handleInfoClick} />
+                        </span>
+                    );
+                })}
+            </span>
+        );
+    }
+});
+
+
+// Display a one dataset related to the experiment
+var RelatedSeriesItem = React.createClass({
+    propTypes: {
+        series: React.PropTypes.object.isRequired, // Series object to display
+        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
+    },
+
+    getInitialState: function() {
+        return {
+            touchOn: false // True if icon has been touched
+        }
+    },
+
+    // Touch screen
+    touchStart: function(series, e) {
+        this.setState({touchOn: !this.state.touchOn});
+        this.props.handleInfoClick(series, true);
+    },
+
+    render: function() {
+        var {series, detailOpen} = this.props;
+
+        return (
+            <span>
+                <a href={series['@id']} title={'View page for series dataset ' + series.accession}>{series.accession}</a>&nbsp;
+                <div className="tooltip-trigger">
+                    <i className="icon icon-info-circle"
+                        onMouseEnter={this.props.handleInfoHover.bind(null, series, true)}
+                        onMouseLeave={this.props.handleInfoHover.bind(null, series, false)}
+                        onClick={this.props.handleInfoClick.bind(null, series, false)}
+                        onTouchStart={this.touchStart.bind(null, series)}></i>
+                    <div className={'tooltip bottom' + (detailOpen ? ' tooltip-open' : '')}>
+                        <div className="tooltip-arrow"></div>
+                        <div className="tooltip-inner">
+                            {series.description ? <span>{series.description}</span> : <em>No description available</em>}
+                        </div>
+                    </div>
+                </div>
+            </span>
+        );
+    }
+});
+
+
 // Handle graphing throws
 function graphException(message, file0, file1) {
 /*jshint validthis: true */
@@ -855,7 +1013,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
 
         // Save the pipeline array used for each step used by the file.
         if (fileAnalysisStep) {
-            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;            
+            allPipelines[fileAnalysisStep['@id']] = fileAnalysisStep.pipelines;
         }
 
         // File is derived; collect any QC info that applies to this file
@@ -1159,7 +1317,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     handleFilterChange: function(e) {
-        var value = e.target.selectedOptions[0].value;
+        var value = e.target.value;
         if (value !== 'default') {
             var filters = value.split('-');
             this.setState({selectedAssembly: filters[0], selectedAnnotation: filters[1]});
@@ -1311,19 +1469,7 @@ var FileDetailView = function(node) {
                 {selectedFile.analysis_step_version ?
                     <div>
                         <dt>Software</dt>
-                        <dd>
-                            {selectedFile.analysis_step_version.software_versions.map(function(version, i) {
-                                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
-                                return (
-                                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
-                                        <span className="software">{version.software.name}</span>
-                                        {version.version ?
-                                            <span className="version">{versionNum}</span>
-                                        : null}
-                                    </a>
-                                );
-                            })}
-                        </dd>
+                        <dd>{SoftwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>
                     </div>
                 : null}
 

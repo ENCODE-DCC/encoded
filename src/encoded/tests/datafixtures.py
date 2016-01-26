@@ -220,6 +220,35 @@ def file(testapp, lab, award, experiment):
 
 
 @pytest.fixture
+def fastq_file(testapp, lab, award, experiment, replicate):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'fastq',
+        'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
+        'replicate': replicate['@id'],
+        'output_type': 'reads',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bam_file(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bam',
+        'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
+        'output_type': 'alignments',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
         'dataset': ucsc_browser_composite['@id'],
@@ -253,6 +282,17 @@ def target(testapp, organism):
         'label': 'ATF4',
         'organism': organism['@id'],
         'investigated_as': ['transcription factor'],
+    }
+    return testapp.post_json('/target', item).json['@graph'][0]
+
+
+@pytest.fixture
+def target_H3K27ac(testapp, organism):
+    item = {
+        'label': 'H3K27ac',
+        'organism': organism['@id'],
+        'investigated_as': ['histone modification',
+                            'histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -323,7 +363,6 @@ def ucsc_browser_composite(testapp, lab, award):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'dataset_type': 'composite',
     }
     return testapp.post_json('/ucsc_browser_composite', item).json['@graph'][0]
 
@@ -333,7 +372,7 @@ def publication_data(testapp, lab, award):
     item = {
         'award': award['@id'],
         'lab': lab['@id'],
-        'dataset_type': 'publication',
+        'references': [],
     }
     return testapp.post_json('/publication_data', item).json['@graph'][0]
 
@@ -573,3 +612,45 @@ def donor_2(testapp, lab, award, organism):
     }
     return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
 
+
+@pytest.fixture
+def analysis_step_bam(testapp):
+    item = {
+        'name': 'bamqc',
+        'title': 'bamqc',
+        'input_file_types': ['reads'],
+        'analysis_step_types': ['QA calculation']
+    }
+    return testapp.post_json('/analysis_step', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
+    item = {
+        'analysis_step': analysis_step_bam['@id'],
+        'software_versions': [
+            software_version['@id'],
+        ],
+    }
+    return testapp.post_json('/analysis_step_version', item).json['@graph'][0]
+
+
+@pytest.fixture
+def analysis_step_run_bam(testapp, analysis_step_version_bam):
+    item = {
+        'analysis_step_version': analysis_step_version_bam['@id'],
+        'status': 'finished',
+        'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-virtual']
+    }
+    return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
+
+
+@pytest.fixture
+def pipeline_bam(testapp, lab, award, analysis_step_bam ):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'title': "Histone ChIP-seq",
+        'analysis_steps': [analysis_step_bam['@id']]
+    }
+    return testapp.post_json('/pipeline', item).json['@graph'][0]

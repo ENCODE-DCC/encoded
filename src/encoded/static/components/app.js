@@ -12,32 +12,34 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
-            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
-            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
-            {id: 'annotations', title: 'Annotations', url: '/data/annotations'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
+            {id: 'assays', title: 'Assays', url: '/search/?type=Experiment'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=Biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=AntibodyLot'},
+            {id: 'annotations', title: 'Annotations', url: '/data/annotations/'},
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy/'},
+//            {id: 'region-search', title: 'Search by region', url: '/region-search/'}
         ]},
         {id: 'methods', title: 'Methods', children: [
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
-            {id: 'softwaretools', title: 'Software tools', url: '/software'},
-            {id: 'pipelines', title: 'Pipelines', url: '/pipelines'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards/'},
+            {id: 'softwaretools', title: 'Software tools', url: '/software/'},
+            {id: 'pipelines', title: 'Pipelines', url: '/pipelines/'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines/'}
         ]},
         {id: 'about', title: 'About', children: [
-            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors/'},
             {id: 'news', title: 'News', url: '/news'},
-            {id: 'publications', title: 'Publications', url: '/publications'},
-            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy'},
-            {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
+            {id: 'publications', title: 'Publications', url: '/publications/'},
+            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy/'},
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access/'},
+            {id: 'acknowledgements', title: 'Acknowledgements', url: '/acknowledgements/'}
         ]},
         {id: 'help', title: 'Help', children: [
-            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started'},
-            {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
-            {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
+            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started/'},
+            {id: 'restapi', title: 'REST API', url: '/help/rest-api/'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats/'},
             {id: 'ontologies', title: 'Ontologies', url: '/help/getting-started/#Ontologies'},
-            {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},
-            {id: 'contact', title: 'Contact', url: '/help/contacts'}
+            {id: 'tutorials', title: 'Tutorials', url: '/tutorials/'},
+            {id: 'contact', title: 'Contact', url: '/help/contacts/'}
         ]}
     ]
 };
@@ -145,6 +147,18 @@ var App = React.createClass({
         this.setState({dropdownComponent: componentID});
     },
 
+    handleAutocompleteChosenChange: function(chosen) {
+        this.setState({autocompleteTermChosen: chosen});
+    },
+
+    handleAutocompleteFocusChange: function(focused) {
+        this.setState({autocompleteFocused: focused});
+    },
+
+    handleAutocompleteHiddenChange: function(hidden) {
+        this.setState({autocompleteHidden: hidden});
+    },
+
     // Handle a click outside a dropdown menu by clearing currently dropped down menu
     handleLayoutClick: function(e) {
         if (this.state.dropdownComponent !== undefined) {
@@ -154,9 +168,16 @@ var App = React.createClass({
 
     // If ESC pressed while drop-down menu open, close the menu
     handleKey: function(e) {
-        if (e.which === 27 && this.state.dropdownComponent !== undefined) {
+        if (e.which === 27) {
+            if (this.state.dropdownComponent !== undefined) {
+                e.preventDefault();
+                this.handleDropdownChange(undefined);
+            } else if (!this.state.autocompleteHidden) {
+                e.preventDefault();
+                this.handleAutocompleteHiddenChange(true);
+            }
+        } else if (e.which === 13 && this.state.autocompleteFocused && !this.state.autocompleteTermChosen) {
             e.preventDefault();
-            this.handleDropdownChange(undefined);
         }
     },
 
@@ -172,7 +193,7 @@ var App = React.createClass({
         var href_url = url.parse(this.props.href);
         // Switching between collections may leave component in place
         var key = context && context['@id'];
-        var current_action = this.currentAction()
+        var current_action = this.currentAction();
         if (!current_action && context.default_page) {
             context = context.default_page;
         }
@@ -186,7 +207,7 @@ var App = React.createClass({
 
         var appClass = 'done';
         if (this.props.slow) {
-            appClass = 'communicating'; 
+            appClass = 'communicating';
         }
 
         var title = context.title || context.name || context.accession || context['@id'];
@@ -255,7 +276,7 @@ var App = React.createClass({
         getRenderedProps: function (document) {
             var props = {};
             // Ensure the initial render is exactly the same
-            props.href = document.querySelector('link[rel="canonical"]').href;
+            props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
             var script_props = document.querySelectorAll('script[data-prop-name]');
             for (var i = 0; i < script_props.length; i++) {
                 var elem = script_props[i];

@@ -35,7 +35,7 @@ class Page(Item):
     schema = load_schema('encoded:schemas/page.json')
     name_key = 'name'
     STATUS_ACL = {
-        'in progress': [],
+        'in progress': ONLY_ADMIN_VIEW,
         'released': ALLOW_EVERYONE_VIEW,
         'deleted': ONLY_ADMIN_VIEW,
     }
@@ -142,7 +142,7 @@ def page_view_page(context, request):
     schema={
         "title": "Default page",
         "type": "string",
-        "linkTo": "page",
+        "linkTo": "Page",
     })
 def collection_default_page(context, request):
     try:
@@ -158,7 +158,7 @@ def collection_default_page(context, request):
     schema={
         "title": "Default page",
         "type": "string",
-        "linkTo": "page",
+        "linkTo": "Page",
     })
 def root_default_page(context, request):
     try:

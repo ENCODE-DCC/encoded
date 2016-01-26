@@ -1,8 +1,8 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var search = require('./search');
-var pipeline = require('./pipeline');
 var fetched = require('./fetched');
 var reference = require('./reference');
 var StatusLabel = require('./statuslabel').StatusLabel;
@@ -10,7 +10,7 @@ var audit = require('./audit');
 var _ = require('underscore');
 var url = require('url');
 
-var PipelineTable = pipeline.PipelineTable;
+var Breadcrumbs = navbar.Breadcrumbs;
 var FetchedItems = fetched.FetchedItems;
 var PubReferenceList = reference.PubReferenceList;
 var AuditIndicators = audit.AuditIndicators;
@@ -28,6 +28,16 @@ var Software = module.exports.Software = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+
+        // Set up breadcrumbs
+        var typeTerms = context.software_type && context.software_type.map(function(type) {
+            return 'software_type=' + type;
+        });
+        var crumbs = [
+            {id: 'Software'},
+            {id: context.software_type ? context.software_type.join(' + ') : null, query: typeTerms && typeTerms.join('&'),
+                tip: context.software_type && context.software_type.join(' + ')}
+        ];
 
         var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
 
@@ -51,6 +61,7 @@ var Software = module.exports.Software = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=software' crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
@@ -111,20 +122,6 @@ var Software = module.exports.Software = React.createClass({
     }
 });
 globals.content_views.register(Software, 'Software');
-
-// Commenting out until pipelines are used.
-
-var PipelinesUsingSoftwareVersion = module.exports.PipelinesUsingSoftwareVersion = React.createClass({
-    render: function () {
-        var context = this.props.context;
-        return (
-            <div>
-                <h3>Pipelines using software {context.title}</h3>
-                <PipelineTable {...this.props} softwareId={context['@id']}/>
-            </div>
-        );
-    }
-});
 
 
 var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
@@ -200,3 +197,24 @@ var Listing = React.createClass({
     }
 });
 globals.listing_views.register(Listing, 'Software');
+
+
+// Display a list of software versions from the given software_version list. This is meant to be displayed
+// in a panel.
+var SoftwareVersionList = module.exports.SoftwareVersionList = function(softwareVersions) {
+    return (
+        <div className="software-version-list">
+            {softwareVersions.map(function(version, i) {
+                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+                return (
+                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
+                        <span className="software">{version.software.name}</span>
+                        {version.version ?
+                            <span className="version">{versionNum}</span>
+                        : null}
+                    </a>
+                );
+            })}
+        </div>
+    );
+};

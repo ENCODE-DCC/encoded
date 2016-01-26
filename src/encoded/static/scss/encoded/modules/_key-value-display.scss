@@ -190,6 +190,10 @@ dd ul, .multi-value {
     line-height: 1.6 !important;
 }
 
+.software-version-list {
+    @extend .clearfix;
+}
+
 .software-version {
     display: block;
     float: left;

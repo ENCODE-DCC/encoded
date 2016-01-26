@@ -44,6 +44,17 @@ def antibody_lot_3(root, antibody_lot):
     return properties
 
 
+@pytest.fixture
+def antibody_lot_4(root, antibody_lot_3):
+    item = antibody_lot_3.copy()
+    item.update({
+        'schema_version': '4',
+        'lot_id_alias': ['testing:456', 'testing:456'],
+        'purifications': ['crude', 'crude']
+    })
+    return item
+
+
 def test_antibody_lot_upgrade(upgrader, antibody_lot_1):
     value = upgrader.upgrade('antibody_lot', antibody_lot_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -80,3 +91,9 @@ def test_antibody_lot_upgrade_targets(
         'antibody_lot', antibody_lot_3, target_version='4', context=context, registry=registry)
     assert value['schema_version'] == '4'
     assert value['targets'] == [target['uuid']]
+
+
+def test_antibody_lot_unique_array(upgrader, antibody_lot_4):
+    value = upgrader.upgrade('antibody_lot', antibody_lot_4, current_version='4', target_version='5')
+    assert len(value['purifications']) == len(set(value['purifications']))
+    assert len(value['lot_id_alias']) == len(set(value['lot_id_alias']))

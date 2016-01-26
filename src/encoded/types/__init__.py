@@ -101,7 +101,7 @@ class Construct(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -122,14 +122,21 @@ class TALEN(Item):
     rev = {
         'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
-    embedded = ['lab', 'submitted_by']
+    embedded = [
+        'lab',
+        'submitted_by',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by'
+    ]
 
     @calculated_property(schema={
         "title": "Characterizations",
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -205,7 +212,7 @@ class RNAi(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "rnai_characterization",
+            "linkTo": "RNAiCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -262,7 +269,7 @@ class Software(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "software_version",
+            "linkTo": "SoftwareVersion",
         },
     })
     def versions(self, request, versions):

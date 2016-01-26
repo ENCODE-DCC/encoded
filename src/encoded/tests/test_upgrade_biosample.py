@@ -114,6 +114,18 @@ def biosample_10(root, biosample):
     return properties
 
 
+@pytest.fixture
+def biosample_11(root, biosample):
+    item = root.get_by_uuid(biosample['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'dbxrefs': ['UCSC-ENCODE-cv:K562', 'UCSC-ENCODE-cv:K562'],
+        'aliases': ['testing:123', 'testing:123']
+    })
+    return properties
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -288,7 +300,7 @@ def test_biosample_age_pattern2(upgrader, biosample_8):
     assert value['model_organism_age'] == '15-16'
 
 
-def test_biosample_references(root, upgrader, biosample,  biosample_9, publication, threadlocals, dummy_request):
+def test_biosample_references(root, upgrader, biosample, biosample_9, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample['uuid'])
     dummy_request.context = context
     value = upgrader.upgrade('biosample', biosample_9, target_version='10', context=context)
@@ -303,3 +315,12 @@ def test_biosample_worm_synch_stage(root, upgrader, biosample, biosample_10, dum
     value = upgrader.upgrade('biosample', biosample_10, target_version='11', context=context)
     assert value['schema_version'] == '11'
     assert value['worm_synchronization_stage'] == 'L1 larva starved after bleaching'
+
+
+def test_biosample_unique_array(root, upgrader, biosample, biosample_11, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_11, target_version='12', context=context)
+    assert value['schema_version'] == '12'
+    assert len(value['dbxrefs']) == len(set(value['dbxrefs']))
+    assert len(value['aliases']) == len(set(value['aliases']))

@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
@@ -11,7 +12,10 @@ var audit = require('./audit');
 var image = require('./image');
 var item = require('./item');
 var reference = require('./reference');
+var objectutils = require('./objectutils');
+var sortTable = require('./sorttable');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
 var AuditIndicators = audit.AuditIndicators;
@@ -21,6 +25,10 @@ var ExperimentTable = dataset.ExperimentTable;
 var Attachment = image.Attachment;
 var PubReferenceList = reference.PubReferenceList;
 var RelatedItems = item.RelatedItems;
+var SingleTreatment = objectutils.SingleTreatment;
+var SortTablePanel = sortTable.SortTablePanel;
+var SortTable = sortTable.SortTable;
+var ProjectBadge = image.ProjectBadge;
 
 
 var Panel = function (props) {
@@ -31,16 +39,58 @@ var Panel = function (props) {
         props = {context: context, key: context['@id']};
     }
     var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView {...props} />;
+    return <PanelView key={props.context.uuid} {...props} />;
 };
 
 
-var biosample_columns = {
-    accession: {title: 'Accession'},
-    biosample_type: {title: 'Type'},
-    biosample_term_name: {title: 'Term'},
-    description: {title: 'Description'},
-};
+// Display a table of retrieved biosamples related to the displayed biosample
+var BiosampleTable = React.createClass({
+    columns: {
+        'accession': {
+            title: 'Accession',
+            display: function(biosample) {
+                return <a href={biosample['@id']}>{biosample.accession}</a>;
+            }
+        },
+        'biosample_type': {title: 'Type'},
+        'biosample_term_name': {title: 'Term'},
+        'description': {title: 'Description', sorter: false}
+    },
+
+    render: function() {
+        var biosamples;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the experiment list by cloning first {limit} elements
+            biosamples = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            biosamples = this.props.items;
+        }
+
+        return (
+            <SortTablePanel>
+                <SortTable list={this.props.items} columns={this.columns} footer={<BiosampleTableFooter items={biosamples} total={this.props.total} url={this.props.url} />} />
+            </SortTablePanel>
+        );
+    }
+});
+
+// Display a count of biosamples in the footer, with a link to the corresponding search if needed
+var BiosampleTableFooter = React.createClass({
+    render: function() {
+        var {items, total, url} = this.props;
+
+        return (
+            <div>
+                <span>Displaying {items.length} of {total} </span>
+                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+            </div>
+        );
+    }
+});
 
 
 var Biosample = module.exports.Biosample = React.createClass({
@@ -49,6 +99,14 @@ var Biosample = module.exports.Biosample = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var aliasList = context.aliases.join(", ");
+
+        // Set up the breadcrumbs
+        var crumbs = [
+            {id: 'Biosamples'},
+            {id: context.biosample_type, query: 'biosample_type=' + context.biosample_type, tip: context.biosample_type},
+            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name, tip: context.organism.scientific_name},
+            {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
+        ];
 
         // set up construct documents panels
         var constructs = _.sortBy(context.constructs, function(item) {
@@ -86,6 +144,14 @@ var Biosample = module.exports.Biosample = React.createClass({
             protocol_documents[doc['@id']] = Panel({context: doc});
         });
 
+        // Set up TALENs panel for multiple TALENs
+        var talens = null;
+        if (context.talens && context.talens.length) {
+            talens = context.talens.map(function(talen) {
+                return Panel({context: talen});
+            });
+        }
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -93,13 +159,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Biosamples</li>
-                            <li>{context.biosample_type}</li>
-                            {context.donor ?
-                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
-                            : null }
-                        </ul>
+                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -113,247 +173,260 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
-                <div className="panel data-display">
-                    <dl className="key-value">
-                        <div data-test="term-name">
-                            <dt>Term name</dt>
-                            <dd>{context.biosample_term_name}</dd>
-                        </div>
-
-                        <div data-test="term-id">
-                            <dt>Term ID</dt>
-                            <dd>{context.biosample_term_id}</dd>
-                        </div>
-
-                        {context.description ? 
-                            <div data-test="description">
-                                <dt>Description</dt>
-                                <dd className="sentence-case">{context.description}</dd>
+                <div className="panel panel-default data-display">
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
+                        <dl className="key-value">
+                            <div data-test="term-name">
+                                <dt>Term name</dt>
+                                <dd>{context.biosample_term_name}</dd>
                             </div>
+
+                            <div data-test="term-id">
+                                <dt>Term ID</dt>
+                                <dd>{context.biosample_term_id}</dd>
+                            </div>
+
+                            {context.description ? 
+                                <div data-test="description">
+                                    <dt>Description</dt>
+                                    <dd className="sentence-case">{context.description}</dd>
+                                </div>
+                            : null}
+
+                            {context.donor && context.donor.organism.name !== 'human' ?
+                                <div>
+                                    {context.life_stage ?
+                                        <div data-test="life-stage">
+                                            <dt>Life stage</dt>
+                                            <dd className="sentence-case">{context.life_stage}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.age ?
+                                        <div data-test="age">
+                                            <dt>Age</dt>
+                                            <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                        </div>
+                                    : null}
+                                </div>
+                            : null}
+
+                            {synchText ?
+                                <div data-test="biosample-synchronization">
+                                    <dt>Synchronization timepoint</dt>
+                                    <dd className="sentence-case">{synchText}</dd>
+                                </div>
+                            : null}
+
+                            {context.subcellular_fraction_term_name ?
+                                <div data-test="subcellulartermname">
+                                    <dt>Subcellular fraction</dt>
+                                    <dd>{context.subcellular_fraction_term_name}</dd>
+                                </div>
+                            : null}
+
+                            {context.subcellular_fraction_term_id ?
+                                <div data-test="subcellularid">
+                                    <dt>Subcellular fraction ID</dt>
+                                    <dd>{context.subcellular_fraction_term_id}</dd>
+                                </div>
+                            : null}
+
+                            {context.depleted_in_term_name && context.depleted_in_term_name.length ?
+                                <div data-test="depletedin">
+                                    <dt>Depleted in</dt>
+                                    <dd>
+                                        {context.depleted_in_term_name.map(function(termName, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    {termName}
+                                                </span>
+                                            );
+                                        })}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.source.title ?
+                                <div data-test="sourcetitle">
+                                    <dt>Source</dt>
+                                    <dd>
+                                        {context.source.url ?
+                                            <a href={context.source.url}>{context.source.title}</a>
+                                        :
+                                            <span>{context.source.title}</span>
+                                        }
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.product_id ?
+                                <div data-test="productid">
+                                    <dt>Product ID</dt>
+                                    <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
+                                </div>
+                            : null}
+
+                            {context.lot_id ?
+                                <div data-test="lotid">
+                                    <dt>Lot ID</dt>
+                                    <dd>{context.lot_id}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="project">
+                                <dt>Project</dt>
+                                <dd>{context.award.project}</dd>
+                            </div>
+
+                            <div data-test="submittedby">
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+
+                            {context.award.pi && context.award.pi.lab ?
+                                <div data-test="awardpi">
+                                    <dt>Award PI</dt>
+                                    <dd>{context.award.pi.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            {context.aliases.length ?
+                                <div data-test="aliases">
+                                    <dt>Aliases</dt>
+                                    <dd>{aliasList}</dd>
+                                </div>
+                            : null}
+
+                            {context.dbxrefs.length ?
+                                <div data-test="externalresources">
+                                    <dt>External resources</dt>
+                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                </div>
+                            : null}
+
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><PubReferenceList values={context.references} /></dd>
+                                </div>
+                            : null}
+
+                            {context.note ?
+                                <div data-test="note">
+                                    <dt>Note</dt>
+                                    <dd>{context.note}</dd>
+                                </div>
+                            : null}
+
+                            {context.date_obtained ?
+                                <div data-test="dateobtained">
+                                    <dt>Date obtained</dt>
+                                    <dd>{context.date_obtained}</dd>
+                                </div>
+                            : null}
+
+                            {context.starting_amount ?
+                                <div data-test="startingamount">
+                                    <dt>Starting amount</dt>
+                                    <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
+                                </div>
+                            : null}
+
+                            {context.culture_start_date ?
+                                <div data-test="culturestartdate">
+                                    <dt>Culture start date</dt>
+                                    <dd>{context.culture_start_date}</dd>
+                                </div>
+                            : null}
+
+                            {context.culture_harvest_date ?
+                                <div data-test="cultureharvestdate">
+                                    <dt>Culture harvest date</dt>
+                                    <dd>{context.culture_harvest_date}</dd>
+                                </div>
+                            : null}
+
+                            {context.passage_number ?
+                                <div data-test="passagenumber">
+                                    <dt>Passage number</dt>
+                                    <dd>{context.passage_number}</dd>
+                                </div>
+                            : null}
+
+                            {context.phase ?
+                                <div data-test="phase">
+                                    <dt>Cell cycle</dt>
+                                    <dd>{context.phase}</dd>
+                                </div>
+                            : null}
+                        </dl>
+
+                        {context.derived_from ?
+                            <section data-test="derivedfrom">
+                                <hr />
+                                <h4>Derived from biosample</h4>
+                                <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
+                            </section>
                         : null}
 
-                        {context.donor && context.donor.organism.name !== 'human' ?
-                            <div>
-                                {context.life_stage ?
-                                    <div data-test="life-stage">
-                                        <dt>Life stage</dt>
-                                        <dd className="sentence-case">{context.life_stage}</dd>
-                                    </div>
-                                : null}
-
-                                {context.age ?
-                                    <div data-test="age">
-                                        <dt>Age</dt>
-                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
-                                    </div>
-                                : null}
-                            </div>
+                        {context.part_of ?
+                            <section data-test="separatedfrom">
+                                <hr />
+                                <h4>Separated from biosample</h4>
+                                <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
+                            </section>
                         : null}
 
-                        {synchText ?
-                            <div data-test="biosample-synchronization">
-                                <dt>Synchronization timepoint</dt>
-                                <dd className="sentence-case">{synchText}</dd>
-                            </div>
-                        : null}
-
-                        {context.subcellular_fraction_term_name ?
-                            <div data-test="subcellulartermname">
-                                <dt>Subcellular fraction</dt>
-                                <dd>{context.subcellular_fraction_term_name}</dd>
-                            </div>
-                        : null}
-
-                        {context.subcellular_fraction_term_id ?
-                            <div data-test="subcellularid">
-                                <dt>Subcellular fraction ID</dt>
-                                <dd>{context.subcellular_fraction_term_id}</dd>
-                            </div>
-                        : null}
-
-                        {context.depleted_in_term_name && context.depleted_in_term_name.length ?
-                            <div data-test="depletedin">
-                                <dt>Depleted in</dt>
-                                <dd>
-                                    {context.depleted_in_term_name.map(function(termName, i) {
+                        {context.pooled_from.length ?
+                            <section data-test="pooledfrom">
+                                <hr />
+                                <h4>Pooled from biosamples</h4>
+                                <ul className="non-dl-list">
+                                    {context.pooled_from.map(function (biosample) {
                                         return (
-                                            <span>
-                                                {i > 0 ? ', ' : ''}
-                                                {termName}
-                                            </span>
+                                            <li key={biosample['@id']}>
+                                                <a href={biosample['@id']}>{biosample.accession}</a>
+                                            </li>
                                         );
                                     })}
-                                </dd>
-                            </div>
+                                </ul>
+                            </section>
                         : null}
 
-                        <div data-test="sourcetitle">
-                            <dt>Source</dt>
-                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
-                        </div>
-
-                        {context.product_id ?
-                            <div data-test="productid">
-                                <dt>Product ID</dt>
-                                <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                            </div>
+                        {context.treatments.length ?
+                            <section>
+                                <hr />
+                                <h4>Treatment details</h4>
+                                {context.treatments.map(Panel)}
+                            </section>
                         : null}
 
-                        {context.lot_id ?
-                            <div data-test="lotid">
-                                <dt>Lot ID</dt>
-                                <dd>{context.lot_id}</dd>
-                            </div>
+                        {context.constructs.length ?
+                            <section>
+                                <hr />
+                                <h4>Construct details</h4>
+                                {context.constructs.map(Panel)}
+                            </section>
                         : null}
 
-                        <div data-test="project">
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
-                        </div>
-
-                        <div data-test="submittedby">
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
-                        </div>
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award.pi && context.award.pi.lab ?
-                            <div data-test="awardpi">
-                                <dt>Award PI</dt>
-                                <dd>{context.award.pi.lab.title}</dd>
-                            </div>
+                        {context.rnais.length ?
+                            <section>
+                                <hr />
+                                <h4>RNAi details</h4>
+                                {context.rnais.map(Panel)}
+                            </section>
                         : null}
-
-                        {context.aliases.length ?
-                            <div data-test="aliases">
-                                <dt>Aliases</dt>
-                                <dd>{aliasList}</dd>
-                            </div>
-                        : null}
-
-                        {context.dbxrefs.length ?
-                            <div data-test="externalresources">
-                                <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
-                            </div>
-                        : null}
-
-                        {context.note ?
-                            <div data-test="note">
-                                <dt>Note</dt>
-                                <dd>{context.note}</dd>
-                            </div>
-                        : null}
-
-                        {context.date_obtained ?
-                            <div data-test="dateobtained">
-                                <dt>Date obtained</dt>
-                                <dd>{context.date_obtained}</dd>
-                            </div>
-                        : null}
-
-                        {context.starting_amount ?
-                            <div data-test="startingamount">
-                                <dt>Starting amount</dt>
-                                <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
-                            </div>
-                        : null}
-
-                        {context.culture_start_date ?
-                            <div data-test="culturestartdate">
-                                <dt>Culture start date</dt>
-                                <dd>{context.culture_start_date}</dd>
-                            </div>
-                        : null}
-
-                        {context.culture_harvest_date ?
-                            <div data-test="cultureharvestdate">
-                                <dt>Culture harvest date</dt>
-                                <dd>{context.culture_harvest_date}</dd>
-                            </div>
-                        : null}
-
-                        {context.passage_number ?
-                            <div data-test="passagenumber">
-                                <dt>Passage number</dt>
-                                <dd>{context.passage_number}</dd>
-                            </div>
-                        : null}
-
-                        {context.phase ?
-                            <div data-test="phase">
-                                <dt>Cell cycle</dt>
-                                <dd>{context.phase}</dd>
-                            </div>
-                        : null}
-                    </dl>
-
-                    {context.derived_from ?
-                        <section data-test="derivedfrom">
-                            <hr />
-                            <h4>Derived from biosample</h4>
-                            <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
-                        </section>
-                    : null}
-
-                    {context.part_of ?
-                        <section data-test="separatedfrom">
-                            <hr />
-                            <h4>Separated from biosample</h4>
-                            <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
-                        </section>
-                    : null}
-
-                    {context.pooled_from.length ?
-                        <section data-test="pooledfrom">
-                            <hr />
-                            <h4>Pooled from biosamples</h4>
-                            <ul className="non-dl-list">
-                                {context.pooled_from.map(function (biosample) {
-                                    return (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </section>
-                    : null}
-
-                    {context.treatments.length ?
-                        <section>
-                            <hr />
-                            <h4>Treatment details</h4>
-                            {context.treatments.map(Panel)}
-                        </section>
-                    : null}
-
-                    {context.constructs.length ?
-                        <section>
-                            <hr />
-                            <h4>Construct details</h4>
-                            {context.constructs.map(Panel)}
-                        </section>
-                    : null}
-
-                    {context.rnais.length ?
-                        <section>
-                            <hr />
-                            <h4>RNAi details</h4>
-                            {context.rnais.map(Panel)}
-                        </section>
-                    : null}
+                    </div>
 
                 </div>
 
@@ -362,6 +435,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
                         <div className="panel data-display">
                             {Panel({context: context.donor, biosample: context})}
+                        </div>
+                    </div>
+                : null}
+
+                {talens ?
+                    <div>
+                        <h3>TALENs</h3>
+                        <div className="panel panel-default">
+                            {talens}
                         </div>
                     </div>
                 : null}
@@ -409,15 +491,15 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 <RelatedItems title="Biosamples that are part of this biosample"
                               url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
                               url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
                               url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -429,8 +511,8 @@ globals.content_views.register(Biosample, 'Biosample');
 
 var MaybeLink = React.createClass({
     render() {
-        if (this.props.href == 'N/A') {
-            return this.props.children;
+        if (!this.props.href || this.props.href === 'N/A') {
+            return <span>{this.props.children}</span>;
         } else {
             return (
                 <a {...this.props}>{this.props.children}</a>
@@ -747,14 +829,17 @@ var Donor = module.exports.Donor = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Set up breadcrumbs
+        var crumbs = [
+            {id: 'Donors'},
+            {id: <i>{context.organism.scientific_name}</i>}
+        ];
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <ul className="breadcrumb">
-                            <li>Donors</li>
-                            <li className="active"><em>{context.organism.scientific_name}</em></li>
-                        </ul>
+                        <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
@@ -771,7 +856,7 @@ var Donor = module.exports.Donor = React.createClass({
 
                 <RelatedItems title={"Biosamples from this " + (context.organism.name == 'human' ? 'donor': 'strain')}
                               url={'/search/?type=biosample&donor.uuid=' + context.uuid}
-                              columns={biosample_columns} />
+                              Component={BiosampleTable} />
 
             </div>
         );
@@ -779,21 +864,6 @@ var Donor = module.exports.Donor = React.createClass({
 });
 
 globals.content_views.register(Donor, 'Donor');
-
-
-
-var SingleTreatment = module.exports.SingleTreatment = function(treatment) {
-    var treatmentText = '';
-
-    if (treatment.concentration) {
-        treatmentText += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
-    }
-    treatmentText += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
-    if (treatment.duration) {
-        treatmentText += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
-    }
-    return treatmentText;
-};
 
 
 var Treatment = module.exports.Treatment = React.createClass({
@@ -916,10 +986,26 @@ var RNAi = module.exports.RNAi = React.createClass({
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
 
                 {context.source && context.source.title ? <dt>Source</dt> : null}
-                {context.source && context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.source && context.source.title ?
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
+                {context.product_id ?
+                    <dd>
+                        {context.url ?
+                            <a href={context.url}>{context.product_id}</a>
+                        :
+                            <span>{context.product_id}</span>
+                        }
+                    </dd>
+                : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}

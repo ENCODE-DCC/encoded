@@ -185,3 +185,51 @@ var UserActions = React.createClass({
 });
 
 module.exports = NavBar;
+
+
+// Display breadcrumbs with contents given in 'crumbs' object.
+// Each crumb in the crumbs array: {
+//     id: Title string to display in each breadcrumb. If falsy, does not get included, not even as an empty breadcrumb
+//     query: query string property and value, or null to display unlinked id
+//     uri: Alternative to 'query' property. Specify the complete URI instead of accreting query string variables
+//     tip: Text to display as part of uri tooltip.
+//     wholeTip: Alternative to 'tip' property. The complete tooltip to display
+// }
+var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
+    propTypes: {
+        root: React.PropTypes.string, // Root URI for searches
+        crumbs: React.PropTypes.arrayOf(React.PropTypes.object).isRequired // Object with breadcrumb contents
+    },
+
+    render: function() {
+        var accretingQuery = '';
+        var accretingTip = '';
+
+        // Get an array of just the crumbs with something in their id
+        var crumbs = _.filter(this.props.crumbs, function(crumb) { return crumb.id; });
+        var rootTitle = crumbs[0].id;
+
+        return (
+            <ol className="breadcrumb">
+                {crumbs.map((crumb, i) => {
+                    // Build up the query string if not specified completely
+                    if (!crumb.uri) {
+                        accretingQuery += crumb.query ? '&' + crumb.query : '';
+                    }
+
+                    // Build up tooltip if not specified completely
+                    if (!crumb.wholeTip) {
+                        accretingTip += crumb.tip ? (accretingTip.length ? ' and ' : '') + crumb.tip : '';
+                    }
+
+                    // Render the breadcrumbs
+                    return (
+                        <li key={i}>
+                            {(crumb.query || crumb.uri) ? <a href={crumb.uri ? crumb.uri : this.props.root + accretingQuery} title={crumb.wholeTip ? crumb.wholeTip : 'Search for ' + accretingTip + ' in ' + rootTitle}>{crumb.id}</a> : <span>{crumb.id}</span>}
+                        </li>
+                    );
+                })}
+            </ol>
+        );
+    }
+});
