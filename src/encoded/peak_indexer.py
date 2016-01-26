@@ -1,6 +1,6 @@
 import urllib3
 import io
-import gzip
+import altgzip
 import csv
 import logging
 import pprint
@@ -158,7 +158,8 @@ def index_peaks(uuid, request):
 
         try:        
 
-            with gzip.open(comp, mode="rt") as file:
+            with altgzip.AltGzipFile(comp) as gz:
+                file = gz.read()
                 for row in tsvreader(file):
                     chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
                     if isinstance(start, int) and isinstance(end, int):
