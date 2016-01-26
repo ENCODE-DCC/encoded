@@ -1,6 +1,6 @@
 import urllib3
 import io
-import altgzip
+import gzip
 import csv
 import logging
 import pprint
@@ -22,6 +22,38 @@ from random import shuffle
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
+
+class AltGzipFile(gzip.GzipFile):
+
+    """
+    Class that ignores the 'Not a gzipped file' due to trailing garbage data
+    http://blog.packetfrenzy.com/ignoring-gzip-trailing-garbage-data-in-python/ 
+
+    """
+
+    def read(self, size=-1):
+        chunks = []
+        try:
+            if size < 0:
+                while True:
+                    chunk = self.read1()
+                    if not chunk:
+                        break
+                    chunks.append(chunk)
+            else:
+                while size > 0:
+                    chunk = self.read1(size)
+                    if not chunk:
+                        break
+                    size -= len(chunk)
+                    chunks.append(chunk)
+        except (OSError, IOError) as e:  # IOError is needed for 2.7
+            if not chunks or not str(e).startswith('Not a gzipped file'):
+                raise
+            _logger.warn('decompression OK, trailing garbage ignored')       
+
+        return b''.join(chunks)
+
 
 
 # hashmap of assays and corresponding file types that are being indexed
@@ -158,7 +190,7 @@ def index_peaks(uuid, request):
 
         try:        
 
-            with altgzip.AltGzipFile(comp) as gz:
+            with AltGzipFile(comp) as gz:
                 file = gz.read()
                 for row in tsvreader(file):
                     chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
