@@ -3,6 +3,7 @@ import io
 import gzip
 import csv
 import logging
+import pprint
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
@@ -104,11 +105,11 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
 
-    log.warn('index_peak called')
+    log.warn('index_peak called with uuid: {}'.format(uuid))
 
     context = request.embed(uuid)
     if 'File' not in context['@type'] or 'dataset' not in context:
-        log.warn("File not in context type or dataset not in context")
+        log.warn("File not in context type or dataset not in context: {}".format(pprint.pformat(context)))
         return
 
     if 'status' not in context and context['status'] is not 'released':
