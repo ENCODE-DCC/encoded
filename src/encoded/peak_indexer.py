@@ -99,7 +99,6 @@ def get_assay_term_name(accession, request):
     '''
     context = request.embed(accession)
     if 'assay_term_name' in context:
-        log.warn('assay term name is {}'.format(context['assay_term_name']))
         return context['assay_term_name']
     return None
 
@@ -157,17 +156,23 @@ def index_peaks(uuid, request):
         r.release_conn()
         file_data = dict()
 
-        with gzip.open(comp, mode="rt") as file:
-            for row in tsvreader(file):
-                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                if isinstance(start, int) and isinstance(end, int):
-                    if chrom in file_data:
-                        file_data[chrom].append({
-                            'start': start + 1,
-                            'end': end + 1
-                        })
-                    else:
-                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+        try:        
+
+            with gzip.open(comp, mode="rt") as file:
+                for row in tsvreader(file):
+                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                    if isinstance(start, int) and isinstance(end, int):
+                        if chrom in file_data:
+                            file_data[chrom].append({
+                                'start': start + 1,
+                                'end': end + 1
+                            })
+                        else:
+                            file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+
+        except OSError:
+            log.exception("gzip error, continue with next file")
+            continue
 
         log.warn("file successfully read for indexing")
             
