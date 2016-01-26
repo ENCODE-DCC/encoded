@@ -55,7 +55,7 @@ def audit_antibody_characterization_review(value, system):
                          'and has biosample_term_id {} '.format(term_id) + \
                          'that is not one of ' + \
                          '{}'.format(biosampleType_ontologyPrefix[term_type])
-                yield AuditFailure('characterization review with invalid biosample term id', detail,
+                yield AuditFailure('characterization review with inappropriate biosample term id', detail,
                                    level='DCC_ACTION')
                 return
 
