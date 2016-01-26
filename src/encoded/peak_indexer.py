@@ -282,6 +282,7 @@ def index_file(request):
 
         log.warn("Number of invalidated objects {}".format(len(invalidated)))
 
-        for uuid in shuffle(invalidated): # shuffling to see differt types of files in logs
+        shuffle(invalidated)
+        for uuid in invalidated: # shuffling to see differt types of files in logs
             index_peaks(uuid, request)
     return result
