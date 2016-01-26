@@ -5,6 +5,7 @@ from contentbase import (
 from .conditions import (
     rfa,
 )
+import datetime
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -125,7 +126,8 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE2', 'ENCODE2-Mouse'))
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN',
+                                                     'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
     Reads files should have a read_length
@@ -140,6 +142,30 @@ def audit_file_read_length(value, system):
     if 'read_length' not in value:
         detail = 'Reads file {} missing read_length'.format(value['@id'])
         raise AuditFailure('missing read_length', detail, level='DCC_ACTION')
+
+    creation_date = value['date_created'][:10].split('-')
+    year = int(creation_date[0])
+    month = int(creation_date[1])
+    day = int(creation_date[2])
+    file_date_creation = datetime.date(year, month, day)
+    threshold_date = datetime.date(2015, 6, 30)
+
+    read_length = value['read_length']
+    if read_length < 50:
+        if file_date_creation < threshold_date:
+            detail = 'Fastq file {} '.format(value['@id']) + \
+                     'has read length of {}bp, while '.format(read_length) + \
+                     'ENCODE files submitted after 2015-6-30 ' + \
+                     'should be at least 50bp long'
+            yield AuditFailure('insufficient read length', detail, level='WARNING')
+            return
+        else:
+            detail = 'Fastq file {} '.format(value['@id']) + \
+                     'has read length of {}bp, while '.format(read_length) + \
+                     'ENCODE files submitted after 2015-6-30 ' + \
+                     'should be at least 50bp long'
+            yield AuditFailure('insufficient read length', detail, level='ERROR')
+            return
 
 
 @audit_checker('file',
