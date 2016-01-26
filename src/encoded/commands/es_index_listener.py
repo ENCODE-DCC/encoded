@@ -208,8 +208,6 @@ def composite(loader, global_conf, **settings):
 
     path = settings.get('path', '/index')
 
-    log.warn("Index listener is running with path: %s", path)
-
     # Composite app is used so we can load the main app
     app_name = settings.get('app', None)
     app = loader.get_app(app_name, global_conf=global_conf)

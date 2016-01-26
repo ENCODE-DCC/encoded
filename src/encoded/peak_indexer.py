@@ -104,17 +104,20 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
 
-    log.warn('endex_peak called')
+    log.warn('index_peak called')
 
     context = request.embed(uuid)
     if 'File' not in context['@type'] or 'dataset' not in context:
+        log.warn("File not in context type or dataset not in context")
         return
 
     if 'status' not in context and context['status'] is not 'released':
+        log.warn("status not in context and context status is not released")
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
     if assay_term_name is None:
+        log.warn("assay_term_name is none")
         return
 
     flag = False
@@ -124,6 +127,7 @@ def index_peaks(uuid, request):
                 flag = True
                 break
     if not flag:
+        log.warn("flag is false")
         return
 
     log.warn("qualifying bed file found")
