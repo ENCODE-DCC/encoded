@@ -232,9 +232,11 @@ def lot_reviews(characterizations, targets, request):
 
     if not_reviewed_chars == total_characterizations and total_characterizations > 0:
         base_review['status'] = 'not eligible for new data'
+        base_review['detail'] = 'characterizations not reviewed'
         return [base_review]
 
     if in_progress_chars == total_characterizations and total_characterizations > 0:
+        base_review['detail'] = 'characterizations in progress'
         return [base_review]
 
     if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and \
@@ -356,6 +358,7 @@ def lot_reviews(characterizations, targets, request):
 
                 if pending_secondary:
                     new_review['status'] = 'pending dcc review'
+                    new_review['detail'] = 'Pending review of a secondary characterization.'
             else:
                 # For all other cases, can keep the awaiting status
                 pass
