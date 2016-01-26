@@ -752,7 +752,11 @@ def audit_file_chip_seq_library_complexity(value, system):
                             yield AuditFailure('low library complexity', detail,
                                                level='WARNING')
                 if 'PBC2' in metric:
-                    PBC2_value = float(metric['PBC2'])
+                    PBC2_raw_value = metric['PBC2']
+                    if PBC2_raw_value == 'Infinity':
+                        PBC2_value = float('inf')
+                    else:
+                        PBC2_value = float(metric['PBC2'])
                     if PBC2_value < 3:
                         detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                  'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
