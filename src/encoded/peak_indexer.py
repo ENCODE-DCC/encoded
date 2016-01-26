@@ -17,6 +17,9 @@ from contentbase.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
 )
+
+from random import shuffle
+
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
@@ -131,7 +134,6 @@ def index_peaks(uuid, request):
             log.warn("assay_term_name is none")
             continue
 
-        log.debug("assay term name {}".format(assay_term_name))
         
         flag = False
         
@@ -141,7 +143,6 @@ def index_peaks(uuid, request):
                     flag = True
                     break
         if not flag:
-            log.warn("flag is false")
             continue
 
         log.warn("qualifying bed file found")
@@ -281,6 +282,6 @@ def index_file(request):
 
         log.warn("Number of invalidated objects {}".format(len(invalidated)))
 
-        for uuid in invalidated:
+        for uuid in shuffle(invalidated): # shuffling to see differt types of files in logs
             index_peaks(uuid, request)
     return result
