@@ -30,3 +30,18 @@ var PanelBody = module.exports.PanelBody = React.createClass({
         );
     }
 });
+
+
+var PanelHeading = module.exports.PanelHeading = React.createClass({
+    propTypes: {
+        addClasses: React.PropTypes.string // Classes to add to outer panel div
+    },
+
+    render: function() {
+        return (
+            <div className={'panel-heading' + (this.props.addClasses ? ' ' + this.props.addClasses : '')}>
+                {this.props.children}
+            </div>
+        );
+    }
+});
