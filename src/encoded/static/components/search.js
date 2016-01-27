@@ -790,15 +790,23 @@ var AuditMixin = audit.AuditMixin;
             var filters = this.props.filters;
             var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
-            var hideTypes;
+            var hideTypes = false;
             if (this.props.mode == 'picker') {
                 hideTypes = false;
             } else {
-                hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && facets.length > 1;
-
-                // Find the facet for the 'type'. Only one should exist.
+                // Find the facet for the 'type'. Only one should exist, and it should contain all the data types available in
+                // the 'terms' array, though many will be empty, which we'll need to filter out.
                 var typeFacet = _(facets).find(facet => facet.field === 'type');
-                var typeTerms = typeFacet && typeFacet.terms.filter();
+                if (typeFacet && typeFacet.terms && typeFacet.terms.length) {
+                    // Now get an array of the 'terms' objects that have a non-zero doc_count
+                    var typeTerms = typeFacet.terms.filter(term => term.doc_count > 0);
+
+                    // Hide the facet if there's only one term with a non-zero doc_count, or if there are more but all have the same value.
+                    var firstDocCount = (typeTerms.length > 0) ? typeTerms[0].doc_count : 0;
+                    if (firstDocCount) {
+                        hideTypes = _(typeTerms).all(term => term === firstDocCount);
+                    }
+                }
             }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
