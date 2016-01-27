@@ -232,11 +232,11 @@ def lot_reviews(characterizations, targets, request):
 
     if not_reviewed_chars == total_characterizations and total_characterizations > 0:
         base_review['status'] = 'not eligible for new data'
-        base_review['detail'] = 'characterizations not reviewed'
+        base_review['detail'] = 'Characterizations not reviewed.'
         return [base_review]
 
     if in_progress_chars == total_characterizations and total_characterizations > 0:
-        base_review['detail'] = 'characterizations in progress'
+        base_review['detail'] = 'Characterizations in progress.'
         return [base_review]
 
     if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and \
@@ -261,6 +261,8 @@ def lot_reviews(characterizations, targets, request):
     not_compliant_secondary = False
     pending_secondary = False
     exempted_secondary = False
+    in_progress_secondary = 0
+    not_reviewed_secondary = 0
 
     for secondary in secondary_chars:
         if secondary['status'] == 'compliant':
@@ -273,6 +275,10 @@ def lot_reviews(characterizations, targets, request):
             pending_secondary = True
         elif secondary['status'] == 'not compliant':
             not_compliant_secondary = True
+        elif secondary['status'] == 'in progress':
+            in_progress_secondary += 1
+        elif secondary['status'] == 'not reviwed':
+            not_reviewed_secondary += 1
         else:
             pass
 
@@ -284,6 +290,9 @@ def lot_reviews(characterizations, targets, request):
     for primary in primary_chars:
         if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
             continue
+
+        if primary['status'] == 'in progress':
+            base_review['detail'] = 'Primary characterization(s) in progress.'
 
         for lane_review in primary.get('characterization_reviews', []):
             # Get the organism information from the lane, not from the target since there are lanes
@@ -301,14 +310,17 @@ def lot_reviews(characterizations, targets, request):
             }
 
             if lane_review['lane_status'] == 'pending dcc review':
+                new_review['status'] = 'pending dcc review'
                 if compliant_secondary:
-                    new_review['status'] = 'pending dcc review'
                     new_review['detail'] = 'Pending review of primary characterization.'
                 if pending_secondary:
-                    new_review['status'] = 'pending dcc review'
                     new_review['detail'] = 'Pending review of primary and secondary characterizations.'
+                if not secondary_chars:
+                    new_review['detail'] = 'Pending review of primary and awaiting submission of \
+                        secondary characterization(s).'
             elif lane_review['lane_status'] == 'not compliant':
-                if not_compliant_secondary or len(secondary_chars) == 0:
+                if not_compliant_secondary or len(secondary_chars) == 0 or \
+                        (not_reviewed_secondary == len(secondary_chars)):
                     new_review['status'] = 'not eligible for new data'
                     new_review['detail'] = 'Awaiting compliant primary and secondary characterizations.'
                 else:
@@ -322,6 +334,10 @@ def lot_reviews(characterizations, targets, request):
                         new_review['biosample_term_name'] = 'any cell type and tissues'
                         new_review['biosample_term_id'] = 'NTR:99999999'
                         new_review['status'] = 'eligible for new data (via exemption)'
+                    if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
+                        new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
+                    if in_progress_secondary == len(secondary_chars):
+                        new_review['detail'] = 'Secondary characterization(s) in progress.'
                 else:
                     # exempted_organisms.add(lane_organism)
                     new_review['biosample_term_name'] = 'any cell type and tissues'
