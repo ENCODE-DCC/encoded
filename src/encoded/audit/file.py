@@ -126,7 +126,7 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN',
+@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'ENCODE',
                                                      'ENCODE2', 'ENCODE2-Mouse'))
 def audit_file_read_length(value, system):
     '''
@@ -148,15 +148,17 @@ def audit_file_read_length(value, system):
     year = int(creation_date[0])
     month = int(creation_date[1])
     day = int(creation_date[2])
+    created_date = str(year)+'-'+str(month)+'-'+str(day)
     file_date_creation = datetime.date(year, month, day)
     threshold_date = datetime.date(2015, 6, 30)
 
     read_length = value['read_length']
     if read_length < 50:
         detail = 'Fastq file {} '.format(value['@id']) + \
+                 'that was created on {} '.format(created_date) + \
                  'has read length of {}bp.'.format(read_length) + \
                  ' It is not compliant with ENCODE3 standards.' + \
-                 'According to ENCODE3 standards files submitted after 2015-6-30 ' + \
+                 ' According to ENCODE3 standards files submitted after 2015-6-30 ' + \
                  'should be at least 50bp long.'
         if file_date_creation < threshold_date:
             yield AuditFailure('insufficient read length', detail, level='WARNING')
