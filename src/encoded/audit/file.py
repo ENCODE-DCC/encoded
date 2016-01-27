@@ -853,12 +853,12 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                 border_value = (required_value - 0.07)  # 0.0713512755834)
                 print_border = '%.2f' % border_value
                 detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
-                         'has Spearman correlation of {} '.format(spearman_correlation) + \
-                         '. For gene quantification files from an {}'.format(experiment_replication_type) + \
+                         'has Spearman correlation of {}.'.format(spearman_correlation) + \
+                         ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                          ' assay in the {} '.format(pipeline['title']) + \
-                         'pipeline, >{} is recommended but a value between '.format(required_value) + \
-                         '{} and one STD away ({}) is acceptable'.format(required_value,
-                                                                         print_border)
+                         'pipeline, >{} is recommended, but a value between '.format(required_value) + \
+                         '{} and one STD away ({}) is acceptable.'.format(required_value,
+                                                                          print_border)
                 if spearman_correlation > border_value:
                     yield AuditFailure('low spearman correlation', detail,
                                        level='WARNING')
