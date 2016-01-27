@@ -243,7 +243,27 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-def test_audit_paired_with(testapp, file1):
+def test_audit_file_read_length_insufficient(testapp, file1):
+    testapp.patch_json(file1['@id'], {'read_length': 10})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient read length' for error in errors_list)
+
+
+def test_audit_file_read_length_sufficient(testapp, file1):
+    testapp.patch_json(file1['@id'], {'read_length': 100})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient read length' for error in errors_list)
+
+
+def test_audit_file_paired_with(testapp, file1):
     testapp.patch_json(file1['@id'], {'paired_end': '1'})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -253,7 +273,7 @@ def test_audit_paired_with(testapp, file1):
     assert any(error['category'] == 'missing paired_with' for error in errors_list)
 
 
-def test_audit_mismatched_paired_with(testapp, file1, file4):
+def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
