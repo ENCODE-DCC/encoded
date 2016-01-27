@@ -25,6 +25,10 @@ from contentbase.elasticsearch import (
     PyramidJSONSerializer,
     TimedUrllib3HttpConnection,
 )
+
+import botocore.session as aws_session
+from requests_aws4auth import AWS4Auth
+
 from contentbase.elasticsearch.interfaces import SNP_SEARCH_ES
 from contentbase.json_renderer import json_renderer
 from elasticsearch import Elasticsearch
@@ -220,11 +224,17 @@ def main(global_config, **local_config):
 
     if 'snp_search.server' in config.registry.settings:
         addresses = aslist(config.registry.settings['snp_search.server'])
+        aws_creds = aws_session.get_session().get_credentials()
+        awsauth = AWS4Auth(aws_creds.access_key, aws_creds.secret_key, 'us-west-2', 'es')
         config.registry[SNP_SEARCH_ES] = Elasticsearch(
             addresses,
             serializer=PyramidJSONSerializer(json_renderer),
             connection_class=TimedUrllib3HttpConnection,
             retry_on_timeout=True,
+            http_auth=awsauth,
+            use_ssl=True,
+            verify_certs=True,
+
         )
         config.include('.region_search')
         config.include('.peak_indexer')

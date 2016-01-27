@@ -92,7 +92,7 @@ def run(wale_s3_prefix, image_id, instance_type,
     print(instance.state)
 
 
-    if region_search == 'yes':
+    if region_search:
         client = boto3.client('es')
         iam_client = boto3.client('iam')
         account_id = iam_client.get_user()['User']['Arn'].split(':user')[0]
@@ -102,10 +102,10 @@ def run(wale_s3_prefix, image_id, instance_type,
                     {
                         "Effect": "Allow",
                         "Principal": {
-                            "AWS": "{}{}".format(account_id, ":root")
+                            "AWS": "{}{}".format(account_id, ":user/encoded")
                         },
                         "Action": "es:*",
-                        "Resource": "{}{}{}{}".format(account_id, ":domain/region-search-",name,"/*")
+                        "Resource": "{}{}{}{}".format(account_id, ":domain/region-search-",region-search,"/*")
                     }
                 ]
             }        
@@ -127,10 +127,16 @@ def run(wale_s3_prefix, image_id, instance_type,
         )
 
         es_created = response.get('DomainStatus', {}).get('Created', False)
+        es_domain_name = response.get('DomainStatus', {})).get('DomainName', '')
 
         print('')
         if es_created:
-            print('Created Elasticsearch instantce at: {}'.format(response['DomainStatus']['Endpoint']))
+            print('getting Elasticsearch endpoint ')
+            while not client.decsribe_elasticsearch_domain(DomainName=es_domain_name).get('Endpoint', None):
+                        sys.stdout.write('.')
+                        sys.stdout.flush()
+                        time.sleep(1)
+            print('Created Elasticsearch instantce at: {}'.format(response['DomainStatus'].get('Endpoint')))
         else:
             print('Failed creating Elasticsearch instance')
 
@@ -165,8 +171,8 @@ def main():
         help="specify 'c4.4xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
-    parser.add_argument('--region-search', default='no', help="Specifies wether AMZ Elasticsearch "
-        "instance should be launched. Pass 'yes' or 'no'")
+    parser.add_argument('--region-search', default=None, help="Specifies wether AMZ Elasticsearch "
+        "instance should be launched. Pass a name as an argument")
     args = parser.parse_args()
 
     return run(**vars(args))
