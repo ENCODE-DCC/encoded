@@ -1070,7 +1070,7 @@ var Document = module.exports.Document = React.createClass({
             );
         }
 
-        var characterization = context['@type'].indexOf('characterization') >= 0;
+        var characterization = context['@type'].indexOf('Characterization') >= 0;
         var caption = characterization ? context.caption : context.description;
         var excerpt;
         if (caption && caption.length > 100) {

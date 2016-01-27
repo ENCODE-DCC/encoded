@@ -46,3 +46,9 @@ def test_changelogs(testapp, registry):
             res = testapp.get(changelog)
             assert res.status_int == 200, changelog
             assert res.content_type == 'text/markdown'
+
+
+def test_schemas_etag(testapp):
+    etag = testapp.get('/profiles/', status=200).etag
+    assert etag
+    testapp.get('/profiles/', headers={'If-None-Match': etag}, status=304)

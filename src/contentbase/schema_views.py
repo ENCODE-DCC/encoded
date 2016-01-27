@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
+from .etag import etag_app_version_effective_principals
 from .interfaces import (
     COLLECTIONS,
     TYPES,
@@ -32,7 +33,8 @@ def _annotated_schema(type_info, request):
     return schema
 
 
-@view_config(route_name='schema', request_method='GET')
+@view_config(route_name='schema', request_method='GET',
+             decorator=etag_app_version_effective_principals)
 def schema(context, request):
     type_name = request.matchdict['type_name']
     types = request.registry[TYPES]
@@ -44,7 +46,8 @@ def schema(context, request):
     return _annotated_schema(type_info, request)
 
 
-@view_config(route_name='schemas', request_method='GET')
+@view_config(route_name='schemas', request_method='GET',
+             decorator=etag_app_version_effective_principals)
 def schemas(context, request):
     types = request.registry[TYPES]
     schemas = {}
