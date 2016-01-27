@@ -10,6 +10,7 @@ import re
 import subprocess
 import sys
 import time
+import json
 
 
 def nameify(s):
@@ -18,7 +19,7 @@ def nameify(s):
 
 
 def run(wale_s3_prefix, image_id, instance_type,
-        branch=None, name=None, role='demo', profile_name=None):
+        branch=None, name=None, role='demo', profile_name=None, with_region_search=False):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -89,6 +90,51 @@ def run(wale_s3_prefix, image_id, instance_type,
             pass
     print('')
     print(instance.state)
+
+
+    if with_region_search:
+        client = boto3.client('es')
+        iam_client = boto3.client('iam')
+        account_id = iam_client.get_user()['User']['Arn'].split(':user')[0]
+        access_policy = 
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": "{}{}".format(account_id, ":root")
+                        },
+                        "Action": "es:*",
+                        "Resource": "{}{}{}{}".format(account_id, ":domain/region-search",name,"/*")
+                    }
+                ]
+            }        
+        response = client.create_elasticsearch_domain(
+            DomainName='region-search',
+            ElasticsearchClusterConfig={
+                'InstanceType': 't2.small.elasticsearch',
+                'InstanceCount': 2,
+                'DedicatedMasterEnabled': False,
+                'ZoneAwarenessEnabled': True,
+            },
+            EBSOptions={
+                'EBSEnabled': False
+            },
+            AccessPolicies=json.dumps(access_policy),
+            AdvancedOptions={
+                "rest.action.multi.allow_explicit_index": False
+            }
+        )
+
+        es_created = response.get('DomainStatus', {}).get('Created', False)
+
+        print('')
+        if es_created:
+            print('Created Elasticsearch instantce at: {}'.format(response['DomainStatus']['Endpoint']))
+        else:
+            print('Failed creating Elasticsearch instance')
+
 
 
 def main():
