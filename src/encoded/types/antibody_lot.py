@@ -301,8 +301,12 @@ def lot_reviews(characterizations, targets, request):
             }
 
             if lane_review['lane_status'] == 'pending dcc review':
-                if pending_secondary or compliant_secondary:
+                if compliant_secondary:
                     new_review['status'] = 'pending dcc review'
+                    new_review['detail'] = 'Pending review of primary characterization.'
+                if pending_secondary:
+                    new_review['status'] = 'pending dcc review'
+                    new_review['detail'] = 'Pending review of primary and secondary characterizations.'
             elif lane_review['lane_status'] == 'not compliant':
                 if not_compliant_secondary or len(secondary_chars) == 0:
                     new_review['status'] = 'not eligible for new data'
