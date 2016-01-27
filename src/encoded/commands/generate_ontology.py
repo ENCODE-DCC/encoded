@@ -106,6 +106,42 @@ organ_slims = {
     'UBERON:0000478': 'extraembryonic structure'
 }
 
+assay_slims = {
+    ## Note shortened synonyms are provided 
+    'OBI:0000634': 'DNA methylation', ## 'DNA methylation profiling'
+    'OBI:0000424': 'transcription', ## 'transcription profiling'
+    'OBI:0001398': 'DNA binding', ## "protein and DNA interaction"
+    'OBI:0001854': 'RNA binding', ## "protein and RNA interaction"
+    'OBI:0001917': '3D chromatin structure', ## 'chromosome conformation identification objective'
+    'OBI:0000870': 'DNA accessibility', ## 'single-nucleotide-resolution nucleic acid structure mapping assay'
+}
+
+slim_shims = {
+    ## this allows us to manually assign term X to slim Y while waiting for ontology updates
+    'assay':
+        ## DNA accessibility
+        'OBI:0001924': 'OBI:0000870',
+        'OBI:0002039': 'OBI:0000870',
+        'OBI:0001853': 'OBI:0000870',
+        'OBI:0001859': 'OBI:0000870',
+    }
+
+}
+
+preferred_name = {
+    "NTR:0000762": "shRNA/RNA-seq",
+    "NTR:0000763": "shRNA/RNA-seq",
+    "NTR:0003082": "single cell/RNA-seq",
+    "NTR:0003508": "WGS",
+    "OBI:0000626": "WGS",
+    "OBI:0001247": "genotyping",
+    "OBI:0001332": "DNAme array",
+    "OBI:0001335": "microRNA array",
+    "OBI:0001463": "transcriptional array",
+    "OBI:0001863": "WGBS",
+    "OBI:0001923": "MS/MS",
+}
+
 category_slims = {
     'OBI:0000634': 'DNA methylation profiling',
     'OBI:0000424': 'transcription profiling',
@@ -412,13 +448,15 @@ def getSlims(goid, terms, slimType):
     ''' Get Slims '''
 
     slims = []
-    slimTerms = []
+    slimTerms = {}
     if slimType == 'developmental':
         slimTerms = developental_slims
     elif slimType == 'organ':
         slimTerms = organ_slims
     elif slimType == 'system':
         slimTerms = system_slims
+    elif slimType == 'assay':
+        slimTerms == assay_slims
     elif slimType == 'category':
         slimTerms = category_slims
     elif slimType == 'objective':
@@ -432,6 +470,11 @@ def getSlims(goid, terms, slimType):
         else:
             if slimTerm in terms[goid]['closure']:
                 slims.append(slimTerms[slimTerm])
+
+    if not slims and slim_shims.get(slimType, {}):
+        shim = slim_shims[slimType].get(goid,'')
+        if shim: 
+            slims.append(shim)
     return slims
 
 
@@ -439,6 +482,7 @@ def getTermStructure():
     return {
         'id': '',
         'name': '',
+        'preferred_name': '',
         'parents': [],
         'part_of': [],
         'has_part': [],
@@ -452,6 +496,7 @@ def getTermStructure():
         'data_with_develops_from': [],
         'synonyms': [],
         'category': [],
+        'assay': [],
         'types': [],
         'objectives': []
     }
@@ -513,6 +558,8 @@ def main():
                 except:
                     terms[term_id]['name'] = ''
 
+                terms[term_id]['preferred_name'] = preferred_name.get(term_id, terms[term_id]['name'])
+
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
                     if isBlankNode(parent):
@@ -560,9 +607,11 @@ def main():
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
+        terms[term]['assay'] = getSlims(term, terms, 'assay')
         terms[term]['category'] = getSlims(term, terms, 'category')
         terms[term]['objectives'] = getSlims(term, terms, 'objective')
         terms[term]['types'] = getSlims(term, terms, 'type')
+
         del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
     for term in terms:
