@@ -4,6 +4,7 @@ from boto.ec2.blockdevicemapping import (
 )
 import boto.ec2
 import boto.exception
+import boto3
 import getpass
 import re
 import subprocess
