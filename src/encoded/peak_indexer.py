@@ -185,12 +185,15 @@ def index_peaks(uuid, request):
         comp = io.BytesIO()
         comp.write(r.data)
         comp.seek(0)
+
+        gzipfile = gzip.GzipFile(fileobj=comp, mode='r')
+
         r.release_conn()
         file_data = dict()
 
         try:        
 
-            with AltGzipFile(comp) as gz:
+            with AltGzipFile(gzipfile) as gz:
                 file = gz.read()
                 for row in tsvreader(file):
                     chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
