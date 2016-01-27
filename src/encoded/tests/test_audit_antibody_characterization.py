@@ -150,7 +150,7 @@ def test_audit_antibody_biosample_invalid_term_in_review(testapp, base_antibody_
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] ==
-               'characterization review with invalid biosample term id' for error in errors_list)
+               'characterization review with biosample term-type mismatch' for error in errors_list)
 
 
 def test_audit_antibody_biosample_ntr_term_in_review(testapp, base_antibody_characterization):

@@ -180,7 +180,7 @@ def audit_biosample_term(value, system):
                  'has biosample_term_id {} '.format(value['biosample_term_id']) + \
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-        yield AuditFailure('invalid biosample term id', detail, level='DCC_ACTION')
+        yield AuditFailure('biosample term-type mismatch', detail, level='DCC_ACTION')
         return
 
     if term_id not in ontology:
@@ -346,18 +346,18 @@ def audit_biosample_part_of_consistency(value, system):
 
         ontology = system['registry']['ontology']
         if (term_id in ontology) and (part_of_term_id in ontology):
-            ontology_child = ontology[term_id]
+            # ontology_child = ontology[term_id]
             ontology_parent = ontology[part_of_term_id]
             if 'name' in ontology_parent and ontology_parent['name'] == 'multi-cellular organism':
                 return
-
+            '''
             if 'organs' in ontology_child and 'organs' in ontology_parent:
                 child_organs = ontology_child['organs']
                 parent_organs = ontology_parent['organs']
                 for org in child_organs:
                     if org in parent_organs:
                         return
-
+            '''
         detail = 'Biosample {} '.format(value['@id']) + \
                  'with biosample_term_id {} '.format(term_id) + \
                  'was separated from biosample {} '.format(part_of_biosample['@id']) + \
