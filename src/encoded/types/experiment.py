@@ -128,6 +128,27 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             "type": "string",
         },
     })
+    def assay_slims(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['assay']
+        return []
+
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay name",
+        "type": "string",
+    })
+    def assay_name(self, registry, assay_term_id):
+        if assay_term_id in registry['ontology']:
+            return registry['ontology'][assay_term_id]['preferred_name']
+        return ''
+        
+    @calculated_property(condition='assay_term_id', schema={
+        "title": "Assay category",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
     def category_slims(self, registry, assay_term_id):
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id]['category']

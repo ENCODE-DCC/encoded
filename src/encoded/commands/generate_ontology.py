@@ -118,12 +118,12 @@ assay_slims = {
 
 slim_shims = {
     ## this allows us to manually assign term X to slim Y while waiting for ontology updates
-    'assay':
+    'assay': {
         ## DNA accessibility
-        'OBI:0001924': 'OBI:0000870',
-        'OBI:0002039': 'OBI:0000870',
-        'OBI:0001853': 'OBI:0000870',
-        'OBI:0001859': 'OBI:0000870',
+        'OBI:0001924': 'DNA accessibility', ##'OBI:0000870',
+        'OBI:0002039': 'DNA accessibility', ##'OBI:0000870',
+        'OBI:0001853': 'DNA accessibility', ##'OBI:0000870',
+        'OBI:0001859': 'DNA accessibility', ##'OBI:0000870',
     }
 
 }
@@ -140,6 +140,9 @@ preferred_name = {
     "OBI:0001463": "transcriptional array",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
+    "OBI:0001271": "RNA-seq",
+    "OBI:0000716": "ChIP-seq",
+    "OBI:0001853": "DNase-seq"
 }
 
 category_slims = {
@@ -456,7 +459,7 @@ def getSlims(goid, terms, slimType):
     elif slimType == 'system':
         slimTerms = system_slims
     elif slimType == 'assay':
-        slimTerms == assay_slims
+        slimTerms = assay_slims
     elif slimType == 'category':
         slimTerms = category_slims
     elif slimType == 'objective':
