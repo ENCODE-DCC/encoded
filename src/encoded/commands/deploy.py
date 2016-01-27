@@ -122,7 +122,7 @@ def run(wale_s3_prefix, image_id, instance_type,
             },
             AccessPolicies=json.dumps(access_policy),
             AdvancedOptions={
-                "rest.action.multi.allow_explicit_index": False
+                "rest.action.multi.allow_explicit_index": 'false'
             }
         )
 
