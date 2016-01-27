@@ -153,19 +153,16 @@ def audit_file_read_length(value, system):
 
     read_length = value['read_length']
     if read_length < 50:
+        detail = 'Fastq file {} '.format(value['@id']) + \
+                 'has read length of {}bp.'.format(read_length) + \
+                 ' It is not compliant with ENCODE3 standards.' + \
+                 'ENCODE files submitted after 2015-6-30 ' + \
+                 'should be at least 50bp long.'
         if file_date_creation < threshold_date:
-            detail = 'Fastq file {} '.format(value['@id']) + \
-                     'has read length of {}bp, while '.format(read_length) + \
-                     'ENCODE files submitted after 2015-6-30 ' + \
-                     'should be at least 50bp long'
             yield AuditFailure('insufficient read length', detail, level='WARNING')
             return
         else:
-            detail = 'Fastq file {} '.format(value['@id']) + \
-                     'has read length of {}bp, while '.format(read_length) + \
-                     'ENCODE files submitted after 2015-6-30 ' + \
-                     'should be at least 50bp long'
-            yield AuditFailure('insufficient read length', detail, level='ERROR')
+            yield AuditFailure('insufficient read length', detail, level='NOT_COMPLIANT')
             return
 
 
