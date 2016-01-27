@@ -112,7 +112,7 @@ def run(wale_s3_prefix, image_id, instance_type,
         response = client.create_elasticsearch_domain(
             DomainName='region-search',
             ElasticsearchClusterConfig={
-                'InstanceType': 't2.small.elasticsearch',
+                'InstanceType': 'm3.medium.elasticsearch',
                 'InstanceCount': 2,
                 'DedicatedMasterEnabled': False,
                 'ZoneAwarenessEnabled': True,
