@@ -795,6 +795,10 @@ var AuditMixin = audit.AuditMixin;
                 hideTypes = false;
             } else {
                 hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && facets.length > 1;
+
+                // Find the facet for the 'type'. Only one should exist.
+                var typeFacet = _(facets).find(facet => facet.field === 'type');
+                var typeTerms = typeFacet && typeFacet.terms.filter();
             }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
