@@ -92,12 +92,11 @@ def run(wale_s3_prefix, image_id, instance_type,
     print(instance.state)
 
 
-    if with_region_search == 'yes':
+    if region_search == 'yes':
         client = boto3.client('es')
         iam_client = boto3.client('iam')
         account_id = iam_client.get_user()['User']['Arn'].split(':user')[0]
-        access_policy =
-            {
+        access_policy = {
                 "Version": "2012-10-17",
                 "Statement": [
                     {
