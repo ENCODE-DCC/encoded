@@ -31,6 +31,9 @@ Step 3: Run buildout::
     $ python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
     $ bin/buildout
 
+    NOTE:  If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql 
+    via homebrew (as above)
+
 
 Step 4: Start the application locally
 
