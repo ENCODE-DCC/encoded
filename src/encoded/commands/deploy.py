@@ -19,7 +19,7 @@ def nameify(s):
 
 
 def run(wale_s3_prefix, image_id, instance_type,
-        branch=None, name=None, role='demo', profile_name=None, with_region_search=False):
+        branch=None, name=None, role='demo', profile_name=None, region_search=False):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
@@ -92,11 +92,11 @@ def run(wale_s3_prefix, image_id, instance_type,
     print(instance.state)
 
 
-    if with_region_search:
+    if with_region_search == 'yes':
         client = boto3.client('es')
         iam_client = boto3.client('iam')
         account_id = iam_client.get_user()['User']['Arn'].split(':user')[0]
-        access_policy = 
+        access_policy =
             {
                 "Version": "2012-10-17",
                 "Statement": [
@@ -106,7 +106,7 @@ def run(wale_s3_prefix, image_id, instance_type,
                             "AWS": "{}{}".format(account_id, ":root")
                         },
                         "Action": "es:*",
-                        "Resource": "{}{}{}{}".format(account_id, ":domain/region-search",name,"/*")
+                        "Resource": "{}{}{}{}".format(account_id, ":domain/region-search-",name,"/*")
                     }
                 ]
             }        
@@ -166,6 +166,8 @@ def main():
         help="specify 'c4.4xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--region-search', default='no', help="Specifies wether AMZ Elasticsearch "
+        "instance should be launched. Pass 'yes' or 'no'")
     args = parser.parse_args()
 
     return run(**vars(args))
