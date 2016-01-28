@@ -25,7 +25,10 @@
                 {
                     "required": ["tags"],
                     "properties": {
-                        "construct_type": {"enum": ["fusion protein"]}
+                        "construct_type": {"enum": ["fusion protein"]},
+                        "tags": {
+                            "minItems": 1
+                        }
                     }
                 },
                 {
@@ -48,8 +51,7 @@
             "type": "string",
             "enum": [
                 "fusion protein",
-                "zinc-finger knockout",
-                "TALEN"
+                "zinc-finger knockout"
             ]
         },
         "description": {
