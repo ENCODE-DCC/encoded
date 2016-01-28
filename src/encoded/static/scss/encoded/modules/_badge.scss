@@ -9,7 +9,7 @@ $projects:
     (roadmap,   'badge-roadmap.svg',   'badge-roadmap.png'),
     (modencode, 'badge-modencode.svg', 'badge-modencode.png'),
     (modern,    'badge-modern.svg',    'badge-modern.png'),
-    (ggr        'badge-ggr.png',       'badge-ggr.png');
+    (ggr,       'badge-ggr.png',       'badge-ggr.png');
 
 @each $project, $badgefile, $badgefilenosvg in $projects {
     .badge-#{$project} {
@@ -19,6 +19,7 @@ $projects:
         background-image: url(/static/img/#{$badgefile});
         background-repeat: no-repeat;
         background-position: 0 0;
+        background-size: contain;
 
         &.center {
             background-position: center 0;
