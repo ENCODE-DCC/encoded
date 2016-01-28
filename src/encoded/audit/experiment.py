@@ -4,7 +4,7 @@ from contentbase import (
 )
 from .conditions import rfa
 from .ontology_data import biosampleType_ontologyPrefix
-
+from .gtex_data import gtexDonorsList
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -54,10 +54,207 @@ non_seq_assays = [
     ]
 
 
+@audit_checker('Experiment', frame=['original_files', 'target',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'replicates', 'replicates.library'],
+               condition=rfa('ENCODE3'))
+def audit_experiment_needs_pipeline(value, system):
+
+    if value['status'] not in ['released', 'release ready']:
+        return
+
+    if 'assay_term_name' not in value:
+        return
+
+    if value['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
+                                        'ChIP-seq',
+                                        'RNA-seq',
+                                        'shRNA knockdown followed by RNA-seq',
+                                        'RAMPAGE']:
+        return
+
+    if 'original_files' not in value or len(value['original_files']) == 0:
+        #  possible ERROR to throw
+        return
+
+    pipelines_dict = {'WGBS': 'WGBS single-end pipeline',
+                      'RNA-seq-long-paired': 'RNA-seq of long RNAs (paired-end, stranded)',
+                      'RNA-seq-long-single': 'RNA-seq of long RNAs (single-end, unstranded)',
+                      'RNA-seq-short': 'Small RNA-seq single-end pipeline',
+                      'RAMPAGE': 'RAMPAGE (paired-end, stranded)',
+                      'ChIP': 'Histone ChIP-seq'}
+
+    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     ' needs to be processed by pipeline {}.'.format(pipelines_dict['WGBS'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if 'replicates' not in value:
+        return
+
+    file_size_range = 0
+
+    size_flag = False
+
+    for rep in value['replicates']:
+        if 'library' in rep:
+            if 'size_range' in rep['library']:
+                file_size_range = rep['library']['size_range']
+                size_flag = True
+                break
+
+    if size_flag is False:
+        return
+
+    run_type = 'unknown'
+
+    for f in value['original_files']:
+        if f['status'] not in ['deleted', 'replaced', 'revoked'] and 'run_type' in f:
+            run_type = f['run_type']
+            break
+
+    if run_type == 'unknown':
+        return
+
+    if value['assay_term_name'] == 'RAMPAGE' and \
+       run_type == 'paired-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       run_type == 'single-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-long-single']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'] and \
+       run_type == 'paired-ended' and \
+       file_size_range == '>200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-long-paired']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    if value['assay_term_name'] == 'RNA-seq' and \
+       run_type == 'single-ended' and \
+       file_size_range == '<200':
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['RNA-seq-short']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+
+    investigated_as_histones = False
+
+    if 'target' in value and 'histone modification' in value['target']['investigated_as']:
+        investigated_as_histones = True
+
+    if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
+        if scanFilesForPipeline(value['original_files'],
+                                pipelines_dict['ChIP']) is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                     'needs to be processed by ' + \
+                     'pipeline {}.'.format(pipelines_dict['ChIP'])
+            raise AuditFailure('needs pipeline run', detail, level='DCC_ACTION')
+        else:
+            return
+    return
+
+
+def scanFilesForPipeline(files_to_scan, pipeline_title):
+    for f in files_to_scan:
+        if 'analysis_step_version' not in f:
+            continue
+        else:
+            if 'analysis_step' not in f['analysis_step_version']:
+                continue
+            else:
+                if 'pipelines' not in f['analysis_step_version']['analysis_step']:
+                    continue
+                else:
+                    pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+                    for p in pipelines:
+                        if p['title'] == pipeline_title:
+                            return True
+    return False
+
+
+@audit_checker('experiment', frame=['replicates',
+                                    'replicates.library',
+                                    'replicates.library.biosample',
+                                    'replicates.library.biosample.donor'])
+def audit_experiment_gtex_biosample(value, system):
+    '''
+    Experiments for GTEx should not have more than one biosample (originating in GTEx donor)
+    associated with
+    '''
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    if len(value['replicates']) < 2:
+        return
+
+    biosample_set = set()
+    donor_set = set()
+
+    for rep in value['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+
+            biosampleObject = rep['library']['biosample']
+            donorObject = biosampleObject['donor']
+
+            biosample_set.add(biosampleObject['accession'])
+            donor_set.add(donorObject['accession'])
+
+    gtex_experiment_flag = False
+    for entry in donor_set:
+        if entry in gtexDonorsList:
+            gtex_experiment_flag = True
+
+    if gtex_experiment_flag is False:
+        return
+
+    if len(biosample_set) > 1:
+        detail = 'GTEx experiment {} '.format(value['@id']) + \
+                 'contains {} '.format(len(biosample_set)) + \
+                 'biosamples, while according to HRWG decision it should have only 1'
+        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='ERROR')
+
+    return
+
+
 @audit_checker('experiment', frame=['object'])
 def audit_experiment_biosample_term_id(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
+    # excluding Bind-n-Seq because they dont have biosamples
+    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
+        return
+
     if value['status'] not in ['preliminary', 'proposed']:
         if 'biosample_term_id' not in value:
             detail = 'Experiment {} '.format(value['@id']) + \
@@ -67,15 +264,6 @@ def audit_experiment_biosample_term_id(value, system):
             detail = 'Experiment {} '.format(value['@id']) + \
                      'has no biosample_type'
             yield AuditFailure('experiment missing biosample_type', detail, level='DCC_ACTION')
-    if 'biosample_type' in value and 'biosample_term_id' in value:
-        biosample_prefix = value['biosample_term_id'].split(':')[0]
-        if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
-            detail = 'Experiment {} has '.format(value['@id']) + \
-                     'biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
-            yield AuditFailure('experiment with invalid biosample term id', detail,
-                               level='DCC_ACTION')
     return
 
 
@@ -140,7 +328,7 @@ def audit_experiment_release_date(value, system):
 
 
 @audit_checker('experiment',
-               frame=['replicates', 'award'],
+               frame=['replicates', 'award', 'target'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
@@ -155,6 +343,11 @@ def audit_experiment_replicated(value, system):
     '''
     if value['assay_term_name'] == 'single cell isolation followed by RNA-seq':
         return
+
+    if 'target' in value:
+        target = value['target']
+        if 'control' in target['investigated_as']:
+            return
 
     num_bio_reps = set()
     for rep in value['replicates']:
@@ -594,22 +787,36 @@ def audit_experiment_biosample_term(value, system):
     if term_id is None:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
-    elif term_id.startswith('NTR:'):
-        detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
-        yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
-    elif term_id not in ontology:
-        detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
-        yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
-    else:
-        ontology_name = ontology[term_id]['name']
-        if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
-            detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
-                value['@id'],
-                term_id,
-                term_name,
-                ontology_name
-                )
-            yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
+
+    elif 'replicates' not in value or len(value['replicates']) == 0:
+        if term_id.startswith('NTR:'):
+            detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
+            yield AuditFailure('NTR biosample', detail, level='DCC_ACTION')
+        else:
+            biosample_prefix = term_id.split(':')[0]
+            if 'biosample_type' in value and \
+               biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
+                detail = 'Experiment {} has '.format(value['@id']) + \
+                         'a biosample of type {} '.format(term_type) + \
+                         'with biosample_term_id {} '.format(value['biosample_term_id']) + \
+                         'that is not one of ' + \
+                         '{}'.format(biosampleType_ontologyPrefix[term_type])
+                yield AuditFailure('experiment with biosample term-type mismatch', detail,
+                                   level='DCC_ACTION')
+
+            elif term_id not in ontology:
+                detail = '{} has term_id {} which is not in ontology'.format(value['@id'], term_id)
+                yield AuditFailure('term_id not in ontology', term_id, level='DCC_ACTION')
+            else:
+                ontology_name = ontology[term_id]['name']
+                if ontology_name != term_name and term_name not in ontology[term_id]['synonyms']:
+                    detail = '{} has a biosample mismatch {} - {} but ontology says {}'.format(
+                        value['@id'],
+                        term_id,
+                        term_name,
+                        ontology_name
+                        )
+                    yield AuditFailure('mismatched biosample_term_name', detail, level='ERROR')
 
     for rep in value['replicates']:
         if 'library' not in rep:
