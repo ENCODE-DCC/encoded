@@ -154,6 +154,9 @@ var Biosample = module.exports.Biosample = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -173,6 +176,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                 </header>
                 <AuditDetail context={context} id="biosample-audit" />
                 <div className="panel data-display">
+                    <div className="panel-heading">
+                        <ProjectBadge project={context.award.project} />
+                    </div>
+                    <div className="panel-body">
                     <dl className="key-value">
                         <div data-test="term-name">
                             <dt>Term name</dt>
@@ -515,6 +522,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var references = PubReferenceList(context.references);
         return (
             <div>
                 <dl className="key-value">
@@ -572,10 +580,10 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                         </div>
                     : null}
 
-                    {context.references && context.references.length ?
+                    {references ?
                         <div data-test="references">
                             <dt>References</dt>
-                            <dd><PubReferenceList values={context.references} /></dd>
+                            <dd>{references}</dd>
                         </div>
                     : null}
                 </dl>
@@ -592,6 +600,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donorUrlDomain;
+        var references = PubReferenceList(context.references);
 
         // Get the domain name of the donor URL
         if (biosample && biosample.donor && biosample.donor.url) {
@@ -680,10 +689,10 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         </section>
                     : null}
 
-                    {context.references && context.references.length ?
+                    {references ?
                         <div data-test="references">
                             <dt>References</dt>
-                            <dd><PubReferenceList values={context.references} /></dd>
+                            <dd>{references}</dd>
                         </div>
                     : null}
                 </dl>

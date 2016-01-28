@@ -381,6 +381,13 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
     embedded = FileSet.embedded + ['files.dataset', 'files.replicate.experiment.target', 'organism']
 
 
+@abstract_collection(
+    name='series',
+    unique_key='accession',
+    properties={
+        'title': "Series",
+        'description': 'Listing of all types of series datasets.',
+    })
 class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedSeriesTarget, CalculatedSeriesTreatment, CalculatedAssaySynonyms):
     item_type = 'series'
     base_types = ['Series'] + Dataset.base_types
