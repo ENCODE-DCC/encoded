@@ -23,6 +23,39 @@ from random import shuffle
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
+import sys  
+if sys.version_info[:2] == (2, 7):  
+    # ripped from py 3.4 gzip module
+    # modified for py 2.7 _read()
+    def read1(self, size=-1):
+        self._check_closed()
+        if self.mode != gzip.READ:
+            import errno
+            raise OSError(errno.EBADF, "read1() on write-only GzipFile object")
+
+        if self.extrasize <= 0 and self.fileobj is None:
+            return b''
+
+        # For certain input data, a single call to _read() may not return
+        # any data. In this case, retry until we get some data or reach EOF.
+        try:
+            while self.extrasize <= 0 and self._read():
+                pass
+        except EOFError:
+            pass
+
+        if size < 0 or size > self.extrasize:
+            size = self.extrasize
+
+        offset = self.offset - self.extrastart
+        chunk = self.extrabuf[offset: offset + size]
+        self.extrasize -= size
+        self.offset += size
+        return chunk
+
+    gzip.GzipFile.read1 = read1
+
+
 class AltGzipFile(gzip.GzipFile):
 
     """
@@ -152,7 +185,7 @@ def index_peaks(uuid, request):
             log.warn("Not File type or dataset not a key: {}".format(pprint.pformat(context)))
             continue
 
-        if 'status' not in output_file and output_file['status'] is not 'released':
+        if 'status' not in output_file or output_file['status'] != 'released':
             log.warn("status not in context and context status is not released")
             continue
 
