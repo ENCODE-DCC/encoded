@@ -652,7 +652,7 @@ def audit_file_read_depth(value, system):
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'uniquely mapped reads. ' + \
-                             'The recommended numer of uniquely mapped reads for ChIP-seq assay ' + \
+                             'The recommended number of uniquely mapped reads for ChIP-seq assay ' + \
                              'and target {} would be '.format(target_name) + \
                              '{}'.format(marks['narrow']+5000000)
                     yield AuditFailure('insufficient read depth', detail, level='WARNING')
@@ -778,7 +778,11 @@ def audit_file_chip_seq_library_complexity(value, system):
                             yield AuditFailure('low library complexity', detail,
                                                level='WARNING')
                 if 'PBC2' in metric:
-                    PBC2_value = float(metric['PBC2'])
+                    PBC2_raw_value = metric['PBC2']
+                    if PBC2_raw_value == 'Infinity':
+                        PBC2_value = float('inf')
+                    else:
+                        PBC2_value = float(metric['PBC2'])
                     if PBC2_value < 3:
                         detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
                                  'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
@@ -872,18 +876,20 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] in spearman_pipelines:
             if spearman_correlation < required_value:
-                border_value = (required_value - 0.0713512755834)
+                border_value = (required_value - 0.07)  # 0.0713512755834)
+                print_border = '%.2f' % border_value
                 detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
-                         'has Spearman correlaton of {} '.format(spearman_correlation) + \
-                         ', for gene quantification files from an {}'.format(experiment_replication_type) + \
+                         'has Spearman correlation of {}.'.format(spearman_correlation) + \
+                         ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                          ' assay in the {} '.format(pipeline['title']) + \
-                         'pipeline the preferred value is > {}, '.format(required_value) + \
-                         'a borderline is between {} and {}'.format(required_value, border_value)
+                         'pipeline, >{} is recommended, but a value between '.format(required_value) + \
+                         '{} and one STD away ({}) is acceptable.'.format(required_value,
+                                                                          print_border)
                 if spearman_correlation > border_value:
-                    yield AuditFailure('borderline spearman correlation', detail,
+                    yield AuditFailure('low spearman correlation', detail,
                                        level='WARNING')
                     return
                 else:
-                    yield AuditFailure('poor spearman correlation', detail,
+                    yield AuditFailure('insufficient spearman correlation', detail,
                                        level='NOT_COMPLIANT')
                     return

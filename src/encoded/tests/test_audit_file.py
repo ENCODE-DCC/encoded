@@ -466,6 +466,25 @@ def test_audit_file_good_library_complexity_chip_seq(testapp, file_exp, file6, f
     assert all(error['category'] != 'insufficient library complexity' for error in errors_list)
 
 
+def test_audit_file_infinity_library_complexity_chip_seq(testapp, file_exp, file6, file4,
+                                                         chipseq_filter_quality_metric,
+                                                         analysis_step_run_bam,
+                                                         analysis_step_version_bam,
+                                                         analysis_step_bam,
+                                                         pipeline_bam):
+    testapp.patch_json(chipseq_filter_quality_metric['@id'],
+                       {'NRF': 0.98, 'PBC1': 0.97, 'PBC2': 'Infinity'})
+    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']]})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'insufficient library complexity' for error in errors_list)
+
+
 def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, file4,
                                                    chipseq_bam_quality_metric,
                                                    analysis_step_run_bam,
@@ -497,7 +516,7 @@ def test_audit_file_mad_qc_spearman_correlation(testapp, file7,  file_exp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'poor spearman correlation' for error in errors_list)
+    assert any(error['category'] == 'insufficient spearman correlation' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
@@ -514,7 +533,7 @@ def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'poor spearman correlation' for error in errors_list)
+    assert all(error['category'] != 'insufficient spearman correlation' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation_silver(testapp, file7,  file_exp,
@@ -532,7 +551,7 @@ def test_audit_file_mad_qc_spearman_correlation_silver(testapp, file7,  file_exp
     for error_type in errors:
         if error_type == 'WARNING':
             errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'borderline spearman correlation' for error in errors_list)
+    assert any(error['category'] == 'low spearman correlation' for error in errors_list)
 
 
 def test_audit_file_mad_qc_spearman_correlation_silver_2(testapp, file7,  file_exp,
@@ -551,7 +570,7 @@ def test_audit_file_mad_qc_spearman_correlation_silver_2(testapp, file7,  file_e
     for error_type in errors:
         if error_type != 'WARNING':
             errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'borderline spearman correlation' for error in errors_list)
+    assert all(error['category'] != 'low spearman correlation' for error in errors_list)
 
 
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):

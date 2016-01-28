@@ -170,6 +170,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
+        // Make a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -304,10 +307,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 </div>
                             : null}
 
-                            {context.references && context.references.length ?
+                            {references ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd><PubReferenceList values={context.references} /></dd>
+                                    <dd>{references}</dd>
                                 </div>
                             : null}
 
