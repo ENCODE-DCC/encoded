@@ -309,6 +309,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>References</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
@@ -320,6 +327,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <div data-test="date-released">
                                             <dt>Date released</dt>
                                             <dd>{context.date_released}</dd>
+                                        </div>
+                                    : null}
+
+                                    {seriesList.length ?
+                                        <div data-test="relatedseries">
+                                            <dt>Related datasets</dt>
+                                            <dd><RelatedSeriesList seriesList={seriesList} /></dd>
                                         </div>
                                     : null}
                                 </dl>
