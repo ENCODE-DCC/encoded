@@ -151,7 +151,8 @@ globals.content_views.register(Image, 'Image');
 // Displays a graphic badge for the award project.
 var ProjectBadge = module.exports.ProjectBadge = React.createClass({
     propTypes: {
-        award: React.PropTypes.object.isRequired // Award whose project's badge we display
+        award: React.PropTypes.object.isRequired, // Award whose project's badge we display
+        center: React.PropTypes.bool // True to center; otherwise left-justified
     },
 
     projectMap: {
@@ -197,11 +198,12 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
         var award = this.props.award;
         var project = award.project;
         var projectMeta = this.projectMap[project];
+        var imageClass = projectMeta.imageClass + (this.props.center ? ' center' : '');
 
         return (
             <div>
                 {projectMeta ?
-                    <div className={projectMeta.imageClass}><span className="sr-only">{projectMeta.alt}</span></div>
+                    <div className={imageClass}><span className="sr-only">{projectMeta.alt}</span></div>
                 : null}
             </div>
         );

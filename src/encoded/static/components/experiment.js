@@ -323,7 +323,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
                                 </dl>
-                                <ProjectBadge award={context.award} />
+                                <ProjectBadge award={context.award} center />
                             </div>
                         </div>
                     </PanelBody>

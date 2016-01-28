@@ -18,7 +18,11 @@ $projects:
         margin-top: 10px;
         background-image: url(/static/img/#{$badgefile});
         background-repeat: no-repeat;
-        background-position: center 0;
+        background-position: 0 0;
+
+        &.center {
+            background-position: center 0;
+        }
 
         .no-svg & {
             background-image: url(/static/img/#{$badgefilenosvg});
