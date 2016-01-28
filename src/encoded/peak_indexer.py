@@ -1,6 +1,5 @@
 import urllib3
 import io
-import StringIO
 import gzip
 import csv
 import logging
