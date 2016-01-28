@@ -144,7 +144,8 @@ preferred_name = {
     "OBI:0000716": "ChIP-seq",
     "OBI:0001853": "DNase-seq",
     "OBI:0001920": "Repli-Seq",
-    "OBI:0001864": "RAMPAGE"
+    "OBI:0001864": "RAMPAGE",
+    "NTR:0000020": "microRNA count"
 }
 
 category_slims = {

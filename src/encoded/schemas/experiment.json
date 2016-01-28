@@ -123,16 +123,8 @@
         "organ_slims": {
             "title": "Organ"
         },
-        "category_slims": {
+        "assay_slims": {
             "title": "Assay category",
-            "type": "array"
-        },
-        "type_slims": {
-            "title": "Assay type ",
-            "type": "array"
-         },
-         "objective_slims": {
-            "title": "Assay objective",
             "type": "array"
         },
         "replicates.library.biosample.life_stage": {
