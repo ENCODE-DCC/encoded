@@ -97,7 +97,7 @@
         }
     },
     "facets": {
-        "assay_term_name": {
+        "assay_name": {
             "title": "Assay"
         },
         "award.project": {

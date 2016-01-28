@@ -297,7 +297,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 'month_released',
                 'files.file_type',
             ],
-            'group_by': 'assay_term_name',
+            'group_by': 'assay_name',
             'label': 'Assay',
         },
     }

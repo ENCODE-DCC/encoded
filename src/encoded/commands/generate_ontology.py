@@ -142,7 +142,10 @@ preferred_name = {
     "OBI:0001923": "MS/MS",
     "OBI:0001271": "RNA-seq",
     "OBI:0000716": "ChIP-seq",
-    "OBI:0001853": "DNase-seq"
+    "OBI:0001853": "DNase-seq",
+    "OBI:0001920": "Repli-Seq",
+    "NTR:0000020": "Nanostring",
+    "OBI:0001864": "RAMPAGE"
 }
 
 category_slims = {
