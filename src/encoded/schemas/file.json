@@ -140,6 +140,7 @@
                         "csv",
                         "sam",
                         "tar",
+                        "tagAlign",
                         "vcf",
                         "wig",
                         "bedpe"
@@ -703,6 +704,7 @@
         "hdf5": ".h5",
         "idat": ".idat",
         "rcc": ".rcc",
+        "tagAlign": ".tagAlign.gz",
         "tar": ".tar.gz",
         "tsv": ".tsv",
         "csv": ".csv",

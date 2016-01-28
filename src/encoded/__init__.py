@@ -173,6 +173,19 @@ def session(config):
     config.set_session_factory(session_factory)
 
 
+def app_version(config):
+    import hashlib
+    import os
+    import subprocess
+    version = subprocess.check_output(
+        ['git', '-C', os.path.dirname(__file__), 'describe']).decode('utf-8').strip()
+    diff = subprocess.check_output(
+        ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'])
+    if diff:
+        version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
+    config.registry.settings['contentbase.app_version'] = version
+
+
 def main(global_config, **local_config):
     """ This function returns a Pyramid WSGI application.
     """
@@ -193,6 +206,7 @@ def main(global_config, **local_config):
     config = Configurator(settings=settings)
     from contentbase.elasticsearch import APP_FACTORY
     config.registry[APP_FACTORY] = main  # used by mp_indexer
+    config.include(app_version)
 
     config.include('pyramid_multiauth')  # must be before calling set_authorization_policy
     from pyramid_localroles import LocalRolesAuthorizationPolicy

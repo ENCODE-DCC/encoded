@@ -57,6 +57,9 @@ var Software = module.exports.Software = React.createClass({
             }
         }
 
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -100,12 +103,10 @@ var Software = module.exports.Software = React.createClass({
                             </div>
                         : null}
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>

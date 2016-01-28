@@ -1,6 +1,7 @@
 from pyramid.decorator import reify
 from contentbase import (
     Root,
+    calculated_property,
     root,
 )
 from .schema_formats import is_accession
@@ -77,3 +78,10 @@ class EncodedRoot(Root):
             if resource is not None:
                 return resource
         return default
+
+    @calculated_property(schema={
+        "title": "Application version",
+        "type": "string",
+    })
+    def app_version(self, registry):
+        return registry.settings['contentbase.app_version']
