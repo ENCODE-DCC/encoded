@@ -140,6 +140,7 @@
                         "csv",
                         "sam",
                         "tar",
+                        "tagAlign",
                         "vcf",
                         "wig",
                         "bedpe"
@@ -212,6 +213,11 @@
                     "type": "string",
                     "linkTo": "Document"
                     }
+        },
+        "restricted": {
+            "title": "Restricted file",
+            "description": "A flag to indicate whether this file is subject to restricted access",
+            "type": "boolean"
         },
         "md5sum": {
             "title": "MD5sum",
@@ -499,7 +505,8 @@
                 "ce10",
                 "ce11",
                 "dm3",
-                "dm6"
+                "dm6",
+                "J02459.1"
                 ]
         },
         "genome_annotation": {
@@ -517,6 +524,7 @@
                 "V7",
                 "V10",
                 "V19",
+                "V24",
                 "ENSEMBL V65",
                 "miRBase V21",
                 "WS235",
@@ -696,6 +704,7 @@
         "hdf5": ".h5",
         "idat": ".idat",
         "rcc": ".rcc",
+        "tagAlign": ".tagAlign.gz",
         "tar": ".tar.gz",
         "tsv": ".tsv",
         "csv": ".csv",

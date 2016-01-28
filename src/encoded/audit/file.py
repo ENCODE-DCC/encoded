@@ -235,7 +235,7 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object', condition=rfa('ENCODE3', 'modERN', 'GGR'))
+@audit_checker('file', frame='object', condition=rfa('modERN', 'GGR'))
 def audit_file_flowcells(value, system):
     '''
     A fastq file could have its flowcell details.
@@ -536,14 +536,14 @@ def audit_file_read_depth(value, system):
     for metric in quality_metrics:
         if 'Uniquely mapped reads number' in metric:  # start_quality_metric.json
             read_depth = metric['Uniquely mapped reads number']
-            continue
+            break  # continue
         else:
             if "total" in metric:
                 if paired_ended_status is False:
                     read_depth = metric['total']
                 else:
-                    read_depth = metric['total']/2
-                continue
+                    read_depth = int(metric['total']/2)
+                break
 
     if read_depth == 0:
         detail = 'ENCODE Processed alignment file {} has no uniquely mapped reads number'.format(
@@ -626,7 +626,7 @@ def audit_file_read_depth(value, system):
                     detail = 'ENCODE Processed alignment file {} has {} '.format(value['@id'],
                                                                                  read_depth) + \
                              'uniquely mapped reads. ' + \
-                             'The recommended numer of uniquely mapped reads for ChIP-seq assay ' + \
+                             'The recommended number of uniquely mapped reads for ChIP-seq assay ' + \
                              'and target {} would be '.format(target_name) + \
                              '{}'.format(marks['narrow']+5000000)
                     yield AuditFailure('insufficient read depth', detail, level='WARNING')
@@ -667,6 +667,120 @@ def audit_file_read_depth(value, system):
                               'analysis_step_version.software_versions.software',
                               'dataset'],
                condition=rfa('ENCODE3', 'ENCODE'))
+def audit_file_chip_seq_library_complexity(value, system):
+    '''
+    An alignment file from the ENCODE ChIP-seq processing pipeline
+    should have minimal library complexity in accordance with the criteria
+    '''
+
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
+        return
+
+    if value['file_format'] != 'bam':
+        return
+
+    if value['output_type'] == 'transcriptome alignments':
+        return
+
+    if value['lab'] != '/labs/encode-processing-pipeline/':
+        return
+
+    if ('quality_metrics' not in value) or (value.get('quality_metrics') == []):
+        return
+
+    if 'analysis_step_version' not in value:
+        return
+
+    if 'analysis_step' not in value['analysis_step_version']:
+        return
+
+    if 'pipelines' not in value['analysis_step_version']['analysis_step']:
+        return
+
+    nrf_end_of_detail = "Non redundant fraction (NRF, Number of reads after " + \
+                        "removing duplicates / Total number of reads). 0.0-0.7 is very " + \
+                        "poor complexity, 0.7-0.8 is poor complexity, 0.8-0.9 moderate " + \
+                        "complexity, and >0.9 high complexity. NRF >0.9 is recommended, " + \
+                        "but >0.8 is acceptable"
+    pbc1_end_of_detail = "PCR Bottlenecking coefficient 1 (PBC1, Number of genomic " + \
+                         "locations where exactly one read maps uniquely/Number of " + \
+                         "distinct genomic locations to which some read maps uniquely). " + \
+                         "0 - 0.5 is severe bottlenecking, 0.5 - 0.8 is moderate " + \
+                         "bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 is " + \
+                         "no bottlenecking. PBC1 >0.9 is recommended, but >0.8 is acceptable"
+
+    pbc2_end_of_detail = "PCR Bottlenecking coefficient 2 (PBC2, Number of genomic locations " + \
+                         "where only one read maps uniquely/Number of genomic locations where " + \
+                         "2 reads map uniquely). 0 - 1 is severe bottlenecking, 1 - 3 is " + \
+                         "moderate bottlenecking, 3 -10 is mild bottlenecking, > 10 is no " + \
+                         "bottlenecking. PBC2 >10 is recommended, but >3 is acceptable"
+
+    for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
+        if pipeline['title'] == 'Histone ChIP-seq':
+            quality_metrics = value.get('quality_metrics')
+            for metric in quality_metrics:
+
+                if 'NRF' in metric:
+                    NRF_value = float(metric['NRF'])
+                    if NRF_value < 0.8:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with NRF value of {}'.format(NRF_value) + \
+                                 '. '+nrf_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+
+                    else:
+                        if NRF_value <= 0.9:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with NRF value of {}'.format(NRF_value) + \
+                                     '. '+nrf_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+                if 'PBC1' in metric:
+                    PBC1_value = float(metric['PBC1'])
+                    if PBC1_value < 0.8:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
+                                 '. '+pbc1_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+                    else:
+                        if PBC1_value <= 0.9:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with PBC1 value of {}'.format(PBC1_value) + \
+                                     '. '+pbc1_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+                if 'PBC2' in metric:
+                    PBC2_raw_value = metric['PBC2']
+                    if PBC2_raw_value == 'Infinity':
+                        PBC2_value = float('inf')
+                    else:
+                        PBC2_value = float(metric['PBC2'])
+                    if PBC2_value < 3:
+                        detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                 'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
+                                 '. '+pbc2_end_of_detail
+                        yield AuditFailure('insufficient library complexity', detail,
+                                           level='NOT_COMPLIANT')
+                    else:
+                        if PBC2_value <= 10:
+                            detail = 'ENCODE Processed alignment file {} '.format(value['@id']) + \
+                                     'was generated from a library with PBC2 value of {}'.format(PBC2_value) + \
+                                     '. '+pbc2_end_of_detail
+                            yield AuditFailure('low library complexity', detail,
+                                               level='WARNING')
+    return
+
+
+@audit_checker('file', frame=['quality_metrics',
+                              'analysis_step_version',
+                              'analysis_step_version.analysis_step',
+                              'analysis_step_version.analysis_step.pipelines',
+                              'analysis_step_version.software_versions',
+                              'analysis_step_version.software_versions.software',
+                              'dataset'],
+               condition=rfa('ENCODE3', 'ENCODE'))
 def audit_file_mad_qc_spearman_correlation(value, system):
     '''
     A gene quantification file from the ENCODE Processing Pipeline should have a mad QC
@@ -685,27 +799,27 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed gene quantification file {} has no analysis step version'.format(
             value['@id'])
-        raise AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing analysis step version', detail, level='DCC_ACTION')
+        return
     if 'analysis_step' not in value['analysis_step_version']:
         detail = 'ENCODE Processed gene quantification file {} has no analysis step in {}'.format(
             value['@id'],
             value['analysis_step_version']['@id'])
-        raise AuditFailure('missing analysis step', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing analysis step', detail, level='DCC_ACTION')
+        return
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
         detail = 'ENCODE Processed gene quantification file {} has no pipelines in {}'.format(
             value['@id'],
             value['analysis_step_version']['analysis_step']['@id'])
-        raise AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing pipelines in analysis step', detail, level='DCC_ACTION')
+        return
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
         detail = 'ENCODE Processed gene quantification file {} has no quality_metrics'.format(
             value['@id'])
-        raise AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
+        return
     spearman_correlation = False
     for metric in quality_metrics:
         if 'Spearman correlation' in metric:
@@ -714,8 +828,8 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if spearman_correlation is False:
         detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
                  'has no MAD quality metric'
-        raise AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
-
+        yield AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
+        return
     spearman_pipelines = ['RAMPAGE (paired-end, stranded)',
                           'Small RNA-seq single-end pipeline',
                           'RNA-seq of long RNAs (single-end, unstranded)',
@@ -735,11 +849,21 @@ def audit_file_mad_qc_spearman_correlation(value, system):
 
     for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
         if pipeline['title'] in spearman_pipelines:
-            if spearman_correlation <= required_value:
-                detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
-                         'has Spearman correlaton of {} '.format(spearman_correlation) + \
-                         ', gene quantification file for {}'.format(experiment_replication_type) + \
-                         ' assay {} '.format(pipeline['title']) + \
-                         'require {}'.format(required_value)
-                raise AuditFailure('insufficient spearman correlation', detail,
-                                   level='NOT_COMPLIANT')
+            if spearman_correlation < required_value:
+                border_value = (required_value - 0.07)  # 0.0713512755834)
+                print_border = '%.2f' % border_value
+                detail = 'ENCODE processed gene quantification file {} '.format(value['@id']) + \
+                         'has Spearman correlation of {}.'.format(spearman_correlation) + \
+                         ' For gene quantification files from an {}'.format(experiment_replication_type) + \
+                         ' assay in the {} '.format(pipeline['title']) + \
+                         'pipeline, >{} is recommended, but a value between '.format(required_value) + \
+                         '{} and one STD away ({}) is acceptable.'.format(required_value,
+                                                                          print_border)
+                if spearman_correlation > border_value:
+                    yield AuditFailure('low spearman correlation', detail,
+                                       level='WARNING')
+                    return
+                else:
+                    yield AuditFailure('insufficient spearman correlation', detail,
+                                       level='NOT_COMPLIANT')
+                    return

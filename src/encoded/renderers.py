@@ -181,6 +181,9 @@ def canonical_redirect(event):
     if request.path_info == '/':
         return
 
+    if not isinstance(event.rendering_val, dict):
+        return
+
     canonical = event.rendering_val.get('@id', None)
     if canonical is None:
         return

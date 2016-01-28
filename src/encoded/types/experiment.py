@@ -60,6 +60,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         'contributing_files.analysis_step_version.software_versions',
         'contributing_files.analysis_step_version.software_versions.software',
         'award.pi.lab',
+        'related_series',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.library',
@@ -140,7 +141,8 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     ]
     rev = Dataset.rev.copy()
     rev.update({
-        'replicates': ('Replicate', 'experiment')
+        'replicates': ('Replicate', 'experiment'),
+        'related_series': ('Series', 'related_datasets'),
     })
 
     @calculated_property(schema={
@@ -153,6 +155,17 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     })
     def replicates(self, request, replicates):
         return paths_filtered_by_status(request, replicates)
+
+    @calculated_property(schema={
+        "title": "Related series",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "Series.related_datasets",
+        },
+    })
+    def related_series(self, request, related_series):
+        return paths_filtered_by_status(request, related_series)
 
     @calculated_property(schema={
         "title": "Replication type",
