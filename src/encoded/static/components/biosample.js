@@ -310,10 +310,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 </div>
                             : null}
 
-                            {context.references && context.references.length ?
+                            {references ?
                                 <div data-test="references">
                                     <dt>References</dt>
-                                    <dd><PubReferenceList values={context.references} /></dd>
+                                    <dd>{references}</dd>
                                 </div>
                             : null}
 
@@ -1123,17 +1123,19 @@ var Document = module.exports.Document = React.createClass({
                         </div>
                         {download}
                         <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
-                            {excerpt && characterization ?
-                                <div data-test="caption">
-                                    <dt>Caption</dt>
-                                    <dd>{context.caption}</dd>
-                                </div>
-                            : null}
-
-                            {excerpt && !characterization ?
-                                <div data-test="caption">
-                                    <dt>Description</dt>
-                                    <dd>{context.description}</dd>
+                            {excerpt ?
+                                <div>
+                                    {characterization ?
+                                        <div data-test="caption">
+                                            <dt>Caption</dt>
+                                            <dd>{context.caption}</dd>
+                                        </div>
+                                    :
+                                        <div data-test="caption">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    }
                                 </div>
                             : null}
 
