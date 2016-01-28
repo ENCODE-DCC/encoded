@@ -157,8 +157,8 @@ def index_peaks(uuid, request):
             continue
 
         # Index human data only for now
-        if 'hg19' not in output_file['assembly']:
-            continue
+        # if 'hg19' not in output_file['assembly']:
+        #     continue
 
         assay_term_name = get_assay_term_name(output_file['dataset'], request)
         if assay_term_name is None:
