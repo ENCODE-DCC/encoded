@@ -56,7 +56,7 @@ def run(wale_s3_prefix, image_id, instance_type,
             user_data=es_user_data,
             block_device_map=bdm,
             instance_initiated_shutdown_behavior='terminate',
-            instance_profile_name='encoded-elasticsearch-instance',
+            instance_profile_name='encoded-instance',
         )
 
         time.sleep(0.5)  # sleep for a moment to ensure instance exists...
@@ -83,6 +83,7 @@ def run(wale_s3_prefix, image_id, instance_type,
                 pass
         print('')
         print(es_instance.state)
+        sys.exit(1)
 
     
     if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
