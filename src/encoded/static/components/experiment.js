@@ -218,9 +218,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
                 <Panel addClasses="data-display">
-                    <PanelHeading>
-                        <ProjectBadge project={context.award.project} />
-                    </PanelHeading>
                     <PanelBody>
                         <div className="flexrow">
                             <div className="flexcol-sm-6">
@@ -323,6 +320,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
                                 </dl>
+                                <ProjectBadge award={context.award} />
                             </div>
                         </div>
                     </PanelBody>
