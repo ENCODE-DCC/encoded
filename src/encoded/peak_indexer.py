@@ -205,9 +205,9 @@ def index_peaks(uuid, request):
 
         except OSError:
             log.exception("gzip error, continue with next file")
-            log.debug('url {}'.format(request.host_url + output_file['href']))
-            log.debug('file data {}'.format(pprint.pformat(file_data)))
-            log.debug('context {}'.format(pprint.pformat(output_file)))
+            log.warn('url {}'.format(request.host_url + output_file['href']))
+            log.warn('file data {}'.format(pprint.pformat(file_data)))
+            log.warn('context {}'.format(pprint.pformat(output_file)))
             continue
 
         log.warn("file successfully read for indexing")
