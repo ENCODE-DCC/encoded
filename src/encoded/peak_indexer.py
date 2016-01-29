@@ -111,6 +111,48 @@ def index_peaks(uuid, request):
 
     context = request.embed(uuid)
 
+
+    urllib3.disable_warnings()
+    es = request.registry.get(SNP_SEARCH_ES, None)
+    http = urllib3.PoolManager()
+    r = http.request('GET', 'https://www.encodeproject.org/files/ENCFF558TCP/@@download/ENCFF558TCP.bed.gz')
+    #r = http.request('GET', request.host_url + output_file['href'])
+    if r.status != 200:
+        continue
+    comp = io.BytesIO()
+    comp.write(r.data)
+    comp.seek(0)
+    r.release_conn()
+    file_data = dict()
+
+
+    with gzip.open(comp, mode='rt') as file:
+        for row in tsvreader(file):
+            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+            if isinstance(start, int) and isinstance(end, int):
+                if chrom in file_data:
+                    file_data[chrom].append({
+                        'start': start + 1,
+                        'end': end + 1
+                    })
+                else:
+                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+
+
+    log.warn("file successfully read for indexing")
+        
+    for key in file_data:
+        doc = {
+            'uuid': output_file['uuid'],
+            'positions': file_data[key]
+        }
+        if not es.indices.exists(key):
+            es.indices.create(index=key, body=index_settings())
+            es.indices.put_mapping(index=key, doc_type=output_file['assembly'],
+                                   body=get_mapping(output_file['assembly']))
+        es.index(index=key, doc_type=output_file['assembly'], body=doc,
+                 id=output_file['uuid'])
+
     if 'AnalysisStepRun' not in context['@type']:
         return
 
@@ -149,7 +191,7 @@ def index_peaks(uuid, request):
         http = urllib3.PoolManager()
         r = http.request('GET', 'https://www.encodeproject.org/files/ENCFF558TCP/@@download/ENCFF558TCP.bed.gz')
         #r = http.request('GET', request.host_url + output_file['href'])
-        if r.status_code != 200:
+        if r.status != 200:
             continue
         comp = io.BytesIO()
         comp.write(r.data)
