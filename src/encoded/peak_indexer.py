@@ -23,71 +23,6 @@ from random import shuffle
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
-import sys  
-if sys.version_info[:2] == (2, 7):  
-    # ripped from py 3.4 gzip module
-    # modified for py 2.7 _read()
-    def read1(self, size=-1):
-        self._check_closed()
-        if self.mode != gzip.READ:
-            import errno
-            raise OSError(errno.EBADF, "read1() on write-only GzipFile object")
-
-        if self.extrasize <= 0 and self.fileobj is None:
-            return b''
-
-        # For certain input data, a single call to _read() may not return
-        # any data. In this case, retry until we get some data or reach EOF.
-        try:
-            while self.extrasize <= 0 and self._read():
-                pass
-        except EOFError:
-            pass
-
-        if size < 0 or size > self.extrasize:
-            size = self.extrasize
-
-        offset = self.offset - self.extrastart
-        chunk = self.extrabuf[offset: offset + size]
-        self.extrasize -= size
-        self.offset += size
-        return chunk
-
-    gzip.GzipFile.read1 = read1
-
-
-class AltGzipFile(gzip.GzipFile):
-
-    """
-    Class that ignores the 'Not a gzipped file' due to trailing garbage data
-    http://blog.packetfrenzy.com/ignoring-gzip-trailing-garbage-data-in-python/ 
-
-    """
-
-    def read(self, size=-1):
-        chunks = []
-        try:
-            if size < 0:
-                while True:
-                    chunk = self.read1()
-                    if not chunk:
-                        break
-                    chunks.append(chunk)
-            else:
-                while size > 0:
-                    chunk = self.read1(size)
-                    if not chunk:
-                        break
-                    size -= len(chunk)
-                    chunks.append(chunk)
-        except (OSError, IOError) as e:  # IOError is needed for 2.7
-            if not chunks or not str(e).startswith('Not a gzipped file'):
-                raise
-            _logger.warn('decompression OK, trailing garbage ignored')       
-
-        return b''.join(chunks)
-
-
 
 # hashmap of assays and corresponding file types that are being indexed
 _INDEXED_DATA = {
@@ -182,11 +117,9 @@ def index_peaks(uuid, request):
     for output_file in context['output_files']:            
 
         if 'File' not in output_file['@type'] or 'dataset' not in output_file:
-            log.warn("Not File type or dataset not a key: {}".format(pprint.pformat(context)))
             continue
 
-        if 'status' not in output_file or output_file['status'] != 'released':
-            log.warn("status not in context and context status is not released")
+        if 'status' not in output_file and output_file['status'] != 'released':
             continue
 
         # Index human data only for now
@@ -215,33 +148,27 @@ def index_peaks(uuid, request):
         es = request.registry.get(SNP_SEARCH_ES, None)
         http = urllib3.PoolManager()
         r = http.request('GET', request.host_url + output_file['href'])
+        if r.status_code != 200:
+            continue
         comp = io.BytesIO()
         comp.write(r.data)
         comp.seek(0)
         r.release_conn()
         file_data = dict()
 
-        try:        
 
-            with AltGzipFile(fileobj=comp, mode='r') as gz:
-                file = gz.read()
-                for row in tsvreader(file):
-                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                    if isinstance(start, int) and isinstance(end, int):
-                        if chrom in file_data:
-                            file_data[chrom].append({
-                                'start': start + 1,
-                                'end': end + 1
-                            })
-                        else:
-                            file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+        with gzip.open(comp, mode='rt') as file:
+            for row in tsvreader(file):
+                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                if isinstance(start, int) and isinstance(end, int):
+                    if chrom in file_data:
+                        file_data[chrom].append({
+                            'start': start + 1,
+                            'end': end + 1
+                        })
+                    else:
+                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
 
-        except OSError:
-            log.exception("gzip error, continue with next file")
-            log.warn('url {}'.format(request.host_url + output_file['href']))
-            log.warn('file data {}'.format(pprint.pformat(file_data)))
-            log.warn('context {}'.format(pprint.pformat(output_file)))
-            continue
 
         log.warn("file successfully read for indexing")
             
