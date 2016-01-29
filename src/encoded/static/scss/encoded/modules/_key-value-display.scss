@@ -45,28 +45,6 @@ dl.key-value, dl.key-value-doc {
         clear: both;
         margin: 6px 0;
     }
-
-    @media screen and (min-width: $screen-sm-min) {
-        display: table;
-
-        dt, dd {
-            display: table-cell;
-        }
-
-        dt {
-            min-width: 140px;
-            padding: 5px 0;
-        }
-
-        dd {
-            padding: 5px 0 5px 10px;
-        }
-
-        [data-test] {
-            clear: none;
-            display: table-row;
-        }
-    }
 }
 
 @media screen and (min-width: $screen-xs-min) {
@@ -136,6 +114,31 @@ dl.key-value, dl.key-value-doc {
         div {
             clear: none;
             display: table-row;
+        }
+    }
+}
+
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        width: auto;
+        padding-top: 0 !important;
+    }
+
+    dt {
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
+    }
+
+    dd {
+        margin-left: 0 !important;
+
+        &.key-value-left-indent {
+            margin-left: 20px !important;
         }
     }
 }
