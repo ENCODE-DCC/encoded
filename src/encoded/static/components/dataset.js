@@ -287,27 +287,27 @@ var Annotation = React.createClass({
                         : null}
 
                         {context.software_used && context.software_used.length ?
-                            <div>
+                            <div data-test="software">
                                 <dt>Software used</dt>
                                 <dd>{SoftwareVersionList(context.software_used)}</dd>
                             </div>
                         : null}
 
                         {context.lab ?
-                            <div data-type="lab">
+                            <div data-test="lab">
                                 <dt>Lab</dt>
                                 <dd>{context.lab.title}</dd>
                             </div>
                         : null}
                         
                         {context.aliases.length ?
-                            <div data-type="aliases">
+                            <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd><DbxrefList values={context.aliases} /></dd>
                             </div>
                         : null}
 
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
@@ -448,13 +448,13 @@ var PublicationData = React.createClass({
                         : null}
 
                         {context.lab ?
-                            <div data-type="lab">
+                            <div data-test="lab">
                                 <dt>Lab</dt>
                                 <dd>{context.lab.title}</dd>
                             </div>
                         : null}
                         
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
@@ -754,20 +754,20 @@ var Project = React.createClass({
                         : null}
 
                         {context.lab ?
-                            <div data-type="lab">
+                            <div data-test="lab">
                                 <dt>Lab</dt>
                                 <dd>{context.lab.title}</dd>
                             </div>
                         : null}
                         
                         {context.aliases.length ?
-                            <div data-type="aliases">
+                            <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd><DbxrefList values={context.aliases} /></dd>
                             </div>
                         : null}
 
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
@@ -914,20 +914,20 @@ var UcscBrowserComposite = React.createClass({
                         : null}
 
                         {context.lab ?
-                            <div data-type="lab">
+                            <div data-test="lab">
                                 <dt>Lab</dt>
                                 <dd>{context.lab.title}</dd>
                             </div>
                         : null}
                         
                         {context.aliases.length ?
-                            <div data-type="aliases">
+                            <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd><DbxrefList values={context.aliases} /></dd>
                             </div>
                         : null}
 
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
@@ -1544,7 +1544,7 @@ var Series = module.exports.Series = React.createClass({
                             </div>
                         : null}
 
-                        <div data-type="externalresources">
+                        <div data-test="externalresources">
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxrefs.length ?
