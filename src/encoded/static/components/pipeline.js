@@ -11,6 +11,7 @@ var software = require('./software');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
+var doc = require('./doc');
 
 var Breadcrumbs = navbar.Breadcrumbs;
 var Graph = graph.Graph;
@@ -19,6 +20,7 @@ var SoftwareVersionList = software.SoftwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
+var DocumentsPanel = doc.DocumentsPanel;
 
 
 var DbxrefList = dbxref.DbxrefList;
@@ -167,13 +169,6 @@ var Pipeline = module.exports.Pipeline = React.createClass({
             {id: assayName, query:  assayTerm + '=' + assayName, tip: assayName}
         ];
 
-        var documents = {};
-        if (context.documents) {
-            context.documents.forEach(function(doc, i) {
-                documents[doc['@id']] = Panel({context: doc, key: i + 1});
-            });
-        }
-
         // Build node graph of the files and analysis steps with this experiment
         this.jsonGraph = this.assembleGraph();
 
@@ -250,14 +245,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                     </div>
                 : null}
                 {context.documents && context.documents.length ?
-                    <div data-test="documents">
-                        <h3>Documents</h3>
-                        <div className="row multi-columns-row">
-                            {context.documents.map(function(doc) {
-                                return <Panel context={doc} />;
-                            })}
-                        </div>
-                    </div>
+                    <DocumentsPanel documentSpecs={[{documents: context.documents}]} />
                 : null}
             </div>
 
