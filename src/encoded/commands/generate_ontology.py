@@ -130,7 +130,7 @@ slim_shims = {
 
 preferred_name = {
     "NTR:0000762": "shRNA/RNA-seq",
-    "NTR:0000763": "shRNA/RNA-seq",
+    "NTR:0000763": "siRNA/RNA-seq",
     "NTR:0003082": "single cell/RNA-seq",
     "NTR:0003508": "WGS",
     "OBI:0000626": "WGS",
