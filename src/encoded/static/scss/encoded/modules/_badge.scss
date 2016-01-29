@@ -1,15 +1,32 @@
 // Handles the styling of the badges (logos) of the different projects. This SCSS loops over the different kinds
 // of projects, and loads the proper background image for each kind of project.
 
-@each $project in encode, roadmap, modencode, modern, ggr, mouseencode {
+$projects:
+    (encode,    'badge-encode.svg',    'badge-encode.png'),
+    (encode2,   'badge-encode2.svg',   'badge-encode2.png'),
+    (encode3,   'badge-encode3.svg',   'badge-encode3.png'),
+    (encode4,   'badge-encode4.svg',   'badge-encode4.png'),
+    (roadmap,   'badge-roadmap.svg',   'badge-roadmap.png'),
+    (modencode, 'badge-modencode.svg', 'badge-modencode.png'),
+    (modern,    'badge-modern.svg',    'badge-modern.png'),
+    (ggr,       'badge-ggr.png',       'badge-ggr.png');
+
+@each $project, $badgefile, $badgefilenosvg in $projects {
     .badge-#{$project} {
-        width: 200px;
-        height: 40px;
-        background-image: url(/static/img/badge-#{$project}.svg);
+        display: block;
+        height: 80px;
+        margin-top: 10px;
+        background-image: url(/static/img/#{$badgefile});
         background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: contain;
+
+        &.center {
+            background-position: center 0;
+        }
 
         .no-svg & {
-            background-image: url(/static/img/badge-#{$project}.png);
+            background-image: url(/static/img/#{$badgefilenosvg});
         }
     }
 }

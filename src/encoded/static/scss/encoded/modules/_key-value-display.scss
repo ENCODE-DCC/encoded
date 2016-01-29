@@ -45,9 +45,7 @@ dl.key-value, dl.key-value-doc {
         clear: both;
         margin: 6px 0;
     }
-}
 
-dl.key-value {
     @media screen and (min-width: $screen-sm-min) {
         display: table;
 
@@ -68,7 +66,6 @@ dl.key-value {
             clear: none;
             display: table-row;
         }
-
     }
 }
 
@@ -143,17 +140,17 @@ dl.key-value {
     }
 }
 
-.unit::before {
-    content: " ";
+// When multiple items in a <dd> need to be displayed on their own lines.
+// Apply to each <span> within a <dd> that needs its own line.
+.line-item {
+    &:before {
+        content: ' ';
+        display: block;
+    }
 }
 
-.horizontal-list {
-    @include clearfix;
-
-    li {
-        float: left;
-        margin-right: 0.5em;
-    }
+.unit::before {
+    content: " ";
 }
 
 dd ul, .multi-value {
