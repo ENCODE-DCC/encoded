@@ -147,7 +147,8 @@ def index_peaks(uuid, request):
         urllib3.disable_warnings()
         es = request.registry.get(SNP_SEARCH_ES, None)
         http = urllib3.PoolManager()
-        r = http.request('GET', request.host_url + output_file['href'])
+        r = http.request('GET', 'https://www.encodeproject.org/files/ENCFF558TCP/@@download/ENCFF558TCP.bed.gz')
+        #r = http.request('GET', request.host_url + output_file['href'])
         if r.status_code != 200:
             continue
         comp = io.BytesIO()
