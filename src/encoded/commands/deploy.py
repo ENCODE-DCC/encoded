@@ -51,7 +51,7 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
     bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     
 
-    if not elasticsearch:
+    if not elasticsearch == 'yes':
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
         user_data = user_data % {
             'WALE_S3_PREFIX': wale_s3_prefix,
