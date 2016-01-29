@@ -48,24 +48,25 @@ dl.key-value, dl.key-value-doc {
 }
 
 @media screen and (min-width: $screen-xs-min) {
-    .key-value {
-        dt {
-            float: left;
-            width: $component-offset-horizontal;
-            text-align: right;
-            clear: left;
-
-        }
+    dl.key-value {
+        display: table;
 
         dt, dd {
-            padding-top: 5px;
-            line-height: 18px;
+            display: table-cell;
+        }
+
+        dt {
+            min-width: 140px;
+            padding: 5px 0;
         }
 
         dd {
-            margin-left: 200px;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
+            padding: 5px 0 5px 10px;
+        }
+
+        [data-test] {
+            clear: none;
+            display: table-row;
         }
     }
 }
