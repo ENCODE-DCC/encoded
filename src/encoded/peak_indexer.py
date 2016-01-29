@@ -117,8 +117,7 @@ def index_peaks(uuid, request):
     http = urllib3.PoolManager()
     r = http.request('GET', 'https://www.encodeproject.org/files/ENCFF558TCP/@@download/ENCFF558TCP.bed.gz')
     #r = http.request('GET', request.host_url + output_file['href'])
-    if r.status != 200:
-        continue
+    
     comp = io.BytesIO()
     comp.write(r.data)
     comp.seek(0)
