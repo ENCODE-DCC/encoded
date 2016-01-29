@@ -28,6 +28,7 @@
             "description": "One or more files that this metric either applies to or is calculated from.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "items": {
                 "title": "File",
                 "description": "A particular file associated with this quality metric.",

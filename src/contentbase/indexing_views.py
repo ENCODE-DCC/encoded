@@ -1,4 +1,5 @@
 from pyramid.security import (
+    Authenticated,
     Everyone,
     principals_allowed_by_permission,
 )
@@ -20,10 +21,17 @@ def item_index_data(context, request):
 
     principals_allowed = {}
     for permission in ('view', 'edit', 'audit'):
-        p = principals_allowed_by_permission(context, permission)
-        if p is Everyone:
-            p = [Everyone]
-        principals_allowed[permission] = sorted(p)
+        principals = principals_allowed_by_permission(context, permission)
+        if principals is Everyone:
+            principals = [Everyone]
+        elif Everyone in principals:
+            principals = [Everyone]
+        elif Authenticated in principals:
+            principals = [Authenticated]
+        # Filter our roles
+        principals_allowed[permission] = [
+            p for p in sorted(principals) if not p.startswith('role.')
+        ]
 
     path = resource_path(context)
     paths = {path}

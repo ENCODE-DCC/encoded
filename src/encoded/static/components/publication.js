@@ -1,10 +1,12 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dbxref = require('./dbxref');
 var search = require('./search');
 var audit = require('./audit');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var AuditIndicators = audit.AuditIndicators;
@@ -18,8 +20,20 @@ var Publication = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+
+        // Set up breadcrumbs
+        var categoryTerms = context.categories && context.categories.map(function(category) {
+            return 'categories=' + category;
+        });
+        var crumbs = [
+            {id: 'Publications'},
+            {id: context.categories ? context.categories.join(' + ') : null, query: (categoryTerms && categoryTerms.join('&')),
+                tip: context.categories && context.categories.join(' + ')}
+        ];
+
         return (
             <div className={itemClass}>
+                <Breadcrumbs root='/search/?type=publication' crumbs={crumbs} />
                 <h2>{context.title}</h2>
                 <AuditIndicators audits={context.audit} id="publication-audit" />
                 <AuditDetail context={context} id="publication-audit" />

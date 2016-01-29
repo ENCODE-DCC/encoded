@@ -65,3 +65,53 @@ def donor_2_3(value, system):
                 item = publications[ref]
                 new_references.append(str(item.uuid))
         value['references'] = new_references
+
+
+@upgrade_step('human_donor', '4', '5')
+@upgrade_step('mouse_donor', '4', '5')
+def human_mouse_donor_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        unique_aliases = set(value['aliases'])
+        value['aliases'] = list(unique_aliases)
+
+    if 'dbxrefs' in value:
+        unique_dbxrefs = set(value['dbxrefs'])
+        value['dbxrefs'] = list(unique_dbxrefs)
+
+    if 'references' in value:
+        unique_refs = set(value['references'])
+        value['references'] = list(unique_refs)
+
+    if 'littermates' in value:
+        unique_litter = set(value['littermates'])
+        value['littermates'] = list(unique_litter)
+
+    if 'parents' in value:
+        unique_parents = set(value['parents'])
+        value['parents'] = list(unique_parents)
+
+    if 'children' in value:
+        unique_children = set(value['children'])
+        value['children'] = list(unique_children)
+
+    if 'siblings' in value:
+        unique_siblings = set(value['siblings'])
+        value['siblings'] = list(unique_siblings)
+
+
+@upgrade_step('fly_donor', '1', '2')
+@upgrade_step('worm_donor', '1', '2')
+def fly_worm_donor_1_2(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'constructs' in value:
+        value['constructs'] = list(set(value['constructs']))

@@ -101,7 +101,7 @@ class Construct(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -136,7 +136,7 @@ class TALEN(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "construct_characterization",
+            "linkTo": "ConstructCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -212,7 +212,7 @@ class RNAi(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "rnai_characterization",
+            "linkTo": "RNAiCharacterization",
         },
     })
     def characterizations(self, request, characterizations):
@@ -269,7 +269,7 @@ class Software(Item):
         "type": "array",
         "items": {
             "type": "string",
-            "linkTo": "software_version",
+            "linkTo": "SoftwareVersion",
         },
     })
     def versions(self, request, versions):

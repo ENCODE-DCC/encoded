@@ -8,11 +8,12 @@ To load the initial data:
 """
 from pyramid.paster import get_app
 from elasticsearch import RequestError
+from functools import reduce
 from contentbase import (
     COLLECTIONS,
     TYPES,
 )
-from contentbase.util import ensurelist
+from contentbase.schema_utils import combine_schemas
 from .interfaces import ELASTIC_SEARCH
 import collections
 import json
@@ -87,7 +88,7 @@ def schema_mapping(name, schema):
             }
         }
 
-    if type_ in ['string', 'boolean']:
+    if type_ ==  'boolean':
         return {
             'type': 'string',
             'store': True,
@@ -98,6 +99,26 @@ def schema_mapping(name, schema):
                 }
             }
         }
+
+    if type_ == 'string':
+
+        if schema.get('elasticsearch_mapping_index_type'):
+             if schema.get('elasticsearch_mapping_index_type')['default'] == 'analyzed':
+                return {
+                    'type': 'string',
+                    'store': True,
+                }
+        else:
+            return {
+                'type': 'string',
+                'store': True,
+                'fields': {
+                    'raw': {
+                        'type': 'string',
+                        'index': 'not_analyzed'
+                    }
+                }
+            }
 
     if type_ == 'number':
         return {
@@ -186,7 +207,7 @@ def audit_mapping():
         },
         'detail': {
             'type': 'string',
-            'index': 'not_analyzed',
+            'index': 'analyzed', 
         },
         'level_name': {
             'type': 'string',
@@ -333,36 +354,6 @@ def combined_mapping(types, *item_types):
     return combined
 
 
-def combine_schemas(a, b):
-    if a == b:
-        return a
-    if not a:
-        return b
-    if not b:
-        return a
-    combined = {}
-    for name in set(a.keys()).intersection(b.keys()):
-        if a[name] == b[name]:
-            combined[name] = a[name]
-        elif name == 'type':
-            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
-        elif name == 'properties':
-            combined[name] = {}
-            for k in set(a[name].keys()).intersection(b[name].keys()):
-                combined[name][k] = combine_schemas(a[name][k], b[name][k])
-            for k in set(a[name].keys()).difference(b[name].keys()):
-                combined[name][k] = a[name][k]
-            for k in set(b[name].keys()).difference(a[name].keys()):
-                combined[name][k] = b[name][k]
-        elif name == 'items':
-            combined[name] = combine_schemas(a[name], b[name])
-    for name in set(a.keys()).difference(b.keys()):
-        combined[name] = a[name]
-    for name in set(b.keys()).difference(a.keys()):
-        combined[name] = b[name]
-    return combined
-
-
 def type_mapping(types, item_type, embed=True):
     type_info = types[item_type]
     schema = type_info.schema
@@ -396,11 +387,7 @@ def type_mapping(types, item_type, embed=True):
                 s = subschema
                 continue
 
-            concrete = {subtype for name in ref_types for subtype in types[name].subtypes}
-
-            s = {}
-            for t in concrete:
-                s = combine_schemas(s, types[t].schema)
+            s = reduce(combine_schemas, (types[t].schema for t in ref_types))
 
             # Check if mapping for property is already an object
             # multiple subobjects may be embedded, so be carful here

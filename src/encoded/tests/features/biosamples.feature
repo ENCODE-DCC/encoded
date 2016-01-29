@@ -13,12 +13,12 @@ Feature: Biosamples
         When I fill in "q" with "Immortal"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS000AAA/']" within 1 seconds
         And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS024AAA/']"
-        And I should see exactly one element with the css selector ".table-count" containing the text "15"
+        And I should see exactly one element with the css selector ".table-count" containing the text "24"
 
         When I fill in "q" with "Tissue"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS024AAA/']" within 1 seconds
         And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS000AAA/']"
-        And I should see exactly one element with the css selector ".table-count" containing the text "6"
+        And I should see exactly one element with the css selector ".table-count" containing the text "14"
 
         When I fill in "q" with "primary"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS026ENC/']" within 1 seconds

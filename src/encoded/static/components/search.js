@@ -11,27 +11,54 @@ var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var audit = require('./audit');
-var biosample = require('./biosample');
+var objectutils = require('./objectutils');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 var statusOrder = globals.statusOrder;
-var SingleTreatment = biosample.SingleTreatment;
+var SingleTreatment = objectutils.SingleTreatment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 
     // Should really be singular...
     var types = {
+        annotation: {title: 'Annotation file set'},
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
+        matched_set: {title: 'Matched set series'},
+        organism_development_series: {title: 'Organism development series'},
         publication: {title: 'Publications'},
         page: {title: 'Web page'},
-        software: {title: 'Software'}
+        pipeline: {title: 'Pipeline'},
+        project: {title: 'Project file set'},
+        publication_data: {title: 'Publication file set'},
+        reference: {title: 'Reference file set'},
+        reference_epigenome: {title: 'Reference epigenome series'},
+        replication_timing_series: {title: 'Replication timing series'},
+        software: {title: 'Software'},
+        treatment_concentration_series: {title: 'Treatment concentration series'},
+        treatment_time_series: {title: 'Treatment time series'},
+        ucsc_browser_composite: {title: 'UCSC browser composite file set'}
+    };
+
+    var datasetTypes = {
+        'Annotation': types['annotation'].title,
+        'Dataset': types['dataset'].title,
+        'MatchedSet': types['matched_set'].title,
+        'OrganismDevelopmentSeries': types['organism_development_series'].title,
+        'Project': types['project'].title,
+        'PublicationData': types['publication_data'].title,
+        'Reference': types['reference'].title,
+        'ReferenceEpigenome': types['reference_epigenome'].title,
+        'ReplicationTimingSeries': types['replication_timing_series'].title,
+        'TreatmentConcentrationSeries': types['treatment_concentration_series'].title,
+        'TreatmentTimeSeries': types['treatment_time_series'].title,
+        'UcscBrowserComposite': types['ucsc_browser_composite'].title
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -143,9 +170,9 @@ var AuditMixin = audit.AuditMixin;
             var classes = {tooltipopen: this.state.tipOpen};
 
             return (
-                <span className="tooltip-trigger">
+                <span className="tooltip-status-trigger">
                     <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
-                    <div className={"tooltip sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                    <div className={"tooltip-status sentence-case " + cx(classes)} style={this.state.tipStyles}>
                         {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                     </div>
                 </span>
@@ -408,21 +435,86 @@ var AuditMixin = audit.AuditMixin;
         mixins: [PickerActionsMixin, AuditMixin],
         render: function() {
             var result = this.props.context;
+            var biosampleTerm, organism, lifeSpec, targets, lifeStages = [], ages = [];
+
+            // Determine whether the dataset is a series or not
+            var seriesDataset = result['@type'].indexOf('Series') >= 0;
+
+            // Get the biosample info for Series types if any. Can be string or array. If array, only use iff 1 term name exists
+            if (seriesDataset) {
+                biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
+                    ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
+                var organisms = _.uniq(result.organism && result.organism.length && result.organism.map(function(organism) {
+                    return organism.scientific_name;
+                }));
+                if (organisms.length === 1) {
+                    organism = organisms[0];
+                }
+
+                // Dig through the biosample life stages and ages
+                if (result.related_datasets && result.related_datasets.length) {
+                    result.related_datasets.forEach(function(dataset) {
+                        if (dataset.replicates && dataset.replicates.length) {
+                            dataset.replicates.forEach(function(replicate) {
+                                if (replicate.library && replicate.library.biosample) {
+                                    var biosample = replicate.library.biosample;
+                                    var lifeStage = (biosample.life_stage && biosample.life_stage !== 'unknown') ? biosample.life_stage : '';
+
+                                    if (lifeStage) { lifeStages.push(lifeStage); }
+                                    if (biosample.age_display) { ages.push(biosample.age_display); }
+                                }
+                            });
+                        }
+                    });
+                    lifeStages = _.uniq(lifeStages);
+                    ages = _.uniq(ages);
+                }
+                lifeSpec = _.compact([lifeStages.length === 1 ? lifeStages[0] : null, ages.length === 1 ? ages[0] : null]);
+
+                // Get list of target labels
+                if (result.target) {
+                    targets = _.uniq(result.target.map(function(target) {
+                        return target.label;
+                    }));
+                }
+            }
+
+            var haveSeries = result['@type'].indexOf('Series') >= 0;
+            var haveFileSet = result['@type'].indexOf('FileSet') >= 0;
+
             return (
                 <li>
                     <div className="clearfix">
                         {this.renderActions()}
                         <div className="pull-right search-meta">
-                            <p className="type meta-title">Dataset</p>
+                            <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                             <p className="type">{' ' + result['accession']}</p>
                             <p className="type meta-status">{' ' + result['status']}</p>
                             <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                         </div>
                         <div className="accession">
-                            <a href={result['@id']}>{result['description']}</a>
+                            <a href={result['@id']}>
+                                {datasetTypes[result['@type'][0]]}
+                                {seriesDataset ?
+                                    <span>
+                                        {biosampleTerm ? <span>{' in ' + biosampleTerm}</span> : null}
+                                        {organism || lifeSpec.length > 0 ?
+                                            <span>
+                                                {' ('}
+                                                {organism ? <i>{organism}</i> : null}
+                                                {lifeSpec.length > 0 ? <span>{organism ? ', ' : ''}{lifeSpec.join(', ')}</span> : null}
+                                                {')'}
+                                            </span>
+                                        : null}
+                                    </span>
+                                :
+                                    <span>{result.description ? <span>{': ' + result.description}</span> : null}</span>
+                                }
+                            </a>
                         </div>
                         <div className="data-row">
                             {result['dataset_type'] ? <div><strong>Dataset type: </strong>{result['dataset_type']}</div> : null}
+                            {targets && targets.length ? <div><strong>Targets: </strong>{targets.join(', ')}</div> : null}
                             <div><strong>Lab: </strong>{result.lab.title}</div>
                             <div><strong>Project: </strong>{result.award.project}</div>
                         </div>
@@ -536,7 +628,7 @@ var AuditMixin = audit.AuditMixin;
             } else if (selected) {
                 href = selected;
             } else {
-                href = this.props.searchBase + field + '=' + term
+                href = this.props.searchBase + field + '=' + encodeURIComponent(term).replace(/%20/g, '+')
             }
             return (
                 <li id={selected ? "selected" : null} key={term}>
@@ -585,57 +677,62 @@ var AuditMixin = audit.AuditMixin;
         },
 
         render: function() {
-            var facet = this.props.facet;
-            var filters = this.props.filters;
-            var title = facet['title'];
-            var field = facet['field'];
-            var total = facet['total'];
-            var termID = title.replace(/\s+/g, '');
-            var terms = facet['terms'].filter(function (term) {
-                if (term.key) {
-                    for(var filter in filters) {
-                        if(filters[filter].term === term.key) {
-                            return true;
-                        }
-                    }
-                    return term.doc_count > 0;
+            var {facet, filters} = this.props;
+            var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
+
+            // Get array of all terms from facets whose doc_count > 0. Include terms whose keys are specified in a filter's term
+            // regardless of their doc_count.
+            var terms = facet.terms.filter(term => term.doc_count > 0 || _(filters).any(filter => filter.term === term.key));
+
+            // If this is the 'Data type' facet, decide if we have to hide it or not
+            if (facet.field === 'type') {
+                // Hide the facet if all the terms' doc_count values are the same, or if there's only one term
+                if (terms.length <= 1) {
+                    hideTypeFacet = true;
                 } else {
-                    return false;
+                    var firstDocCount = terms[0].doc_count;
+                    hideTypeFacet = _(terms).all(term => term.doc_count === firstDocCount);
                 }
-            });
-            var moreTerms = terms.slice(5);
-            var TermComponent = field === 'type' ? TypeTerm : Term;
-            var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
-            var moreTermSelected = selectedTermCount > 0;
-            var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-            var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-            var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
-            return (
-                <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
-                    <h5>{title}</h5>
-                    <ul className="facet-list nav">
-                        <div>
-                            {terms.slice(0, 5).map(function (term) {
-                                return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                            }.bind(this))}
-                        </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {moreTerms.map(function (term) {
+            }
+
+            if (!hideTypeFacet) {
+                var {title, field, total} = facet;
+                var termID = title.replace(/\s+/g, '');
+                var moreTerms = terms.slice(5);
+                var TermComponent = field === 'type' ? TypeTerm : Term;
+                var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
+                var moreTermSelected = selectedTermCount > 0;
+                var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+                var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
+                var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
+                return (
+                    <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
+                        <h5>{title}</h5>
+                        <ul className="facet-list nav">
+                            <div>
+                                {terms.slice(0, 5).map(function (term) {
                                     return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
                                 }.bind(this))}
                             </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <label className="pull-right">
-                                    <small>
-                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                    </small>
-                            </label>
-                        : null}
-                    </ul>
-                </div>
-            );
+                            {terms.length > 5 ?
+                                <div id={termID} className={moreSecClass}>
+                                    {moreTerms.map(function (term) {
+                                        return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
+                                    }.bind(this))}
+                                </div>
+                            : null}
+                            {(terms.length > 5 && !moreTermSelected) ?
+                                <label className="pull-right">
+                                        <small>
+                                            <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                        </small>
+                                </label>
+                            : null}
+                        </ul>
+                    </div>
+                );
+            }
+            return null;
         }
     });
 
@@ -698,28 +795,16 @@ var AuditMixin = audit.AuditMixin;
             var filters = this.props.filters;
             var width = 'inherit';
             if (!facets.length && this.props.mode != 'picker') return <div />;
-            var hideTypes;
-            if (this.props.mode == 'picker') {
-                hideTypes = false;
-            } else {
-                hideTypes = filters.filter(function(filter) {
-                    return filter.field == 'type';
-                }).length;
-            }
             if (this.props.orientation == 'horizontal') {
                 width = (100 / facets.length) + '%';
             }
             return (
                 <div className={"box facets " + this.props.orientation}>
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
-                    {facets.map(function (facet) {
-                        if (hideTypes && facet.field == 'type') {
-                            return <span key={facet.field} />;
-                        } else {
-                            return <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
-                                          width={width} />;
-                        }
-                    }.bind(this))}
+                    {facets.map(facet =>
+                        <Facet {...this.props} key={facet.field} facet={facet} filters={filters}
+                                  width={width} />
+                    )}
                 </div>
             );
         }
@@ -791,7 +876,6 @@ var AuditMixin = audit.AuditMixin;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var facets = context['facets'];
             var total = context['total'];
             var batch_hub_disabled = total > 500;
             var columns = context['columns'];
@@ -799,13 +883,14 @@ var AuditMixin = audit.AuditMixin;
             var label = 'results';
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-            _.each(facets, function(facet) {
+
+            var facets = context['facets'].map(function(facet) {
                 if (this.props.restrictions[facet.field] !== undefined) {
+                    facet = _.clone(facet);
                     facet.restrictions = this.props.restrictions[facet.field];
-                    facet.terms = facet.terms.filter(function(term) {
-                        return _.contains(facet.restrictions, term.key);
-                    }.bind(this));
+                    facet.terms = facet.terms.filter(term => _.contains(facet.restrictions, term.key));
                 }
+                return facet;
             }.bind(this));
 
             // See if a specific result type was requested ('type=x')
@@ -817,9 +902,6 @@ var AuditMixin = audit.AuditMixin;
                         specificFilter = specificFilter ? '' : filter.term;
                     }
                 });
-                if (typeof specificFilter === 'string' && specificFilter.length) {
-                    label = results[0]['@id'].split('/')[1].replace(/-/g, ' ');
-                }
             }
 
             return (
@@ -832,7 +914,7 @@ var AuditMixin = audit.AuditMixin;
                             <div className="col-sm-7 col-md-8 col-lg-9">
                                 {context['notification'] === 'Success' ?
                                     <h4>
-                                        Showing {results.length} of {total} {label} {context.matrix && <a href={context.matrix} title="View result matrix"><i className="icon icon-table"></i></a>}
+                                        Showing {results.length} of {total} {label}
                                         {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                             <span className="pull-right">
                                                 <a rel="nofollow" className="btn btn-info btn-sm"
@@ -900,7 +982,7 @@ var AuditMixin = audit.AuditMixin;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.context.location_href).search || '';
-            var facetdisplay = context.facets.some(function(facet) {
+            var facetdisplay = context.facets && context.facets.some(function(facet) {
                 return facet.total > 0;
             });
             return (

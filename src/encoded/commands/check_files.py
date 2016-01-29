@@ -165,6 +165,7 @@ def check_format(item, path):
         ('rcc', None): ['-type=rcc'],
         ('idat', None): ['-type=idat'],
         ('gtf', None): None,
+        ('tagAlign', None): ['-type=tagAlign'],
         ('tar', None): None,
         ('tsv', None): None,
         ('csv', None): None,
@@ -175,7 +176,8 @@ def check_format(item, path):
         ('sam', None): None,
         ('wig', None): None,
         ('hdf5', None): None,
-        ('gff', None): None
+        ('gff', None): None,
+        ('vcf', None): None
     }
 
     validate_args = validate_map.get((item['file_format'], item.get('file_format_type')))

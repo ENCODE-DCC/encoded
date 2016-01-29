@@ -1,2 +1,16 @@
 [
+    {
+        "_test": "matched set",
+        "accession": "ENCSR834QRI",
+        "award": "U54HG007010",
+        "description": "Paired Experiment for midbrain (ENCSR706IDL,ENCSR751YPU)",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "related_datasets": [
+            "/experiments/ENCSR706IDL",
+            "/experiments/ENCSR751YPU"
+        ],
+        "uuid": "6da7a50a-c5a5-4b55-af52-7820257ffbe1"
+    }
 ]

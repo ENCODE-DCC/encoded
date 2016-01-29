@@ -15,3 +15,13 @@ def construct_0_2(value, system):
                 value['status'] = 'released'
             elif value['award'] not in ENCODE2_AWARDS:
                 value['status'] = 'in progress'
+
+
+@upgrade_step('construct', '2', '3')
+def construct_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))
+
+    if 'documents' in value:
+        value['documents'] = list(set(value['documents']))

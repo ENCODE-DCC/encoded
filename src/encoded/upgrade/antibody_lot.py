@@ -60,3 +60,22 @@ def antibody_lot_3_4(value, system):
         else:
             targets.add(approval.properties['target'])
     value['targets'] = list(targets)
+
+
+@upgrade_step('antibody_lot', '4', '5')
+def antibody_lot_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if 'purifications' in value:
+        value['purifications'] = list(set(value['purifications']))
+
+    if 'targets' in value:
+        value['targets'] = list(set(value['targets']))
+
+    if 'lot_id_alias' in value:
+        value['lot_id_alias'] = list(set(value['lot_id_alias']))
+
+    if 'dbxrefs' in value:
+        value['dbxrefs'] = list(set(value['dbxrefs']))
+
+    if 'aliases' in value:
+        value['aliases'] = list(set(value['aliases']))

@@ -37,6 +37,11 @@ def test_home_json(testapp):
     assert res.json['@type']
 
 
+def test_home_app_version(testapp):
+    res = testapp.get('/', status=200)
+    assert 'app_version' in res.json
+
+
 def test_vary_html(anonhtmltestapp):
     res = anonhtmltestapp.get('/', status=200)
     assert res.vary is not None
@@ -296,6 +301,10 @@ def test_page_nested(workbook, anontestapp):
     assert res.json['@id'] == '/test-section/subpage/'
 
 
+def test_page_nested_in_progress(workbook, anontestapp):
+    return anontestapp.get('/test-section/subpage-in-progress/', status=403)
+
+
 def test_page_homepage(workbook, anontestapp):
     res = anontestapp.get('/pages/homepage/', status=200)
     assert res.json['canonical_uri'] == '/'
@@ -345,3 +354,8 @@ def test_profiles(testapp, item_type):
     res = testapp.get('/profiles/%s.json' % item_type).maybe_follow(status=200)
     errors = Draft4Validator.check_schema(res.json)
     assert not errors
+
+
+def test_bad_frame(testapp, human):
+    res = testapp.get(human['@id'] + '?frame=bad', status=404)
+    assert res.json['detail'] == '?frame=bad'

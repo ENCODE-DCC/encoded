@@ -4,6 +4,7 @@ var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
+var navbar = require('./navbar');
 var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var image = require('./image');
@@ -11,6 +12,7 @@ var item = require('./item');
 var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
+var Breadcrumbs = navbar.Breadcrumbs;
 var Attachment = image.Attachment;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
@@ -53,6 +55,38 @@ var Lot = module.exports.Lot = React.createClass({
         }
         var targetKeys = Object.keys(targets);
 
+        // Set up the breadcrumbs
+        var organismComponents = [];
+        var organismTerms = [];
+        var organismTips = [];
+        var geneComponents = [];
+        var geneTerms = [];
+        var geneTips = [];
+        targetKeys.forEach(function(key, i) {
+            var scientificName = targets[key].organism.scientific_name;
+            var geneName = targets[key].gene_name;
+
+            // Add to the information on organisms from the targets
+            organismComponents.push(<span key={key}>{i > 0 ? <span> + <i>{scientificName}</i></span> : <i>{scientificName}</i>}</span>);
+            organismTerms.push('targets.organism.scientific_name=' + scientificName);
+            organismTips.push(scientificName);
+
+            // Add to the information on gene names from the targets
+            if (geneName && geneName !== 'unknown') {
+                geneComponents.push(<span key={key}>{i > 0 ? <span> + {geneName}</span> : <span>{geneName}</span>}</span>);
+                geneTerms.push('targets.gene_name=' + geneName);
+                geneTips.push(geneName);
+            }
+        });
+
+        var organismQuery = organismTerms.join('&');
+        var geneQuery = geneTerms.join('&');
+        var crumbs = [
+            {id: 'Antibodies'},
+            {id: organismComponents, query: organismQuery, tip: organismTips.join(' + ')},
+            {id: geneComponents.length ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ')}
+        ];
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -60,6 +94,7 @@ var Lot = module.exports.Lot = React.createClass({
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
+                        <Breadcrumbs root='/search/?type=antibody_lot' crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
@@ -279,24 +314,24 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
 
-                        <dl className="characterization-intro characterization-meta-data key-value-left">
+                        <dl className="characterization-intro characterization-meta-data">
                             {context.characterization_method ?
                                 <div data-test="method">
-                                    <dt>Method</dt>
-                                    <dd>{context.characterization_method}</dd>
+                                    <strong>Method: </strong>
+                                    {context.characterization_method}
                                 </div>
                             : null}
 
                             {excerpt || (context.caption && context.caption.length) ?
                                 <div data-test="caption">
-                                    <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
-                                    <dd>{excerpt ? excerpt : context.caption}</dd>
+                                    <strong>{excerpt ? 'Caption excerpt' : 'Caption'}: </strong>
+                                    {excerpt ? excerpt : context.caption}
                                 </div>
                             : null}
                         </dl>
                     </div>
                     <dl ref="collapse" className={keyClass}>
-                        {excerpt ?
+                        {context.caption && context.caption.length ?
                             <div data-test="caption">
                                 <dt>Caption</dt>
                                 <dd className="sentence-case para-text">{context.caption}</dd>

@@ -124,17 +124,6 @@
     },
     {
         "dbxref": [
-            "UniProtKB:Q71DI3"
-        ],
-        "gene_name": "HIST2H3C",
-        "label": "H3K4me3",
-        "organism": "human",
-        "status": "current",
-        "investigated_as": ["histone modification"],
-        "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
-    },
-    {
-        "dbxref": [
             "UniProtKB:P84228"
         ],
         "gene_name": "Hist2h3c1",
@@ -319,5 +308,102 @@
         "organism": "dmelanogaster",
         "investigated_as": ["transcription factor"],
         "status": "current"
+    },
+    {
+        "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
+        "label": "fkh-10",
+        "dbxref": [
+            "WormBase:WBGene00001442",
+            "WormBase:C25A1.2",
+            "UniProtKB:O17593"
+        ],
+        "organism": "celegans",
+        "gene_name": "fkh-10",
+        "investigated_as": ["transcription factor"],
+        "status": "current"
+    },
+    {
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "gene_name": "HIST2H3C",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "label": "H3K4me3",
+        "organism": "human",
+        "status": "current",
+        "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
+    },
+    {
+        "label": "H3K27ac",
+        "organism": "human",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "status": "current",
+        "gene_name": "HIST2H3C",
+        "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
+    },
+    {
+        "label": "H3K36me3",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "organism": "human",
+        "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
+        "gene_name": "HIST2H3C",
+        "status": "current"
+    },
+    {
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "gene_name": "HIST2H3C",
+        "organism": "human",
+        "label": "H3K27me3",
+        "status": "current",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "uuid": "9fdbd27b-4118-4851-b566-87d77d467d79"
+    },
+    {
+        "uuid": "14173a5f-799e-4dae-b155-a142c5b6b566",
+        "label": "H3K9me3",
+        "gene_name": "HIST2H3C",
+        "organism": "human",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "status": "current",
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ]
+    },
+    {
+        "uuid": "1aa5391a-01f1-4983-bdb6-d93db5f53334",
+        "label": "H3K4me1",
+        "gene_name": "HIST2H3C",
+        "organism": "human",
+        "investigated_as": [
+            "histone modification",
+            "histone"
+        ],
+        "status": "current",
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ]
     }
 ]

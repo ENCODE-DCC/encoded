@@ -16,6 +16,8 @@ The Browser accessible frontend is written in ReactJS_ and uses the same Pyramid
 SOURCE CODE ORGANIZATION
 ------------------------
 
+	*** WARNING THIS IS OUT OF DATE SINCE CONTENTBASE SPLIT OFF -- REWRITE WHEN IT'S TOTALLY DIVORCED ***
+
 	* Root - the root directory contains configuration files and install scripts along with other accessory directories
 		- *bin* - command line excutables (see src/commmands) from buildout (see PyramidDocs_)
 		- *develop* & *develop-eggs* - source and python eggs (created by buildout)

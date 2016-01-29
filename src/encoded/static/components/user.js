@@ -6,10 +6,13 @@ var React = require('react');
 var globals = require('./globals');
 var _ = require('underscore');
 var parseAndLogError = require('./mixins').parseAndLogError;
+var navbar = require('./navbar');
 var Modal = require('react-bootstrap/lib/Modal');
 var ItemStore = require('./lib/store').ItemStore;
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
+
+var Breadcrumbs = navbar.Breadcrumbs;
 
 
 class AccessKeyStore extends ItemStore {
@@ -129,9 +132,13 @@ var AccessKeyTable = React.createClass({
 var User = module.exports.User = React.createClass({
     render: function() {
         var context = this.props.context;
+        var crumbs = [
+            {id: 'Users'}
+        ];
         return (
             <div>
                 <header className="row">
+                    <Breadcrumbs root='/search/?type=user' crumbs={crumbs} />
                     <div className="col-sm-12">
                         <h1 className="page-title">{context.title}</h1>
                     </div>
