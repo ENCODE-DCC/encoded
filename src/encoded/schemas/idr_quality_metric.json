@@ -10,7 +10,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "quality_metric.json#/properties" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
@@ -23,40 +23,268 @@
             "description": "Non-accessioned files to be associated with this QC metric object",
             "type": "object",
             "properties": {
-                "plots": {
-                    "description": "IDR dispersion plots",
+                "IDR_plot_true": {
+                    "description": "IDR dispersion plot for true replicates",
+                    "title": "QC metric document metadata",
                     "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
                     "properties": {
-                        "true":      { 
-                            "description": "IDR dispersion plot for true replicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "rep1_pr":   { 
-                            "description": "IDR dispersion plot for replicate 1 pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "rep2_pr":   {
-                            "description": "IDR dispersoin plot for replicate 2 pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "pooled_pr": {
-                            "description": "IDR dispersion plot for pooled pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" }
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "image/png"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
                     }
                 },
-                "parameters": {
-                    "description": "IDR run parameters",
+                "IDR_plot_rep1_pr": {
+                    "description": "IDR dispersion plot for replicate 1 pseudo-replicates",
+                    "title": "QC metric document metadata",
                     "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
                     "properties": {
-                        "true":      { 
-                            "description": "IDR run parameters for true replicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "rep1_pr":   { 
-                            "description": "IDR run parameters for replicate 1 pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "rep2_pr":   {
-                            "description": "IDR run parameters for replicate 2 pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" },
-                        "pooled_pr": {
-                            "description": "IDR run parameters for pooled pseudoreplicates",
-                            "$ref": "quality_metric.json#/properties/attachment" }
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "image/png"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_plot_rep2_pr": {
+                    "description": "IDR dispersion plot for replicate 2 pseudo-replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "image/png"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_plot_pool_pr": {
+                    "description": "IDR dispersion plot for pool pseudo-replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "image/png"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_parameters_true": {
+                    "description": "IDR run parameters for true replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "text/plain"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_parameters_rep1_pr": {
+                    "description": "IDR run parameters for replicate 1 pseudo-replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "text/plain"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_parameters_rep2_pr": {
+                    "description": "IDR run parameters for replicate 2 pseudo-replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "text/plain"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
+                    }
+                },
+                "IDR_parameters_pool_pr": {
+                    "description": "IDR run parameters for pool pseudo-replicates",
+                    "title": "QC metric document metadata",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "formInput": "file",
+                    "properties": {
+                        "download": {
+                            "title": "File Name",
+                            "type": "string"
+                        },
+                        "href": {
+                            "comment": "Internal webapp URL for document file",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "MIME type",
+                            "type": "string",
+                            "enum": [
+                                "text/plain"
+                            ]
+                        },
+                        "size": {
+                            "title": "File size",
+                            "type": "integer"
+                        },
+                        "md5sum": {
+                            "format": "md5sum",
+                            "type": "string",
+                            "title": "MD5sum"
+                        }
                     }
                 }
             }
@@ -95,7 +323,8 @@
             "enum": [
                 "pass",
                 "borderline",
-                "fail"]
+                "fail"
+            ]
         },
         "N_optimal": {
             "type": "number",
