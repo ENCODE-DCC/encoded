@@ -222,11 +222,11 @@ var Lot = module.exports.Lot = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                <DocumentsPanel documentSpecs={documentSpecs} />
-
                 <RelatedItems title={'Experiments using antibody ' + context.accession}
                               url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
+
+                <DocumentsPanel documentSpecs={documentSpecs} />
             </div>
         );
     }
@@ -387,10 +387,6 @@ var CharacterizationFile = React.createClass({
 
         return (
             <div className="dl-bar">
-                {excerpt || caption ?
-                    <span>{excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}</span>
-                : null}
-
                 {detailSwitch ?
                     <div className={'detail-switch' + (detailOpen ? ' open' : '')}>
                         <i className={'icon detail-trigger' + (detailOpen ? ' open' : '')} onClick={detailSwitch}></i>

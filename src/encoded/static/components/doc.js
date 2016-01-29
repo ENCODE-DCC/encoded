@@ -53,7 +53,7 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                         {documentSpecs.map(documentSpec => {
                             if (documentSpec.documents.length) {
                                 return (
-                                    <PanelBody>
+                                    <PanelBody addClasses="panel-body-doc">
                                         <DocumentsSubpanels documentSpec={documentSpec} />
                                     </PanelBody>
                                 );
@@ -121,18 +121,18 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4 doc-panel">
-                <div className={globals.itemClass(context, 'view-item view-detail status-none panel')}>
+            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
                     <DocumentHeaderView doc={context} />
-                    <div className="panel-body">
+                    <PanelBody>
                         <div className="document-header">
                             <DocumentPreviewView doc={context} />
                             <DocumentCaptionView doc={context} />
                         </div>
-                        <DocumentFileView doc={this.props.context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
-                        <DocumentDetailView doc={this.props.context} detailOpen={this.state.panelOpen} key={this.props.key} />
-                    </div>
-                </div>
+                        <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
+                        <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} key={this.props.key} />
+                    </PanelBody>
+                </Panel>
             </section>
         );
     }

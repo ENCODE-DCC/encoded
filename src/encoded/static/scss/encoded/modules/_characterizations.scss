@@ -15,9 +15,6 @@ $characterization-figure-height: 64px;
 
 /* clear first in row in ie 8 or lower */
 .multi-columns-row {
-    margin-top: 10px;
-    margin-bottom: 10px;
-
     .first-in-row {
         clear: left;
     }
