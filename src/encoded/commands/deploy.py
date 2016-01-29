@@ -16,81 +16,26 @@ def nameify(s):
     return re.subn(r'\-+', '-', name)[0]
 
 
-def run(wale_s3_prefix, image_id, instance_type,
-        branch=None, name=None, role='demo', profile_name=None, elasticsearch_name=None):
-
+def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
+        branch=None, name=None, role='demo', profile_name=None):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
 
     commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).decode('utf-8').strip()
+    if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
+        print("Commit %r not in origin. Did you git push?" % commit)
+        sys.exit(1)
 
     username = getpass.getuser()
 
     if name is None:
         name = nameify('%s-%s-%s' % (branch, commit, username))
+        if elasticsearch == 'yes':
+            name ='elasticsearch-' + name
 
     conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
 
     domain = 'production' if profile_name == 'production' else 'instance'
-
-    bdm = BlockDeviceMapping()
-    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=60)
-    # Don't attach instance storage so we can support auto recovery
-    bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
-    bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
-    user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
-    user_data = user_data % {
-        'WALE_S3_PREFIX': wale_s3_prefix,
-        'COMMIT': commit,
-        'ROLE': role,
-    }
-
-    if elasticsearch_name:
-        es_conn = boto.ec2.connect_to_region("us-west-2", profile_name=profile_name)
-        es_user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
-
-        es_reservation = es_conn.run_instances(
-            image_id=image_id,
-            instance_type=instance_type,
-            security_groups=['ssh-http-https'],
-            user_data=es_user_data,
-            block_device_map=bdm,
-            instance_initiated_shutdown_behavior='terminate',
-            instance_profile_name='encoded-instance',
-        )
-
-        time.sleep(0.5)  # sleep for a moment to ensure instance exists...
-        es_instance = es_reservation.instances[0]  # Instance:i-34edd56f
-        print('%s.%s.encodedcc.org' % (es_instance.id, domain))
-        es_instance.add_tags({
-            'Name': elasticsearch_name,
-            'branch': branch,
-            'commit': commit,
-            'started_by': username,
-        })
-        print('ssh %s.%s.encodedcc.org' % (name, domain))
-        if domain == 'instance':
-            print('https://%s.demo.encodedcc.org' % name)
-
-        sys.stdout.write(es_instance.state)
-        while es_instance.state == 'pending':
-            sys.stdout.write('.')
-            sys.stdout.flush()
-            time.sleep(1)
-            try:
-                es_instance.update()
-            except boto.exception.EC2ResponseError:
-                pass
-        print('')
-        print(es_instance.state)
-        sys.exit(1)
-
-    
-    if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
-        print("Commit %r not in origin. Did you git push?" % commit)
-        sys.exit(1)
-
-    
 
     if any(name == i.tags.get('Name')
            for reservation in conn.get_all_instances()
@@ -99,7 +44,23 @@ def run(wale_s3_prefix, image_id, instance_type,
         print('An instance already exists with name: %s' % name)
         sys.exit(1)
 
+    bdm = BlockDeviceMapping()
+    bdm['/dev/sda1'] = BlockDeviceType(volume_type='gp2', delete_on_termination=True, size=60)
+    # Don't attach instance storage so we can support auto recovery
+    bdm['/dev/sdb'] = BlockDeviceType(no_device=True)
+    bdm['/dev/sdc'] = BlockDeviceType(no_device=True)
     
+
+    if not elasticsearch:
+        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml']).decode('utf-8')
+        user_data = user_data % {
+            'WALE_S3_PREFIX': wale_s3_prefix,
+            'COMMIT': commit,
+            'ROLE': role,
+        }
+    else:
+        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
+
 
     reservation = conn.run_instances(
         image_id=image_id,
@@ -166,7 +127,7 @@ def main():
         help="specify 'c4.4xlarge' for faster indexing (you should switch to a smaller "
              "instance afterwards.)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
-    parser.add_argument('--elasticsearch-name', default=None, help='Whether to launch elasticsearch instance only')
+    parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     args = parser.parse_args()
 
     return run(**vars(args))
