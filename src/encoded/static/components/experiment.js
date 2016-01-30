@@ -663,13 +663,13 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
 
             // If the current key shows a rendering component, call it and save the resulting React object for later rendering.
             if (libraryComponents[key]) {
-                libraryValues[key].component[firstBiologicalReplicate] = libraryComponents[key](replicates[0].library);
+                libraryValues[key].component[firstBiologicalReplicate] = replicates[0].library ? libraryComponents[key](replicates[0].library) : null;
             }
         } else {
             if (libraryComponents[key]) {
                 replicates.forEach(replicate => {
                     // If the current key shows a rendering component, call it and save the resulting React object for later rendering.
-                    libraryValues[key].component[replicateToIndex(replicate)] = libraryComponents[key](replicate.library);
+                    libraryValues[key].component[replicateToIndex(replicate)] = replicate.library ? libraryComponents[key](replicate.library) : null;
                 });
             }
         }
