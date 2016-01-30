@@ -255,6 +255,9 @@ write_files:
     index.search.slowlog.threshold.query.warn: 8s
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
+    index.number_of_shards: 1
+    index.number_of_replicas: 0
+    index.refresh_interval: 30s
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
