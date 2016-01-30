@@ -112,24 +112,7 @@ bootcmd:
 package_upgrade: true
 
 packages:
-- apache2-mpm-worker
-- bsdtar
-- build-essential
 - elasticsearch
-- graphviz
-- libevent-dev
-- libfreetype6-dev
-- libjpeg-dev
-- liblcms2-dev
-- libmagic-dev
-- libpq-dev
-- libssl-dev
-- libtiff5-dev
-- libwebp-dev
-- libxml2-dev
-- libxslt1-dev
-- lzop
-- ntp
 - oracle-java8-installer
 - oracle-java8-set-default
 
@@ -144,7 +127,6 @@ runcmd:
 # permissions
 - set -ex
 - update-rc.d elasticsearch defaults
-- echo "network.host: 0.0.0.0" >> /etc/elasticsearch/elasticsearch.yml
 - service elasticsearch start
 
 # - sleep 10
@@ -193,6 +175,8 @@ write_files:
     index.search.slowlog.threshold.query.warn: 8s
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
+    network.host: 0.0.0.0
+
 
 - path: /etc/ssh/users_ca.pub
   content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
