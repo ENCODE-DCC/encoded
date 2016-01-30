@@ -15,6 +15,7 @@ from collections import OrderedDict
 
 def includeme(config):
     config.add_route('search', '/search{slash:/?}')
+    config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.scan(__name__)
 
@@ -468,8 +469,19 @@ def search(context, request, search_type=None):
                 'term': ti.name,
                 'remove': '{}?{}'.format(request.path, qs)
             })
-        if len(doc_types) == 1 and hasattr(ti.factory, 'matrix'):
-            result['matrix'] = request.route_path('matrix', slash='/') + search_base
+        if len(doc_types) == 1:
+            result['views'] = views = []
+            views.append({
+                'href': request.route_path('report', slash='/') + search_base,
+                'title': 'View tabular report',
+                'icon': 'table',
+            })
+            if hasattr(ti.factory, 'matrix'):
+                views.append({
+                    'href': request.route_path('matrix', slash='/') + search_base,
+                    'title': 'View summary matrix',
+                    'icon': 'th',
+                })
 
     search_fields, highlights = get_search_fields(request, doc_types)
 
@@ -594,6 +606,27 @@ def collection_view_listing_es(context, request):
         return collection_view_listing_db(context, request)
 
     return search(context, request, context.type_info.name)
+
+
+@view_config(route_name='report', request_method='GET', permission='search')
+def report(context, request):
+    types = request.params.getall('type')
+    if len(types) != 1:
+        msg = 'Report view requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+
+    # Reuse search view
+    res = search(context, request)
+
+    # change @id, @type, and views
+    res['views'][0] = {
+        'href': res['@id'],
+        'title': 'View results as list',
+        'icon': 'list-alt',
+    }
+    res['@id'] = res['@id'].replace('search', 'report')
+    res['@type'] = ['Report']
+    return res
 
 
 @view_config(route_name='matrix', request_method='GET', permission='search')
