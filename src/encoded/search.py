@@ -90,27 +90,53 @@ def prepare_search_term(request):
     return search_term
 
 
-def get_sort_order(sort_order=None):
+def set_sort_order(request, search_term, types, doc_types, query, result):
     """
-    specifies sort order for elasticsearch results
+    sets sort order for elasticsearch results
     """
-    if sort_order is not None:
-        order = {}
-        for field in sort_order:
-            # Should always sort on raw field rather than analyzed field
-            order['embedded.' + field + '.raw'] = sort_order[field]
-        return order
-    return {
-        'embedded.date_created.raw': {
-            'order': 'desc',
+    sort = OrderedDict()
+    result_sort = OrderedDict()
+
+    # Prefer sort order specified in request, if any
+    requested_sort = request.params.get('sort')
+    if requested_sort:
+        if requested_sort.startswith('-'):
+            name = requested_sort[1:]
+            order = 'desc'
+        else:
+            name = requested_sort
+            order = 'asc'
+        sort['embedded.' + name + '.raw'] = result_sort[name] = {
+            'order': order,
             'ignore_unmapped': True,
-        },
-        'embedded.label.raw': {
-            'order': 'asc',
-            'missing': '_last',
-            'ignore_unmapped': True,
-        },
-    }
+        }
+
+    # Otherwise we use a default sort only when there's no text search to be ranked
+    if not sort and search_term == '*':
+
+        # If searching for a single type, look for sort options in its schema
+        if len(doc_types) == 1:
+            type_schema = types[doc_types[0]].schema
+            if 'sort_by' in type_schema:
+                for k, v in type_schema['sort_by'].items():
+                    # Should always sort on raw field rather than analyzed field
+                    sort['embedded.' + k + '.raw'] = result_sort[k] = v
+
+        # Default is most recent first, then alphabetical by label
+        if not sort:
+            sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+                'order': 'desc',
+                'ignore_unmapped': True,
+            }
+            sort['embedded.label.raw'] = result_sort['label'] = {
+                'order': 'asc',
+                'missing': '_last',
+                'ignore_unmapped': True,
+            }
+
+    if sort:
+        query['sort'] = sort
+        result['sort'] = result_sort
 
 
 def get_search_fields(request, doc_types):
@@ -168,7 +194,8 @@ def set_filters(request, query, result):
     used_filters = {}
     for field, term in request.params.items():
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
-                     'format', 'frame', 'datastore', 'field', 'region', 'genome']:
+                     'format', 'frame', 'datastore', 'field', 'region', 'genome',
+                     'sort']:
             continue
 
         # Add filter to result
@@ -495,17 +522,16 @@ def search(context, request, search_type=None):
     if not result['columns']:
         del result['columns']
 
-    # Sorting the files when search term is not specified
+    # If no text search, use match_all query instead of query_string
     if search_term == '*':
-        query['sort'] = [get_sort_order()]
-        if len(doc_types) == 1:
-            type_schema = types[doc_types[0]].schema
-            if 'sort_by' in type_schema and len(type_schema['sort_by']):
-                query['sort'] = [get_sort_order(type_schema['sort_by'])]
         query['query']['match_all'] = {}
         del query['query']['query_string']
+    # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
         del query['query']['query_string']['fields']
+
+    # Set sort order
+    set_sort_order(request, search_term, types, doc_types, query, result)
 
     # Setting filters
     used_filters = set_filters(request, query, result)

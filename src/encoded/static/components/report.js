@@ -67,18 +67,16 @@ var lookup_column = function (result, column) {
 
 
 class Cell {
-    constructor(value, sortable) {
+    constructor(value) {
         this.value = value;
-        this.sortable = sortable;
     }
 }
 
 
 class Row {
-    constructor(item, cells, text) {
+    constructor(item, cells) {
         this.item = item;
         this.cells = cells;
-        this.text = text;
     }
 }
 
@@ -86,24 +84,6 @@ class Row {
 class Data {
     constructor(rows) {
         this.rows = rows;
-        this.sortedOn = null;
-        this.reversed = false;
-    }
-    sort(sortColumn, reverse) {
-        reverse = !!reverse;
-        if (this.sortedOn === sortColumn && this.reversed === reverse) return;
-        this.sortedOn = sortColumn;
-        this.reversed = reverse;            
-        this.rows.sort(function (rowA, rowB) {
-            var a = '' + rowA.cells[sortColumn].sortable;
-            var b = '' + rowB.cells[sortColumn].sortable;
-            if (a < b) {
-                return reverse ? 1 : -1;
-            } else if (a > b) {
-                return reverse ? -1 : 1;
-            }
-            return 0;
-        });
     }
 }
 
@@ -147,29 +127,38 @@ var Table = module.exports.Table = React.createClass({
                     factory = globals.listing_titles.lookup(value);
                     value = factory({context: value});
                 }
-                var sortable = ('' + value).toLowerCase();
-                return new Cell(value, sortable);
+                return new Cell(value);
             });
-            var text = cells.map(cell => cell.value).join(' ').toLowerCase();
-            return new Row(item, cells, text);
+            return new Row(item, cells);
         });
         return new Data(rows);
+    },
+
+    getSort: function() {
+        if (this.props.context.sort) {
+            var sortColumn = Object.keys(this.props.context.sort)[0];
+            return {
+                column: sortColumn,
+                reversed: this.props.context.sort[sortColumn].order == 'desc',
+            };
+        } else {
+            return {};
+        }
     },
 
     render: function () {
         var context = this.props.context;
 
         var columns = visibleColumns(this.props.columns);
-        var sortOn = context.sort;
-        var sortReversed = false;
+        var sort = this.getSort();
 
         var headers = columns.map((column, index) => {
             var className = "sortdirection icon";
-            if (column.path === sortOn) {
-                className += sortReversed ? " icon-chevron-down" : " icon-chevron-up";
+            if (column.path === sort.column) {
+                className += sort.reversed ? " icon-chevron-down" : " icon-chevron-up";
             }
             return (
-                <th key={index}>
+                <th key={index} onClick={this.setSort.bind(this, column.path)}>
                     {column.title}
                     <i className={className}></i>
                 </th>
@@ -191,6 +180,12 @@ var Table = module.exports.Table = React.createClass({
                 </table>
             </div>
         );
+    },
+
+    setSort: function(path) {
+        const sort = this.getSort();
+        const column = sort.column == path ? '-' + path : path;
+        this.props.setSort(column);
     }
 
 });
@@ -284,6 +279,13 @@ var Report = React.createClass({
         delete parsed_url.search;
         this.context.navigate(url.format(parsed_url));
     },
+
+    setSort: function(sort) {
+        var parsed_url = url.parse(this.context.location_href, true);
+        parsed_url.query.sort = sort;
+        delete parsed_url.search;
+        this.context.navigate(url.format(parsed_url));        
+    }
 });
 
 
