@@ -153,14 +153,13 @@ var Table = module.exports.Table = React.createClass({
         var sort = this.getSort();
 
         var headers = columns.map((column, index) => {
-            var className = "sortdirection icon";
+            var className = "icon";
             if (column.path === sort.column) {
-                className += sort.reversed ? " icon-chevron-down" : " icon-chevron-up";
+                className += sort.reversed ? " icon-chevron-up" : " icon-chevron-down";
             }
             return (
                 <th key={index} onClick={this.setSort.bind(this, column.path)}>
-                    {column.title}
-                    <i className={className}></i>
+                    {column.title}&nbsp;<i className={className}></i>
                 </th>
             );
         });
@@ -184,7 +183,7 @@ var Table = module.exports.Table = React.createClass({
 
     setSort: function(path) {
         const sort = this.getSort();
-        const column = sort.column == path ? '-' + path : path;
+        const column = sort.column == path && !sort.reversed ? '-' + path : path;
         this.props.setSort(column);
     }
 
@@ -255,7 +254,7 @@ var Report = React.createClass({
                                 Showing {results.length} of {context.total} results
                                 {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                             </h4>
-                            <Table context={context} columns={columns} />
+                            <Table context={context} columns={columns} setSort={this.setSort} />
                         </div>
                     </div>
                 </div>
