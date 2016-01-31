@@ -88,12 +88,6 @@ class Row {
 }
 
 
-class Data {
-    constructor(rows) {
-        this.rows = rows;
-    }
-}
-
 var RowView = function (props) {
     var row = props.row;
     var id = row.item['@id'];
@@ -114,19 +108,19 @@ var RowView = function (props) {
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: React.PropTypes.string,
     },
 
-    extractData: function (columns) {
-        var context = this.props.context;
-        var rows = context['@graph'].map(function (item) {
+    extractData: function (items) {
+        var columns = visibleColumns(this.props.columns);
+        var rows = items.map(function (item) {
             var cells = columns.map(column => {
                 var factory;
                 var value = lookup_column(item, column.path);
                 if (column.path == '@id') {
                     factory = globals.listing_titles.lookup(item);
                     value = factory({context: item});
-                } else if (value == null) {
+                } else if (value === null || value === undefined) {
                     value = '';
                 } else if (value instanceof Array) {
                     value = value;
@@ -138,7 +132,7 @@ var Table = module.exports.Table = React.createClass({
             });
             return new Row(item, cells);
         });
-        return new Data(rows);
+        return rows;
     },
 
     getSort: function() {
@@ -155,7 +149,6 @@ var Table = module.exports.Table = React.createClass({
 
     render: function () {
         var context = this.props.context;
-
         var columns = visibleColumns(this.props.columns);
         var sort = this.getSort();
 
@@ -171,8 +164,8 @@ var Table = module.exports.Table = React.createClass({
             );
         });
 
-        var data = this.extractData(columns);
-        var rows = data.rows.map(row => RowView({row: row}));
+        var data = this.extractData(context['@graph']).concat(this.extractData(this.props.more));
+        var rows = data.map(row => RowView({row: row}));
         var table_class = "sticky-area collection-table";
         return (
             <div className="table-responsive">            
@@ -192,7 +185,7 @@ var Table = module.exports.Table = React.createClass({
         const sort = this.getSort();
         const column = sort.column == path && !sort.reversed ? '-' + path : path;
         this.props.setSort(column);
-    }
+    },
 
 });
 
@@ -233,6 +226,33 @@ var Report = React.createClass({
     contextTypes: {
         location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
+        fetch: React.PropTypes.func,
+    },
+
+    getDefaultProps: function() {
+        return {size: 25};
+    },
+
+    getInitialState: function() {
+        var parsed_url = url.parse(this.context.location_href, true);
+        var from = parseInt(parsed_url.query.from) || 0;
+        return {
+            from: from,
+            to: from + this.props.size,
+            loading: false,
+            more: [],
+        };
+    },
+
+    componentWillReceiveProps: function(nextProps, nextContext) {
+        // reset pagination when filter is changed
+        if (nextContext.location_href != this.context.location_href) {
+            this.setState({
+                from: nextProps.from,
+                to: nextProps.from + this.props.size,
+                more: [],
+            });
+        }
     },
 
     render: function () {
@@ -259,10 +279,19 @@ var Report = React.createClass({
                                 <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
                             </span>
                             <h4>
-                                Showing {results.length} of {context.total} results
+                                Showing results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
                                 {context.views && context.views.map(view => <span> <a href={view.href} title={view.title}><i className={'icon icon-' + view.icon}></i></a></span>)}
                             </h4>
-                            <Table context={context} columns={columns} setSort={this.setSort} />
+                            <Table context={context} more={this.state.more}
+                                   columns={columns} setSort={this.setSort} />
+                            {this.state.to < context.total &&
+                                <h4 className={this.state.loading ? 'communicating' : ''}>
+                                    {this.state.loading ?
+                                        <div className="loading-spinner"></div>
+                                    : <a className="btn btn-info btn-sm" onClick={this.loadMore}>Load more</a>} Showing
+                                    results {this.state.from + 1} to {Math.min(context.total, this.state.to)} of {context.total}
+                                </h4>
+                            }
                         </div>
                     </div>
                 </div>
@@ -292,7 +321,41 @@ var Report = React.createClass({
         parsed_url.query.sort = sort;
         delete parsed_url.search;
         this.context.navigate(url.format(parsed_url));        
-    }
+    },
+
+    loadMore: function() {
+        if (this.state.request) {
+            this.state.request.abort();
+        }
+        var parsed_url = url.parse(this.context.location_href, true);
+        parsed_url.query.from = this.state.to;
+        delete parsed_url.search;
+        var request = this.context.fetch(url.format(parsed_url), {
+            headers: {'Accept': 'application/json'}
+        });
+        request.then(response => {
+            if (!response.ok) throw response;
+            return response.json();
+        })
+        .catch(parseAndLogError.bind(undefined, 'loadMore'))
+        .then(data => {
+            this.setState({
+                more: this.state.more.concat(data['@graph']),
+                loading: false,
+                request: null,
+            });
+        });
+
+        this.setState({
+            request: request,
+            to: this.state.to + this.props.size,
+            loading: true,
+        });
+    },
+
+    componentWillUnmount: function () {
+        if (this.state.request) this.state.request.abort();
+    },
 });
 
 

@@ -195,7 +195,7 @@ def set_filters(request, query, result):
     for field, term in request.params.items():
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort']:
+                     'sort', 'from']:
             continue
 
         # Add filter to result
@@ -449,7 +449,8 @@ def search(context, request, search_type=None):
     es_index = request.registry.settings['contentbase.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
-    # handling limit
+    # handling pagination
+    from_ = request.params.get('from') or 0
     size = request.params.get('limit', 25)
     if size in ('all', ''):
         size = None
@@ -556,7 +557,7 @@ def search(context, request, search_type=None):
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
-        es_results = es.search(body=query, index=es_index, size=size)
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
     result['total'] = es_results['hits']['total']
 
@@ -605,7 +606,7 @@ def search(context, request, search_type=None):
     if size is None:
         hits = scan(es, query=query, index=es_index)
     else:
-        hits = scan(es, query=query, index=es_index, size=size)
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size)
     graph = format_results(request, hits)
 
     # Support for request.embed()
