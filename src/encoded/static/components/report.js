@@ -23,7 +23,14 @@ var columnChoices = function(schema, selected) {
             };
         });
     } else {
+        columns['@id'] = {
+            title: 'ID',
+            visible: true,
+        };
         _.each(schema.properties, (property, name) => {
+            if (name.slice(0, 1) == '@' || name.search(/(uuid|_no|accession)/) != -1) {
+                return;
+            }
             columns[name] = {
                 title: property.title,
                 visible: true,
@@ -229,9 +236,10 @@ var Report = React.createClass({
     },
 
     render: function () {
+        var parsed_url = url.parse(this.context.location_href, true);
+        if (parsed_url.pathname.indexOf('/report') !== 0) return false;  // avoid breaking on re-render when navigate changes href before context is changed
         var context = this.props.context;
         var results = context['@graph'];
-        var parsed_url = url.parse(this.context.location_href, true);
         var searchBase = parsed_url.search || '';
         searchBase = searchBase + (searchBase ? '&' : '?');
 
