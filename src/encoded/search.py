@@ -625,6 +625,7 @@ def report(context, request):
         'icon': 'list-alt',
     }
     res['@id'] = res['@id'].replace('search', 'report')
+    res['title'] = 'Report'
     res['@type'] = ['Report']
     return res
 
