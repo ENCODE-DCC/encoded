@@ -925,7 +925,7 @@ def audit_experiment_antibody_eligible(value, system):
                         eligible_biosamples.add(eligible_biosample)
                 if lot_review['status'] == 'eligible for new data (via exemption)':
                     warning_flag = True
-            if warning_flag is True:
+            if warning_flag is True and experiment_biosample in eligible_biosamples:
                 detail = '{} is eligible via exempt for {} in {}'.format(antibody["@id"],
                                                                          biosample_term_name,
                                                                          organism)
