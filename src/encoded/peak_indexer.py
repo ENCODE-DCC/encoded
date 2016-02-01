@@ -3,7 +3,7 @@ import io
 import gzip
 import csv
 import logging
-import pprint
+import collections
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
@@ -18,7 +18,6 @@ from contentbase.elasticsearch.interfaces import (
     SNP_SEARCH_ES,
 )
 
-from random import shuffle
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
@@ -117,8 +116,12 @@ def index_peaks(uuid, request):
     if 'status' not in context and context['status'] != 'released':
         return
 
+    # Index human data for now       
+    if 'hg19' not in context['assembly']:
+        return
+
     assay_term_name = get_assay_term_name(context['dataset'], request)
-    if assay_term_name is None:
+    if assay_term_name is None or isinstance(assay_term_name, collections.Hashable) is False:
         return
 
     
@@ -132,7 +135,6 @@ def index_peaks(uuid, request):
     if not flag:
         return
 
-    log.warn("qualifying bed file found")
 
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
@@ -173,12 +175,10 @@ def index_peaks(uuid, request):
         es.index(index=key, doc_type=context['assembly'], body=doc,
                  id=context['uuid'])
     
-    log.warn("bed file was indexed")
-    
+
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
-    log.warn('Peak indexer started')
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
@@ -271,9 +271,7 @@ def index_file(request):
             invalidated = referencing | updated
     if not dry_run:
 
-        log.warn("Number of invalidated objects {}".format(len(invalidated)))
 
-        shuffle(invalidated)
-        for uuid in invalidated: # shuffling to see differt types of files in logs
+        for uuid in invalidated:
             index_peaks(uuid, request)
     return result
