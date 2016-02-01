@@ -19,7 +19,6 @@ from contentbase.elasticsearch.interfaces import (
 )
 
 from random import shuffle
-import pprint
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
@@ -110,9 +109,13 @@ def index_peaks(uuid, request):
     """
 
 
-    context = request.embed(uuid)
+    #context = request.embed(uuid)
 
-    log.warn(pprint.pformat(context))
+    object_ = request.embed(uuid)
+
+    log.warn(pprint.pformat(object_))
+
+    return
 
 
     if 'AnalysisStepRun' not in context['@type']:
