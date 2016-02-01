@@ -111,7 +111,7 @@ def index_peaks(uuid, request):
 
     #context = request.embed(uuid)
 
-    object_ = request.embed(uuid)
+    object_ = request.embed('/', str(uuid), '@@object')
 
     log.warn(pprint.pformat(object_))
 
