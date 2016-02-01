@@ -20,8 +20,6 @@ import logging
 import pytz
 import time
 
-import pdb
-
 
 log = logging.getLogger(__name__)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -36,12 +34,6 @@ def includeme(config):
 
 @view_config(route_name='index', request_method='POST', permission="index")
 def index(request):
-
-    log.warn("Indexer is running")
-
-    pdb.set_trace()
-
-
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     # Setting request.datastore here only works because routed views are not traversed.
     request.datastore = 'database'

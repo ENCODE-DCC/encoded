@@ -107,88 +107,74 @@ def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
     """
+    context = request.embed('/', str(uuid), '@@object')
 
 
-    #context = request.embed(uuid)
 
-    object_ = request.embed('/', str(uuid), '@@object')
-
-    log.warn(pprint.pformat(object_))
-
-    return
-
-
-    if 'AnalysisStepRun' not in context['@type']:
+    if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
-    for output_file in context['output_files']:            
+    if 'status' not in context and context['status'] != 'released':
+        return
 
-        if 'File' not in output_file['@type'] or 'dataset' not in output_file:
-            continue
+    assay_term_name = get_assay_term_name(context['dataset'], request)
+    if assay_term_name is None:
+        return
 
-        if 'status' not in output_file and output_file['status'] != 'released':
-            continue
+    
+    flag = False
+    
+    for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
+        if k in context and context[k] in v:
+            if 'file_format' in context and context['file_format'] == 'bed':
+                flag = True
+                break
+    if not flag:
+        return
 
-        # Index human data only for now
-        # if 'hg19' not in output_file['assembly']:
-        #     continue
+    log.warn("qualifying bed file found")
 
-        assay_term_name = get_assay_term_name(output_file['dataset'], request)
-        if assay_term_name is None:
-            continue
+    urllib3.disable_warnings()
+    es = request.registry.get(SNP_SEARCH_ES, None)
+    http = urllib3.PoolManager()
+    r = http.request('GET', request.host_url + context['href'])
+    if r.status != 200:
+        return
+    comp = io.BytesIO()
+    comp.write(r.data)
+    comp.seek(0)
+    r.release_conn()
+    file_data = dict()
+
+
+    with gzip.open(comp, mode='rt') as file:
+        for row in tsvreader(file):
+            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+            if isinstance(start, int) and isinstance(end, int):
+                if chrom in file_data:
+                    file_data[chrom].append({
+                        'start': start + 1,
+                        'end': end + 1
+                    })
+                else:
+                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+
 
         
-        flag = False
-        
-        for k, v in _INDEXED_DATA.get(assay_term_name, {}).items():
-            if k in output_file and output_file[k] in v:
-                if 'file_format' in output_file and output_file['file_format'] == 'bed':
-                    flag = True
-                    break
-        if not flag:
-            continue
-
-        log.warn("qualifying bed file found")
-
-        urllib3.disable_warnings()
-        es = request.registry.get(SNP_SEARCH_ES, None)
-        http = urllib3.PoolManager()
-        r = http.request('GET', request.host_url + output_file['href'])
-        if r.status != 200:
-            continue
-        comp = io.BytesIO()
-        comp.write(r.data)
-        comp.seek(0)
-        r.release_conn()
-        file_data = dict()
-
-
-        with gzip.open(comp, mode='rt') as file:
-            for row in tsvreader(file):
-                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                if isinstance(start, int) and isinstance(end, int):
-                    if chrom in file_data:
-                        file_data[chrom].append({
-                            'start': start + 1,
-                            'end': end + 1
-                        })
-                    else:
-                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-
-
-            
-        for key in file_data:
-            doc = {
-                'uuid': output_file['uuid'],
-                'positions': file_data[key]
-            }
-            if not es.indices.exists(key):
-                es.indices.create(index=key, body=index_settings())
-                es.indices.put_mapping(index=key, doc_type=output_file['assembly'],
-                                       body=get_mapping(output_file['assembly']))
-            es.index(index=key, doc_type=output_file['assembly'], body=doc,
-                     id=output_file['uuid'])
-        log.warn("bed file was indexed")
+    for key in file_data:
+        doc = {
+            'uuid': context['uuid'],
+            'positions': file_data[key]
+        }
+        if not es.indices.exists(key):
+            es.indices.create(index=key, body=index_settings())
+            es.indices.put_mapping(index=key, doc_type=context['assembly'],
+                                   body=get_mapping(context['assembly']))
+        es.index(index=key, doc_type=context['assembly'], body=doc,
+                 id=context['uuid'])
+    
+    log.warn("bed file was indexed")
+    
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
