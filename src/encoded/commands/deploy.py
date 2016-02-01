@@ -58,14 +58,15 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch,
             'COMMIT': commit,
             'ROLE': role,
         }
+        security_groups = ['ssh-http-https']
     else:
         user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
-
+        security_groups = ['elasticsearch-https']
 
     reservation = conn.run_instances(
         image_id=image_id,
         instance_type=instance_type,
-        security_groups=['ssh-http-https'],
+        security_groups=security_groups,
         user_data=user_data,
         block_device_map=bdm,
         instance_initiated_shutdown_behavior='terminate',
