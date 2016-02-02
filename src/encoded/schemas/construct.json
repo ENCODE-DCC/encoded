@@ -115,6 +115,7 @@
                         "enum": [
                             "N-terminal",
                             "C-terminal",
+                            "internal",
                             "other",
                             "unknown"
                         ]
