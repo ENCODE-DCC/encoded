@@ -960,35 +960,21 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
         }
     });
 
-    // Add contributing files to the allFiles object that other files derive from.
-    // Don't worry about files they derive from; they're not included in the graph.
-    // If an allFiles entry already exists for the file, it gets overwritten so that
-    // allFiles and allContributingFiles point at the same object.
-    if (context.contributing_files && context.contributing_files.length) {
-        context.contributing_files.forEach(function(file) {
-            if (allFiles[file['@id']]) {
-                // Contributing file already existed in file array for some reason; use its existing file object
-                allContributing[file['@id']] = allFiles[file['@id']];
-            } else {
-                // Seeing contributed file for the first time; save it in both allFiles and allContributingFiles
-                allFiles[file['@id']] = allContributing[file['@id']] = file;
-            }
-        });
-    }
-
-    // Collect derived_from files, used replicates, and used pipelines
+    // Collect derived_from files, used replicates, and used pipelines. allFiles has all files directly involved
+    // with this experiment if we're logged in, or just released files directly involved with experiment if we're not.
     Object.keys(allFiles).forEach(function(fileId) {
         var file = allFiles[fileId];
 
         // Build an object keyed with all files that other files derive from. If the file is contributed,
         // we don't care about its derived_from because we don't render that.
-        if (!allContributing[fileId] && file.derived_from && file.derived_from.length) {
+        if (file.derived_from && file.derived_from.length) {
             file.derived_from.forEach(function(derived_from) {
                 var derivedFromId = derived_from['@id'];
                 var derivedFile = allFiles[derivedFromId];
                 if (!derivedFile) {
                     // The derived-from file wasn't in the given file list. Copy the file object from the file's
-                    // derived_from so we can examine it later -- and mark it as missing.
+                    // derived_from so we can examine it later -- and mark it as missing. It could be because a
+                    // derived-from file isn't released and we're not logged in, or because it's a contributing file.
                     derivedFromFiles[derivedFromId] = derived_from;
                     derived_from.missing = true;
                 } else if (!derivedFromFiles[derivedFromId]) {
@@ -1043,6 +1029,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     });
     // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
     // allPipelines points to pipelines.
+
+    // Now find contributing files by subtracting original_files from the list of derived_from files.
+    var filteredDerivedFrom = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
+        var found = 
+        return _(context.original_files).find(originalFileId => originalFileId !== derivedFromId);
+    });
+
+    console.log('Derived: %o', derivedFromFiles);
+    console.log('Filtered: %o', filteredDerivedFrom);
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
