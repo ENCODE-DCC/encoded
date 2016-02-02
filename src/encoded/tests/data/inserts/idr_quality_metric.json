@@ -15,6 +15,14 @@
         "Nt": 2,
         "reproducibility_test": "borderline",
         "rescue_ratio": 11,
-        "self_consistency_ratio": 10
+        "self_consistency_ratio": 10,
+        "IDR_plot_true": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "IDR_plot_rep1_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "IDR_plot_rep2_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "IDR_plot_pool_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.pooled_common_IDRv2.narrowPeak.png",
+        "IDR_parameters_true": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "IDR_parameters_rep1_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "IDR_parameters_rep2_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt",
+        "IDR_parameters_pool_pr": "ENCFF150HADvENCFF315YLZ.IDRv2.log.txt"
     }
 ]
