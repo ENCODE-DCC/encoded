@@ -73,6 +73,7 @@ ORDER = [
     'pbc_quality_metric',
     'phantompeaktools_spp_quality_metric',
     'samtools_stats_quality_metric',
+    'idr_quality_metric',
     'image',
     'page'
 ]
