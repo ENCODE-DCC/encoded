@@ -517,14 +517,27 @@ def test_audit_file_read_depth_chip_seq_paired_end(testapp, file_exp, file6, fil
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
-def test_audit_file_mad_qc_spearman_correlation(testapp, file7,  file_exp,
-                                                mad_quality_metric,
-                                                analysis_step_run_bam,
-                                                analysis_step_version_bam, analysis_step_bam,
-                                                pipeline_bam):
+def test_audit_file_mad_qc_spearman_correlation(testapp, pipeline_bam,
+                                                base_experiment, file7,
+                                                donor_1, mad_quality_metric,
+                                                donor_2,
+                                                biosample_1,
+                                                biosample_2,
+                                                library_1,
+                                                library_2,
+                                                replicate_1_1,
+                                                replicate_2_1):
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],
+                                                               replicate_2_1['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': base_experiment['@id']})
     res = testapp.get(file7['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -550,15 +563,28 @@ def test_audit_file_mad_qc_spearman_correlation_2(testapp, file7,  file_exp,
     assert all(error['category'] != 'insufficient spearman correlation' for error in errors_list)
 
 
-def test_audit_file_mad_qc_spearman_correlation_silver(testapp, file7,  file_exp,
-                                                       mad_quality_metric,
-                                                       analysis_step_run_bam,
-                                                       analysis_step_version_bam, analysis_step_bam,
-                                                       pipeline_bam):
+def test_audit_file_mad_qc_spearman_correlation_silver(testapp, pipeline_bam,
+                                                       base_experiment, file7,
+                                                       donor_1, mad_quality_metric,
+                                                       donor_2,
+                                                       biosample_1,
+                                                       biosample_2,
+                                                       library_1,
+                                                       library_2,
+                                                       replicate_1_1,
+                                                       replicate_2_1):
+    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': donor_1['@id']})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'replicates': [replicate_1_1['@id'],
+                                                               replicate_2_1['@id']]})
     testapp.patch_json(mad_quality_metric['@id'], {'Spearman correlation': 0.891})
     testapp.patch_json(pipeline_bam['@id'], {'title': 'RAMPAGE (paired-end, stranded)'})
-    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA-seq'})
-    testapp.patch_json(file7['@id'], {'dataset': file_exp['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
+    testapp.patch_json(file7['@id'], {'dataset': base_experiment['@id']})
     res = testapp.get(file7['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
