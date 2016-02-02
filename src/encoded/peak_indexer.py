@@ -4,6 +4,7 @@ import gzip
 import csv
 import logging
 import collections
+import pprint
 from pyramid.view import view_config
 from elasticsearch.exceptions import (
     NotFoundError
@@ -60,7 +61,7 @@ def get_mapping(assembly_name='hg19'):
                 'enabled': False
             },
             '_source': {
-                'enabled': False
+                'enabled': True
             },
             'properties': {
                 'uuid': {
@@ -136,11 +137,15 @@ def index_peaks(uuid, request):
         return
 
 
+    log.warn('bed file found {}'.format(pprint.pformat(context)))
+
+
     urllib3.disable_warnings()
     es = request.registry.get(SNP_SEARCH_ES, None)
     http = urllib3.PoolManager()
     r = http.request('GET', request.host_url + context['href'])
     if r.status != 200:
+        log.warn('File status is not 200: {}, will not index file'.format(r.status))
         return
     comp = io.BytesIO()
     comp.write(r.data)
@@ -160,6 +165,8 @@ def index_peaks(uuid, request):
                     })
                 else:
                     file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+            else:
+                log.warn('positions are not integers, will not index file')
 
 
         
