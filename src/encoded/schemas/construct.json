@@ -93,6 +93,7 @@
                 "comment": "Submit tag name and tag location.",
                 "type": "object",
                 "additionalProperties": false,
+                "required": ["name", "location"],
                 "properties": {
                     "name": {
                         "type": "string",
