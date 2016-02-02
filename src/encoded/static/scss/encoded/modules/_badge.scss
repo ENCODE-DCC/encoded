@@ -1,0 +1,15 @@
+// Handles the styling of the badges (logos) of the different projects. This SCSS loops over the different kinds
+// of projects, and loads the proper background image for each kind of project.
+
+@each $project in encode, roadmap, modencode, modern, ggr, mouseencode {
+    .badge-#{$project} {
+        width: 200px;
+        height: 40px;
+        background-image: url(/static/img/badge-#{$project}.svg);
+        background-repeat: no-repeat;
+
+        .no-svg & {
+            background-image: url(/static/img/badge-#{$project}.png);
+        }
+    }
+}

@@ -121,8 +121,7 @@ describe('Antibody', function() {
 
             var charData = panel.getElementsByClassName('characterization-intro')[0];
             var item = charData.querySelector('[data-test="method"]');
-            var itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('immunoblot');
+            expect(item.textContent).toContain('immunoblot');
 
             charData = panel.getElementsByClassName('characterization-slider')[0];
             item = charData.querySelector('[data-test="documents"]');
@@ -131,7 +130,7 @@ describe('Antibody', function() {
             expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/@@download/attachment/Antibody_Characterization_ENCODE3_February2014.pdf');
 
             item = charData.querySelector('[data-test="submitted"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
+            var itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('Ad Est');
 
             item = charData.querySelector('[data-test="grant"]');

@@ -146,3 +146,51 @@ var Image = React.createClass({
 
 
 globals.content_views.register(Image, 'Image');
+
+
+// Displays a graphic badge for the award project.
+var ProjectBadge = module.exports.ProjectBadge = React.createClass({
+    propTypes: {
+        project: React.PropTypes.string.isRequired // Project whose badge we display
+    },
+
+    projectMap: {
+        'ENCODE': {
+            imageClass: 'badge-encode',
+            alt: 'ENCODE project'
+        },
+        'Roadmap': {
+            imageClass: 'badge-roadmap',
+            alt: 'Roadmap Epigenomics Mapping Consortium'
+        },
+        'modENCODE': {
+            imageClass: 'badge-modencode',
+            alt: 'modENCODE Project'
+        },
+        'modERN': {
+            imageClass: 'badge-modern',
+            alt: 'modERN project'
+        },
+        'GGR': {
+            imageClass: 'badge-ggr',
+            alt: 'Genomics of Gene Regulation Project'
+        },
+        'mouse-ENCODE': {
+            imageClass: 'badge-mouseencode',
+            alt: 'ENCODE Mouse Project'
+        }
+    },
+
+    render: function() {
+        var project = this.props.project;
+        var projectMeta = this.projectMap[project];
+
+        return (
+            <div>
+                {projectMeta ?
+                    <div className={projectMeta.imageClass}><span className="sr-only">{projectMeta.alt}</span></div>
+                : null}
+            </div>
+        );
+    }
+});

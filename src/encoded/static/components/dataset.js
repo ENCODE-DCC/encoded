@@ -68,6 +68,9 @@ var Dataset = module.exports.Dataset = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -110,10 +113,10 @@ var Dataset = module.exports.Dataset = React.createClass({
                             : <em>None submitted</em> }
                         </dd>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
@@ -203,6 +206,9 @@ var Annotation = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
@@ -310,12 +316,10 @@ var Annotation = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
@@ -381,6 +385,9 @@ var PublicationData = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Render the publication links
+        var referenceList = PubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
@@ -456,12 +463,10 @@ var PublicationData = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {referenceList ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{referenceList}</dd>
                             </div>
                         : null}
                     </dl>
@@ -526,6 +531,9 @@ var Reference = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
@@ -601,12 +609,10 @@ var Reference = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
@@ -671,6 +677,9 @@ var Project = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links
+        var references = PubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
@@ -767,12 +776,10 @@ var Project = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
@@ -844,6 +851,9 @@ var UcscBrowserComposite = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
@@ -926,12 +936,10 @@ var UcscBrowserComposite = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>Publications</dt>
-                                <dd>
-                                    <PubReferenceList values={context.references} />
-                                </dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
@@ -1449,6 +1457,9 @@ var Series = module.exports.Series = React.createClass({
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
 
+        // Get a list of reference links, if any
+        var references = PubReferenceList(context.references);
+
         // Make the series title
         var seriesComponent = this.seriesComponents[context['@type'][0]];
         var seriesTitle = seriesComponent ? seriesComponent.title : 'series';
@@ -1542,10 +1553,10 @@ var Series = module.exports.Series = React.createClass({
                             </dd>
                         </div>
 
-                        {context.references && context.references.length ?
+                        {references ?
                             <div data-test="references">
                                 <dt>References</dt>
-                                <dd><PubReferenceList values={context.references} /></dd>
+                                <dd>{references}</dd>
                             </div>
                         : null}
                     </dl>
