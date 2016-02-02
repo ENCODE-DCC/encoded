@@ -68,6 +68,14 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer"
                 }
             }
         }
