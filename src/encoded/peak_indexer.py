@@ -118,7 +118,7 @@ def index_peaks(uuid, request):
         return
 
     # Index human data for now       
-    if 'hg19' not in context['assembly']:
+    if 'assembly' not in context and 'hg19' not in context['assembly']:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
