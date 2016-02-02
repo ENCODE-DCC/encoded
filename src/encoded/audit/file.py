@@ -498,12 +498,15 @@ def audit_file_read_depth(value, system):
 
     quality_metrics = value.get('quality_metrics')
 
+    excluded_pipelines = ['Raw mapping with no filtration',
+                          'WGBS single-end pipeline - version 2',
+                          'WGBS single-end pipeline']
     if (quality_metrics is None) or (quality_metrics == []):
         '''
         Excluding ChIP-seq - Raw mapping with no filtration BAMs
         '''
         for pipeline in value['analysis_step_version']['analysis_step']['pipelines']:
-            if pipeline['title'] == 'Raw mapping with no filtration':
+            if pipeline['title'] in excluded_pipelines:
                 return
 
         detail = 'ENCODE Processed alignment file {} has no quality_metrics'.format(

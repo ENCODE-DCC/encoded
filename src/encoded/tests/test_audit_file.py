@@ -361,12 +361,26 @@ def test_audit_file_read_depth(testapp, file6, file4, bam_quality_metric, analys
     assert any(error['category'] == 'insufficient read depth' for error in errors_list)
 
 
-def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6, bam_quality_metric,
+def test_audit_file_missing_quality_metrics_tophat_exclusion(testapp, file6,
                                                              analysis_step_run_bam,
                                                              analysis_step_version_bam,
                                                              analysis_step_bam, pipeline_bam,
                                                              software):
     testapp.patch_json(software['@id'], {'title': 'TopHat'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing quality metrics' for error in errors_list)
+
+
+def test_audit_file_missing_quality_metrics_WGBS_exclusion(testapp, file6,
+                                                           analysis_step_run_bam,
+                                                           analysis_step_version_bam,
+                                                           analysis_step_bam, pipeline_bam,
+                                                           software):
+    testapp.patch_json(pipeline_bam['@id'], {'title': 'WGBS single-end pipeline - version 2'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
