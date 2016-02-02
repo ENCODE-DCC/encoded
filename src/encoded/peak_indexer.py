@@ -114,11 +114,11 @@ def index_peaks(uuid, request):
     if 'File' not in context['@type'] or 'dataset' not in context:
         return
 
-    if 'status' not in context and context['status'] != 'released':
+    if 'status' not in context or context['status'] != 'released':
         return
 
     # Index human data for now       
-    if 'assembly' not in context and 'hg19' not in context['assembly']:
+    if 'assembly' not in context or 'hg19' not in context['assembly']:
         return
 
     assay_term_name = get_assay_term_name(context['dataset'], request)
@@ -186,6 +186,7 @@ def index_peaks(uuid, request):
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
+    log.warn('File indexing restarted')
     INDEX = request.registry.settings['contentbase.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
