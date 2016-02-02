@@ -22,11 +22,8 @@ def includeme(config):
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgHubConnect',
-    '?hgHub_do_redirect=on',
-    '&hgHubConnect.remakeTrackHub=on',
-    '&hgHub_do_firstDb=1',
-    '&hubUrl=',
+    'http://genome.ucsc.edu/cgi-bin/hgTracks',
+    '?hubClear=',
 ])
 
 audit_facets = [
@@ -323,14 +320,15 @@ def search_result_actions(request, doc_types, es_results):
     aggregations = es_results['aggregations']
 
     # generate batch hub URL for experiments
-    if doc_types == ['Experiment'] and any(
-            bucket['doc_count'] > 0
-            for bucket in aggregations['assembly']['assembly']['buckets']):
-        search_params = request.query_string.replace('&', ',,')
-        hub = request.route_url('batch_hub',
-                                search_params=search_params,
-                                txt='hub.txt')
-        actions['batch_hub'] = hgConnect + hub
+    if doc_types == ['Experiment']:
+        for bucket in aggregations['assembly']['assembly']['buckets']:
+            if bucket['doc_count'] > 0:
+                assembly = bucket.get("name", "hg19")
+                search_params = request.query_string.replace('&', ',,')
+                hub = request.route_url('batch_hub',
+                                        search_params=search_params,
+                                        txt='hub.txt')
+                actions['batch_hub'][assembly] = hgConnect + hub + '?db=' + assembly
 
     # generate batch download URL for experiments
     if doc_types == ['Experiment'] and any(
