@@ -1,13 +1,24 @@
 from contentbase import (
-    calculated_property,
     collection,
     load_schema,
 )
+from contentbase.resource_views import (
+    item_view,
+    item_view_page,
+)
 from .base import (
+    DELETED,
     Item,
 )
-from pyramid.traversal import (
-    find_root,
+from pyramid.httpexceptions import (
+    HTTPForbidden,
+    HTTPMovedPermanently,
+)
+from pyramid.security import (
+    NO_PERMISSION_REQUIRED,
+)
+from pyramid.view import (
+    view_config,
 )
 
 
@@ -21,21 +32,30 @@ class AntibodyApproval(Item):
     schema = load_schema('encoded:schemas/antibody_approval.json')
     item_type = 'antibody_approval'
 
+    __acl__ = DELETED
+
     def unique_keys(self, properties):
         keys = super(AntibodyApproval, self).unique_keys(properties)
         value = u'{antibody}/{target}'.format(**properties)
         keys.setdefault('antibody_approval:lot_target', []).append(value)
         return keys
 
-    # trigger redirect to antibody_lot
-    @calculated_property(name='@id', schema={
-        "type": "string",
-    })
-    def jsonld_id(self, antibody):
-        return antibody
 
-    # Use /antibodies/{uuid} as url
-    @property
-    def __parent__(self):
-        root = find_root(self.collection)
-        return root.by_item_type['antibody_lot']
+@view_config(context=AntibodyApproval, permission=NO_PERMISSION_REQUIRED,
+             request_method='GET', name='page')
+def antibody_approval_page_view(context, request):
+    if 'antibodies' in request.traversed:
+        obj = request.embed(request.resource_path(context), '@@object')
+        qs = request.query_string
+        location = obj['antibody'] + ('?' if qs else '') + qs
+        raise HTTPMovedPermanently(location=location)
+    if request.has_permission('view'):
+        return item_view_page(context, request)
+    raise HTTPForbidden()
+
+
+@view_config(context=AntibodyApproval, permission=NO_PERMISSION_REQUIRED,
+             request_method='GET')
+def antibody_approval_view(context, request):
+    # XXX Should item_view be registered with NO_PERMISSION_REQUIRED?
+    return item_view(context, request)
