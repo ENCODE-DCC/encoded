@@ -15,12 +15,8 @@ var Dbxref = module.exports.Dbxref = function (props) {
     }
 
     // Handle two different kinds of GEO -- GSM/GSE vs SAMN
-    if (prefix === 'GEO') {
-        var samn = local.match(/SAMN(\d+)/);
-        if (samn) {
-            prefix = 'GEOSAMN';
-            local = samn[1];
-        }
+    if (prefix === 'GEO' && local.substr(0, 4) === 'SAMN') {
+        prefix = 'GEOSAMN';
     }
 
     var base = prefix && globals.dbxref_prefix_map[prefix];

@@ -310,7 +310,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 </div>
                             : null}
 
-                            {context.dbxrefs.length ?
+                            {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="externalresources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
@@ -587,7 +587,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                         </div>
                     : null}
 
-                    {context.dbxrefs.length ?
+                    {context.dbxrefs && context.dbxrefs.length ?
                         <div data-test="external-resources">
                             <dt>External resources</dt>
                             <dd><DbxrefList values={context.dbxrefs} /></dd>
@@ -703,7 +703,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         </section>
                     : null}
 
-                    {context.dbxrefs.length ?
+                    {context.dbxrefs && context.dbxrefs.length ?
                         <div data-test="external-resources">
                             <dt>External resources</dt>
                             <dd><DbxrefList values={context.dbxrefs} /></dd>
@@ -814,7 +814,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     : null}
 
-                    {context.dbxrefs.length ?
+                    {context.dbxrefs && context.dbxrefs.length ?
                         <div data-test="external-resources">
                             <dt>External resources</dt>
                             <dd><DbxrefList values={context.dbxrefs} /></dd>
