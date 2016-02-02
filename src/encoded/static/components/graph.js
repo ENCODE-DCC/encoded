@@ -195,12 +195,13 @@ var Graph = module.exports.Graph = React.createClass({
         var g = new dagreD3.graphlib.Graph({multigraph: true, compound: true})
             .setGraph({rankdir: this.state.verticalGraph ? 'TB' : 'LR'})
             .setDefaultEdgeLabel(function() { return {}; });
+        var render = new dagreD3.render();
+        render(svg.select('g'), g);
 
         // Convert from given node architecture to the dagre nodes and edges
         this.convertGraph(this.props.graph, g);
 
         // Run the renderer. This is what draws the final graph.
-        var render = new dagreD3.render();
         render(svg.select('g'), g);
 
         // Dagre-D3 has a width and height for the graph.
