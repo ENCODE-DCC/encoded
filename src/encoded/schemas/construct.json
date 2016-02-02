@@ -50,8 +50,7 @@
             "description": "The type of sequence expressed from the construct.",
             "type": "string",
             "enum": [
-                "fusion protein",
-                "zinc-finger knockout"
+                "fusion protein"
             ]
         },
         "description": {
