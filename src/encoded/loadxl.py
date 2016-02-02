@@ -78,6 +78,18 @@ ORDER = [
     'page'
 ]
 
+IS_ATTACHMENT = [
+    'attachment',
+    'IDR_plot_true',
+    'IDR_plot_rep1_pr',
+    'IDR_plot_rep2_pr',
+    'IDR_plot_pool_pr',
+    'IDR_parameters_true',
+    'IDR_parameters_rep1_pr',
+    'IDR_parameters_rep2_pr',
+    'IDR_parameters_pool_pr'
+]
+
 ##############################################################################
 # Pipeline components
 #
@@ -169,18 +181,18 @@ def skip_rows_with_all_falsey_value(*keys):
     return component
 
 
-def add_attachment(docsdir):
+def add_attachments(docsdir):
     def component(dictrows):
         for row in dictrows:
-            filename = row.get('attachment', None)
-            if filename is None:
-                yield row
-                continue
-            try:
-                path = find_doc(docsdir, filename)
-                row['attachment'] = attachment(path)
-            except ValueError as e:
-                row['_errors'] = repr(e)
+            for attachment_property in IS_ATTACHMENT:
+                filename = row.get(attachment_property, None)
+                if filename is None:
+                    continue
+                try:
+                    path = find_doc(docsdir, filename)
+                    row[attachment_property] = attachment(path)
+                except ValueError as e:
+                    row['_errors'] = repr(e)
             yield row
 
     return component
@@ -504,7 +516,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'mouse_life_stage',
             # 'flowcell_details.machine',
         ),
-        add_attachment(docsdir),
+        add_attachments(docsdir),
     ]
     if phase == 1:
         method = 'POST'
