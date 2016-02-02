@@ -832,6 +832,14 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if value['lab'] != '/labs/encode-processing-pipeline/':
         return
 
+    '''
+    Excluding unreplicated experiments
+    '''
+    if 'dataset' in value and\
+       'replication_type' in value['dataset'] and \
+       value['dataset']['replication_type'] == 'unreplicated':
+        return
+
     if 'analysis_step_version' not in value:
         detail = 'ENCODE Processed gene quantification file {} has no analysis step version'.format(
             value['@id'])
@@ -852,14 +860,6 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     quality_metrics = value.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
-        '''
-        Excluding unreplicated experiments
-        '''
-        if 'dataset' in value and\
-           'replication_type' in value['dataset'] and \
-           value['dataset']['replication_type'] == 'unreplicated':
-            return
-
         detail = 'ENCODE Processed gene quantification file {} has no quality_metrics'.format(
             value['@id'])
         yield AuditFailure('missing quality metrics', detail, level='DCC_ACTION')
