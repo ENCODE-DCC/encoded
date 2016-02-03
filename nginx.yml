@@ -1,6 +1,7 @@
 #cloud-config
 
-# Launch instance with network interfaces configured to the local IP addresses we references in the config.
+# Launch instance with a network interface configured to the local IP addresses we references in the config.
+# Specify availability zone as we have a different subnet in each one.
 # $ aws --profile production ec2 run-instances --user-data file://nginx.yml --iam-instance-profile Name="proxy" --image-id ami-5189a661 --instance-type t2.medium --region us-west-2 --placement AvailabilityZone=us-west-2c --network-interfaces '[{"DeviceIndex": 0, "Groups": ["sg-4ae7be2f"], "SubnetId": "subnet-201d1766", "PrivateIpAddresses": [{"PrivateIpAddress": "172.31.2.70", "Primary": true}, {"PrivateIpAddress": "172.31.2.78", "Primary": false}, {"PrivateIpAddress": "172.31.2.79", "Primary": false}]}]'
 
 # Choose instance size based on network performance required.
@@ -37,7 +38,7 @@ runcmd:
 - aws --region us-west-2 s3 cp s3://encoded-conf-proxy/ssl.tgz ssl.tgz
 - mkdir -p /etc/nginx/ssl
 - tar -zxf ssl.tgz --directory /etc/nginx/ssl
-# Generate a new (takes a few minutes.)
+# Generate a big prime number for DH SSL (takes a few minutes.)
 - openssl dhparam 2048 -out /etc/nginx/ssl/dhparam.pem
 - chmod 600 /etc/nginx/ssl/dhparam.pem
 - curl -o /etc/nginx/nginx.conf https://raw.githubusercontent.com/ENCODE-DCC/encoded/master/encode-proxy-nginx.conf
