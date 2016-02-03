@@ -939,12 +939,20 @@ var AuditMixin = audit.AuditMixin;
                                             </span>
                                         : null}
 
-                                        {context['batch_hub'] ?
-                                            <span className="pull-right">
-                                                <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
-                                                   href={context['batch_hub']}>{batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'}</a>&nbsp;
-                                            </span>
-                                        :null}
+                                 {context['batch_hub'] ?
+                                    <span className="pull-right">
+                                        {Object.keys(context['batch_hub']).map(function(assembly) {
+                                            return (
+                                                <span>
+                                                    <a disabled={batch_hub_disabled} data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['batch_hub'][assembly]}>
+                                                        {batch_hub_disabled ? 'Filter to 500 to visualize' :'Visualize'+' '+ assembly}
+                                                    </a>
+                                                    &nbsp;
+                                                </span>
+                                            );
+                                        })}
+                                    </span>
+                                : null}
                                     </h4>
                                 :
                                     <h4>{context['notification']}</h4>

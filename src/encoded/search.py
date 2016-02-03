@@ -323,12 +323,12 @@ def search_result_actions(request, doc_types, es_results):
     if doc_types == ['Experiment']:
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
-                assembly = bucket.get("name", "hg19")
+                assembly = bucket['key']
                 search_params = request.query_string.replace('&', ',,')
                 hub = request.route_url('batch_hub',
                                         search_params=search_params,
                                         txt='hub.txt')
-                actions['batch_hub'][assembly] = hgConnect + hub + '?db=' + assembly
+                actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + assembly
 
     # generate batch download URL for experiments
     if doc_types == ['Experiment'] and any(
