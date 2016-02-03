@@ -361,7 +361,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <FetchedData>
                     <Param name="data" url={dataset.unreleased_files_url(context)} />
-                    <ExperimentGraph context={context} />
+                    <ExperimentGraph context={context} session={this.context.session} />
                 </FetchedData>
 
                 {context.files.length ?
@@ -865,7 +865,7 @@ function graphException(message, file0, file1) {
 module.exports.graphException = graphException;
 
 
-var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId, files, filterAssembly, filterAnnotation) {
+var assembleGraph = module.exports.assembleGraph = function(context, session, infoNodeId, files, filterAssembly, filterAnnotation) {
 
     // Calculate a step ID from a file's derived_from array
     function _derivedFileIds(file) {
@@ -1034,7 +1034,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // Process the contributing files array
     var allContributing = {};
     allContributingArray.forEach(contributingFile => {
-        // Convert array of contributing files to a keyed array to help with searching later
+        // Convert array of contributing files to a keyed object to help with searching later
         contributingFile.missing = false;
         var contributingFileId = contributingFile['@id'];
         allContributing[contributingFileId] = contributingFile;
@@ -1220,13 +1220,25 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             }
 
             // Add file to the graph as a node
-            jsonGraph.addNode(fileNodeId, file.title + ' (' + file.output_type + ')', {
-                cssClass: 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : ''),
+            var fileNodeLabel, fileCssClass, fileRef;
+            var loggedIn = session && session['auth.userid'];
+            if (fileContributed && fileContributed.status !== 'released' && !loggedIn) {
+                // A contributed file isn't released and we're not logged in
+                fileNodeLabel = 'Unreleased';
+                fileCssClass = 'pipeline-node-file contributing error' + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = null;
+            } else {
+                fileNodeLabel = file.title + ' (' + file.output_type + ')';
+                fileCssClass = 'pipeline-node-file' + (fileContributed ? ' contributing' : '') + (infoNodeId === fileNodeId ? ' active' : '');
+                fileRef = file;
+            }
+            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                cssClass: fileCssClass,
                 type: 'File',
                 shape: 'rect',
                 cornerRadius: 16,
                 parentNode: replicateNode,
-                ref: file
+                ref: fileRef
             }, metricsInfo);
 
             // If the file has an analysis step, prepare it for graph insertion
@@ -1335,8 +1347,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
     },
 
     render: function() {
-        var context = this.props.context;
-        var data = this.props.data;
+        var {context, session, data} = this.props;
         var items = data ? data['@graph'] : [];
         var files = context.files.concat(items);
 
@@ -1345,7 +1356,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
             // Build the graph; place resulting graph in this.jsonGraph
             var filterOptions = {};
             try {
-                this.jsonGraph = assembleGraph(context, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
+                this.jsonGraph = assembleGraph(context, session, this.state.infoNodeId, files, this.state.selectedAssembly, this.state.selectedAnnotation);
             } catch(e) {
                 this.jsonGraph = null;
                 console.warn(e.message + (e.file0 ? ' -- file0:' + e.file0 : '') + (e.file1 ? ' -- file1:' + e.file1: ''));
@@ -1501,7 +1512,7 @@ var FileDetailView = function(node) {
             </dl>
         );
     } else {
-        return null;
+        return <p className="browser-error">No information available</p>;
     }
 };
 
