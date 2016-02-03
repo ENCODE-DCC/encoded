@@ -289,8 +289,8 @@ def region_search(context, request):
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
-        format_results(request, es_results)
-        format_facets(es_results, _FACETS)
+        result['@graph'] = format_results(request, es_results)
+        result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
             result['notification'] = 'Success'
             result['total'] = es_results['hits']['total']
