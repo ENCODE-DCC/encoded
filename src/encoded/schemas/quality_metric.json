@@ -56,8 +56,7 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "text/plain",
-                        "image/png"
+                        "text/plain"
                     ]
                 },
                 "size": {
@@ -68,14 +67,6 @@
                     "format": "md5sum",
                     "type": "string",
                     "title": "MD5sum"
-                },
-                "width": {
-                    "title": "Image width",
-                    "type": "integer"
-                },
-                "height": {
-                    "title": "Image height",
-                    "type": "integer"
                 }
             }
         }
