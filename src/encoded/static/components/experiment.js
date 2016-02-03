@@ -76,6 +76,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.summary : null;
             }
         },
+        'biosample_accession': {
+            title: 'Biosample',
+            getValue: replicate => { return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.accession : null; }
+        },
         'antibody': {
             title: 'Antibody',
             getValue: function(replicate) {
