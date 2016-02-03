@@ -1005,7 +1005,7 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
         }
 
         // File is derived; collect any QC info that applies to this file
-        if (file.quality_metrics) {
+        if (file.quality_metrics && file.quality_metrics.length) {
             var matchingQc = [];
 
             // Search file's quality_metrics array to find one with a quality_metric_of field referring to this file.
