@@ -869,6 +869,7 @@ def audit_file_mad_qc_spearman_correlation(value, system):
     if spearman_correlation is False:
         detail = 'ENCODE Processed gene quantification file {} '.format(value['@id']) + \
                  'has no MAD quality metric'
+
         yield AuditFailure('missing Spearman correlation', detail, level='DCC_ACTION')
         return
 
