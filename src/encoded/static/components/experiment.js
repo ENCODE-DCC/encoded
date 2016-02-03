@@ -900,28 +900,24 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
             return fileList;
         }
 
-        var fileKeys = Object.keys(fileList);
-        for (var i = 0; i < fileKeys.length; i++) {
-            var file = fileList[fileKeys[i]];
+        Object.keys(fileList).forEach(file => {
             var nextFileList;
 
-            if (file) {
-                if (!file.removed) {
-                    // This file gets included. Include everything it derives from
-                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileList = getSubFileList(file.derived_from);
-                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
-                    }
-                } else if (include) {
-                    // Unremove the file if this branch is to be included based on files that derive from it
-                    file.removed = false;
-                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                        nextFileList = getSubFileList(file.derived_from);
-                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
-                    }
+            if (!file.removed) {
+                // This file gets included. Include everything it derives from
+                if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                    nextFileList = getSubFileList(file.derived_from);
+                    processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                }
+            } else if (include) {
+                // Unremove the file if this branch is to be included based on files that derive from it
+                file.removed = false;
+                if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                    nextFileList = getSubFileList(file.derived_from);
+                    processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
                 }
             }
-        }
+        });
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
@@ -930,7 +926,6 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     var allReplicates = {}; // All file's replicates as keys; each key references an array of files
     var allPipelines = {}; // List of all pipelines indexed by step @id
     var allMetricsInfo = []; // List of all QC metrics found attached to files
-    var allContributing = {}; // List of all contributing files
     var fileQcMetrics = {}; // List of all file QC metrics indexed by file ID
     var filterOptions = {}; // List of graph filters; annotations and assemblies
     var stepExists = false; // True if at least one file has an analysis_step
@@ -1030,14 +1025,28 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // At this stage, allFiles, allReplicates, and derivedFromFiles point to the same file objects;
     // allPipelines points to pipelines.
 
-    // Now find contributing files by subtracting original_files from the list of derived_from files.
-    var filteredDerivedFrom = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
-        var found = 
-        return _(context.original_files).find(originalFileId => originalFileId !== derivedFromId);
+    // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
+    // an object keyed by each file's @id. contributingFiles is an array of file objects.
+    var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
+        return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
     });
 
-    console.log('Derived: %o', derivedFromFiles);
-    console.log('Filtered: %o', filteredDerivedFrom);
+    // Convert array of contributing files to a keyed array to help with searching later
+    var allContributing = {};
+    allContributingArray.forEach(contributingFile => {
+        contributingFile.missing = false;
+        var contributingFileId = contributingFile['@id'];
+        allContributing[contributingFileId] = contributingFile;
+
+        // Also add contributing files to the allFiles object
+        if (allFiles[contributingFileId]) {
+            // Contributing file already existed in file array for some reason; use its existing file object
+            allContributing[contributingFileId] = allFiles[contributingFileId];
+        } else {
+            // Seeing contributed file for the first time; save it in allFiles
+            allFiles[contributingFileId] = allContributing[contributingFileId];
+        }
+    });
 
     // Don't draw anything if no files have an analysis_step
     if (!stepExists) {
@@ -1370,7 +1379,7 @@ var ExperimentGraph = module.exports.ExperimentGraph = React.createClass({
                             </Graph>
                         :
                             <div className="panel-full">
-                                <p className="browser-error">Currently selected assembly and genomic annocation hides the graph</p>
+                                <p className="browser-error">Currently selected assembly and genomic annotation hides the graph</p>
                             </div>
                         }
                     </div>
