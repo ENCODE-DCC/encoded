@@ -913,8 +913,8 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                          'value of {}.'.format(mad_value) + \
                          ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                          ' assay in the {} '.format(pipeline['title']) + \
-                         'pipeline, <0.2 is recommended, but a value between ' + \
-                         '0.2 and 0.5 is acceptable for isogenic replicates'
+                         'pipeline, a value <0.2 is recommended, but a value between ' + \
+                         '0.2 and 0.5 is acceptable.'
                 if experiment_replication_type == 'isogenic':
                     if mad_value < 0.5:
                         yield AuditFailure('borderline MAD value', detail,
@@ -929,7 +929,7 @@ def audit_file_mad_qc_spearman_correlation(value, system):
                              'value of {}.'.format(mad_value) + \
                              ' For gene quantification files from an {}'.format(experiment_replication_type) + \
                              ' assay in the {} '.format(pipeline['title']) + \
-                             'pipeline, <0.5 is recommended for anisogenic replicates'
+                             'pipeline, a value <0.5 is recommended.'
                     yield AuditFailure('borderline MAD value', detail,
                                        level='WARNING')
         return
