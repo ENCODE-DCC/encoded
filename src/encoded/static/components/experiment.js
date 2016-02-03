@@ -70,6 +70,12 @@ var Experiment = module.exports.Experiment = React.createClass({
     replicateColumns: {
         'biological_replicate_number': {title: 'Biological replicate'},
         'technical_replicate_number': {title: 'Technical replicate'},
+        'summary': {
+            title: 'Summary',
+            getValue: function(replicate) {
+                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.summary : null;
+            }
+        },
         'antibody': {
             title: 'Antibody',
             getValue: function(replicate) {
@@ -356,10 +362,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                     </div>
                 : null}
-
-                {replicates.map(function (replicate, index) {
-                    return Replicate({replicate: replicate, anisogenic: anisogenic, key: index});
-                })}
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
@@ -667,108 +669,6 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
     }
 
     return components;
-};
-
-
-var Replicate = module.exports.Replicate = function (props) {
-    var replicate = props.replicate;
-    var concentration = replicate.rbns_protein_concentration;
-    var library = replicate.library;
-    var biosample = library && library.biosample;
-
-    // Build biosample summary string
-    var summary;
-    if (biosample) {
-        // Make an array of all the organism summary info to make it easy to comma separate
-        summary = biosampleSummaries([biosample]);
-    }
-
-    return (
-        <div className="panel-replicate" key={props.key}>
-            <h3>{props.anisogenic ? 'Anisogenic' : 'Biological'} replicate - {replicate.biological_replicate_number}</h3>
-            <Panel>
-                <PanelBody>
-                    <dl className="key-value">
-                        <div data-test="techreplicate">
-                            <dt>Technical replicate</dt>
-                            <dd>{replicate.technical_replicate_number}</dd>
-                        </div>
-
-                        {concentration ?
-                            <div data-test="proteinconcentration">
-                                <dt>Protein concentration</dt>
-                                <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd>
-                            </div>
-                        : null}
-
-                        {library ?
-                            <div data-test="library">
-                                <dt>Library</dt>
-                                <dd>{library.accession}</dd>
-                            </div>
-                        : null}
-
-                        {library && library.nucleic_acid_starting_quantity ?
-                            <div data-test="startingquantity">
-                                <dt>Library starting quantity</dt>
-                                <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
-                            </div>
-                        : null}
-
-                        {biosample ?
-                            <div data-test="biosample">
-                                <dt>Biosample</dt>
-                                {biosample ?
-                                    <dd>
-                                        <a href={biosample['@id']}>
-                                            {biosample.accession}
-                                        </a>
-                                        {summary ? <span>{' - '}{summary}</span> : null}
-                                    </dd>
-                                : null}
-                            </div>
-                        : null}
-                    </dl>
-                </PanelBody>
-            </Panel>
-        </div>
-    );
-};
-// Can't be a proper panel as the control must be passed in.
-//globals.panel_views.register(Replicate, 'replicate');
-
-
-var BiosampleTreatments = function(biosamples) {
-    var treatmentTexts = [];
-
-    // Build up array of treatment strings
-    if (biosamples && biosamples.length) {
-        biosamples.forEach(function(biosample) {
-            if (biosample.treatments && biosample.treatments.length) {
-                biosample.treatments.forEach(function(treatment) {
-                    treatmentTexts.push(SingleTreatment(treatment));
-                });
-            }
-        });
-    }
-
-    // Component output of treatment strings
-    if (treatmentTexts.length) {
-        treatmentTexts = _.uniq(treatmentTexts);
-        return (
-            <span>
-                {treatmentTexts.map(function(treatments, i) {
-                    return (
-                        <span key={i}>
-                            {i > 0 ? <span>{','}<br /></span> : null}
-                            {treatments}
-                        </span>
-                    );
-                })}
-            </span>
-        );
-    }
-    return null;
 };
 
 
