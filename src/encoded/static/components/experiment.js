@@ -300,7 +300,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>{context.award.project}</dd>
                             </div>
 
-                            {context.dbxrefs.length ?
+                            {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="external-resources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
