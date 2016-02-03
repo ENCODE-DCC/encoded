@@ -303,7 +303,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 </div>
                             : null}
 
-                            {context.dbxrefs.length ?
+                            {context.dbxrefs && context.dbxrefs.length ?
                                 <div data-test="externalresources">
                                     <dt>External resources</dt>
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
@@ -580,6 +580,13 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                         </div>
                     : null}
 
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                        </div>
+                    : null}
+
                     {references ?
                         <div data-test="references">
                             <dt>References</dt>
@@ -689,6 +696,13 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                         </section>
                     : null}
 
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                        </div>
+                    : null}
+
                     {references ?
                         <div data-test="references">
                             <dt>References</dt>
@@ -790,6 +804,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         <div data-test="strain-name">
                             <dt>Strain name</dt>
                             <dd>{context.strain_name}</dd>
+                        </div>
+                    : null}
+
+                    {context.dbxrefs && context.dbxrefs.length ?
+                        <div data-test="external-resources">
+                            <dt>External resources</dt>
+                            <dd><DbxrefList values={context.dbxrefs} /></dd>
                         </div>
                     : null}
                 </dl>
