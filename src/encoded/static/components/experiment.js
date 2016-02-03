@@ -900,24 +900,28 @@ var assembleGraph = module.exports.assembleGraph = function(context, session, in
             return fileList;
         }
 
-        Object.keys(fileList).forEach(file => {
+        var fileKeys = Object.keys(fileList);
+        for (var i = 0; i < fileKeys.length; i++) {
+            var file = fileList[fileKeys[i]];
             var nextFileList;
 
-            if (!file.removed) {
-                // This file gets included. Include everything it derives from
-                if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                    nextFileList = getSubFileList(file.derived_from);
-                    processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
-                }
-            } else if (include) {
-                // Unremove the file if this branch is to be included based on files that derive from it
-                file.removed = false;
-                if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
-                    nextFileList = getSubFileList(file.derived_from);
-                    processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+            if (file) {
+                if (!file.removed) {
+                    // This file gets included. Include everything it derives from
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                    }
+                } else if (include) {
+                    // Unremove the file if this branch is to be included based on files that derive from it
+                    file.removed = false;
+                    if (file.derived_from && file.derived_from.length && !allContributing[file['@id']]) {
+                        nextFileList = getSubFileList(file.derived_from);
+                        processFiltering(nextFileList, filterAssembly, filterAnnotation, allFiles, allContributing, true);
+                    }
                 }
             }
-        });
+        }
     }
 
     var jsonGraph; // JSON graph object of entire graph; see graph.js
