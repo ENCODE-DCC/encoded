@@ -1026,14 +1026,15 @@ var assembleGraph = module.exports.assembleGraph = function(context, infoNodeId,
     // allPipelines points to pipelines.
 
     // Now find contributing files by subtracting original_files from the list of derived_from files. Note: derivedFromFiles is
-    // an object keyed by each file's @id. contributingFiles is an array of file objects.
+    // an object keyed by each file's @id. allContributingArray is an array of file objects.
     var allContributingArray = _(derivedFromFiles).filter((derivedFromFile, derivedFromId) => {
         return !_(context.original_files).any(originalFileId => originalFileId === derivedFromId);
     });
 
-    // Convert array of contributing files to a keyed array to help with searching later
+    // Process the contributing files array
     var allContributing = {};
     allContributingArray.forEach(contributingFile => {
+        // Convert array of contributing files to a keyed array to help with searching later
         contributingFile.missing = false;
         var contributingFileId = contributingFile['@id'];
         allContributing[contributingFileId] = contributingFile;
