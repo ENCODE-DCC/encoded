@@ -162,6 +162,7 @@
             "type": "object",
             "additionalProperties": false,
             "formInput": "file",
+            "attachment": true,
             "properties": {
                 "download": {
                     "title": "File Name",
