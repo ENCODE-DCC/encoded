@@ -5,16 +5,13 @@ from mimetypes import guess_type
 from PIL import Image
 from pyramid.httpexceptions import (
     HTTPNotFound,
-    HTTPTemporaryRedirect,
 )
 from pyramid.response import Response
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 from urllib.parse import (
-    parse_qs,
     quote,
     unquote,
-    urlparse,
 )
 from contentbase import (
     BLOBS,
@@ -65,10 +62,8 @@ def mimetypes_are_equal(m1, m2):
 class ItemWithAttachment(Item):
     """ Item base class with attachment blob
     """
-    download_property = 'attachment'
 
-    def _process_downloads(self, properties, sheets):
-        prop_name = self.download_property
+    def _process_downloads(self, prop_name, properties, downloads):
         attachment = properties[prop_name]
         href = attachment['href']
 
@@ -76,14 +71,7 @@ class ItemWithAttachment(Item):
             msg = "Expected data URI."
             raise ValidationFailure('body', [prop_name, 'href'], msg)
 
-        properties = properties.copy()
         properties[prop_name] = attachment = attachment.copy()
-
-        if sheets is None:
-            sheets = {}
-        else:
-            sheets = sheets.copy()
-        sheets['downloads'] = downloads = {}
         download_meta = downloads[prop_name] = {}
 
         try:
@@ -146,16 +134,27 @@ class ItemWithAttachment(Item):
         registry = find_root(self).registry
         registry[BLOBS].store_blob(data, download_meta)
 
-        attachment['href'] = '@@download/%s/%s' % (
-            prop_name, quote(filename))
-
-        return properties, sheets
+        attachment['href'] = '@@download/%s/%s' % (prop_name, quote(filename))
 
     def _update(self, properties, sheets=None):
-        prop_name = self.download_property
-        attachment = properties.get(prop_name, {})
-        href = attachment.get('href', None)
-        if href is not None:
+        changed = []
+        unchanged = []
+        removed = []
+        for prop_name, prop in self.schema['properties'].items():
+            if not prop.get('attachment', False):
+                continue
+
+            if prop_name not in properties:
+                if prop_name in self.propsheets.get('downloads', {}):
+                    removed.append(prop_name)
+                continue
+
+            attachment = properties[prop_name]
+            if 'href' not in attachment:
+                msg = "Expected data uri or existing uri."
+                raise ValidationFailure('body', [prop_name, 'href'], msg)
+
+            href = attachment['href']
             if href.startswith('@@download/'):
                 try:
                     existing = self.properties[prop_name]['href']
@@ -164,8 +163,20 @@ class ItemWithAttachment(Item):
                 if existing != href:
                     msg = "Expected data uri or existing uri."
                     raise ValidationFailure('body', [prop_name, 'href'], msg)
+                unchanged.append(prop_name)
             else:
-                properties, sheets = self._process_downloads(properties, sheets)
+                changed.append(prop_name)
+
+        if changed or removed:
+            properties = properties.copy()
+            sheets = {} if sheets is None else sheets.copy()
+            sheets['downloads'] = downloads = {}
+
+            for prop_name in unchanged:
+                downloads[prop_name] = self.propsheets['downloads'][prop_name]
+
+            for prop_name in changed:
+                self._process_downloads(prop_name, properties, downloads)
 
         super(ItemWithAttachment, self)._update(properties, sheets)
 

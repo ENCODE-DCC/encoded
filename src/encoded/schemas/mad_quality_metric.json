@@ -23,6 +23,7 @@
             "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
+            "attachment": true,
             "formInput": "file",
             "properties": {
                 "download": {
