@@ -285,7 +285,7 @@ def region_search(context, request):
     log.warn(file_uuids)
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
-        query = get_filtered_query('', [], set(), principals, [])
+        query = get_filtered_query('', [], set(), principals, ['Item'])
         del query['query']
         query['filter']['and']['filters'].append({
             'terms': {
