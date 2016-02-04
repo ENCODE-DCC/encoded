@@ -51,6 +51,17 @@ class TestingDownload(ItemWithAttachment):
         'properties': {
             'attachment': {
                 'type': 'object',
+                'attachment': True,
+                'properties': {
+                    'type': {
+                        'type': 'string',
+                        'enum': ['image/png'],
+                    }
+                }
+            },
+            'attachment2': {
+                'type': 'object',
+                'attachment': True,
                 'properties': {
                     'type': {
                         'type': 'string',
