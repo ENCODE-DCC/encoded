@@ -282,7 +282,6 @@ def region_search(context, request):
     result['notification'] = 'No results found'
 
 
-    log.warn(file_uuids)
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
         query = get_filtered_query('', [], set(), principals, ['Item'])
@@ -294,12 +293,11 @@ def region_search(context, request):
         })
         used_filters = set_filters(request, query, result)
         used_filters['files.uuid'] = file_uuids
-        set_facets(_FACETS, used_filters, query, principals)
+        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Item'])
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
 
-        log.warn(pprint.pformat(es_results))
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
