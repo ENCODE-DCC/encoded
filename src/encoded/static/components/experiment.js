@@ -347,9 +347,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </header>
                 <AuditDetail context={context} id="experiment-audit" />
                 <Panel addClasses="data-display">
-                    <PanelBody>
+                    <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
                             <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
                                     <div data-test="assay">
                                         <dt>Assay</dt>
@@ -433,6 +434,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
 
                             <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                </div>
                                 <dl className="key-value">
                                     <div data-test="lab">
                                         <dt>Lab</dt>
@@ -486,7 +491,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
                                 </dl>
-                                <ProjectBadge award={context.award} center />
                             </div>
                         </div>
                     </PanelBody>
