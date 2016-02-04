@@ -589,12 +589,8 @@ var AuditMixin = audit.AuditMixin;
 
     // If the given term is selected, return the href for the term
     function termSelected(term, field, filters) {
-        for (var filter in filters) {
-            if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-                return url.parse(filters[filter]['remove']).search;
-            }
-        }
-        return null;
+        var matchedFilter = _(filters).find(filter => filter.field === field && filter.term === term);
+        return matchedFilter ? url.parse(matchedFilter.remove).search : null;
     }
 
     // Determine whether any of the given terms are selected
@@ -666,16 +662,6 @@ var AuditMixin = audit.AuditMixin;
             return {width: 'inherit'};
         },
 
-        getInitialState: function () {
-            return {
-                facetOpen: false
-            };
-        },
-
-        handleClick: function () {
-            this.setState({facetOpen: !this.state.facetOpen});
-        },
-
         render: function() {
             var {facet, filters} = this.props;
             var hideTypeFacet = false; // True if we need to hide the 'Data type' facet.
@@ -703,31 +689,13 @@ var AuditMixin = audit.AuditMixin;
                 var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
                 var moreTermSelected = selectedTermCount > 0;
                 var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
-                var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
-                var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
                 return (
                     <div className="facet" hidden={terms.length === 0} style={{width: this.props.width}}>
                         <h5>{title}</h5>
                         <ul className="facet-list nav">
                             <div>
-                                {terms.slice(0, 5).map(function (term) {
-                                    return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                                }.bind(this))}
+                                {terms.map(term => <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />)}
                             </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className={moreSecClass}>
-                                    {moreTerms.map(function (term) {
-                                        return <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />;
-                                    }.bind(this))}
-                                </div>
-                            : null}
-                            {(terms.length > 5 && !moreTermSelected) ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                        </small>
-                                </label>
-                            : null}
                         </ul>
                     </div>
                 );
