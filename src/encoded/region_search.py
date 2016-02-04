@@ -289,7 +289,7 @@ def region_search(context, request):
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
-        result['@graph'] = format_results(request, es_results)
+        result['@graph'] = list(format_results(request, es_results))
         result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
             result['notification'] = 'Success'
@@ -331,5 +331,5 @@ def suggest(context, request):
         return {}
     else:
         result['@id'] = '/suggest/' + ('?q=' + text)
-        result['@graph'] = results['suggester'][0]['options']
+        result['@graph'] = [x for x in results['suggester'][0]['options'] if '(homo sapiens)' in x['text']]
         return result
