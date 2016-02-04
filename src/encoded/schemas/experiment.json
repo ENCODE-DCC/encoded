@@ -98,7 +98,11 @@
         }
     },
     "facets": {
-        "assay_name": {
+        "assay_slims": {
+            "title": "Assay category",
+            "type": "array"
+        },
+        "assay_title": {
             "title": "Assay"
         },
         "award.project": {
@@ -122,10 +126,6 @@
         },
         "organ_slims": {
             "title": "Organ"
-        },
-        "assay_slims": {
-            "title": "Assay category",
-            "type": "array"
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage"

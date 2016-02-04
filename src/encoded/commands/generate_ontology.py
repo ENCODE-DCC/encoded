@@ -107,23 +107,25 @@ organ_slims = {
 }
 
 assay_slims = {
-    ## Note shortened synonyms are provided 
-    'OBI:0000634': 'DNA methylation', ## 'DNA methylation profiling'
-    'OBI:0000424': 'transcription', ## 'transcription profiling'
-    'OBI:0001398': 'DNA binding', ## "protein and DNA interaction"
-    'OBI:0001854': 'RNA binding', ## "protein and RNA interaction"
-    'OBI:0001917': '3D chromatin structure', ## 'chromosome conformation identification objective'
-    'OBI:0000870': 'DNA accessibility', ## 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    # Note shortened synonyms are provided
+    'OBI:0000634': 'DNA methylation',  # 'DNA methylation profiling'
+    'OBI:0000424': 'transcription',  # 'transcription profiling'
+    'OBI:0001398': 'DNA binding',  # "protein and DNA interaction"
+    'OBI:0001854': 'RNA binding',  # "protein and RNA interaction"
+    'OBI:0001917': '3D chromatin structure',  # 'chromosome conformation identification objective'
+    'OBI:0000870': 'DNA accessibility',  # 'single-nucleotide-resolution nucleic acid structure mapping assay'
+    'OBI:0001916': 'replication',
+    'OBI:0000435': 'genotyping',
 }
 
 slim_shims = {
-    ## this allows us to manually assign term X to slim Y while waiting for ontology updates
+    # this allows us to manually assign term X to slim Y while waiting for ontology updates
     'assay': {
-        ## DNA accessibility
-        'OBI:0001924': 'DNA accessibility', ##'OBI:0000870',
-        'OBI:0002039': 'DNA accessibility', ##'OBI:0000870',
-        'OBI:0001853': 'DNA accessibility', ##'OBI:0000870',
-        'OBI:0001859': 'DNA accessibility', ##'OBI:0000870',
+        # DNA accessibility
+        'OBI:0001924': 'DNA accessibility',  # 'OBI:0000870',
+        'OBI:0002039': 'DNA accessibility',  # 'OBI:0000870',
+        'OBI:0001853': 'DNA accessibility',  # 'OBI:0000870',
+        'OBI:0001859': 'DNA accessibility',  # 'OBI:0000870',
     }
 
 }
@@ -131,13 +133,13 @@ slim_shims = {
 preferred_name = {
     "NTR:0000762": "shRNA/RNA-seq",
     "NTR:0000763": "siRNA/RNA-seq",
-    "NTR:0003082": "single cell/RNA-seq",
+    "NTR:0003082": "single cell RNA-seq",
     "NTR:0003508": "WGS",
     "OBI:0000626": "WGS",
     "OBI:0001247": "genotyping",
     "OBI:0001332": "DNAme array",
     "OBI:0001335": "microRNA array",
-    "OBI:0001463": "transcriptional array",
+    "OBI:0001463": "expression array",
     "OBI:0001863": "WGBS",
     "OBI:0001923": "MS/MS",
     "OBI:0001271": "RNA-seq",
@@ -564,7 +566,7 @@ def main():
                 except:
                     terms[term_id]['name'] = ''
 
-                terms[term_id]['preferred_name'] = preferred_name.get(term_id, terms[term_id]['name'])
+                terms[term_id]['preferred_name'] = preferred_name.get(term_id, '')
 
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):

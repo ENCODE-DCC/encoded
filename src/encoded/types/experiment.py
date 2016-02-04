@@ -122,7 +122,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         return paths_filtered_by_status(request, replicates)
 
     @calculated_property(condition='assay_term_id', schema={
-        "title": "Assay category",
+        "title": "Assay type",
         "type": "array",
         "items": {
             "type": "string",
@@ -134,10 +134,10 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         return []
 
     @calculated_property(condition='assay_term_id', schema={
-        "title": "Assay name",
+        "title": "Assay title",
         "type": "string",
     })
-    def assay_name(self, registry, assay_term_id, assay_term_name):
+    def assay_title(self, registry, assay_term_id, assay_term_name):
         # This is the preferred name in generate_ontology.py if exists
         if assay_term_id in registry['ontology']:
             return registry['ontology'][assay_term_id].get('preferred_name', assay_term_name)
