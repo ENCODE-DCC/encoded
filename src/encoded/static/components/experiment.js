@@ -121,8 +121,9 @@ var Experiment = module.exports.Experiment = React.createClass({
             return replicate.library && replicate.library.biosample;
         }));
 
-        // Build the text of the Treatment, synchronization, and mutatedGene string arrays
-        var treatments;
+        // Build the text of the Treatment, Synchronization string arrays. Theoretically these could be a part of the
+        // AssayDetails function, but these appear before 'target' so they're out of order.
+        var treatments = {};
         var synchText = [];
         biosamples.map(function(biosample) {
             // Collect treatments
@@ -137,6 +138,43 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
         });
         synchText = synchText && _.uniq(synchText);
+
+        // Create platforms array from file platforms; ignore duplicate platforms
+        var platforms = {};
+        if (context.files && context.files.length) {
+            context.files.forEach(file => {
+                if (file.platform && file.dataset === context['@id']) {
+                    platforms[file.platform['@id']] = file.platform;
+                }
+            });
+        }
+
+        // Add protein concentration units to components array. First determine if all values in all replicates are identical.
+        var firstConcentration = replicates[0].rbns_protein_concentration
+        var firstConcentraitonUnits = replicates[0].rbns_protein_concentration_units;
+        var homogenousConcentrations = _(replicates).all(replicate => {
+            return (replicate.rbns_protein_concentration === firstConcentration) && (replicate.rbns_protein_concentration_units === firstConcentraitonUnits);
+        });
+
+        // Generate the renderings of each concentration line item. Check against undefined explicitly because some real values might by falsy.
+        var concentrationRender = null;
+        if (homogenousConcentrations) {
+            // All values are the same (possibly undefined). Render just one line item or nothing if all are undefined
+            concentrationRender = (firstConcentration !== undefined) ? <span className="line-item">{firstConcentration}<span className="unit">{firstConcentraitonUnits}</span></span> : null;
+        } else {
+            // Not all values are the same
+            concentrationRender = replicates.map(replicate => {
+                if (replicate.rbns_protein_concentration !== undefined) {
+                    return (
+                        <span className="line-item" key={replicate.uuid}>
+                            {replicate.rbns_protein_concentration}
+                            <span className="unit">{replicate.rbns_protein_concentration_units}</span> [{replicate.biological_replicate_number}-{replicate.technical_replicate_number}]
+                        </span>
+                    );
+                }
+                return null;
+            });
+        }
 
         // Generate biosample summaries
         var fullSummaries = biosampleSummaries(biosamples);
@@ -177,9 +215,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var seriesList = [];
         var loggedIn = this.context.session && this.context.session['auth.userid'];
         if (context.related_series && context.related_series.length) {
-            seriesList = _(context.related_series).filter(dataset => {
-                return loggedIn || dataset.status === 'released';
-            });
+            seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
 
         // Set up the breadcrumbs
@@ -240,7 +276,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.assay_term_name}</dd>
                                     </div>
 
-                                    {AssayDetails(context)}
+                                    {context.replication_type ?
+                                        <div data-test="replicationtype">
+                                            <dt>Replication type</dt>
+                                            <dd>{context.replication_type}</dd>
+                                        </div>
+                                    : null}
 
                                     {biosamples.length || context.biosample_term_name ?
                                         <div data-test="biosample-summary">
@@ -249,17 +290,33 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
-                                    {context.biosample_type ?
-                                        <div data-test="biosample-type">
-                                            <dt>Type</dt>
-                                            <dd>{context.biosample_type}</dd>
-                                        </div>
-                                    : null}
-
                                     {context.target ?
                                         <div data-test="target">
                                             <dt>Target</dt>
                                             <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                                        </div>
+                                    : null}
+
+                                    {AssayDetails(replicates)}
+
+                                    {Object.keys(platforms).length ?
+                                        <div data-test="platform">
+                                            <dt>Platform</dt>
+                                            <dd>{Object.keys(platforms).map(platformId => <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>)}</dd>
+                                        </div>
+                                    : null}
+
+                                    {concentrationRender ?
+                                        <div data-test="proteinconcentration">
+                                            <dt>Protein concentration</dt>
+                                            <dd>{concentrationRender}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.biosample_type ?
+                                        <div data-test="biosample-type">
+                                            <dt>Type</dt>
+                                            <dd>{context.biosample_type}</dd>
                                         </div>
                                     : null}
 
@@ -414,7 +471,7 @@ var ControllingExperiments = React.createClass({
 
 
 // Return an array of React components to render into the enclosing panel, given the experiment object in the context parameter
-var AssayDetails = module.exports.AssayDetails = function (context) {
+var AssayDetails = module.exports.AssayDetails = function (replicates) {
 
     // Little utility to convert a replicate to a unique index we can use for arrays (like libraryValues below)
     function replicateToIndex(replicate) {
@@ -422,17 +479,9 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
     }
 
     // No replicates, so no assay entries
-    if (!context.replicates.length) {
+    if (!replicates.length) {
         return [];
     }
-
-    // Sort the replicates first by biological replicate number, then by technical replicate number
-    var replicates = context.replicates.sort(function(a, b) {
-        if (b.biological_replicate_number === a.biological_replicate_number) {
-            return a.technical_replicate_number - b.technical_replicate_number;
-        }
-        return a.biological_replicate_number - b.biological_replicate_number;
-    });
 
     // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
     var libraryValues = {
@@ -444,7 +493,6 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
         fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
         library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
-        treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'},
         spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
     };
 
@@ -549,20 +597,15 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         var firstValue = libraryValues[key].values[firstBiologicalReplicate];
 
         // See if all values in the values array are identical. Treat 'undefined' as a value
-        if (_(Object.keys(libraryValues[key].values)).all(replicateId => {
-            var value = libraryValues[key].values[replicateId];
-            return value === firstValue;
-        })) {
+        if (_(Object.keys(libraryValues[key].values)).all(replicateId => libraryValues[key].values[replicateId] === firstValue)) {
             // All values for the library value are the same. Set the 'value' field with that value.
             libraryValues[key].value = firstValue;
 
             // If the resulting value is undefined, then all values are undefined for this key. Null out the values array.
             if (firstValue === undefined) {
                 libraryValues[key].values = [];
-            }
-
-            // If the current key shows a rendering component, call it and save the resulting React object for later rendering.
-            if (libraryComponents[key]) {
+            } else if (libraryComponents[key]) {
+                // The current key shows a rendering component, call it and save the resulting React object for later rendering.
                 libraryValues[key].component[firstBiologicalReplicate] = libraryComponents[key](replicates[0].library);
             }
         } else {
@@ -613,65 +656,7 @@ var AssayDetails = module.exports.AssayDetails = function (context) {
         return null;
     });
 
-    // Now handle a couple more complex properties to display for assay details.
-
-    // Create platforms array from file platforms; ignore duplicate platforms
-    var platforms = {};
-    if (context.files && context.files.length) {
-        context.files.forEach(function(file) {
-            if (file.platform && file.dataset === context['@id']) {
-                platforms[file.platform['@id']] = file.platform;
-            }
-        });
-    }
-
-    // Add platforms to the components array
-    var platformKeys = Object.keys(platforms);
-    if (platformKeys.length) {
-        components.push(
-            <div data-test="platform">
-                <dt>Platform</dt>
-                <dd>{platformKeys.map(platformId => <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>)}</dd>
-            </div>
-        );
-    }
-
-    // Add protein concentration units to components array. First determine if all values in all replicates identical.
-    var firstConcentration = replicates[0].rbns_protein_concentration
-    var firstConcentraitonUnits = replicates[0].rbns_protein_concentration_units;
-    var homogenousConcentrations = _(replicates).all(replicate => {
-        return (replicate.rbns_protein_concentration === firstConcentration) && (replicate.rbns_protein_concentration_units === firstConcentraitonUnits);
-    });
-
-    // Generate the renderings of each concentration line item. Check against undefined explicitly because some real values might by falsy.
-    var concentrationRender = null;
-    if (homogenousConcentrations) {
-        // All values are the same (possibly undefined). Render just one line item
-        concentrationRender = (firstConcentration !== undefined) ? <span className="line-item">{firstConcentration}<span className="unit">{firstConcentraitonUnits}</span></span> : null;
-    } else {
-        // Not all values are the same
-        concentrationRender = replicates.map(replicate => {
-            if (replicate.rbns_protein_concentration !== undefined) {
-                return (
-                    <span className="line-item" key={replicate.uuid}>
-                        {replicate.rbns_protein_concentration}
-                        <span className="unit">{replicate.rbns_protein_concentration_units}</span> [{replicate.biological_replicate_number}-{replicate.technical_replicate_number}]
-                    </span>
-                );
-            }
-        });
-    }
-
-    // Add the concentration rendering to the components array
-    if (concentrationRender) {
-        components.push(
-            <div data-test="proteinconcentration">
-                <dt>Protein concentration</dt>
-                <dd>{concentrationRender}</dd>
-            </div>
-       );
-    }
-
+    // Finally, return the array of JSX renderings of all assay details.
     return components;
 };
 
