@@ -149,110 +149,112 @@ var Experiment = module.exports.Experiment = React.createClass({
             });
         }
 
-        // Add protein concentration units to components array. First determine if all values in all replicates are identical.
-        var firstConcentration = replicates[0].rbns_protein_concentration
-        var firstConcentraitonUnits = replicates[0].rbns_protein_concentration_units;
-        var homogenousConcentrations = _(replicates).all(replicate => {
-            return (replicate.rbns_protein_concentration === firstConcentration) && (replicate.rbns_protein_concentration_units === firstConcentraitonUnits);
-        });
-
-        // Generate the renderings of each concentration line item. Check against undefined explicitly because some real values might by falsy.
-        var concentrationRender = null;
-        if (homogenousConcentrations) {
-            // All values are the same (possibly undefined). Render just one line item or nothing if all are undefined
-            concentrationRender = (firstConcentration !== undefined) ? <span className="line-item">{firstConcentration}<span className="unit">{firstConcentraitonUnits}</span></span> : null;
-        } else {
-            // Not all values are the same
-            concentrationRender = replicates.map(replicate => {
-                if (replicate.rbns_protein_concentration !== undefined) {
-                    return (
-                        <span className="line-item" key={replicate.uuid}>
-                            {replicate.rbns_protein_concentration}
-                            <span className="unit">{replicate.rbns_protein_concentration_units}</span> [{replicate.biological_replicate_number}-{replicate.technical_replicate_number}]
-                        </span>
-                    );
-                }
-                return null;
+        if (replicates && replicates.length) {
+            // Add protein concentration units to components array. First determine if all values in all replicates are identical.
+            var firstConcentration = replicates[0].rbns_protein_concentration
+            var firstConcentraitonUnits = replicates[0].rbns_protein_concentration_units;
+            var homogenousConcentrations = _(replicates).all(replicate => {
+                return (replicate.rbns_protein_concentration === firstConcentration) && (replicate.rbns_protein_concentration_units === firstConcentraitonUnits);
             });
-        }
 
-        // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
-        var libraryValues1 = {
-            treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'}
-        };
-        var libraryValues2 = {
-            nucleic_acid_term_name:         {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',         test: 'nucleicacid'},
-            depleted_in_term_name:          {values: {}, value: undefined, component: {}, title: 'Depleted in',               test: 'depletedin'},
-            nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
-            size_range:                     {values: {}, value: undefined, component: {}, title: 'Size range',                test: 'sizerange'},
-            lysis_method:                   {values: {}, value: undefined, component: {}, title: 'Lysis method',              test: 'lysismethod'},
-            extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
-            fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
-            library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
-            spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
-        };
-
-        // For any library properties that aren't simple values, put functions to process them into simple values in this object,
-        // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
-        // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
-        var librarySpecials1 = {
-            treatments: function(library) {
-                var treatments = library.treatments;
-                if (treatments && treatments.length) {
-                    return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
-                }
-                return undefined;
+            // Generate the renderings of each concentration line item. Check against undefined explicitly because some real values might by falsy.
+            var concentrationRender = null;
+            if (homogenousConcentrations) {
+                // All values are the same (possibly undefined). Render just one line item or nothing if all are undefined
+                concentrationRender = (firstConcentration !== undefined) ? <span className="line-item">{firstConcentration}<span className="unit">{firstConcentraitonUnits}</span></span> : null;
+            } else {
+                // Not all values are the same
+                concentrationRender = replicates.map(replicate => {
+                    if (replicate.rbns_protein_concentration !== undefined) {
+                        return (
+                            <span className="line-item" key={replicate.uuid}>
+                                {replicate.rbns_protein_concentration}
+                                <span className="unit">{replicate.rbns_protein_concentration_units}</span> [{replicate.biological_replicate_number}-{replicate.technical_replicate_number}]
+                            </span>
+                        );
+                    }
+                    return null;
+                });
             }
-        };
-        var librarySpecials2 = {
-            nucleic_acid_starting_quantity: function(library) {
-                var quantity = library.nucleic_acid_starting_quantity;
-                if (quantity) {
-                    return quantity + library.nucleic_acid_starting_quantity_units;
-                }
-                return undefined;
-            },
-            depleted_in_term_name: function(library) {
-                var terms = library.depleted_in_term_name;
-                if (terms && terms.length) {
-                    return terms.sort().join(', ');
-                }
-                return undefined;
-            },
-            spikeins_used: function(library) {
-                var spikeins = library.spikeins_used;
 
-                // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
-                if (spikeins && spikeins.length) {
-                    return spikeins.map(spikein => spikein.accession).sort().join();
+            // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
+            var libraryValues1 = {
+                treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'}
+            };
+            var libraryValues2 = {
+                nucleic_acid_term_name:         {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',         test: 'nucleicacid'},
+                depleted_in_term_name:          {values: {}, value: undefined, component: {}, title: 'Depleted in',               test: 'depletedin'},
+                nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
+                size_range:                     {values: {}, value: undefined, component: {}, title: 'Size range',                test: 'sizerange'},
+                lysis_method:                   {values: {}, value: undefined, component: {}, title: 'Lysis method',              test: 'lysismethod'},
+                extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
+                fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
+                library_size_selection_method:  {values: {}, value: undefined, component: {}, title: 'Size selection method',     test: 'sizeselectionmethod'},
+                spikeins_used:                  {values: {}, value: undefined, component: {}, title: 'Spike-ins datasets',        test: 'spikeins'}
+            };
+
+            // For any library properties that aren't simple values, put functions to process them into simple values in this object,
+            // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
+            // momentarily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+            var librarySpecials1 = {
+                treatments: function(library) {
+                    var treatments = library.treatments;
+                    if (treatments && treatments.length) {
+                        return treatments.map(treatment => treatment.treatment_term_name).sort().join(', ');
+                    }
+                    return undefined;
                 }
-                return undefined;
-            }
-        };
-        var libraryComponents2 = {
-            nucleic_acid_starting_quantity: function(library) {
-                if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
-                    return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
+            };
+            var librarySpecials2 = {
+                nucleic_acid_starting_quantity: function(library) {
+                    var quantity = library.nucleic_acid_starting_quantity;
+                    if (quantity) {
+                        return quantity + library.nucleic_acid_starting_quantity_units;
+                    }
+                    return undefined;
+                },
+                depleted_in_term_name: function(library) {
+                    var terms = library.depleted_in_term_name;
+                    if (terms && terms.length) {
+                        return terms.sort().join(', ');
+                    }
+                    return undefined;
+                },
+                spikeins_used: function(library) {
+                    var spikeins = library.spikeins_used;
+
+                    // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
+                    if (spikeins && spikeins.length) {
+                        return spikeins.map(spikein => spikein.accession).sort().join();
+                    }
+                    return undefined;
                 }
-                return null;
-            },
-            spikeins_used: function(library) {
-                var spikeins = library.spikeins_used;
-                if (spikeins && spikeins.length) {
-                    return (
-                        <span>
-                            {spikeins.map(function(dataset, i) {
-                                return (
-                                    <span key={dataset.uuid}>
-                                        {i > 0 ? ', ' : ''}
-                                        <a href={dataset['@id']}>{dataset.accession}</a>
-                                    </span>
-                                );
-                            })}
-                        </span>
-                    );
+            };
+            var libraryComponents2 = {
+                nucleic_acid_starting_quantity: function(library) {
+                    if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
+                        return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
+                    }
+                    return null;
+                },
+                spikeins_used: function(library) {
+                    var spikeins = library.spikeins_used;
+                    if (spikeins && spikeins.length) {
+                        return (
+                            <span>
+                                {spikeins.map(function(dataset, i) {
+                                    return (
+                                        <span key={dataset.uuid}>
+                                            {i > 0 ? ', ' : ''}
+                                            <a href={dataset['@id']}>{dataset.accession}</a>
+                                        </span>
+                                    );
+                                })}
+                            </span>
+                        );
+                    }
+                    return null;
                 }
-                return null;
             }
         }
 
