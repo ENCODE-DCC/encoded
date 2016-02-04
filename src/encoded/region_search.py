@@ -289,7 +289,7 @@ def region_search(context, request):
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
-        result['@graph'] = list(format_results(request, es_results))
+        result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
             result['notification'] = 'Success'
