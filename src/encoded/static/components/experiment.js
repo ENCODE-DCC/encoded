@@ -182,9 +182,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         };
         var libraryValues2 = {
             nucleic_acid_term_name:         {values: {}, value: undefined, component: {}, title: 'Nucleic acid type',         test: 'nucleicacid'},
-            size_range:                     {values: {}, value: undefined, component: {}, title: 'Size range',                test: 'sizerange'},
-            nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
             depleted_in_term_name:          {values: {}, value: undefined, component: {}, title: 'Depleted in',               test: 'depletedin'},
+            nucleic_acid_starting_quantity: {values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity'},
+            size_range:                     {values: {}, value: undefined, component: {}, title: 'Size range',                test: 'sizerange'},
             lysis_method:                   {values: {}, value: undefined, component: {}, title: 'Lysis method',              test: 'lysismethod'},
             extraction_method:              {values: {}, value: undefined, component: {}, title: 'Extraction method',         test: 'extractionmethod'},
             fragmentation_method:           {values: {}, value: undefined, component: {}, title: 'Fragmentation method',      test: 'fragmentationmethod'},
