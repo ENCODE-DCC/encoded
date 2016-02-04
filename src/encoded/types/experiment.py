@@ -145,7 +145,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         biosample_sex_list = []
         biosample_donor_list = []
         biosample_number_list = []
-        encode2_flag = False
 
         for rep in replicates:
             replicateObject = request.embed(rep, '@@object')
@@ -153,11 +152,6 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 continue
             if 'library' in replicateObject:
                 libraryObject = request.embed(replicateObject['library'], '@@object')
-                if 'award' in libraryObject:
-                    awardObject = request.embed(libraryObject['award'], '@@object')
-                    if 'rfa' in awardObject:
-                        if awardObject['rfa'] == 'ENCODE2':
-                            encode2_flag = True
                 if 'biosample' in libraryObject:
                     biosampleObject = request.embed(libraryObject['biosample'], '@@object')
                     biosample_dict[biosampleObject['accession']] = biosampleObject
