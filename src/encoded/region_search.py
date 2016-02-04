@@ -15,6 +15,13 @@ from .search import (
 from collections import OrderedDict
 import requests
 
+import pprint
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
 
 _ASSEMBLY_MAPPER = {
@@ -269,11 +276,13 @@ def region_search(context, request):
         return result
     file_uuids = []
     for hit in peak_results['hits']['hits']:
-        if hit['_id']not in file_uuids:
+        if hit['_id'] not in file_uuids:
             file_uuids.append(hit['_id'])
     file_uuids = list(set(file_uuids))
     result['notification'] = 'No results found'
 
+
+    log.warn(file_uuids)
     # if more than one peak found return the experiments with those peak files
     if len(file_uuids):
         query = get_filtered_query('', [], set(), principals, [])
@@ -289,6 +298,8 @@ def region_search(context, request):
         es_results = es.search(
             body=query, index='encoded', doc_type='experiment', size=size
         )
+
+        log.warn(pprint.pformat(es_results))
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['facets'] = format_facets(es_results, _FACETS)
         if len(result['@graph']):
