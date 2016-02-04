@@ -178,7 +178,7 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
                 return None
 
         #  exclude ENCODE2
-        if (len(set(biosample_number_list)) < 2) and (encode2_flag is not True):
+        if (len(set(biosample_number_list)) < 2):
             return 'unreplicated'
 
         if biosample_type == 'immortalized cell line':
