@@ -360,7 +360,8 @@
                 "protein",
                 "chemical",
                 "exposure",
-                "infection"
+                "infection",
+                "antibody"
             ]
         },
         "treatment_term_id": {
