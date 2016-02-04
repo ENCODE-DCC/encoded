@@ -359,6 +359,9 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         return
 
     if value['file_format'] == 'fastq':
+        if 'step_run' in value:
+            detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
+            yield AuditFailure('unexpected step_run', detail, level='ERROR')
         return
 
     if 'step_run' not in value:
