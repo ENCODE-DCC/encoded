@@ -53,6 +53,21 @@
                 "preliminary",
                 "proposed"
             ]
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(GEO:SAMN\\d+)$"
+            }
         }
     }
 }

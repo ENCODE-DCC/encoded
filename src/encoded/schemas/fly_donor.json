@@ -63,7 +63,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(bloomington|dssc):.+$"
+                "pattern": "^(((bloomington|dssc):.+)|(GEO:SAMN\\d+))$"
             }
         }
     }
