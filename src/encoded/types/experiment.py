@@ -293,12 +293,12 @@ class Experiment(Dataset, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
         },
         'x': {
             'facets': [
-                'assay_name',
+                'assay_title',
                 'target.investigated_as',
                 'month_released',
                 'files.file_type',
             ],
-            'group_by': 'assay_name',
+            'group_by': 'assay_title',
             'label': 'Assay',
         },
     }
