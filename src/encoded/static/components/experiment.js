@@ -36,7 +36,7 @@ var ExperimentTable = dataset.ExperimentTable;
 var SingleTreatment = objectutils.SingleTreatment;
 var SoftwareVersionList = software.SoftwareVersionList;
 var ProjectBadge = image.ProjectBadge;
-var SortTable = sortTable.SortTable;
+var {SortTablePanel, SortTable} = sortTable;
 var {Panel, PanelBody, PanelHeading} = panel;
 
 
@@ -65,33 +65,6 @@ var Experiment = module.exports.Experiment = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object
-    },
-
-    replicateColumns: {
-        'biological_replicate_number': {title: 'Biological replicate'},
-        'technical_replicate_number': {title: 'Technical replicate'},
-        'summary': {
-            title: 'Summary',
-            getValue: function(replicate) {
-                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.summary : null;
-            }
-        },
-        'biosample_accession': {
-            title: 'Biosample',
-            getValue: replicate => { return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.accession : null; }
-        },
-        'antibody': {
-            title: 'Antibody',
-            getValue: function(replicate) {
-                return replicate.antibody ? replicate.antibody.accession : '';
-            }
-        },
-        'library': {
-            title: 'Library',
-            getValue: function(replicate) {
-                return replicate.library ? replicate.library.accession : '';
-            }
-        }
     },
 
     render: function() {
@@ -496,12 +469,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         </div>
                     </PanelBody>
-
-                    {replicates && replicates.length ?
-                        <SortTable title="Replicates" list={replicates} columns={this.replicateColumns} />
-                    : null}
                 </Panel>
 
+                {replicates && replicates.length ?
+                    <ReplicateTable replicates={replicates} anisogenic={anisogenic} />
+                : null}
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
@@ -541,6 +513,60 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'Experiment');
+
+
+// Display the table of replicates
+var ReplicateTable = React.createClass({
+    propTypes: {
+        replicates: React.PropTypes.array.isRequired, // Array of replicate objects
+        anisogenic: React.PropTypes.bool // True if the owning experiment has anisogenic replicates
+    },
+
+    replicateColumns: {
+        'biological_replicate_number': {title: 'Biological replicate'},
+        'technical_replicate_number': {title: 'Technical replicate'},
+        'summary': {
+            title: 'Summary',
+            getValue: replicate => (replicate.library && replicate.library.biosample) ? replicate.library.biosample.summary : null
+        },
+        'biosample_accession': {
+            title: 'Biosample',
+            getValue: replicate => {
+                if (replicate.library && replicate.library.biosample) {
+                    var biosample = replicate.library.biosample;
+                    return <a href={biosample['@id']} title={'View biosample ' + biosample.accession}>{biosample.accession}</a>;
+                }
+                return null;
+            }
+        },
+        'antibody': {
+            title: 'Antibody',
+            display: replicate => {
+                if (replicate.antibody) {
+                    return <a href={replicate.antibody['@id']} title={'View antibody ' + replicate.antibody.accession}>{replicate.antibody.accession}</a>;
+                }
+                return null;
+            }
+        },
+        'library': {
+            title: 'Library',
+            getValue: replicate => replicate.library ? replicate.library.accession : ''
+        }
+    },
+
+    render: function() {
+        if (this.props.anisogenic) {
+            this.replicateColumns.biological_replicate_number.title = 'Anisogenic replicate';
+        }
+
+        return (
+            <SortTablePanel>
+                <SortTable title="Replicates" list={this.props.replicates} columns={this.replicateColumns} />
+            </SortTablePanel>
+        );
+    }
+});
+
 
 
 var ControllingExperiments = React.createClass({
