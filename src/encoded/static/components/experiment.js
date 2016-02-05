@@ -123,33 +123,6 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         if (replicates && replicates.length) {
-            // Add protein concentration units to components array. First determine if all values in all replicates are identical.
-            var firstConcentration = replicates[0].rbns_protein_concentration
-            var firstConcentraitonUnits = replicates[0].rbns_protein_concentration_units;
-            var homogenousConcentrations = _(replicates).all(replicate => {
-                return (replicate.rbns_protein_concentration === firstConcentration) && (replicate.rbns_protein_concentration_units === firstConcentraitonUnits);
-            });
-
-            // Generate the renderings of each concentration line item. Check against undefined explicitly because some real values might by falsy.
-            var concentrationRender = null;
-            if (homogenousConcentrations) {
-                // All values are the same (possibly undefined). Render just one line item or nothing if all are undefined
-                concentrationRender = (firstConcentration !== undefined) ? <span className="line-item">{firstConcentration}<span className="unit">{firstConcentraitonUnits}</span></span> : null;
-            } else {
-                // Not all values are the same
-                concentrationRender = replicates.map(replicate => {
-                    if (replicate.rbns_protein_concentration !== undefined) {
-                        return (
-                            <span className="line-item" key={replicate.uuid}>
-                                {replicate.rbns_protein_concentration}
-                                <span className="unit">{replicate.rbns_protein_concentration_units}</span> [{replicate.biological_replicate_number}-{replicate.technical_replicate_number}]
-                            </span>
-                        );
-                    }
-                    return null;
-                });
-            }
-
             // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
             var libraryValues1 = {
                 treatments:                     {values: {}, value: undefined, component: {}, title: 'Treatments',                test: 'treatments'}
@@ -308,9 +281,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
-                        <h2>
-                            Experiment summary for {context.accession}
-                        </h2>
+                        <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
@@ -346,6 +317,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         </div>
                                     : null}
 
+                                    {context.biosample_type ?
+                                        <div data-test="biosample-type">
+                                            <dt>Type</dt>
+                                            <dd>{context.biosample_type}</dd>
+                                        </div>
+                                    : null}
+
                                     {AssayDetails(replicates, libraryValues1, librarySpecials1)}
 
                                     {context.target ?
@@ -360,30 +338,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     {Object.keys(platforms).length ?
                                         <div data-test="platform">
                                             <dt>Platform</dt>
-                                            <dd>{Object.keys(platforms).map(platformId => <a className="stacked-link" key={platformId} href={platformId}>{platforms[platformId].title}</a>)}</dd>
-                                        </div>
-                                    : null}
-
-                                    {concentrationRender ?
-                                        <div data-test="proteinconcentration">
-                                            <dt>Protein concentration</dt>
-                                            <dd>{concentrationRender}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.biosample_type ?
-                                        <div data-test="biosample-type">
-                                            <dt>Type</dt>
-                                            <dd>{context.biosample_type}</dd>
-                                        </div>
-                                    : null}
-
-                                    {Object.keys(antibodies).length ?
-                                        <div data-test="antibody">
-                                            <dt>Antibody</dt>
-                                            <dd>{Object.keys(antibodies).map(function(antibody, i) {
-                                                return (<span key={antibody}>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
-                                            })}</dd>
+                                            <dd>
+                                                {Object.keys(platforms).map((platformId, i) =>
+                                                    <span key={platformId}>
+                                                        {i > 0 ? <span>, </span> : null}
+                                                        <a className="stacked-link" href={platformId}>{platforms[platformId].title}</a>
+                                                    </span>
+                                                )}
+                                            </dd>
                                         </div>
                                     : null}
 
@@ -472,7 +434,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </Panel>
 
                 {replicates && replicates.length ?
-                    <ReplicateTable replicates={replicates} anisogenic={anisogenic} />
+                    <ReplicateTable replicates={replicates} replicationType={context.replication_type} />
                 : null}
 
                 {Object.keys(documents).length ?
@@ -519,7 +481,7 @@ globals.content_views.register(Experiment, 'Experiment');
 var ReplicateTable = React.createClass({
     propTypes: {
         replicates: React.PropTypes.array.isRequired, // Array of replicate objects
-        anisogenic: React.PropTypes.bool // True if the owning experiment has anisogenic replicates
+        replicationType: React.PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
     },
 
     replicateColumns: {
@@ -527,7 +489,25 @@ var ReplicateTable = React.createClass({
         'technical_replicate_number': {title: 'Technical replicate'},
         'summary': {
             title: 'Summary',
-            getValue: replicate => (replicate.library && replicate.library.biosample) ? replicate.library.biosample.summary : null
+            getValue: replicate => {
+                // Display protein concentration if it exists
+                if (replicate.rbns_protein_concentration) {
+                    return (
+                        <span>
+                            Protein concentration {replicate.rbns_protein_concentration}
+                            <span className="unit">{replicate.rbns_protein_concentration_units}</span>
+                        </span>
+                    );
+                }
+
+                // Else, display biosample summary if the biosample exists
+                if (replicate.library && replicate.library.biosample) {
+                    return <span>{replicate.library.biosample.summary}</span>;
+                }
+
+                // Else, display nothing
+                return null;
+            }
         },
         'biosample_accession': {
             title: 'Biosample',
@@ -555,18 +535,28 @@ var ReplicateTable = React.createClass({
     },
 
     render: function() {
-        if (this.props.anisogenic) {
+        var tableTitle;
+        var {replicates, replicationType} = this.props;
+
+        // Determine replicate table title based on the replicate type. Also override the biosample replicate column title
+        if (replicationType === 'anisogenic') {
+            tableTitle = 'Anisogenic replicates';
             this.replicateColumns.biological_replicate_number.title = 'Anisogenic replicate';
+        } else if (replicationType === 'isogenic') {
+            tableTitle = 'Isogenic replicates';
+            this.replicateColumns.biological_replicate_number.title = 'Isogenic replicate';
+        } else {
+            tableTitle = 'Replicates';
+            this.replicateColumns.biological_replicate_number.title = 'Biosample replicate';
         }
 
         return (
             <SortTablePanel>
-                <SortTable title="Replicates" list={this.props.replicates} columns={this.replicateColumns} />
+                <SortTable title={tableTitle} list={replicates} columns={this.replicateColumns} />
             </SortTablePanel>
         );
     }
 });
-
 
 
 var ControllingExperiments = React.createClass({
