@@ -196,3 +196,13 @@ class SamtoolsStatsQualityMetric(QualityMetric):
     item_type = 'samtools_stats_quality_metric'
     schema = load_schema('encoded:schemas/samtools_stats_quality_metric.json')
 
+@collection(
+    name='idr-quality-metrics',
+    properties={
+        'title': "IDR Metrics",
+        'description': "Quality metrics from Irreproducible Discovery Rate (IDR) analysis",
+    })
+class IDRQualityMetric(QualityMetric):
+    item_type = 'idr_quality_metric'
+    schema = load_schema('encoded:schemas/idr_quality_metric.json')
+
